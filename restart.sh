@@ -1,5 +1,6 @@
 #! /bin/sh
 
+ant rebuild
 if [ -f killbot ]
 then
 	BOTPID=`cat killbot | cut -d" " -f2`
@@ -17,7 +18,6 @@ do
 done
 export CLASSPATH=$CLASSPATH:build:$JAVA_HOME/lib/tools.jar
 
-ant rebuild
 java javabot.Javabot &> javabot.log &
 PID=$!
 echo "kill ${PID} ; rm \$0" > killbot
