@@ -13,6 +13,9 @@ import com.rickyclarkson.java.util.TypeSafeList;
 
 /**
  * This one must always be used last.
+ *
+ * @deprecated because it takes hours to complete and javabot cannot multitask
+ * at the time.
  */
 public class ListFactoidsOperation implements BotOperation {
     /**
@@ -25,6 +28,9 @@ public class ListFactoidsOperation implements BotOperation {
         String channel = event.getChannel();
         String message = event.getMessage().toLowerCase();
 
+	if (!message.equals("listkeys"))
+		return messages;
+	
         if (channel.startsWith("#")) {
             messages.add(new Message(channel,
                 "I will only list keys in a private " + "message", false));
