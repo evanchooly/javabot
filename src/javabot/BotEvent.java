@@ -1,73 +1,59 @@
 package javabot;
 
-/**
- * @author ricky_clarkson
- */
-public class BotEvent {
-    private Javabot _bot;
-    private String _channel;
-    private String _sender;
-    private String _login;
-    private String _hostname;
-    private String _message;
+public class BotEvent
+{
+	private Javabot bot;
+	private String channel;
+	private String sender;
+	private String login;
+	private String hostname;
+	private String message;
 
-    /**
-     * @param bot
-     * @param channel
-     * @param sender
-     * @param login
-     * @param hostname
-     * @param message
-     */
-    public BotEvent(Javabot bot, String channel, String sender, String login,
-        String hostname, String message) {
-        this._bot = bot;
-        this._channel = channel;
-        this._sender = sender;
-        this._login = login;
-        this._hostname = hostname;
-        this._message = message;
-    }
+	public BotEvent
+	(
+		Javabot bot,
+		String channel,
+		String sender,
+		String login,
+        	String hostname,
+		String message
+	)
+	{
+        	this.bot=bot;
+		this.channel=channel;
+		this.sender=sender;
+		this.login=login;
+		this.hostname=hostname;
+		this.message=message;
+	}
+	
+	public Javabot getBot()
+	{
+		return bot;
+	}
 
-    /**
-     * @return
-     */
-    public Javabot getBot() {
-        return _bot;
-    }
+	public String getChannel()
+	{
+        	return channel;
+	}
 
-    /**
-     * @return
-     */
-    public String getChannel() {
-        return _channel;
-    }
+	public String getSender()
+	{
+		return sender;
+	}
 
-    /**
-     * @return
-     */
-    public String getSender() {
-        return _sender;
-    }
+	public String getLogin()
+	{
+		return login;
+	}
 
-    /**
-     * @return
-     */
-    public String getLogin() {
-        return _login;
-    }
+	public String getHostname()
+	{
+		return hostname;
+	}
 
-    /**
-     * @return
-     */
-    public String getHostname() {
-        return _hostname;
-    }
-
-    /**
-     * @return
-     */
-    public String getMessage() {
-        return _message;
-    }
+	public String getMessage()
+	{
+		return message;
+	}
 }
