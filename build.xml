@@ -19,4 +19,16 @@
 	</target>
 	
 	<target name="rebuild" depends="clean, main"/>
+
+	<target name="test" depends="main">
+		<junit haltonfailure="true" reloading="false">
+			<formatter type="brief" usefile="no"/>
+			<classpath refid="javabot.cp"/>
+			<batchtest>
+				<fileset dir="src/tests">
+					<include name="*.java"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
 </project>
