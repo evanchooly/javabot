@@ -42,7 +42,10 @@ public class GuessOperation implements BotOperation {
         "me",
         "an",
 	"for",
-	"use"
+	"use",
+	"he",
+	"she",
+	"it"
     };
 
     String ignoreString = Arrays.toString(ignoreList, "|");
