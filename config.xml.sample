@@ -17,7 +17,6 @@
 	<channel name="#struts"/>
 	<channel name="#hibernate"/>
 	<operation class="javabot.operations.Magic8BallOperation"/>
-	<operation class="javabot.operations.AddFactoidOperation"/>
 	<operation class="javabot.operations.DaysToChristmasOperation"/>
 	<operation class="javabot.operations.DaysUntilOperation"/>
 	<operation class="javabot.operations.DictOperation"/>
@@ -41,6 +40,7 @@
 	<operation class="javabot.operations.TimeOperation"/>
 	<operation class="javabot.operations.UnixCommandOperation"/>
 
+	<operation class="javabot.operations.AddFactoidOperation"/>
 	<!-- Note that GetFactoidOperation should always be *LAST*
 	in the list, as it is a last resort, it even tries to guess.
 	Everything else should be above this line.-->
