@@ -27,6 +27,12 @@ public class GetFactoidOperation implements BotOperation {
         String firstWord = message.replaceAll(" .+", "");
         String dollarOne = message.replaceFirst("[^ ]+ ", "");
         String key = message;
+
+        if(message.startsWith("<see>")) {
+            message
+                = bot.getFactoid(message.substring("<see>".length()));
+        }
+	
         if(!bot.hasFactoid(message.toLowerCase())
             && bot.hasFactoid(firstWord.toLowerCase() + " $1")) {
             message = firstWord + " $1";
@@ -61,16 +67,19 @@ public class GetFactoidOperation implements BotOperation {
                 message
                     = bot.getFactoid(message.substring("<see>".length()));
             }
-            if(message.startsWith("<reply>")) {
-                messages.add(new Message(channel, message.substring("<reply>"
-                    .length()), false));
-                return messages;
-            }
-            if(message.startsWith("<action>")) {
-                messages.add(new Message(channel, message.substring("<action>"
-                    .length()), true));
-                return messages;
-            }
+	    else
+	    {
+            	if(message.startsWith("<reply>")) {
+                	messages.add(new Message(channel, message.substring("<reply>"
+	                    .length()), false));
+        	        return messages;
+            	}
+		if(message.startsWith("<action>")) {
+                	messages.add(new Message(channel, message.substring("<action>"
+                		.length()), true));
+			return messages;
+            	}
+	    }
             messages.add(new Message(channel, sender + ", " + key + " is "
                 + message, false));
             return messages;

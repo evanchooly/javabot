@@ -98,6 +98,9 @@ public class GuessOperation implements BotOperation {
             for (int a = 0; a < words.length; a++) {
                 int currentMatches = 0;
 
+		if (words[a].length()<3)
+			continue;
+		
                 for (int b = 0; b < next.length(); b++) {
                     int index = next.indexOf(words[a]);
 
