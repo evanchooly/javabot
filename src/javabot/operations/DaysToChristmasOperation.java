@@ -4,8 +4,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javabot.BotEvent;
+import javabot.Message;
+
 import com.rickyclarkson.java.util.TypeSafeList;
 
+/**
+ * @author ricky_clarkson
+ */
 public class DaysToChristmasOperation implements BotOperation
 {
 	/**

@@ -11,327 +11,323 @@ import java.util.List;
 import com.rickyclarkson.java.util.TypeSafeList;
 
 /**
-	Adapted from mod_googler.cpp by mr_gray in #java on Freenode
-*/
-class Googler
-{
-	private static final String token="<p class=g><a href=";
-	
-	private static final String spellingToken = "<font color=cc0000 class=p>Did you mean: </font><a href=";
+ * Adapted from mod_googler.cpp by mr_gray in #java on Freenode
+ */
+public class Googler {
+    private static final String token = "<p class=g><a href=";
 
-	private List searchResults = new TypeSafeList(new ArrayList(),Result.class);
+    private static final String spellingToken = "<font color=cc0000 class=p>Did you mean: </font><a href=";
 
-	private Socket socket;
+    private List searchResults = new TypeSafeList(new ArrayList(), Result.class);
 
-	private String correctSpelling;
+    private Socket socket;
+    
+    private String correctSpelling;
 
-	private boolean foundResults;
+    private boolean foundResults;
 
-	private int currentIndex;
-	
-	public static class Result
-	{
-		private String link;
-		private String linkInfo;
-		
-		public String getLink()
-		{
-			return link;
-		}
+    private int currentIndex;
 
-		public String getLinkInfo()
-		{
-			return linkInfo;
-		}
+    /**
+     * @author ricky_clarkson
+     */
+    public static class Result {
+        private String link;
+        private String linkInfo;
 
-		public void setLink(String string)
-		{
-			link=string;
-		}
+        /**
+         * @return
+         */
+        public String getLink() {
+            return link;
+        }
 
-		public void setLinkInfo(String string)
-		{
-			linkInfo=string;
-		}
-		
-		public String toString()
-		{
-			return link+" ("+linkInfo+")";
-		}
-	}
-	
-	public Googler()
-	{
-		try
-		{
-			socket=new Socket("www.google.com",80);
-		}
-		catch (Exception exception)
-		{
-			throw new RuntimeException(exception);
-		}
-	}
+        /**
+         * @return
+         */
+        public String getLinkInfo() {
+            return linkInfo;
+        }
 
-	public boolean connect()
-	{
-		return socket!=null && socket.isConnected();
-	}
-	
-	public void search(String query)
-	{
-		if (socket!=null)
-		{
-			resetVars();
-			
-			String httpPost=
-				"GET /search?hl=en&ie=UTF-8&oe=UTF-8&q="+
-				urlEscape(query)+
-				"&btnG=Google+Search HTTP/1.1\r\n"+
-				"Accept: text/html\r\n"+
-				"Referer: http://www.google.com/index.html"+
-					"\r\n"+
-				"Accept-Language: en-us\r\n"+
-				
-				"User-Agent: Mozilla/4.0 (compatible; "+
-					"MSIE 6.0; Windows NT 5.1; "+
-					"Avant Browser [avantbrowser.com]; "+
-					".NET CLR 1.1.4322)\r\n"+
-				
-				"Host: www.google.com\r\n"+
-				"Connection: close\r\n\r\n";
-			
-			try
-			{
-				PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
-				
-				writer.print(httpPost);
-				writer.flush();
-			}
-			catch (Exception exception)
-			{
-				throw new RuntimeException(exception);
-			}
-			
-			BufferedReader bufferedReader = null;
-			
-			try {
-				bufferedReader= new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			}
-			catch(IOException ie) {
-				ie.printStackTrace();	
-			}
+        /**
+         * @param string
+         */
+        public void setLink(String string) {
+            link = string;
+        }
 
-			StringBuffer resultBuffer=new StringBuffer();
-			
-			String line = null;
-			
-			do
-			{
-				try
-				{
-					line = bufferedReader.readLine();
-				}
-				catch (IOException exception)
-				{
-					throw new RuntimeException(exception);
-				}
-				
-				if (line!=null)
-					resultBuffer.append(line+"\r\n");
-			}
-			while (line!=null);
-			
-			try
-			{
-				socket.close();
-			}
-			catch (Exception exception)
-			{
-				exception.printStackTrace();
-			}
-			
-			String result=resultBuffer.toString();
-			
-			if (result.indexOf(noResultsToken(query))!=-1) {
-				return;
-			}
+        /**
+         * @param string
+         */
+        public void setLinkInfo(String string) {
+            linkInfo = string;
+        }
 
-			int findIndex = result.indexOf(spellingToken);
-			
-			if (findIndex!=-1)
-			{
-				findIndex+=spellingToken.length();
+        /**
+         * @see java.lang.Object#toString()
+         */
+        public String toString() {
+            return link + " (" + linkInfo + ")";
+        }
+    }
 
-				int endChar=result.indexOf('>',findIndex);
+    /**
+     * 
+     */
+    public Googler() {
+        try {
+            socket = new Socket("www.google.com", 80);
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+    }
 
-				if (endChar!=-1)
-				{
-					findIndex+=(endChar-findIndex);
+    /**
+     * @return
+     */
+    public boolean connect() {
+        return socket != null && socket.isConnected();
+    }
 
-					endChar=result.indexOf("</a>", findIndex);
+    /**
+     * @param query
+     */
+    public void search(String query) {
+        if (socket != null) {
+            resetVars();
 
-					if (endChar!=-1)
-					{
-						StringBuffer revisedSpelling=
-							new StringBuffer();
+            String httpPost = "GET /search?hl=en&ie=UTF-8&oe=UTF-8&q="
+                + urlEscape(query) + "&btnG=Google+Search HTTP/1.1\r\n"
+                + "Accept: text/html\r\n"
+                + "Referer: http://www.google.com/index.html" + "\r\n"
+                + "Accept-Language: en-us\r\n" +
 
-						boolean inHtml=false;
+                "User-Agent: Mozilla/4.0 (compatible; "
+                + "MSIE 6.0; Windows NT 5.1; "
+                + "Avant Browser [avantbrowser.com]; "
+                + ".NET CLR 1.1.4322)\r\n" +
 
-						for
-						(
-							int a=findIndex;
-							a<endChar;
-							a++
-						)
-						{
-							if (result.charAt(a)=='<')
-								inHtml=true;
+                "Host: www.google.com\r\n" + "Connection: close\r\n\r\n";
 
-							if (result.charAt(a)=='>')
-							{
-								inHtml=false;
-								continue;
-							}
-							
-							if (!inHtml)
-								revisedSpelling.append(result.charAt(a));
-						}
+            try {
+                PrintWriter writer = new PrintWriter(socket.getOutputStream(),
+                    true);
 
-						correctSpelling=revisedSpelling.toString();
-					}
-				}
-			}
+                writer.print(httpPost);
+                writer.flush();
+            } catch (Exception exception) {
+                throw new RuntimeException(exception);
+            }
 
-			int linkPosition=result.indexOf(token);
+            BufferedReader bufferedReader = null;
 
-			while (linkPosition!=-1)
-			{
-				linkPosition+=token.length();
+            try {
+                bufferedReader = new BufferedReader(new InputStreamReader(
+                    socket.getInputStream()));
+            } catch (IOException ie) {
+                ie.printStackTrace();
+            }
 
-				int linkEndPos1=result.indexOf('>',linkPosition+1);
-				int linkEndPos2=result.indexOf(' ',linkPosition+1);
-				
-				if (linkEndPos1!=-1 || linkEndPos2!=-1)
-				{
-					int end        = Math.min(linkEndPos1,linkEndPos2);
-					Result result2 = new Result();
-					
-					result2.setLink(result.substring(linkPosition,linkPosition+(end-linkPosition)));
+            StringBuffer resultBuffer = new StringBuffer();
 
-					int end2 = result.indexOf("</a>",end);
+            String line = null;
 
-					if (end2!=-1)
-					{
-						if (end==linkEndPos1)
-						{
-							result2.setLinkInfo(htmlEscape(result.substring(end+1, end + ((end2-end)))));
+            do {
+                try {
+                    line = bufferedReader.readLine();
+                } catch (IOException exception) {
+                    throw new RuntimeException(exception);
+                }
 
-							searchResults.add(result2);
-							foundResults = true;
-						}
-						else
-						{
-							int end3=result.indexOf('>',end);
+                if (line != null)
+                    resultBuffer.append(line + "\r\n");
+            } while (line != null);
 
-							if (end3!=-1)
-							{
-								result2.setLinkInfo(htmlEscape(result.substring(end3+1, end3 + ((end2-end3) -1))));
-								
-								searchResults.add(result2);
-								foundResults=true;
-							}
-						}
-					}
-				}
-				
-				linkPosition=result.indexOf(token,linkPosition);
-			}
-		}
-	}
+            try {
+                socket.close();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
 
-	public String urlEscape(String url)
-	{
-		return url.replaceAll(" ","+");
-	}
+            String result = resultBuffer.toString();
 
-	public String htmlEscape(String html)
-	{
-		StringBuffer answer=new StringBuffer();
+            if (result.indexOf(noResultsToken(query)) != -1) {
+                return;
+            }
 
-		boolean inTag=false;
+            int findIndex = result.indexOf(spellingToken);
 
-		for (int a=0;a<html.length();a++)
-		{
-			char currentChar=html.charAt(a);
-			
-			if (currentChar=='<')
-				inTag=true;
+            if (findIndex != -1) {
+                findIndex += spellingToken.length();
 
-			if (currentChar=='>') {
-				inTag=false;
-				continue;
-			}
+                int endChar = result.indexOf('>', findIndex);
 
-			if (!inTag)
-				answer.append(currentChar);
-		}
-		
-		return answer.toString();
-	}
+                if (endChar != -1) {
+                    findIndex += (endChar - findIndex);
 
-	public void finalize()
-	{
-		close();
-	}
+                    endChar = result.indexOf("</a>", findIndex);
 
-	public void resetVars()
-	{
-		correctSpelling=null;
-		searchResults= new ArrayList();
-		currentIndex=0;
-		foundResults=false;
-	}
+                    if (endChar != -1) {
+                        StringBuffer revisedSpelling = new StringBuffer();
 
-	public Result getNextResult()
-	{
-		if (searchResults.size()>0)
-		{
-			if (currentIndex>=searchResults.size())
-				currentIndex=0;
-		
-			return (Result)searchResults.get(currentIndex++);
-		}
-		
-		return null;
-	}
+                        boolean inHtml = false;
 
-	public Result getCurrentResult()
-	{
-		return (Result)searchResults.get(currentIndex);
-	}
+                        for (int a = findIndex; a < endChar; a++) {
+                            if (result.charAt(a) == '<')
+                                inHtml = true;
 
-	public int getNumberOfResults()
-	{
-		return searchResults.size();
-	}
+                            if (result.charAt(a) == '>') {
+                                inHtml = false;
+                                continue;
+                            }
 
-	public void close()
-	{
-		try
-		{
-			socket.close();
-		}
-		catch (IOException exception)
-		{
-			throw new RuntimeException(exception);
-		}
-	}
+                            if (!inHtml)
+                                revisedSpelling.append(result.charAt(a));
+                        }
 
-	private static final String noResultsToken(String searchText)
-	{
-		return
-			"<br><br>Your search - <b>"+searchText+"</b> - "+
-			"did not match any documents.  <br>No pages were "+
-			"found containing";
-	}
+                        correctSpelling = revisedSpelling.toString();
+                    }
+                }
+            }
+
+            int linkPosition = result.indexOf(token);
+
+            while (linkPosition != -1) {
+                linkPosition += token.length();
+
+                int linkEndPos1 = result.indexOf('>', linkPosition + 1);
+                int linkEndPos2 = result.indexOf(' ', linkPosition + 1);
+
+                if (linkEndPos1 != -1 || linkEndPos2 != -1) {
+                    int end = Math.min(linkEndPos1, linkEndPos2);
+                    Result result2 = new Result();
+
+                    result2.setLink(result.substring(linkPosition, linkPosition
+                        + (end - linkPosition)));
+
+                    int end2 = result.indexOf("</a>", end);
+
+                    if (end2 != -1) {
+                        if (end == linkEndPos1) {
+                            result2.setLinkInfo(htmlEscape(result.substring(
+                                end + 1, end + ((end2 - end)))));
+
+                            searchResults.add(result2);
+                            foundResults = true;
+                        } else {
+                            int end3 = result.indexOf('>', end);
+
+                            if (end3 != -1) {
+                                result2.setLinkInfo(htmlEscape(result
+                                    .substring(end3 + 1, end3
+                                        + ((end2 - end3) - 1))));
+
+                                searchResults.add(result2);
+                                foundResults = true;
+                            }
+                        }
+                    }
+                }
+
+                linkPosition = result.indexOf(token, linkPosition);
+            }
+        }
+    }
+
+    /**
+     * @param url
+     * @return
+     */
+    public String urlEscape(String url) {
+        return url.replaceAll(" ", "+");
+    }
+
+    /**
+     * @param html
+     * @return
+     */
+    public String htmlEscape(String html) {
+        StringBuffer answer = new StringBuffer();
+
+        boolean inTag = false;
+
+        for (int a = 0; a < html.length(); a++) {
+            char currentChar = html.charAt(a);
+
+            if (currentChar == '<')
+                inTag = true;
+
+            if (currentChar == '>') {
+                inTag = false;
+                continue;
+            }
+
+            if (!inTag)
+                answer.append(currentChar);
+        }
+
+        return answer.toString();
+    }
+
+    /**
+     * @see java.lang.Object#finalize()
+     */
+    public void finalize() {
+        close();
+    }
+
+    /**
+     * 
+     */
+    public void resetVars() {
+        correctSpelling = null;
+        searchResults = new ArrayList();
+        currentIndex = 0;
+        foundResults = false;
+    }
+
+    /**
+     * @return
+     */
+    public Result getNextResult() {
+        if (searchResults.size() > 0) {
+            if (currentIndex >= searchResults.size())
+                currentIndex = 0;
+
+            return (Result)searchResults.get(currentIndex++);
+        }
+
+        return null;
+    }
+
+    /**
+     * @return
+     */
+    public Result getCurrentResult() {
+        return (Result)searchResults.get(currentIndex);
+    }
+
+    /**
+     * @return
+     */
+    public int getNumberOfResults() {
+        return searchResults.size();
+    }
+
+    /**
+     * 
+     */
+    public void close() {
+        try {
+            socket.close();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+
+    private static final String noResultsToken(String searchText) {
+        return "<br><br>Your search - <b>" + searchText + "</b> - "
+            + "did not match any documents.  <br>No pages were "
+            + "found containing";
+    }
 }

@@ -3,10 +3,19 @@ package javabot.operations;
 import java.util.ArrayList;
 import java.util.List;
 
+import javabot.BotEvent;
+import javabot.Message;
+
 import com.rickyclarkson.java.util.TypeSafeList;
 
+/**
+ * @author ricky_clarkson
+ */
 public class SayOperation implements BotOperation
 {
+	/**
+	 * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
+	 */
 	public List handleMessage(BotEvent event)
 	{
 		List messages=new TypeSafeList(new ArrayList(),Message.class);

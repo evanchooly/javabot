@@ -17,4 +17,6 @@
 	<target name="clean">
 		<delete dir="${build}"/>
 	</target>
+	
+	<target name="rebuild" depends="clean, main"/>
 </project>
