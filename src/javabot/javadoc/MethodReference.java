@@ -4,15 +4,32 @@ import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.Parameter;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 import org.jdom.Element;
 
 public class MethodReference
 {
+	private static Pattern stripSpaces=Pattern.compile(" ");
+	
 	private ClassReference owner;
 	private String methodName;
 	private String longSignatureTypes;
 	private String shortSignatureTypes;
 
+	/**
+		Long signature without spacing, used for matching.
+		We still need the original for URLs.
+	*/
+	private String longSignatureStripped;
+
+	/**
+		Short signature without spacing, used for matching.
+		We still need the original for URLs.
+	*/
+	private String shortSignatureStripped;
+	
 	public MethodReference(ExecutableMemberDoc doc, ClassReference owner)
 	{
 		this.owner=owner;
@@ -50,14 +67,21 @@ public class MethodReference
 
 	public boolean signatureMatches(String signature)
 	{
-		String longTypes=methodName+"("+longSignatureTypes+")";
-		String shortTypes=methodName+"("+shortSignatureTypes+")";
+		String signatureStripped=stripSpaces(signature);
+
+		String longTypes=methodName+"("+longSignatureStripped+")";
+		String shortTypes=methodName+"("+shortSignatureStripped+")";
 		
 		return
-			signature.equals(longTypes) ||
-			signature.equalsIgnoreCase(shortTypes);
+			signatureStripped.equals(longTypes) ||
+			signatureStripped.equalsIgnoreCase(shortTypes);
 	}
 
+	private static String stripSpaces(String string)
+	{
+		return stripSpaces.matcher(string).replaceAll("");
+	}
+	
 	public String getLongSignature()
 	{
 		return methodName+"("+longSignatureTypes+")";
@@ -97,6 +121,9 @@ public class MethodReference
 		
 		longSignatureTypes=element.getChildText("LongSignatureTypes");
 		shortSignatureTypes=element.getChildText("ShortSignatureTypes");
+
+		longSignatureStripped=stripSpaces(longSignatureTypes);
+		shortSignatureStripped=stripSpaces(shortSignatureTypes);
 	}
 
 	public int getArgumentCount()
