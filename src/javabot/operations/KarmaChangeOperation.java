@@ -20,52 +20,49 @@ public class KarmaChangeOperation implements BotOperation {
         String sender = event.getSender();
         String channel = event.getChannel();
         Javabot bot = event.getBot();
-        if(bot.isValidSender(sender)) {
-            if(message.indexOf(" ") != -1) {
+        if(message.indexOf(" ") != -1) {
+            return messages;
+        }
+        if(message.endsWith("++") || message.endsWith("--")) {
+            String nick = message.substring(0, message.length() - 2);
+            nick = nick.toLowerCase();
+            if(nick.equals(sender.toLowerCase())) {
+                messages.add
+                    (new Message
+                        (channel,
+                            "Changing one's own karma" +
+                    " is not permitted.",
+                            false));
                 return messages;
             }
-            if(message.endsWith("++") || message.endsWith("--")) {
-                String nick = message.substring(0, message.length() - 2);
-                nick = nick.toLowerCase();
-                if(nick.equals(sender.toLowerCase())) {
-                    messages.add
-                        (new Message
-                            (channel,
-                                "Changing one's own karma" +
-                        " is not permitted.",
-                                false));
-                    return messages;
-                }
-                int karma;
-                try {
-                    karma = Integer.parseInt
-                        (bot.getFactoid("karma " + nick));
-                } catch(Exception exception) {
-                    karma = 0;
-                }
-                if(message.endsWith("++")) {
-                    karma++;
-                } else {
-                    karma--;
-                }
-                bot.addFactoid(sender, "karma " + nick, karma + "");
-                KarmaReadOperation karmaRead = new KarmaReadOperation();
-                messages.addAll
-                    (karmaRead.handleMessage
-                    (new BotEvent
-                        (bot,
-                            event.getChannel(),
-                            event.getSender(),
-                            event.getLogin(),
-                            event.getHostname(),
-                            "karma " + nick)));
+            int karma;
+            try {
+                karma = Integer.parseInt
+                    (bot.getFactoid("karma " + nick));
+            } catch(Exception exception) {
+                karma = 0;
             }
+            if(message.endsWith("++")) {
+                karma++;
+            } else {
+                karma--;
+            }
+            bot.addFactoid(sender, "karma " + nick, karma + "");
+            KarmaReadOperation karmaRead = new KarmaReadOperation();
+            messages.addAll
+                (karmaRead.handleMessage
+                (new BotEvent
+                    (bot,
+                        event.getChannel(),
+                        event.getSender(),
+                        event.getLogin(),
+                        event.getHostname(),
+                        "karma " + nick)));
         }
         return messages;
     }
 
-    public List handleChannelMessage(BotEvent event)
-    {
-	    	return new TypeSafeList(new ArrayList(),Message.class);
+    public List handleChannelMessage(BotEvent event) {
+        return new TypeSafeList(new ArrayList(), Message.class);
     }
 }

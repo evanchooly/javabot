@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Date;
 import com.rickyclarkson.java.util.TypeSafeList;
 import javabot.operations.BotOperation;
 import org.jdom.Document;
@@ -197,33 +197,21 @@ public class Javabot extends PircBot {
         }
     }
 
-    public void onMessage
-        (String channel,
-        String sender,
-        String login,
-        String hostname,
-        String message) {
-        for(int a = 0; a < startStrings.length; a++) {
-            int length = startStrings[a].length();
-            if(message.startsWith(startStrings[a])) {
-                handleAnyMessage
-                    (channel,
-                        sender,
-                        login,
-                        hostname,
+    public void onMessage(String channel, String sender, String login,
+        String hostname, String message) {
+        if(isValidSender(sender)) {
+            for(int a = 0; a < startStrings.length; a++) {
+                int length = startStrings[a].length();
+                if(message.startsWith(startStrings[a])) {
+                    handleAnyMessage(channel, sender, login, hostname,
                         message.substring(length).trim());
-                return;
+                    return;
+                }
             }
+            handleAnyChannelMessage(channel, sender, login, hostname, message);
+        } else {
+            System.out.println("ignoring " + sender);
         }
-
-	handleAnyChannelMessage
-	(
-		channel,
-		sender,
-		login,
-		hostname,
-		message
-	);
     }
 
     public List getResponses
@@ -248,7 +236,7 @@ public class Javabot extends PircBot {
         return null;
     }
 
-public List getChannelResponses
+    public List getChannelResponses
         (String channel,
         String sender,
         String login,
@@ -296,15 +284,12 @@ public List getChannelResponses
         channelPreviousMessages.put(channel, message);
     }
 
-	private void handleAnyChannelMessage
-        (
-		String channel,
-	        String sender,
-        	String login,
-	        String hostname,
-        	String message
-	)
-	{
+    private void handleAnyChannelMessage
+        (String channel,
+        String sender,
+        String login,
+        String hostname,
+        String message) {
         List messages = getChannelResponses
             (channel, sender, login, hostname, message);
         if(messages != null) {
@@ -321,8 +306,8 @@ public List getChannelResponses
                             nextMessage.getMessage());
                 }
             }
-        } 
-}    
+        }
+    }
 
     public void onInvite
         (String targetNick,
@@ -356,7 +341,6 @@ public List getChannelResponses
         } catch(IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public boolean hasFactoid(String key) {
@@ -422,17 +406,16 @@ public List getChannelResponses
             exception.printStackTrace();
         }
     }
-	public void onPrivateMessage
-	(
-		String sender,
-		String login,
-		String hostname,
-		String message
-	)
-	{
-		if (isOnSameChannelAs(sender))
-			handleAnyMessage(sender,sender,login,hostname,message);
-	}
+
+    public void onPrivateMessage
+        (String sender,
+        String login,
+        String hostname,
+        String message) {
+        if(isOnSameChannelAs(sender)) {
+            handleAnyMessage(sender, sender, login, hostname, message);
+        }
+    }
 
     private void dumpHTML() {
         Iterator iterator = new TreeSet(map.keySet()).iterator();
@@ -447,33 +430,27 @@ public List getChannelResponses
                 String value = (String)map.get(factoid);
                 value = value.replaceAll("<", "&lt;");
                 value = value.replaceAll(">", "&gt;");
-			
-		int startHttp=0;
-		
-		loop: do
-		{
-			startHttp=value.indexOf("http://",startHttp);
-			
-			if (startHttp==-1)
-				break loop;
-			
-			int endHttp=value.indexOf(" ",startHttp);
-			if (endHttp==-1)
-				endHttp=value.length();
-
-			value=
-				value.substring(0,startHttp)+
-				"<a href=\""+
-				value.substring(startHttp,endHttp)+
-				"\">"+
-				value.substring(startHttp,endHttp)+
-				"</a>"+
-				value.substring(endHttp);
-
-			startHttp=value.indexOf("</a>",startHttp);
-		}
-		while (startHttp!=-1);
-		
+                int startHttp = 0;
+                loop:
+                do {
+                    startHttp = value.indexOf("http://", startHttp);
+                    if(startHttp == -1) {
+                        break loop;
+                    }
+                    int endHttp = value.indexOf(" ", startHttp);
+                    if(endHttp == -1) {
+                        endHttp = value.length();
+                    }
+                    value =
+                        value.substring(0, startHttp) +
+                        "<a href=\"" +
+                        value.substring(startHttp, endHttp) +
+                        "\">" +
+                        value.substring(startHttp, endHttp) +
+                        "</a>" +
+                        value.substring(endHttp);
+                    startHttp = value.indexOf("</a>", startHttp);
+                } while(startHttp != -1);
                 writer.println
                     ("<tr><td>" +
                     factoid +
@@ -539,8 +516,8 @@ public List getChannelResponses
         return password;
     }
 
-    public boolean isValidSender(String sender) {
-        return ! ignores.contains(sender);
+    private boolean isValidSender(String sender) {
+        return !ignores.contains(sender);
     }
 
     public void addIgnore(String sender) {

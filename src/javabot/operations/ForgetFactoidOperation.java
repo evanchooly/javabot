@@ -24,29 +24,23 @@ public class ForgetFactoidOperation implements BotOperation {
         Javabot bot = event.getBot();
         String[] messageParts = message.split(" ");
         if(messageParts[0].equals("forget")) {
-            if(bot.isValidSender(sender)) {
-                int length = Array.getLength(messageParts);
-                Object keyParts = Arrays.subset(messageParts, 1, length);
-                String key = Arrays.toString(keyParts, " ");
-                key = key.toLowerCase();
-                if(bot.hasFactoid(key)) {
-                    messages.add(new Message(channel, "I forgot about " + key
-                        + ", " + sender + ".", false));
-                    bot.forgetFactoid(sender, key);
-                } else {
-                    messages.add(new Message(channel, "I never knew about "
-                        + key + " anyway, " + sender + ".", false));
-                }
+            int length = Array.getLength(messageParts);
+            Object keyParts = Arrays.subset(messageParts, 1, length);
+            String key = Arrays.toString(keyParts, " ");
+            key = key.toLowerCase();
+            if(bot.hasFactoid(key)) {
+                messages.add(new Message(channel, "I forgot about " + key
+                    + ", " + sender + ".", false));
+                bot.forgetFactoid(sender, key);
             } else {
-                messages.add(new Message(channel, "Whatever, " + sender + ".",
-                    false));
+                messages.add(new Message(channel, "I never knew about "
+                    + key + " anyway, " + sender + ".", false));
             }
         }
         return messages;
     }
 
-    public List handleChannelMessage(BotEvent event)
-    {
-	    	return new TypeSafeList(new ArrayList(),Message.class);
+    public List handleChannelMessage(BotEvent event) {
+        return new TypeSafeList(new ArrayList(), Message.class);
     }
 }
