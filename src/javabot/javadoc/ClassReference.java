@@ -97,7 +97,7 @@ public class ClassReference
 			MethodReference reference=
 				(MethodReference)methods.get(i);
 			
-			if (reference.getMethodName().equals(methodName))
+			if (reference.getMethodName().equalsIgnoreCase(methodName))
 				return reference.getMethodUrl(baseUrl);
 		}
 		return null;

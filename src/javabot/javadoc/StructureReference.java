@@ -54,7 +54,7 @@ public class StructureReference
 
 	private void addClassReference(ClassReference reference)
 	{
-		shortNames.put(reference.getClassName(),reference);
+		shortNames.put(reference.getClassName().toLowerCase(),reference);
 		longNames.put(reference.getQualifiedName(),reference);
 	}
 
@@ -66,7 +66,7 @@ public class StructureReference
 		if (reference!=null)
 			return new String[]{reference.getClassUrl(baseURL)};
 		
-		List list=(List)shortNames.get(className);
+		List list=(List)shortNames.get(className.toLowerCase());
 		
 		if (list==null)
 			return new String[0];
@@ -107,7 +107,7 @@ public class StructureReference
 			return new String[]{url};
 		}
 		
-		List classes=(List)shortNames.get(className);
+		List classes=(List)shortNames.get(className.toLowerCase());
 		
 		if (classes==null)
 			return new String[0];

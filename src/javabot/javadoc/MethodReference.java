@@ -55,7 +55,7 @@ public class MethodReference
 		
 		return
 			signature.equals(longTypes) ||
-			signature.equals(shortTypes);
+			signature.equalsIgnoreCase(shortTypes);
 	}
 
 	public String getLongSignature()

@@ -22,7 +22,7 @@ public class JavadocParser {
         if(openIndex == -1) {
             return reference.getClassDocUrls(key, baseUrl);
         }
-        int finalIndex = key.lastIndexOf('.');
+        int finalIndex = key.lastIndexOf('.',openIndex);
         int closeIndex = key.indexOf(')');
         if(closeIndex == -1 || finalIndex == -1) {
             return new String[0];
