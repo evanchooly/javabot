@@ -40,7 +40,9 @@ public class GuessOperation implements BotOperation {
         "of",
         "out",
         "me",
-        "an"
+        "an",
+	"for",
+	"use"
     };
 
     String ignoreString = Arrays.toString(ignoreList, "|");
@@ -87,6 +89,9 @@ public class GuessOperation implements BotOperation {
 
             next = next.toLowerCase();
 
+	    if (next.indexOf("karma ")==0)
+		    continue;
+	    
             for (int a = 0; a < words.length; a++) {
                 int currentMatches = 0;
 
