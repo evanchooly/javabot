@@ -32,4 +32,5 @@
         <operation class="javabot.operations.SayOperation"/>
         <operation class="javabot.operations.AddFactoidOperation"/>
         <operation class="javabot.operations.QuitOperation"/>
+	<operation class="javabot.operations.GetFactoidOperation"/>
 </javabot>
