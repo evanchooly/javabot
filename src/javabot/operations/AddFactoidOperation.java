@@ -23,11 +23,10 @@ public class AddFactoidOperation implements BotOperation {
         String channel = event.getChannel();
         String sender = event.getSender();
         Javabot bot = event.getBot();
-
-        if(!bot.isValidSender(sender)) {
-            String[] messageParts = message.split(" ");
-            int partWithIs = Arrays.search(messageParts, "is");
-            if(partWithIs != -1) {
+        String[] messageParts = message.split(" ");
+        int partWithIs = Arrays.search(messageParts, "is");
+        if(partWithIs != -1) {
+            if(!bot.isValidSender(sender)) {
                 Object keyParts = Arrays.subset(messageParts, 0, partWithIs);
                 String key = Arrays.toString(keyParts, " ");
                 key = key.toLowerCase();
@@ -44,10 +43,10 @@ public class AddFactoidOperation implements BotOperation {
                 event.getBot().addFactoid(sender, key,
                     Arrays.toString(Arrays.subset(messageParts, partWithIs + 1,
                         messageParts.length), " "));
+            } else {
+                messages.add(new Message(channel, "Whatever, " + sender + ".",
+                    false));
             }
-        } else {
-            messages.add(new Message(channel, "Whatever, " + sender + ".",
-                false));
         }
         return messages;
     }
