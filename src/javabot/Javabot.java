@@ -66,13 +66,9 @@ public class Javabot extends PircBot
 		setName("javabot");
 		setLogin("javabot");
 
-		setVersion
-		(
-			"Javabot 1.3 by Ricky Clarkson "+
-			"(ricky_clarkson@yahoo.com), based on PircBot by "+
-			"Paul Mutton"
-		);
-
+		setVersion("Javabot 1.4 by Ricky Clarkson"
+			+ " (ricky_clarkson@yahoo.com) and various"
+			+ " contributors, based on PircBot by Paul Mutton");
 		Document document=XMLUtility.xmlToDom("config.xml");
 
 		Node javabotNode=
