@@ -60,6 +60,9 @@ public class AddFactoidOperation implements BotOperation {
                     return messages;
                 }
                 messages.add(new Message(channel, "Okay, " + sender + ".", false));
+		if (value.startsWith("<see>"))
+			value=value.toLowerCase();
+
                 event.getBot().addFactoid(sender, key,value);
             } else {
                 messages.add(new Message(channel, "Whatever, " + sender + ".",
