@@ -1,5 +1,6 @@
 package javabot;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -8,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,15 +17,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Date;
 import com.rickyclarkson.java.util.TypeSafeList;
-import com.rickyclarkson.xml.DOMSimple;
-import com.rickyclarkson.xml.XMLUtility;
 import javabot.operations.BotOperation;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 public class Javabot extends PircBot {
     Map map = new HashMap();
@@ -41,85 +42,120 @@ public class Javabot extends PircBot {
     private List ignores = new ArrayList();
     private PrintWriter factoidLog;
 
-    private Javabot() throws IOException {
+
+    private Javabot() throws JDOMException, IOException {
         setName("javabot");
         setLogin("javabot");
         setVersion("Javabot 1.4 by Ricky Clarkson"
             + " (ricky_clarkson@yahoo.com) and various"
             + " contributors, based on PircBot by Paul Mutton");
-        Document document = XMLUtility.xmlToDom("config.xml");
-        Node javabotNode =
-            DOMSimple.getChildElementNode(document, "javabot");
-        String verbosity = DOMSimple.getAttribute(javabotNode, "verbose");
-        setVerbose(!"false".equals(verbosity));
-        Node serverNode =
-            DOMSimple.getChildElementNode(javabotNode, "server");
-        host = DOMSimple.getAttribute(serverNode, "name");
-        port = Integer.parseInt
-            (DOMSimple.getAttribute(serverNode, "port"));
-        Node javadocNode =
-            DOMSimple.getChildElementNode(javabotNode, "javadoc");
-        javadocSources =
-            DOMSimple.getAttribute(javadocNode, "source-list");
-        javadocBaseUrl = DOMSimple.getAttribute(javadocNode, "base-url");
-        Node factoidsNode =
-            DOMSimple.getChildElementNode(javabotNode, "factoids");
-        factoidFilename =
-            DOMSimple.getAttribute(factoidsNode, "filename");
-        htmlFile = DOMSimple.getAttribute(factoidsNode, "htmlfilename");
-        factoidLog = new PrintWriter(new FileWriter(DOMSimple.getAttribute(
-            factoidsNode, "factoidChangeLog"), true));
-        Node dictNode =
-            DOMSimple.getChildElementNode(javabotNode, "dict");
-        dictHost = DOMSimple.getAttribute(dictNode, "host");
-        Node[] channelNodes =
-            DOMSimple.getChildElementNodes(javabotNode, "channel");
-        for(int a = 0; a < channelNodes.length; a++) {
-            channels.add(DOMSimple.getAttribute(channelNodes[a], "name"));
-        }
-        Node[] authNodes =
-            DOMSimple.getChildElementNodes(javabotNode, "auth");
-        for(int a = 0; a < authNodes.length; a++) {
-            authWait = Integer.parseInt
-                (DOMSimple.getAttribute(authNodes[a], "wait"));
-            setNickPassword
-                (DOMSimple.getAttribute(authNodes[a], "password"));
-        }
-        Node[] nickNodes =
-            DOMSimple.getChildElementNodes(javabotNode, "nick");
-        if(nickNodes.length > 0) {
-            setName(DOMSimple.getAttribute(nickNodes[0], "name"));
-        }
-        Node[] startNodes =
-            DOMSimple.getChildElementNodes(javabotNode, "message");
-        startStrings = new String[startNodes.length];
-        for(int a = 0; a < startNodes.length; a++) {
-            startStrings[a] =
-                DOMSimple.getAttribute(startNodes[a], "tag");
-        }
-        Node[] operationNodes = DOMSimple.getChildElementNodes(javabotNode, "operation");
-        operations = new BotOperation[operationNodes.length];
-        for(int a = 0; a < operationNodes.length; a++) {
-            try {
-                Class operationClass = Class.forName
-                    (DOMSimple.getAttribute
-                    (operationNodes[a], "class"));
-                operations[a] = (BotOperation)operationClass
-                    .newInstance();
-                System.out.println(operations[a]);
-            } catch(Exception exception) {
-                throw new RuntimeException(exception);
-            }
-        }
-        Node[] ignoreNodes =
-            DOMSimple.getChildElementNodes(javabotNode, "ignore");
-        for(int a = 0; a < ignoreNodes.length; a++) {
-            ignores.add(DOMSimple.getAttribute(ignoreNodes[a], "name"));
-        }
+        loadConfig();
         loadFactoids();
     }
 
-    public static void main(String[] args) throws IOException {
+    private void loadConfig() throws JDOMException, IOException {
+        SAXBuilder reader = new SAXBuilder(true);
+        Document document = reader.build(new File("config.xml"));
+        Element root = document.getRootElement();
+        String verbosity = root.getAttributeValue("verbose");
+
+        setVerbose("true".equals(verbosity));
+        loadServerInfo(root);
+        loadJavadocInfo(root);
+        loadFactoidInfo(root);
+        loadDictInfo(root);
+        loadChannelInfo(root);
+        loadAuthenticationInfo(root);
+        loadStartStringInfo(root);
+        loadOperationInfo(root);
+        loadIgnoreInfo(root);
+    }
+
+    private void loadIgnoreInfo(Element root) {
+        List ignoreNodes = root.getChildren("ignore");
+
+        Iterator iterator = ignoreNodes.iterator();
+        while(iterator.hasNext()) {
+            Element node = (Element)iterator.next();
+            ignores.add(node.getAttributeValue("name"));
+        }
+    }
+
+    private void loadOperationInfo(Element root) {
+        List operationNodes = root.getChildren("operation");
+        Iterator iterator = operationNodes.iterator();
+        operations = new BotOperation[operationNodes.size()];
+        int index = 0;
+        while(iterator.hasNext()) {
+            Element node = (Element)iterator.next();
+            try {
+                Class operationClass = Class.forName(
+                    node.getAttributeValue("class"));
+                operations[index] = (BotOperation)operationClass.newInstance();
+                System.out.println(operations[index]);
+            } catch(Exception exception) {
+                throw new RuntimeException(exception);
+            }
+            index++;
+        }
+    }
+
+    private void loadStartStringInfo(Element root) {
+        List startNodes = root.getChildren("message");
+        Iterator iterator = startNodes.iterator();
+        startStrings = new String[startNodes.size()];
+        int index = 0;
+        while(iterator.hasNext()) {
+            Element node = (Element)iterator.next();
+            startStrings[index++] = node.getAttributeValue("tag");
+        }
+    }
+
+    private void loadAuthenticationInfo(Element root) {
+        Element authNode = root.getChild("auth");
+        authWait = Integer.parseInt(authNode.getAttributeValue("wait"));
+        setNickPassword(authNode.getAttributeValue("password"));
+
+        Element nickNode = root.getChild("nick");
+        setName(nickNode.getAttributeValue("name"));
+    }
+
+    private void loadChannelInfo(Element root) {
+        List channelNodes = root.getChildren("channel");
+        Iterator iterator = channelNodes.iterator();
+        while(iterator.hasNext()) {
+            Element node = (Element)iterator.next();
+            channels.add(node.getAttributeValue("name"));
+        }
+    }
+
+    private void loadDictInfo(Element root) {
+        Element dictNode = root.getChild("dict");
+        dictHost = dictNode.getAttributeValue("host");
+    }
+
+    private void loadFactoidInfo(Element root) throws IOException {
+        Element factoidsNode = root.getChild("factoids");
+        factoidFilename =
+            factoidsNode.getAttributeValue("filename");
+        htmlFile = factoidsNode.getAttributeValue("htmlfilename");
+        factoidLog = new PrintWriter(new FileWriter(
+            factoidsNode.getAttributeValue("factoidChangeLog"), true));
+    }
+
+    private void loadJavadocInfo(Element root) {
+        Element javadocNode = root.getChild("javadoc");
+        javadocSources = root.getAttributeValue("source-list");
+        javadocBaseUrl = javadocNode.getAttributeValue("base-url");
+    }
+
+    private void loadServerInfo(Element root) {
+        Element serverNode = root.getChild("server");
+        host = serverNode.getAttributeValue("name");
+        port = Integer.parseInt(serverNode.getAttributeValue("port"));
+    }
+
+    public static void main(String[] args) throws IOException, JDOMException {
         System.out.println("Starting Javabot");
         Javabot bot = new Javabot();
         bot.setMessageDelay(2000);
@@ -127,43 +163,31 @@ public class Javabot extends PircBot {
     }
 
     private void connect() {
-        while(true) {
-            boolean noException = true;
-            try {
-                connect(host, port);
-            } catch(Exception exception) {
-                exception.printStackTrace();
-                noException = false;
-            }
-            sendRawLine
-                ("PRIVMSG NickServ :identify " +
-                getNickPassword());
-            try {
-                Thread.sleep(authWait);
-            } catch(InterruptedException exception) {
-                throw new RuntimeException(exception);
-            }
-            Iterator iterator = channels.iterator();
-            while(iterator.hasNext()) {
-                joinChannel((String)iterator.next());
-            }
-            if(noException) {
-                return;
-            }
-            try {
+        boolean connected = false;
+        try {
+            while(!connected) {
+                try {
+                    connect(host, port);
+                    sendRawLine("PRIVMSG NickServ :identify "
+                        + getNickPassword());
+                    Thread.sleep(authWait);
+                    Iterator iterator = channels.iterator();
+                    while(iterator.hasNext()) {
+                        joinChannel((String)iterator.next());
+                    }
+                    connected = true;
+                } catch(Exception exception) {
+                    exception.printStackTrace();
+                }
                 Thread.sleep(1000);
-            } catch(InterruptedException exception) {
-                throw new RuntimeException(exception);
             }
+        } catch(InterruptedException exception) {
+            throw new RuntimeException(exception);
         }
     }
 
-    public void onMessage
-        (String channel,
-        String sender,
-        String login,
-        String hostname,
-        String message) {
+    public void onMessage(String channel, String sender, String login,
+        String hostname, String message) {
         String[] startStrings =
             {"~", "javabot: ", "javabot, ", "javabot "};
         for(int a = 0; a < startStrings.length; a++) {
@@ -180,21 +204,11 @@ public class Javabot extends PircBot {
         }
     }
 
-    public List getResponses
-        (String channel,
-        String sender,
-        String login,
-        String hostname,
-        String message) {
+    public List getResponses(String channel, String sender, String login,
+        String hostname, String message) {
         for(int a = 0; a < operations.length; a++) {
-            List messages = operations[a].handleMessage
-                (new BotEvent
-                    (this,
-                        channel,
-                        sender,
-                        login,
-                        hostname,
-                        message));
+            List messages = operations[a].handleMessage(new BotEvent(this,
+                channel, sender, login, hostname, message));
             if(messages.size() != 0) {
                 return messages;
             }
@@ -202,44 +216,34 @@ public class Javabot extends PircBot {
         return null;
     }
 
-    private void handleAnyMessage
-        (String channel,
-        String sender,
-        String login,
-        String hostname,
-        String message) {
-        List messages = getResponses
-            (channel, sender, login, hostname, message);
-        if(messages == null) {
-            return;
-        }
-        Iterator iterator = messages.iterator();
-        while(iterator.hasNext()) {
-            Message nextMessage = (Message)iterator.next();
-            if(nextMessage.isAction()) {
-                sendAction
-                    (nextMessage.getDestination(),
-                        nextMessage.getMessage());
-            } else {
-                sendMessage
-                    (nextMessage.getDestination(),
-                        nextMessage.getMessage());
+    private void handleAnyMessage(String channel, String sender, String login,
+        String hostname, String message) {
+        List messages = getResponses(channel, sender, login, hostname, message);
+        if(messages != null) {
+            Iterator iterator = messages.iterator();
+            while(iterator.hasNext()) {
+                Message nextMessage = (Message)iterator.next();
+                if(nextMessage.isAction()) {
+                    sendAction
+                        (nextMessage.getDestination(),
+                            nextMessage.getMessage());
+                } else {
+                    sendMessage
+                        (nextMessage.getDestination(),
+                            nextMessage.getMessage());
+                }
             }
+            channelPreviousMessages.put(channel, message);
         }
-        channelPreviousMessages.put(channel, message);
     }
 
-    public void onPrivateMessage
-        (String sender, String login, String hostname, String message) {
+    public void onPrivateMessage(String sender, String login, String hostname,
+        String message) {
         handleAnyMessage(sender, sender, login, hostname, message);
     }
 
-    public void onInvite
-        (String targetNick,
-        String sourceNick,
-        String sourceLogin,
-        String sourceHostname,
-        String channel) {
+    public void onInvite(String targetNick, String sourceNick,
+        String sourceLogin, String sourceHostname, String channel) {
         if(channels.contains(channel)) {
             joinChannel(channel);
         }
@@ -252,14 +256,13 @@ public class Javabot extends PircBot {
     public void addFactoid(String sender, String key, String value) {
         map.put(key, value);
         saveFactoids();
-
         logFactoidChange(sender, key, value, "added");
     }
 
     private void logFactoidChange(String sender, String key,
         String value, String operation) {
-        factoidLog.println("<br> " + new Date() + ": " + sender + " " + operation + " "
-            + key + " = '" + value + "'");
+        factoidLog.println("<br> " + new Date() + ": " + sender + " "
+            + operation + " " + key + " = '" + value + "'");
         factoidLog.flush();
     }
 
@@ -275,7 +278,6 @@ public class Javabot extends PircBot {
         String old = (String)map.get(key);
         map.remove(key);
         saveFactoids();
-
         logFactoidChange(sender, key, old, "removed");
     }
 
