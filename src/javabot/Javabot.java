@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -123,7 +124,9 @@ public class Javabot extends PircBot {
             "channel");
 
         for (int a = 0; a < channelNodes.length; a++) {
-            channels.add(DOMSimple.getAttribute(channelNodes[a], "name"));
+				String[] joins = DOMSimple.getAttribute(channelNodes[a],
+					"name").split(" ");
+            channels.addAll(Arrays.asList(joins));
         }
 
         Node authNode = DOMSimple.getChildElementNode(javabotNode, "auth");
