@@ -1,13 +1,14 @@
 #! /bin/sh
 
-BOTPID=`cat bot.pid`
+BOTPID=`cat killbot | cut -d" " -f2`
 
 echo $BOTPID
 ps w | grep $BOTPID | grep javabot | grep -v grep
 if [ "`ps w | grep $BOTPID | grep javabot | grep -v grep`" ] 
 then
-	kill -9 $BOTPID
-	rm bot.pid
+	echo Old instance running
+	./killbot
+	rm killbot
 fi
 
 for i in lib/*.jar
@@ -18,5 +19,5 @@ export CLASSPATH=$CLASSPATH:build
 echo $CLASSPATH
 
 java javabot.Javabot &> javabot.log &
-echo $! > bot.pid
-#tail -f javabot.log
+echo "kill $!" > killbot
+chmod +x killbot

@@ -40,7 +40,7 @@ public class ForgetFactoidOperation implements BotOperation {
                 messages.add(new Message(channel, "I forgot about " + key
                     + ", " + sender + ".", false));
 
-                bot.forgetFactoid(key);
+                bot.forgetFactoid(sender, key);
                 return messages;
             }
 

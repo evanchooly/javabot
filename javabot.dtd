@@ -19,6 +19,7 @@
 <!ATTLIST factoids
 	filename CDATA #REQUIRED
     htmlfilename CDATA #REQUIRED
+    factoidChangeLog CDATA #REQUIRED
 >
 
 <!ELEMENT dict EMPTY>

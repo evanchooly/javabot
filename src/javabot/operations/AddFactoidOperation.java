@@ -41,7 +41,7 @@ public class AddFactoidOperation implements BotOperation {
                     return messages;
                 }
                 messages.add(new Message(channel, "Okay, " + sender + ".", false));
-                event.getBot().addFactoid(key,
+                event.getBot().addFactoid(sender, key,
                     Arrays.toString(Arrays.subset(messageParts, partWithIs + 1,
                         messageParts.length), " "));
             }

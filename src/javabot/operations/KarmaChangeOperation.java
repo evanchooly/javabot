@@ -69,7 +69,7 @@ public class KarmaChangeOperation implements BotOperation
 			else
 				karma--;
 			
-			bot.addFactoid("karma "+nick,karma+"");
+			bot.addFactoid(sender, "karma "+nick,karma+"");
 			
 			KarmaReadOperation karmaRead=new KarmaReadOperation();
 			

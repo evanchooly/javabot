@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Date;
 import com.rickyclarkson.java.util.TypeSafeList;
 import com.rickyclarkson.xml.DOMSimple;
 import com.rickyclarkson.xml.XMLUtility;
@@ -38,8 +39,9 @@ public class Javabot extends PircBot {
     private List channels = new TypeSafeList(new ArrayList(), String.class);
     private String htmlFile;
     private List ignores = new ArrayList();
+    private PrintWriter factoidLog;
 
-    private Javabot() {
+    private Javabot() throws IOException {
         setName("javabot");
         setLogin("javabot");
         setVersion("Javabot 1.4 by Ricky Clarkson"
@@ -65,6 +67,8 @@ public class Javabot extends PircBot {
         factoidFilename =
             DOMSimple.getAttribute(factoidsNode, "filename");
         htmlFile = DOMSimple.getAttribute(factoidsNode, "htmlfilename");
+        factoidLog = new PrintWriter(new FileWriter(DOMSimple.getAttribute(
+            factoidsNode, "factoidChangeLog"), true));
         Node dictNode =
             DOMSimple.getChildElementNode(javabotNode, "dict");
         dictHost = DOMSimple.getAttribute(dictNode, "host");
@@ -115,7 +119,7 @@ public class Javabot extends PircBot {
         loadFactoids();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         System.out.println("Starting Javabot");
         Javabot bot = new Javabot();
         bot.setMessageDelay(2000);
@@ -245,9 +249,18 @@ public class Javabot extends PircBot {
         connect();
     }
 
-    public void addFactoid(String key, String value) {
+    public void addFactoid(String sender, String key, String value) {
         map.put(key, value);
         saveFactoids();
+
+        logFactoidChange(sender, key, value, "added");
+    }
+
+    private void logFactoidChange(String sender, String key,
+        String value, String operation) {
+        factoidLog.println("<br> " + new Date() + ": " + sender + " " + operation + " "
+            + key + " = '" + value + "'");
+        factoidLog.flush();
     }
 
     public boolean hasFactoid(String key) {
@@ -258,9 +271,12 @@ public class Javabot extends PircBot {
         return (String)map.get(key);
     }
 
-    public void forgetFactoid(String key) {
+    public void forgetFactoid(String sender, String key) {
+        String old = (String)map.get(key);
         map.remove(key);
         saveFactoids();
+
+        logFactoidChange(sender, key, old, "removed");
     }
 
     public Map getMap() {

@@ -11,7 +11,7 @@
 		<mkdir dir="${build}"/>
 	</target>
 	
-	<target name="main" depends="init">
+	<target name="main" depends="clean, init">
 		<javac destDir="${build}" srcDir="src" classpathref="javabot.cp"
 			debug="true"/>
 	</target>
