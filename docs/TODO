@@ -4,5 +4,8 @@ Add Access Control Lists.
 Add an ignore list.
 Add a factoid search feature.
 Add in the org.omg URLs - maybe srclist.txt could be generated with a handy wget.
+Make the javadoc URLs capable of coming from more places than just java.sun.com.
+Make javabot interact with the pastebin to notify on pastes.
 Make fun of people who log in as root on IRC (requested by Twiun).
 Add a version entry to reflect the svn revision number javabot was built against.  and probably a date.
+
