@@ -55,18 +55,14 @@ public class UnixCommandOperation implements BotOperation {
         String message = event.getMessage();
         String channel = event.getChannel();
         String[] split = message.split(" ");
-        if(!_commands.contains(split[0])) {
-            return messages;
+        if(_commands.contains(split[0])) {
+            messages.add(new Message(channel, "Wrong window, " + getInsult(),
+                false));
         }
-        messages.add
-            (new Message
-                (channel, "Wrong window, " + getInsult(), false));
         return messages;
     }
 
     private String getInsult() {
-        int index = _random.nextInt(_insults.size());
-        System.out.println("index = " + index);
-        return (String)_insults.get(index);
+        return (String)_insults.get(_random.nextInt(_insults.size()));
     }
 }
