@@ -180,6 +180,14 @@ public class Javabot extends PircBot
 	{
 		Element javadocNode=root.getChild("javadoc");
 		javadocSources=javadocNode.getAttributeValue("reference-xml");
+
+		if (javadocSources==null)
+			throw new IllegalStateException
+			(
+				"The config file must supply a reference-xml "+
+				"attribute, as per the config.xml.sample file."
+			);
+
 		javadocBaseUrl=javadocNode.getAttributeValue("base-url");
 	}
 
