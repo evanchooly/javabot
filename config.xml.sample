@@ -2,9 +2,10 @@
 <!DOCTYPE javabot SYSTEM "javabot.dtd">
 <javabot verbose="true">
 	<server name="irc.freenode.net" port="8001"/>
-	<javadoc reference-xml="docref.xml" base-url="http://java.sun.com/j2se/1.4.2/docs/api/"/>
+	<javadoc reference-xml="docref.xml"
+		base-url="http://java.sun.com/j2se/1.4.2/docs/api/"/>
 	<factoids filename="map.serialized" htmlfilename="factoids.html"
-        factoidChangeLog="factoid.changelog"/>
+		factoidChangeLog="factoid.changelog"/>
 	<dict host="dict.org"/>
 	<nick name="javabot"/>
 	<auth password="passwordGoesHere" wait="3000"/>
@@ -15,27 +16,30 @@
 	<channel name="#java"/>
 	<channel name="#struts"/>
 	<channel name="#hibernate"/>
-	<operation class="javabot.operations.StatsOperation"/>
-	<operation class="javabot.operations.SpecialCasesOperation"/>
+	<operation class="javabot.operations.AddFactoidOperation"/>
+	<operation class="javabot.operations.DaysToChristmasOperation"/>
+	<operation class="javabot.operations.DaysUntilOperation"/>
+	<operation class="javabot.operations.DictOperation"/>
 	<operation class="javabot.operations.ForgetFactoidOperation"/>
+	<operation class="javabot.operations.GoogleOperation"/>
+	<operation class="javabot.operations.GuessOperation"/>
+	<operation class="javabot.operations.IgnoreOperation"/>
 	<operation class="javabot.operations.JavadocOperation"/>
-	<operation class="javabot.operations.LeaveOperation"/>
 	<operation class="javabot.operations.KarmaChangeOperation"/>
 	<operation class="javabot.operations.KarmaReadOperation"/>
-	<operation class="javabot.operations.TellOperation"/>
+	<operation class="javabot.operations.LeaveOperation"/>
+	<operation class="javabot.operations.ListFactoidsOperation"/>
 	<operation class="javabot.operations.LiteralOperation"/>
-	<operation class="javabot.operations.Rot13Operation"/>
 	<operation class="javabot.operations.Magic8BallOperation"/>
-	<operation class="javabot.operations.DictOperation"/>
-	<operation class="javabot.operations.GoogleOperation"/>
-	<operation class="javabot.operations.DaysToChristmasOperation"/>
-	<operation class="javabot.operations.TimeOperation"/>
 	<operation class="javabot.operations.NickometerOperation"/>
-	<operation class="javabot.operations.GuessOperation"/>
-	<operation class="javabot.operations.SayOperation"/>
-	<operation class="javabot.operations.AddFactoidOperation"/>
 	<operation class="javabot.operations.QuitOperation"/>
-	<operation class="javabot.operations.DaysUntilOperation"/>
+	<operation class="javabot.operations.Rot13Operation"/>
+	<operation class="javabot.operations.SayOperation"/>
+	<operation class="javabot.operations.SpecialCasesOperation"/>
+	<operation class="javabot.operations.StatsOperation"/>
+	<operation class="javabot.operations.TellOperation"/>
+	<operation class="javabot.operations.TimeOperation"/>
+	<operation class="javabot.operations.UnixCommandOperation"/>
 
 	<!-- Note that GetFactoidOperation should always be *LAST*
 	in the list, as it is a last resort, it even tries to guess.
