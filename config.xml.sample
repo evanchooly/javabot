@@ -35,6 +35,10 @@
 	<operation class="javabot.operations.SayOperation"/>
 	<operation class="javabot.operations.AddFactoidOperation"/>
 	<operation class="javabot.operations.QuitOperation"/>
+	<operation class="javabot.operations.DaysUntilOperation"/>
+
+	<!-- Note that GetFactoidOperation should always be *LAST*
+	in the list, as it is a last resort, it even tries to guess.
+	Everything else should be above this line.-->
 	<operation class="javabot.operations.GetFactoidOperation"/>
-    <operation class="javabot.operations.DaysUntilOperation"/>
 </javabot>

@@ -1,2 +1,5 @@
 When you have a factoid that refers to another factoid with <see> and the other factoid does not exist, a NullPointerException is thrown.
+
 Javabot reports "I have been up for 1 days" instead of "I have been up for 1 day".
+
+In config.xml, <message tag=... is unintuitive.
