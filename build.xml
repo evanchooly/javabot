@@ -49,7 +49,7 @@
 	</target>
 
 	<target name="buildxml"  unless="docref.uptodate">
-        <unzip src="${env.JAVA_HOME}/share/src.zip" dest="docRefBuild"/>
+        <unzip src="${env.JAVA_HOME}/${src.zip}" dest="docRefBuild"/>
 		<javadoc
 			sourcepath="docRefBuild"
 			packagenames="*"

@@ -110,8 +110,12 @@ public class ClassReference
 
 	public String getClassHTMLPage(String baseUrl)
 	{
-		String path=getQualifiedName().replaceAll("\\.","/");
-		return baseUrl+path+".html";
+		String path=
+			packageName==null ?
+			"" :
+			packageName.replaceAll("\\.","/")+"/";
+		
+		return baseUrl+path+className+".html";
 	}
 
 	public String getPackageName()
