@@ -58,4 +58,9 @@ public class LiteralOperation implements BotOperation
 
 		return messages;
 	}
+
+	public List handleChannelMessage(BotEvent event)
+	{
+			return new TypeSafeList(new ArrayList(),Message.class);
+	}
 }

@@ -215,6 +215,15 @@ public class Javabot extends PircBot {
                 return;
             }
         }
+
+	handleAnyChannelMessage
+	(
+		channel,
+		sender,
+		login,
+		hostname,
+		message
+	);
     }
 
     public List getResponses
@@ -225,6 +234,28 @@ public class Javabot extends PircBot {
         String message) {
         for(int a = 0; a < operations.length; a++) {
             List messages = operations[a].handleMessage
+                (new BotEvent
+                    (this,
+                        channel,
+                        sender,
+                        login,
+                        hostname,
+                        message));
+            if(messages.size() != 0) {
+                return messages;
+            }
+        }
+        return null;
+    }
+
+public List getChannelResponses
+        (String channel,
+        String sender,
+        String login,
+        String hostname,
+        String message) {
+        for(int a = 0; a < operations.length; a++) {
+            List messages = operations[a].handleChannelMessage
                 (new BotEvent
                     (this,
                         channel,
@@ -264,6 +295,34 @@ public class Javabot extends PircBot {
         }
         channelPreviousMessages.put(channel, message);
     }
+
+	private void handleAnyChannelMessage
+        (
+		String channel,
+	        String sender,
+        	String login,
+	        String hostname,
+        	String message
+	)
+	{
+        List messages = getChannelResponses
+            (channel, sender, login, hostname, message);
+        if(messages != null) {
+            Iterator iterator = messages.iterator();
+            while(iterator.hasNext()) {
+                Message nextMessage = (Message)iterator.next();
+                if(nextMessage.isAction()) {
+                    sendAction
+                        (nextMessage.getDestination(),
+                            nextMessage.getMessage());
+                } else {
+                    sendMessage
+                        (nextMessage.getDestination(),
+                            nextMessage.getMessage());
+                }
+            }
+        } 
+}    
 
     public void onInvite
         (String targetNick,

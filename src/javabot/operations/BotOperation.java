@@ -14,4 +14,6 @@ public interface BotOperation {
      * @return
      */
     public List handleMessage(BotEvent event);
+
+    public List handleChannelMessage(BotEvent event);
 }

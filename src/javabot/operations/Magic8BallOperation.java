@@ -55,4 +55,9 @@ public class Magic8BallOperation implements BotOperation {
 
         return messages;
     }
+
+    public List handleChannelMessage(BotEvent event)
+    {
+	    	return new TypeSafeList(new ArrayList(),Message.class);
+    }
 }
