@@ -26,8 +26,8 @@
 			<formatter type="brief" usefile="no"/>
 			<classpath refid="javabot.cp"/>
 			<batchtest>
-				<fileset dir="src/tests">
-					<include name="*.java"/>
+				<fileset dir="src">
+					<include name="tests/*.java"/>
 				</fileset>
 			</batchtest>
 		</junit>
