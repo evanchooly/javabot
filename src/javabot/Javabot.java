@@ -362,7 +362,8 @@ public class Javabot extends PircBot
 		String message
 	)
 	{
-		handleAnyMessage(sender,sender,login,hostname,message);
+		if (isOnSameChannelAs(sender))
+			handleAnyMessage(sender,sender,login,hostname,message);
 	}
 
 	public void onInvite
