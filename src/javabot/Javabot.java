@@ -540,7 +540,7 @@ public List getChannelResponses
     }
 
     public boolean isValidSender(String sender) {
-        return ignores.contains(sender);
+        return ! ignores.contains(sender);
     }
 
     public void addIgnore(String sender) {

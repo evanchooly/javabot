@@ -24,7 +24,7 @@ public class ForgetFactoidOperation implements BotOperation {
         Javabot bot = event.getBot();
         String[] messageParts = message.split(" ");
         if(messageParts[0].equals("forget")) {
-            if(!bot.isValidSender(sender)) {
+            if(bot.isValidSender(sender)) {
                 int length = Array.getLength(messageParts);
                 Object keyParts = Arrays.subset(messageParts, 1, length);
                 String key = Arrays.toString(keyParts, " ");

@@ -20,7 +20,7 @@ public class KarmaChangeOperation implements BotOperation {
         String sender = event.getSender();
         String channel = event.getChannel();
         Javabot bot = event.getBot();
-        if(!bot.isValidSender(sender)) {
+        if(bot.isValidSender(sender)) {
             if(message.indexOf(" ") != -1) {
                 return messages;
             }

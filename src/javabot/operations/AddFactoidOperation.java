@@ -26,7 +26,7 @@ public class AddFactoidOperation implements BotOperation {
         String[] messageParts = message.split(" ");
         int partWithIs = Arrays.search(messageParts, "is");
         if(partWithIs!=-1) {
-		if(!bot.isValidSender(sender)) {
+		if(bot.isValidSender(sender)) {
                 Object keyParts = Arrays.subset(messageParts, 0, partWithIs);
                 String key = Arrays.toString(keyParts, " ");
                 key = key.toLowerCase();
