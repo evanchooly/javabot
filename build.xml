@@ -1,7 +1,9 @@
 <project name="javabot" default="main">
 
+	<property file="build.properties"/>
 	<property environment="env"/>
 	<property name="build" location="build"/>
+	<property name="src.zip" value="share/src.zip"/>
 	
 	<!-- Set this to point to the sources you want to generate a reference 
 	file for -->
@@ -18,8 +20,8 @@
 		<pathelement path="${build}"/>
 	</path>
 
-    <uptodate property="docref.uptodate" targetfile="docref.xml"
-        srcfile="${env.JAVA_HOME}/share/src.zip"/>
+	<uptodate property="docref.uptodate" targetfile="docref.xml"
+		srcfile="${env.JAVA_HOME}/${src.zip}"/>
 
 	<target name="init">
 		<mkdir dir="${build}"/>
