@@ -1,0 +1,31 @@
+<!ELEMENT javabot (server,javadoc,factoids,dict,channel*)>
+<!ATTLIST javabot
+	verbose CDATA #IMPLIED
+>
+
+<!ELEMENT server EMPTY>
+<!ATTLIST server
+	name CDATA #REQUIRED
+	port CDATA #REQUIRED
+>
+
+<!ELEMENT javadoc EMPTY>
+<!ATTLIST javadoc
+	source-list CDATA #REQUIRED
+	base-url CDATA #REQUIRED
+>
+
+<!ELEMENT factoids EMPTY>
+<!ATTLIST factoids
+	filename CDATA #REQUIRED
+>
+
+<!ELEMENT dict EMPTY>
+<!ATTLIST dict
+	host CDATA #REQUIRED
+>
+
+<!ELEMENT channel EMPTY>
+<!ATTLIST channel
+	name CDATA #REQUIRED
+>
