@@ -64,4 +64,12 @@
 		</javadoc>
         <delete dir="docRefBuild"/>
 	</target>
+
+	<target name="killbot" depends="main">
+		<java classname="javabot.Killbot" classpathref="javabot.cp" fork="true"/>
+	</target>
+	
+	<target name="run" depends="killbot">
+		<java classname="javabot.Javabot" classpathref="javabot.cp" fork="true" spawn="true"/>
+	</target>
 </project>

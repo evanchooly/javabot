@@ -1,5 +1,8 @@
 #! /bin/sh
 
+echo "Deprecated, use ant run instead. Press Ctrl-C to stop or Enter to continue."
+read
+
 ant rebuild
 if [ -f killbot ]
 then

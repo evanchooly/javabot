@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,7 +46,7 @@ public class Javabot extends PircBot {
     private PrintWriter factoidLog;
     private String _changeLog;
 
-    private Javabot() throws JDOMException, IOException {
+    Javabot() throws JDOMException, IOException {
         setName("javabot");
         setLogin("javabot");
         setVersion
@@ -162,9 +163,17 @@ public class Javabot extends PircBot {
 
     public static void main(String[] args)
         throws IOException, JDOMException {
+
+	System.setOut(new PrintStream(new FileOutputStream("javabot.log")));
+
         System.out.println("Starting Javabot");
+
+
         Javabot bot = new Javabot();
-        bot.setMessageDelay(2000);
+	
+	new PortListener(2356,bot.getNickPassword()).start();
+        
+	bot.setMessageDelay(2000);
         bot.connect();
     }
 
