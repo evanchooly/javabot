@@ -25,6 +25,7 @@
 	<target name="main" depends="init">
 		<javac destDir="${build}" srcDir="src" classpathref="javabot.cp"
 			debug="true"/>
+        <antcall target="buildxml"/>
 	</target>
 
 	<target name="clean">
@@ -45,9 +46,11 @@
 		</junit>
 	</target>
 
-	<target name="buildxml" depends="main">
-		<javadoc 
-			sourcepath="${java.src}"
+	<target name="buildxml" depends="check-source"
+        unless="docref.uptodate">
+        <unzip src="${env.JAVA_HOME}/share/src.zip" dest="docRefBuild"/>
+		<javadoc
+			sourcepath="docRefBuild"
 			packagenames="*"
 			excludepackagenames="com.sun.*, org.apache.*"
 			maxmemory="192m"
@@ -58,5 +61,11 @@
 				<param name="-x" value="docref.xml"/>
 			</doclet>
 		</javadoc>
+        <delete dir="docRefBuild"/>
 	</target>
+
+    <target name="check-source">
+        <uptodate property="docref.uptodate" targetfile="docref.xml"
+            srcfile="${env.JAVA_HOME}/share/src.zip"/>
+    </target>
 </project>
