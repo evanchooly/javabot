@@ -31,7 +31,7 @@ public class KarmaChangeOperation implements BotOperation {
                     messages.add
                         (new Message
                             (channel,
-                                "Incrementing one's own karma" +
+                                "Changing one's own karma" +
                         " is not permitted.",
                                 false));
                     return messages;
