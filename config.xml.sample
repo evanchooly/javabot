@@ -16,6 +16,7 @@
 	<channel name="#java"/>
 	<channel name="#struts"/>
 	<channel name="#hibernate"/>
+	<operation class="javabot.operations.Magic8BallOperation"/>
 	<operation class="javabot.operations.AddFactoidOperation"/>
 	<operation class="javabot.operations.DaysToChristmasOperation"/>
 	<operation class="javabot.operations.DaysUntilOperation"/>
@@ -30,7 +31,6 @@
 	<operation class="javabot.operations.LeaveOperation"/>
 	<operation class="javabot.operations.ListFactoidsOperation"/>
 	<operation class="javabot.operations.LiteralOperation"/>
-	<operation class="javabot.operations.Magic8BallOperation"/>
 	<operation class="javabot.operations.NickometerOperation"/>
 	<operation class="javabot.operations.QuitOperation"/>
 	<operation class="javabot.operations.Rot13Operation"/>
