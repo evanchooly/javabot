@@ -27,13 +27,19 @@ public class NickometerOperation implements BotOperation
 			return messages;
 		
 		String nick=messageParts[1].toString();
-		
+	
+		if (nick.length()==0)
+			return messages;
+	
 		int lameness=0;
-		
+
+		if (nick.length()>0 && Character.isUpperCase(nick.charAt(0)))
+			lameness--;
+
 		for (int a=0;a<nick.length();a++)
 			if (!Character.isLowerCase(nick.charAt(a)))
 				lameness++;
-		
+	
 		double tempLameness=(double)lameness/nick.length();
 
 		tempLameness=Math.sqrt(tempLameness);
