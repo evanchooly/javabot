@@ -1,3 +1,5 @@
+package javabot;
+
 public class Message
 {
 	private final String destination;

@@ -1,4 +1,4 @@
-package operations;
+package javabot.operations;
 
 import com.rickyclarkson.java.util.Arrays;
 

@@ -1,3 +1,5 @@
+package javabot;
+
 import java.util.ArrayList;
 import java.util.List;
 
