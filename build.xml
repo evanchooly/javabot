@@ -4,6 +4,7 @@
 	
 	<path id="javabot.cp">
 		<fileset dir="lib" includes="*.jar"/>
+		<pathelement path="${build}"/>
 	</path>
 
 	<target name="init">

@@ -238,9 +238,10 @@ public class Javabot extends PircBot
 		String message
 	)
 	{
-		String[] startStrings={"~","javabot: ","javabot, ","javabot "};
+		//String[] startStrings=
+		//	{"~","javabot: ","javabot, ","javabot "};
 
-		for (int a=0; a < startStrings.length; a++)
+		for (int a=0;a<startStrings.length;a++)
 		{
 			int length=startStrings[a].length();
 
