@@ -20,14 +20,6 @@ public class SpecialCasesOperation implements BotOperation {
 
         String message = event.getMessage();
 
-        if (message.toLowerCase().indexOf("ricky_clarkson is") != -1)
-            return event.getBot().getResponses(event.getChannel(),
-                event.getSender(), event.getLogin(), event.getHostname(),
-                "ricky_clarkson");
-
-        //give a standard answer for anything with ricky_clarkson
-        //at the beginning
-
         String[] stupidPrefixes = { "what is ", "where is " };
 
         for (int a = 0; a < stupidPrefixes.length; a++) {
