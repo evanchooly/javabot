@@ -1,7 +1,6 @@
 package javabot.operations;
 
 import java.util.List;
-
 import javabot.BotEvent;
 
 /**
