@@ -55,7 +55,7 @@ public class UnixCommandOperation implements BotOperation {
         String message = event.getMessage();
         String channel = event.getChannel();
         String[] split = message.split(" ");
-        if(_commands.contains(split[0])) {
+        if(_commands.contains(split[0]) && (split.length < 3)) {
             messages.add(new Message(channel, event.getSender()
                 + ": wrong window, " + getInsult(), false));
         }
