@@ -1,0 +1,12 @@
+<project name="javabot" default="main">
+	
+	<property name="build" location="build"/>
+	
+	<target name="init">
+		<mkdir dir="${build}"/>
+	</target>
+	
+	<target name="main" depends="init">
+		<javac destDir="${build}" srcDir="."/>
+	</target>
+</project>
