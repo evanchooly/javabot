@@ -5,3 +5,4 @@ Add Access Control Lists.
 Add an ignore list.
 Add a factoid search feature.
 Make fun of people who log in as root on IRC (requested by Twiun).
+Add a version entry to reflect the svn revision number javabot was built against.  and probably a date.

@@ -25,9 +25,6 @@ public class ListFactoidsOperation implements BotOperation {
         String channel = event.getChannel();
         String message = event.getMessage().toLowerCase();
 
-        if (!message.equals("listkeys"))
-            return messages;
-
         if (channel.startsWith("#")) {
             messages.add(new Message(channel,
                 "I will only list keys in a private " + "message", false));
