@@ -1,0 +1,62 @@
+<project name="javabot" default="main">
+
+	<property environment="env"/>
+	<property name="build" location="build"/>
+	
+	<!-- Set this to point to the sources you want to generate a reference 
+	file for -->
+	<property name="java.src" location="/Users/avalys/Files/General/javasrc"/>
+	
+	<path id="javabot.cp">
+		<fileset dir="lib" includes="*.jar"/>
+		
+		<!-- Note: this is unnecessary if tools.jar is in your classpath
+		by default (i.e. on Mac OS X systems) -->
+		<fileset dir="${env.JAVA_HOME}/lib" includes="tools.jar"/>
+		<!--.-->
+		
+		<pathelement path="${build}"/>
+	</path>
+
+	<target name="init">
+		<mkdir dir="${build}"/>
+	</target>
+	
+	<target name="main" depends="init">
+		<javac destDir="${build}" srcDir="src" classpathref="javabot.cp"
+			debug="true"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build}"/>
+	</target>
+	
+	<target name="rebuild" depends="clean, main"/>
+
+	<target name="test" depends="main">
+		<junit haltonfailure="true" reloading="false">
+			<formatter type="brief" usefile="no"/>
+			<classpath refid="javabot.cp"/>
+			<batchtest>
+				<fileset dir="src">
+					<include name="tests/*.java"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<target name="buildxml" depends="main">
+		<javadoc 
+			sourcepath="${java.src}"
+			packagenames="*"
+			excludepackagenames="com.sun.*, org.apache.*"
+			maxmemory="192m"
+			source="1.4"
+			docletpathref="javabot.cp"
+		>
+			<doclet name="javabot.javadoc.StructureDoclet">
+				<param name="-x" value="docRef.xml"/>
+			</doclet>
+		</javadoc>
+	</target>
+</project>
