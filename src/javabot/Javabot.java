@@ -447,6 +447,35 @@ public List getChannelResponses
                 String value = (String)map.get(factoid);
                 value = value.replaceAll("<", "&lt;");
                 value = value.replaceAll(">", "&gt;");
+		
+		int startHttp=0;
+		
+		loop: do
+		{
+			startHttp=value.indexOf("http://",startHttp);
+			
+			if (startHttp==-1)
+				break loop;
+			
+			int endHttp=value.indexOf(" ",startHttp);
+			if (endHttp==-1)
+				endHttp=value.length();
+
+			value=
+				value.substring(0,startHttp)+
+				"<a href=\""+
+				value.substring(startHttp,endHttp)+
+				">"+
+				value.substring(startHttp,endHttp)+
+				"</a>"+
+				value.substring(endHttp);
+
+			System.out.println(value);
+
+			startHttp=value.indexOf("</a>",startHttp);
+		}
+		while (startHttp!=-1);
+		
                 writer.println
                     ("<tr><td>" +
                     factoid +
