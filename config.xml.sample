@@ -1,21 +1,57 @@
 <?xml version="1.0"?>
 <!DOCTYPE javabot SYSTEM "javabot.dtd">
 <javabot verbose="true">
-	<server name="irc.freenode.net" port="8001"/>
-	<javadoc reference-xml="docref.xml"
-		base-url="http://java.sun.com/j2se/1.4.2/docs/api/"/>
-	<factoids filename="map.serialized" htmlfilename="factoids.html"
-		factoidChangeLog="factoid.changelog"/>
+	<!--
+		replace the following server and port with whatever you want to
+		use
+	-->
+	<server name="irc.SOMETHING.net" port="6667"/>
+
+	<!--
+		replace the following URL with the version of Java you want to
+		reference in JavadocOperation
+	-->
+	<javadoc
+		reference-xml="docref.xml"
+		base-url="http://java.sun.com/j2se/1.5.0/docs/api/"
+	/>
+		
+	<factoids
+		filename="map.serialized"
+		htmlfilename="factoids.html"
+		factoidChangeLog="factoid.changelog"
+	/>
+		
 	<dict host="dict.org"/>
 	<nick name="javabot"/>
-	<auth password="passwordGoesHere" wait="3000"/>
+
+	<!--
+		replace the following with the password you want, and the wait
+		with however long your network's nickserv takes to reply.
+	-->
+	<auth password="PASSWORD_GOES_HERE" wait="3000"/>
+	
+	<!--
+		Replace the following with whatever you want javabot to reply
+		to.  Maybe if you put nothing there it will reply to
+		everything in a public channel.
+	-->
 	<message tag="~"/>
 	<message tag="javabot: "/>
 	<message tag="javabot, "/>
 	<message tag="javabot "/>
-	<channel name="#java"/>
-	<channel name="#struts"/>
-	<channel name="#hibernate"/>
+
+	<!--
+		Replace the following with whatever channels you want
+		javabot to join.
+	-->
+	<channel name="#channel"/>
+	<channel name="#anotherchannel"/>
+	<channel name="#yetanotherchannel"/>
+
+	<!-- The order of these operations is important - javabot sends
+	messages to each in turn. -->
+	
 	<operation class="javabot.operations.Magic8BallOperation"/>
 	<operation class="javabot.operations.DaysToChristmasOperation"/>
 	<operation class="javabot.operations.DaysUntilOperation"/>
@@ -39,10 +75,12 @@
 	<operation class="javabot.operations.TellOperation"/>
 	<operation class="javabot.operations.TimeOperation"/>
 	<operation class="javabot.operations.UnixCommandOperation"/>
-
 	<operation class="javabot.operations.AddFactoidOperation"/>
-	<!-- Note that GetFactoidOperation should always be *LAST*
-	in the list, as it is a last resort, it even tries to guess.
-	Everything else should be above this line.-->
+	
+	<!--
+		Note that GetFactoidOperation should always be *LAST*
+		in the list, as it is a last resort, it even tries to guess.
+		Everything else should be above this line.
+	-->
 	<operation class="javabot.operations.GetFactoidOperation"/>
 </javabot>
