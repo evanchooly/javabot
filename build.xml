@@ -18,6 +18,9 @@
 		<pathelement path="${build}"/>
 	</path>
 
+    <uptodate property="docref.uptodate" targetfile="docref.xml"
+        srcfile="${env.JAVA_HOME}/share/src.zip"/>
+
 	<target name="init">
 		<mkdir dir="${build}"/>
 	</target>
@@ -46,8 +49,7 @@
 		</junit>
 	</target>
 
-	<target name="buildxml" depends="check-source"
-        unless="docref.uptodate">
+	<target name="buildxml"  unless="docref.uptodate">
         <unzip src="${env.JAVA_HOME}/share/src.zip" dest="docRefBuild"/>
 		<javadoc
 			sourcepath="docRefBuild"
@@ -63,9 +65,4 @@
 		</javadoc>
         <delete dir="docRefBuild"/>
 	</target>
-
-    <target name="check-source">
-        <uptodate property="docref.uptodate" targetfile="docref.xml"
-            srcfile="${env.JAVA_HOME}/share/src.zip"/>
-    </target>
 </project>
