@@ -1,9 +1,9 @@
 These are listed from most important to least important.
 
 Add Access Control Lists.
-Add an ignore list.
 Add a factoid search feature.
 Add in the org.omg URLs - maybe srclist.txt could be generated with a handy wget.
+If someone forgets the 'javadoc' part of ~javadoc SomeClass, be lenient.
 Make the javadoc URLs capable of coming from more places than just java.sun.com.
 Make javabot interact with the pastebin to notify on pastes.
 Make fun of people who log in as root on IRC (requested by Twiun).
