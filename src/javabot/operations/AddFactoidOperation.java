@@ -25,8 +25,8 @@ public class AddFactoidOperation implements BotOperation {
         Javabot bot = event.getBot();
         String[] messageParts = message.split(" ");
         int partWithIs = Arrays.search(messageParts, "is");
-        if(partWithIs!=-1 && message.matches("^\\s*\\w+\\s+is\\s++\\w+")) {
-            if(!bot.isValidSender(sender)) {
+        if(partWithIs!=-1) {
+		if(!bot.isValidSender(sender)) {
                 Object keyParts = Arrays.subset(messageParts, 0, partWithIs);
                 String key = Arrays.toString(keyParts, " ");
                 key = key.toLowerCase();
@@ -34,15 +34,33 @@ public class AddFactoidOperation implements BotOperation {
                     || key.endsWith("!")) {
                     key = key.substring(0, key.length() - 1);
                 }
+
+		String value=Arrays.toString
+		(
+			Arrays.subset
+				(messageParts,partWithIs+1,messageParts.length),
+			" "
+		);
+		
+		if (key.trim().length()==0)
+		{
+			messages.add(new Message(channel,"Invalid key",false));
+			return messages;
+		}
+		
+		if (value.trim().length()==0)
+		{
+			messages.add(new Message(channel,"Invalid value",false));
+			return messages;
+		}
+		
                 if(bot.hasFactoid(key)) {
                     messages.add(new Message(channel, "I already have a factoid "
                         + "with that name, " + sender, false));
                     return messages;
                 }
                 messages.add(new Message(channel, "Okay, " + sender + ".", false));
-                event.getBot().addFactoid(sender, key,
-                    Arrays.toString(Arrays.subset(messageParts, partWithIs + 1,
-                        messageParts.length), " "));
+                event.getBot().addFactoid(sender, key,value);
             } else {
                 messages.add(new Message(channel, "Whatever, " + sender + ".",
                     false));
