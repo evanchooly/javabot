@@ -4,10 +4,7 @@
 	<property environment="env"/>
 	<property name="build" location="build"/>
 	<property name="src.zip" value="share/src.zip"/>
-	
-	<!-- Set this to point to the sources you want to generate a reference 
-	file for -->
-	<property name="java.src" location="/home/ricky/javasources"/>
+	<property name="src.version" value="1.4"/>
 	
 	<path id="javabot.cp">
 		<fileset dir="lib" includes="*.jar"/>
@@ -57,8 +54,8 @@
 			sourcepath="docRefBuild"
 			packagenames="*"
 			excludepackagenames="com.sun.*, org.apache.*"
-			maxmemory="192m"
-			source="1.4"
+			maxmemory="384m"
+			source="${src.version}"
 			docletpathref="javabot.cp"
 		>
 			<doclet name="javabot.javadoc.StructureDoclet">

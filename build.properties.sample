@@ -1,1 +1,2 @@
-src.zip=${env.JAVA_HOME}/share/src.zip
+src.zip=share/src.zip
+src.version=1.5
