@@ -11,7 +11,7 @@
 
 <!ELEMENT javadoc EMPTY>
 <!ATTLIST javadoc
-	source-list CDATA #REQUIRED
+	reference-xml CDATA #REQUIRED
 	base-url CDATA #REQUIRED
 >
 

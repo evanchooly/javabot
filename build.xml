@@ -1,9 +1,20 @@
 <project name="javabot" default="main">
-	
+
+	<property environment="env"/>
 	<property name="build" location="build"/>
+	
+	<!-- Set this to point to the sources you want to generate a reference 
+	file for -->
+	<property name="java.src" location="/home/ricky/javasources"/>
 	
 	<path id="javabot.cp">
 		<fileset dir="lib" includes="*.jar"/>
+		
+		<!-- Note: this is unnecessary if tools.jar is in your classpath
+		by default (i.e. on Mac OS X systems) -->
+		<fileset dir="${env.JAVA_HOME}/lib" includes="tools.jar"/>
+		<!--.-->
+		
 		<pathelement path="${build}"/>
 	</path>
 
@@ -32,5 +43,20 @@
 				</fileset>
 			</batchtest>
 		</junit>
+	</target>
+
+	<target name="buildxml" depends="main">
+		<javadoc 
+			sourcepath="${java.src}"
+			packagenames="*"
+			excludepackagenames="com.sun.*, org.apache.*"
+			maxmemory="192m"
+			source="1.4"
+			docletpathref="javabot.cp"
+		>
+			<doclet name="javabot.javadoc.StructureDoclet">
+				<param name="-x" value="docref.xml"/>
+			</doclet>
+		</javadoc>
 	</target>
 </project>

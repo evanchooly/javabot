@@ -1,16 +1,16 @@
 package javabot.operations;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.rickyclarkson.java.util.TypeSafeList;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.JavadocParser;
 import javabot.Message;
+import org.jdom.JDOMException;
 
-import com.rickyclarkson.java.util.TypeSafeList;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ricky_clarkson
@@ -46,6 +46,9 @@ public class JavadocOperation implements BotOperation
 				}
 				catch (IOException exception)
 				{
+					throw new RuntimeException(exception);
+				}
+				catch (JDOMException exception) {
 					throw new RuntimeException(exception);
 				}
 			}
