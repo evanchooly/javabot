@@ -2,11 +2,15 @@
 	
 	<property name="build" location="build"/>
 	
+	<path id="javabot.cp">
+		<fileset dir="lib" includes="*.jar"/>
+	</path>
+
 	<target name="init">
 		<mkdir dir="${build}"/>
 	</target>
 	
 	<target name="main" depends="init">
-		<javac destDir="${build}" srcDir="."/>
+		<javac destDir="${build}" srcDir="." classpathref="javabot.cp"/>
 	</target>
 </project>
