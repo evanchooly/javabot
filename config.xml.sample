@@ -3,7 +3,7 @@
 <javabot verbose="true">
 	<server name="irc.freenode.net" port="8001"/>
 	<javadoc source-list="srclist.txt" base-url="http://java.sun.com/j2se/1.4.2/docs/api/"/>
-	<factoids filename="map.serialized"/>
+	<factoids filename="map.serialized" htmlfilename="factoids.html"/>
 	<dict host="dict.org"/>
 	<nick name="javabot"/>
 	<auth password="passwordGoesHere" wait="3000"/>
