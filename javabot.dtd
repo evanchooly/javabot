@@ -1,4 +1,4 @@
-<!ELEMENT javabot (server,javadoc,factoids,dict,nick,auth,message*,channel*)>
+<!ELEMENT javabot (server,javadoc,factoids,dict,nick?,auth?,message*,channel*)>
 <!ATTLIST javabot
 	verbose CDATA #IMPLIED
 >
@@ -32,7 +32,7 @@
 
 <!ELEMENT auth EMPTY>
 <!ATTLIST auth
-	raw CDATA #REQUIRED
+	password CDATA #REQUIRED
 	wait CDATA #REQUIRED
 >
 

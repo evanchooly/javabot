@@ -6,7 +6,7 @@
 	<factoids filename="map.serialized"/>
 	<dict host="dict.org"/>
 	<nick name="javabot"/>
-	<auth raw="PRIVMSG NickServ :identify passwordGoesHere" wait="3000"/>
+	<auth password="passwordGoesHere" wait="3000"/>
 	<message tag="~"/>
 	<message tag="javabot: "/>
 	<message tag="javabot, "/>
