@@ -1,6 +1,7 @@
 package javabot.javadoc;
 
 import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.Parameter;
 
 import org.jdom.Element;
@@ -12,7 +13,7 @@ public class MethodReference
 	private String longSignatureTypes;
 	private String shortSignatureTypes;
 
-	public MethodReference(MethodDoc doc, ClassReference owner)
+	public MethodReference(ExecutableMemberDoc doc, ClassReference owner)
 	{
 		this.owner=owner;
 		methodName=doc.name();

@@ -2,6 +2,7 @@ package javabot.javadoc;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
+import com.sun.javadoc.ConstructorDoc;
 import org.jdom.Attribute;
 import org.jdom.Element;
 
@@ -26,13 +27,20 @@ public class ClassReference
 			superClassQualified=doc.superclass().qualifiedName();
 		
 		MethodDoc[] methodDocs=doc.methods();
+		ConstructorDoc[] conDocs = doc.constructors();
 		
-		this.methods=new ArrayList(methodDocs.length);
+		this.methods=new ArrayList(methodDocs.length + conDocs.length);
 		
 		for (int i=0;i<methodDocs.length;i++)
 		{
 			MethodDoc methodDoc = methodDocs[i];
 			methods.add(new MethodReference(methodDoc,this));
+		}
+		
+		for (int i = 0; i < conDocs.length; i++)
+		{
+			ConstructorDoc conDoc = conDocs[i];
+			methods.add(new MethodReference(conDoc, this));
 		}
 		
 		Collections.sort(methods,new MethodComparator());

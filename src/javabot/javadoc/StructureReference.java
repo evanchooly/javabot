@@ -91,11 +91,18 @@ public class StructureReference
 			(ClassReference)longNames.get(className);
 		
 		if (reference != null)
-			return new String[]
 			{
-				reference.getMethodUrl
-					(methodName,signatureTypes,baseUrl)
-			};
+			String url = getUrl
+					(
+						reference,
+						methodName,
+						signatureTypes,
+						baseUrl
+					);
+			if (url == null)
+				return new String[0];
+			return new String[]{url};
+		}
 		
 		List classes=(List)shortNames.get(className);
 		

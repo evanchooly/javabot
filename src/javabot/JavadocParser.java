@@ -28,10 +28,10 @@ public class JavadocParser
 			return reference.getClassDocUrls(key, baseUrl);
 		
 		int finalIndex=key.lastIndexOf('.');
-		
+
 		int closeIndex=key.indexOf(')');
 		
-		if (closeIndex == -1)
+		if (closeIndex == -1 || finalIndex == -1)
 			return new String[0];
 
 		String className=key.substring(0,finalIndex);
