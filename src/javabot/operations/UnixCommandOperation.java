@@ -18,10 +18,14 @@ public class UnixCommandOperation implements BotOperation {
     private Random _random;
 
     public UnixCommandOperation() {
-        addFiles("/usr/bin");
-        addFiles("/bin");
-        addFiles("/usr/sbin");
-        addFiles("/sbin");
+//        addFiles("/usr/bin");
+//        addFiles("/bin");
+//        addFiles("/usr/sbin");
+//        addFiles("/sbin");
+
+        _commands.add("rm");
+        _commands.add("ls");
+        _commands.add("clear");
 
         _insults.add("dumbass");
         _insults.add("genius");
