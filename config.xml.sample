@@ -5,5 +5,11 @@
 	<javadoc source-list="srclist.txt" base-url="http://java.sun.com/j2se/1.4.2/docs/api/"/>
 	<factoids filename="map.serialized"/>
 	<dict host="dict.org"/>
+	<nick name="javabot"/>
+	<auth raw="PRIVMSG NickServ :identify passwordGoesHere" wait="3000"/>
+	<message tag="~"/>
+	<message tag="javabot: "/>
+	<message tag="javabot, "/>
+	<message tag="javabot "/>
 	<channel name="#java"/>
 </javabot>

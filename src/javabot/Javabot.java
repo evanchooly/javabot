@@ -51,23 +51,37 @@ public class Javabot extends PircBot {
 
     Map channelPreviousMessages = new HashMap();
 
-    BotOperation[] operations = { new StatsOperation(),
-        new SpecialCasesOperation(), new ForgetFactoidOperation(),
-        new JavadocOperation(), new LeaveOperation(),
-        new KarmaChangeOperation(), new KarmaReadOperation(),
-        new TellOperation(), new LiteralOperation(),
+    BotOperation[] operations = {
+        new StatsOperation(),
+        new SpecialCasesOperation(),
+        new ForgetFactoidOperation(),
+        new JavadocOperation(),
+        new LeaveOperation(),
+        new KarmaChangeOperation(),
+        new KarmaReadOperation(),
+        new TellOperation(),
+        new LiteralOperation(),
         new Rot13Operation(),
-        new Magic8BallOperation(), new DictOperation(), new GoogleOperation(),
-        new DaysToChristmasOperation(), new TimeOperation(),
-        new NickometerOperation(), new GuessOperation(), new SayOperation(),
-        new AddFactoidOperation(), new GetFactoidOperation() };
+        new Magic8BallOperation(),
+        new DictOperation(),
+        new GoogleOperation(),
+        new DaysToChristmasOperation(),
+        new TimeOperation(),
+        new NickometerOperation(),
+        new GuessOperation(),
+        new SayOperation(),
+        new AddFactoidOperation(),
+        new GetFactoidOperation()
+    };
 
     private String host, dictHost;
     private int port;
     private String factoidFilename;
-    private String javadocSources, javadocBaseUrl;
+    private String javadocSources, javadocBaseUrl, authRaw;
+    private String[] startStrings = null;
+    private int authWait;
 
-    private List _channels = new TypeSafeList(new ArrayList(), String.class);
+    private List channels = new TypeSafeList(new ArrayList(), String.class);
 
     private Javabot() {
         setName("javabot");
@@ -109,7 +123,25 @@ public class Javabot extends PircBot {
             "channel");
 
         for (int a = 0; a < channelNodes.length; a++) {
-            _channels.add(DOMSimple.getAttribute(channelNodes[a], "name"));
+            channels.add(DOMSimple.getAttribute(channelNodes[a], "name"));
+        }
+
+        Node authNode = DOMSimple.getChildElementNode(javabotNode, "auth");
+
+        authRaw = DOMSimple.getAttribute(authNode, "raw");
+        authWait = Integer.parseInt(DOMSimple.getAttribute(authNode, "wait"));
+
+        Node nickNode = DOMSimple.getChildElementNode(javabotNode, "nick");
+
+        setName(DOMSimple.getAttribute(nickNode, "name"));
+
+        Node[] startNodes = DOMSimple.getChildElementNodes(javabotNode,
+            "message");
+
+        startStrings = new String[startNodes.length];
+
+        for (int a = 0; a < startNodes.length; a++) {
+            startStrings[a] = DOMSimple.getAttribute(startNodes[a], "tag");
         }
 
         loadFactoids();
@@ -137,7 +169,14 @@ public class Javabot extends PircBot {
                 noException = false;
             }
 
-            Iterator iterator = _channels.iterator();
+            sendRawLine(authRaw);
+            try {
+                Thread.sleep(authWait);
+            } catch (InterruptedException exception) {
+                throw new RuntimeException(exception);
+            }
+
+            Iterator iterator = channels.iterator();
 
             while (iterator.hasNext())
                 joinChannel((String)iterator.next());
@@ -159,7 +198,9 @@ public class Javabot extends PircBot {
      */
     public void onMessage(String channel, String sender, String login,
         String hostname, String message) {
-        String[] startStrings = { "~", "javabot: ", "javabot, ", "javabot " };
+        String[] startStrings = {
+            "~", "javabot: ", "javabot, ", "javabot "
+        };
 
         for (int a = 0; a < startStrings.length; a++) {
             int length = startStrings[a].length();
@@ -218,7 +259,8 @@ public class Javabot extends PircBot {
     }
 
     /**
-     * @see org.jibble.pircbot.PircBot#onPrivateMessage(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.jibble.pircbot.PircBot#onPrivateMessage(java.lang.String,
+     * java.lang.String, java.lang.String, java.lang.String)
      */
     public void onPrivateMessage(String sender, String login, String hostname,
         String message) {
@@ -226,11 +268,13 @@ public class Javabot extends PircBot {
     }
 
     /**
-     * @see org.jibble.pircbot.PircBot#onInvite(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see org.jibble.pircbot.PircBot#onInvite(java.lang.String,
+     * java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     public void onInvite(String targetNick, String sourceNick,
         String sourceLogin, String sourceHostname, String channel) {
-        joinChannel(channel);
+        if (channels.contains(channel))
+            joinChannel(channel);
     }
 
     /**
