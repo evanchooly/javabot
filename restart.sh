@@ -4,7 +4,7 @@ if [ -f killbot ]
 then
 	BOTPID=`cat killbot | cut -d" " -f2`
 
-	if [ "`ps w | grep $BOTPID | grep javabot | grep -v grep`" ] 
+	if [ "`ps auxw | grep $BOTPID | grep javabot | grep -v grep`" ] 
 	then
 		echo Old instance running
 		./killbot
@@ -17,6 +17,7 @@ do
 done
 export CLASSPATH=$CLASSPATH:build
 
+ant rebuild
 java javabot.Javabot &> javabot.log &
 PID=$!
 echo "kill ${PID} ; rm \$0" > killbot
