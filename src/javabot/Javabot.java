@@ -50,30 +50,7 @@ public class Javabot extends PircBot
 
 	Map channelPreviousMessages=new HashMap();
 
-	BotOperation[] operations=
-	{
-		new StatsOperation(),
-		new SpecialCasesOperation(),
-		new ForgetFactoidOperation(),
-		new JavadocOperation(),
-		new LeaveOperation(),
-		new KarmaChangeOperation(),
-		new KarmaReadOperation(),
-		new TellOperation(),
-		new LiteralOperation(),
-		new Rot13Operation(),
-		new Magic8BallOperation(),
-		new DictOperation(),
-		new GoogleOperation(),
-		new DaysToChristmasOperation(),
-		new TimeOperation(),
-		new NickometerOperation(),
-		new GuessOperation(),
-		new SayOperation(),
-		new AddFactoidOperation(),
-		new QuitOperation(),
-		new GetFactoidOperation()
-	};
+	BotOperation[] operations;
 
 	private String host,dictHost;
 	private int port;
@@ -167,6 +144,31 @@ public class Javabot extends PircBot
 			startStrings[a]=
 				DOMSimple.getAttribute(startNodes[a],"tag");
 
+		Node[] operationNodes=DOMSimple.getChildElementNodes(javabotNode,"operation");
+
+		operations=new BotOperation[operationNodes.length];
+		
+		for (int a=0;a<operationNodes.length;a++)
+		{
+			try
+			{
+				Class operationClass=Class.forName
+				(
+					DOMSimple.getAttribute
+						(operationNodes[a],"class")
+				);
+			
+				operations[a]=(BotOperation)operationClass
+					.newInstance();
+
+				System.out.println(operations[a]);
+			}
+			catch (Exception exception)
+			{
+				throw new RuntimeException(exception);
+			}
+		}
+
 		loadFactoids();
 	}
 
@@ -238,8 +240,8 @@ public class Javabot extends PircBot
 		String message
 	)
 	{
-		//String[] startStrings=
-		//	{"~","javabot: ","javabot, ","javabot "};
+		String[] startStrings=
+			{"~","javabot: ","javabot, ","javabot "};
 
 		for (int a=0;a<startStrings.length;a++)
 		{

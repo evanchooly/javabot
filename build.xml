@@ -12,7 +12,7 @@
 	</target>
 	
 	<target name="main" depends="init">
-		<javac destDir="${build}" srcDir="src" classpathref="javabot.cp"/>
+		<javac destDir="${build}" srcDir="src" classpathref="javabot.cp" debug="true"/>
 	</target>
 
 	<target name="clean">
