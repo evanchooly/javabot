@@ -15,7 +15,7 @@ for i in lib/*.jar
 do
 	export CLASSPATH=$CLASSPATH:$i
 done
-export CLASSPATH=$CLASSPATH:build
+export CLASSPATH=$CLASSPATH:build:$JAVA_HOME/lib/tools.jar
 
 ant rebuild
 java javabot.Javabot &> javabot.log &
