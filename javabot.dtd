@@ -1,4 +1,4 @@
-<!ELEMENT javabot (server,javadoc,factoids,dict,nick?,auth?,message*,channel*,operation*)>
+<!ELEMENT javabot (server,javadoc,factoids,dict,nick?,auth?,message*,channel*,operation*,ignore*)>
 <!ATTLIST javabot
 	verbose CDATA #IMPLIED
 >
@@ -50,4 +50,9 @@
 <!ELEMENT operation EMPTY>
 <!ATTLIST operation
 	class CDATA #REQUIRED
+>
+
+<!ELEMENT ignore EMPTY>
+<!ATTLIST ignore
+    name CDATA #REQUIRED
 >

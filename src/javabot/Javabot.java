@@ -37,6 +37,7 @@ public class Javabot extends PircBot {
     private String password;
     private List channels = new TypeSafeList(new ArrayList(), String.class);
     private String htmlFile;
+    private List ignores = new ArrayList();
 
     private Javabot() {
         setName("javabot");
@@ -52,7 +53,6 @@ public class Javabot extends PircBot {
         Node serverNode =
             DOMSimple.getChildElementNode(javabotNode, "server");
         host = DOMSimple.getAttribute(serverNode, "name");
-
         port = Integer.parseInt
             (DOMSimple.getAttribute(serverNode, "port"));
         Node javadocNode =
@@ -65,7 +65,6 @@ public class Javabot extends PircBot {
         factoidFilename =
             DOMSimple.getAttribute(factoidsNode, "filename");
         htmlFile = DOMSimple.getAttribute(factoidsNode, "htmlfilename");
-
         Node dictNode =
             DOMSimple.getChildElementNode(javabotNode, "dict");
         dictHost = DOMSimple.getAttribute(dictNode, "host");
@@ -108,6 +107,11 @@ public class Javabot extends PircBot {
                 throw new RuntimeException(exception);
             }
         }
+        Node[] ignoreNodes =
+            DOMSimple.getChildElementNodes(javabotNode, "ignore");
+        for(int a = 0; a < ignoreNodes.length; a++) {
+            ignores.add(DOMSimple.getAttribute(ignoreNodes[a], "name"));
+        }
         loadFactoids();
     }
 
@@ -119,7 +123,7 @@ public class Javabot extends PircBot {
     }
 
     private void connect() {
-        for(; ;) {
+        while(true) {
             boolean noException = true;
             try {
                 connect(host, port);
@@ -317,8 +321,7 @@ public class Javabot extends PircBot {
                 String value = (String)map.get(factoid);
                 value = value.replaceAll("<", "&lt;");
                 value = value.replaceAll(">", "&gt;");
-
-                writer.println( "<tr><td>" + factoid
+                writer.println("<tr><td>" + factoid
                     + "</td><td>" + value + "</td></tr>");
             }
             writer.println("</table></body></html>");
@@ -377,5 +380,13 @@ public class Javabot extends PircBot {
 
     public String getNickPassword() {
         return password;
+    }
+
+    public boolean isValidSender(String sender) {
+        return ignores.contains(sender);
+    }
+
+    public void addIgnore(String sender) {
+        ignores.add(sender);
     }
 }
