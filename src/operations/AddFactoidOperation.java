@@ -1,4 +1,6 @@
 import com.rickyclarkson.java.util.Arrays;
+package operations;
+
 import com.rickyclarkson.java.util.TypeSafeList;
 
 import java.util.ArrayList;
