@@ -29,8 +29,6 @@ public class StatsOperation implements BotOperation {
         if (message.toLowerCase().startsWith("stats")) {
             long uptime = System.currentTimeMillis() - startTime;
 
-            uptime /= 1000;
-
             long days = uptime / 86400000;
 
             messages.add(new Message(event.getChannel(), "I have been up for "
