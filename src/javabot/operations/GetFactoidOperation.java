@@ -41,9 +41,15 @@ public class GetFactoidOperation implements BotOperation {
         if (bot.hasFactoid(message.toLowerCase())) {
             message = bot.getFactoid(message.toLowerCase());
 
-            message = message.replaceAll("\\$who", sender);
+	    try
+	    {
+            	message = message.replaceAll("\\$who", sender);
 
-            message = message.replaceAll("\\$1", dollarOne);
+	        message = message.replaceAll("\\$1", dollarOne);
+	    }
+	    catch (IndexOutOfBoundsException exception)
+	    {
+	    }
 
             int index = -1;
 
