@@ -145,7 +145,7 @@ public class Javabot extends PircBot {
 
     private void loadJavadocInfo(Element root) {
         Element javadocNode = root.getChild("javadoc");
-        javadocSources = root.getAttributeValue("source-list");
+        javadocSources = javadocNode.getAttributeValue("source-list");
         javadocBaseUrl = javadocNode.getAttributeValue("base-url");
     }
 
