@@ -27,8 +27,14 @@ public class TellOperation implements BotOperation {
 
         Javabot bot = event.getBot();
 
-        if (!message.startsWith("tell ") || message.indexOf("about")==-1)
-            return messages;
+        if (!message.startsWith("tell "))
+		return messages;
+
+	if (message.indexOf("about")==-1)
+	{
+		messages.add(new Message(channel,"The syntax is: tell nick about factoid - you missed out the 'about', "+sender,false));
+		return messages;
+	}
 
         message = message.substring("tell ".length());
 
