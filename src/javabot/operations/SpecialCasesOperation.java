@@ -20,11 +20,6 @@ public class SpecialCasesOperation implements BotOperation {
 
         String message = event.getMessage();
 
-        if (message.toLowerCase().indexOf("c++") != -1)
-            return event.getBot().getResponses(event.getChannel(),
-                event.getSender(), event.getLogin(), event.getHostname(),
-                message.replaceAll("c\\+\\+", "cpp"));
-
         if (message.toLowerCase().indexOf("ricky_clarkson is") != -1)
             return event.getBot().getResponses(event.getChannel(),
                 event.getSender(), event.getLogin(), event.getHostname(),
