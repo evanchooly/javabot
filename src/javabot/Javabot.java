@@ -283,7 +283,7 @@ public class Javabot extends PircBot {
     public boolean userIsOnChannel(String nick, String channel) {
         User[] users = getUsers(channel);
         for(int a = 0; a < users.length; a++) {
-            if(users[a].getNick().equals(nick)) {
+            if(users[a].getNick().toLowerCase().equals(nick.toLowerCase())) {
                 return true;
             }
         }
