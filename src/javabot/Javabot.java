@@ -24,7 +24,6 @@ import javabot.operations.JavadocOperation;
 import javabot.operations.KarmaChangeOperation;
 import javabot.operations.KarmaReadOperation;
 import javabot.operations.LeaveOperation;
-import javabot.operations.ListFactoidsOperation;
 import javabot.operations.LiteralOperation;
 import javabot.operations.Magic8BallOperation;
 import javabot.operations.NickometerOperation;
@@ -57,7 +56,7 @@ public class Javabot extends PircBot {
         new JavadocOperation(), new LeaveOperation(),
         new KarmaChangeOperation(), new KarmaReadOperation(),
         new TellOperation(), new LiteralOperation(),
-        new ListFactoidsOperation(), new Rot13Operation(),
+        new Rot13Operation(),
         new Magic8BallOperation(), new DictOperation(), new GoogleOperation(),
         new DaysToChristmasOperation(), new TimeOperation(),
         new NickometerOperation(), new GuessOperation(), new SayOperation(),
