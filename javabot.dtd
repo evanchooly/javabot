@@ -18,6 +18,7 @@
 <!ELEMENT factoids EMPTY>
 <!ATTLIST factoids
 	filename CDATA #REQUIRED
+    htmlfilename CDATA #REQUIRED
 >
 
 <!ELEMENT dict EMPTY>
