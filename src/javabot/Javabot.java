@@ -470,8 +470,6 @@ public List getChannelResponses
 				"</a>"+
 				value.substring(endHttp);
 
-			System.out.println(value);
-
 			startHttp=value.indexOf("</a>",startHttp);
 		}
 		while (startHttp!=-1);
