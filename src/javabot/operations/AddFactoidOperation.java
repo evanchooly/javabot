@@ -36,11 +36,13 @@ public class AddFactoidOperation implements BotOperation {
             String value = Arrays.toString(Arrays.subset(messageParts,
                 partWithIs + 1, messageParts.length), " ");
             if(key.trim().length() == 0) {
-                messages.add(new Message(channel, "Invalid key", false));
+					 messages.add(new Message(channel, "Invalid factoid name",
+						 false));
                 return messages;
             }
             if(value.trim().length() == 0) {
-                messages.add(new Message(channel, "Invalid value", false));
+                messages.add(new Message(channel, "Invalid factoid value",
+						 false));
                 return messages;
             }
             if(bot.hasFactoid(key)) {

@@ -220,7 +220,7 @@ public class Googler {
                             if (end3 != -1) {
                                 result2.setLinkInfo(htmlEscape(result
                                     .substring(end3 + 1, end3
-                                        + ((end2 - end3) - 1))));
+                                        + ((end2 - end3)))));
 
                                 searchResults.add(result2);
                                 foundResults = true;
