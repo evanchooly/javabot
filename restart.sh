@@ -6,7 +6,7 @@ echo $BOTPID
 ps w | grep $BOTPID | grep javabot | grep -v grep
 if [ "`ps w | grep $BOTPID | grep javabot | grep -v grep`" ] 
 then
-	kill $BOTPID
+	kill -9 $BOTPID
 	rm bot.pid
 fi
 
