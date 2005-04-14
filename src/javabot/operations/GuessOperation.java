@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javabot.BotEvent;
-import javabot.Javabot;
+import javabot.Database;
 import javabot.Message;
 
 import com.rickyclarkson.java.util.Arrays;
@@ -50,6 +50,13 @@ public class GuessOperation implements BotOperation {
 
     String ignoreString = Arrays.toString(ignoreList, "|");
 
+    private final Database database;
+
+    public GuessOperation(final Database database)
+    {
+	    this.database=database;
+    }
+    
     /**
      * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
      */
@@ -58,8 +65,6 @@ public class GuessOperation implements BotOperation {
 
         String message = event.getMessage().toLowerCase();
         String channel = event.getChannel();
-
-        Javabot bot = event.getBot();
 
         if (!message.startsWith("guess "))
             return messages;
@@ -79,14 +84,14 @@ public class GuessOperation implements BotOperation {
         words = (String[])Arrays.removeAll(words, " ");
         words = (String[])Arrays.removeAll(words, "");
 
-        Iterator iterator = bot.getMap().keySet().iterator();
+        Iterator iterator = database.getMap().keySet().iterator();
 
         int maxMatches = 0;
         String bestKey = "";
 
         while (iterator.hasNext()) {
             String nextKey = (String)iterator.next();
-            //			String nextValue=bot.getFactoid(nextKey);
+            //			String nextValue=database.getFactoid(nextKey);
 
             String next = nextKey;
 
@@ -128,8 +133,8 @@ public class GuessOperation implements BotOperation {
         messages.add(new Message(channel, "I guess the factoid '" + bestKey
             + "' might be appropriate:", false));
 
-        messages.addAll(new GetFactoidOperation().handleMessage(new BotEvent(
-            bot, event.getChannel(), event.getSender(), event.getLogin(), event
+        messages.addAll(new GetFactoidOperation(database).handleMessage(new BotEvent(
+            event.getChannel(), event.getSender(), event.getLogin(), event
                 .getHostname(), bestKey)));
 
         return messages;

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Message;
+import javabot.Responder;
 
 import com.rickyclarkson.java.util.TypeSafeList;
 
@@ -12,6 +13,13 @@ import com.rickyclarkson.java.util.TypeSafeList;
  * @author ricky_clarkson
  */
 public class SpecialCasesOperation implements BotOperation {
+	private final Responder responder;
+	
+	public SpecialCasesOperation(final Responder responder)
+	{
+		this.responder=responder;
+	}
+
     /**
      * @see BotOperation#handleMessage(BotEvent)
      */
@@ -20,28 +28,16 @@ public class SpecialCasesOperation implements BotOperation {
 
         String message = event.getMessage();
 
-        String[] stupidPrefixes = { "what is ", "where is " };
-
-        for (int a = 0; a < stupidPrefixes.length; a++) {
-            if (message.toLowerCase().startsWith(stupidPrefixes[a]))
-                return event.getBot().getResponses(event.getChannel(),
-                    event.getSender(), event.getLogin(), event.getHostname(),
-                    message.substring(stupidPrefixes[a].length()));
-        }
-
         if (message.toLowerCase().startsWith("no, ")) {
             message = message.substring("no, ".length());
 
             String key = message.substring(0, message.indexOf(" is "));
 
-            //messages.addAll
-            //(
-            event.getBot().getResponses(event.getChannel(), event.getSender(),
+            responder.getResponses(event.getChannel(), event.getSender(),
                 event.getLogin(), event.getHostname(), "forget " + key
-            //	)
                 );
 
-            messages.addAll(event.getBot().getResponses(event.getChannel(),
+            messages.addAll(responder.getResponses(event.getChannel(),
                 event.getSender(), event.getLogin(), event.getHostname(),
                 message));
 

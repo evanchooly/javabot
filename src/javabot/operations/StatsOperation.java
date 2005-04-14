@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javabot.BotEvent;
+import javabot.Database;
 import javabot.Message;
 
 import com.rickyclarkson.java.util.TypeSafeList;
@@ -12,6 +13,13 @@ import com.rickyclarkson.java.util.TypeSafeList;
  * @author ricky_clarkson
  */
 public class StatsOperation implements BotOperation {
+	private final Database database;
+	
+	public StatsOperation(final Database database)
+	{
+		this.database=database;
+	}
+	
     private static long startTime = System.currentTimeMillis();
 
     private static int numberOfMessages = 0;
@@ -33,7 +41,7 @@ public class StatsOperation implements BotOperation {
 
             messages.add(new Message(event.getChannel(), "I have been up for "
                 + days + " days, " + "have served " + numberOfMessages
-                + " messages, and have " + event.getBot().getNumberOfFactoids()
+                + " messages, and have " + database.getNumberOfFactoids()
                 + " factoids.", false));
         }
 

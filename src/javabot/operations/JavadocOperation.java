@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import com.rickyclarkson.java.util.TypeSafeList;
 import javabot.BotEvent;
-import javabot.Javabot;
 import javabot.JavadocParser;
 import javabot.Message;
 import org.jdom.JDOMException;
@@ -17,20 +16,25 @@ import org.jdom.JDOMException;
 public class JavadocOperation implements BotOperation {
     JavadocParser javadocParser;
 
+	private final String javadocSources;
+	private final String javadocBaseUrl;
+    
+	public JavadocOperation
+		(final String javadocSources,final String javadocBaseUrl)
+	{
+		this.javadocSources=javadocSources;
+		this.javadocBaseUrl=javadocBaseUrl;
+	}
+	
     /**
      * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
      */
     public List handleMessage(BotEvent event) {
         List messages = new TypeSafeList(new ArrayList(), Message.class);
         String message = event.getMessage();
-        Javabot bot = event.getBot();
         if(message.toLowerCase().startsWith("javadoc ")) {
             if(javadocParser == null) {
-                String javadocSources = bot.getJavadocSources();
-                String javadocBaseUrl = bot.getJavadocBaseUrl();
                 try {
-                    System.out.println("javadocSources = " + javadocSources);
-                    System.out.println("javadocBaseURL = " + javadocBaseUrl);
                     javadocParser = new JavadocParser
                         (new File(javadocSources),
                             javadocBaseUrl);

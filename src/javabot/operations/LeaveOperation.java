@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javabot.BotEvent;
-import javabot.Javabot;
+import javabot.ChannelControl;
 import javabot.Message;
 
 import com.rickyclarkson.java.util.TypeSafeList;
@@ -13,6 +13,13 @@ import com.rickyclarkson.java.util.TypeSafeList;
  * @author ricky_clarkson
  */
 public class LeaveOperation implements BotOperation {
+	private final ChannelControl channelControl;
+	
+	public LeaveOperation(final ChannelControl channelControl)
+	{
+		this.channelControl=channelControl;
+	}
+	
     /**
      * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
      */
@@ -22,7 +29,6 @@ public class LeaveOperation implements BotOperation {
         final String message = event.getMessage();
         final String channel = event.getChannel();
         final String sender = event.getSender();
-        final Javabot bot = event.getBot();
 
         if (message.toLowerCase().equals("leave")) {
             if (channel.equals(sender)) {
@@ -37,7 +43,8 @@ public class LeaveOperation implements BotOperation {
 
             new Thread(new Runnable() {
                 public void run() {
-                    bot.partChannel(channel, "I was asked to leave.");
+                    channelControl.partChannel
+		    	(channel, "I was asked to leave.");
 
                     try {
                         Thread.sleep(3600 * 1000);
@@ -45,7 +52,7 @@ public class LeaveOperation implements BotOperation {
                         exception.printStackTrace();
                     }
 
-                    bot.joinChannel(channel);
+                    channelControl.joinChannel(channel);
                 }
             }).start();
 

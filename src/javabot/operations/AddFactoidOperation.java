@@ -5,27 +5,27 @@ import java.util.List;
 import com.rickyclarkson.java.util.Arrays;
 import com.rickyclarkson.java.util.TypeSafeList;
 import javabot.BotEvent;
-import javabot.Javabot;
+import javabot.Database;
 import javabot.Message;
 
-/**
- * @author ricky_clarkson
- */
 public class AddFactoidOperation implements BotOperation {
-    /**
-     * @param event
-     *
-     * @return
-     */
-    public List handleMessage(BotEvent event) {
+    
+	private final Database database;
+	
+	public AddFactoidOperation(final Database database)
+	{
+		this.database=database;
+	}
+	
+	public List handleMessage(BotEvent event) {
         List messages = new TypeSafeList(new ArrayList(), Message.class);
         String message = event.getMessage();
         String channel = event.getChannel();
         String sender = event.getSender();
-        Javabot bot = event.getBot();
         String[] messageParts = message.split(" ");
         int partWithIs = Arrays.search(messageParts, "is");
-        if(partWithIs != -1) {
+        
+	if(partWithIs != -1) {
             Object keyParts = Arrays.subset(messageParts, 0, partWithIs);
             String key = Arrays.toString(keyParts, " ");
             key = key.toLowerCase();
@@ -45,7 +45,7 @@ public class AddFactoidOperation implements BotOperation {
 						 false));
                 return messages;
             }
-            if(bot.hasFactoid(key)) {
+            if(database.hasFactoid(key)) {
                 messages.add(new Message(channel, "I already have a factoid "
                     + "with that name, " + sender, false));
                 return messages;
@@ -54,7 +54,7 @@ public class AddFactoidOperation implements BotOperation {
             if(value.startsWith("<see>")) {
                 value = value.toLowerCase();
             }
-            event.getBot().addFactoid(sender, key, value);
+            database.addFactoid(sender, key, value);
         }
         return messages;
     }

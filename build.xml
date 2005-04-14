@@ -69,7 +69,17 @@
 		<java classname="javabot.Killbot" classpathref="javabot.cp" fork="true"/>
 	</target>
 	
-	<target name="run" depends="killbot">
+	<target name="run">
 		<java classname="javabot.Javabot" classpathref="javabot.cp" fork="true" spawn="true"/>
+	</target>
+
+	<target name="javadocs">
+		<property name="blah" refid="javabot.cp"/>
+		
+		<echo message="$blah"/>
+
+		<java classname="javabot.IndependentJavadocViewer" classpathref="javabot.cp" fork="true">
+			<arg value="String"/>
+		</java>
 	</target>
 </project>

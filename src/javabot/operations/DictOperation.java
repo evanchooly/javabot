@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javabot.BotEvent;
-import javabot.Javabot;
 import javabot.Message;
 
 import com.rickyclarkson.java.util.Arrays;
@@ -21,7 +20,15 @@ import com.rickyclarkson.java.util.TypeSafeList;
  * @author ricky_clarkson
  */
 public class DictOperation implements BotOperation {
-    private final static int port = 2628;
+
+	private final String host;
+	
+	public DictOperation(final String host)
+	{
+		this.host=host;
+	}
+	
+private final static int port = 2628;
 
     /**
      * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
@@ -32,7 +39,6 @@ public class DictOperation implements BotOperation {
         String message = event.getMessage();
         String sender = event.getSender();
         String channel = event.getChannel();
-        Javabot bot = event.getBot();
 
         String[] messageParts = message.split(" ");
 
@@ -45,7 +51,7 @@ public class DictOperation implements BotOperation {
 
         try {
             Socket socket = new Socket(
-                InetAddress.getByName(bot.getDictHost()), port);
+                InetAddress.getByName(host), port);
 
             OutputStream outputStream = socket.getOutputStream();
 

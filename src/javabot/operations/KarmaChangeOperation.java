@@ -4,13 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import com.rickyclarkson.java.util.TypeSafeList;
 import javabot.BotEvent;
-import javabot.Javabot;
+import javabot.Database;
 import javabot.Message;
 
 /**
  * @author ricky_clarkson
  */
 public class KarmaChangeOperation implements BotOperation {
+
+	private final Database database;
+	
+	public KarmaChangeOperation(final Database database)
+	{
+		this.database=database;
+	}
     /**
      * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
      */
@@ -19,7 +26,6 @@ public class KarmaChangeOperation implements BotOperation {
         String message = event.getMessage();
         String sender = event.getSender();
         String channel = event.getChannel();
-        Javabot bot = event.getBot();
         if(message.indexOf(" ") != -1) {
             return messages;
         }
@@ -38,7 +44,7 @@ public class KarmaChangeOperation implements BotOperation {
             int karma;
             try {
                 karma = Integer.parseInt
-                    (bot.getFactoid("karma " + nick));
+                    (database.getFactoid("karma " + nick));
             } catch(Exception exception) {
                 karma = 0;
             }
@@ -47,13 +53,12 @@ public class KarmaChangeOperation implements BotOperation {
             } else {
                 karma--;
             }
-            bot.addFactoid(sender, "karma " + nick, karma + "");
-            KarmaReadOperation karmaRead = new KarmaReadOperation();
+            database.addFactoid(sender, "karma " + nick, karma + "");
+            KarmaReadOperation karmaRead = new KarmaReadOperation(database);
             messages.addAll
                 (karmaRead.handleMessage
                 (new BotEvent
-                    (bot,
-                        event.getChannel(),
+                    (   event.getChannel(),
                         event.getSender(),
                         event.getLogin(),
                         event.getHostname(),

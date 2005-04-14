@@ -11,7 +11,7 @@ public final class Killbot
 		Javabot bot=new Javabot();
 		String password=bot.getNickPassword();
 
-		Socket socket=new Socket("localhost",2356);
+		Socket socket=new Socket("localhost",2346);
 		
 		OutputStreamWriter writer=
 			new OutputStreamWriter(socket.getOutputStream());

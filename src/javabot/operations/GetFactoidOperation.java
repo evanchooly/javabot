@@ -4,19 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import com.rickyclarkson.java.util.TypeSafeList;
 import javabot.BotEvent;
-import javabot.Javabot;
+import javabot.Database;
 import javabot.Message;
 
-/**
- * This one must always be used last.
- */
 public class GetFactoidOperation implements BotOperation {
-    /**
-     * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
-     */
-    public List handleMessage(BotEvent event) {
+   
+	private Database database;
+
+	public GetFactoidOperation(final Database database)
+	{
+		this.database=database;
+	}
+	
+	public List handleMessage(BotEvent event) {
         List messages = new TypeSafeList(new ArrayList(), Message.class);
-        Javabot bot = event.getBot();
         String channel = event.getChannel();
         String message = event.getMessage();
         String sender = event.getSender();
@@ -30,15 +31,15 @@ public class GetFactoidOperation implements BotOperation {
 
         if(message.startsWith("<see>")) {
             message
-                = bot.getFactoid(message.substring("<see>".length()));
+                = database.getFactoid(message.substring("<see>".length()));
         }
 	
-        if(!bot.hasFactoid(message.toLowerCase())
-            && bot.hasFactoid(firstWord.toLowerCase() + " $1")) {
+        if(!database.hasFactoid(message.toLowerCase())
+            && database.hasFactoid(firstWord.toLowerCase() + " $1")) {
             message = firstWord + " $1";
         }
-        if(bot.hasFactoid(message.toLowerCase())) {
-            message = bot.getFactoid(message.toLowerCase());
+        if(database.hasFactoid(message.toLowerCase())) {
+            message = database.getFactoid(message.toLowerCase());
             try {
                 message = message.replaceAll("\\$who", sender);
                 message = message.replaceAll("\\$1", dollarOne);
@@ -65,7 +66,7 @@ public class GetFactoidOperation implements BotOperation {
             } while(true);
             if(message.startsWith("<see>")) {
                 message
-                    = bot.getFactoid(message.substring("<see>".length()));
+                    = database.getFactoid(message.substring("<see>".length()));
             }
 	    else
 	    {
@@ -84,8 +85,8 @@ public class GetFactoidOperation implements BotOperation {
                 + message, false));
             return messages;
         }
-        List guessed = new GuessOperation().handleMessage(new BotEvent(event
-            .getBot(), event.getChannel(), event.getSender(), event.getLogin(),
+        List guessed = new GuessOperation(database).handleMessage(new BotEvent(
+            event.getChannel(), event.getSender(), event.getLogin(),
             event.getHostname(), "guess " + message));
         Message guessedMessage = (Message)guessed.get(0);
         if(!guessedMessage.getMessage()

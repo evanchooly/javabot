@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javabot.BotEvent;
-import javabot.Javabot;
+import javabot.Database;
 import javabot.Message;
 
 import com.rickyclarkson.java.util.TypeSafeList;
@@ -14,6 +14,13 @@ import com.rickyclarkson.java.util.TypeSafeList;
  */
 public class LiteralOperation implements BotOperation
 {
+	private final Database database;
+	
+	public LiteralOperation(Database database)
+	{
+		this.database=database;
+	}
+		
 	/**
 	 * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
 	 */
@@ -24,20 +31,18 @@ public class LiteralOperation implements BotOperation
 		String message=event.getMessage().toLowerCase();
 		String channel=event.getChannel();
 
-		Javabot bot=event.getBot();
-
 		if (message.startsWith("literal "))
 		{
 			String key=message.substring("literal ".length());
 
-			if (bot.hasFactoid(key))
+			if (database.hasFactoid(key))
 			{
 				messages.add
 				(
 					new Message
 					(
 						channel,
-						bot.getFactoid(key),
+						database.getFactoid(key),
 						false
 					)
 				);

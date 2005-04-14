@@ -18,8 +18,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import com.rickyclarkson.java.lang.Debug;
 import com.rickyclarkson.java.util.TypeSafeList;
+
+import javabot.operations.AddFactoidOperation;
 import javabot.operations.BotOperation;
+import javabot.operations.DictOperation;
+import javabot.operations.ForgetFactoidOperation;
+import javabot.operations.GetFactoidOperation;
+import javabot.operations.GuessOperation;
+import javabot.operations.JavadocOperation;
+import javabot.operations.KarmaChangeOperation;
+import javabot.operations.KarmaReadOperation;
+import javabot.operations.LeaveOperation;
+import javabot.operations.ListFactoidsOperation;
+import javabot.operations.LiteralOperation;
+import javabot.operations.QuitOperation;
+import javabot.operations.SpecialCasesOperation;
+import javabot.operations.StatsOperation;
+import javabot.operations.TellOperation;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -27,7 +46,9 @@ import org.jdom.input.SAXBuilder;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 
-public class Javabot extends PircBot {
+public class Javabot extends PircBot
+	implements ChannelControl,Database,Responder
+{
     private Map map = new HashMap();
     private Map channelPreviousMessages = new HashMap();
     private BotOperation[] operations;
@@ -47,6 +68,7 @@ public class Javabot extends PircBot {
     private String _changeLog;
 
     Javabot() throws JDOMException, IOException {
+	System.setErr(System.out);
         setName("javabot");
         setLogin("javabot");
         setVersion
@@ -87,19 +109,118 @@ public class Javabot extends PircBot {
         List operationNodes = root.getChildren("operation");
         Iterator iterator = operationNodes.iterator();
         operations = new BotOperation[operationNodes.size()];
-        int index = 0;
-        while(iterator.hasNext()) {
+        int index = -1;
+	whileLoop: while(iterator.hasNext()) {
+	    index++;
+	    
             Element node = (Element)iterator.next();
+
+	    final String className=node.getAttributeValue("class");
+	    
             try {
                 Class operationClass = Class.forName
                     (node.getAttributeValue("class"));
-                operations[index] = (BotOperation)operationClass
-                    .newInstance();
+
+		if (AddFactoidOperation.class.equals(operationClass))
+		{
+			operations[index]=new AddFactoidOperation(this);
+			continue whileLoop;
+		}
+		
+		if (DictOperation.class.equals(operationClass))
+		{
+			operations[index]=new DictOperation(dictHost);
+			continue whileLoop;
+		}
+		
+		if (ForgetFactoidOperation.class.equals(operationClass))
+		{
+			operations[index]=new ForgetFactoidOperation(this);
+			Debug.printDebug();
+			continue whileLoop;
+		}
+	
+		if (GetFactoidOperation.class.equals(operationClass))
+		{
+			operations[index]=new GetFactoidOperation(this);
+			continue whileLoop;
+		}
+
+		if (GuessOperation.class.equals(operationClass))
+		{
+			operations[index]=new GuessOperation(this);
+			continue whileLoop;
+		}
+
+		if (JavadocOperation.class.equals(operationClass))
+		{
+			operations[index]=new JavadocOperation
+				(javadocSources,javadocBaseUrl);
+			continue whileLoop;
+		}
+
+		if (KarmaChangeOperation.class.equals(operationClass))
+		{
+			operations[index]=new KarmaChangeOperation(this);
+			continue whileLoop;
+		}
+		
+		if (KarmaReadOperation.class.equals(operationClass))
+		{
+			operations[index]=new KarmaReadOperation(this);
+			continue whileLoop;
+		}
+
+		if (LeaveOperation.class.equals(operationClass))
+		{
+			operations[index]=new LeaveOperation(this);
+			continue whileLoop;
+		}
+		
+		if (ListFactoidsOperation.class.equals(operationClass))
+		{
+			operations[index]=new ListFactoidsOperation(this);
+			continue whileLoop;
+		}
+
+		if (LiteralOperation.class.equals(operationClass))
+		{
+			operations[index]=new LiteralOperation(this);
+			continue whileLoop;
+		}
+
+		if (QuitOperation.class.equals(operationClass))
+		{
+			operations[index]=new QuitOperation(getNickPassword());
+			continue whileLoop;
+		}
+		
+		if (SpecialCasesOperation.class.equals(operationClass))
+		{
+			operations[index]=new SpecialCasesOperation(this);
+			
+			continue whileLoop;
+		}
+
+		if (StatsOperation.class.equals(operationClass))
+		{
+			operations[index]=new StatsOperation(this);
+			continue whileLoop;
+		}
+	
+		if (TellOperation.class.equals(operationClass))
+		{
+			operations[index]=new TellOperation(getNick(),this);
+			continue whileLoop;
+		}
+
+		operations[index] = (BotOperation)operationClass
+                    		.newInstance();
+				
                 System.out.println(operations[index]);
             } catch(Exception exception) {
                 throw new RuntimeException(exception);
             }
-            index++;
         }
     }
 
@@ -171,7 +292,7 @@ public class Javabot extends PircBot {
 
         Javabot bot = new Javabot();
 	
-	new PortListener(2356,bot.getNickPassword()).start();
+	new PortListener(2346,bot.getNickPassword()).start();
         
 	bot.setMessageDelay(2000);
         bot.connect();
@@ -232,8 +353,7 @@ public class Javabot extends PircBot {
         for(int a = 0; a < operations.length; a++) {
             List messages = operations[a].handleMessage
                 (new BotEvent
-                    (this,
-                        channel,
+                    (channel,
                         sender,
                         login,
                         hostname,
@@ -254,8 +374,7 @@ public class Javabot extends PircBot {
         for(int a = 0; a < operations.length; a++) {
             List messages = operations[a].handleChannelMessage
                 (new BotEvent
-                    (this,
-                        channel,
+                  	(channel,
                         sender,
                         login,
                         hostname,

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javabot.BotEvent;
-import javabot.Javabot;
+import javabot.Database;
 import javabot.Message;
 
 import com.rickyclarkson.java.util.TypeSafeList;
@@ -13,6 +13,12 @@ import com.rickyclarkson.java.util.TypeSafeList;
  * @author ricky_clarkson
  */
 public class KarmaReadOperation implements BotOperation {
+	private final Database database;
+
+	public KarmaReadOperation(final Database database)
+	{
+		this.database=database;
+	}
     /**
      * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
      */
@@ -22,8 +28,6 @@ public class KarmaReadOperation implements BotOperation {
         String message = event.getMessage();
         String channel = event.getChannel();
         String sender = event.getSender();
-
-        Javabot bot = event.getBot();
 
         if (!message.startsWith("karma "))
             return messages;
@@ -44,7 +48,7 @@ public class KarmaReadOperation implements BotOperation {
         int karma;
 
         try {
-            karma = Integer.parseInt(bot.getFactoid("karma " + nick));
+            karma = Integer.parseInt(database.getFactoid("karma " + nick));
         } catch (Exception exception) {
             karma = 0;
         }

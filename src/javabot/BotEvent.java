@@ -2,7 +2,6 @@ package javabot;
 
 public class BotEvent
 {
-	private Javabot bot;
 	private String channel;
 	private String sender;
 	private String login;
@@ -11,7 +10,6 @@ public class BotEvent
 
 	public BotEvent
 	(
-		Javabot bot,
 		String channel,
 		String sender,
 		String login,
@@ -19,7 +17,6 @@ public class BotEvent
 		String message
 	)
 	{
-        	this.bot=bot;
 		this.channel=channel;
 		this.sender=sender;
 		this.login=login;
@@ -27,11 +24,6 @@ public class BotEvent
 		this.message=message;
 	}
 	
-	public Javabot getBot()
-	{
-		return bot;
-	}
-
 	public String getChannel()
 	{
         	return channel;

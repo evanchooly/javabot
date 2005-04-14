@@ -13,6 +13,15 @@ import com.rickyclarkson.java.util.TypeSafeList;
  * @author ricky_clarkson
  */
 public class TellOperation implements BotOperation {
+	private final String ownNick;
+	private final Javabot javabot;
+	
+	public TellOperation(final String ownNick,final Javabot javabot)
+	{
+		this.ownNick=ownNick;
+		this.javabot=javabot;
+	}
+	
     /**
      * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
      */
@@ -24,8 +33,6 @@ public class TellOperation implements BotOperation {
         String login = event.getLogin();
         String hostname = event.getHostname();
         String sender = event.getSender();
-
-        Javabot bot = event.getBot();
 
         if (!message.startsWith("tell "))
 		return messages;
@@ -40,7 +47,7 @@ public class TellOperation implements BotOperation {
 
         String nick = message.substring(0, message.indexOf(" "));
 
-        if (nick.equals(bot.getNick())) {
+        if (nick.equals(ownNick)) {
             messages.add(new Message(channel, "I don't want to talk to myself",
                 false));
 
@@ -53,14 +60,14 @@ public class TellOperation implements BotOperation {
         if (sender.equals(channel)) {
             //private message
 
-            if (bot.isOnSameChannelAs(nick)) {
+            if (javabot.isOnSameChannelAs(nick)) {
                 messages.add(new Message(nick, sender + " wants to tell you "
                     + "the following:", false));
 
                 String thing = message.substring(message.indexOf("about ")
                     + "about ".length());
 
-                messages.addAll(bot.getResponses(nick, nick, login, hostname,
+                messages.addAll(javabot.getResponses(nick, nick, login, hostname,
                     thing));
 
                 messages.add(new Message(sender, "I told " + nick + " about "
@@ -77,12 +84,12 @@ public class TellOperation implements BotOperation {
 
         //channel message
 
-        if (bot.userIsOnChannel(nick, channel)) {
+        if (javabot.userIsOnChannel(nick, channel)) {
             String newMessage = message.substring(message.indexOf("about ")
                 + "about ".length());
             System.out.println("newMessage=" + newMessage);
 
-            List responses = bot.getResponses(channel, nick, login, hostname,
+            List responses = javabot.getResponses(channel, nick, login, hostname,
                 newMessage);
 
             int length = responses.size();
@@ -95,7 +102,7 @@ public class TellOperation implements BotOperation {
 
                     String newMessage2 = nick + ", ";
 
-                    String javabotNick = event.getBot().getNick();
+                    String javabotNick = javabot.getNick();
 
                     if (next.isAction())
                         newMessage2 += javabotNick + " ";

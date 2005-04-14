@@ -1,5 +1,7 @@
 package javabot;
 
+import com.rickyclarkson.java.lang.Debug;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -46,7 +48,10 @@ public class PortListener implements Runnable
 				System.out.println(password+"=="+line+"?");
 				
 				if (password.equals(line))
+				{
+					Debug.printDebug("About to exit");
 					System.exit(0);
+				}
 
 				socket.close();
 			}
