@@ -7,16 +7,15 @@ import com.rickyclarkson.java.util.Arrays;
 import com.rickyclarkson.java.util.TypeSafeList;
 import javabot.BotEvent;
 import javabot.Database;
-import javabot.Javabot;
 import javabot.Message;
 
 public class ForgetFactoidOperation implements BotOperation {
    
 	private final Database database;
 
-	public ForgetFactoidOperation(final Database database)
+	public ForgetFactoidOperation(final Database factoidDatabase)
 	{
-		this.database=database;
+        database =factoidDatabase;
 	}
 	
 	public List handleMessage(BotEvent event) {
@@ -25,7 +24,7 @@ public class ForgetFactoidOperation implements BotOperation {
         String message = event.getMessage();
         String sender = event.getSender();
         String[] messageParts = message.split(" ");
-        if(messageParts[0].equals("forget")) {
+        if("forget".equals(messageParts[0])) {
             int length = Array.getLength(messageParts);
             Object keyParts = Arrays.subset(messageParts, 1, length);
             String key = Arrays.toString(keyParts, " ");
@@ -39,7 +38,6 @@ public class ForgetFactoidOperation implements BotOperation {
                     + key + " anyway, " + sender + ".", false));
             }
         }
-	System.out.println("Here");
         return messages;
     }
 

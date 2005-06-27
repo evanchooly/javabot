@@ -14,6 +14,7 @@
 		<fileset dir="${env.JAVA_HOME}/lib" includes="tools.jar"/>
 		<!--.-->
 		
+		<pathelement path="etc"/>
 		<pathelement path="${build}"/>
 	</path>
 
@@ -26,7 +27,9 @@
 	
 	<target name="main" depends="init">
 		<javac destDir="${build}" srcDir="src" classpathref="javabot.cp"
-			debug="true"/>
+			debug="true">
+            <!-- compilerarg line="-Xlint:unchecked"/ -->
+        </javac>
         <antcall target="buildxml"/>
 	</target>
 
@@ -82,4 +85,14 @@
 			<arg value="String"/>
 		</java>
 	</target>
+
+    <target name="make-properties"
+            description="Generates the hibernate and log4j properties files.">
+        <delete file="etc/log4j.properties"/>
+        <filter filtersfile="build.properties"/>
+        <filter filtersfile="build.properties.sample"/>
+        <copy file="etc/merge/log4j.properties" todir="etc"
+              filtering="true" overwrite="true"/>
+    </target>
+
 </project>

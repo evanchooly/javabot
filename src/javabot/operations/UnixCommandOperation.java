@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.TreeSet;
+import java.util.Set;
+
 import com.rickyclarkson.java.util.TypeSafeList;
 import javabot.BotEvent;
 import javabot.Message;
@@ -13,8 +15,8 @@ import javabot.Message;
  * @author ricky_clarkson
  */
 public class UnixCommandOperation implements BotOperation {
-    private TreeSet _commands = new TreeSet();
-    private List _insults = new ArrayList();
+    private Set<String> _commands = new TreeSet<String>();
+    private List<String> _insults = new ArrayList<String>();
     private Random _random;
 
     public UnixCommandOperation() {
@@ -48,12 +50,14 @@ public class UnixCommandOperation implements BotOperation {
     }
 
     /**
-     * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
+     * @see BotOperation#handleMessage(BotEvent)
      */
+    @SuppressWarnings(value = {"unchecked"})
     public List handleMessage(BotEvent event) {
         return new TypeSafeList(new ArrayList(), Message.class);
     }
 
+    @SuppressWarnings(value = {"unchecked"})
     public List handleChannelMessage(BotEvent event) {
         List messages = new TypeSafeList(new ArrayList(), Message.class);
         String message = event.getMessage();
@@ -67,6 +71,6 @@ public class UnixCommandOperation implements BotOperation {
     }
 
     private String getInsult() {
-        return (String)_insults.get(_random.nextInt(_insults.size()));
+        return _insults.get(_random.nextInt(_insults.size()));
     }
 }
