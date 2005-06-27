@@ -58,7 +58,7 @@
         <mkdir dir="${build.report.dir}/junitreport"/>
     </target>
 	
-	<target name="main" depends="init">
+	<target name="main" depends="init, make-properties">
 		<javac destDir="${build.src.dir}" srcDir="${src.dir}" classpathref="javabot.cp"
 			debug="true">
             <!-- compilerarg line="-Xlint:unchecked"/ -->
@@ -156,7 +156,7 @@
 		<java classname="javabot.Killbot" classpathref="javabot.cp" fork="true"/>
 	</target>
 	
-	<target name="run">
+	<target name="run" depends="killbot">
 		<java classname="javabot.Javabot" classpathref="javabot.cp" fork="true" spawn="true"/>
 	</target>
 
