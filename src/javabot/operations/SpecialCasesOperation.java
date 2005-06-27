@@ -28,7 +28,10 @@ public class SpecialCasesOperation implements BotOperation {
 
         String message = event.getMessage();
 
-        if (message.toLowerCase().startsWith("no, ")) {
+	String lowerMessage=message.toLowerCase();
+	
+        if (lowerMessage.startsWith("no, ") || lowerMessage.startsWith("no "))
+	{
             message = message.substring("no, ".length());
 
             String key = message.substring(0, message.indexOf(" is "));
