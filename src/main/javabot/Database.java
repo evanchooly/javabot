@@ -3,6 +3,9 @@ package javabot;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Provides a generic interface to a factoid database.
+ */
 public interface Database {
     boolean hasFactoid(String key);
 
@@ -12,9 +15,7 @@ public interface Database {
 
     String getFactoid(String key);
 
-    Map getMap();
-
     int getNumberOfFactoids();
 
-    Set<String> keys();
+    Map<String, String> getMap();
 }

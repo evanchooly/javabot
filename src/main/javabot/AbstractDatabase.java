@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,20 +13,23 @@ import org.jdom.Element;
 /**
  * Created Jun 26, 2005
  *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
+ * @author <a href="mailto:javabot@cheeseronline.org">Justin Lee</a>
  */
 public abstract class AbstractDatabase implements Database {
     private static Log log = LogFactory.getLog(AbstractDatabase.class);
     private String _htmlFile;
 
     public AbstractDatabase(Element root) {
-        Element factoidsNode = root.getChild("factoids");
-        _htmlFile = factoidsNode.getAttributeValue("htmlfilename");
+        this(root.getChild("factoids").getAttributeValue("htmlfilename"));
+    }
+
+    public AbstractDatabase(String htmlFile) {
+        _htmlFile = htmlFile;
     }
 
     protected void dumpHTML() {
         try {
-            Iterator iterator = keys().iterator();
+            Iterator<String> iterator = keys().iterator();
             PrintWriter writer = new PrintWriter(new FileWriter(_htmlFile));
             writer.println
                 ("<html><body><table border=\"1\"><tr><th>" +
@@ -67,4 +71,6 @@ public abstract class AbstractDatabase implements Database {
             log.error(e.getMessage(), e);
         }
     }
+
+    protected abstract Set<String> keys();
 }

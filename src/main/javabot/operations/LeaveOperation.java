@@ -8,20 +8,23 @@ import javabot.ChannelControl;
 import javabot.Message;
 
 import com.rickyclarkson.java.util.TypeSafeList;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author ricky_clarkson
  */
 public class LeaveOperation implements BotOperation {
-	private final ChannelControl channelControl;
-	
-	public LeaveOperation(final ChannelControl channelControl)
-	{
-		this.channelControl=channelControl;
-	}
-	
+    private final ChannelControl channelControl;
+    private static Log log = LogFactory.getLog(LeaveOperation.class);
+
+    public LeaveOperation(final ChannelControl channelControl)
+    {
+        this.channelControl=channelControl;
+    }
+
     /**
-     * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
+     * @see BotOperation#handleMessage(BotEvent)
      */
     public List handleMessage(BotEvent event) {
         List messages = new TypeSafeList(new ArrayList(), Message.class);
@@ -30,7 +33,7 @@ public class LeaveOperation implements BotOperation {
         final String channel = event.getChannel();
         final String sender = event.getSender();
 
-        if (message.toLowerCase().equals("leave")) {
+        if ("leave".equals(message.toLowerCase())) {
             if (channel.equals(sender)) {
                 messages.add(new Message(channel, "I cannot leave a private "
                     + "message, " + sender + ".", false));
@@ -44,12 +47,12 @@ public class LeaveOperation implements BotOperation {
             new Thread(new Runnable() {
                 public void run() {
                     channelControl.partChannel
-		    	(channel, "I was asked to leave.");
+                (channel, "I was asked to leave.");
 
                     try {
                         Thread.sleep(3600 * 1000);
                     } catch (Exception exception) {
-                        exception.printStackTrace();
+                        log.error(exception.getMessage(), exception);
                     }
 
                     channelControl.joinChannel(channel);
@@ -64,6 +67,6 @@ public class LeaveOperation implements BotOperation {
 
     public List handleChannelMessage(BotEvent event)
     {
-	    	return new TypeSafeList(new ArrayList(),Message.class);
+            return new TypeSafeList(new ArrayList(),Message.class);
     }
 }

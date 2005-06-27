@@ -1,13 +1,25 @@
 <project name="javabot" default="main">
-
 	<property file="build.properties"/>
+
 	<property environment="env"/>
-	<property name="build" location="build"/>
-	<property name="src.zip" value="share/src.zip"/>
-	<property name="src.version" value="1.4"/>
-	
-	<path id="javabot.cp">
-		<fileset dir="lib" includes="*.jar"/>
+
+    <property name="build" location="build"/>
+	<property name="build.src.dir" location="${build}/main"/>
+	<property name="build.test.dir" location="${build}/tests"/>
+	<property name="src.dir" location="src/main"/>
+	<property name="test.src.dir" location="src/tests"/>
+
+    <property name="emma.dir" location="${build}/emma"/>
+    <property name="emma.instr.dir" location="${emma.dir}/instr"/>
+
+    <property name="build.report.dir" location="${build}/reports"/>
+    <property name="junit.report.dir" location="${build.report.dir}/junitreport"/>
+
+    <property name="src.zip" value="share/src.zip"/>
+    <property name="src.version" value="1.5"/>
+
+    <path id="javabot.cp">
+		<fileset dir="lib" includes="**/*.jar, **/*.zip"/>
 		
 		<!-- Note: this is unnecessary if tools.jar is in your classpath
 		by default (i.e. on Mac OS X systems) -->
@@ -15,18 +27,43 @@
 		<!--.-->
 		
 		<pathelement path="etc"/>
-		<pathelement path="${build}"/>
+		<pathelement path="${build.src.dir}"/>
 	</path>
 
-	<uptodate property="docref.uptodate" targetfile="docref.xml"
+    <path id="test.class.path">
+        <dirset dir="${emma.instr.dir}"/>
+        <pathelement path="${build.test.dir}"/>
+        <path refid="javabot.cp"/>
+    </path>
+
+    <path id="build.src.path">
+        <dirset dir="${build.src.dir}"/>
+    </path>
+
+
+    <uptodate property="docref.uptodate" targetfile="docref.xml"
 		srcfile="${env.JAVA_HOME}/${src.zip}"/>
 
 	<target name="init">
-		<mkdir dir="${build}"/>
-	</target>
+        <mkdir dir="build"/>
+        <mkdir dir="${build}/main"/>
+        <mkdir dir="${build}/tests"/>
+        <mkdir dir="src/main"/>
+        <mkdir dir="src/tests"/>
+
+        <mkdir dir="${build}/emma"/>
+        <mkdir dir="${emma.dir}/instr"/>
+
+        <mkdir dir="${build}/reports"/>
+        <mkdir dir="${build.report.dir}/junitreport"/>
+    </target>
 	
 	<target name="main" depends="init">
-		<javac destDir="${build}" srcDir="src" classpathref="javabot.cp"
+		<javac destDir="${build.src.dir}" srcDir="${src.dir}" classpathref="javabot.cp"
+			debug="true">
+            <!-- compilerarg line="-Xlint:unchecked"/ -->
+        </javac>
+		<javac destDir="${build.test.dir}" srcDir="${test.src.dir}" classpathref="javabot.cp"
 			debug="true">
             <!-- compilerarg line="-Xlint:unchecked"/ -->
         </javac>
@@ -40,7 +77,7 @@
 	<target name="rebuild" depends="clean, main"/>
 
 	<target name="test" depends="main">
-		<junit haltonfailure="true" reloading="false">
+		<!-- junit haltonfailure="true" reloading="false">
 			<formatter type="brief" usefile="no"/>
 			<classpath refid="javabot.cp"/>
 			<batchtest>
@@ -48,8 +85,55 @@
 					<include name="tests/*.java"/>
 				</fileset>
 			</batchtest>
-		</junit>
-	</target>
+		</junit -->
+
+        <mkdir dir="${build.report.dir}"/>
+        <mkdir dir="${junit.report.dir}"/>
+        <mkdir dir="${emma.dir}"/>
+        <mkdir dir="${emma.instr.dir}"/>
+
+        <taskdef name="testng"
+                 classname="org.testng.TestNGAntTask"
+                 classpathref="test.class.path"/>
+        <taskdef name="emma" classname="com.vladium.emma.emmaTask"
+                 classpathref="test.class.path"/>
+
+        <emma>
+            <instr instrpathref="build.src.path"
+                   destdir="${emma.instr.dir}"
+                   metadatafile="${emma.dir}/metadata.emma"
+                   merge="true"
+                />
+        </emma>
+
+        <testng classpathref="test.class.path"
+                outputDir="${build.report.dir}"
+                sourcedir="${test.src.dir}"
+                haltOnfailure="false">
+
+            <classfileset dir="${test.src.dir}" includes="**/*.java"/>
+            <jvmarg value="-Demma.coverage.out.file=${emma.dir}/coverage.emma"/>
+            <jvmarg value="-Demma.coverage.out.merge=true"/>
+        </testng>
+
+        <junitreport todir="${junit.report.dir}">
+            <fileset dir="${build.report.dir}">
+                <include name="*.xml"/>
+            </fileset>
+
+            <report todir="${junit.report.dir}"/>
+        </junitreport>
+
+        <emma>
+            <report sourcepath="${src.dir}">
+                <fileset dir="${emma.dir}">
+                    <include name="*.emma"/>
+                </fileset>
+                <txt outfile="${emma.dir}/coverage.txt"/>
+                <html outfile="${emma.dir}/coverage.html"/>
+            </report>
+        </emma>
+    </target>
 
 	<target name="buildxml"  unless="docref.uptodate">
         <unzip src="${env.JAVA_HOME}/${src.zip}" dest="docRefBuild"/>

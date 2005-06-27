@@ -1,18 +1,12 @@
 package javabot;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.rickyclarkson.java.lang.Debug;
 import javabot.operations.AddFactoidOperation;
@@ -54,7 +48,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     private String password;
     private List<String> _channels = new ArrayList<String>();
     private List ignores = new ArrayList();
-    private Database database;
+    private Database _database;
     public static final int PORT_NUMBER = 2346;
 
     Javabot() throws JDOMException, IOException {
@@ -71,7 +65,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         Element root = document.getRootElement();
         String verbosity = root.getAttributeValue("verbose");
         setVerbose("true".equals(verbosity));
-        database = new HashMapDatabase(root);
+        _database = new HashMapDatabase(root);
         loadServerInfo(root);
         loadJavadocInfo(root);
         loadDictInfo(root);
@@ -105,34 +99,34 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                 Class operationClass = Class.forName
                     (node.getAttributeValue("class"));
                 if(AddFactoidOperation.class.equals(operationClass)) {
-                    operations.add(new AddFactoidOperation(database));
+                    operations.add(new AddFactoidOperation(_database));
                 } else if(DictOperation.class.equals(operationClass)) {
                     operations.add(new DictOperation(dictHost));
                 } else if(ForgetFactoidOperation.class.equals(operationClass)) {
-                    operations.add(new ForgetFactoidOperation(database));
+                    operations.add(new ForgetFactoidOperation(_database));
                     Debug.printDebug();
                 } else if(GetFactoidOperation.class.equals(operationClass)) {
-                    operations.add(new GetFactoidOperation(database));
+                    operations.add(new GetFactoidOperation(_database));
                 } else if(GuessOperation.class.equals(operationClass)) {
-                    operations.add(new GuessOperation(database));
+                    operations.add(new GuessOperation(_database));
                 } else if(JavadocOperation.class.equals(operationClass)) {
                     operations.add(new JavadocOperation(javadocSources, javadocBaseUrl));
                 } else if(KarmaChangeOperation.class.equals(operationClass)) {
-                    operations.add(new KarmaChangeOperation(database));
+                    operations.add(new KarmaChangeOperation(_database));
                 } else if(KarmaReadOperation.class.equals(operationClass)) {
-                    operations.add(new KarmaReadOperation(database));
+                    operations.add(new KarmaReadOperation(_database));
                 } else if(LeaveOperation.class.equals(operationClass)) {
                     operations.add(new LeaveOperation(this));
                 } else if(ListFactoidsOperation.class.equals(operationClass)) {
-                    operations.add(new ListFactoidsOperation(database));
+                    operations.add(new ListFactoidsOperation(_database));
                 } else if(LiteralOperation.class.equals(operationClass)) {
-                    operations.add(new LiteralOperation(database));
+                    operations.add(new LiteralOperation(_database));
                 } else if(QuitOperation.class.equals(operationClass)) {
                     operations.add(new QuitOperation(getNickPassword()));
                 } else if(SpecialCasesOperation.class.equals(operationClass)) {
                     operations.add(new SpecialCasesOperation(this));
                 } else if(StatsOperation.class.equals(operationClass)) {
-                    operations.add(new StatsOperation(database));
+                    operations.add(new StatsOperation(_database));
                 } else if(TellOperation.class.equals(operationClass)) {
                     operations.add(new TellOperation(getNick(), this));
                 } else {
@@ -226,7 +220,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                 }
                 connected = true;
             } catch(Exception exception) {
-                exception.printStackTrace();
+                log.error(exception.getMessage(), exception);
             }
             sleep(1000);
         }
