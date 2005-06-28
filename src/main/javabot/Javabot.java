@@ -19,7 +19,6 @@ import javabot.operations.JavadocOperation;
 import javabot.operations.KarmaChangeOperation;
 import javabot.operations.KarmaReadOperation;
 import javabot.operations.LeaveOperation;
-import javabot.operations.ListFactoidsOperation;
 import javabot.operations.LiteralOperation;
 import javabot.operations.QuitOperation;
 import javabot.operations.SpecialCasesOperation;
@@ -50,6 +49,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     private List ignores = new ArrayList();
     private Database _database;
     public static final int PORT_NUMBER = 2346;
+    public static final String JAVABOT_PROPERTIES = "javabot.properties";
 
     Javabot() throws JDOMException, IOException {
         setName("javabot");
@@ -65,7 +65,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         Element root = document.getRootElement();
         String verbosity = root.getAttributeValue("verbose");
         setVerbose("true".equals(verbosity));
-        _database = new HashMapDatabase(root);
+        _database = new JDBCDatabase(root);
         loadServerInfo(root);
         loadJavadocInfo(root);
         loadDictInfo(root);
@@ -117,8 +117,6 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                     operations.add(new KarmaReadOperation(_database));
                 } else if(LeaveOperation.class.equals(operationClass)) {
                     operations.add(new LeaveOperation(this));
-                } else if(ListFactoidsOperation.class.equals(operationClass)) {
-                    operations.add(new ListFactoidsOperation(_database));
                 } else if(LiteralOperation.class.equals(operationClass)) {
                     operations.add(new LiteralOperation(_database));
                 } else if(QuitOperation.class.equals(operationClass)) {

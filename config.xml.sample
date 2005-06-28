@@ -64,7 +64,6 @@
 	<operation class="javabot.operations.KarmaChangeOperation"/>
 	<operation class="javabot.operations.KarmaReadOperation"/>
 	<operation class="javabot.operations.LeaveOperation"/>
-	<operation class="javabot.operations.ListFactoidsOperation"/>
 	<operation class="javabot.operations.LiteralOperation"/>
 	<operation class="javabot.operations.NickometerOperation"/>
 	<operation class="javabot.operations.QuitOperation"/>

@@ -2,6 +2,7 @@ package javabot.operations;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.rickyclarkson.java.util.Arrays;
 import com.rickyclarkson.java.util.TypeSafeList;
 import javabot.BotEvent;
@@ -9,23 +10,20 @@ import javabot.Database;
 import javabot.Message;
 
 public class AddFactoidOperation implements BotOperation {
-    
-	private final Database database;
-	
-	public AddFactoidOperation(final Database database)
-	{
-		this.database=database;
-	}
-	
-	public List handleMessage(BotEvent event) {
-        List messages = new TypeSafeList(new ArrayList(), Message.class);
+    private final Database database;
+
+    public AddFactoidOperation(final Database factoidDatabase) {
+        database = factoidDatabase;
+    }
+
+    public List<Message> handleMessage(BotEvent event) {
+        List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();
         String channel = event.getChannel();
         String sender = event.getSender();
         String[] messageParts = message.split(" ");
         int partWithIs = Arrays.search(messageParts, "is");
-        
-	if(partWithIs != -1) {
+        if(partWithIs != -1) {
             Object keyParts = Arrays.subset(messageParts, 0, partWithIs);
             String key = Arrays.toString(keyParts, " ");
             key = key.toLowerCase();
@@ -36,13 +34,12 @@ public class AddFactoidOperation implements BotOperation {
             String value = Arrays.toString(Arrays.subset(messageParts,
                 partWithIs + 1, messageParts.length), " ");
             if(key.trim().length() == 0) {
-					 messages.add(new Message(channel, "Invalid factoid name",
-						 false));
+                messages.add(new Message(channel, "Invalid factoid name", false));
                 return messages;
             }
             if(value.trim().length() == 0) {
                 messages.add(new Message(channel, "Invalid factoid value",
-						 false));
+                    false));
                 return messages;
             }
             if(database.hasFactoid(key)) {
@@ -59,7 +56,7 @@ public class AddFactoidOperation implements BotOperation {
         return messages;
     }
 
-    public List handleChannelMessage(BotEvent event) {
-        return new TypeSafeList(new ArrayList(), Message.class);
+    public List<Message> handleChannelMessage(BotEvent event) {
+        return new ArrayList<Message>();
     }
 }

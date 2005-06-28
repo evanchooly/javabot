@@ -58,7 +58,7 @@
         <mkdir dir="${build.report.dir}/junitreport"/>
     </target>
 	
-	<target name="main" depends="init, make-properties">
+	<target name="main" depends="init, make-properties, validate-config">
 		<javac destDir="${build.src.dir}" srcDir="${src.dir}" classpathref="javabot.cp"
 			debug="true">
             <!-- compilerarg line="-Xlint:unchecked"/ -->
@@ -77,39 +77,71 @@
 	<target name="rebuild" depends="clean, main"/>
 
 	<target name="test" depends="main">
-		<!-- junit haltonfailure="true" reloading="false">
-			<formatter type="brief" usefile="no"/>
-			<classpath refid="javabot.cp"/>
-			<batchtest>
-				<fileset dir="src">
-					<include name="tests/*.java"/>
-				</fileset>
-			</batchtest>
-		</junit -->
+		<antcall target="test-with-xml"/>
+		<antcall target="test-all"/>
+	</target>
 
+	<target name="test-with-xml" depends="main" if="test.xml">
         <mkdir dir="${build.report.dir}"/>
         <mkdir dir="${junit.report.dir}"/>
         <mkdir dir="${emma.dir}"/>
         <mkdir dir="${emma.instr.dir}"/>
 
-        <taskdef name="testng"
-                 classname="org.testng.TestNGAntTask"
-                 classpathref="test.class.path"/>
-        <taskdef name="emma" classname="com.vladium.emma.emmaTask"
-                 classpathref="test.class.path"/>
+		  <taskdef name="testng" classname="org.testng.TestNGAntTask"
+			  classpathref="test.class.path"/>
+		  <taskdef name="emma" classname="com.vladium.emma.emmaTask"
+			  classpathref="test.class.path"/>
 
         <emma>
-            <instr instrpathref="build.src.path"
-                   destdir="${emma.instr.dir}"
-                   metadatafile="${emma.dir}/metadata.emma"
-                   merge="true"
-                />
+				<instr instrpathref="build.src.path" destdir="${emma.instr.dir}"
+					metadatafile="${emma.dir}/metadata.emma" merge="true" />
         </emma>
 
-        <testng classpathref="test.class.path"
-                outputDir="${build.report.dir}"
-                sourcedir="${test.src.dir}"
-                haltOnfailure="false">
+		  <testng classpathref="test.class.path" outputDir="${build.report.dir}"
+			  sourcedir="${test.src.dir}" haltOnfailure="false">
+
+				<xmlfileset dir="etc" includes="${test.xml}"/>
+            <jvmarg value="-Demma.coverage.out.file=${emma.dir}/coverage.emma"/>
+            <jvmarg value="-Demma.coverage.out.merge=true"/>
+        </testng>
+
+        <junitreport todir="${junit.report.dir}">
+            <fileset dir="${build.report.dir}">
+                <include name="*.xml"/>
+            </fileset>
+
+            <report todir="${junit.report.dir}"/>
+        </junitreport>
+
+        <emma>
+            <report sourcepath="${src.dir}">
+                <fileset dir="${emma.dir}">
+                    <include name="*.emma"/>
+                </fileset>
+                <txt outfile="${emma.dir}/coverage.txt"/>
+                <html outfile="${emma.dir}/coverage.html"/>
+            </report>
+        </emma>
+    </target>
+
+	<target name="test-all" depends="main" unless="test.xml">
+        <mkdir dir="${build.report.dir}"/>
+        <mkdir dir="${junit.report.dir}"/>
+        <mkdir dir="${emma.dir}"/>
+        <mkdir dir="${emma.instr.dir}"/>
+
+		  <taskdef name="testng" classname="org.testng.TestNGAntTask"
+			  classpathref="test.class.path"/>
+		  <taskdef name="emma" classname="com.vladium.emma.emmaTask"
+			  classpathref="test.class.path"/>
+
+        <emma>
+				<instr instrpathref="build.src.path" destdir="${emma.instr.dir}"
+					metadatafile="${emma.dir}/metadata.emma" merge="true" />
+        </emma>
+
+		  <testng classpathref="test.class.path" outputDir="${build.report.dir}"
+			  sourcedir="${test.src.dir}" haltOnfailure="false">
 
             <classfileset dir="${test.src.dir}" includes="**/*.java"/>
             <jvmarg value="-Demma.coverage.out.file=${emma.dir}/coverage.emma"/>
@@ -137,14 +169,9 @@
 
 	<target name="buildxml"  unless="docref.uptodate">
         <unzip src="${env.JAVA_HOME}/${src.zip}" dest="docRefBuild"/>
-		<javadoc
-			sourcepath="docRefBuild"
-			packagenames="*"
-			excludepackagenames="com.sun.*, org.apache.*"
-			maxmemory="384m"
-			source="${src.version}"
-			docletpathref="javabot.cp"
-		>
+		<javadoc sourcepath="docRefBuild" packagenames="*"
+			excludepackagenames="com.sun.*, org.apache.*" maxmemory="384m"
+			source="${src.version}" docletpathref="javabot.cp" >
 			<doclet name="javabot.javadoc.StructureDoclet">
 				<param name="-x" value="docref.xml"/>
 			</doclet>
@@ -152,12 +179,13 @@
         <delete dir="docRefBuild"/>
 	</target>
 
-	<target name="killbot" depends="main">
+	<target name="killbot" depends="main" description="Kills any running bot">
 		<java classname="javabot.Killbot" classpathref="javabot.cp" fork="true"/>
 	</target>
 	
-	<target name="run" depends="killbot">
-		<java classname="javabot.Javabot" classpathref="javabot.cp" fork="true" spawn="true"/>
+	<target name="run" depends="killbot" description="Starts the bot">
+		<java classname="javabot.Javabot" classpathref="javabot.cp" fork="true"
+			spawn="true"/>
 	</target>
 
 	<target name="javadocs">
@@ -165,18 +193,24 @@
 		
 		<echo message="$blah"/>
 
-		<java classname="javabot.IndependentJavadocViewer" classpathref="javabot.cp" fork="true">
+		<java classname="javabot.IndependentJavadocViewer"
+			classpathref="javabot.cp" fork="true">
 			<arg value="String"/>
 		</java>
 	</target>
 
     <target name="make-properties"
-            description="Generates the hibernate and log4j properties files.">
-        <delete file="etc/log4j.properties"/>
+            description="Generates the javabot and log4j properties files.">
         <filter filtersfile="build.properties"/>
         <filter filtersfile="build.properties.sample"/>
-        <copy file="etc/merge/log4j.properties" todir="etc"
-              filtering="true" overwrite="true"/>
+		  <copy file="etc/merge/log4j.properties" todir="etc" filtering="true"
+			  overwrite="true"/>
+		  <copy file="etc/merge/javabot.properties" todir="etc" filtering="true"
+			  overwrite="true"/>
     </target>
 
+    <target name="validate-config" description="Validates the sample and active config files">
+        <xmlvalidate file="config.xml"/>
+        <xmlvalidate file="config.xml.sample"/>
+    </target>
 </project>

@@ -2,6 +2,7 @@ package javabot.operations;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.rickyclarkson.java.util.TypeSafeList;
 import javabot.BotEvent;
 import javabot.Database;
@@ -11,15 +12,14 @@ import javabot.Message;
  * @author ricky_clarkson
  */
 public class KarmaChangeOperation implements BotOperation {
+    private final Database database;
 
-	private final Database database;
-	
-	public KarmaChangeOperation(final Database database)
-	{
-		this.database=database;
-	}
+    public KarmaChangeOperation(final Database factoidDatabase) {
+        database = factoidDatabase;
+    }
+
     /**
-     * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
+     * @see BotOperation#handleMessage(BotEvent)
      */
     public List handleMessage(BotEvent event) {
         List messages = new TypeSafeList(new ArrayList(), Message.class);
@@ -33,18 +33,14 @@ public class KarmaChangeOperation implements BotOperation {
             String nick = message.substring(0, message.length() - 2);
             nick = nick.toLowerCase();
             if(nick.equals(sender.toLowerCase())) {
-                messages.add
-                    (new Message
-                        (channel,
-                            "Changing one's own karma" +
-                    " is not permitted.",
-                            false));
+                messages.add(new Message(channel,"Changing one's own karma" +
+                    " is not permitted.", false));
                 return messages;
             }
             int karma;
             try {
-                karma = Integer.parseInt
-                    (database.getFactoid("karma " + nick));
+                karma = Integer.parseInt(database.getFactoid(
+                    "karma " + nick).getValue());
             } catch(Exception exception) {
                 karma = 0;
             }
@@ -55,14 +51,9 @@ public class KarmaChangeOperation implements BotOperation {
             }
             database.addFactoid(sender, "karma " + nick, karma + "");
             KarmaReadOperation karmaRead = new KarmaReadOperation(database);
-            messages.addAll
-                (karmaRead.handleMessage
-                (new BotEvent
-                    (   event.getChannel(),
-                        event.getSender(),
-                        event.getLogin(),
-                        event.getHostname(),
-                        "karma " + nick)));
+            messages.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(),
+                event.getSender(),event.getLogin(),event.getHostname(),
+                "karma " + nick)));
         }
         return messages;
     }

@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javabot.Database;
-import javabot.HashMapDatabase;
+import javabot.JDBCDatabase;
+import javabot.Factoid;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
@@ -19,15 +20,13 @@ import org.testng.annotations.Test;
  * @author <a href="mailto:javabot@cheeseronline.org">Justin Lee</a>
  */
 public class FactoidsTests {
-    public static final String HTML_FILE = "htmlfile.log";
     public static final String FACTOID_FILENAME = "factoids.log";
     public static final String CHANGE_LOG = "factoidChange.log";
     private static Log log = LogFactory.getLog(FactoidsTests.class);
 
-    @Configuration(beforeTestMethod = true, afterTestMethod = true)
+    @Configuration(beforeTestMethod = true)
     public void clearLogs() {
-        log.debug("Deleting logs");
-        new File(HTML_FILE).delete();
+        new File(JDBCDatabase.HTML_FILE).delete();
         new File(FACTOID_FILENAME).delete();
         new File(CHANGE_LOG).delete();
     }
@@ -37,38 +36,41 @@ public class FactoidsTests {
         for(Database database : getDatabases()) {
             String key = "test factoid";
             String value = "test value";
+            int count = database.getNumberOfFactoids();
             database.addFactoid("cheeser", key, value);
-            Assert.assertEquals(value, database.getFactoid(key),
+            Factoid factoid = database.getFactoid(key);
+            Assert.assertEquals(value, factoid.getValue(),
                 database.getClass().getName() + ":  The factoid value should have matched");
-            Assert.assertNotSame("test value2", database.getFactoid(key),
+            Assert.assertNotSame("test value2", factoid.getValue(),
                 database.getClass().getName() + ":  The factoid value should have matched");
-            Assert.assertEquals(1, database.getNumberOfFactoids(), "Should have only 1 factoid");
+            Assert.assertEquals(count + 1, database.getNumberOfFactoids(), "Should have only 1 more factoid");
         }
     }
 
-    @Test(groups = {"operations"}, dependsOnMethods = {"addFactoid"})
+    @Test(groups = {"operations"}, dependsOnMethods = {"testOperation"})
     public void removeFactoid() {
         for(Database database : getDatabases()) {
             String key = "remove factoid";
             String value = "remove value";
             database.addFactoid("cheeser", key, value);
+            int count = database.getNumberOfFactoids();
             database.forgetFactoid("cheeser", key);
             Assert.assertNull(database.getFactoid(key),
                 database.getClass().getName() + ":  The factoid value should be null");
-            Assert.assertFalse(database.hasFactoid(key));
-            Assert.assertEquals(0, database.getNumberOfFactoids(), "Should have 0 factoids");
+            Assert.assertFalse(database.hasFactoid(key),
+                database.getClass().getName() + ":  The factoid not be present");
+            Assert.assertEquals(count - 1, database.getNumberOfFactoids(),
+                database.getClass().getName() + ":  Should have 1 fewer factoids");
         }
     }
 
     public List<Database> getDatabases() {
         List<Database> databases = new ArrayList<Database>();
         try {
-            databases.add(new HashMapDatabase(FactoidsTests.HTML_FILE,
-                FactoidsTests.FACTOID_FILENAME,
-                FactoidsTests.CHANGE_LOG));
+            databases.add(new JDBCDatabase(JDBCDatabase.HTML_FILE));
         } catch(IOException e) {
             log.error(e.getMessage(), e);
-            Assert.fail("Could not create HashMapDatabase");
+            Assert.fail("Could not create database");
         }
         return databases;
     }

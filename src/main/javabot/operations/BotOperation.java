@@ -2,6 +2,7 @@ package javabot.operations;
 
 import java.util.List;
 import javabot.BotEvent;
+import javabot.Message;
 
 /**
  * @author ricky_clarkson
@@ -13,7 +14,7 @@ public interface BotOperation {
      * @param event
      * @return
      */
-    public List handleMessage(BotEvent event);
+    List<Message> handleMessage(BotEvent event);
 
-    public List handleChannelMessage(BotEvent event);
+    List<Message> handleChannelMessage(BotEvent event);
 }

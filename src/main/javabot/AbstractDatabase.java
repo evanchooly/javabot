@@ -4,7 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,42 +27,28 @@ public abstract class AbstractDatabase implements Database {
         _htmlFile = htmlFile;
     }
 
+    public AbstractDatabase() {
+    }
+
     protected void dumpHTML() {
         try {
-            Iterator<String> iterator = keys().iterator();
+            List<Factoid> factoids = getFactoids();
             PrintWriter writer = new PrintWriter(new FileWriter(_htmlFile));
-            writer.println
-                ("<html><body><table border=\"1\"><tr><th>" +
-                    "factoid</th><th>value</th></tr>");
-            while(iterator.hasNext()) {
-                String factoid = (String)iterator.next();
-                String value = getFactoid(factoid);
-                value = value.replaceAll("<", "&lt;");
-                value = value.replaceAll(">", "&gt;");
-                StringBuilder builder = new StringBuilder(value);
-                int startHttp = 0;
-                do {
-                    startHttp = value.indexOf("http://", startHttp);
-                    if(startHttp != -1) {
-                        int endHttp = value.indexOf(" ", startHttp);
-                        if(endHttp == -1) {
-                            endHttp = value.length();
-                        }
-                        builder.append(value.substring(0, startHttp));
-                        builder.append("<a href=\"");
-                        builder.append(value.substring(startHttp, endHttp));
-                        builder.append("\">");
-                        builder.append(value.substring(startHttp, endHttp));
-                        builder.append("</a>");
-                        builder.append(value.substring(endHttp));
-                        startHttp = builder.indexOf("</a>", startHttp);
-                    }
-                } while(startHttp != -1);
-                builder.insert(0,"<tr><td>");
-                builder.insert(0,factoid);
-                builder.insert(0,"</td><td>");
-                builder.insert(0,"</td></tr>");
-                writer.println(builder.toString());
+            writer.println("<html><body><table border=\"1\" width=\"100%\"><tr>"
+                + "<th width=\"5%\">id</th><th width=\"10%\">factoid</th>"
+                + "<th width=\"75%\">value</th><th>user</th></tr>\n");
+            for(Factoid factoid : factoids) {
+
+                StringBuilder html = new StringBuilder("<tr><td>");
+                html.append(factoid.getID());
+                html.append("</td><td>");
+                html.append(factoid.getName());
+                html.append("</td><td>");
+                html.append(htmlize(factoid.getValue()));
+                html.append("</td><td>");
+                html.append(factoid.getUser());
+                html.append("</td></tr>\n");
+                writer.println(html);
             }
             writer.println("</table></body></html>");
             writer.flush();
@@ -72,5 +58,26 @@ public abstract class AbstractDatabase implements Database {
         }
     }
 
-    protected abstract Set<String> keys();
+    protected String htmlize(final String value) {
+        String newValue = value.replaceAll("<", "&lt;");
+        newValue = newValue.replaceAll(">", "&gt;");
+        int startHttp = newValue.indexOf("http://");
+        while(startHttp != -1) {
+            StringBuilder builder = new StringBuilder(newValue.substring(0, startHttp));
+            int endHttp = newValue.indexOf(" ", startHttp);
+            if(endHttp == -1) {
+                endHttp = newValue.length();
+            }
+            String link = newValue.substring(startHttp, endHttp);
+            builder.append("<a href=\"");
+            builder.append(link);
+            builder.append("\" target=\"_blank\">");
+            builder.append(link);
+            builder.append("</a>");
+            builder.append(newValue.substring(endHttp));
+            newValue = builder.toString();
+            startHttp = newValue.indexOf("http://", link.length() + startHttp + 30);
+        }
+        return newValue;
+    }
 }
