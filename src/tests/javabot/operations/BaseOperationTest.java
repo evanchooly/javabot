@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import javabot.BotEvent;
 import javabot.Message;
+import javabot.ApplicationException;
 import org.testng.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,14 +13,21 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Created Jun 28, 2005
  *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
+ * @author <a href="mailto:javabot@cheeseronline.org">Justin Lee</a>
  */
-public abstract class BaseOperationTest {
+public class BaseOperationTest {
     protected static final String SENDER = "cheeser";
     private static final String CHANNEL = "#test";
     private static final String LOGIN = "";
     private static final String HOSTNAME = "localhost";
     private static Log log = LogFactory.getLog(BaseOperationTest.class);
+
+    public BaseOperationTest() {
+    }
+
+    public BaseOperationTest(String name) {
+        log.debug("here?");
+    }
 
     protected void testOperation(String message, String response, String errorMessage) {
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, message);
@@ -30,5 +38,7 @@ public abstract class BaseOperationTest {
         Assert.assertEquals(response, result.getMessage(), errorMessage);
     }
 
-    protected abstract BotOperation getOperation();
+    protected BotOperation getOperation() {
+        throw new ApplicationException("Implement this method on " + getClass().getName());
+    }
 }

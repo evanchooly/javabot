@@ -97,8 +97,8 @@
 					metadatafile="${emma.dir}/metadata.emma" merge="true" />
         </emma>
 
-		  <testng classpathref="test.class.path" outputDir="${build.report.dir}"
-			  sourcedir="${test.src.dir}" haltOnfailure="false">
+        <testng classpathref="test.class.path" outputDir="${build.report.dir}"
+            sourcedir="${test.src.dir}" haltOnfailure="false" fork="true">
 
 				<xmlfileset dir="etc" includes="${test.xml}"/>
             <jvmarg value="-Demma.coverage.out.file=${emma.dir}/coverage.emma"/>

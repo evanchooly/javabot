@@ -19,16 +19,24 @@ import org.testng.annotations.Test;
 public class AddFactoidOperationTest extends BaseOperationTest {
     private static Log log = LogFactory.getLog(AddFactoidOperationTest.class);
 
+    public AddFactoidOperationTest() {
+        super();
+    }
+
+    public AddFactoidOperationTest(String name) {
+        super(name);
+    }
+
     public void factoidAdd() throws IOException {
         AddFactoidOperation operation = getOperation();
         String response = "Okay, " + SENDER + ".";
         String errorMessage = "Should have added the factoid";
-        testOperation("test pong is pong", response, errorMessage);
-        testOperation("ping $1 is <action>sends some radar to $1, "
+        testOperation(System.currentTimeMillis() + "test pong is pong", response, errorMessage);
+        testOperation(System.currentTimeMillis() + "ping $1 is <action>sends some radar to $1, "
             + "awaits a response then forgets how long it took", response,
             errorMessage);
-        testOperation("what? is a question", response, errorMessage);
-        testOperation("what up? is <see>what?", response, errorMessage);
+        testOperation(System.currentTimeMillis() + "what? is a question", response, errorMessage);
+        testOperation(System.currentTimeMillis() + "what up? is <see>what?", response, errorMessage);
     }
 
     @Test(dependsOnMethods = {"factoidAdd"})

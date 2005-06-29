@@ -47,7 +47,7 @@ public class FactoidsTests {
         }
     }
 
-    @Test(groups = {"operations"}, dependsOnMethods = {"testOperation"})
+    @Test(groups = {"operations"}, dependsOnMethods = {"addFactoid"})
     public void removeFactoid() {
         for(Database database : getDatabases()) {
             String key = "remove factoid";
