@@ -38,6 +38,7 @@ public class PortListener implements Runnable {
                 BufferedReader reader =
                     new BufferedReader(streamReader);
                 String line = reader.readLine();
+                log.debug(password);
                 if(password.equals(line)) {
                     Debug.printDebug("About to exit");
                     _quit = true;
