@@ -16,9 +16,9 @@ public class SayOperation implements BotOperation
 	/**
 	 * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
 	 */
-	public List handleMessage(BotEvent event)
+	public List<Message> handleMessage(BotEvent event)
 	{
-		List messages=new TypeSafeList(new ArrayList(),Message.class);
+		List<Message> messages=new ArrayList<Message>();
 		
 		String message=event.getMessage();
 		String channel=event.getChannel();
@@ -37,8 +37,8 @@ public class SayOperation implements BotOperation
 		return messages;
 	}
 
-	public List handleChannelMessage(BotEvent event)
+	public List<Message> handleChannelMessage(BotEvent event)
 	{
-			return new TypeSafeList(new ArrayList(),Message.class);
+			return new ArrayList<Message>();
 	}
 }

@@ -226,10 +226,17 @@ public class JDBCDatabase extends AbstractDatabase {
         ObjectInputStream ois = new ObjectInputStream(fis);
         Map<String, String> map = new TreeMap<String, String>();
         try {
-            map = (Map)ois.readObject();
+	    map = new TreeMap<String,String>();
+	    
+	    for (final Object object: ((Map)ois.readObject()).entrySet())
+	    {
+		    final Map.Entry entry=(Map.Entry)object;
+		    map.put((String)entry.getKey(),(String)entry.getValue());
+	    }
+	    
             ois.close();
             fis.close();
-            Set keySet = new HashSet(map.keySet());
+            Set<String> keySet = new HashSet<String>(map.keySet());
             Iterator iterator = keySet.iterator();
             while(iterator.hasNext()) {
                 String next = (String)iterator.next();

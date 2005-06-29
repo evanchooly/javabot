@@ -7,14 +7,14 @@ import java.util.LinkedList;
 
 public class ListMap
 {
-	private Map map=new HashMap();
+	private Map<Object,List<Object>> map=new HashMap<Object,List<Object>>();
 
 	public void put(Object key,Object value)
 	{
-		List l=(List)map.get(key);
+		List<Object> l=map.get(key);
 		
 		if (l==null)
-			l = new LinkedList();
+			l = new LinkedList<Object>();
 		
 		l.add(value);
 		map.put(key,l);

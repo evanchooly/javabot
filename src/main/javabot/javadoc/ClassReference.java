@@ -16,7 +16,7 @@ public class ClassReference
 	private String packageName;
 	private String className;
 	private String superClassQualified;
-	private List methods;
+	private List<MethodReference> methods;
 
 	public ClassReference(ClassDoc doc)
 	{
@@ -29,7 +29,8 @@ public class ClassReference
 		MethodDoc[] methodDocs=doc.methods();
 		ConstructorDoc[] conDocs = doc.constructors();
 		
-		this.methods=new ArrayList(methodDocs.length + conDocs.length);
+		this.methods=new ArrayList<MethodReference>
+			(methodDocs.length + conDocs.length);
 		
 		for (int i=0;i<methodDocs.length;i++)
 		{
@@ -58,7 +59,7 @@ public class ClassReference
 			superClassQualified=superClassAttribute.getValue();
 
 		List children=element.getChildren("Method");
-		methods=new ArrayList(children.size());
+		methods=new ArrayList<MethodReference>(children.size());
 		
 		for (int i=0;i<children.size();i++)
 		{
@@ -161,9 +162,10 @@ public class ClassReference
 		return element;
 	}
 
-	private static class MethodComparator implements Comparator
+	private static class MethodComparator implements 
+		Comparator<MethodReference>
 	{
-		public int compare(Object o1,Object o2)
+		public int compare(MethodReference o1,MethodReference o2)
 		{
 			MethodReference one=(MethodReference)o1;
 			MethodReference two=(MethodReference)o2;

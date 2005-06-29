@@ -19,7 +19,9 @@ public class Googler {
     private static Log log = LogFactory.getLog(Googler.class);
     private static final String TOKEN = "<p class=g><a href=";
     private static final String SPELLING_TOKEN = "<font color=cc0000 class=p>Did you mean: </font><a href=";
-    private List searchResults = new TypeSafeList(new ArrayList(), Result.class);
+    
+    private List<Result> searchResults=new ArrayList<Result>();
+
     private Socket socket;
     private String correctSpelling;
     private boolean foundResults;
@@ -242,7 +244,7 @@ public class Googler {
      */
     public void resetVars() {
         correctSpelling = null;
-        searchResults = new ArrayList();
+        searchResults = new ArrayList<Result>();
         currentIndex = 0;
         foundResults = false;
     }

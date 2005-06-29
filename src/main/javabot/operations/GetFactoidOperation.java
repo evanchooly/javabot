@@ -18,9 +18,9 @@ public class GetFactoidOperation implements BotOperation {
         database = botDatabase;
     }
 
-    public List handleMessage(BotEvent event) {
-        List messages = null;
-        messages = new TypeSafeList(new ArrayList(), Message.class);
+    public List<Message> handleMessage(BotEvent event) {
+        List<Message> messages = null;
+        messages = new ArrayList< Message>();
         try {
             String channel = event.getChannel();
             String message = event.getMessage();
@@ -85,7 +85,7 @@ public class GetFactoidOperation implements BotOperation {
                     + message, false));
                 return messages;
             }
-            List guessed = new GuessOperation(database).handleMessage(new BotEvent(
+            List<Message> guessed = new GuessOperation(database).handleMessage(new BotEvent(
                 event.getChannel(), event.getSender(), event.getLogin(),
                 event.getHostname(), "guess " + message));
             Message guessedMessage = (Message)guessed.get(0);
@@ -101,7 +101,7 @@ public class GetFactoidOperation implements BotOperation {
         return messages;
     }
 
-    public List handleChannelMessage(BotEvent event) {
-        return new TypeSafeList(new ArrayList(), Message.class);
+    public List<Message> handleChannelMessage(BotEvent event) {
+        return new ArrayList< Message>();
     }
 }

@@ -26,9 +26,8 @@ public class TellOperation implements BotOperation {
     /**
      * @see BotOperation#handleMessage(BotEvent)
      */
-    @SuppressWarnings(value = {"unchecked"})
-    public List handleMessage(BotEvent event) {
-        List messages = new TypeSafeList(new ArrayList(), Message.class);
+    public List<Message> handleMessage(BotEvent event) {
+        List<Message> messages = new ArrayList< Message>();
         String message = event.getMessage();
         String channel = event.getChannel();
         String login = event.getLogin();
@@ -79,7 +78,7 @@ public class TellOperation implements BotOperation {
             String newMessage = message.substring(message.indexOf("about ")
                 + "about ".length());
             log.debug("newMessage=" + newMessage);
-            List responses = javabot.getResponses(channel, nick, login, hostname,
+            List<Message> responses = javabot.getResponses(channel, nick, login, hostname,
                 newMessage);
             int length = responses.size();
             for(int a = 0; a < length; a++) {
@@ -105,7 +104,7 @@ public class TellOperation implements BotOperation {
         return messages;
     }
 
-    public List handleChannelMessage(BotEvent event) {
-        return new TypeSafeList(new ArrayList(), Message.class);
+    public List<Message> handleChannelMessage(BotEvent event) {
+        return new ArrayList< Message>();
     }
 }

@@ -35,7 +35,10 @@ import org.jibble.pircbot.User;
 
 public class Javabot extends PircBot implements ChannelControl, Responder {
     private static Log log = LogFactory.getLog(Javabot.class);
-    private Map channelPreviousMessages = new HashMap();
+    
+    private final Map<String,String> channelPreviousMessages=
+	    new HashMap<String,String>();
+
     private List<BotOperation> operations;
     private String host;
     private String dictHost;
@@ -46,7 +49,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     private int authWait;
     private String password;
     private List<String> _channels = new ArrayList<String>();
-    private List ignores = new ArrayList();
+    private List<String> ignores = new ArrayList<String>();
     private Database _database;
     public static final int PORT_NUMBER = 2346;
     public static final String JAVABOT_PROPERTIES = "javabot.properties";
@@ -78,8 +81,12 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     }
 
     private void loadIgnoreInfo(Element root) {
-        List ignoreNodes = root.getChildren("ignore");
-        Iterator iterator = ignoreNodes.iterator();
+        final List<Element> ignoreNodes = new ArrayList<Element>();
+	
+	for (final Object element: root.getChildren("ignore"))
+		ignoreNodes.add((Element)element);
+	
+        Iterator<Element> iterator = ignoreNodes.iterator();
         while(iterator.hasNext()) {
             Element node = (Element)iterator.next();
             ignores.add(node.getAttributeValue("name"));
@@ -241,10 +248,10 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         }
     }
 
-    public List getResponses(String channel, String sender, String login, String hostname,
+    public List<Message> getResponses(String channel, String sender, String login, String hostname,
         String message) {
         for(BotOperation operation : operations) {
-            List messages = operation.handleMessage(new BotEvent(channel, sender, login,
+            List<Message> messages = operation.handleMessage(new BotEvent(channel, sender, login,
                 hostname, message));
             if(messages.size() != 0) {
                 return messages;

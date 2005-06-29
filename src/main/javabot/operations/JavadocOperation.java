@@ -29,8 +29,8 @@ public class JavadocOperation implements BotOperation {
     /**
      * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
      */
-    public List handleMessage(BotEvent event) {
-        List messages = new TypeSafeList(new ArrayList(), Message.class);
+    public List<Message> handleMessage(BotEvent event) {
+        List<Message> messages = new ArrayList< Message>();
         String message = event.getMessage();
         if(message.toLowerCase().startsWith("javadoc ")) {
             if(javadocParser == null) {
@@ -68,8 +68,8 @@ public class JavadocOperation implements BotOperation {
         return messages;
     }
 
-    public List handleChannelMessage(BotEvent event)
+    public List<Message> handleChannelMessage(BotEvent event)
     {
-	    	return new TypeSafeList(new ArrayList(),Message.class);
+	    	return new ArrayList<Message>();
     }
 }

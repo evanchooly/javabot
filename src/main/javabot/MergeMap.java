@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,7 +43,15 @@ public class MergeMap {
         }
         FileInputStream fis = new FileInputStream(input1);
         ObjectInputStream ois = new ObjectInputStream(fis);
-        HashMap map1 = (HashMap)ois.readObject();
+        HashMap<Object,Object> map1 = new HashMap<Object,Object>();
+
+	for (final Object object: ((Map)ois.readObject()).entrySet())
+	{
+		final Map.Entry entry=(Map.Entry)object;
+		
+		map1.put(entry.getKey(),entry.getValue());
+	}
+	
         ois.close();
         fis.close();
         fis = new FileInputStream(input2);

@@ -17,9 +17,9 @@ public class DaysToChristmasOperation implements BotOperation
 	/**
 		@see BotOperation#handleMessage(BotEvent)
 	*/
-	public List handleMessage(BotEvent event)
+	public List<Message> handleMessage(BotEvent event)
 	{
-		List messages=new TypeSafeList(new ArrayList(),Message.class);
+		List<Message> messages=new ArrayList<Message>();
 		
 		if (!event.getMessage().toLowerCase().equals("countdown to christmas"))
 			return messages;
@@ -49,8 +49,8 @@ public class DaysToChristmasOperation implements BotOperation
 		return messages;
 	}
 
-	public List handleChannelMessage(BotEvent event)
+	public List<Message> handleChannelMessage(BotEvent event)
 	{
-			return new TypeSafeList(new ArrayList(),Message.class);
+		return new ArrayList<Message>();
 	}
 }

@@ -12,10 +12,10 @@ import javabot.Message;
 	@deprecated weird
 */
 public class IgnoreOperation implements BotOperation {
-    public List handleMessage(BotEvent event) {
+    public List<Message> handleMessage(BotEvent event) {
 	    Debug.printDebug("About to exit");
 	    System.exit(0);
-        List messages = new TypeSafeList(new ArrayList(), Message.class);
+        List<Message> messages = new ArrayList< Message>();
         String message = event.getMessage();
         //Javabot bot = event.getBot();
         String[] parts = message.split(" ");
@@ -28,8 +28,8 @@ public class IgnoreOperation implements BotOperation {
         return messages;
     }
 
-    public List handleChannelMessage(BotEvent event)
+    public List<Message> handleChannelMessage(BotEvent event)
     {
-	    	return new TypeSafeList(new ArrayList(),Message.class);
+	    	return new ArrayList<Message>();
     }
 }

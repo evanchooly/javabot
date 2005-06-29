@@ -52,14 +52,12 @@ public class UnixCommandOperation implements BotOperation {
     /**
      * @see BotOperation#handleMessage(BotEvent)
      */
-    @SuppressWarnings(value = {"unchecked"})
-    public List handleMessage(BotEvent event) {
-        return new TypeSafeList(new ArrayList(), Message.class);
+    public List<Message> handleMessage(BotEvent event) {
+        return new ArrayList< Message>();
     }
 
-    @SuppressWarnings(value = {"unchecked"})
-    public List handleChannelMessage(BotEvent event) {
-        List messages = new TypeSafeList(new ArrayList(), Message.class);
+    public List<Message> handleChannelMessage(BotEvent event) {
+        List<Message> messages = new ArrayList< Message>();
         String message = event.getMessage();
         String channel = event.getChannel();
         String[] split = message.split(" ");

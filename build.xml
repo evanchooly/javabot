@@ -61,11 +61,11 @@
 	<target name="main" depends="init, make-properties, validate-config">
 		<javac destDir="${build.src.dir}" srcDir="${src.dir}" classpathref="javabot.cp"
 			debug="true">
-            <!-- compilerarg line="-Xlint:unchecked"/ -->
+            		<compilerarg line="-Xlint:unchecked"/>
         </javac>
 		<javac destDir="${build.test.dir}" srcDir="${test.src.dir}" classpathref="javabot.cp"
 			debug="true">
-            <!-- compilerarg line="-Xlint:unchecked"/ -->
+            	<compilerarg line="-Xlint:unchecked"/>
         </javac>
         <antcall target="buildxml"/>
 	</target>

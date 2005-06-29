@@ -22,7 +22,9 @@ import org.jdom.output.XMLOutputter;
 public class StructureReference
 {
 	private ListMap shortNames=new ListMap();
-	private Map longNames=new TreeMap();
+
+	private Map<String,ClassReference> longNames=
+		new TreeMap<String,ClassReference>();
 
 	public StructureReference(RootDoc doc)
 	{
@@ -112,7 +114,7 @@ public class StructureReference
 		if (classes==null)
 			return new String[0];
 		
-		List urls=new ArrayList(classes.size());
+		List<String> urls=new ArrayList<String>(classes.size());
 		
 		for (int i=0;i<classes.size();i++)
 		{

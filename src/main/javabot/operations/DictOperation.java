@@ -33,8 +33,8 @@ private final static int port = 2628;
     /**
      * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
      */
-    public List handleMessage(BotEvent event) {
-        List messages = new TypeSafeList(new ArrayList(), Message.class);
+    public List<Message> handleMessage(BotEvent event) {
+        List<Message> messages = new ArrayList<Message>();
 
         String message = event.getMessage();
         String sender = event.getSender();
@@ -106,8 +106,8 @@ private final static int port = 2628;
         return messages;
     }
 
-    public List handleChannelMessage(BotEvent event)
+    public List<Message> handleChannelMessage(BotEvent event)
     {
-	    	return new TypeSafeList(new ArrayList(),Message.class);
+	    return new ArrayList<Message>();
     }
 }

@@ -26,8 +26,8 @@ public class LeaveOperation implements BotOperation {
     /**
      * @see BotOperation#handleMessage(BotEvent)
      */
-    public List handleMessage(BotEvent event) {
-        List messages = new TypeSafeList(new ArrayList(), Message.class);
+    public List<Message> handleMessage(BotEvent event) {
+        List<Message> messages = new ArrayList< Message>();
 
         final String message = event.getMessage();
         final String channel = event.getChannel();
@@ -65,8 +65,8 @@ public class LeaveOperation implements BotOperation {
 
     }
 
-    public List handleChannelMessage(BotEvent event)
+    public List<Message> handleChannelMessage(BotEvent event)
     {
-            return new TypeSafeList(new ArrayList(),Message.class);
+            return new ArrayList<Message>();
     }
 }
