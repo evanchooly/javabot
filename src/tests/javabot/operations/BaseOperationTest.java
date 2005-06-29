@@ -33,6 +33,7 @@ public class BaseOperationTest {
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, message);
         List<Message> results = getOperation().handleMessage(event);
         Message result = results.get(0);
+        log.debug("message = " + message);
         log.debug("response = " + response);
         log.debug("result = " + result.getMessage());
         Assert.assertEquals(response, result.getMessage(), errorMessage);

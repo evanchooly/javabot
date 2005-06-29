@@ -28,7 +28,6 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     }
 
     public void factoidAdd() throws IOException {
-        AddFactoidOperation operation = getOperation();
         String response = "Okay, " + SENDER + ".";
         String errorMessage = "Should have added the factoid";
         testOperation(System.currentTimeMillis() + "test pong is pong", response, errorMessage);
@@ -41,10 +40,12 @@ public class AddFactoidOperationTest extends BaseOperationTest {
 
     @Test(dependsOnMethods = {"factoidAdd"})
     public void duplicateAdd() throws IOException {
-        AddFactoidOperation operation = getOperation();
+        String okay = "Okay, " + SENDER + ".";
         String response = "I already have a factoid with that name, " + SENDER;
         String errorMessage = "Should not have added the factoid";
-        testOperation("test pong is pong", response, errorMessage);
+        String message = System.currentTimeMillis() + "test pong is pong";
+        testOperation(message, okay, errorMessage);
+        testOperation(message, response, errorMessage);
     }
 
     public void blankFactoid() throws IOException {
