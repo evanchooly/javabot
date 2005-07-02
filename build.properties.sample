@@ -1,5 +1,6 @@
 src.zip=share/src.zip
 src.version=1.5
+
 DB_URL=jdbc:postgresql:javabot
 DB_USER=cheeser
 DB_PASS=cheeser

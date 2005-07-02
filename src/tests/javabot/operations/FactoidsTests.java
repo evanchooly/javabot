@@ -43,7 +43,8 @@ public class FactoidsTests {
                 database.getClass().getName() + ":  The factoid value should have matched");
             Assert.assertNotSame("test value2", factoid.getValue(),
                 database.getClass().getName() + ":  The factoid value should have matched");
-            Assert.assertEquals(count + 1, database.getNumberOfFactoids(), "Should have only 1 more factoid");
+            Assert.assertEquals(database.getNumberOfFactoids(), count + 1,
+                "Should have only 1 more factoid");
         }
     }
 
@@ -59,7 +60,7 @@ public class FactoidsTests {
                 database.getClass().getName() + ":  The factoid value should be null");
             Assert.assertFalse(database.hasFactoid(key),
                 database.getClass().getName() + ":  The factoid not be present");
-            Assert.assertEquals(count - 1, database.getNumberOfFactoids(),
+            Assert.assertEquals(database.getNumberOfFactoids(), count - 1,
                 database.getClass().getName() + ":  Should have 1 fewer factoids");
         }
     }

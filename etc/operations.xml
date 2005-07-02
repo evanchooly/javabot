@@ -8,6 +8,8 @@
 		</groups>
 		<classes>
 			<class name="javabot.operations.AddFactoidOperationTest" />
-		</classes>
+			<class name="javabot.operations.ForgetFactoidOperationTest" />
+            <class name="javabot.operations.GetFactoidOperationTest"/>
+        </classes>
 	</test>
 </suite>

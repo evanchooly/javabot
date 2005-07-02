@@ -28,24 +28,21 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     }
 
     public void factoidAdd() throws IOException {
-        String response = "Okay, " + SENDER + ".";
         String errorMessage = "Should have added the factoid";
-        testOperation(System.currentTimeMillis() + "test pong is pong", response, errorMessage);
+        testOperation(System.currentTimeMillis() + "test pong is pong", OKAY, errorMessage);
         testOperation(System.currentTimeMillis() + "ping $1 is <action>sends some radar to $1, "
-            + "awaits a response then forgets how long it took", response,
+            + "awaits a response then forgets how long it took", OKAY,
             errorMessage);
-        testOperation(System.currentTimeMillis() + "what? is a question", response, errorMessage);
-        testOperation(System.currentTimeMillis() + "what up? is <see>what?", response, errorMessage);
+        testOperation(System.currentTimeMillis() + "what? is a question", OKAY, errorMessage);
+        testOperation(System.currentTimeMillis() + "what up? is <see>what?", OKAY, errorMessage);
     }
 
     @Test(dependsOnMethods = {"factoidAdd"})
     public void duplicateAdd() throws IOException {
-        String okay = "Okay, " + SENDER + ".";
-        String response = "I already have a factoid with that name, " + SENDER;
         String errorMessage = "Should not have added the factoid";
         String message = System.currentTimeMillis() + "test pong is pong";
-        testOperation(message, okay, errorMessage);
-        testOperation(message, response, errorMessage);
+        testOperation(message, OKAY, errorMessage);
+        testOperation(message, ALREADY_HAVE_FACTOID, errorMessage);
     }
 
     public void blankFactoid() throws IOException {
@@ -62,19 +59,14 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     }
 
     public void channelMessage() throws IOException {
-        AddFactoidOperation operation = getOperation();
         BotEvent event = new BotEvent("#test", SENDER, "", "localhost",
             "pong is");
-        Assert.assertEquals(0, operation.handleChannelMessage(event).size(),
+        Assert.assertEquals(getOperation().handleChannelMessage(event).size(), 0,
             "Should be an empty list");
     }
 
     protected AddFactoidOperation getOperation() {
-        try {
-            return new AddFactoidOperation(new JDBCDatabase());
-        } catch(IOException e) {
-            log.error(e.getMessage(), e);
-            throw new ApplicationException(e.getMessage());
-        }
+        return new AddFactoidOperation(getDatabase());
     }
+
 }

@@ -1,51 +1,38 @@
 package javabot;
 
-public class BotEvent
-{
-	private String channel;
-	private String sender;
-	private String login;
-	private String hostname;
-	private String message;
+public class BotEvent {
+    private String channel;
+    private String sender;
+    private String login;
+    private String hostname;
+    private String message;
 
-	public BotEvent
-	(
-		String channel,
-		String sender,
-		String login,
-        	String hostname,
-		String message
-	)
-	{
-		this.channel=channel;
-		this.sender=sender;
-		this.login=login;
-		this.hostname=hostname;
-		this.message=message;
-	}
-	
-	public String getChannel()
-	{
-        	return channel;
-	}
+    public BotEvent(String eventChannel, String user, String loginName,
+        String host, String eventMessage) {
+        channel = eventChannel;
+        sender = user;
+        login = loginName;
+        hostname = host;
+        message = eventMessage;
+    }
 
-	public String getSender()
-	{
-		return sender;
-	}
+    public String getChannel() {
+        return channel;
+    }
 
-	public String getLogin()
-	{
-		return login;
-	}
+    public String getSender() {
+        return sender;
+    }
 
-	public String getHostname()
-	{
-		return hostname;
-	}
+    public String getLogin() {
+        return login;
+    }
 
-	public String getMessage()
-	{
-		return message;
-	}
+    public String getHostname() {
+        return hostname;
+    }
+
+    public String getMessage() {
+        return message;
+    }
 }

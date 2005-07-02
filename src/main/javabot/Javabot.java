@@ -57,7 +57,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     Javabot() throws JDOMException, IOException {
         setName("javabot");
         setLogin("javabot");
-        setVersion("Javabot 1.5 by Ricky Clarkso (ricky_clarkson@yahoo.com) and "
+        setVersion("Javabot 1.6 by Ricky Clarkson (ricky_clarkson@yahoo.com) and "
             + "various contributors, based on PircBot by Paul Mutton");
         loadConfig();
     }

@@ -3,22 +3,10 @@ results, Javabot fails.
 
 Your nick is written here as 'user'.
 
-~ping is pong
-<javabot> Okay, user.
-~ping
-<javabot> user, ping is pong
 ~no, ping is PONG
 <javabot> Okay, user.
 ~ping
 <javabot> user, ping is PONG
-~ping $1 is <action>sends some radar to $1, awaits a response then forgets how long it took.
-<javabot> Okay, user.
-~ping beezly
-* javabot sends some radar to beezly, awaits a response then forgets how long it took.
-~whoami is <reply>$who
-<javabot> Okay, user.
-~whoami
-<javabot> user
 ~countdown to christmas
 <javabot> There are XXX days until Christmas. #work it out if you want
 ~days until 2010/05/05

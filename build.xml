@@ -1,5 +1,6 @@
 <project name="javabot" default="main">
 	<property file="build.properties"/>
+	<property file="build.properties.sample"/>
 
 	<property environment="env"/>
 
@@ -59,21 +60,21 @@
     </target>
 	
 	<target name="main" depends="init, make-properties, validate-config">
-		<javac destDir="${build.src.dir}" srcDir="${src.dir}" classpathref="javabot.cp"
-			debug="true">
-            		<compilerarg line="-Xlint:unchecked"/>
-        </javac>
-		<javac destDir="${build.test.dir}" srcDir="${test.src.dir}" classpathref="javabot.cp"
-			debug="true">
-            	<compilerarg line="-Xlint:unchecked"/>
-        </javac>
-        <antcall target="buildxml"/>
+		<javac destDir="${build.src.dir}" srcDir="${src.dir}"
+			classpathref="javabot.cp" debug="true">
+			<compilerarg line="-Xlint:unchecked"/>
+		</javac>
+		<javac destDir="${build.test.dir}" srcDir="${test.src.dir}"
+			classpathref="javabot.cp" debug="true">
+			<compilerarg line="-Xlint:unchecked"/>
+		</javac>
+		<antcall target="buildxml"/>
 	</target>
 
 	<target name="clean">
 		<delete dir="${build}"/>
 	</target>
-	
+
 	<target name="rebuild" depends="clean, main"/>
 
 	<target name="test" depends="main">
@@ -98,7 +99,7 @@
         </emma>
 
         <testng classpathref="test.class.path" outputDir="${build.report.dir}"
-            sourcedir="${test.src.dir}" haltOnfailure="false" fork="true">
+            sourcedir="${test.src.dir}" haltOnfailure="false">
 
 				<xmlfileset dir="etc" includes="${test.xml}"/>
             <jvmarg value="-Demma.coverage.out.file=${emma.dir}/coverage.emma"/>
@@ -212,5 +213,22 @@
     <target name="validate-config" description="Validates the sample and active config files">
         <xmlvalidate file="config.xml"/>
         <xmlvalidate file="config.xml.sample"/>
+    </target>
+
+    <target name="import-db">
+        <get src="http://www.cheeseronline.org/~javabot/currentBackup" usetimestamp="true"
+             dest="etc/db.sql"/>
+        <exec executable="dropdb" output="/dev/null">
+            <arg line="javabot"/>
+        </exec>
+        <exec executable="createdb" output="/dev/null">
+            <arg line="javabot"/>
+        </exec>
+        <exec executable="psql" output="/dev/null">
+            <arg line="javabot -f etc/javabot.sql"/>
+        </exec>
+        <exec executable="psql" output="/dev/null">
+            <arg line="javabot -f etc/db.sql"/>
+        </exec>
     </target>
 </project>
