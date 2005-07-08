@@ -17,4 +17,6 @@ public interface Database {
     int getNumberOfFactoids();
 
     List<Factoid> getFactoids();
+
+    void updateFactoid(Factoid factoid);
 }

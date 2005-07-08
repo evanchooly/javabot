@@ -1,8 +1,10 @@
 package javabot.operations;
 
 import java.io.IOException;
+import java.util.List;
 
 import javabot.BotEvent;
+import javabot.Message;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.annotations.Configuration;
@@ -63,7 +65,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void guessFactoid() {
-        testOperation("bre", "I guess the factoid 'break' might be appropriate:", ERROR_MESSAGE);
+        testOperation("bre", "I guess the factoid 'label line breaks' might be appropriate:", ERROR_MESSAGE);
     }
 
     public void noGuess() {
@@ -81,6 +83,14 @@ public class GetFactoidOperationTest extends BaseOperationTest {
             "Should just return message");
 
     }
+
+    public void action() {
+        BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "kick " + SENDER);
+        List<Message> results = getOperation().handleMessage(event);
+        Message result = results.get(0);
+        Assert.assertEquals(result.isAction(), true, "Should be an action.");
+    }
+
     public void channelMessage() throws IOException {
         BotEvent event = new BotEvent("#test", SENDER, "", "localhost", "pong is");
         Assert.assertEquals(getOperation().handleChannelMessage(event).size(), 0,

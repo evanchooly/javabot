@@ -2,11 +2,13 @@ package javabot.operations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 import com.rickyclarkson.java.util.TypeSafeList;
 import javabot.BotEvent;
 import javabot.Database;
 import javabot.Message;
+import javabot.Factoid;
 
 /**
  * @author ricky_clarkson
@@ -38,9 +40,9 @@ public class KarmaChangeOperation implements BotOperation {
                 return messages;
             }
             int karma;
+            Factoid factoid = database.getFactoid("karma " + nick);
             try {
-                karma = Integer.parseInt(database.getFactoid(
-                    "karma " + nick).getValue());
+                karma = Integer.parseInt(factoid.getValue());
             } catch(Exception exception) {
                 karma = 0;
             }
@@ -49,7 +51,8 @@ public class KarmaChangeOperation implements BotOperation {
             } else {
                 karma--;
             }
-            database.addFactoid(sender, "karma " + nick, karma + "");
+            factoid.setValue("" + karma, sender);
+            database.updateFactoid(factoid);
             KarmaReadOperation karmaRead = new KarmaReadOperation(database);
             messages.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(),
                 event.getSender(),event.getLogin(),event.getHostname(),

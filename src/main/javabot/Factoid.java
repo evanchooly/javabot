@@ -1,7 +1,6 @@
 package javabot;
 
 import java.util.Date;
-import java.sql.ResultSet;
 
 /**
  * Created Jun 28, 2005
@@ -14,12 +13,6 @@ public class Factoid {
     private String _value;
     private String _user;
     private Date _updated;
-
-    public Factoid(String name, String value, String user) {
-        _name = name;
-        _value = value;
-        _user = user;
-    }
 
     public Factoid(long id, String name, String value, String user, Date updated) {
         _name = name;
@@ -41,23 +34,16 @@ public class Factoid {
         return _name;
     }
 
-    public void setName(String name) {
-        _name = name;
-    }
-
     public String getValue() {
         return _value;
-    }
-
-    public void setValue(String value) {
-        _value = value;
     }
 
     public String getUser() {
         return _user;
     }
 
-    public void setUser(String user) {
+    public void setValue(String value, String user) {
+        _value = value;
         _user = user;
     }
 }

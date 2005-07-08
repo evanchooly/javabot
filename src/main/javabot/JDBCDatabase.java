@@ -49,6 +49,8 @@ public class JDBCDatabase extends AbstractDatabase {
     private static final String FACTOID_FETCH_ALL = "SELECT * FROM " + TABLE_NAME;
     public static final String SERIALIZED_MAP = "map.serialized";
     public static final String HTML_FILE = "htmlfile.log";
+    private static final String FACTOID_UPDATE = "UPDATE factoids SET value=?,"
+        + " username=?, updated=? WHERE id=?";
 
     public JDBCDatabase() throws IOException {
         this(HTML_FILE);
@@ -71,19 +73,6 @@ public class JDBCDatabase extends AbstractDatabase {
         }
         // let's make sure we can connect
         getConnection();
-        convertSerializedMap();
-    }
-
-    private void convertSerializedMap() throws IOException {
-        File file = new File(SERIALIZED_MAP);
-        if(file.exists()) {
-            Map<String, String> map = loadMap(file);
-            for(String key : map.keySet()) {
-                log.debug("converting " + key);
-                addFactoid("cheeser", key, map.get(key));
-            }
-            file.delete();
-        }
     }
 
     private Connection getConnection() {
@@ -115,6 +104,26 @@ public class JDBCDatabase extends AbstractDatabase {
             stmt.setString(3, sender);
             stmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
             stmt.execute();
+        } catch(SQLException e) {
+            log.error(e.getMessage(), e);
+        } finally {
+            cleanup(stmt, connection);
+        }
+        dumpHTML();
+    }
+
+    public void updateFactoid(Factoid factoid) {
+        PreparedStatement stmt = null;
+        Connection connection = null;
+        try {
+            connection = getConnection();
+            stmt = connection.prepareStatement(FACTOID_UPDATE);
+            int col = 1;
+            stmt.setString(col++, factoid.getValue());
+            stmt.setString(col++, factoid.getUser());
+            stmt.setTimestamp(col++, new Timestamp(System.currentTimeMillis()));
+            stmt.setLong(col++, factoid.getID());
+            stmt.executeUpdate();
         } catch(SQLException e) {
             log.error(e.getMessage(), e);
         } finally {
@@ -219,36 +228,5 @@ public class JDBCDatabase extends AbstractDatabase {
         return new Factoid(rs.getLong("id"), rs.getString("name"),
             rs.getString("value"), rs.getString("username"),
             new Date(rs.getDate("updated").getTime()));
-    }
-
-    protected static Map<String, String> loadMap(File file) throws IOException {
-        FileInputStream fis = new FileInputStream(file);
-        ObjectInputStream ois = new ObjectInputStream(fis);
-        Map<String, String> map = new TreeMap<String, String>();
-        try {
-	    map = new TreeMap<String,String>();
-	    
-	    for (final Object object: ((Map)ois.readObject()).entrySet())
-	    {
-		    final Map.Entry entry=(Map.Entry)object;
-		    map.put((String)entry.getKey(),(String)entry.getValue());
-	    }
-	    
-            ois.close();
-            fis.close();
-            Set<String> keySet = new HashSet<String>(map.keySet());
-            Iterator iterator = keySet.iterator();
-            while(iterator.hasNext()) {
-                String next = (String)iterator.next();
-                if(!next.equals(next.toLowerCase())) {
-                    String value = (String)map.get(next);
-                    map.remove(next);
-                    map.put(next.toLowerCase(), value);
-                }
-            }
-        } catch(ClassNotFoundException e) {
-            log.error(e.getMessage(), e);
-        }
-        return map;
     }
 }
