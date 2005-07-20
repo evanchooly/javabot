@@ -10,4 +10,4 @@ cd /tmp
 /bin/tar --exclude=".svn" -cjvf ${TAR_DIR}/${TAR_NAME} javabot
 /usr/bin/rm -rf /tmp/javabot
 cd ${TAR_DIR}
-echo "<html><body><a href=\"${TAR_NAME}\">${TAR_NAME}</a></body></html>" > index.html
+/usr/bin/echo "<html><body><a href=\"${TAR_NAME}\">${TAR_NAME}</a></body></html>" > index.html
