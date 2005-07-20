@@ -7,3 +7,4 @@ cd /tmp
 /usr/bin/svn co http://www.cheeseronline.org/svn/repos/javabot
 /usr/bin/rm  ${TAR_DIR}/javabot-src-*.tar*
 /bin/tar --exclude=".svn" -cjvf ${TAR_DIR}/javabot-src-${REVISION}.tar.bz2 javabot
+rm -rf /tmp/javabot
