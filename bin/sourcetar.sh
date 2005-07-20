@@ -11,4 +11,3 @@ cd /tmp
 rm -rf /tmp/javabot
 cd ${TAR_DIR}
 echo "<html><body><a href=\"${TAR_NAME}\">${TAR_NAME}</a></body></html>" > index.html
-
