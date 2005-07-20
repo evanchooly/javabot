@@ -20,5 +20,4 @@ echo "BEGIN;" > $FILE
 pg_dump --no-owner --column-inserts --data-only --disable-triggers -U $USER $DB >> $FILE
 echo "COMMIT;" >> $FILE
 
-
-ln -s $FILE ../backup/current
+ln -sf $FILE ../backup/current
