@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd">
-<suite thread-count="5" verbose="1" name="Utility Tests suite" parallel="false" annotations="1.5">
-	<test name="utility">
+<suite thread-count="5" verbose="1" name="Operations Tests suite" parallel="false" annotations="1.5">
+	<test name="operations">
 		<groups>
 			<run>
 				<include name="operations"/>
@@ -9,7 +9,8 @@
 		<classes>
 			<class name="javabot.operations.AddFactoidOperationTest" />
 			<class name="javabot.operations.ForgetFactoidOperationTest" />
-            <class name="javabot.operations.GetFactoidOperationTest"/>
-        </classes>
+			<class name="javabot.operations.GetFactoidOperationTest"/>
+			<class name="javabot.operations.KarmaChangeOperationTest"/>
+		</classes>
 	</test>
 </suite>

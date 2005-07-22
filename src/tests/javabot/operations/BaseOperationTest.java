@@ -2,6 +2,7 @@ package javabot.operations;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Arrays;
 
 import javabot.ApplicationException;
 import javabot.BotEvent;
@@ -17,7 +18,7 @@ import org.testng.annotations.Test;
  *
  * @author <a href="mailto:javabot@cheeseronline.org">Justin Lee</a>
  */
-public class BaseOperationTest {
+public abstract class BaseOperationTest {
     private static Log log = LogFactory.getLog(BaseOperationTest.class);
     protected static final String SENDER = "cheeser";
     protected static final String CHANNEL = "#test";
@@ -32,7 +33,6 @@ public class BaseOperationTest {
     }
 
     public BaseOperationTest(String name) {
-        log.debug("here?");
     }
 
     protected void testOperation(String message, String response, String errorMessage) {
@@ -66,14 +66,20 @@ public class BaseOperationTest {
             }
         }
 
+        if(responses.length != results.size()) {
+            Assert.fail("Did not receive all the expected results.  "
+                + "Expected : " + Arrays.asList(responses)
+                + ".  Received : " + results);
+        }
+
         if(! success) {
             Assert.fail(errorMessage);
         }
     }
 
-    protected BotOperation getOperation() {
-        throw new ApplicationException("Implement this method on " + getClass().getName());
-    }
+    protected abstract BotOperation getOperation();// {
+//        throw new ApplicationException("Implement this method on " + getClass().getName());
+//    }
 
     protected JDBCDatabase getDatabase() {
         if(_jdbcDatabase == null) {
