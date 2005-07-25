@@ -39,7 +39,6 @@ public class KarmaChangeOperation implements BotOperation {
             int karma = 0;
             boolean newKarma = false;
             Factoid factoid = database.getFactoid("karma " + nick);
-            log.debug("factoid = " + factoid);
             try {
                 karma = Integer.parseInt(factoid.getValue());
             } catch(Exception exception) {

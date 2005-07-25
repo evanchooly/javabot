@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import javabot.BotEvent;
 import javabot.Message;
+import javabot.Factoid;
 
 /**
  * Created Jul 22, 2005
@@ -19,12 +20,37 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
     private static Log log = LogFactory.getLog(KarmaChangeOperationTest.class);
 
     public void updateKarma() {
-        testOperation("testjavabot++", "testjavabot has a karma level of 1, cheeser", "");
-        testOperation("testjavabot++", "testjavabot has a karma level of 2, cheeser", "");
-        testOperation("testjavabot--", "testjavabot has a karma level of 1, cheeser", "");
-        testOperation("testjavabot--", "testjavabot has a karma level of 0, cheeser", "");
-        testOperation("testjavabot--", "testjavabot has a karma level of -1, cheeser", "");
-        testOperation("testjavabot++", "testjavabot has a karma level of 0, cheeser", "");
+        testOperation("testjavabot++", "testjavabot has a karma level of 1, " + SENDER, "");
+        testOperation("testjavabot++", "testjavabot has a karma level of 2, " + SENDER, "");
+        testOperation("testjavabot--", "testjavabot has a karma level of 1, " + SENDER, "");
+        testOperation("testjavabot--", "testjavabot has a karma level of 0, " + SENDER, "");
+        testOperation("testjavabot--", "testjavabot has a karma level of -1, " + SENDER, "");
+        testOperation("testjavabot++", "testjavabot has a karma level of 0, " + SENDER, "");
+    }
+
+    public void logNew() {
+        log.debug("BEGIN ADDLOG");
+        String target = "karmachange";
+        testOperation(target + "++", target + " has a karma level of 1, " + SENDER, "");
+        String message = SENDER + " added 'karma " + target + "' with "
+            + "a value of '1'";
+        log.debug("looking for " + message);
+        Assert.assertTrue(getDatabase().findLog(message));
+        forgetFactoid("karma " + target);
+        log.debug("END ADDLOG");
+    }
+
+    public void logChanged() {
+        log.debug("BEGIN LOGCHANGED");
+        String target = "javabot";
+        int karma = getKarma(target) + 1;
+        testOperation(target + "++", target + " has a karma level of " + karma
+            + ", " + SENDER, "");
+        String message = SENDER + " changed 'karma " + target + "' to"
+            + " '" + karma + "'";
+        log.debug("looking for " + message);
+        Assert.assertTrue(getDatabase().findLog(message));
+        log.debug("END LOGCHANGED");
     }
 
     public void changeOwnKarma() {
@@ -36,13 +62,10 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
         Assert.assertTrue(karma2 == karma -1, "Should have lost one karma point.");
     }
 
-    private int getKarma(String sender) {
-        KarmaReadOperation operation = new KarmaReadOperation(getDatabase());
-        BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "karma " + sender);
-        List<Message> results = operation.handleMessage(event);
-        log.debug("results = " + results);
-        String[] message = results.get(0).getMessage().split(" ");
-        String value = message[7].split("\\.")[0];
+    private int getKarma(String target) {
+        log.debug("target = " + target);
+        Factoid factoid = getDatabase().getFactoid("karma " + target);
+        String value = factoid.getValue();
         log.debug("value = " + value);
 
         return Integer.parseInt(value);

@@ -1,24 +1,24 @@
 package javabot.operations;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 
 import javabot.ApplicationException;
 import javabot.BotEvent;
+import javabot.Database;
 import javabot.JDBCDatabase;
 import javabot.Message;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
-import org.testng.annotations.Test;
 
 /**
  * Created Jun 28, 2005
  *
  * @author <a href="mailto:javabot@cheeseronline.org">Justin Lee</a>
  */
-public abstract class BaseOperationTest {
+public class BaseOperationTest {
     private static Log log = LogFactory.getLog(BaseOperationTest.class);
     protected static final String SENDER = "cheeser";
     protected static final String CHANNEL = "#test";
@@ -44,6 +44,7 @@ public abstract class BaseOperationTest {
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, message);
         List<Message> results = operation.handleMessage(event);
         Message result = results.get(0);
+        log.debug("result = " + result);
         Assert.assertEquals(response, result.getMessage(), errorMessage);
     }
 
@@ -65,23 +66,21 @@ public abstract class BaseOperationTest {
                 // try next
             }
         }
-
         if(responses.length != results.size()) {
             Assert.fail("Did not receive all the expected results.  "
                 + "Expected : " + Arrays.asList(responses)
                 + ".  Received : " + results);
         }
-
         if(! success) {
             Assert.fail(errorMessage);
         }
     }
 
-    protected abstract BotOperation getOperation();// {
-//        throw new ApplicationException("Implement this method on " + getClass().getName());
-//    }
+    protected BotOperation getOperation() {
+        throw new ApplicationException("Implement this method on " + getClass().getName());
+    }
 
-    protected JDBCDatabase getDatabase() {
+    protected Database getDatabase() {
         if(_jdbcDatabase == null) {
             try {
                 _jdbcDatabase = new JDBCDatabase();
@@ -99,5 +98,11 @@ public abstract class BaseOperationTest {
 
     protected String getFoundMessage(String factoid, String value) {
         return SENDER + ", " + factoid + " is " + value;
+    }
+
+    protected void forgetFactoid(String name) {
+        testOperation("forget " + name, "I forgot about " + name + ", " + SENDER + ".",
+            "I never knew about " + name + " anyway, " + SENDER + ".",
+            new ForgetFactoidOperation(getDatabase()));
     }
 }

@@ -51,6 +51,9 @@ public class JDBCDatabase extends AbstractDatabase {
     public static final String HTML_FILE = "htmlfile.log";
     private static final String FACTOID_UPDATE = "UPDATE factoids SET value=?,"
         + " username=?, updated=? WHERE id=?";
+    private static final String FACTOID_CHANGE_LOG = "INSERT INTO changes"
+        + " (message, changeDate) VALUES (?,?)";
+    private static final String FIND_CHANGES = "SELECT * FROM changes WHERE message=?";
 
     public JDBCDatabase() throws IOException {
         this(HTML_FILE);
@@ -109,7 +112,13 @@ public class JDBCDatabase extends AbstractDatabase {
         } finally {
             cleanup(stmt, connection);
         }
+        logAdd(sender, key, value);
         dumpHTML();
+    }
+
+    private void logAdd(String sender, String key, String value) {
+        logChange(sender + " added '" + key + "' with a value of '"
+            + value + "'");
     }
 
     public void updateFactoid(Factoid factoid) {
@@ -129,6 +138,8 @@ public class JDBCDatabase extends AbstractDatabase {
         } finally {
             cleanup(stmt, connection);
         }
+        logChange(factoid.getUser() + " changed '" + factoid.getName() + "' to '"
+            + factoid.getValue() + "'");
         dumpHTML();
     }
 
@@ -153,7 +164,29 @@ public class JDBCDatabase extends AbstractDatabase {
             stmt = connection.prepareStatement(FACTOID_DELETE);
             stmt.setString(1, key);
             stmt.execute();
+            logForget(sender, key);
             dumpHTML();
+        } catch(SQLException e) {
+            log.error(e.getMessage(), e);
+        } finally {
+            cleanup(stmt, connection);
+        }
+    }
+
+    private void logForget(String sender, String key) {
+        logChange(sender + " removed '" + key + "'");
+    }
+
+    private void logChange(String message) {
+        PreparedStatement stmt = null;
+        Connection connection = null;
+        Factoid factoid = null;
+        try {
+            connection = getConnection();
+            stmt = connection.prepareStatement(FACTOID_CHANGE_LOG);
+            stmt.setString(1, message);
+            stmt.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+            stmt.executeUpdate();
         } catch(SQLException e) {
             log.error(e.getMessage(), e);
         } finally {
@@ -228,5 +261,23 @@ public class JDBCDatabase extends AbstractDatabase {
         return new Factoid(rs.getLong("id"), rs.getString("name"),
             rs.getString("value"), rs.getString("username"),
             new Date(rs.getDate("updated").getTime()));
+    }
+
+    public boolean findLog(String s) {
+        PreparedStatement stmt = null;
+        Connection connection = null;
+        boolean found = false;
+        try {
+            connection = getConnection();
+            stmt = connection.prepareStatement(FIND_CHANGES);
+            stmt.setString(1, s);
+            ResultSet rs = stmt.executeQuery();
+            found = rs.next();
+        } catch(SQLException e) {
+            log.error(e.getMessage(), e);
+        } finally {
+            cleanup(stmt, connection);
+        }
+        return found;
     }
 }

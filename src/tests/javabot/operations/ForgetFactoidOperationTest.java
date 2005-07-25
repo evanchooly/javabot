@@ -27,6 +27,11 @@ public class ForgetFactoidOperationTest extends BaseOperationTest {
             + SENDER + ".", "Should not have known about factoid");
     }
 
+    public void addLog() {
+        forgetFactoid("gprs");
+        Assert.assertTrue(getDatabase().findLog(SENDER + " removed 'gprs'"));
+    }
+
     protected BotOperation getOperation() {
         return new ForgetFactoidOperation(getDatabase());
     }

@@ -7,3 +7,8 @@ CREATE TABLE factoids(
 	updated TIMESTAMP
 	);
 ALTER TABLE factoids ALTER ID SET DEFAULT NEXTVAL('factoid_sequence');
+
+CREATE TABLE changes(
+	message VARCHAR(4000) NOT NULL,
+	changeDate TIMESTAMP
+	);

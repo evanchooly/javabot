@@ -2,9 +2,7 @@ package javabot.operations;
 
 import java.io.IOException;
 
-import javabot.ApplicationException;
 import javabot.BotEvent;
-import javabot.JDBCDatabase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
@@ -56,6 +54,13 @@ public class AddFactoidOperationTest extends BaseOperationTest {
         String response = "Invalid factoid value";
         String errorMessage = "Should not have added the factoid";
         testOperation("pong is", response, errorMessage);
+    }
+
+    public void addLog() {
+        testOperation("12345 is 12345", OKAY, "Should have added the factoid.");
+        Assert.assertTrue(getDatabase().findLog(SENDER + " added '" + 12345 + "' with a value of '"
+            + 12345 + "'"));
+        forgetFactoid("12345");
     }
 
     public void channelMessage() throws IOException {

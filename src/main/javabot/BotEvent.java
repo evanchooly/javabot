@@ -35,4 +35,14 @@ public class BotEvent {
     public String getMessage() {
         return message;
     }
+
+    public String toString() {
+        return "BotEvent{" +
+            "channel='" + channel + "'" +
+            ", sender='" + sender + "'" +
+            ", login='" + login + "'" +
+            ", hostname='" + hostname + "'" +
+            ", message='" + message + "'" +
+            "}";
+    }
 }

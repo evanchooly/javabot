@@ -3,23 +3,21 @@ package javabot.operations;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.rickyclarkson.java.util.Arrays;
-import com.rickyclarkson.java.util.TypeSafeList;
 import javabot.BotEvent;
 import javabot.Database;
 import javabot.Message;
 
 public class ForgetFactoidOperation implements BotOperation {
-   
-	private final Database database;
+    private final Database database;
 
-	public ForgetFactoidOperation(final Database factoidDatabase)
-	{
-        database =factoidDatabase;
-	}
-	
-	public List<Message> handleMessage(BotEvent event) {
-        List<Message> messages = new ArrayList< Message>();
+    public ForgetFactoidOperation(final Database factoidDatabase) {
+        database = factoidDatabase;
+    }
+
+    public List<Message> handleMessage(BotEvent event) {
+        List<Message> messages = new ArrayList<Message>();
         String channel = event.getChannel();
         String message = event.getMessage();
         String sender = event.getSender();

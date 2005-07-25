@@ -19,4 +19,6 @@ public interface Database {
     List<Factoid> getFactoids();
 
     void updateFactoid(Factoid factoid);
+
+    boolean findLog(String s);
 }
