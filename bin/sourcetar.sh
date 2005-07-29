@@ -8,3 +8,4 @@ cd /tmp
 /usr/bin/svn co http://www.cheeseronline.org/svn/repos/javabot
 /usr/bin/rm -f ${TAR_DIR}/javabot-src-*.tar*
 /bin/tar --exclude=".svn" -cjvf ${TAR_DIR}/${TAR_NAME} javabot
+exit
