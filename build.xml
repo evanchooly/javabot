@@ -77,7 +77,7 @@
 
 	<target name="rebuild" depends="clean, main"/>
 
-	<target name="test" depends="main">
+	<target name="test" depends="main, import-db">
 		<antcall target="test-with-xml"/>
 		<antcall target="test-all"/>
 	</target>

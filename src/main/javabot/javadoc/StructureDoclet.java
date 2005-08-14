@@ -22,8 +22,7 @@ public class StructureDoclet extends Doclet {
     public static boolean start(RootDoc doc) {
         StructureReference reference = new StructureReference(doc);
         String[][] options = doc.options();
-        for(int i = 0; i < options.length; i++) {
-            String[] option = options[i];
+        for(String[] option : options) {
             if("-x".equals(option[0])) {
                 if(option.length != 2) {
                     return false;

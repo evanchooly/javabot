@@ -79,7 +79,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
             "Should just return message");
 
         message = "(1)";
-        Assert.assertEquals(operation.processRandomList(message), "1",
+        Assert.assertEquals(operation.processRandomList(message), "(1)",
             "Should just return message");
 
     }

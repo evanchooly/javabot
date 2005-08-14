@@ -2,14 +2,12 @@ package javabot.operations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.io.IOException;
 
 import javabot.BotEvent;
 import javabot.Database;
 import javabot.Message;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.testng.Assert;
 
 public class GetFactoidOperation implements BotOperation {
     private static Log log = LogFactory.getLog(GetFactoidOperation.class);
@@ -76,30 +74,24 @@ public class GetFactoidOperation implements BotOperation {
         }
     }
 
-    protected String processRandomList(String message) {
+    String processRandomList(String message) {
+        String result = message;
         int index = -1;
-        do {
-            index = message.indexOf("(", index + 1);
-            if(index == -1) {
-                break;
-            }
-            int index2 = message.indexOf(")", index + 1);
-            if(index2 == -1) {
-                break;
-            }
-            String choice = message.substring(index + 1, index2);
+        index = result.indexOf("(", index + 1);
+        int index2 = result.indexOf(")", index + 1);
+        while(index < result.length() && index != -1 && index2 != -1) {
+            String choice = result.substring(index + 1, index2);
             String[] choices = choice.split("\\|");
-            if(choices.length < 2) {
-                if(choices.length == 1) {
-                    message = choices[0]; 
-                }
-                continue;
+
+            if(choices.length > 1) {
+                int chosen = (int)(Math.random() * choices.length);
+                result = result.substring(0, index) + choices[chosen]
+                    + result.substring(index2 + 1);
             }
-            int chosen = (int)(Math.random() * choices.length);
-            message = message.substring(0, index) + choices[chosen]
-                + message.substring(index2 + 1);
-        } while(true);
-        return message;
+            index = result.indexOf("(", index + 1);
+            index2 = result.indexOf(")", index + 1);
+        }
+        return result;
     }
 
     public List<Message> handleChannelMessage(BotEvent event) {

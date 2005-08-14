@@ -43,6 +43,7 @@ public class BaseOperationTest {
         BotOperation operation) {
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, message);
         List<Message> results = operation.handleMessage(event);
+        Assert.assertTrue(results.size() != 0);
         Message result = results.get(0);
         log.debug("result = " + result);
         Assert.assertEquals(response, result.getMessage(), errorMessage);
@@ -65,11 +66,6 @@ public class BaseOperationTest {
             } catch(AssertionError ae) {
                 // try next
             }
-        }
-        if(responses.length != results.size()) {
-            Assert.fail("Did not receive all the expected results.  "
-                + "Expected : " + Arrays.asList(responses)
-                + ".  Received : " + results);
         }
         if(! success) {
             Assert.fail(errorMessage);

@@ -15,8 +15,6 @@ import org.testng.annotations.Test;
  */
 @Test(groups = {"operations"})
 public class AddFactoidOperationTest extends BaseOperationTest {
-    private static Log log = LogFactory.getLog(AddFactoidOperationTest.class);
-
     public AddFactoidOperationTest() {
         super();
     }
@@ -44,7 +42,6 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     }
 
     public void blankFactoid() throws IOException {
-        AddFactoidOperation operation = getOperation();
         String response = "Invalid factoid name";
         String errorMessage = "Should not have added the factoid";
         testOperation("is pong", response, errorMessage);
@@ -68,6 +65,15 @@ public class AddFactoidOperationTest extends BaseOperationTest {
             "pong is");
         Assert.assertEquals(getOperation().handleChannelMessage(event).size(), 0,
             "Should be an empty list");
+    }
+
+    public void parensFactoids() {
+        String factoid = "should be the full (/hi there) factoid";
+        testOperation("asdf is <reply>"+ factoid, OKAY, "Should have added the factoid.");
+
+        GetFactoidOperation operation = new GetFactoidOperation(getDatabase());
+        String errorMessage = "Should have found the factoid";
+        testOperation("asdf", factoid, errorMessage, operation);
     }
 
     protected AddFactoidOperation getOperation() {
