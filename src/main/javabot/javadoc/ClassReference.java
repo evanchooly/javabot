@@ -1,182 +1,123 @@
 package javabot.javadoc;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.ConstructorDoc;
+import com.sun.javadoc.MethodDoc;
 import org.jdom.Attribute;
 import org.jdom.Element;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
-import java.util.Comparator;
+public class ClassReference {
+    private String packageName;
+    private String className;
+    private String superClassQualified;
+    private List<MethodReference> methods;
 
-public class ClassReference
-{
-	private String packageName;
-	private String className;
-	private String superClassQualified;
-	private List<MethodReference> methods;
+    public ClassReference(ClassDoc doc) {
+        packageName = doc.containingPackage().name();
+        className = doc.name();
+        if(doc.superclass() != null) {
+            superClassQualified = doc.superclass().qualifiedName();
+        }
+        this.methods = new ArrayList<MethodReference>(doc.methods().length + doc.constructors().length);
+        for(MethodDoc methodDoc : doc.methods()) {
+            methods.add(new MethodReference(methodDoc, this));
+        }
+        for(ConstructorDoc conDoc : doc.constructors()) {
+            methods.add(new MethodReference(conDoc, this));
+        }
+        Collections.sort(methods, new MethodComparator());
+    }
 
-	public ClassReference(ClassDoc doc)
-	{
-		packageName=doc.containingPackage().name();
-		className=doc.name();
-		
-		if (doc.superclass()!=null)
-			superClassQualified=doc.superclass().qualifiedName();
-		
-		MethodDoc[] methodDocs=doc.methods();
-		ConstructorDoc[] conDocs = doc.constructors();
-		
-		this.methods=new ArrayList<MethodReference>
-			(methodDocs.length + conDocs.length);
-		
-		for (int i=0;i<methodDocs.length;i++)
-		{
-			MethodDoc methodDoc = methodDocs[i];
-			methods.add(new MethodReference(methodDoc,this));
-		}
-		
-		for (int i = 0; i < conDocs.length; i++)
-		{
-			ConstructorDoc conDoc = conDocs[i];
-			methods.add(new MethodReference(conDoc, this));
-		}
-		
-		Collections.sort(methods,new MethodComparator());
-	}
+    public ClassReference(Element element) {
+        className = element.getAttribute("className").getValue();
+        packageName = element.getAttribute("packageName").getValue();
+        Attribute superClassAttribute = element.getAttribute("superClassQualified");
+        if(superClassAttribute != null) {
+            superClassQualified = superClassAttribute.getValue();
+        }
+        methods = new ArrayList<MethodReference>(element.getChildren("Method").size());
+        for(Object aChildren : element.getChildren("Method")) {
+            Element child = (Element)aChildren;
+            methods.add(new MethodReference(child, this));
+        }
+        Collections.sort(methods, new MethodComparator());
+    }
 
-	public ClassReference(Element element)
-	{
-		className=element.getAttribute("className").getValue();
-		packageName=element.getAttribute("packageName").getValue();
-		
-		Attribute superClassAttribute=
-			element.getAttribute("superClassQualified");
-		
-		if (superClassAttribute!=null)
-			superClassQualified=superClassAttribute.getValue();
+    public String getMethodUrl(String methodName, String signatureTypes, String baseUrl) {
+        if("*".equals(signatureTypes)) {
+            return getWildcardMethodUrl(methodName, baseUrl);
+        } else {
+            String signature = methodName + "(" + signatureTypes + ")";
+            for(MethodReference method : methods) {
+                if(method.signatureMatches(signature)) {
+                    return method.getMethodUrl(baseUrl);
+                }
+            }
+            return null;
+        }
+    }
 
-		List children=element.getChildren("Method");
-		methods=new ArrayList<MethodReference>(children.size());
-		
-		for (int i=0;i<children.size();i++)
-		{
-			Element child=(Element)children.get(i);
-			methods.add(new MethodReference(child,this));
-		}
-		
-		Collections.sort(methods,new MethodComparator());
-	}
+    private String getWildcardMethodUrl(String methodName, String baseUrl) {
+        for(MethodReference method : methods) {
+            if(method.getMethodName().equalsIgnoreCase(methodName)) {
+                return method.getMethodUrl(baseUrl);
+            }
+        }
+        return null;
+    }
 
-	public String getMethodUrl
-		(String methodName,String signatureTypes,String baseUrl)
-	{
-		if ("*".equals(signatureTypes))
-			return getWildcardMethodUrl(methodName,baseUrl);
-		else
-		{
-			String signature=methodName+"("+signatureTypes+")";
-			
-			for (int i=0;i<methods.size();i++)
-			{
-				MethodReference reference=
-					(MethodReference)methods.get(i);
-				
-				if (reference.signatureMatches(signature))
-					return reference.getMethodUrl(baseUrl);
-			}
-			return null;
-		}
-	}
+    public String getClassUrl(String baseUrl) {
+        return getQualifiedName() + ": " + getClassHTMLPage(baseUrl);
+    }
 
-	private String getWildcardMethodUrl(String methodName,String baseUrl)
-	{
-		for (int i=0;i<methods.size();i++)
-		{
-			MethodReference reference=
-				(MethodReference)methods.get(i);
-			
-			if (reference.getMethodName().equalsIgnoreCase(methodName))
-				return reference.getMethodUrl(baseUrl);
-		}
-		return null;
-	}
+    public String getClassHTMLPage(String baseUrl) {
+        String path = packageName == null ? "" : packageName.replaceAll("\\.", "/") + "/";
+        return baseUrl + path + className + ".html";
+    }
 
-	public String getClassUrl(String baseUrl)
-	{
-		return getQualifiedName()+": "+getClassHTMLPage(baseUrl);
-	}
+    public String getPackageName() {
+        return packageName;
+    }
 
-	public String getClassHTMLPage(String baseUrl)
-	{
-		String path=
-			packageName==null ?
-			"" :
-			packageName.replaceAll("\\.","/")+"/";
-		
-		return baseUrl+path+className+".html";
-	}
+    public String getClassName() {
+        return className;
+    }
 
-	public String getPackageName()
-	{
-		return packageName;
-	}
+    public String getQualifiedName() {
+        return (packageName == null ? "" : packageName + ".") + className;
+    }
 
-	public String getClassName()
-	{
-		return className;
-	}
+    public String getSuperClass() {
+        return superClassQualified;
+    }
 
-	public String getQualifiedName()
-	{
-		return
-			(packageName==null ? "" : (packageName+"."))+
-			className;
-	}
+    public Element buildElement() {
+        Element element = new Element("ClassReference");
+        element.setAttribute("packageName", packageName);
+        element.setAttribute("className", className);
+        if(superClassQualified != null) {
+            element.setAttribute("superClassQualified", superClassQualified);
+        }
+        for(MethodReference method : methods) {
+            element.addContent(method.buildElement());
+        }
+        return element;
+    }
 
-	public String getSuperClass()
-	{
-		return superClassQualified;
-	}
-
-	public Element buildElement()
-	{
-		Element element=new Element("ClassReference");
-		element.setAttribute("packageName",packageName);
-		element.setAttribute("className",className);
-		
-		if (superClassQualified != null)
-			element.setAttribute
-				("superClassQualified",superClassQualified);
-		
-		for (int i=0;i<methods.size();i++)
-		{
-			MethodReference reference=
-				(MethodReference)methods.get(i);
-			
-			element.addContent(reference.buildElement());
-		}
-		
-		return element;
-	}
-
-	private static class MethodComparator implements 
-		Comparator<MethodReference>
-	{
-		public int compare(MethodReference o1,MethodReference o2)
-		{
-			MethodReference one=(MethodReference)o1;
-			MethodReference two=(MethodReference)o2;
-			
-			if (one.getArgumentCount()==two.getArgumentCount())
-				return 0;
-			
-			if (one.getArgumentCount()>two.getArgumentCount())
-				return 1;
-			
-			return -1;
-		}
-	}
+    private static class MethodComparator implements Comparator<MethodReference> {
+        public int compare(MethodReference o1, MethodReference o2) {
+            if(o1.getArgumentCount() == o2.getArgumentCount()) {
+                return 0;
+            }
+            if(o1.getArgumentCount() > o2.getArgumentCount()) {
+                return 1;
+            }
+            return -1;
+        }
+    }
 }

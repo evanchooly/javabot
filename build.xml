@@ -1,4 +1,5 @@
 <project name="javabot" default="main">
+
 	<property file="build.properties"/>
 	<property file="build.properties.sample"/>
 
@@ -202,8 +203,8 @@
 
     <target name="make-properties"
             description="Generates the javabot and log4j properties files.">
-        <filter filtersfile="build.properties"/>
         <filter filtersfile="build.properties.sample"/>
+        <filter filtersfile="build.properties"/>
 		  <copy file="etc/merge/log4j.properties" todir="etc" filtering="true"
 			  overwrite="true"/>
 		  <copy file="etc/merge/javabot.properties" todir="etc" filtering="true"

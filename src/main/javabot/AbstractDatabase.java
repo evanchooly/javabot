@@ -3,7 +3,6 @@ package javabot;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -16,7 +15,7 @@ import org.jdom.Element;
  * @author <a href="mailto:javabot@cheeseronline.org">Justin Lee</a>
  */
 public abstract class AbstractDatabase implements Database {
-    private static Log log = LogFactory.getLog(AbstractDatabase.class);
+    private static final Log log = LogFactory.getLog(AbstractDatabase.class);
     private String _htmlFile;
 
     public AbstractDatabase(Element root) {
@@ -31,23 +30,19 @@ public abstract class AbstractDatabase implements Database {
     }
 
     protected void dumpHTML() {
+        PrintWriter writer = null;
         try {
             List<Factoid> factoids = getFactoids();
-            PrintWriter writer = new PrintWriter(new FileWriter(_htmlFile));
-            writer.println("<html><body><table border=\"1\" width=\"100%\"><tr>"
-                + "<th width=\"5%\">id</th><th width=\"10%\">factoid</th>"
-                + "<th width=\"75%\">value</th><th>user</th></tr>\n");
+            writer = new PrintWriter(new FileWriter(_htmlFile));
+            writer.println(
+                "<html><body><table border=\"1\"><tr><th>id</th><th>factoid</th><th>value</th><th>user</th></tr>\n");
             for(Factoid factoid : factoids) {
-
-                StringBuilder html = new StringBuilder("<tr><td>");
-                html.append(factoid.getID());
-                html.append("</td><td>");
-                html.append(factoid.getName());
-                html.append("</td><td>");
-                html.append(htmlize(factoid.getValue()));
-                html.append("</td><td>");
-                html.append(factoid.getUser());
-                html.append("</td></tr>\n");
+                StringBuilder html = new StringBuilder("<tr>");
+                appendCell(html, Long.toString(factoid.getID()));
+                appendCell(html, factoid.getName());
+                appendCell(html, htmlize(factoid.getValue()));
+                appendCell(html, factoid.getUser());
+                html.append("</tr>\n");
                 writer.println(html);
             }
             writer.println("</table></body></html>");
@@ -55,10 +50,20 @@ public abstract class AbstractDatabase implements Database {
             writer.close();
         } catch(IOException e) {
             log.error(e.getMessage(), e);
+        } finally {
+            if(writer != null) {
+                writer.close();
+            }
         }
     }
 
-    protected String htmlize(final String value) {
+    private void appendCell(StringBuilder html, String value) {
+        html.append("<td>");
+        html.append(value);
+        html.append("</td>");
+    }
+
+    protected String htmlize(String value) {
         String newValue = value.replaceAll("<", "&lt;");
         newValue = newValue.replaceAll(">", "&gt;");
         int startHttp = newValue.indexOf("http://");
