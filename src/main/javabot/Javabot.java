@@ -34,11 +34,8 @@ import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 
 public class Javabot extends PircBot implements ChannelControl, Responder {
-    private static Log log = LogFactory.getLog(Javabot.class);
-    
-    private final Map<String,String> channelPreviousMessages=
-	    new HashMap<String,String>();
-
+    private static final Log log = LogFactory.getLog(Javabot.class);
+    private final Map<String, String> channelPreviousMessages = new HashMap<String, String>();
     private List<BotOperation> operations;
     private String host;
     private String dictHost;
@@ -81,14 +78,11 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     }
 
     private void loadIgnoreInfo(Element root) {
-        final List<Element> ignoreNodes = new ArrayList<Element>();
-	
-	for (final Object element: root.getChildren("ignore"))
-		ignoreNodes.add((Element)element);
-	
-        Iterator<Element> iterator = ignoreNodes.iterator();
-        while(iterator.hasNext()) {
-            Element node = (Element)iterator.next();
+        List<Element> ignoreNodes = new ArrayList<Element>();
+        for(Object element : root.getChildren("ignore")) {
+            ignoreNodes.add((Element)element);
+        }
+        for(Element node : ignoreNodes) {
             ignores.add(node.getAttributeValue("name"));
         }
     }
@@ -97,11 +91,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         List operationNodes = root.getChildren("operation");
         Iterator iterator = operationNodes.iterator();
         operations = new ArrayList<BotOperation>();
-        int index = -1;
         while(iterator.hasNext()) {
-            index++;
             Element node = (Element)iterator.next();
-            final String className = node.getAttributeValue("class");
             try {
                 Class operationClass = Class.forName
                     (node.getAttributeValue("class"));
@@ -166,9 +157,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
 
     private void loadChannelInfo(Element root) {
         List channelNodes = root.getChildren("channel");
-        Iterator iterator = channelNodes.iterator();
-        while(iterator.hasNext()) {
-            Element node = (Element)iterator.next();
+        for(Object channelNode : channelNodes) {
+            Element node = (Element)channelNode;
             _channels.add(node.getAttributeValue("name"));
         }
     }
@@ -211,6 +201,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         }
     }
 
+    @SuppressWarnings({"StringContatenationInLoop"})
     private void connect() {
         boolean connected = false;
         while(!connected) {
@@ -218,10 +209,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                 connect(host, port);
                 sendRawLine("PRIVMSG NickServ :identify " + getNickPassword());
                 sleep(authWait);
-                Iterator iterator = _channels.iterator();
-                while(iterator.hasNext()) {
-                    joinChannel
-                        ((String)iterator.next());
+                for(String _channel : _channels) {
+                    joinChannel(_channel);
                 }
                 connected = true;
             } catch(Exception exception) {
@@ -231,14 +220,14 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         }
     }
 
+    @Override
     public void onMessage(String channel, String sender, String login,
         String hostname, String message) {
         if(isValidSender(sender)) {
-            for(int a = 0; a < startStrings.length; a++) {
-                int length = startStrings[a].length();
-                if(message.startsWith(startStrings[a])) {
-                    handleAnyMessage(channel, sender, login, hostname,
-                        message.substring(length).trim());
+            for(String startString : startStrings) {
+                int length = startString.length();
+                if(message.startsWith(startString)) {
+                    handleAnyMessage(channel, sender, login, hostname, message.substring(length).trim());
                     return;
                 }
             }
@@ -253,7 +242,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         for(BotOperation operation : operations) {
             List<Message> messages = operation.handleMessage(new BotEvent(channel, sender, login,
                 hostname, message));
-            if(messages.size() != 0) {
+            if(!messages.isEmpty()) {
                 return messages;
             }
         }
@@ -265,7 +254,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         for(BotOperation operation : operations) {
             List messages = operation.handleChannelMessage(new BotEvent(channel, sender,
                 login, hostname, message));
-            if(messages.size() != 0) {
+            if(!messages.isEmpty()) {
                 return messages;
             }
         }
@@ -276,9 +265,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         String hostname, String message) {
         List messages = getResponses(channel, sender, login, hostname, message);
         if(messages != null) {
-            Iterator iterator = messages.iterator();
-            while(iterator.hasNext()) {
-                Message nextMessage = (Message)iterator.next();
+            for(Object message1 : messages) {
+                Message nextMessage = (Message)message1;
                 if(nextMessage.isAction()) {
                     sendAction(nextMessage.getDestination(), nextMessage.getMessage());
                 } else {
@@ -293,9 +281,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         String hostname, String message) {
         List messages = getChannelResponses(channel, sender, login, hostname, message);
         if(messages != null) {
-            Iterator iterator = messages.iterator();
-            while(iterator.hasNext()) {
-                Message nextMessage = (Message)iterator.next();
+            for(Object message1 : messages) {
+                Message nextMessage = (Message)message1;
                 if(nextMessage.isAction()) {
                     sendAction(nextMessage.getDestination(), nextMessage.getMessage());
                 } else {
@@ -305,6 +292,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         }
     }
 
+    @Override
     public void onInvite(String targetNick, String sourceNick, String sourceLogin,
         String sourceHostname, String channel) {
         if(_channels.contains(channel)) {
@@ -312,21 +300,22 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         }
     }
 
+    @Override
     public void onDisconnect() {
         connect();
     }
 
     public String getPreviousMessage(String channel) {
         if(channelPreviousMessages.containsKey(channel)) {
-            return (String)channelPreviousMessages.get(channel);
+            return channelPreviousMessages.get(channel);
         }
         return "";
     }
 
     public boolean isOnSameChannelAs(String nick) {
         String[] channels = getChannels();
-        for(int a = 0; a < channels.length; a++) {
-            if(userIsOnChannel(nick, channels[a])) {
+        for(String channel : channels) {
+            if(userIsOnChannel(nick, channel)) {
                 return true;
             }
         }
@@ -335,23 +324,16 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
 
     public boolean userIsOnChannel(String nick, String channel) {
         User[] users = getUsers(channel);
-        for(int a = 0; a < users.length; a++) {
-            if
-                (
-                users[a].getNick().toLowerCase()
-                    .equals(nick.toLowerCase())
-                ) {
+        for(User user : users) {
+            if(user.getNick().toLowerCase().equals(nick.toLowerCase())) {
                 return true;
             }
         }
         return false;
     }
 
-    public void onPrivateMessage
-        (String sender,
-            String login,
-            String hostname,
-            String message) {
+    @Override
+    public void onPrivateMessage(String sender, String login, String hostname, String message) {
         if(isOnSameChannelAs(sender)) {
             handleAnyMessage(sender, sender, login, hostname, message);
         }
@@ -369,8 +351,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         return javadocBaseUrl;
     }
 
-    public void setNickPassword(String password) {
-        this.password = password;
+    public void setNickPassword(String value) {
+        password = value;
     }
 
     public String getNickPassword() {

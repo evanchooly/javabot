@@ -8,9 +8,9 @@ import org.jdom.JDOMException;
 public class JavadocParser {
     private StructureReference reference;
 
-    public JavadocParser(File file, String baseUrl)
+    public JavadocParser(File file, String url)
         throws IOException, JDOMException {
-        this.baseUrl = baseUrl;
+        this.baseUrl = url;
         reference = new StructureReference(file);
     }
 

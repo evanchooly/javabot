@@ -42,7 +42,6 @@
         <dirset dir="${build.src.dir}"/>
     </path>
 
-
     <uptodate property="docref.uptodate" targetfile="docref.xml"
 		srcfile="${env.JAVA_HOME}/${src.zip}"/>
 
@@ -217,8 +216,7 @@
     </target>
 
     <target name="import-db">
-        <get src="http://www.cheeseronline.org/~javabot/currentBackup" usetimestamp="true"
-             dest="etc/db.sql"/>
+        <get src="http://ns/javabot/currentBackup" usetimestamp="true" dest="etc/db.sql"/>
         <exec executable="dropdb" output="/dev/null">
             <arg line="javabot"/>
         </exec>
