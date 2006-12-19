@@ -15,9 +15,7 @@ public class JavadocParser {
     }
 
     public String[] javadoc(String key) {
-        // Use presence of an open parentheses to indicate we're
-        // looking for a method
-
+        // Use presence of an open parentheses to indicate we're looking for a method
         int openIndex = key.indexOf('(');
         if(openIndex == -1) {
             return reference.getClassDocUrls(key, baseUrl);
