@@ -67,6 +67,7 @@ public class TellOperation implements BotOperation {
         if(javabot.userIsOnChannel(nick, channel)) {
             String newMessage = message.substring(message.indexOf("about ") + "about ".length());
             List<Message> responses = javabot.getResponses(channel, nick, login, hostname, newMessage);
+            log.debug(sender + " is telling " + nick + " about " + newMessage);
             int length = responses.size();
             for(int a = 0; a < length; a++) {
                 Message next = responses.get(a);
