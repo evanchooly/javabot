@@ -110,7 +110,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                 } else if(JavadocOperation.class.equals(operationClass)) {
                     operations.add(new JavadocOperation(javadocSources, javadocBaseUrl));
                 } else if(KarmaChangeOperation.class.equals(operationClass)) {
-                    operations.add(new KarmaChangeOperation(_database));
+                    operations.add(new KarmaChangeOperation(_database, this));
                 } else if(KarmaReadOperation.class.equals(operationClass)) {
                     operations.add(new KarmaReadOperation(_database));
                 } else if(LeaveOperation.class.equals(operationClass)) {

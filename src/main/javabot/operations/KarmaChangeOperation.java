@@ -7,6 +7,7 @@ import java.util.List;
 import javabot.BotEvent;
 import javabot.Database;
 import javabot.Factoid;
+import javabot.Javabot;
 import javabot.Message;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,9 +18,11 @@ import org.apache.commons.logging.LogFactory;
 public class KarmaChangeOperation implements BotOperation {
     private final Database database;
     private static Log log = LogFactory.getLog(KarmaChangeOperation.class);
+    private final Javabot javabot;
 
-    public KarmaChangeOperation(final Database factoidDatabase) {
+    public KarmaChangeOperation(final Database factoidDatabase, final Javabot bot) {
         database = factoidDatabase;
+        javabot = bot;
     }
 
     /**
@@ -35,36 +38,39 @@ public class KarmaChangeOperation implements BotOperation {
         }
         if(message.endsWith("++") || message.endsWith("--")) {
             String nick = message.substring(0, message.length() - 2);
-            nick = nick.toLowerCase();
-            int karma = 0;
-            boolean newKarma = false;
-            Factoid factoid = database.getFactoid("karma " + nick);
-            try {
-                karma = Integer.parseInt(factoid.getValue());
-            } catch(Exception exception) {
-                newKarma = true;
-                factoid = new Factoid(-1, "karma " + nick, "0", sender, new Date());
-            }
-            if(nick.equals(sender.toLowerCase())) {
-                messages.add(new Message(channel, "Changing one's own karma" +
-                    " is not permitted.", false));
-                message = "--";
-            }
-            if(message.endsWith("++")) {
-                karma++;
+            if(!javabot.isOnSameChannelAs(nick)) {
+                messages.add(new Message(channel, "I don't know who that is.", false));
             } else {
-                karma--;
+                nick = nick.toLowerCase();
+                int karma = 0;
+                boolean newKarma = false;
+                Factoid factoid = database.getFactoid("karma " + nick);
+                try {
+                    karma = Integer.parseInt(factoid.getValue());
+                } catch(Exception exception) {
+                    newKarma = true;
+                    factoid = new Factoid(-1, "karma " + nick, "0", sender, new Date());
+                }
+                if(nick.equals(sender.toLowerCase())) {
+                    messages.add(new Message(channel, "Changing one's own karma is not permitted.", false));
+                    message = "--";
+                }
+                if(message.endsWith("++")) {
+                    karma++;
+                } else {
+                    karma--;
+                }
+                factoid.setValue("" + karma, sender);
+                if(newKarma) {
+                    database.addFactoid(factoid.getUser(), factoid.getName(), factoid.getValue());
+                } else {
+                    database.updateFactoid(factoid);
+                }
+                KarmaReadOperation karmaRead = new KarmaReadOperation(database);
+                messages.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(),
+                    event.getSender(), event.getLogin(), event.getHostname(),
+                    "karma " + nick)));
             }
-            factoid.setValue("" + karma, sender);
-            if(newKarma) {
-                database.addFactoid(factoid.getUser(), factoid.getName(), factoid.getValue());
-            } else {
-                database.updateFactoid(factoid);
-            }
-            KarmaReadOperation karmaRead = new KarmaReadOperation(database);
-            messages.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(),
-                event.getSender(), event.getLogin(), event.getHostname(),
-                "karma " + nick)));
         }
         return messages;
     }

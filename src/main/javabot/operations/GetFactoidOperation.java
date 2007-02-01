@@ -10,7 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class GetFactoidOperation implements BotOperation {
-    private static Log log = LogFactory.getLog(GetFactoidOperation.class);
+    private static final Log log = LogFactory.getLog(GetFactoidOperation.class);
     private Database database;
 
     public GetFactoidOperation(final Database botDatabase) {
@@ -18,26 +18,20 @@ public class GetFactoidOperation implements BotOperation {
     }
 
     public List<Message> handleMessage(BotEvent event) {
-        List<Message> messages = null;
-        messages = new ArrayList<Message>();
-        String channel = event.getChannel();
-        String message = event.getMessage();
-        String sender = event.getSender();
-        getFactoid(message, sender, messages, channel, event);
+        List<Message> messages = new ArrayList<Message>();
+        getFactoid(event.getMessage(), event.getSender(), messages, event.getChannel(), event);
         return messages;
     }
 
-    private void getFactoid(String message, String sender, List<Message> messages, String channel,
-        BotEvent event) {
-        if(message.endsWith(".") || message.endsWith("?")
-            || message.endsWith("!")) {
+    private void getFactoid(String message, String sender, List<Message> messages, String channel, BotEvent event) {
+        log.debug(sender + " : " + message);
+        if(message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
             message = message.substring(0, message.length() - 1);
         }
         String firstWord = message.replaceAll(" .+", "");
         String dollarOne = message.replaceFirst("[^ ]+ ", "");
         String key = message;
-        if(!database.hasFactoid(message.toLowerCase())
-            && database.hasFactoid(firstWord.toLowerCase() + " $1")) {
+        if(!database.hasFactoid(message.toLowerCase()) && database.hasFactoid(firstWord.toLowerCase() + " $1")) {
             message = firstWord + " $1";
         }
         if(database.hasFactoid(message.toLowerCase())) {
@@ -46,18 +40,14 @@ public class GetFactoidOperation implements BotOperation {
             message = message.replaceAll("\\$1", dollarOne);
             message = processRandomList(message);
             if(message.startsWith("<see>")) {
-                message = database.getFactoid(
-                    message.substring("<see>".length())).getValue();
+                message = database.getFactoid(message.substring("<see>".length())).getValue();
             }
             if(message.startsWith("<reply>")) {
-                messages.add(new Message(channel, message.substring("<reply>"
-                    .length()), false));
+                messages.add(new Message(channel, message.substring("<reply>".length()), false));
             } else if(message.startsWith("<action>")) {
-                messages.add(new Message(channel, message.substring("<action>"
-                    .length()), true));
+                messages.add(new Message(channel, message.substring("<action>".length()), true));
             } else {
-                messages.add(new Message(channel, sender + ", " + key + " is "
-                    + message, false));
+                messages.add(new Message(channel, sender + ", " + key + " is " + message, false));
             }
         } else {
             List<Message> guessed = new GuessOperation(database).handleMessage(new BotEvent(
@@ -68,9 +58,8 @@ public class GetFactoidOperation implements BotOperation {
                 messages.addAll(guessed);
             }
         }
-        if(messages.size() == 0) {
-            messages.add(new Message(channel, sender + ", I have no idea what "
-                + message + " is.", false));
+        if(messages.isEmpty()) {
+            messages.add(new Message(channel, sender + ", I have no idea what " + message + " is.", false));
         }
     }
 
@@ -82,7 +71,6 @@ public class GetFactoidOperation implements BotOperation {
         while(index < result.length() && index != -1 && index2 != -1) {
             String choice = result.substring(index + 1, index2);
             String[] choices = choice.split("\\|");
-
             if(choices.length > 1) {
                 int chosen = (int)(Math.random() * choices.length);
                 result = result.substring(0, index) + choices[chosen]
