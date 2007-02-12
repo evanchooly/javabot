@@ -1,9 +1,6 @@
 package javabot;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -14,13 +11,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
-import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -69,7 +61,7 @@ public class JDBCDatabase extends AbstractDatabase {
         _properties.load(getClass().getClassLoader().getResourceAsStream(
             Javabot.JAVABOT_PROPERTIES));
         try {
-            Class.forName(_properties.getProperty(DRIVER_NAME));
+            Class<?> aClass = Class.forName(_properties.getProperty(DRIVER_NAME));
         } catch(ClassNotFoundException e) {
             log.error(e.getMessage(), e);
             throw new ApplicationException(e.getMessage());

@@ -1,7 +1,6 @@
 package javabot.operations;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import javabot.ApplicationException;
@@ -19,7 +18,7 @@ import org.testng.Assert;
  * @author <a href="mailto:javabot@cheeseronline.org">Justin Lee</a>
  */
 public class BaseOperationTest {
-    private static Log log = LogFactory.getLog(BaseOperationTest.class);
+    private static final Log log = LogFactory.getLog(BaseOperationTest.class);
     protected static final String SENDER = "cheeser";
     protected static final String CHANNEL = "#test";
     protected static final String LOGIN = "";
@@ -43,7 +42,7 @@ public class BaseOperationTest {
         BotOperation operation) {
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, message);
         List<Message> results = operation.handleMessage(event);
-        Assert.assertTrue(results.size() != 0);
+        Assert.assertTrue(!results.isEmpty());
         Message result = results.get(0);
         log.debug("result = " + result);
         Assert.assertEquals(response, result.getMessage(), errorMessage);

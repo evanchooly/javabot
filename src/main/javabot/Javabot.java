@@ -45,27 +45,33 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     private String[] startStrings;
     private int authWait;
     private String password;
-    private List<String> _channels = new ArrayList<String>();
+    private List<String> channels = new ArrayList<String>();
     private List<String> ignores = new ArrayList<String>();
-    private Database _database;
+    private Database database;
     public static final int PORT_NUMBER = 2346;
     public static final String JAVABOT_PROPERTIES = "javabot.properties";
 
-    Javabot() throws JDOMException, IOException {
+    public Javabot() throws JDOMException, IOException {
         setName("javabot");
         setLogin("javabot");
-        setVersion("Javabot 1.6 by Ricky Clarkson (ricky_clarkson@yahoo.com) and "
-            + "various contributors, based on PircBot by Paul Mutton");
+        setVersion("Javabot 1.6");
         loadConfig();
     }
 
     private void loadConfig() throws JDOMException, IOException {
         SAXBuilder reader = new SAXBuilder(true);
-        Document document = reader.build(new File("config.xml"));
+        File configFile = getConfigFile();
+        Document document = null;
+        try {
+            document = reader.build(configFile.toURI().toURL());
+        } catch(Exception e) {
+            e.printStackTrace(System.out);
+            throw new RuntimeException(e.getMessage());
+        }
         Element root = document.getRootElement();
         String verbosity = root.getAttributeValue("verbose");
         setVerbose("true".equals(verbosity));
-        _database = new JDBCDatabase(root);
+        database = new JDBCDatabase(root);
         loadServerInfo(root);
         loadJavadocInfo(root);
         loadDictInfo(root);
@@ -74,7 +80,10 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         loadStartStringInfo(root);
         loadOperationInfo(root);
         loadIgnoreInfo(root);
-        log.debug("finished loading");
+    }
+
+    protected File getConfigFile() {
+        return new File("config.xml");
     }
 
     private void loadIgnoreInfo(Element root) {
@@ -97,32 +106,32 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                 Class operationClass = Class.forName
                     (node.getAttributeValue("class"));
                 if(AddFactoidOperation.class.equals(operationClass)) {
-                    operations.add(new AddFactoidOperation(_database));
+                    operations.add(new AddFactoidOperation(database));
                 } else if(DictOperation.class.equals(operationClass)) {
                     operations.add(new DictOperation(dictHost));
                 } else if(ForgetFactoidOperation.class.equals(operationClass)) {
-                    operations.add(new ForgetFactoidOperation(_database));
+                    operations.add(new ForgetFactoidOperation(database));
                     Debug.printDebug();
                 } else if(GetFactoidOperation.class.equals(operationClass)) {
-                    operations.add(new GetFactoidOperation(_database));
+                    operations.add(new GetFactoidOperation(database));
                 } else if(GuessOperation.class.equals(operationClass)) {
-                    operations.add(new GuessOperation(_database));
+                    operations.add(new GuessOperation(database));
                 } else if(JavadocOperation.class.equals(operationClass)) {
                     operations.add(new JavadocOperation(javadocSources, javadocBaseUrl));
                 } else if(KarmaChangeOperation.class.equals(operationClass)) {
-                    operations.add(new KarmaChangeOperation(_database, this));
+                    operations.add(new KarmaChangeOperation(database, this));
                 } else if(KarmaReadOperation.class.equals(operationClass)) {
-                    operations.add(new KarmaReadOperation(_database));
+                    operations.add(new KarmaReadOperation(database));
                 } else if(LeaveOperation.class.equals(operationClass)) {
                     operations.add(new LeaveOperation(this));
                 } else if(LiteralOperation.class.equals(operationClass)) {
-                    operations.add(new LiteralOperation(_database));
+                    operations.add(new LiteralOperation(database));
                 } else if(QuitOperation.class.equals(operationClass)) {
                     operations.add(new QuitOperation(getNickPassword()));
                 } else if(SpecialCasesOperation.class.equals(operationClass)) {
                     operations.add(new SpecialCasesOperation(this));
                 } else if(StatsOperation.class.equals(operationClass)) {
-                    operations.add(new StatsOperation(_database));
+                    operations.add(new StatsOperation(database));
                 } else if(TellOperation.class.equals(operationClass)) {
                     operations.add(new TellOperation(getNick(), this));
                 } else {
@@ -159,7 +168,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         List channelNodes = root.getChildren("channel");
         for(Object channelNode : channelNodes) {
             Element node = (Element)channelNode;
-            _channels.add(node.getAttributeValue("name"));
+            channels.add(node.getAttributeValue("name"));
         }
     }
 
@@ -202,15 +211,15 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     }
 
     @SuppressWarnings({"StringContatenationInLoop"})
-    private void connect() {
+    public void connect() {
         boolean connected = false;
         while(!connected) {
             try {
                 connect(host, port);
                 sendRawLine("PRIVMSG NickServ :identify " + getNickPassword());
                 sleep(authWait);
-                for(String _channel : _channels) {
-                    joinChannel(_channel);
+                for(String channel : channels) {
+                    joinChannel(channel);
                 }
                 connected = true;
             } catch(Exception exception) {
@@ -261,8 +270,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         return null;
     }
 
-    private void handleAnyMessage(String channel, String sender, String login,
-        String hostname, String message) {
+    private void handleAnyMessage(String channel, String sender, String login, String hostname, String message) {
         List messages = getResponses(channel, sender, login, hostname, message);
         if(messages != null) {
             for(Object message1 : messages) {
@@ -295,7 +303,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     @Override
     public void onInvite(String targetNick, String sourceNick, String sourceLogin,
         String sourceHostname, String channel) {
-        if(_channels.contains(channel)) {
+        if(channels.contains(channel)) {
             joinChannel(channel);
         }
     }
@@ -313,8 +321,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     }
 
     public boolean isOnSameChannelAs(String nick) {
-        String[] channels = getChannels();
-        for(String channel : channels) {
+        for(String channel : getChannels()) {
             if(userIsOnChannel(nick, channel)) {
                 return true;
             }
@@ -323,8 +330,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     }
 
     public boolean userIsOnChannel(String nick, String channel) {
-        User[] users = getUsers(channel);
-        for(User user : users) {
+        for(User user : getUsers(channel)) {
             if(user.getNick().toLowerCase().equals(nick.toLowerCase())) {
                 return true;
             }

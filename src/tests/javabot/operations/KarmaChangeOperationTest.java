@@ -1,14 +1,11 @@
 package javabot.operations;
 
-import java.util.List;
-
-import org.testng.annotations.Test;
-import org.testng.Assert;
+import javabot.Factoid;
+import javabot.Javabot;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import javabot.BotEvent;
-import javabot.Message;
-import javabot.Factoid;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 /**
  * Created Jul 22, 2005
@@ -17,7 +14,7 @@ import javabot.Factoid;
  */
 @Test(groups = {"operations"})
 public class KarmaChangeOperationTest extends BaseOperationTest {
-    private static Log log = LogFactory.getLog(KarmaChangeOperationTest.class);
+    private static final Log log = LogFactory.getLog(KarmaChangeOperationTest.class);
 
     public void updateKarma() {
         testOperation("testjavabot++", "testjavabot has a karma level of 1, " + SENDER, "");
@@ -71,7 +68,16 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
         return Integer.parseInt(value);
     }
 
+    @Override
     protected BotOperation getOperation() {
-        return new KarmaChangeOperation(getDatabase());
+        KarmaChangeOperation operation = null;
+        try {
+            operation = new KarmaChangeOperation(getDatabase(), new Javabot());
+            return operation;
+        } catch(Exception e) {
+            Assert.fail("Could not create operation");
+        }
+
+        return operation;
     }
 }
