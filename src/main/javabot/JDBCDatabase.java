@@ -24,8 +24,7 @@ import org.jdom.Element;
  * @author <a href="mailto:javabot@cheeseronline.org">Justin Lee</a>
  */
 public class JDBCDatabase extends AbstractDatabase {
-    private static Log log = LogFactory.getLog(JDBCDatabase.class);
-    private Properties _properties;
+    private static final Log log = LogFactory.getLog(JDBCDatabase.class);
     private static final String DRIVER_NAME = "database.driver";
     private static final String DATABASE_URL = "database.url";
     private static final String DATABASE_USER_NAME = "database.username";
@@ -47,6 +46,8 @@ public class JDBCDatabase extends AbstractDatabase {
         + " (message, changeDate) VALUES (?,?)";
     private static final String FIND_CHANGES = "SELECT * FROM changes WHERE message=?";
 
+    private Properties _properties;
+
     public JDBCDatabase() throws IOException {
         this(HTML_FILE);
     }
@@ -61,7 +62,7 @@ public class JDBCDatabase extends AbstractDatabase {
         _properties.load(getClass().getClassLoader().getResourceAsStream(
             Javabot.JAVABOT_PROPERTIES));
         try {
-            Class<?> aClass = Class.forName(_properties.getProperty(DRIVER_NAME));
+            Class.forName(_properties.getProperty(DRIVER_NAME));
         } catch(ClassNotFoundException e) {
             log.error(e.getMessage(), e);
             throw new ApplicationException(e.getMessage());
@@ -70,6 +71,7 @@ public class JDBCDatabase extends AbstractDatabase {
         getConnection();
     }
 
+    @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed"})
     private Connection getConnection() {
         try {
             Connection connection = DriverManager
@@ -88,6 +90,7 @@ public class JDBCDatabase extends AbstractDatabase {
         return getFactoid(key) != null;
     }
 
+    @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed"})
     public void addFactoid(String sender, String key, String value) {
         PreparedStatement stmt = null;
         Connection connection = null;
@@ -113,6 +116,7 @@ public class JDBCDatabase extends AbstractDatabase {
             + value + "'");
     }
 
+    @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed"})
     public void updateFactoid(Factoid factoid) {
         PreparedStatement stmt = null;
         Connection connection = null;
@@ -130,8 +134,7 @@ public class JDBCDatabase extends AbstractDatabase {
         } finally {
             cleanup(stmt, connection);
         }
-        logChange(factoid.getUser() + " changed '" + factoid.getName() + "' to '"
-            + factoid.getValue() + "'");
+        logChange(factoid.getUser() + " changed '" + factoid.getName() + "' to '" + factoid.getValue() + "'");
         dumpHTML();
     }
 
@@ -148,6 +151,7 @@ public class JDBCDatabase extends AbstractDatabase {
         }
     }
 
+    @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed"})
     public void forgetFactoid(String sender, String key) {
         PreparedStatement stmt = null;
         Connection connection = null;
@@ -169,10 +173,10 @@ public class JDBCDatabase extends AbstractDatabase {
         logChange(sender + " removed '" + key + "'");
     }
 
+    @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed"})
     private void logChange(String message) {
         PreparedStatement stmt = null;
         Connection connection = null;
-        Factoid factoid = null;
         try {
             connection = getConnection();
             stmt = connection.prepareStatement(FACTOID_CHANGE_LOG);
@@ -186,6 +190,7 @@ public class JDBCDatabase extends AbstractDatabase {
         }
     }
 
+    @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed"})
     public Factoid getFactoid(String key) {
         PreparedStatement stmt = null;
         Connection connection = null;
@@ -206,6 +211,7 @@ public class JDBCDatabase extends AbstractDatabase {
         return factoid;
     }
 
+    @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed"})
     public int getNumberOfFactoids() {
         PreparedStatement stmt = null;
         Connection connection = null;
@@ -225,6 +231,7 @@ public class JDBCDatabase extends AbstractDatabase {
         return count;
     }
 
+    @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed"})
     public List<Factoid> getFactoids() {
         PreparedStatement stmt = null;
         Connection connection = null;
@@ -251,10 +258,10 @@ public class JDBCDatabase extends AbstractDatabase {
 
     private Factoid createFactoid(ResultSet rs) throws SQLException {
         return new Factoid(rs.getLong("id"), rs.getString("name"),
-            rs.getString("value"), rs.getString("username"),
-            new Date(rs.getDate("updated").getTime()));
+            rs.getString("value"), rs.getString("username"), new Date(rs.getDate("updated").getTime()));
     }
 
+    @SuppressWarnings({"JDBCResourceOpenedButNotSafelyClosed"})
     public boolean findLog(String s) {
         PreparedStatement stmt = null;
         Connection connection = null;
@@ -271,5 +278,14 @@ public class JDBCDatabase extends AbstractDatabase {
             cleanup(stmt, connection);
         }
         return found;
+    }
+
+    public void disconnect() {
+        try {
+            getConnection().close();
+        } catch(SQLException e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

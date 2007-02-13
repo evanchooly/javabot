@@ -21,4 +21,6 @@ public interface Database {
     void updateFactoid(Factoid factoid);
 
     boolean findLog(String s);
+
+    void disconnect();
 }

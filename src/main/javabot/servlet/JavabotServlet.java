@@ -21,10 +21,10 @@ import org.apache.commons.logging.LogFactory;
  */
 public class JavabotServlet implements Servlet {
     private static final Log log = LogFactory.getLog(JavabotServlet.class);
+    private Javabot bot;
 
     public void init(final ServletConfig servletConfig) throws ServletException {
         log.info("Starting Javabot");
-        Javabot bot = null;
         try {
             bot = new Javabot() {
                 @Override
@@ -59,5 +59,8 @@ public class JavabotServlet implements Servlet {
     }
 
     public void destroy() {
+        if(bot == null) {
+            bot.shutdown();
+        }
     }
 }

@@ -372,4 +372,9 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     public void addIgnore(String sender) {
         ignores.add(sender);
     }
+
+    public void shutdown() {
+        disconnect();
+
+    }
 }
