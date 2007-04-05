@@ -222,7 +222,7 @@
     <target name="war" depends="rebuild">
         <war destfile="${build}/javabot.war" webxml="src/web/WEB-INF/web.xml">
             <classes dir="${build.src.dir}"/>
-            <classes dir="etc" includes="javabot.properties"/>
+            <classes dir="etc" includes="*.properties"/>
             <lib dir="lib" includes="*.jar" excludes="servlet*"/>
         </war>
     </target>

@@ -31,19 +31,22 @@ public class PortListener implements Runnable {
         try {
             ServerSocket serverSocket = new ServerSocket(port);
             while(!_quit) {
-                Socket socket = serverSocket.accept();
-                InputStream inputStream = socket.getInputStream();
-                InputStreamReader streamReader =
-                    new InputStreamReader(inputStream);
-                BufferedReader reader =
-                    new BufferedReader(streamReader);
-                String line = reader.readLine();
-                log.debug(password);
-                if(password.equals(line)) {
-                    Debug.printDebug("About to exit");
-                    _quit = true;
+                BufferedReader reader = null;
+                try {
+                    Socket socket = serverSocket.accept();
+                    InputStream inputStream = socket.getInputStream();
+                    InputStreamReader streamReader = new InputStreamReader(inputStream);
+                    reader = new BufferedReader(streamReader);
+                    String line = reader.readLine();
+                    log.debug(password);
+                    if(password.equals(line)) {
+                        Debug.printDebug("About to exit");
+                        _quit = true;
+                    }
+                    socket.close();
+                } finally {
+                    reader.close();
                 }
-                socket.close();
             }
             System.exit(0);
         }

@@ -6,7 +6,7 @@ DB_USER=cheeser
 DB_PASS=cheeser
 DB_DRIVER=org.postgresql.Driver
 
-LOG4J_DIRECTORY=logs
+LOG4J_DIRECTORY=/tmp
 LOG4J_DATE_PATTERN=yyyy-MM-dd-a
 LOG4J_CONVERSION=%-5p\: %d{ISO8601}\: %C{1}\: %m%n
 LOG4J_LAYOUT=org.apache.log4j.PatternLayout
