@@ -33,11 +33,17 @@ public class StructureReference {
 
     public StructureReference(File file) throws IOException, JDOMException {
         SAXBuilder sax = new SAXBuilder(false);
-        Document doc = sax.build(new FileInputStream(file));
-        List children = doc.getRootElement().getChildren("ClassReference");
-        for(Object aChildren : children) {
-            Element child = (Element)aChildren;
-            addClassReference(new ClassReference(child));
+        FileInputStream stream = null;
+        try {
+            stream = new FileInputStream(file);
+            Document doc = sax.build(stream);
+            List children = doc.getRootElement().getChildren("ClassReference");
+            for(Object aChildren : children) {
+                Element child = (Element)aChildren;
+                addClassReference(new ClassReference(child));
+            }
+        } finally {
+            stream.close();
         }
     }
 

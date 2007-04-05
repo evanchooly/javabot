@@ -54,7 +54,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     public Javabot() throws JDOMException, IOException {
         setName("javabot");
         setLogin("javabot");
-        setVersion("Javabot 1.6");
+        setVersion("Javabot 1.7");
         loadConfig();
     }
 
@@ -182,8 +182,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         javadocSources = javadocNode.getAttributeValue("reference-xml");
         if(javadocSources == null) {
             throw new IllegalStateException
-                ("The config file must supply a reference-xml " +
-                    "attribute, as per the config.xml.sample file.");
+                ("The config file must supply a reference-xml attribute, as per the config.xml.sample file.");
         }
         javadocBaseUrl = javadocNode.getAttributeValue("base-url");
     }

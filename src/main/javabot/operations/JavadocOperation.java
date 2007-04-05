@@ -1,14 +1,12 @@
 package javabot.operations;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javabot.BotEvent;
 import javabot.JavadocParser;
 import javabot.Message;
-import org.jdom.JDOMException;
 
 /**
  * @author ricky_clarkson
@@ -33,9 +31,7 @@ public class JavadocOperation implements BotOperation {
             if(javadocParser == null) {
                 try {
                     javadocParser = new JavadocParser(new File(javadocSources),javadocBaseUrl);
-                } catch(IOException exception) {
-                    throw new RuntimeException(exception);
-                } catch(JDOMException exception) {
+                } catch(Exception exception) {
                     throw new RuntimeException(exception);
                 }
             }
