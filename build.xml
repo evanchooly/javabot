@@ -84,10 +84,8 @@
         <mkdir dir="${emma.dir}"/>
         <mkdir dir="${emma.instr.dir}"/>
 
-        <taskdef name="testng" classname="org.testng.TestNGAntTask"
-                 classpathref="test.class.path"/>
-        <taskdef name="emma" classname="com.vladium.emma.emmaTask"
-                 classpathref="test.class.path"/>
+        <taskdef name="testng" classname="org.testng.TestNGAntTask" classpathref="test.class.path"/>
+        <taskdef name="emma" classname="com.vladium.emma.emmaTask" classpathref="test.class.path"/>
 
         <emma>
             <instr instrpathref="build.src.path" destdir="${emma.instr.dir}" metadatafile="${emma.dir}/metadata.emma"
@@ -164,7 +162,7 @@
 
     <target name="buildxml" unless="docref.uptodate">
         <unzip src="${env.JAVA_HOME}/${src.zip}" dest="docRefBuild"/>
-        <javadoc sourcepath="docRefBuild" packagenames="*" excludepackagenames="com.sun.*, org.apache.*"
+        <javadoc sourcepath="docRefBuild" packagenames="*" excludepackagenames="com.sun.*, org.apache.*, org.omg.*"
             maxmemory="1024m" source="${src.version}" docletpathref="javabot.cp">
             <doclet name="javabot.javadoc.StructureDoclet">
                 <param name="-x" value="docref.xml"/>

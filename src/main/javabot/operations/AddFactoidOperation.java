@@ -11,7 +11,7 @@ import javabot.Message;
 public class AddFactoidOperation implements BotOperation {
     private final Database database;
 
-    public AddFactoidOperation(final Database factoidDatabase) {
+    public AddFactoidOperation(Database factoidDatabase) {
         database = factoidDatabase;
     }
 
@@ -26,24 +26,20 @@ public class AddFactoidOperation implements BotOperation {
             Object keyParts = Arrays.subset(messageParts, 0, partWithIs);
             String key = Arrays.toString(keyParts, " ");
             key = key.toLowerCase();
-            while(key.endsWith(".") || key.endsWith("?")
-                || key.endsWith("!")) {
+            while(key.endsWith(".") || key.endsWith("?") || key.endsWith("!")) {
                 key = key.substring(0, key.length() - 1);
             }
-            String value = Arrays.toString(Arrays.subset(messageParts,
-                partWithIs + 1, messageParts.length), " ");
+            String value = Arrays.toString(Arrays.subset(messageParts, partWithIs + 1, messageParts.length), " ");
             if(key.trim().length() == 0) {
                 messages.add(new Message(channel, "Invalid factoid name", false));
                 return messages;
             }
             if(value.trim().length() == 0) {
-                messages.add(new Message(channel, "Invalid factoid value",
-                    false));
+                messages.add(new Message(channel, "Invalid factoid value", false));
                 return messages;
             }
             if(database.hasFactoid(key)) {
-                messages.add(new Message(channel, "I already have a factoid "
-                    + "with that name, " + sender, false));
+                messages.add(new Message(channel, "I already have a factoid with that name, " + sender, false));
                 return messages;
             }
             messages.add(new Message(channel, "Okay, " + sender + ".", false));

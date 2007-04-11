@@ -376,4 +376,9 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         disconnect();
 
     }
+
+    @Override
+    public void log(String string) {
+        log.info(string);
+    }
 }

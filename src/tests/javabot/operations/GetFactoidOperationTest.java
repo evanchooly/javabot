@@ -7,9 +7,8 @@ import javabot.BotEvent;
 import javabot.Message;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.testng.annotations.Configuration;
-import org.testng.annotations.Test;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
 /**
  * Created Jun 30, 2005
@@ -59,9 +58,8 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void questionFactoid() {
-        testOperation("how to use spinners?",
-            getFoundMessage("how to use spinners", "http://java.sun.com/docs/books/tutorial/"
-                + "uiswing/components/spinner.html"), ERROR_MESSAGE);
+        testOperation("how to use spinners?", getFoundMessage("how to use spinners",
+            "http://java.sun.com/docs/books/tutorial/uiswing/components/spinner.html"), ERROR_MESSAGE);
     }
 
     public void guessFactoid() {
