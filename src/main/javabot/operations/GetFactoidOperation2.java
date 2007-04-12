@@ -1,7 +1,6 @@
 package javabot.operations;
 
 import javabot.BotEvent;
-import javabot.Database;
 import javabot.Message;
 import javabot.dao.FactoidDao;
 import org.apache.commons.logging.Log;
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetFactoidOperation2 implements BotOperation {
-    private static final Log log = LogFactory.getLog(GetFactoidOperation.class);
+    private static final Log log = LogFactory.getLog(GetFactoidOperation2.class);
     private FactoidDao m_dao;
 
     public GetFactoidOperation2(final FactoidDao dao) {
@@ -49,7 +48,7 @@ public class GetFactoidOperation2 implements BotOperation {
             } else {
                 messages.add(new Message(channel, sender + ", " + key + " is " + message, false));
             }
-        /*} else {
+            /*} else {
             List<Message> guessed = new GuessOperation(database).handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event.getHostname(), "guess " + message));
             Message guessedMessage = guessed.get(0);
             if (!"No appropriate factoid found.".equals(guessedMessage.getMessage())) {
