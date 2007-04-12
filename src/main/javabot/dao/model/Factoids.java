@@ -11,7 +11,7 @@ import java.util.Date;
 
 //
 @Entity
-public class Factoids implements Serializable {
+public class factoids implements Serializable {
 
     @Id
     @Column(name = "id")

@@ -1,6 +1,6 @@
 package javabot.dao;
 
-import javabot.dao.model.Factoids;
+import javabot.dao.model.factoids;
 import org.hibernate.SessionFactory;
 
 // User: joed
@@ -8,16 +8,16 @@ import org.hibernate.SessionFactory;
 // Time: 2:41:22 PM
 
 
-public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoids> implements FactoidDao {
+public class FactoidDaoHibernate extends AbstractDaoHibernate<factoids> implements FactoidDao {
 
     public FactoidDaoHibernate() {
-        super(Factoids.class);
+        super(factoids.class);
     }
 
-    public Factoids load(String name) {
-        String query = "from Factoids m where m.name = :name";
+    public factoids load(String name) {
+        String query = "from factoids m where m.name = :name";
 
-        return (Factoids) getSession().createQuery(query)
+        return (factoids) getSession().createQuery(query)
                 .setString("name", name)
                 .setMaxResults(1)
                 .uniqueResult();

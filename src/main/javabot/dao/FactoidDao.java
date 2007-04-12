@@ -1,6 +1,6 @@
 package javabot.dao;
 
-import javabot.dao.model.Factoids;
+import javabot.dao.model.factoids;
 
 
 // User: joed
@@ -11,7 +11,7 @@ import javabot.dao.model.Factoids;
 public interface FactoidDao {
 
 
-    public Factoids load(String name);
+    public factoids load(String name);
 
 
 
