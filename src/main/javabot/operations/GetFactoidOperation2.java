@@ -33,13 +33,13 @@ public class GetFactoidOperation2 implements BotOperation {
         String key = message;
 
 
-        if (!m_dao.load(message.toLowerCase()).equals("")) {
-            message = m_dao.load(message.toLowerCase()).getValue();
+        if (!((m_dao.getFactoid(message.toLowerCase()).getValue() == null))) {
+            message = m_dao.getFactoid(message.toLowerCase()).getValue();
             message = message.replaceAll("\\$who", sender);
             message = message.replaceAll("\\$1", dollarOne);
             message = processRandomList(message);
             if (message.startsWith("<see>")) {
-                message = m_dao.load(message.substring("<see>".length())).getValue();
+                message = m_dao.getFactoid(message.substring("<see>".length())).getValue();
             }
             if (message.startsWith("<reply>")) {
                 messages.add(new Message(channel, message.substring("<reply>".length()), false));
@@ -48,12 +48,12 @@ public class GetFactoidOperation2 implements BotOperation {
             } else {
                 messages.add(new Message(channel, sender + ", " + key + " is " + message, false));
             }
-            /*} else {
-            List<Message> guessed = new GuessOperation(database).handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event.getHostname(), "guess " + message));
+            } else {
+            List<Message> guessed = new GuessOperation2(m_dao).handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event.getHostname(), "guess " + message));
             Message guessedMessage = guessed.get(0);
             if (!"No appropriate factoid found.".equals(guessedMessage.getMessage())) {
                 messages.addAll(guessed);
-            }*/
+            }
         }
         if (messages.isEmpty()) {
             messages.add(new Message(channel, sender + ", I have no idea what " + message + " is.", false));
