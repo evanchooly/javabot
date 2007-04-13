@@ -1,6 +1,10 @@
 package javabot.dao.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -14,26 +18,33 @@ import java.util.Date;
 public class factoids implements Serializable {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "`id`")
+    // For MySQL uncomment the AUTO strategy
+    // Postgresql had an existing sequence
+    //@GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "factoid_sequence")
+    @SequenceGenerator(name = "factoid_sequence", sequenceName = "factoid_sequence", allocationSize = 1)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "`name`", length = 255)
     private String name;
 
 
-    @Column(name = "`value`")
+    @Column(name = "`value`", length = 2000)
     private String value;
 
-    @Column(name = "username")
+    @Column(name = "`username`", length = 100)
     private String userName;
 
-    @Column(name = "updated")
+    @Column(name = "`updated`")
     private Date updated;
 
-
-    public Long getSeqno() {
+    public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -67,6 +78,4 @@ public class factoids implements Serializable {
     public void setUpdated(Date updated) {
         this.updated = updated;
     }
-
-
 }
