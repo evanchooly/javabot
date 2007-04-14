@@ -19,4 +19,10 @@ CREATE TABLE seen(
 	message VARCHAR(4000) NOT NULL,
 	updated TIMESTAMP
 );
-	
+
+CREATE TABLE logs(
+	nick VARCHAR(255) NOT NULL,
+        channel VARCHAR(255) NOT NULL,
+        message VARCHAR(4000) NOT NULL,
+        updated TIMESTAMP
+);
