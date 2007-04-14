@@ -49,7 +49,7 @@ public class LogDaoHibernate extends AbstractDaoHibernate<factoids> implements L
 
 
     public seen getMessage(String nick, String channel) {
-        String query = "from seen s where s.nick = :nick" +
+        String query = "from logs s where s.nick = :nick" +
                        " AND s.channel = :channel";
 
         seen m_user = (seen) getSession().createQuery(query)
