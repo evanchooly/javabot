@@ -3,6 +3,16 @@
 
 <beans>
 
+    <bean id="log4jInitialization" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetClass" value="org.springframework.util.Log4jConfigurer"/>
+        <property name="targetMethod" value="initLogging"/>
+        <property name="arguments">
+            <list>
+                <value>log4j.properties</value>
+            </list>
+        </property>
+    </bean>
+
     <bean id="factoidDao" class="javabot.dao.FactoidDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
@@ -12,6 +22,10 @@
     </bean>
 
     <bean id="seenDao" class="javabot.dao.SeenDaoHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="logDao" class="javabot.dao.LogDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
@@ -44,6 +58,7 @@
                 <value>javabot.dao.model.factoids</value>
                 <value>javabot.dao.model.changes</value>
                 <value>javabot.dao.model.seen</value>
+                <value>javabot.dao.model.logs</value>
             </list>
         </property>
         <property name="hibernateProperties">
