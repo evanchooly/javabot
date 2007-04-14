@@ -12,3 +12,11 @@ CREATE TABLE changes(
 	message VARCHAR(4000) NOT NULL,
 	changeDate TIMESTAMP
 	);
+
+CREATE TABLE seen(
+	nick VARCHAR(255) NOT NULL,
+	channel VARCHAR(255) NOT NULL,
+	message VARCHAR(4000) NOT NULL,
+	updated TIMESTAMP
+);
+	
