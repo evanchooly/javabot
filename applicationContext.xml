@@ -7,11 +7,13 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-
-     <bean id="changesDao" class="javabot.dao.ChangesDaoHibernate">
+    <bean id="changesDao" class="javabot.dao.ChangesDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
+    <bean id="seenDao" class="javabot.dao.SeenDaoHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
 
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
@@ -36,14 +38,12 @@
         </property>
     </bean>
 
-
-
-
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="annotatedClasses">
             <list>
                 <value>javabot.dao.model.factoids</value>
                 <value>javabot.dao.model.changes</value>
+                <value>javabot.dao.model.seen</value>
             </list>
         </property>
         <property name="hibernateProperties">
