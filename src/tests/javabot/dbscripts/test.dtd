@@ -1,0 +1,47 @@
+<!ELEMENT dataset (
+   (changes|
+    db_version|
+    factoids|
+    logs|
+    seen)*)>
+
+<!ELEMENT changes EMPTY>
+<!ATTLIST changes
+    message CDATA #IMPLIED
+    changedate CDATA #IMPLIED
+>
+
+<!ELEMENT db_version EMPTY>
+<!ATTLIST db_version
+    version_index CDATA #IMPLIED
+    last_updated_on CDATA #IMPLIED
+    last_update_succeeded CDATA #IMPLIED
+    codescripts_timestamp CDATA #IMPLIED
+    last_codeupdate_succeeded CDATA #IMPLIED
+>
+
+<!ELEMENT factoids EMPTY>
+<!ATTLIST factoids
+    id CDATA #IMPLIED
+    name CDATA #IMPLIED
+    value CDATA #IMPLIED
+    username CDATA #IMPLIED
+    updated CDATA #IMPLIED
+>
+
+<!ELEMENT logs EMPTY>
+<!ATTLIST logs
+    nick CDATA #IMPLIED
+    channel CDATA #IMPLIED
+    message CDATA #IMPLIED
+    updated CDATA #IMPLIED
+>
+
+<!ELEMENT seen EMPTY>
+<!ATTLIST seen
+    nick CDATA #IMPLIED
+    channel CDATA #IMPLIED
+    message CDATA #IMPLIED
+    updated CDATA #IMPLIED
+>
+
