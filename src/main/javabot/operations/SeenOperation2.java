@@ -17,7 +17,7 @@ public class SeenOperation2 implements BotOperation {
 
     private static Log log = LogFactory.getLog(SeenOperation2.class);
 
-    public SeenDao s_dao;
+    private SeenDao s_dao;
 
     public SeenOperation2(SeenDao dao) {
         this.s_dao = dao;
