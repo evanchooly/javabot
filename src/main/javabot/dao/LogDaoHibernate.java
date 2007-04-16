@@ -1,17 +1,13 @@
 package javabot.dao;
 
 import javabot.dao.model.factoids;
-import javabot.dao.model.seen;
 import javabot.dao.model.logs;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
 
 // User: joed
@@ -48,11 +44,11 @@ public class LogDaoHibernate extends AbstractDaoHibernate<factoids> implements L
     }
 
 
-    public seen getMessage(String nick, String channel) {
+    public logs getMessage(String nick, String channel) {
         String query = "from logs s where s.nick = :nick" +
-                       " AND s.channel = :channel";
+                " AND s.channel = :channel";
 
-        seen m_user = (seen) getSession().createQuery(query)
+        logs m_user = (logs) getSession().createQuery(query)
                 .setString("nick", nick)
                 .setString("channel", channel)
                 .setMaxResults(1)
@@ -60,7 +56,7 @@ public class LogDaoHibernate extends AbstractDaoHibernate<factoids> implements L
 
         if (m_user == null) {
 
-            seen notFound = new seen();
+            logs notFound = new logs();
             return notFound;
         }
 
