@@ -1,13 +1,13 @@
 package javabot.operations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.FactoidDao;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GetFactoidOperation2 implements BotOperation {
     private static final Log log = LogFactory.getLog(GetFactoidOperation2.class);

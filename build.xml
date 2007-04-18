@@ -202,7 +202,7 @@
     </target>
 
     <target name="import-db">
-        <get src="http://ns/javabot/currentBackup" usetimestamp="true" dest="etc/db.sql"/>
+        <scp file="jlee:${scp.password}@antwerkz.com:javabot.dump" localToFile="etc/javabot.sql" trust="yes"/>
         <exec executable="dropdb" output="/dev/null">
             <arg line="javabot"/>
         </exec>

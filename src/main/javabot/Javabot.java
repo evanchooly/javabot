@@ -1,5 +1,13 @@
 package javabot;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import com.rickyclarkson.java.lang.Debug;
 import javabot.dao.FactoidDao;
 import javabot.operations.AddFactoidOperation;
@@ -29,14 +37,6 @@ import org.jibble.pircbot.User;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 public class Javabot extends PircBot implements ChannelControl, Responder {
     private static final Log log = LogFactory.getLog(Javabot.class);
     private final Map<String, String> channelPreviousMessages = new HashMap<String, String>();
@@ -64,7 +64,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     public Javabot() throws JDOMException, IOException {
         setName("javabot");
         setLogin("javabot");
-        setVersion("Javabot 1.7");
+        setVersion("Javabot 1.8");
         loadConfig();
     }
 
