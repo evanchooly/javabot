@@ -201,18 +201,22 @@
         <xmlvalidate file="config.xml.sample"/>
     </target>
 
-    <target name="import-db">
-        <scp file="jlee:${scp.password}@antwerkz.com:javabot.dump" localToFile="etc/javabot.sql" trust="yes"/>
-        <exec executable="dropdb" output="/dev/null">
+    <target name="import-db" if="scp.password">
+        <sshexec host="antwerkz.com" username="jlee" password="${scp.password}"
+                 command="pg_dump -C -D -f javabot.dump javabot" trust="yes"/>
+        <scp file="jlee:${scp.password}@antwerkz.com:javabot.dump" localToFile="etc/db.sql" trust="yes"/>
+        <sshexec host="antwerkz.com" username="jlee" password="${scp.password}" command="rm javabot.dump" trust="yes"
+                 verbose="true"/>
+        <exec executable="dropdb">
             <arg line="javabot"/>
         </exec>
-        <exec executable="createdb" output="/dev/null">
+        <exec executable="createdb">
             <arg line="javabot"/>
         </exec>
-        <exec executable="psql" output="/dev/null">
+        <exec executable="psql">
             <arg line="javabot -f etc/javabot.sql"/>
         </exec>
-        <exec executable="psql" output="/dev/null">
+        <exec executable="psql">
             <arg line="javabot -f etc/db.sql"/>
         </exec>
     </target>

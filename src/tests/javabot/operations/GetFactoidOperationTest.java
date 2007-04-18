@@ -83,7 +83,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void action() {
-        BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "kick " + SENDER);
+        BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "smack " + SENDER);
         List<Message> results = getOperation().handleMessage(event);
         Message result = results.get(0);
         Assert.assertEquals(result.isAction(), true, "Should be an action.");
