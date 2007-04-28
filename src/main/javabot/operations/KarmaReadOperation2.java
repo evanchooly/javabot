@@ -14,16 +14,14 @@ public class KarmaReadOperation2 implements BotOperation {
 
     private FactoidDao f_dao;
     private ChangesDao c_dao;
-    private Element root;
-    private String htmlFile;
-    private Properties properties;
-
-    public KarmaReadOperation2(FactoidDao factoid_dao, ChangesDao change_dao, Element root) {
+     private String htmlFile;
+    
+    public KarmaReadOperation2(FactoidDao factoid_dao, ChangesDao change_dao, String file) {
         this.f_dao = factoid_dao;
         this.c_dao = change_dao;
-        this.root = root;
 
-        htmlFile = root.getChild("factoids").getAttributeValue("htmlfilename");
+
+        htmlFile = file;
     }
 
     /**

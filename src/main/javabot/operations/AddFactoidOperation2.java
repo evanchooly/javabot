@@ -18,12 +18,11 @@ public class AddFactoidOperation2 implements BotOperation {
     private String htmlFile;
     private Properties properties;
 
-    public AddFactoidOperation2(FactoidDao f_dao, ChangesDao c_dao, Element root) {
+    public AddFactoidOperation2(FactoidDao f_dao, ChangesDao c_dao, String file) {
         this.f_dao = f_dao;
         this.c_dao = c_dao;
-        this.root = root;
-
-        htmlFile = root.getChild("factoids").getAttributeValue("htmlfilename");
+        
+        htmlFile = file;
 
     }
 

@@ -1,13 +1,13 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.FactoidDao;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GetFactoidOperation2 implements BotOperation {
     private static final Log log = LogFactory.getLog(GetFactoidOperation2.class);
@@ -31,9 +31,12 @@ public class GetFactoidOperation2 implements BotOperation {
         String firstWord = message.replaceAll(" .+", "");
         String dollarOne = message.replaceFirst("[^ ]+ ", "");
         String key = message;
-
+        if(!m_dao.hasFactoid(message.toLowerCase()) && m_dao.hasFactoid(firstWord.toLowerCase() + " $1")) {
+                       message = firstWord + " $1";
+                 }
 
         if (!((m_dao.getFactoid(message.toLowerCase()).getValue() == null))) {
+
             message = m_dao.getFactoid(message.toLowerCase()).getValue();
             message = message.replaceAll("\\$who", sender);
             message = message.replaceAll("\\$1", dollarOne);
@@ -48,7 +51,7 @@ public class GetFactoidOperation2 implements BotOperation {
             } else {
                 messages.add(new Message(channel, sender + ", " + key + " is " + message, false));
             }
-            } else {
+        } else {
             List<Message> guessed = new GuessOperation2(m_dao).handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event.getHostname(), "guess " + message));
             Message guessedMessage = guessed.get(0);
             if (!"No appropriate factoid found.".equals(guessedMessage.getMessage())) {
@@ -60,7 +63,7 @@ public class GetFactoidOperation2 implements BotOperation {
         }
     }
 
-    String processRandomList(String message) {
+    protected String processRandomList(String message) {
         String result = message;
         int index = -1;
         index = result.indexOf("(", index + 1);

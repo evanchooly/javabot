@@ -12,7 +12,6 @@ import org.jdom.Element;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class KarmaChangeOperation2 implements BotOperation {
 
@@ -23,22 +22,17 @@ public class KarmaChangeOperation2 implements BotOperation {
     private ChangesDao c_dao;
     private Element root;
     private String htmlFile;
-    private Properties properties;
 
-    public KarmaChangeOperation2(FactoidDao factoid_dao, ChangesDao change_dao, Element root, final Javabot bot) {
+    public KarmaChangeOperation2(FactoidDao factoid_dao, ChangesDao change_dao, String file, final Javabot bot) {
         this.f_dao = factoid_dao;
         this.c_dao = change_dao;
         this.root = root;
 
         javabot = bot;
 
-        htmlFile = root.getChild("factoids").getAttributeValue("htmlfilename");
+        htmlFile = file;
     }
 
-
-    /**
-     * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
-     */
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();
@@ -84,7 +78,7 @@ public class KarmaChangeOperation2 implements BotOperation {
                 } else {
                     f_dao.updateFactoid(factoid, c_dao, htmlFile);
                 }
-                KarmaReadOperation2 karmaRead = new KarmaReadOperation2(f_dao, c_dao, root);
+                KarmaReadOperation2 karmaRead = new KarmaReadOperation2(f_dao, c_dao, htmlFile);
                 messages.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event.getHostname(), "karma " + nick)));
             }
         }

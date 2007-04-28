@@ -44,12 +44,6 @@ public class SeenOperation2 implements BotOperation {
     }
 
     public List<Message> handleChannelMessage(BotEvent event) {
-        String message = event.getMessage();
-        String channel = event.getChannel();
-        String sender = event.getSender();
-
-        s_dao.logSeen(sender, channel, "said: " + message);
-
         return new ArrayList<Message>();
     }
 }

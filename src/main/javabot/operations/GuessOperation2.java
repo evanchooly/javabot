@@ -53,6 +53,9 @@ public class GuessOperation2 implements BotOperation {
             if (next.indexOf("karma ") == 0) {
                 continue;
             }
+            if (next.contains("$1")) {
+                continue;
+            }
             for (String word : words) {
                 int currentMatches = 0;
                 if (word.length() < 3) {
