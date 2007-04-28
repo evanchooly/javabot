@@ -1,10 +1,6 @@
 package javabot.dao.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -44,6 +40,7 @@ public class factoids implements Serializable {
     }
 
     public void setId(Long id) {
+        
         this.id = id;
     }
 

@@ -1,8 +1,6 @@
 package javabot.dao.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,13 +11,27 @@ import java.util.Date;
 
 //
 @Entity
+@Table(
+        name = "seen",
+        uniqueConstraints =
+        @UniqueConstraint(columnNames = {"`nick`", "`channel`"})
+)
 public class seen implements Serializable {
 
+
     @Id
+    @Column(name = "`id`")
+    // For MySQL uncomment the AUTO strategy
+    // Postgresql had an existing sequence
+    //@GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "seen_sequence")
+    @SequenceGenerator(name = "seen_sequence", sequenceName = "seen_sequence", allocationSize = 1)
+    private Long id;
+
     @Column(name = "`nick`")
     private String nick;
 
-    @Column(name= "`channel`")
+    @Column(name = "`channel`")
     private String channel;
 
     @Column(name = "`message`", length = 2000)
@@ -27,6 +39,15 @@ public class seen implements Serializable {
 
     @Column(name = "`updated`")
     private Date updated;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 
     public String getNick() {
         return nick;
