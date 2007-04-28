@@ -36,20 +36,15 @@ public class FactoidDaoTest extends BaseServiceTest {
         Assert.assertEquals(value, factoid.getValue(), factoidDao.getClass().getName() + ":  The factoid value should have matched");
         Assert.assertNotSame("test value2", factoid.getValue(), factoidDao.getClass().getName() + ":  The factoid value should have matched");
         factoidDao.forgetFactoid("cheeser", key, changesDao, "test");
-
     }
 
     @Test(groups = {"operations"})
     public void countFactoids() {
-
         String key = "test factoid";
         String value = "test value";
         Long count = factoidDao.getNumberOfFactoids();
-
         factoidDao.addFactoid("cheeser", key, value, changesDao, "test");
-
         Assert.assertEquals((long) factoidDao.getNumberOfFactoids(), (Long) count + 1, "Should have only 1 more factoid");
-
         factoidDao.forgetFactoid("cheeser", key, changesDao, "test");
     }
 
