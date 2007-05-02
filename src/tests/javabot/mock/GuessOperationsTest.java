@@ -10,6 +10,7 @@ import javabot.operations.GuessOperation2;
 import static org.easymock.EasyMock.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.testng.annotations.Configuration;
 import org.unitils.UnitilsTestNG;
 
 import java.util.Date;
@@ -33,6 +34,7 @@ public class GuessOperationsTest extends UnitilsTestNG {
 
     private GuessOperation2 guessOperation;
 
+    @Configuration(beforeTestMethod = true)
     public void setUp() {
         f_dao = createMock(FactoidDao.class);
         c_dao = createMock(ChangesDao.class);
@@ -81,4 +83,33 @@ public class GuessOperationsTest extends UnitilsTestNG {
         Assert.assertEquals(results.get(1).getMessage(), "joed, magnificent is MAGNIFICENT");
     }
 
-}
+
+    public void testIgnores(){
+        //"you", "and", "are", "to", "that", "your", "do", "have", "a", "the", "be", "but", "can", "i", "who", "how", "get", "by", "is", "of", "out", "me", "an", "for", "use", "he", "she", "it"
+
+       reset(f_dao);
+
+        List listOfFactoids = new LinkedList();
+        Integer id = 100;
+
+        factoids factoid = new factoids();
+        factoid.setId(id.longValue());
+        factoid.setName("magnificent");
+        factoid.setValue("MAGNIFICENT");
+        factoid.setUpdated(new Date());
+        factoid.setUserName(SENDER);
+
+        listOfFactoids.add(factoid);
+
+        BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "guess you and are to that do have magnif a the be but can i who how get by is of out me an for use he she it");
+        expect(f_dao.hasFactoid("magnificent")).andReturn(true);
+        expect(f_dao.getFactoids()).andReturn(listOfFactoids);
+        expect(f_dao.getFactoid("magnificent")).andReturn(factoid);
+        expect(f_dao.getFactoid("magnificent")).andReturn(factoid);
+
+        replay(f_dao);
+
+        List<Message> results = guessOperation.handleMessage(event);
+        Assert.assertEquals(results.get(0).getMessage(), "I guess the factoid 'magnificent' might be appropriate:");
+        Assert.assertEquals(results.get(1).getMessage(), "joed, magnificent is MAGNIFICENT");
+}   }
