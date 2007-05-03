@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.rickyclarkson.java.util.Arrays;
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.FactoidDao;
@@ -15,7 +14,6 @@ import java.util.List;
  */
 public class GuessOperation2 implements BotOperation {
     private String[] ignoreList = {"you", "and", "are", "to", "that", "your", "do", "have", "a", "the", "be", "but", "can", "i", "who", "how", "get", "by", "is", "of", "out", "me", "an", "for", "use", "he", "she", "it"};
-    private String ignoreString = Arrays.toString(ignoreList, "|");
     private FactoidDao m_dao = null;
 
     public GuessOperation2(FactoidDao factoidDao) {
@@ -41,8 +39,15 @@ public class GuessOperation2 implements BotOperation {
         }
         message = message.toLowerCase();
         String[] words = message.split(" +");
-        words = (String[]) Arrays.removeAll(words, " ");
-        words = (String[]) Arrays.removeAll(words, "");
+
+        List<String> words2 = new ArrayList<String>();
+
+        for (String word1 : words) {
+            if (!("".equals(word1) || " ".equals(word1))) {
+                words2.add(word1);
+            }
+        }
+
         int maxMatches = 0;
         String bestKey = "";
         for (factoids factoid : m_dao.getFactoids()) {
@@ -56,7 +61,7 @@ public class GuessOperation2 implements BotOperation {
             if (next.contains("$1")) {
                 continue;
             }
-            for (String word : words) {
+            for (String word : words2) {
                 int currentMatches = 0;
                 if (word.length() < 3) {
                     continue;
