@@ -9,8 +9,8 @@ import javabot.dao.model.factoids;
 import javabot.operations.GuessOperation2;
 import static org.easymock.EasyMock.*;
 import org.testng.Assert;
-import org.testng.annotations.Test;
 import org.testng.annotations.Configuration;
+import org.testng.annotations.Test;
 import org.unitils.UnitilsTestNG;
 
 import java.util.Date;
@@ -58,7 +58,7 @@ public class GuessOperationsTest extends UnitilsTestNG {
     public void testGuess() {
         reset(f_dao);
 
-        List listOfFactoids = new LinkedList();
+        List<factoids> listOfFactoids = new LinkedList<factoids>();
         Integer id = 100;
 
         factoids factoid = new factoids();
@@ -84,12 +84,12 @@ public class GuessOperationsTest extends UnitilsTestNG {
     }
 
 
-    public void testIgnores(){
+    public void testIgnores() {
         //"you", "and", "are", "to", "that", "your", "do", "have", "a", "the", "be", "but", "can", "i", "who", "how", "get", "by", "is", "of", "out", "me", "an", "for", "use", "he", "she", "it"
 
-       reset(f_dao);
+        reset(f_dao);
 
-        List listOfFactoids = new LinkedList();
+        List<factoids> listOfFactoids = new LinkedList<factoids>();
         Integer id = 100;
 
         factoids factoid = new factoids();
@@ -112,4 +112,5 @@ public class GuessOperationsTest extends UnitilsTestNG {
         List<Message> results = guessOperation.handleMessage(event);
         Assert.assertEquals(results.get(0).getMessage(), "I guess the factoid 'magnificent' might be appropriate:");
         Assert.assertEquals(results.get(1).getMessage(), "joed, magnificent is MAGNIFICENT");
-}   }
+    }
+}
