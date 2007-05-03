@@ -1,29 +1,25 @@
 package javabot.operations;
 
-import com.rickyclarkson.java.util.Arrays;
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.ChangesDao;
 import javabot.dao.FactoidDao;
-import org.jdom.Element;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class AddFactoidOperation2 implements BotOperation {
+    private static final Log log = LogFactory.getLog(AddFactoidOperation2.class);
     private FactoidDao f_dao;
     private ChangesDao c_dao;
-    private Element root;
     private String htmlFile;
-    private Properties properties;
 
     public AddFactoidOperation2(FactoidDao f_dao, ChangesDao c_dao, String file) {
         this.f_dao = f_dao;
         this.c_dao = c_dao;
-        
         htmlFile = file;
-
     }
 
     public List<Message> handleMessage(BotEvent event) {
@@ -31,16 +27,17 @@ public class AddFactoidOperation2 implements BotOperation {
         String message = event.getMessage();
         String channel = event.getChannel();
         String sender = event.getSender();
-        String[] messageParts = message.split(" ");
-        int partWithIs = Arrays.search(messageParts, "is");
-        if (partWithIs != -1) {
-            Object keyParts = Arrays.subset(messageParts, 0, partWithIs);
-            String key = Arrays.toString(keyParts, " ");
+
+        log.info("Before :" + message);
+        if (message.toLowerCase().contains(" is ")) {
+            log.info("Tjoos " + message);
+            String key = message.substring(0, message.indexOf(" is"));
             key = key.toLowerCase();
             while (key.endsWith(".") || key.endsWith("?") || key.endsWith("!")) {
                 key = key.substring(0, key.length() - 1);
             }
-            String value = Arrays.toString(Arrays.subset(messageParts, partWithIs + 1, messageParts.length), " ");
+            String value = message.substring(message.indexOf("is ") + 3, message.length());
+
             if (key.trim().length() == 0) {
                 messages.add(new Message(channel, "Invalid factoid name", false));
                 return messages;
