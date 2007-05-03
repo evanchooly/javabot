@@ -5,7 +5,7 @@ import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.ChangesDao;
 import javabot.dao.FactoidDao;
-import javabot.dao.model.factoids;
+import javabot.dao.model.Factoid;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -44,12 +44,12 @@ public class KarmaChangeOperation2 implements BotOperation {
                 nick = nick.toLowerCase();
                 int karma = 0;
                 boolean newKarma = false;
-                factoids factoid = f_dao.getFactoid("karma " + nick);
+                Factoid factoid = f_dao.getFactoid("karma " + nick);
                 try {
                     karma = Integer.parseInt(factoid.getValue());
                 } catch (Exception exception) {
                     newKarma = true;
-                    factoid = new factoids();
+                    factoid = new Factoid();
 
                     factoid.setName("karma " + nick);
                     factoid.setValue("0");

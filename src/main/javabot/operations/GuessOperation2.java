@@ -3,7 +3,7 @@ package javabot.operations;
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.FactoidDao;
-import javabot.dao.model.factoids;
+import javabot.dao.model.Factoid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class GuessOperation2 implements BotOperation {
 
         int maxMatches = 0;
         String bestKey = "";
-        for (factoids factoid : m_dao.getFactoids()) {
+        for (Factoid factoid : m_dao.getFactoids()) {
             String nextKey = factoid.getName();
             //			String nextValue=database.getFactoid(nextKey);
             String next = nextKey;

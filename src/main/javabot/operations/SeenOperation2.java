@@ -27,8 +27,8 @@ public class SeenOperation2 implements BotOperation {
         String message = event.getMessage().toLowerCase();
         String channel = event.getChannel();
         String sender = event.getSender();
-        if (message.startsWith("seen ")) {
-            String key = message.substring("seen ".length());
+        if (message.startsWith("Seen ")) {
+            String key = message.substring("Seen ".length());
             if (s_dao.isSeen(key, channel)) {
                 messages.add(new Message(channel, sender + ", At " + DateFormat.getInstance().format(s_dao.getSeen(key, channel).getUpdated()) + " " + key + " " + s_dao.getSeen(key, channel).getMessage(), false));
                 return messages;

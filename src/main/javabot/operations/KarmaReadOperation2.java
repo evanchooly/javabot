@@ -30,7 +30,7 @@ public class KarmaReadOperation2 implements BotOperation {
         String nick = message.substring("karma ".length());
         nick = nick.toLowerCase();
         if (nick.indexOf(" ") != -1) {
-            messages.add(new Message(channel, "I've never seen a nick with a space " + "in, " + sender, false));
+            messages.add(new Message(channel, "I've never Seen a nick with a space " + "in, " + sender, false));
             return messages;
         }
         int karma;
