@@ -3,6 +3,7 @@ package javabot.dao.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,7 +14,8 @@ import java.util.Date;
 
 //
 @Entity
-public class changes implements Serializable {
+@Table(name = "change")
+public class Change implements Serializable {
 
 
     @Column(name = "`message`", length = 2000)

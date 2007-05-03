@@ -11,7 +11,8 @@ import java.util.Date;
 
 //
 @Entity
-public class factoids implements Serializable {
+@Table(name = "factoids")
+public class Factoid implements Serializable {
 
     @Id
     @Column(name = "`id`")
@@ -40,7 +41,7 @@ public class factoids implements Serializable {
     }
 
     public void setId(Long id) {
-        
+
         this.id = id;
     }
 

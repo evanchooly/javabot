@@ -11,12 +11,8 @@ import java.util.Date;
 
 //
 @Entity
-@Table(
-        name = "seen",
-        uniqueConstraints =
-        @UniqueConstraint(columnNames = {"`nick`", "`channel`"})
-)
-public class seen implements Serializable {
+@Table(name = "seen",uniqueConstraints = @UniqueConstraint(columnNames = {"`nick`", "`channel`"}))
+public class Seen implements Serializable {
 
 
     @Id
