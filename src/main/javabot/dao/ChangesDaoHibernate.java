@@ -1,7 +1,7 @@
 package javabot.dao;
 
-import javabot.dao.model.changes;
-import javabot.dao.model.factoids;
+import javabot.dao.model.Change;
+import javabot.dao.model.Factoid;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -12,15 +12,15 @@ import java.util.Date;
 // Time: 2:41:22 PM
 
 
-public class ChangesDaoHibernate extends AbstractDaoHibernate<factoids> implements ChangesDao {
+public class ChangesDaoHibernate extends AbstractDaoHibernate<Factoid> implements ChangesDao {
 
     public ChangesDaoHibernate() {
-        super(changes.class);
+        super(Change.class);
     }
 
     public void logChange(String message) {
 
-        changes change = new changes();
+        Change change = new Change();
 
         change.setMessage(message);
         change.setChangeDate(new Date());
@@ -38,10 +38,10 @@ public class ChangesDaoHibernate extends AbstractDaoHibernate<factoids> implemen
     public boolean findLog(String message) {
         boolean found = false;
 
-        //            SELECT * FROM changes WHERE message=?
+        //            SELECT * FROM Change WHERE message=?
 
-        String query = "from changes c where c.message = :message";
-        changes change = (changes) getSession().createQuery(query)
+        String query = "from Change c where c.message = :message";
+        Change change = (Change) getSession().createQuery(query)
                 .setString("message", message)
                 .uniqueResult();
 

@@ -1,11 +1,11 @@
 package javabot.dao;
 
-import javabot.dao.model.logs;
+import javabot.dao.model.Logs;
 
 public interface LogDao {
 
     void logMessage(String nick, String channel, String message);
 
-    logs getMessage(String nick, String channel);
+    Logs getMessage(String nick, String channel);
 
 }

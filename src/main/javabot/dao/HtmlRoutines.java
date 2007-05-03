@@ -1,28 +1,29 @@
 package javabot.dao;
 
-import javabot.dao.model.factoids;
+import javabot.dao.model.Factoid;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdom.Element;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+
 //
 // Author: joed
+
 // Date  : Apr 12, 2007
 public class HtmlRoutines {
 
     private static final Log log = LogFactory.getLog(HtmlRoutines.class);
 
 
-    public void dumpHTML(List<factoids> factoids,String htmlFile) {
+    public void dumpHTML(List<Factoid> factoids, String htmlFile) {
         PrintWriter writer = null;
         try {
             writer = new PrintWriter(new FileWriter(htmlFile));
             writer.println("<html><body><table border=\"1\"><tr><th>id</th><th>factoid</th><th>value</th><th>user</th></tr>\n");
-            for (factoids factoid : factoids) {
+            for (Factoid factoid : factoids) {
                 StringBuilder html = new StringBuilder("<tr>");
                 appendCell(html, Long.toString(factoid.getId()));
                 appendCell(html, factoid.getName());

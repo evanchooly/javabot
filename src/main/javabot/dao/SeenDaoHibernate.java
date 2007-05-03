@@ -1,16 +1,13 @@
 package javabot.dao;
 
-import javabot.dao.model.factoids;
-import javabot.dao.model.seen;
+import javabot.dao.model.Factoid;
+import javabot.dao.model.Seen;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
 
 // User: joed
@@ -18,7 +15,7 @@ import java.util.Properties;
 // Time: 2:41:22 PM
 
 
-public class SeenDaoHibernate extends AbstractDaoHibernate<factoids> implements SeenDao {
+public class SeenDaoHibernate extends AbstractDaoHibernate<Factoid> implements SeenDao {
 
     private Properties _properties;
 
@@ -27,12 +24,12 @@ public class SeenDaoHibernate extends AbstractDaoHibernate<factoids> implements 
     private static final Log log = LogFactory.getLog(SeenDaoHibernate.class);
 
     public SeenDaoHibernate() {
-        super(seen.class);
+        super(Seen.class);
     }
 
     public void logSeen(String nick, String channel, String message) {
 
-        seen lastSeen = new seen();
+        Seen lastSeen = new Seen();
 
         lastSeen.setNick(nick);
         lastSeen.setChannel(channel);
@@ -47,14 +44,13 @@ public class SeenDaoHibernate extends AbstractDaoHibernate<factoids> implements 
     }
 
     public boolean isSeen(String nick, String channel) {
-        return getSeen(nick,channel).getNick() != null;
+        return getSeen(nick, channel).getNick() != null;
     }
 
-    public seen getSeen(String nick, String channel) {
-        String query = "from seen s where s.nick = :nick" +
-                       " AND s.channel = :channel";
+    public Seen getSeen(String nick, String channel) {
+        String query = "from Seen s where s.nick = :nick" + " AND s.channel = :channel";
 
-        seen m_user = (seen) getSession().createQuery(query)
+        Seen m_user = (Seen) getSession().createQuery(query)
                 .setString("nick", nick)
                 .setString("channel", channel)
                 .setMaxResults(1)
@@ -62,7 +58,7 @@ public class SeenDaoHibernate extends AbstractDaoHibernate<factoids> implements 
 
         if (m_user == null) {
 
-            seen notFound = new seen();
+            Seen notFound = new Seen();
             return notFound;
         }
 

@@ -1,7 +1,7 @@
 package javabot.dao;
 
-import javabot.dao.model.factoids;
-import javabot.dao.model.logs;
+import javabot.dao.model.Factoid;
+import javabot.dao.model.Logs;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -15,7 +15,7 @@ import java.util.Properties;
 // Time: 2:41:22 PM
 
 
-public class LogDaoHibernate extends AbstractDaoHibernate<factoids> implements LogDao {
+public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements LogDao {
 
     private Properties _properties;
 
@@ -24,12 +24,12 @@ public class LogDaoHibernate extends AbstractDaoHibernate<factoids> implements L
     private static final Log log = LogFactory.getLog(LogDaoHibernate.class);
 
     public LogDaoHibernate() {
-        super(logs.class);
+        super(Logs.class);
     }
 
     public void logMessage(String nick, String channel, String message) {
 
-        logs logMessage = new logs();
+        Logs logMessage = new Logs();
 
         logMessage.setNick(nick);
         logMessage.setChannel(channel);
@@ -44,11 +44,10 @@ public class LogDaoHibernate extends AbstractDaoHibernate<factoids> implements L
     }
 
 
-    public logs getMessage(String nick, String channel) {
-        String query = "from logs s where s.nick = :nick" +
-                " AND s.channel = :channel";
+    public Logs getMessage(String nick, String channel) {
+        String query = "from Logs s where s.nick = :nick" + " AND s.channel = :channel";
 
-        logs m_user = (logs) getSession().createQuery(query)
+        Logs m_user = (Logs) getSession().createQuery(query)
                 .setString("nick", nick)
                 .setString("channel", channel)
                 .setMaxResults(1)
@@ -56,7 +55,7 @@ public class LogDaoHibernate extends AbstractDaoHibernate<factoids> implements L
 
         if (m_user == null) {
 
-            logs notFound = new logs();
+            Logs notFound = new Logs();
             return notFound;
         }
 

@@ -1,4 +1,5 @@
 package javabot.dao;
+
 //
 // This file is part of the OpenNMS(R) Application.
 //

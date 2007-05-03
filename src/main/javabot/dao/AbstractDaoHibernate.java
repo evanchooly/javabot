@@ -1,10 +1,9 @@
 package javabot.dao;
 
 
-import org.hibernate.SessionFactory;
-import org.hibernate.Session;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import javabot.dao.util.EntityNotFoundException;
+import org.hibernate.SessionFactory;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 //
 // User: joed
@@ -22,7 +21,7 @@ public class AbstractDaoHibernate<T> extends HibernateDaoSupport {
     // MEMBERS
 
     private Class entityClass;
-        private SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
 
     // CONSTRUCTORS

@@ -1,10 +1,8 @@
 package javabot.dao;
 
-import javabot.dao.model.factoids;
+import javabot.dao.model.Factoid;
 
 import java.util.List;
-
-import org.jdom.Element;
 
 // User: joed
 // Date: Apr 11, 2007
@@ -19,13 +17,13 @@ public interface FactoidDao {
 
     void forgetFactoid(String sender, String key, ChangesDao c_dao, String htmlFile);
 
-    factoids getFactoid(String key);
+    Factoid getFactoid(String key);
 
     Long getNumberOfFactoids();
 
-    List<factoids> getFactoids();
+    List<Factoid> getFactoids();
 
-    void updateFactoid(factoids factoid,ChangesDao c_dao, String htmlFile);
+    void updateFactoid(Factoid factoid, ChangesDao c_dao, String htmlFile);
 
 
 }
