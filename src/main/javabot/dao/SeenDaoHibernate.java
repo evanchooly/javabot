@@ -29,17 +29,32 @@ public class SeenDaoHibernate extends AbstractDaoHibernate<Factoid> implements S
 
     public void logSeen(String nick, String channel, String message) {
 
-        Seen lastSeen = new Seen();
+         if (isSeen(nick, channel)) {
 
-        lastSeen.setNick(nick);
-        lastSeen.setChannel(channel);
-        lastSeen.setMessage(message);
-        lastSeen.setUpdated(new Date());
+            Seen oldSeen = getSeen(nick, channel);
+            oldSeen.setMessage(message);
+            oldSeen.setUpdated(new Date());
 
-        Session session = getSession();
-        Transaction transaction = session.beginTransaction();
-        session.saveOrUpdate(lastSeen);
-        transaction.commit();
+            Session session = getSession();
+            Transaction transaction = session.beginTransaction();
+            session.saveOrUpdate(oldSeen);
+            transaction.commit();
+
+        } else {
+
+            Seen lastSeen = new Seen();
+
+            lastSeen.setNick(nick);
+            lastSeen.setChannel(channel);
+            lastSeen.setMessage(message);
+            lastSeen.setUpdated(new Date());
+
+            Session session = getSession();
+            Transaction transaction = session.beginTransaction();
+            session.saveOrUpdate(lastSeen);
+            transaction.commit();
+
+         }
 
     }
 
@@ -58,8 +73,7 @@ public class SeenDaoHibernate extends AbstractDaoHibernate<Factoid> implements S
 
         if (m_user == null) {
 
-            Seen notFound = new Seen();
-            return notFound;
+            return new Seen();
         }
 
         return m_user;
