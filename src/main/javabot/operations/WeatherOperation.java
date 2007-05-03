@@ -16,11 +16,6 @@ import java.util.List;
 //
 
 public class WeatherOperation implements BotOperation {
-    /**
-     * @see BotOperation#handleMessage(javabot.BotEvent)
-     */
-
-    public static final String STATIONS_URL = "http://www.rap.ucar.edu/weather/surface/stations.txt";
 
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
