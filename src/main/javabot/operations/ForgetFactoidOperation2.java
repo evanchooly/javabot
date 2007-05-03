@@ -1,13 +1,10 @@
 package javabot.operations;
 
-import com.rickyclarkson.java.util.Arrays;
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.ChangesDao;
 import javabot.dao.FactoidDao;
-import org.jdom.Element;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -21,7 +18,6 @@ public class ForgetFactoidOperation2 implements BotOperation {
     public ForgetFactoidOperation2(FactoidDao factoid_dao, ChangesDao change_dao, String file) {
         this.f_dao = factoid_dao;
         this.c_dao = change_dao;
-
         htmlFile = file;
     }
 
@@ -30,11 +26,15 @@ public class ForgetFactoidOperation2 implements BotOperation {
         String channel = event.getChannel();
         String message = event.getMessage();
         String sender = event.getSender();
-        String[] messageParts = message.split(" ");
-        if ("forget".equals(messageParts[0])) {
-            int length = Array.getLength(messageParts);
-            Object keyParts = Arrays.subset(messageParts, 1, length);
-            String key = Arrays.toString(keyParts, " ");
+
+        if (!message.startsWith("forget ")) {
+            return messages;
+        } else {
+            message = message.substring("forget ".length());
+            if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
+                message = message.substring(0, message.length() - 1);
+            }
+            String key = message;
             key = key.toLowerCase();
             if (f_dao.hasFactoid(key)) {
                 messages.add(new Message(channel, "I forgot about " + key + ", " + sender + ".", false));
@@ -45,6 +45,7 @@ public class ForgetFactoidOperation2 implements BotOperation {
         }
         return messages;
     }
+
 
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();

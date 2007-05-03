@@ -8,7 +8,6 @@ import javabot.dao.FactoidDao;
 import javabot.dao.model.factoids;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdom.Element;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,16 +19,12 @@ public class KarmaChangeOperation2 implements BotOperation {
 
     private FactoidDao f_dao;
     private ChangesDao c_dao;
-    private Element root;
     private String htmlFile;
 
     public KarmaChangeOperation2(FactoidDao factoid_dao, ChangesDao change_dao, String file, final Javabot bot) {
         this.f_dao = factoid_dao;
         this.c_dao = change_dao;
-        this.root = root;
-
         javabot = bot;
-
         htmlFile = file;
     }
 

@@ -1,7 +1,6 @@
 package javabot.operations;
 
 import javabot.BotEvent;
-import javabot.Database;
 import javabot.Message;
 import javabot.dao.FactoidDao;
 
@@ -11,11 +10,12 @@ import java.util.List;
 // joed - moved to Dao's
 
 public class StatsOperation2 implements BotOperation {
-    private FactoidDao m_dao ;
+    private FactoidDao m_dao;
 
     public StatsOperation2(FactoidDao m_dao) {
         this.m_dao = m_dao;
     }
+
     private static long startTime = System.currentTimeMillis();
 
     private static int numberOfMessages = 0;

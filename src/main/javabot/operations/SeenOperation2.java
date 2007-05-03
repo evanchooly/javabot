@@ -16,13 +16,12 @@ import java.util.List;
 public class SeenOperation2 implements BotOperation {
 
     private static Log log = LogFactory.getLog(SeenOperation2.class);
-
     private SeenDao s_dao;
 
     public SeenOperation2(SeenDao dao) {
         this.s_dao = dao;
     }
-    
+
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage().toLowerCase();
@@ -31,11 +30,7 @@ public class SeenOperation2 implements BotOperation {
         if (message.startsWith("seen ")) {
             String key = message.substring("seen ".length());
             if (s_dao.isSeen(key, channel)) {
-                messages.add(new Message(channel, sender + ", At " +
-                        DateFormat.getInstance().format
-                                (s_dao.getSeen(key, channel).getUpdated()) +
-                        " " + key +
-                        " " + s_dao.getSeen(key, channel).getMessage(), false));
+                messages.add(new Message(channel, sender + ", At " + DateFormat.getInstance().format(s_dao.getSeen(key, channel).getUpdated()) + " " + key + " " + s_dao.getSeen(key, channel).getMessage(), false));
                 return messages;
             }
             messages.add(new Message(channel, sender + ", I have no information about \"" + key + "\"", false));

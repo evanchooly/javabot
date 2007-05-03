@@ -4,24 +4,16 @@ import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.ChangesDao;
 import javabot.dao.FactoidDao;
-import org.jdom.Element;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class KarmaReadOperation2 implements BotOperation {
 
     private FactoidDao f_dao;
-    private ChangesDao c_dao;
-     private String htmlFile;
-    
+
     public KarmaReadOperation2(FactoidDao factoid_dao, ChangesDao change_dao, String file) {
         this.f_dao = factoid_dao;
-        this.c_dao = change_dao;
-
-
-        htmlFile = file;
     }
 
     /**
