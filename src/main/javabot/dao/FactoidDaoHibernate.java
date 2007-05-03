@@ -15,8 +15,6 @@ import java.util.*;
 
 public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implements FactoidDao {
 
-    private Properties _properties;
-
     private HtmlRoutines html = new HtmlRoutines();
 
     private static final Log log = LogFactory.getLog(FactoidDaoHibernate.class);

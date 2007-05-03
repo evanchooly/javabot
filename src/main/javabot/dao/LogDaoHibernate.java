@@ -17,8 +17,6 @@ import java.util.Properties;
 
 public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements LogDao {
 
-    private Properties _properties;
-
     private HtmlRoutines html = new HtmlRoutines();
 
     private static final Log log = LogFactory.getLog(LogDaoHibernate.class);

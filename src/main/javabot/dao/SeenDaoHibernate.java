@@ -17,8 +17,6 @@ import java.util.Properties;
 
 public class SeenDaoHibernate extends AbstractDaoHibernate<Factoid> implements SeenDao {
 
-    private Properties _properties;
-
     private HtmlRoutines html = new HtmlRoutines();
 
     private static final Log log = LogFactory.getLog(SeenDaoHibernate.class);
