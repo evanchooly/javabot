@@ -31,9 +31,9 @@ public class GetFactoidOperation2 implements BotOperation {
         String firstWord = message.replaceAll(" .+", "");
         String dollarOne = message.replaceFirst("[^ ]+ ", "");
         String key = message;
-        if(!m_dao.hasFactoid(message.toLowerCase()) && m_dao.hasFactoid(firstWord.toLowerCase() + " $1")) {
-                       message = firstWord + " $1";
-                 }
+        if (!m_dao.hasFactoid(message.toLowerCase()) && m_dao.hasFactoid(firstWord.toLowerCase() + " $1")) {
+            message = firstWord + " $1";
+        }
 
         if (!((m_dao.getFactoid(message.toLowerCase()).getValue() == null))) {
 
@@ -41,8 +41,11 @@ public class GetFactoidOperation2 implements BotOperation {
             message = message.replaceAll("\\$who", sender);
             message = message.replaceAll("\\$1", dollarOne);
             message = processRandomList(message);
+
             if (message.startsWith("<see>")) {
-                message = m_dao.getFactoid(message.substring("<see>".length())).getValue();
+                if (m_dao.hasFactoid(message.substring("<see>".length()).toLowerCase())) {
+                    message = m_dao.getFactoid(message.substring("<see>".length()).toLowerCase()).getValue();
+                }
             }
             if (message.startsWith("<reply>")) {
                 messages.add(new Message(channel, message.substring("<reply>".length()), false));
