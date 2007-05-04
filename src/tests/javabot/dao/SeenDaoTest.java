@@ -1,9 +1,9 @@
 package javabot.dao;
 
-import javabot.dao.model.factoids;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
+
 //
 
 // Author: joed
@@ -16,8 +16,8 @@ public class SeenDaoTest extends BaseServiceTest {
 
     @Test
     public void addSeen() {
-       seenDao.logSeen("nick","channel","message");
-       Assert.assertTrue(seenDao.isSeen("nick","channel"));
+        seenDao.logSeen("nick", "channel", "message");
+        Assert.assertTrue(seenDao.isSeen("nick", "channel"));
     }
 
 

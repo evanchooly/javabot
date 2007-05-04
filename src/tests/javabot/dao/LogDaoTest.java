@@ -1,9 +1,10 @@
 package javabot.dao;
 
-import javabot.dao.model.logs;
+import javabot.dao.model.Logs;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
+
 //
 
 // Author: joed
@@ -17,7 +18,7 @@ public class LogDaoTest extends BaseServiceTest {
     @Test
     public void addLogMessage() {
         logDao.logMessage("nick", "test", "test");
-        logs log = logDao.getMessage("nick", "test");
+        Logs log = logDao.getMessage("nick", "test");
         Assert.assertEquals(log.getMessage(), "test");
     }
 
