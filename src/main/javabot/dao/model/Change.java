@@ -14,7 +14,7 @@ import java.util.Date;
 
 //
 @Entity
-@Table(name = "change")
+@Table(name = "changes")
 public class Change implements Serializable {
 
 
