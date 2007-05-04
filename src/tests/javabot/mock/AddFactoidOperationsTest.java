@@ -4,7 +4,7 @@ import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.ChangesDao;
 import javabot.dao.FactoidDao;
-import javabot.dao.model.factoids;
+import javabot.dao.model.Factoid;
 import javabot.operations.AddFactoidOperation2;
 import static org.easymock.EasyMock.*;
 import org.testng.Assert;
@@ -50,10 +50,10 @@ public class AddFactoidOperationsTest extends UnitilsTestNG {
     public void testAlreadyHaveFactoid() {
         reset(f_dao);
 
-        List<factoids> listOfFactoids = new LinkedList<factoids>();
+        List<Factoid> listOfFactoids = new LinkedList<Factoid>();
         Integer id = 100;
 
-        factoids factoid = new factoids();
+        Factoid factoid = new Factoid();
         factoid.setId(id.longValue());
         factoid.setName("magnificent");
         factoid.setValue("MAGNIFICENT");
@@ -77,10 +77,10 @@ public class AddFactoidOperationsTest extends UnitilsTestNG {
     public void testAddFactoid() {
         reset(f_dao);
 
-        List<factoids> listOfFactoids = new LinkedList<factoids>();
+        List<Factoid> listOfFactoids = new LinkedList<Factoid>();
         Integer id = 100;
 
-        factoids factoid = new factoids();
+        Factoid factoid = new Factoid();
 
 
         listOfFactoids.add(factoid);
@@ -100,10 +100,10 @@ public class AddFactoidOperationsTest extends UnitilsTestNG {
     public void testAddLongFactoid() {
         reset(f_dao);
 
-        List<factoids> listOfFactoids = new LinkedList<factoids>();
+        List<Factoid> listOfFactoids = new LinkedList<Factoid>();
         Integer id = 100;
 
-        factoids factoid = new factoids();
+        Factoid factoid = new Factoid();
         listOfFactoids.add(factoid);
 
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "magnificent is bla bla bla bla bla");
@@ -117,6 +117,13 @@ public class AddFactoidOperationsTest extends UnitilsTestNG {
         Assert.assertEquals(results.get(0).getMessage(), "Okay, joed.");
 
     }
+
+     public void testBlankFactoid(){
+            BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "is SLASK");
+            List<Message> results = addOperation.handleMessage(event);
+
+              Assert.assertEquals(results.get(0).getMessage(), "Invalind");
+     }
 
 
 }

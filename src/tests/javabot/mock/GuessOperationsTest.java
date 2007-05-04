@@ -5,7 +5,7 @@ import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.ChangesDao;
 import javabot.dao.FactoidDao;
-import javabot.dao.model.factoids;
+import javabot.dao.model.Factoid;
 import javabot.operations.GuessOperation2;
 import static org.easymock.EasyMock.*;
 import org.testng.Assert;
@@ -58,10 +58,10 @@ public class GuessOperationsTest extends UnitilsTestNG {
     public void testGuess() {
         reset(f_dao);
 
-        List<factoids> listOfFactoids = new LinkedList<factoids>();
+        List<Factoid> listOfFactoids = new LinkedList<Factoid>();
         Integer id = 100;
 
-        factoids factoid = new factoids();
+        Factoid factoid = new Factoid();
         factoid.setId(id.longValue());
         factoid.setName("magnificent");
         factoid.setValue("MAGNIFICENT");
@@ -89,10 +89,10 @@ public class GuessOperationsTest extends UnitilsTestNG {
 
         reset(f_dao);
 
-        List<factoids> listOfFactoids = new LinkedList<factoids>();
+        List<Factoid> listOfFactoids = new LinkedList<Factoid>();
         Integer id = 100;
 
-        factoids factoid = new factoids();
+        Factoid factoid = new Factoid();
         factoid.setId(id.longValue());
         factoid.setName("magnificent");
         factoid.setValue("MAGNIFICENT");
