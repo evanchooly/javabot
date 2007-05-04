@@ -3,15 +3,12 @@ package javabot.operations;
 import javabot.Javabot;
 import javabot.dao.ChangesDao;
 import javabot.dao.FactoidDao;
-import javabot.dao.model.factoids;
+import javabot.dao.model.Factoid;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
-import org.jdom.JDOMException;
-
-import java.io.IOException;
 
 
 @Test(groups = {"operations"})
@@ -30,7 +27,7 @@ public class KarmaChangeOperationTest2 extends BaseOperationTest2 {
         testOperation2("testjavabot--", "testjavabot has a karma level of 1, " + SENDER, "");
         testOperation2("testjavabot--", "testjavabot has a karma level of 0, " + SENDER, "");
         testOperation2("testjavabot--", "testjavabot has a karma level of -1, " + SENDER, "");
-        testOperation2("testjavabot++", "testjavabot has a karma level of 0, " + SENDER, "");
+        testOperation2("testjavabot++", "testjavabot has a karma level of 0, "  + SENDER, "");
     }
 
     public void logNew() {
@@ -64,7 +61,7 @@ public class KarmaChangeOperationTest2 extends BaseOperationTest2 {
 
     private int getKarma(String target) {
         log.debug("target = " + target);
-        factoids factoid = factoidDao.getFactoid("karma " + target);
+        Factoid factoid = factoidDao.getFactoid("karma " + target);
         String value = factoid.getValue();
         log.debug("value = " + value);
 

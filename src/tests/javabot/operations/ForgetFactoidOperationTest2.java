@@ -27,11 +27,9 @@ public class ForgetFactoidOperationTest2 extends BaseOperationTest2 {
     private ChangesDao changesDao;
 
     public void forgetFactoid() {
-
         if (!factoidDao.hasFactoid("afky")) {
             factoidDao.addFactoid(SENDER, "afky", "test", changesDao, "TEST");
         }
-
         testOperation2("forget afky", "I forgot about afky, " + SENDER + ".", "Should have forgotten factoid");
     }
 

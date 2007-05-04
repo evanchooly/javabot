@@ -13,7 +13,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import java.io.IOException;
 import java.util.List;
 
-
 @Test(groups = {"operations"})
 
 public class GetFactoidOperationTest2 extends BaseOperationTest2 {
