@@ -55,10 +55,10 @@
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="annotatedClasses">
             <list>
-                <value>javabot.dao.model.factoids</value>
-                <value>javabot.dao.model.changes</value>
-                <value>javabot.dao.model.seen</value>
-                <value>javabot.dao.model.logs</value>
+                <value>javabot.dao.model.Factoid</value>
+                <value>javabot.dao.model.Change</value>
+                <value>javabot.dao.model.Seen</value>
+                <value>javabot.dao.model.Logs</value>
             </list>
         </property>
         <property name="hibernateProperties">
