@@ -118,12 +118,4 @@ public class AddFactoidOperationsTest extends UnitilsTestNG {
 
     }
 
-     public void testBlankFactoid(){
-            BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "is SLASK");
-            List<Message> results = addOperation.handleMessage(event);
-
-              Assert.assertEquals(results.get(0).getMessage(), "Invalind");
-     }
-
-
 }
