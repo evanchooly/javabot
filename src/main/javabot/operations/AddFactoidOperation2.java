@@ -28,20 +28,26 @@ public class AddFactoidOperation2 implements BotOperation {
         String channel = event.getChannel();
         String sender = event.getSender();
 
-        log.info("Before :" + message);
         if (message.toLowerCase().contains(" is ")) {
-            log.info("Tjoos " + message);
-            String key = message.substring(0, message.indexOf(" is"));
+
+            String key = new String();
+            String value = new String();
+
+            key = message.substring(0, message.indexOf(" is"));
             key = key.toLowerCase();
+
             while (key.endsWith(".") || key.endsWith("?") || key.endsWith("!")) {
                 key = key.substring(0, key.length() - 1);
             }
-            String value = message.substring(message.indexOf("is ") + 3, message.length());
+
+            value = message.substring(message.indexOf("is ") + 3, message.length());
 
             if (key.trim().length() == 0) {
                 messages.add(new Message(channel, "Invalid factoid name", false));
                 return messages;
             }
+            log.debug("Value: " + value);
+            log.debug("Key: " + key);
             if (value.trim().length() == 0) {
                 messages.add(new Message(channel, "Invalid factoid value", false));
                 return messages;
@@ -56,7 +62,12 @@ public class AddFactoidOperation2 implements BotOperation {
             }
             f_dao.addFactoid(sender, key, value, c_dao, htmlFile);
         }
+        else {
+            return new ArrayList<Message>();
+
+        }
         return messages;
+
     }
 
     public List<Message> handleChannelMessage(BotEvent event) {
