@@ -6,10 +6,10 @@
     <property environment="env"/>
 
     <property name="build" location="build"/>
-    <property name="build.src.dir" location="${build}/main"/>
-    <property name="build.test.dir" location="${build}/tests"/>
-    <property name="src.dir" location="src/main"/>
-    <property name="test.src.dir" location="src/tests"/>
+    <property name="build.src.dir" location="${build}/main/"/>
+    <property name="build.test.dir" location="${build}/test/"/>
+    <property name="src.dir" location="src/main/java"/>
+    <property name="test.src.dir" location="src/test"/>
 
     <property name="emma.dir" location="${build}/emma"/>
     <property name="emma.instr.dir" location="${emma.dir}/instr"/>
@@ -222,7 +222,7 @@
     </target>
 
     <target name="war" depends="rebuild">
-        <war destfile="${build}/javabot.war" webxml="src/web/WEB-INF/web.xml">
+        <war destfile="${build}/javabot.war" webxml="src/main/webapp/WEB-INF/web.xml">
             <classes dir="${build.src.dir}"/>
             <classes dir="etc" includes="*.properties"/>
             <lib dir="lib" includes="*.jar" excludes="servlet*"/>
