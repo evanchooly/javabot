@@ -30,6 +30,7 @@ public class JavabotServlet extends HttpServlet {
             };
         } catch(Exception e) {
             log.error(e.getMessage(), e);
+            System.out.println(e);
             throw new RuntimeException(e.getMessage());
         }
 //        new PortListener(Javabot.PORT_NUMBER, bot.getNickPassword()).start();

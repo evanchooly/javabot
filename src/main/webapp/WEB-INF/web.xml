@@ -2,11 +2,37 @@
 <web-app version="2.4"
          xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" >
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>/WEB-INF/log4j.properties</param-value>
+    </context-param>
+
+    <!-- The SpringWebApplicationFactory will need access to a Spring Application context, configured like this... -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            /WEB-INF/applicationContext.xml
+        </param-value>
+    </context-param>
+
+    <servlet>
+        <servlet-name>context</servlet-name>
+        <servlet-class>org.springframework.web.context.ContextLoaderServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener
+        </listener-class>
+    </listener>
 
     <servlet>
         <servlet-name>javabot</servlet-name>
         <servlet-class>javabot.servlet.JavabotServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
+
 </web-app>
