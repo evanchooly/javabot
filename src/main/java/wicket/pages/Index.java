@@ -1,6 +1,8 @@
 package wicket.pages;
 
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.markup.html.resources.StyleSheetReference;
+import org.apache.wicket.model.Model;
 import wicket.core.JavabotPage;
 
 // User: joed
@@ -11,5 +13,8 @@ import wicket.core.JavabotPage;
 public class Index extends JavabotPage {
 
     public Index(final PageParameters parameters) {
+
+         add(new StyleSheetReference("stylesheet", getClass(), "css/style.css"));
+
     }
 }
