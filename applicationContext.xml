@@ -3,6 +3,7 @@
 
 <beans>
 
+    <!--
     <bean id="log4jInitialization" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
         <property name="targetClass" value="org.springframework.util.Log4jConfigurer"/>
         <property name="targetMethod" value="initLogging"/>
@@ -12,7 +13,7 @@
             </list>
         </property>
     </bean>
-
+    -->
     <bean id="factoidDao" class="javabot.dao.FactoidDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
