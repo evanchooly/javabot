@@ -17,17 +17,15 @@
         </param-value>
     </context-param>
 
-    <servlet>
-        <servlet-name>context</servlet-name>
-        <servlet-class>org.springframework.web.context.ContextLoaderServlet
-        </servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-
     <listener>
         <listener-class>org.springframework.web.util.Log4jConfigListener
         </listener-class>
     </listener>
+
+       <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
 
     <servlet>
         <servlet-name>javabot</servlet-name>
