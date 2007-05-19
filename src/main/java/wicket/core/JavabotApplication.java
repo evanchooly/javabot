@@ -6,6 +6,7 @@ import org.apache.wicket.Response;
 import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.AjaxServerAndClientTimeFilter;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import wicket.pages.Index;
 
 //
@@ -21,6 +22,8 @@ public class JavabotApplication extends WebApplication {
     }
 
     protected void init() {
+	 addComponentInstantiationListener(new SpringComponentInjector(this));
+
         getResourceSettings().setThrowExceptionOnMissingResource(false);
         getRequestCycleSettings().addResponseFilter(new AjaxServerAndClientTimeFilter());
         getDebugSettings().setAjaxDebugModeEnabled(true);
