@@ -9,6 +9,8 @@ import org.hibernate.Transaction;
 
 import java.util.Date;
 import java.util.Properties;
+import java.util.List;
+import java.util.ArrayList;
 
 // User: joed
 // Date: Apr 11, 2007
@@ -60,5 +62,17 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
         return m_user;
 
     }
+
+    public List<String> loggedChannels() {
+        String query = "select distinct s.channel from Logs s where s.channel like '#%'";
+
+        List<String> m_channels = (List) getSession().createQuery(query).list();
+
+        if (m_channels== null) {
+          return new ArrayList<String>();
+        }
+
+        return m_channels;
+  }
 
 }
