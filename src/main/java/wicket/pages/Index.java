@@ -5,6 +5,7 @@ import org.apache.wicket.markup.html.resources.StyleSheetReference;
 import wicket.core.JavabotPage;
 import wicket.panels.ChannelBox;
 import wicket.panels.ChannelLog;
+import wicket.panels.JavabotInfo;
 
 // User: joed
 // Date: May 17, 2007
@@ -21,6 +22,9 @@ public class Index extends JavabotPage {
 
         ChannelLog channelLog = new ChannelLog("ChannelLog");
         add(channelLog);
+
+        JavabotInfo javabotInfo = new JavabotInfo("info");
+        add(javabotInfo);
 
     }
 
