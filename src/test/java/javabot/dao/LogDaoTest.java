@@ -34,7 +34,7 @@ public class LogDaoTest extends BaseServiceTest {
     @Test
     public void getDailyLog(){
         // Assumes logging to #test
-        Iterator<Logs> logdata = logDao.dailyLog("#test",0);
+        Iterator<Logs> logdata = logDao.dailyLog("#test",1);
         Assert.assertNotNull(logdata.hasNext(),"1");
     }
 

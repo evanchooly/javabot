@@ -1,5 +1,6 @@
 CREATE SEQUENCE factoid_sequence;
 CREATE SEQUENCE seen_sequence;
+CREATE SEQUENCE log_sequence;
 
 CREATE  TABLE factoids(
         id BIGINT NOT NULL ,
@@ -28,11 +29,15 @@ CREATE TABLE seen(
 
 ALTER TABLE seen ALTER ID SET DEFAULT NEXTVAL('seen_sequence');
 CREATE TABLE logs(
+
+        id BIGINT NOT NULL ,
         nick VARCHAR(255) NOT NULL,
         channel VARCHAR(255) NOT NULL,
         message VARCHAR(4000) NOT NULL,
         updated TIMESTAMP
 );
+
+ALTER TABLE logs ALTER ID SET DEFAULT NEXTVAL('log_sequence');
 
 
 INSERT INTO changes (message, changedate) VALUES ('cheeser removed ''foo''', '2005-07-25 08:20:24.121');

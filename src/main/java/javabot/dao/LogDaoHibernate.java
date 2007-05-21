@@ -8,10 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 // User: joed
 // Date: Apr 11, 2007
@@ -28,8 +25,14 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
 
     public Iterator<Logs> dailyLog(String channel, Integer daysBack) {
 
-        Date updated = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE,- daysBack);
+
+        Date updated = calendar.getTime();
+
+      
         String query = "from Logs s WHERE s.channel = :channel" +
                 " AND to_Date(s.updated, 'YYYY-MM-DD') = :updated" +
                 " ORDER BY s.updated ASC";
