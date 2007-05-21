@@ -23,6 +23,6 @@ public class JavabotInfo extends Panel {
         FactoidCount factoidCount = new FactoidCount("factoid_count"); 
 
         add(factoidCount);
-        factoidCount.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
+        factoidCount.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(30)));
     }
 }
