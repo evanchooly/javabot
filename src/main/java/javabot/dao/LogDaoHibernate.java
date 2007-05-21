@@ -46,7 +46,7 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String query = "from Logs s WHERE s.channel = :channel" +
                 " AND to_Date(s.updated, 'YYYY-MM-DD') = :updated" +
-                " ORDER BY s.updated DESC";
+                " ORDER BY s.updated ASC";
 
         return getSession().createQuery(query)
                 .setString("channel", channel)
