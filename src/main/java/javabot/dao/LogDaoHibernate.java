@@ -32,20 +32,6 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String query = "from Logs s WHERE s.channel = :channel" +
                 " AND to_Date(s.updated, 'YYYY-MM-DD') = :updated" +
-                " ORDER BY s.updated DESC";
-
-        return getSession().createQuery(query)
-                .setString("channel", channel)
-                .setString("updated", sdf.format(updated))
-                .iterate();
-    }
-
-    public Iterator<Logs> dailyLog2(String channel, Integer daysBack) {
-
-        Date updated = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String query = "from Logs s WHERE s.channel = :channel" +
-                " AND to_Date(s.updated, 'YYYY-MM-DD') = :updated" +
                 " ORDER BY s.updated ASC";
 
         return getSession().createQuery(query)
@@ -53,7 +39,6 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
                 .setString("updated", sdf.format(updated))
                 .iterate();
     }
-
 
      public Integer dailyLogCount(String channel, Integer daysBack) {
         Date updated = new Date();
