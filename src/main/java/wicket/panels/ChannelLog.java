@@ -1,21 +1,15 @@
 package wicket.panels;
 
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.markup.repeater.RepeatingView;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.AttributeModifier;
 import javabot.dao.LogDao;
 import javabot.dao.model.Logs;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 
-import java.util.Date;
 import java.util.Iterator;
-import java.io.Serializable;
 
 //
 // Author: joed
@@ -29,23 +23,27 @@ public class ChannelLog extends Panel {
     public ChannelLog(String s) {
         super(s);
 
-          Iterator logs = m_logs.dailyLog("#tjoho",0);
+        Iterator logs = m_logs.dailyLog("#tjoho", 0);
 
-                RepeatingView repeating = new RepeatingView("channel_log");
-                add(repeating);
+        RepeatingView repeating = new RepeatingView("channel_log");
+        add(repeating);
 
-                while (logs.hasNext())
-                {
-                        WebMarkupContainer item = new WebMarkupContainer(repeating.newChildId());
-                        repeating.add(item);
-                        Logs log = (Logs)logs.next();
+        while (logs.hasNext()) {
+            WebMarkupContainer item = new WebMarkupContainer(repeating.newChildId());
+            repeating.add(item);
+            Logs log = (Logs) logs.next();
 
-                        item.add(new Label("date", log.getUpdated().toString()));
-                        item.add(new Label("nick", log.getNick()));
-                        item.add(new Label("message",log.getMessage()));
-                       
-                }
+            if (log.isAction()) {
+                item.add(new SimpleAttributeModifier("class", "action"));
+                item.add(new ActionMessagePanel("messagePanel", new Model(log)));
+            } else if (log.isServerMessage()) {
+                item.add(new SimpleAttributeModifier("class", "action"));
+                item.add(new ServerMessagePanel("messagePanel", new Model(log)));
+            } else {
+                item.add(new NickMessagePanel("messagePanel", new Model(log)));
+            }
 
+        }
 
 
     }

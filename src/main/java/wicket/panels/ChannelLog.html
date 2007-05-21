@@ -1,17 +1,15 @@
 <wicket:panel>
 
 
-<table cellspacing="0" class="dataview">
-        <tr>
-                <th>Date</th>
+<table cellspacing="0" cellpadding="2" class="dataview" width="100%">
+        <tr id="logHeader">
                 <th>Nick</th>
                 <th>Message</th>
+                <th>Date</th>
 
         </tr>
         <tr wicket:id="channel_log">
-                <td><span wicket:id="date">[date]</span></td>
-                <td><span wicket:id="nick">[nick]</span> </td>
-                <td><span wicket:id="message">[message]</span></td>
+            <span wicket:id="messagePanel">[messagePanel]</span>
         </tr>
 </table>
 </wicket:panel>

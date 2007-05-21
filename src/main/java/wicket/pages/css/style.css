@@ -6,16 +6,16 @@ body {
   background-color: #E0E0E0;
 }
 
-A:link {
+a:link {
 	COLOR: #0000FF; text-decoration: none;
 }
-A:visited {
+a:visited {
 	COLOR: #0000FF; text-decoration: none;
 }
-A:active {
+a:active {
 	COLOR: #0000FF; text-decoration: none;
 }
-A:hover {
+a:hover {
 	COLOR: #FF0000; text-decoration: underline;
 }
 
@@ -221,7 +221,7 @@ list-style-type: none;
 .featurebox_center {
   background-color: #fffff6;
   margin:0px;
-  padding:10px;
+  padding:0px;
   border: 1px solid #DFE8F7;
   font-family: verdana, arial, sans-serif;
   font-size: 11px;
@@ -238,4 +238,27 @@ list-style-type: none;
   font-size: 11px;
   line-height: 18px;
   color: #333333;
+}
+
+/* Added by kinabalu */
+.action {
+  background-color: #fff;
+    font-size: 80%;
+}
+
+.time {
+    text-decoration: none;
+    color: #8888cc;
+}
+
+#logHeader {
+    background-color:#2153AA;
+    border:1px solid #0F3974;
+    color:#FFFFFF;
+    font-family:verdana,arial,sans-serif;
+    font-size:14px;
+    font-weight:bold;
+    line-height:14px;
+    margin:5px 5px 10px;
+    padding:4px;
 }

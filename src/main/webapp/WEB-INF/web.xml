@@ -26,13 +26,13 @@
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
 
-
+<!--
     <servlet>
         <servlet-name>javabot</servlet-name>
         <servlet-class>javabot.servlet.JavabotServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-
+-->
 
     <context-param>
           <param-name>configuration</param-name>

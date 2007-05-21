@@ -75,4 +75,14 @@ public class Logs implements Serializable {
     public void setUpdated(Date updated) {
         this.updated = updated;
     }
+
+    public boolean isAction() {
+        return message!=null && message.startsWith("ACTION");
+    }
+
+    public boolean isServerMessage() {
+        return message!=null &&
+                (message.startsWith("joined") || message.startsWith("left") || message.startsWith("quit"));
+    }
+
 }

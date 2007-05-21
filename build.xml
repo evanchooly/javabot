@@ -65,6 +65,7 @@
                classpathref="javabot.cp" debug="true">
             <compilerarg line="-Xlint:unchecked"/>
         </javac>
+
     </target>
 
     <target name="clean">
