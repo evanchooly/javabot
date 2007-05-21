@@ -19,6 +19,11 @@ A:hover {
 	COLOR: #FF0000; text-decoration: underline;
 }
 
+ul
+{
+list-style-type: none;
+}
+
 #page_wrapper {
   margin-left: auto; 
   margin-right: auto;

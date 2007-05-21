@@ -7,10 +7,11 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.util.Date;
-import java.util.Properties;
-import java.util.List;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 // User: joed
 // Date: Apr 11, 2007
@@ -19,12 +20,53 @@ import java.util.ArrayList;
 
 public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements LogDao {
 
-    private HtmlRoutines html = new HtmlRoutines();
-
     private static final Log log = LogFactory.getLog(LogDaoHibernate.class);
 
     public LogDaoHibernate() {
         super(Logs.class);
+    }
+
+    public Iterator<Logs> dailyLog(String channel, Integer daysBack) {
+
+        Date updated = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String query = "from Logs s WHERE s.channel = :channel" +
+                " AND to_Date(s.updated, 'YYYY-MM-DD') = :updated" +
+                " ORDER BY s.updated DESC";
+
+        return getSession().createQuery(query)
+                .setString("channel", channel)
+                .setString("updated", sdf.format(updated))
+                .iterate();
+    }
+
+    public Iterator<Logs> dailyLog2(String channel, Integer daysBack) {
+
+        Date updated = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String query = "from Logs s WHERE s.channel = :channel" +
+                " AND to_Date(s.updated, 'YYYY-MM-DD') = :updated" +
+                " ORDER BY s.updated DESC";
+
+        return getSession().createQuery(query)
+                .setString("channel", channel)
+                .setString("updated", sdf.format(updated))
+                .iterate();
+    }
+
+
+     public Integer dailyLogCount(String channel, Integer daysBack) {
+        Date updated = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String query = "select count (*) from Logs s WHERE s.channel = :channel" +
+                " AND to_Date(s.updated, 'YYYY-MM-DD') = :updated" +
+                " ORDER BY s.updated DESC";
+
+        return (Integer) getSession().createQuery(query)
+                .setString("channel", channel)
+                .setString("updated", sdf.format(updated))
+                .uniqueResult();
+
     }
 
     public void logMessage(String nick, String channel, String message) {
@@ -34,7 +76,7 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
         logMessage.setNick(nick);
         logMessage.setChannel(channel);
         logMessage.setMessage(message);
-        logMessage.setDate(new Date());
+        logMessage.setUpdated(new Date());
 
         Session session = getSession();
         Transaction transaction = session.beginTransaction();
@@ -42,7 +84,6 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
         transaction.commit();
 
     }
-
 
     public Logs getMessage(String nick, String channel) {
         String query = "from Logs s where s.nick = :nick" + " AND s.channel = :channel";
@@ -55,8 +96,8 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
 
         if (m_user == null) {
 
-            Logs notFound = new Logs();
-            return notFound;
+
+            return new Logs();
         }
 
         return m_user;
@@ -66,13 +107,13 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
     public List<String> loggedChannels() {
         String query = "select distinct s.channel from Logs s where s.channel like '#%'";
 
-        List<String> m_channels = (List) getSession().createQuery(query).list();
+        List<String> m_channels = getSession().createQuery(query).list();
 
-        if (m_channels== null) {
-          return new ArrayList<String>();
+        if (m_channels == null) {
+            return new ArrayList<String>();
         }
 
         return m_channels;
-  }
+    }
 
 }

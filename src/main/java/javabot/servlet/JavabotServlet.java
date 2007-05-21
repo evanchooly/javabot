@@ -21,7 +21,7 @@ public class JavabotServlet extends HttpServlet {
     @Override
     public void init(final ServletConfig servletConfig) throws ServletException {
         log.info("Starting Javabot");
-        try {
+       try {
             bot = new Javabot() {
                 @Override
                 protected File getConfigFile() {

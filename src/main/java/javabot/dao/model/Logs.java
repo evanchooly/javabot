@@ -1,9 +1,6 @@
 package javabot.dao.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -14,10 +11,19 @@ import java.util.Date;
 
 //
 @Entity
-@Table(name = "logs" )
+@Table(name = "logs")
 public class Logs implements Serializable {
 
     @Id
+    @Column(name = "`id`")
+    // For MySQL uncomment the AUTO strategy
+    // Postgresql had an existing sequence
+    //@GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "seen_sequence")
+    @SequenceGenerator(name = "seen_sequence", sequenceName = "seen_sequence", allocationSize = 1)
+    private Long id;
+
+
     @Column(name = "`nick`")
     private String nick;
 
@@ -28,7 +34,15 @@ public class Logs implements Serializable {
     private String message;
 
     @Column(name = "`updated`")
-    private Date date;
+    private Date updated;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getNick() {
         return nick;
@@ -54,11 +68,11 @@ public class Logs implements Serializable {
         this.message = message;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getUpdated() {
+        return updated;
     }
 
-    public void setDate(Date updated) {
-        this.date = updated;
+    public void setUpdated(Date updated) {
+        this.updated = updated;
     }
 }

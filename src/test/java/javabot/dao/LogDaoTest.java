@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import java.util.List;
+import java.util.Iterator;
 
 //
 
@@ -28,7 +29,13 @@ public class LogDaoTest extends BaseServiceTest {
     public void findChannels(){
         List channels = logDao.loggedChannels();
         Assert.assertEquals("#test",channels.get(0));
+    }
 
+    @Test
+    public void getDailyLog(){
+        // Assumes logging to #test
+        Iterator<Logs> logdata = logDao.dailyLog("#test",0);
+        Assert.assertNotNull(logdata.hasNext(),"1");
     }
 
 
