@@ -11,7 +11,6 @@ import wicket.panels.JavabotInfo;
 // Date: May 17, 2007
 // Time: 2:37:26 PM
 
-// 
 public class Index extends JavabotPage {
 
     public Index(final PageParameters parameters) {
@@ -20,13 +19,14 @@ public class Index extends JavabotPage {
         ChannelBox channelBox = new ChannelBox("ChannelBox");
         add(channelBox);
 
-        ChannelLog channelLog = new ChannelLog("ChannelLog");
-        add(channelLog);
-
+        if (!"".equals(parameters.getString("channel"))) {
+            ChannelLog channelLog = new ChannelLog("ChannelLog", parameters.getString("channel"));
+            add(channelLog);
+        } else {
+            ChannelLog channelLog = new ChannelLog("ChannelLog", "");
+            add(channelLog);
+        }
         JavabotInfo javabotInfo = new JavabotInfo("info");
         add(javabotInfo);
-
     }
-
-
 }
