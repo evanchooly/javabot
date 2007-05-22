@@ -10,6 +10,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 
 import java.util.Iterator;
+import java.util.Date;
 
 //
 // Author: joed
@@ -20,10 +21,10 @@ public class ChannelLog extends Panel {
     @SpringBean
     LogDao m_logs;
 
-    public ChannelLog(String s) {
-        super(s);
+    public ChannelLog(String id,String channel, Date date) {
+        super(id);
 
-        Iterator logs = m_logs.dailyLog("#tjoho", 0);
+        Iterator logs = m_logs.dailyLog(channel, date);
 
         RepeatingView repeating = new RepeatingView("channel_log");
         add(repeating);

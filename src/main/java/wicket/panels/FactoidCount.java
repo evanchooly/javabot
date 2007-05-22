@@ -23,7 +23,6 @@ public class FactoidCount extends Label {
 
     private static class FCounter extends AbstractReadOnlyModel {
 
-
         public FCounter() {
 
         }

@@ -27,6 +27,8 @@ public class JavabotApplication extends WebApplication {
         getResourceSettings().setThrowExceptionOnMissingResource(false);
         getRequestCycleSettings().addResponseFilter(new AjaxServerAndClientTimeFilter());
         getDebugSettings().setAjaxDebugModeEnabled(true);
+       // getRequestCycleSettings().setBufferResponse(false);
+
     }
 
     public Class getHomePage() {
