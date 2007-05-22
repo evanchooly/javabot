@@ -7,8 +7,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import java.util.List;
 import java.util.Iterator;
-
-//
+import java.util.Date;
 
 // Author: joed
 
@@ -34,7 +33,7 @@ public class LogDaoTest extends BaseServiceTest {
     @Test
     public void getDailyLog(){
         // Assumes logging to #test
-        Iterator<Logs> logdata = logDao.dailyLog("#test",1);
+        Iterator<Logs> logdata = logDao.dailyLog("#test",new Date());
         Assert.assertNotNull(logdata.hasNext(),"1");
     }
 
