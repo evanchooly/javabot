@@ -4,6 +4,7 @@ import javabot.dao.model.Logs;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Date;
 
 public interface LogDao {
 
@@ -13,8 +14,6 @@ public interface LogDao {
 
     List<String> loggedChannels();
 
-    Iterator<Logs> dailyLog(String channel, Integer daysBack);
-
-    Integer dailyLogCount(String channel, Integer daysBack); 
+    Iterator<Logs> dailyLog(String channel, Date date);
 
 }

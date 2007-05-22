@@ -23,39 +23,20 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
         super(Logs.class);
     }
 
-    public Iterator<Logs> dailyLog(String channel, Integer daysBack) {
+    public Iterator<Logs> dailyLog(String channel, Date date) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE,- daysBack);
-
-        Date updated = calendar.getTime();
-
-      
         String query = "from Logs s WHERE s.channel = :channel" +
                 " AND to_Date(s.updated, 'YYYY-MM-DD') = :updated" +
                 " ORDER BY s.updated ASC";
 
         return getSession().createQuery(query)
                 .setString("channel", channel)
-                .setString("updated", sdf.format(updated))
+                .setString("updated", sdf.format(date))
                 .iterate();
     }
 
-     public Integer dailyLogCount(String channel, Integer daysBack) {
-        Date updated = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String query = "select count (*) from Logs s WHERE s.channel = :channel" +
-                " AND to_Date(s.updated, 'YYYY-MM-DD') = :updated" +
-                " ORDER BY s.updated ASC";
-
-        return (Integer) getSession().createQuery(query)
-                .setString("channel", channel)
-                .setString("updated", sdf.format(updated))
-                .uniqueResult();
-
-    }
 
     public void logMessage(String nick, String channel, String message) {
 
