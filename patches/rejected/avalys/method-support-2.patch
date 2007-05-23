@@ -1,0 +1,210 @@
+Index: src/javabot/JavadocParser.java
+===================================================================
+--- src/javabot/JavadocParser.java	(revision 52)
++++ src/javabot/JavadocParser.java	(working copy)
+@@ -4,8 +4,9 @@
+ import java.io.File;
+ import java.io.FileReader;
+ import java.io.IOException;
+-import java.util.ArrayList;
+-import java.util.HashMap;
++import java.util.*;
++import java.lang.reflect.Method;
++import java.net.URLEncoder;
+ 
+ public class JavadocParser
+ {
+@@ -52,26 +53,165 @@
+ 		fileReader.close();
+ 	}
+     
+-	public String[] javadoc(String className)
++	public String[] javadoc(String key)
+ 	{
+-		ArrayList list=(ArrayList)map.get(className.toLowerCase());
+-
+-		if (list == null)
++		List list;
++		if (key.indexOf('(') == -1)
+ 		{
+-			return new String[0];
++			// The presence of ( indicates a method search
++			list = (ArrayList)map.get(key.toLowerCase());
++			if (list == null) {
++				return new String[0];
++			}
++			String[] results=new String[list.size()];
++			for (int i=0;i<list.size();i++)
++			{
++				String entry=(String)list.get(i);
++				String fullName=entry.replace('/','.');
++				results[i]=fullName+": "+baseUrl+entry+".html";
++			}
++		    return results;
+ 		}
+-		
+-		String[] results=new String[list.size()];
+-		
+-		for (int i=0;i<list.size();i++)
++		else
+ 		{
+-			String entry=(String)list.get(i);
+-			String fullName=entry.replace('/','.');
+-			results[i]=fullName+": "+baseUrl+entry+".html";
+-        	}
++			int finalIndex = key.lastIndexOf('.');
++			int firstParenDex = key.indexOf('(');
++			int lastParenDex = key.indexOf(')');
++			if (lastParenDex == -1 || firstParenDex == -1) {
++				return new String[0];
++			}
++			// Could be a constructor
++			String className = key.substring(0,finalIndex != -1 ? finalIndex : firstParenDex);
++			
++			String methodName = key.substring(finalIndex+1,firstParenDex);
++			String signatureTypes = key.substring(firstParenDex+1,lastParenDex);
++			list=(ArrayList)map.get(className.toLowerCase());
++			if (list == null) {
++				return new String[0];
++			}
++			return processClassList(list, methodName, signatureTypes);
++        
++		}
++	}
++
++	private String[] processClassList(List classList, String methodName, String signatureTypes) {
++		List newList = new ArrayList();
++		for (int i = 0; i < classList.size(); i++) {
++			String entry = (String)classList.get(i);
++			String className = entry.replace('/','.');
++			try {
++				Class clazz = Class.forName(className);
++				String url = getMethodURL(clazz, methodName, signatureTypes, entry);
++				if (url != null) {
++					newList.add(url);
++				}
++			} catch (Exception e) {
++				// Ignore classes that we can't find
++				e.printStackTrace();
++			}
++		}
++		return (String[]) newList.toArray(new String[newList.size()]);
++	}
+ 		
+-		return results;
++	// Returns a response for the named method
++	// If signature is (*), pick a method based on the the number of arguments
++	// Otherwise, looks for the method with the exactly described signature
++	// TODO: Pick the method closest to the described signature
++	private String getMethodURL(Class clazz, String methodName, String signatureTypes, String entry) {
++		Method[] methods = clazz.getMethods();
++		Arrays.sort(methods, new MethodSortComparator());
++		for (int i = 0; i < methods.length; i++) {
++			if (methods[i].getName().equals(methodName)) {
++				String javadocSig = buildJavaDocSignature(methods[i]);
++				String requestSig = buildRequestSignature(methods[i]);
++				String signature = methodName + "(" + signatureTypes + ")";
++				if ("*".equals(signatureTypes) || 
++				    signature.equals(javadocSig) || 
++				    signature.equals(requestSig)) {
++					// This line determines how verbose the returned info is:
++					// (include fully qualified names or not)
++					return getShortTypeName(clazz) + "." + requestSig + ": " +
++						baseUrl + entry + ".html#" + encode(javadocSig);
++				}
++			}
++		}
++		return null;
+ 	}
+-    
++
++	// Javadoc requires fully-qualified class names in parameters
++	private static String buildJavaDocSignature(Method method) {
++		StringBuffer buffer = new StringBuffer();
++		Class[] arguments = method.getParameterTypes();
++		buffer.append(method.getName() + "(");
++		for (int j = 0; j < arguments.length; j++) {
++			if (j > 0) {
++				buffer.append(", ");
++			}
++			buffer.append(getTypeName(arguments[j]));
++		}
++		buffer.append(")");
++		return buffer.toString();
++	}
++
++	// Javabot only requires the name of the class
++	private static String buildRequestSignature(Method method) {
++		StringBuffer buffer = new StringBuffer();
++		Class[] arguments = method.getParameterTypes();
++		buffer.append(method.getName() + "(");
++		for (int j = 0; j < arguments.length; j++) {
++			if (j > 0) {
++				buffer.append(", ");
++			}
++			buffer.append(getShortTypeName(arguments[j]));
++		}
++		buffer.append(")");
++		return buffer.toString();
++	}
++
++	private static String getShortTypeName(Class clazz) {
++		if (clazz.isArray()) {
++			return getShortTypeName(clazz.getComponentType()) + "[]";
++		} else {
++			String name = clazz.getName();
++			int dotIndex = name.lastIndexOf('.');
++			if (dotIndex == -1) return name;
++			return name.substring(dotIndex+1,name.length());
++		}
++	}
++
++	private static String getTypeName(Class clazz) {
++		if (clazz.isArray()) {
++			return getTypeName(clazz.getComponentType()) + "[]";
++		} else {
++			return clazz.getName();
++		}
++	}
++
++	private static String encode(String url) {
++		try {
++			return url.replaceAll(" ","%20");
++		} catch (Exception e) {
++			return url;
++		}
++	}
++
++	// Sorts methods by the number of arguments they accept
++	private static class MethodSortComparator implements Comparator {
++		public int compare(Object o, Object o1) {
++			Method one = (Method)o;
++			Method two = (Method)o1;
++			if (one.getName().equals(two.getName())) {
++				if (one.getParameterTypes().length == two.getParameterTypes().length) {
++					return 0;
++				} else if (one.getParameterTypes().length > two.getParameterTypes().length) {
++					return 1;
++				} else {
++					return -1;
++				}
++			} else {
++				return one.getName().compareTo(two.getName());
++			}
++		}
++	}
+ 	private final String baseUrl;
+ }
+Index: src/javabot/Javabot.java
+===================================================================
+--- src/javabot/Javabot.java	(revision 52)
++++ src/javabot/Javabot.java	(working copy)
+@@ -188,8 +188,6 @@
+ 
+     public void onMessage(String channel, String sender, String login,
+         String hostname, String message) {
+-        String[] startStrings =
+-            {"~", "javabot: ", "javabot, ", "javabot "};
+         for(int a = 0; a < startStrings.length; a++) {
+             int length = startStrings[a].length();
+             if(message.startsWith(startStrings[a])) {

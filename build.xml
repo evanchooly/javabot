@@ -1,0 +1,232 @@
+<project name="javabot" default="main">
+
+    <property file="build.properties"/>
+    <property file="build.properties.sample"/>
+
+    <property environment="env"/>
+
+    <property name="build" location="build"/>
+    <property name="build.src.dir" location="${build}/main/"/>
+    <property name="build.test.dir" location="${build}/test/"/>
+    <property name="src.dir" location="src/main/java"/>
+    <property name="test.src.dir" location="src/test"/>
+
+    <property name="emma.dir" location="${build}/emma"/>
+    <property name="emma.instr.dir" location="${emma.dir}/instr"/>
+
+    <property name="build.report.dir" location="${build}/reports"/>
+    <property name="junit.report.dir" location="${build.report.dir}/junitreport"/>
+
+    <property name="src.zip" value="share/src.zip"/>
+    <property name="src.version" value="1.5"/>
+
+    <path id="javabot.cp">
+        <fileset dir="lib" includes="**/*.jar, **/*.zip"/>
+
+        <!-- Note: this is unnecessary if tools.jar is in your classpath
+          by default (i.e. on Mac OS X systems) -->
+        <fileset dir="${env.JAVA_HOME}/lib" includes="tools.jar"/>
+        <!--.-->
+
+        <pathelement path="etc"/>
+        <pathelement path="${build.src.dir}"/>
+    </path>
+
+    <path id="test.class.path">
+        <dirset dir="${emma.instr.dir}"/>
+        <pathelement path="${build.test.dir}"/>
+        <path refid="javabot.cp"/>
+    </path>
+
+    <path id="build.src.path">
+        <dirset dir="${build.src.dir}"/>
+    </path>
+
+    <target name="init">
+        <mkdir dir="build"/>
+        <mkdir dir="${build}/main"/>
+        <mkdir dir="${build}/tests"/>
+        <mkdir dir="src/main"/>
+        <mkdir dir="src/tests"/>
+
+        <mkdir dir="${build}/emma"/>
+        <mkdir dir="${emma.dir}/instr"/>
+
+        <mkdir dir="${build}/reports"/>
+        <mkdir dir="${build.report.dir}/junitreport"/>
+    </target>
+
+    <target name="main" depends="init, make-properties, validate-config">
+        <javac destDir="${build.src.dir}" srcDir="${src.dir}"
+               classpathref="javabot.cp" debug="true">
+            <compilerarg line="-Xlint:unchecked"/>
+        </javac>
+        <javac destDir="${build.test.dir}" srcDir="${test.src.dir}"
+               classpathref="javabot.cp" debug="true">
+            <compilerarg line="-Xlint:unchecked"/>
+        </javac>
+
+    </target>
+
+    <target name="clean">
+        <delete dir="${build}"/>
+    </target>
+
+    <target name="rebuild" depends="clean, main"/>
+
+    <target name="test" depends="main, import-db">
+        <antcall target="test-with-xml"/>
+        <antcall target="test-all"/>
+    </target>
+
+    <target name="test-with-xml" depends="main" if="test.xml">
+        <mkdir dir="${build.report.dir}"/>
+        <mkdir dir="${junit.report.dir}"/>
+        <mkdir dir="${emma.dir}"/>
+        <mkdir dir="${emma.instr.dir}"/>
+
+        <taskdef name="testng" classname="org.testng.TestNGAntTask" classpathref="test.class.path"/>
+        <taskdef name="emma" classname="com.vladium.emma.emmaTask" classpathref="test.class.path"/>
+
+        <emma>
+            <instr instrpathref="build.src.path" destdir="${emma.instr.dir}" metadatafile="${emma.dir}/metadata.emma"
+                merge="true"/>
+        </emma>
+
+        <testng classpathref="test.class.path" outputDir="${build.report.dir}" sourcedir="${test.src.dir}"
+            haltOnfailure="false">
+
+            <xmlfileset dir="etc" includes="${test.xml}"/>
+            <jvmarg value="-Demma.coverage.out.file=${emma.dir}/coverage.emma"/>
+            <jvmarg value="-Demma.coverage.out.merge=true"/>
+        </testng>
+
+        <junitreport todir="${junit.report.dir}">
+            <fileset dir="${build.report.dir}">
+                <include name="*.xml"/>
+            </fileset>
+
+            <report todir="${junit.report.dir}"/>
+        </junitreport>
+
+        <emma>
+            <report sourcepath="${src.dir}">
+                <fileset dir="${emma.dir}">
+                    <include name="*.emma"/>
+                </fileset>
+                <txt outfile="${emma.dir}/coverage.txt"/>
+                <html outfile="${emma.dir}/coverage.html"/>
+            </report>
+        </emma>
+    </target>
+
+    <target name="test-all" depends="main" unless="test.xml">
+        <mkdir dir="${build.report.dir}"/>
+        <mkdir dir="${junit.report.dir}"/>
+        <mkdir dir="${emma.dir}"/>
+        <mkdir dir="${emma.instr.dir}"/>
+
+        <taskdef name="testng" classname="org.testng.TestNGAntTask" classpathref="test.class.path"/>
+        <taskdef name="emma" classname="com.vladium.emma.emmaTask" classpathref="test.class.path"/>
+
+        <emma>
+            <instr instrpathref="build.src.path" destdir="${emma.instr.dir}" metadatafile="${emma.dir}/metadata.emma"
+                merge="true"/>
+        </emma>
+
+        <testng classpathref="test.class.path" outputDir="${build.report.dir}" sourcedir="${test.src.dir}"
+            haltOnfailure="false">
+
+            <classfileset dir="${test.src.dir}" includes="**/*.java"/>
+            <jvmarg value="-Demma.coverage.out.file=${emma.dir}/coverage.emma"/>
+            <jvmarg value="-Demma.coverage.out.merge=true"/>
+        </testng>
+
+        <junitreport todir="${junit.report.dir}">
+            <fileset dir="${build.report.dir}">
+                <include name="*.xml"/>
+            </fileset>
+
+            <report todir="${junit.report.dir}"/>
+        </junitreport>
+
+        <emma>
+            <report sourcepath="${src.dir}">
+                <fileset dir="${emma.dir}">
+                    <include name="*.emma"/>
+                </fileset>
+                <txt outfile="${emma.dir}/coverage.txt"/>
+                <html outfile="${emma.dir}/coverage.html"/>
+            </report>
+        </emma>
+    </target>
+
+    <target name="buildxml" unless="docref.uptodate">
+        <unzip src="${env.JAVA_HOME}/${src.zip}" dest="docRefBuild"/>
+        <javadoc sourcepath="docRefBuild" packagenames="*" excludepackagenames="com.sun.*, org.apache.*, org.omg.*"
+            maxmemory="1024m" source="${src.version}" docletpathref="javabot.cp">
+            <doclet name="javabot.javadoc.StructureDoclet">
+                <param name="-x" value="docref.xml"/>
+            </doclet>
+        </javadoc>
+        <delete dir="docRefBuild"/>
+    </target>
+
+    <target name="killbot" depends="main" description="Kills any running bot">
+        <java classname="javabot.Killbot" classpathref="javabot.cp" fork="true"/>
+    </target>
+
+    <target name="run" depends="killbot" description="Starts the bot">
+        <java classname="javabot.Javabot" classpathref="javabot.cp" fork="true" spawn="true"/>
+    </target>
+
+    <target name="javadocs">
+        <property name="blah" refid="javabot.cp"/>
+
+        <echo message="$blah"/>
+
+        <java classname="javabot.IndependentJavadocViewer" classpathref="javabot.cp" fork="true">
+            <arg value="String"/>
+        </java>
+    </target>
+
+    <target name="make-properties" description="Generates the javabot and log4j properties files.">
+        <filter filtersfile="build.properties.sample"/>
+        <filter filtersfile="build.properties"/>
+        <copy file="etc/merge/log4j.properties" todir="etc" filtering="true" overwrite="true"/>
+        <copy file="etc/merge/javabot.properties" todir="etc" filtering="true" overwrite="true"/>
+    </target>
+
+    <target name="validate-config" description="Validates the sample and active config files">
+        <xmlvalidate file="config.xml"/>
+        <xmlvalidate file="config.xml.sample"/>
+    </target>
+
+    <target name="import-db" if="scp.password">
+        <sshexec host="antwerkz.com" username="jlee" password="${scp.password}"
+                 command="pg_dump -C -D -f javabot.dump javabot" trust="yes"/>
+        <scp file="jlee:${scp.password}@antwerkz.com:javabot.dump" localToFile="etc/db.sql" trust="yes"/>
+        <sshexec host="antwerkz.com" username="jlee" password="${scp.password}" command="rm javabot.dump" trust="yes"
+                 verbose="true"/>
+        <exec executable="dropdb">
+            <arg line="javabot"/>
+        </exec>
+        <exec executable="createdb">
+            <arg line="javabot"/>
+        </exec>
+        <exec executable="psql">
+            <arg line="javabot -f etc/javabot.sql"/>
+        </exec>
+        <exec executable="psql">
+            <arg line="javabot -f etc/db.sql"/>
+        </exec>
+    </target>
+
+    <target name="war" depends="rebuild">
+        <war destfile="${build}/javabot.war" webxml="src/main/webapp/WEB-INF/web.xml">
+            <classes dir="${build.src.dir}"/>
+            <classes dir="etc" includes="*.properties"/>
+            <lib dir="lib" includes="*.jar" excludes="servlet*"/>
+        </war>
+    </target>
+</project>

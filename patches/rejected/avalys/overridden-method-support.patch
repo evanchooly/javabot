@@ -1,0 +1,52 @@
+--- javabot_exist/src/javabot/JavadocParser.java	Mon Aug 16 12:02:09 2004
++++ javabot/src/javabot/JavadocParser.java	Mon Aug 16 12:23:10 2004
+@@ -101,7 +101,7 @@
+ 			String className = entry.replace('/','.');
+ 			try {
+ 				Class clazz = Class.forName(className);
+-				String url = getMethodURL(clazz, methodName, signatureTypes, entry);
++				String url = getMethodURL(clazz, methodName, signatureTypes);
+ 				if (url != null) {
+ 					newList.add(url);
+ 				}
+@@ -117,8 +117,8 @@
+ 	// If signature is (*), pick a method based on the the number of arguments
+ 	// Otherwise, looks for the method with the exactly described signature
+ 	// TODO: Pick the method closest to the described signature
+-	private String getMethodURL(Class clazz, String methodName, String signatureTypes, String entry) {
+-		Method[] methods = clazz.getMethods();
++	private String getMethodURL(Class clazz, String methodName, String signatureTypes) {
++		Method[] methods = clazz.getDeclaredMethods();
+ 		Arrays.sort(methods, new MethodSortComparator());
+ 		for (int i = 0; i < methods.length; i++) {
+ 			if (methods[i].getName().equals(methodName)) {
+@@ -131,10 +131,16 @@
+ 					// This line determines how verbose the returned info is:
+ 					// (include fully qualified names or not)
+ 					return getShortTypeName(clazz) + "." + requestSig + ": " +
+-						baseUrl + entry + ".html#" + encode(javadocSig);
++						baseUrl + getClassUrlPart(clazz) + ".html#" + encode(javadocSig);
+ 				}
+ 			}
+ 		}
++		if (clazz.getSuperclass() != null) {
++			// This method could be defined in a superclass and not overridden
++			// So, if we haven't found the method yet, look for it in the superclass
++			// add '&& clazz.getSuperclass() != Object.class' to exclude Object
++			return getMethodURL(clazz.getSuperclass(), methodName, signatureTypes);
++		}
+ 		return null;
+ 	}
+ 
+@@ -193,6 +199,11 @@
+ 		} catch (Exception e) {
+ 			return url;
+ 		}
++	}
++
++	private static String getClassUrlPart(Class clazz) {
++		// Regex is actually \.
++		return clazz.getName().replaceAll("\\.","/");
+ 	}
+ 
+ 	// Sorts methods by the number of arguments they accept

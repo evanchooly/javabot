@@ -1,0 +1,15 @@
+src.zip=share/src.zip
+src.version=1.5
+
+DB_URL=jdbc:postgresql:javabot
+DB_USER=cheeser
+DB_PASS=cheeser
+DB_DRIVER=org.postgresql.Driver
+
+LOG4J_DIRECTORY=/tmp
+LOG4J_DATE_PATTERN=yyyy-MM-dd-a
+LOG4J_CONVERSION=%-5p\: %d{ISO8601}\: %C{1}\: %m%n
+LOG4J_LAYOUT=org.apache.log4j.PatternLayout
+LOG4J_APPENDER=org.apache.log4j.DailyRollingFileAppender
+LOG4J_APPEND=true
+LOG4J_LOG_LEVEL=DEBUG

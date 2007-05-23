@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd">
+<suite thread-count="5" verbose="1" name="Karma Change Tests suite" parallel="false" annotations="1.5">
+	<test name="karma change">
+		<groups>
+			<run>
+				<include name="operations"/>
+			</run>
+		</groups>
+		<classes>
+			<class name="javabot.operations.KarmaChangeOperationTest"/>
+		</classes>
+	</test>
+</suite>

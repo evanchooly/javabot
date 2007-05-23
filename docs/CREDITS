@@ -1,0 +1,13 @@
+Code:
+
+Ricky Clarkson <ricky_clarkson@yahoo.com> - bulk of the code
+Justin Lee <javabot@cheeseronline.org> - maintenance and various features
+Alex Valys <avalys@gmail.com> - method and constructor level javadoc
+Jason Lee <jason@theleehouse.net> - a simple operation, DaysUntilOperation
+Deranged <df@erinye.com> - nickserv identification
+mr_gray - Parsing of Google's HTML for GoogleOperation
+Paul Mutton <paul@jibble.org> - initial JavadocParser code.
+
+Testing:
+
+The members of #java, #struts and #hibernate on irc.freenode.net

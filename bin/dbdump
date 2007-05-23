@@ -1,0 +1,23 @@
+#!/bin/bash
+
+USER=cheeser
+DB=javabot
+DIR=../backup/daily/`date +%Y-%m-%d`
+YESTERDAY=`date --date 'yesterday' +%Y-%m-%d`
+YESTERDAY_DIR=../backup/daily/$YESTERDAY
+FILE=$DIR/dump-`date +%Y%m%d-%H%M`.sql
+
+# if the directory doesn't exist, create it and make an archive of yesterday's dir
+if [ ! -d $DIR ]; then
+	mkdir -p $DIR
+	if [ -d $YESTERDAY_DIR ]; then
+		tar jcf $YESTERDAY_DIR/$YESTERDAY.tar.bz2 $YESTERDAY_DIR/*.sql
+		rm -f $YESTERDAY_DIR/*.sql
+	fi
+fi
+
+echo "BEGIN;" > $FILE
+pg_dump --no-owner --column-inserts --data-only --disable-triggers -U $USER $DB >> $FILE
+echo "COMMIT;" >> $FILE
+
+ln -sf $FILE ../backup/current

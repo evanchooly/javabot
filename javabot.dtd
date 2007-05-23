@@ -1,0 +1,59 @@
+<!ELEMENT javabot (server,javadoc,factoids,dict,nick?,auth?,message*,channel*,operation*,ignore*)>
+<!ATTLIST javabot
+	verbose CDATA #IMPLIED
+>
+
+<!ELEMENT server EMPTY>
+<!ATTLIST server
+	name CDATA #REQUIRED
+	port CDATA #REQUIRED
+>
+
+<!ELEMENT javadoc EMPTY>
+<!ATTLIST javadoc
+	reference-xml CDATA #REQUIRED
+	base-url CDATA #REQUIRED
+>
+
+<!ELEMENT factoids EMPTY>
+<!ATTLIST factoids
+	filename CDATA #REQUIRED
+    htmlfilename CDATA #REQUIRED
+    factoidChangeLog CDATA #REQUIRED
+>
+
+<!ELEMENT dict EMPTY>
+<!ATTLIST dict
+	host CDATA #REQUIRED
+>
+
+<!ELEMENT nick EMPTY>
+<!ATTLIST nick
+	name CDATA #REQUIRED
+>
+
+<!ELEMENT auth EMPTY>
+<!ATTLIST auth
+	password CDATA #REQUIRED
+	wait CDATA #REQUIRED
+>
+
+<!ELEMENT message EMPTY>
+<!ATTLIST message
+	tag CDATA #REQUIRED
+>
+
+<!ELEMENT channel EMPTY>
+<!ATTLIST channel
+	name CDATA #REQUIRED
+>
+
+<!ELEMENT operation EMPTY>
+<!ATTLIST operation
+	class CDATA #REQUIRED
+>
+
+<!ELEMENT ignore EMPTY>
+<!ATTLIST ignore
+    name CDATA #REQUIRED
+>

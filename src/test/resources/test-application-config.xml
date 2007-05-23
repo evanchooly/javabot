@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <bean id="factoidDao" class="javabot.dao.FactoidDaoHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="changesDao" class="javabot.dao.ChangesDaoHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="seenDao" class="javabot.dao.SeenDaoHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="logDao" class="javabot.dao.LogDaoHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+
+    <bean id="dataSource" class="org.unitils.database.UnitilsDataSource" />
+
+    <!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.hsqldb.Driver"/>
+        <property name="url" value="jdbc:hsqldb:javabot-test"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
+-->
+
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="annotatedClasses">
+            <list>
+                <value>javabot.dao.model.Factoid</value>
+                <value>javabot.dao.model.Change</value>
+                <value>javabot.dao.model.Seen</value>
+                <value>javabot.dao.model.Logs</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <value>
+                hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+                hibernate.show_sql=true
+                use_outer_join=true
+                <!--<prop key="hibernate.current_session_context_class">thread</prop>
+                <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>-->
+
+                hibernate.bytecode.use_reflection_optimizer=true
+                hibernate.connection.release_mode=after_transaction
+                hibernate.cglib.use_reflection_optimizer=true
+                hibernate.transaction.flush_before_completion=true
+                hibernate.transaction.auto_close_session=true
+                hibernate.current_session_context_class=thread
+                
+            </value>
+        </property>
+    </bean>
+
+
+    
+
+</beans>
