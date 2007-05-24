@@ -1,5 +1,5 @@
 /*body {*/
-  /*text-align: center;*/
+  /**/
   /*margin-top:10px;*/
   /*margin-bottom:10px;*/
   /*color:#666666;*/
@@ -10,7 +10,9 @@
 body {
 	font: normal 11px auto "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
 	color: #4f6b72;
-	background: #E6EAE9;
+    margin-top:10px;
+    margin-bottom:10px;
+    background: #E6EAE9;
 }
 
 
@@ -281,17 +283,23 @@ a {
 	margin: 0;
 }
 
-caption {
-	padding: 0 0 5px 0;
-	width: 700px;
-	font: italic 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-	text-align: right;
-}
-
 th {
 	font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
 	color: #4f6b72;
 	border-right: 1px solid #C1DAD7;
+	border-bottom: 1px solid #C1DAD7;
+	border-top: 1px solid #C1DAD7;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	text-align: left;
+	padding: 6px 6px 6px 12px;
+	background: #CAE8EA url(../img/bg_header.jpg) no-repeat;
+}
+
+th.lef {
+	font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+	color: #4f6b72;
+	border-left: 1px solid #C1DAD7;
 	border-bottom: 1px solid #C1DAD7;
 	border-top: 1px solid #C1DAD7;
 	letter-spacing: 2px;
@@ -316,18 +324,17 @@ td {
 	padding: 6px 6px 6px 12px;
 	color: #4f6b72;
     font-family: verdana, arial, sans-serif;
-  font-size: 11px;
+    font-size: 11px;
 }
 
-td.left {
-
+td.lef {
     border-left: 1px solid #C1DAD7;
 	border-bottom: 1px solid #C1DAD7;
 	background: #fff;
 	padding: 6px 6px 6px 12px;
 	color: #4f6b72;
     font-family: verdana, arial, sans-serif;
-  font-size: 11px;
+    font-size: 11px;
 }
 
 
