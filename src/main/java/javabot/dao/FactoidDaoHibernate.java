@@ -1,6 +1,7 @@
 package javabot.dao;
 
 import javabot.dao.model.Factoid;
+import javabot.dao.util.QueryParam;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -22,8 +23,23 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
     public FactoidDaoHibernate() {
         super(Factoid.class);
 
-
     }
+
+    @SuppressWarnings("unchecked")
+    public Iterator<Factoid> getFactoids(QueryParam qp) {
+        StringBuilder query = new StringBuilder("from Factoid f");
+
+        if (qp.hasSort()) {
+            query.append(" order by ")
+                    .append(qp.getSort())
+                    .append((qp.isSortAsc()) ? " asc" : " desc");
+        }
+
+        return getSession().createQuery(query.toString())
+                .setFirstResult(qp.getFirst())
+                .setMaxResults(qp.getCount()).iterate();
+    }
+
 
     @SuppressWarnings({"unchecked"})
     public List<Factoid> getFactoids() {
@@ -39,6 +55,22 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         });
 
         return m_factoids;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public Iterator<Factoid> getIterator() {
+
+        String query = "from Factoid m";
+
+        List<Factoid> m_factoids = getSession().createQuery(query).list();
+
+        Collections.sort(m_factoids, new Comparator<Factoid>() {
+            public int compare(Factoid factoid, Factoid factoid1) {
+                return factoid.getName().compareTo(factoid1.getName());
+            }
+        });
+
+        return m_factoids.iterator();
     }
 
     public void updateFactoid(Factoid factoid, ChangesDao c_dao, String htmlFile) {
@@ -96,6 +128,24 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
 
         Factoid m_factoid = (Factoid) getSession().createQuery(query)
                 .setString("name", name)
+                .setMaxResults(1)
+                .uniqueResult();
+
+        if (m_factoid == null) {
+
+            Factoid notFound = new Factoid();
+            return notFound;
+        }
+
+        return m_factoid;
+
+    }
+
+    public Factoid get(Long id) {
+        String query = "from Factoid m where m.id = :id";
+
+        Factoid m_factoid = (Factoid) getSession().createQuery(query)
+                .setLong("id", id)
                 .setMaxResults(1)
                 .uniqueResult();
 
