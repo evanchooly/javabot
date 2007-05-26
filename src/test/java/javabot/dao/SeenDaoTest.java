@@ -16,7 +16,8 @@ public class SeenDaoTest extends BaseServiceTest {
 
     @Test
     public void addSeen() {
-        seenDao.logSeen("nick", "channel", "message");
+        String nick = System.currentTimeMillis() + "test";
+        seenDao.logSeen(nick, "channel", "message");
         Assert.assertTrue(seenDao.isSeen("nick", "channel"));
     }
 

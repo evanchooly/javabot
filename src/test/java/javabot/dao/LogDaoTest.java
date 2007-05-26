@@ -19,8 +19,9 @@ public class LogDaoTest extends BaseServiceTest {
 
     @Test
     public void addLogMessage() {
-        logDao.logMessage("nick", "#test", "test");
-        Logs log = logDao.getMessage("nick", "test");
+        String nick = System.currentTimeMillis() + "test";
+        logDao.logMessage(nick, "#test", "test");
+        Logs log = logDao.getMessage(nick, "#test");
         Assert.assertEquals(log.getMessage(), "test");
     }
 
