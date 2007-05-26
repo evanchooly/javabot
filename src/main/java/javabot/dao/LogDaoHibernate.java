@@ -43,7 +43,7 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
         Logs logMessage = new Logs();
 
         logMessage.setNick(nick);
-        logMessage.setChannel(channel);
+        logMessage.setChannel(channel.toLowerCase());
         logMessage.setMessage(message);
         logMessage.setUpdated(new Date());
 
@@ -59,7 +59,7 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
 
         Logs m_user = (Logs) getSession().createQuery(query)
                 .setString("nick", nick)
-                .setString("channel", channel)
+                .setString("channel", channel.toLowerCase())
                 .setMaxResults(1)
                 .uniqueResult();
 

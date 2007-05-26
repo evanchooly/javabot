@@ -27,7 +27,7 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
 
     @SuppressWarnings("unchecked")
     public Iterator<Factoid> getFactoids(QueryParam qp) {
-        StringBuilder query = new StringBuilder("from Factoid f");
+        StringBuilder query = new StringBuilder("from Factoid f where f.name not like 'karma%'");
 
         if (qp.hasSort()) {
             query.append(" order by ")
@@ -160,7 +160,7 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
     }
 
     public Long getNumberOfFactoids() {
-        String query = "select count(*) from Factoid";
+        String query = "select count(*) from Factoid f where f.name not like 'karma%'";
         return (Long) getSession().createQuery(query).uniqueResult();
 
     }
