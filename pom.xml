@@ -318,18 +318,18 @@
             <version>1.0-rc-2</version>
         </dependency>
 
-	<dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.1.0</version>
-	</dependency>
+        </dependency>
 
-       <dependency>
-              <groupId>org.slf4j</groupId>
-              <artifactId>slf4j-jcl</artifactId>
-              <version>1.0.1</version>
-              <type>jar</type>
-          </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jcl</artifactId>
+            <version>1.0.1</version>
+            <type>jar</type>
+        </dependency>
 
         <dependency>
             <groupId>org.acegisecurity</groupId>
@@ -353,6 +353,14 @@
                     <artifactId>spring-mock</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.openlaszlo</groupId>
+            <artifactId>lps</artifactId>
+            <version>4.0.2</version>
+            <type>war</type>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 
@@ -397,8 +405,12 @@
                         </resource>
 
                     </webResources>
+                    <!-- Disables openlaszlo from overwriting the web.xml -->
+                    <dependentWarExcludes>WEB-INF/web.xml,index.*</dependentWarExcludes>
+
                 </configuration>
             </plugin>
+
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

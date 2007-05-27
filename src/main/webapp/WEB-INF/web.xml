@@ -59,5 +59,54 @@
         <url-pattern>/app/*</url-pattern>
     </filter-mapping>
 
+    <!-- OpenLaszlo -->
+
+                         <servlet>
+        <servlet-name>LPS</servlet-name>
+        <servlet-class>org.openlaszlo.servlets.LZServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>LZViewer</servlet-name>
+        <servlet-class>org.openlaszlo.servlets.LZViewer</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>AuthenticationServlet</servlet-name>
+        <servlet-class>AuthenticationServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>AxisServlet</servlet-name>
+      <servlet-class>
+          org.apache.axis.transport.http.AxisServlet
+      </servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>LPS</servlet-name>
+        <url-pattern>*.lzx</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>LPS</servlet-name>
+        <url-pattern>*.lzo</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>LZViewer</servlet-name>
+        <url-pattern>/LZViewer</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AuthenticationServlet</servlet-name>
+        <url-pattern>/AuthenticationServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>AxisServlet</servlet-name>
+      <url-pattern>*.jws</url-pattern>
+    </servlet-mapping>
+
 
 </web-app>
