@@ -1,0 +1,6 @@
+<canvas width="200" height="150">
+  <window x="20" y="20" width="50" height="50"
+          title="w00t!" resizable="true">
+    <text>Here is some text.</text>
+  </window>
+</canvas>
