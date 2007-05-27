@@ -31,6 +31,7 @@
 
 <!ELEMENT logs EMPTY>
 <!ATTLIST logs
+    id CDATA #IMPLIED
     nick CDATA #IMPLIED
     channel CDATA #IMPLIED
     message CDATA #IMPLIED

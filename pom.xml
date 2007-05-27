@@ -284,13 +284,11 @@
             <version>1.0</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring</artifactId>
             <version>2.0-m4</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -305,6 +303,7 @@
             <scope>test</scope>
             <classifier>jdk15</classifier>
         </dependency>
+
         <dependency>
             <groupId>sun.jdk</groupId>
             <artifactId>tools</artifactId>
@@ -312,6 +311,7 @@
             <scope>system</scope>
             <systemPath>${java.home}/../lib/tools.jar</systemPath>
         </dependency>
+
         <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils</artifactId>
@@ -356,12 +356,12 @@
         </dependency>
 
         <dependency>
-            <groupId>com.openlaszlo</groupId>
-            <artifactId>lps</artifactId>
+            <groupId>org.openlaszlo</groupId>
+            <artifactId>openlaszlo</artifactId>
             <version>4.0.2</version>
-            <type>war</type>
-            <scope>runtime</scope>
+            <type>pom</type>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -369,7 +369,6 @@
             <resource>
                 <filtering>false</filtering>
                 <directory>src/main/java</directory>
-
                 <includes>
                     <include>**</include>
                 </includes>
@@ -380,7 +379,6 @@
             <resource>
                 <filtering>false</filtering>
                 <directory>src/main/resources</directory>
-
                 <includes>
                     <include>**</include>
                 </includes>
@@ -403,11 +401,7 @@
                             <directory>${basedir}/src/main/resources
                             </directory>
                         </resource>
-
                     </webResources>
-                    <!-- Disables openlaszlo from overwriting the web.xml -->
-                    <dependentWarExcludes>WEB-INF/web.xml,index.*</dependentWarExcludes>
-
                 </configuration>
             </plugin>
 
@@ -427,9 +421,7 @@
                 <version>6.1.1</version>
                 <configuration>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
-
                     <webApp>${basedir}/target/fn-javabot-2.0-SNAPSHOT</webApp>
-
                 </configuration>
             </plugin>
 
@@ -441,7 +433,6 @@
                     <groups>operations</groups>
                 </configuration>
             </plugin>
-
 
         </plugins>
 

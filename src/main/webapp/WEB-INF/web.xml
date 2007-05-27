@@ -71,11 +71,11 @@
         <servlet-class>org.openlaszlo.servlets.LZViewer</servlet-class>
     </servlet>
 
-    <servlet>
+   <!-- <servlet>
         <servlet-name>AuthenticationServlet</servlet-name>
         <servlet-class>AuthenticationServlet</servlet-class>
     </servlet>
-
+-->
     <servlet>
       <servlet-name>AxisServlet</servlet-name>
       <servlet-class>
@@ -98,11 +98,11 @@
         <url-pattern>/LZViewer</url-pattern>
     </servlet-mapping>
 
-    <servlet-mapping>
+    <!--<servlet-mapping>
         <servlet-name>AuthenticationServlet</servlet-name>
         <url-pattern>/AuthenticationServlet</url-pattern>
     </servlet-mapping>
-
+-->
     <servlet-mapping>
       <servlet-name>AxisServlet</servlet-name>
       <url-pattern>*.jws</url-pattern>
