@@ -10,7 +10,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import wicket.pages.Index;
-import wicket.pages.Factoids;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,7 +30,7 @@ public class ChannelBox extends Panel {
 
         List<String> channels = l_dao.loggedChannels();
 
-        
+
         RepeatingView repeating = new RepeatingView("logged_channels");
         add(repeating);
 
@@ -40,9 +39,11 @@ public class ChannelBox extends Panel {
             for (String channel : channels) {
                 WebMarkupContainer item = new WebMarkupContainer(repeating.newChildId());
                 repeating.add(item);
-                Link link = new BookmarkablePageLink("link", Index.class,newPageParameters(new Date(),channel));
+                Link link = new BookmarkablePageLink("link", Index.class, newPageParameters(new Date(), channel));
                 link.add(new Label("channel", channel));
                 item.add(link);
+
+
             }
 
         } else {
