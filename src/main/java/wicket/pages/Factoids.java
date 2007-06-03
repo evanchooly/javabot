@@ -5,12 +5,6 @@ import org.apache.wicket.markup.html.resources.StyleSheetReference;
 import wicket.core.JavabotPage;
 import wicket.panels.*;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import laszlo.panels.ExamplePanel;
-
 // User: joed
 // Date: May 17, 2007
 // Time: 2:37:26 PM
@@ -33,8 +27,7 @@ public class Factoids extends JavabotPage {
         Credits credits = new Credits("credits");
         add(credits);
 
-        ExamplePanel laszlo = new ExamplePanel("laszlo");
-        add(laszlo);
+      
         
     }
 
