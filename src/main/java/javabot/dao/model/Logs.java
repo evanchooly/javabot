@@ -82,7 +82,7 @@ public class Logs implements Serializable {
     }
 
     public boolean isAction() {
-        return message!=null && message.startsWith("ACTION");
+        return message!=null && Type.ACTION.compareTo(getType()) == 0;
     }
 
     public Type getType() {
@@ -94,8 +94,9 @@ public class Logs implements Serializable {
     }
 
     public boolean isServerMessage() {
-        return message!=null &&
-                (message.startsWith("joined") || message.startsWith("left") || message.startsWith("quit"));
+        return message!=null && Type.JOIN.compareTo(getType()) == 0
+                || Type.PART.compareTo(getType()) == 0 ||
+                 Type.QUIT.compareTo(getType()) == 0;
     }
 
 }
