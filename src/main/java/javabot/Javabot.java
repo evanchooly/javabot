@@ -163,9 +163,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                 } else if (StatsOperation2.class.equals(operationClass)) {
                     operations.add(new StatsOperation2(factoid_dao));
                 } else if (SeenOperation2.class.equals(operationClass)) {
-                    operations.add(new SeenOperation2(seen_dao));
-                } else if (ChannelLogOperation.class.equals(operationClass)) {
-                    operations.add(new ChannelLogOperation(log_dao));
+                    operations.add(new SeenOperation2(seen_dao));                
                 } else {
                     operations.add((BotOperation) operationClass.newInstance());
                 }
