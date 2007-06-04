@@ -414,7 +414,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     @Override
     public void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
         seen_dao.logSeen(recipientNick, channel, kickerNick + " kicked " + recipientNick + " with this reasoning: " + reason);
-        log_dao.logMessage(Logs.Type.KICK, kickerNick, channel, "kicked" + recipientNick + "(" +reason +")");
+        log_dao.logMessage(Logs.Type.KICK, kickerNick, channel, " kicked " + recipientNick + " (" +reason +")");
     }
 
     public void onOp(){

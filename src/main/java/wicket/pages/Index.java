@@ -16,6 +16,8 @@ import java.util.Date;
 public class Index extends JavabotPage {
 
     public Index(final PageParameters parameters) {
+
+        
         add(new StyleSheetReference("stylesheet", getClass(), "css/style.css"));
 
         String year = parameters.getString("0");

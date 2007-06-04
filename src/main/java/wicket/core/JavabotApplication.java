@@ -28,8 +28,7 @@ public class JavabotApplication extends WebApplication {
         getRequestCycleSettings().addResponseFilter(new AjaxServerAndClientTimeFilter());
         getDebugSettings().setAjaxDebugModeEnabled(true);
         // getRequestCycleSettings().setBufferResponse(false);
-
-
+        //getMarkupSettings().setStripWicketTags(true);
         mountBookmarkablePage("/home", Index.class);
     
     }

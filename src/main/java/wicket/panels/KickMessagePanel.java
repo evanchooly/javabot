@@ -21,13 +21,12 @@ public class KickMessagePanel extends Panel {
         super(id, model);
 
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-
         Logs log = (Logs)model.getObject();
 
         add(new Label("date", "["+timeFormat.format( log.getUpdated())+"]"));
 
-        String message = "****" + log.getNick() + " " + log.getMessage();
+        String message = "*** " + log.getNick() + " " + log.getMessage();
         add(new Label("message", message));
 
     }
-}
+}                              
