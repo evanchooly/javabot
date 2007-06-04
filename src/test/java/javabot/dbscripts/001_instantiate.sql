@@ -34,6 +34,7 @@ CREATE TABLE logs(
         nick VARCHAR(255) NOT NULL,
         channel VARCHAR(255) NOT NULL,
         message VARCHAR(4000) NOT NULL,
+        type VARCHAR(255) NOT NULL,
         updated TIMESTAMP
 );
 
@@ -196,7 +197,7 @@ INSERT INTO changes (message, changedate) VALUES ('mohadib changed ''karma bykte
 INSERT INTO changes (message, changedate) VALUES ('mohadib changed ''karma cheeser'' to ''127''', '2005-08-09 23:15:51.643');
 INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''migrar a java'' with a value of ''http://www.softwareguru.com.mx/portal/index.php?option=com_content&task=view&id=93 (in Spanish)''', '2005-08-09 23:36:38.055');
 INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r removed ''migrar a java''', '2005-08-09 23:37:01.926');
-INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''migrar a java'' with a value of ''<reply>Article http://www.softwareguru.com.mx/portal/index.php?option=com_content&task=view&id=93 en espa��ol sobre migraci��n a Java .''', '2005-08-09 23:37:43.889');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''migrar a java'' with a value of ''<reply>Article http://www.softwareguru.com.mx/portal/index.php?option=com_content&task=view&id=93 en espa??????ol sobre migraci??????n a Java .''', '2005-08-09 23:37:43.889');
 INSERT INTO changes (message, changedate) VALUES ('Twiun changed ''karma lunk'' to ''4''', '2005-08-10 06:59:46.854');
 INSERT INTO changes (message, changedate) VALUES ('cheeser removed ''avasound''', '2005-08-10 07:09:17.883');
 INSERT INTO changes (message, changedate) VALUES ('cheeser removed ''~no javasound''', '2005-08-10 07:09:35.013');
@@ -2580,7 +2581,7 @@ INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma jcsc
 INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma jcscoobyrs'' to ''22''', '2006-01-03 21:26:15.10');
 INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma jcscoobyrs'' to ''23''', '2006-01-03 21:26:15.562');
 INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r removed ''npe''', '2006-01-04 00:03:08.409');
-INSERT INTO changes (message, changedate) VALUES ('dibblego added ''copyright'' with a value of ''�''', '2006-01-04 03:56:24.518');
+INSERT INTO changes (message, changedate) VALUES ('dibblego added ''copyright'' with a value of ''???''', '2006-01-04 03:56:24.518');
 INSERT INTO changes (message, changedate) VALUES ('teralaser removed ''layout managers''', '2006-01-04 05:49:10.571');
 INSERT INTO changes (message, changedate) VALUES ('teralaser added ''layout managers'' with a value of ''http://java.sun.com/docs/books/tutorial/uiswing/layout/index.html. If the layout managers that come with the jdk dont satisfy you, have a look at FormLayout, TableLayout, PercentLayout or HTMLLayout (ask me about each of those to learn more). Book chapter at http://javafaq.mine.nu/lookup?290''', '2006-01-04 05:49:19.158');
 INSERT INTO changes (message, changedate) VALUES ('hopper changed ''karma davidw'' to ''2''', '2006-01-04 06:09:47.594');
@@ -5626,10 +5627,10 @@ INSERT INTO changes (message, changedate) VALUES ('Eclipser added ''-10~-15c'' w
 INSERT INTO changes (message, changedate) VALUES ('MickMcMack removed ''-10~-15c''', '2006-07-20 07:06:25.734');
 INSERT INTO changes (message, changedate) VALUES ('ricky_clarkson added ''private messages'' with a value of ''<see>pm''', '2006-07-20 07:32:36.265');
 INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma kaylee'' to ''30''', '2006-07-20 09:32:42.68');
-INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''hola'' with a value of ''<reply>Please, no hablo espa��l.  Let''s talk in Engleesh instead.''', '2006-07-20 09:34:58.056');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''hola'' with a value of ''<reply>Please, no hablo espa??????l.  Let''s talk in Engleesh instead.''', '2006-07-20 09:34:58.056');
 INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r removed ''hola''', '2006-07-20 09:35:17.58');
 INSERT INTO changes (message, changedate) VALUES ('JavaGeek changed ''karma javabot'' to ''59''', '2006-07-20 09:35:19.664');
-INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''hola'' with a value of ''<reply>Please, no hablo esp��ol.  Let''s talk in Engleesh instead.''', '2006-07-20 09:35:38.345');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''hola'' with a value of ''<reply>Please, no hablo esp??????ol.  Let''s talk in Engleesh instead.''', '2006-07-20 09:35:38.345');
 INSERT INTO changes (message, changedate) VALUES ('lunk changed ''karma cheeser'' to ''257''', '2006-07-20 09:35:39.787');
 INSERT INTO changes (message, changedate) VALUES ('lunk changed ''karma cheeser'' to ''256''', '2006-07-20 09:35:57.793');
 INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma kaylee'' to ''31''', '2006-07-20 10:01:30.12');
@@ -5798,9 +5799,9 @@ INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma mele
 INSERT INTO changes (message, changedate) VALUES ('octoberdan added ''blog cry'' with a value of ''a term to describe political whineing voiced by blogs.''', '2006-07-28 11:38:27.677');
 INSERT INTO changes (message, changedate) VALUES ('octoberdan added ''blogcry'' with a value of ''a term that represents the political whining that is disseminated via blogs. It''s also a reference to a way of telling people you''ve blogged''', '2006-07-28 11:43:00.292');
 INSERT INTO changes (message, changedate) VALUES ('octoberdan removed ''blogcry''', '2006-07-28 11:45:38.176');
-INSERT INTO changes (message, changedate) VALUES ('octoberdan added ''blogcry'' with a value of ''a term that represents the political whining that is disseminated via blogs. More commonly, it refers to the act of spreading notoriety of a blog by direct communication. Example: ���Hey! Everyone! New blog post at http://oystersofwisdom.blogspot.com/!���''', '2006-07-28 11:45:38.695');
+INSERT INTO changes (message, changedate) VALUES ('octoberdan added ''blogcry'' with a value of ''a term that represents the political whining that is disseminated via blogs. More commonly, it refers to the act of spreading notoriety of a blog by direct communication. Example: ?????????Hey! Everyone! New blog post at http://oystersofwisdom.blogspot.com/!?????????''', '2006-07-28 11:45:38.695');
 INSERT INTO changes (message, changedate) VALUES ('octoberdan removed ''blog cry''', '2006-07-28 11:45:43.457');
-INSERT INTO changes (message, changedate) VALUES ('octoberdan added ''blog cry'' with a value of ''a term that represents the political whining that is disseminated via blogs. More commonly, it refers to the act of spreading notoriety of a blog by direct communication. Example: ���Hey! Everyone! New blog post at http://oystersofwisdom.blogspot.com/!���''', '2006-07-28 11:45:43.987');
+INSERT INTO changes (message, changedate) VALUES ('octoberdan added ''blog cry'' with a value of ''a term that represents the political whining that is disseminated via blogs. More commonly, it refers to the act of spreading notoriety of a blog by direct communication. Example: ?????????Hey! Everyone! New blog post at http://oystersofwisdom.blogspot.com/!?????????''', '2006-07-28 11:45:43.987');
 INSERT INTO changes (message, changedate) VALUES ('octoberdan removed ''blog cry''', '2006-07-28 11:47:13.436');
 INSERT INTO changes (message, changedate) VALUES ('octoberdan added ''blog cry'' with a value of ''a term that represents the political whining that is disseminated via blogs. More commonly, it refers to the act of spreading notoriety of a blog by direct communication. Example: \\"Hey! Everyone! New blog post at http://oystersofwisdom.blogspot.com/!\\"''', '2006-07-28 11:47:13.959');
 INSERT INTO changes (message, changedate) VALUES ('octoberdan removed ''blog cry''', '2006-07-28 11:47:38.195');
@@ -6580,9 +6581,9 @@ INSERT INTO changes (message, changedate) VALUES ('kaylee changed ''karma bitpoe
 INSERT INTO changes (message, changedate) VALUES ('Clackwell removed ''test case''', '2006-09-15 03:11:28.34');
 INSERT INTO changes (message, changedate) VALUES ('Clackwell added ''test case'' with a value of ''<reply>Provide complete, compilable Java SOURCE CODE that demonstrates the problem. Do not include an entire application; just provide a test case that shows the problem and nothing else. Be as brief as possible. (See http://javafaq.mine.nu/lookup?364 for details and a HOWTO.)''', '2006-09-15 03:11:30.829');
 INSERT INTO changes (message, changedate) VALUES ('cheeser added ''rediculous'' with a value of ''<reply>rediculous?  i''ll tell you what ridiculous is:  people can''t even spell it!''', '2006-09-15 09:42:51.837');
-INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''viola a javageek'' with a value of ''<reply>JavaGeek, volt��ate para el otro lado mientras me descubro el miembro, cierra los ojos, y prep��rate para recibir la pitiza del siglo.''', '2006-09-15 10:21:27.607');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''viola a javageek'' with a value of ''<reply>JavaGeek, volt??????ate para el otro lado mientras me descubro el miembro, cierra los ojos, y prep??????rate para recibir la pitiza del siglo.''', '2006-09-15 10:21:27.607');
 INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r removed ''viola a javageek''', '2006-09-15 10:21:37.613');
-INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''viola a javageek'' with a value of ''<reply>JavaGeek, volt��ate para el otro lado mientras me descubro el miembro, cierra los ojos, y prep��rate para recibir la pitiza del siglo.''', '2006-09-15 10:21:43.778');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''viola a javageek'' with a value of ''<reply>JavaGeek, volt??????ate para el otro lado mientras me descubro el miembro, cierra los ojos, y prep??????rate para recibir la pitiza del siglo.''', '2006-09-15 10:21:43.778');
 INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r removed ''viola a javageek''', '2006-09-15 10:22:06.191');
 INSERT INTO changes (message, changedate) VALUES ('r0bby_ changed ''karma cheeser'' to ''269''', '2006-09-15 10:40:03.622');
 INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma javageek'' to ''54''', '2006-09-15 15:32:08.54');
@@ -9682,14 +9683,14 @@ INSERT INTO changes (message, changedate) VALUES ('Alconquian added ''karma bykt
 INSERT INTO changes (message, changedate) VALUES ('joed changed ''karma flippo'' to ''45''', '2007-04-07 18:17:13.806');
 INSERT INTO changes (message, changedate) VALUES ('joed changed ''karma bitpoet'' to ''51''', '2007-04-07 19:31:24.243');
 INSERT INTO changes (message, changedate) VALUES ('kinabalu changed ''karma bitpoet'' to ''52''', '2007-04-07 19:31:40.311');
-INSERT INTO changes (message, changedate) VALUES ('krustofski added ''tyson'' with a value of ''<reply><arg>, I���ll fuck you till you love me faggot.''', '2007-04-08 00:44:57.117');
+INSERT INTO changes (message, changedate) VALUES ('krustofski added ''tyson'' with a value of ''<reply><arg>, I?????????ll fuck you till you love me faggot.''', '2007-04-08 00:44:57.117');
 INSERT INTO changes (message, changedate) VALUES ('krustofski removed ''tyson''', '2007-04-08 00:46:05.86');
-INSERT INTO changes (message, changedate) VALUES ('krustofski added ''tyson'' with a value of ''<reply><args>, I���ll fuck you till you love me faggot.''', '2007-04-08 00:46:06.282');
+INSERT INTO changes (message, changedate) VALUES ('krustofski added ''tyson'' with a value of ''<reply><args>, I?????????ll fuck you till you love me faggot.''', '2007-04-08 00:46:06.282');
 INSERT INTO changes (message, changedate) VALUES ('krustofski removed ''tyson''', '2007-04-08 01:08:54.801');
-INSERT INTO changes (message, changedate) VALUES ('krustofski added ''tyson'' with a value of ''<reply>$1, I���ll fuck you till you love me faggot.''', '2007-04-08 01:08:55.27');
-INSERT INTO changes (message, changedate) VALUES ('krustofski added ''tyson $1'' with a value of ''$1, I���ll fuck you till you love me faggot.''', '2007-04-08 01:09:45.463');
+INSERT INTO changes (message, changedate) VALUES ('krustofski added ''tyson'' with a value of ''<reply>$1, I?????????ll fuck you till you love me faggot.''', '2007-04-08 01:08:55.27');
+INSERT INTO changes (message, changedate) VALUES ('krustofski added ''tyson $1'' with a value of ''$1, I?????????ll fuck you till you love me faggot.''', '2007-04-08 01:09:45.463');
 INSERT INTO changes (message, changedate) VALUES ('krustofski removed ''tyson $1''', '2007-04-08 01:10:08.928');
-INSERT INTO changes (message, changedate) VALUES ('krustofski added ''tyson $1'' with a value of ''<reply>$1, I���ll fuck you till you love me faggot.''', '2007-04-08 01:10:09.651');
+INSERT INTO changes (message, changedate) VALUES ('krustofski added ''tyson $1'' with a value of ''<reply>$1, I?????????ll fuck you till you love me faggot.''', '2007-04-08 01:10:09.651');
 INSERT INTO changes (message, changedate) VALUES ('krustofski removed ''tyson''', '2007-04-08 01:10:32.179');
 INSERT INTO changes (message, changedate) VALUES ('krustofski removed ''tyson $1''', '2007-04-08 01:10:46.744');
 INSERT INTO changes (message, changedate) VALUES ('krustofski added ''tyson $1'' with a value of ''<reply>$1, I`ll fuck you till you love me faggot.''', '2007-04-08 01:10:47.157');
@@ -10246,7 +10247,7 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (719, 'docbook'
 INSERT INTO factoids (id, name, value, username, updated) VALUES (721, 'lars_g', 'Lars_G, don''t try to understand him, he''s too complex and varying for that. He''s a lover of Java, XML, and admires Hunter S. Thompson and Frank Zappa. Need I say more?', 'cheeser', '2005-06-28 21:52:34.41');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (725, 'jeditorpane', '<see>how to use editor panes', 'cheeser', '2005-06-28 21:52:35.16');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (726, 'rentacoder', 'http://rentacoder.com -- Users post projects for a given $ amount and you can place bids on them.  Great place to make some money for coding', 'cheeser', '2005-06-28 21:52:35.311');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (728, 'are you $1', '<reply>(yes|no|maybe)', 'cheeser', '2005-06-28 21:52:35.768');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (728, 'are??you $1', '<reply>(yes|no|maybe)', 'cheeser', '2005-06-28 21:52:35.768');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (729, 'cannot resolve symbol', 'http://c2.com/cgi/wiki?CannotResolveSymbol', 'cheeser', '2005-06-28 21:52:35.91');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (730, 'analogy', 'a silly thing to make', 'cheeser', '2005-06-28 21:52:36.054');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (735, 'threads', 'http://java.sun.com/tutorial/essential/threads', 'cheeser', '2005-06-28 21:52:37.151');
@@ -11002,7 +11003,7 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (2360, 'cts', '
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2365, 'seems sluggish', '<reply>You would be too, with this lot yammering at you all day', 'dmlloyd', '2005-08-06 10:47:08.525');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2370, 'news', '<reply>http://java.sun.com/j2se/1.5.0/ReleaseNotes.html#150_04 -- Java 5 rel. 4 is out; here''s the list of bug fixes in case anybody here feels like updating or like discussing (Sunday, 7.Aug.2005)', 'pr3d4t0r', '2005-08-07 19:28:03.944');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2380, 'javasound', 'a LowLevel API http://www.jsresources.org and the *highly active* JAVASOUND-INTEREST mailinglist both exist, Richard Baldwin has great tutorials at his site, for GAMES you may also be interested in "~joal"; also check JavaSoundDemo from sun.com', 'aiyaiyairc', '2005-08-09 17:01:30.886');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (2383, 'migrar a java', '<reply>Article http://www.softwareguru.com.mx/portal/index.php?option=com_content&task=view&id=93 en espa��ol sobre migraci��n a Java .', 'pr3d4t0r', '2005-08-09 23:37:43.858');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (2383, 'migrar a java', '<reply>Article http://www.softwareguru.com.mx/portal/index.php?option=com_content&task=view&id=93 en espa??????ol sobre migraci??????n a Java .', 'pr3d4t0r', '2005-08-09 23:37:43.858');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2385, 'eclipse shortcuts', 'http://eclipse-tools.sourceforge.net/shortcuts.html', 'mohadib_', '2005-08-10 13:33:50.402');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2386, 'one-jar', 'a library that allows packing multiple jars files into one. See: http://one-jar.sourceforge.net/', 'jbalint', '2005-08-11 12:42:56.236');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2403, 'jia', 'the Java in Action conference, organized by Tech Target.  More info at:  http://javainaction.techtarget.com/?Offer=JIAwswn78', 'pr3d4t0r', '2005-08-16 14:31:42.544');
@@ -11672,7 +11673,7 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (794, 'karma me
 INSERT INTO factoids (id, name, value, username, updated) VALUES (4333, 'java on mac', '<reply>Are Macs the best machines for running Java?  Check this out:  http://www.theserverside.com/tt/articles/article.tss?l=JavaMac', 'pr3d4t0r', '2006-07-19 20:55:52.664');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (4334, 'e.e. cummings', 'convoluted giberish from some left wing green peace nut... ;)', 'kaamoss', '2006-07-20 00:41:35.324');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (4336, 'private messages', '<see>pm', 'ricky_clarkson', '2006-07-20 07:32:36.233');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (4338, 'hola', '<reply>Please, no hablo esp��ol.  Let''s talk in Engleesh instead.', 'pr3d4t0r', '2006-07-20 09:35:38.307');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (4338, 'hola', '<reply>Please, no hablo esp??????ol.  Let''s talk in Engleesh instead.', 'pr3d4t0r', '2006-07-20 09:35:38.307');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (4339, 'visitor', 'http://en.wikipedia.org/wiki/Visitor_pattern', 'ricky_clarkson', '2006-07-20 10:47:57.015');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (4340, 'jprofiler', 'commercial profiler it can be found at http://www.ej-technologies.com/products/jprofiler/overview.html', 'ernimril', '2006-07-20 14:00:10.127');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (4341, 'hprof', 'a profiling feature inbuilt into Java since 1.2: http://java.sun.com/developer/technicalArticles/Programming/HPROF.html', 'ricky_clarkson', '2006-07-20 14:02:40.732');
@@ -12860,7 +12861,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (4701, 'karma d
 INSERT INTO factoids (id, name, value, username, updated) VALUES (4592, 'karma pfn', '22', 'pr3d4t0r', '2007-04-17 15:54:26.016');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5947, 'karma fzlogik', '1', 'stork', '2007-04-17 17:02:43.171');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (3650, 'karma snooplsm', '6', 'whaley', '2007-04-17 23:25:14.797');
-
 
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;

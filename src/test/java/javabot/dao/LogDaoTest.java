@@ -27,6 +27,10 @@ public class LogDaoTest extends BaseServiceTest {
 
     @Test
     public void findChannels(){
+
+        String nick = System.currentTimeMillis() + "test";
+         logDao.logMessage(Logs.Type.MESSAGE, nick, "#test", "test");
+
         List channels = logDao.loggedChannels();
         Assert.assertEquals("#test",channels.get(0));
     }
