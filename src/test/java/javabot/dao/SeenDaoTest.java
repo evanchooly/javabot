@@ -21,5 +21,4 @@ public class SeenDaoTest extends BaseServiceTest {
         Assert.assertTrue(seenDao.isSeen(nick, "channel"));
     }
 
-
 }
