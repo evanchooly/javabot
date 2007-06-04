@@ -1,40 +1,11 @@
 package javabot;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import javabot.dao.ChangesDao;
 import javabot.dao.FactoidDao;
 import javabot.dao.LogDao;
 import javabot.dao.SeenDao;
-import javabot.operations.AddFactoidOperation;
-import javabot.operations.AddFactoidOperation2;
-import javabot.operations.BotOperation;
-import javabot.operations.ChannelLogOperation;
-import javabot.operations.DictOperation;
-import javabot.operations.ForgetFactoidOperation;
-import javabot.operations.ForgetFactoidOperation2;
-import javabot.operations.GetFactoidOperation;
-import javabot.operations.GetFactoidOperation2;
-import javabot.operations.GuessOperation;
-import javabot.operations.JavadocOperation;
-import javabot.operations.KarmaChangeOperation;
-import javabot.operations.KarmaChangeOperation2;
-import javabot.operations.KarmaReadOperation;
-import javabot.operations.KarmaReadOperation2;
-import javabot.operations.LeaveOperation;
-import javabot.operations.LiteralOperation;
-import javabot.operations.QuitOperation;
-import javabot.operations.SeenOperation2;
-import javabot.operations.SpecialCasesOperation;
-import javabot.operations.StatsOperation;
-import javabot.operations.StatsOperation2;
-import javabot.operations.TellOperation;
+import javabot.dao.model.Logs;
+import javabot.operations.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
@@ -45,6 +16,17 @@ import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletConfig;
+import javax.servlet.http.HttpServlet;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 public class Javabot extends PircBot implements ChannelControl, Responder {
     private static final Log log = LogFactory.getLog(Javabot.class);
@@ -67,8 +49,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     public static final String JAVABOT_PROPERTIES = "javabot.properties";
 
     // Spring wiring
-    private ApplicationContext context = new FileSystemXmlApplicationContext("applicationContext.xml");
-
+    ApplicationContext context = new ClassPathXmlApplicationContext("/javabot/applicationContext.xml");
+ 
     public FactoidDao factoid_dao = (FactoidDao) context.getBean("factoidDao");
 
     public ChangesDao change_dao = (ChangesDao) context.getBean("changesDao");
@@ -89,7 +71,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     private void loadConfig() throws JDOMException, IOException {
         SAXBuilder reader = new SAXBuilder(true);
         File configFile = getConfigFile();
-        Document document;
+        Document document = null;
         try {
             document = reader.build(configFile.toURI().toURL());
         } catch (Exception e) {
@@ -114,9 +96,10 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         loadIgnoreInfo(root);
 
     }
-
+    
     protected File getConfigFile() {
-        return new File("config.xml");
+        //return new File("config.xml");
+        return new File(new File(System.getProperty("user.home")), ".javabot/config.xml").getAbsoluteFile();
     }
 
     private void loadIgnoreInfo(Element root) {
@@ -134,7 +117,6 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         List operationNodes = root.getChildren("operation");
         Iterator iterator = operationNodes.iterator();
         operations = new ArrayList<BotOperation>();
-
 
         while (iterator.hasNext()) {
             Element node = (Element) iterator.next();
@@ -191,9 +173,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
             } catch (Exception exception) {
                 throw new RuntimeException(exception);
             }
-
-
-        }
+       }
     }
 
     private void loadStartStringInfo(Element root) {
@@ -249,9 +229,10 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         port = Integer.parseInt(serverNode.getAttributeValue("port"));
     }
 
-    public static void main(String[] args) throws IOException, JDOMException {
+    public void main(String[] args) throws IOException, JDOMException {
         log.info("Starting Javabot");
         Javabot bot = new Javabot();
+
         new PortListener(PORT_NUMBER, bot.getNickPassword()).start();
         bot.setMessageDelay(2000);
         bot.connect();
@@ -287,7 +268,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     @Override
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
         seen_dao.logSeen(sender, channel,  "said: " + message);
-        log_dao.logMessage(sender, channel, message);
+        log_dao.logMessage(Logs.Type.MESSAGE, sender, channel, message);
         log.info("Message " + message);
         if (isValidSender(sender)) {
 
@@ -334,11 +315,11 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                 if (nextMessage.isAction()) {
                     sendAction(nextMessage.getDestination(), nextMessage.getMessage());
                     seen_dao.logSeen(nickName, nextMessage.getDestination(), "did a /me " + nextMessage.getMessage());
-                    log_dao.logMessage(nickName, nextMessage.getDestination(), "ACTION:" + nextMessage.getMessage());
+                    log_dao.logMessage(Logs.Type.ACTION, nickName, nextMessage.getDestination(), "ACTION:" + nextMessage.getMessage());
                 } else {
                     sendMessage(nextMessage.getDestination(), nextMessage.getMessage());
                     seen_dao.logSeen(nickName, nextMessage.getDestination(),"said: " + nextMessage.getMessage());
-                    log_dao.logMessage(nickName, nextMessage.getDestination(), nextMessage.getMessage());
+                    log_dao.logMessage(Logs.Type.MESSAGE, nickName, nextMessage.getDestination(), nextMessage.getMessage());
                 }
             }
         }
@@ -353,11 +334,11 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                 if (nextMessage.isAction()) {
                     sendAction(nextMessage.getDestination(), nextMessage.getMessage());
                     seen_dao.logSeen(nickName, nextMessage.getDestination(), "did a /me " + nextMessage.getMessage());
-                    log_dao.logMessage(nickName, nextMessage.getDestination(), "ACTION:" + nextMessage.getMessage());
+                    log_dao.logMessage(Logs.Type.ACTION, nickName, nextMessage.getDestination(), "ACTION:" + nextMessage.getMessage());
                 } else {
                     sendMessage(nextMessage.getDestination(), nextMessage.getMessage());
                     seen_dao.logSeen(nickName, nextMessage.getDestination(), "said: " + nextMessage.getMessage());
-                    log_dao.logMessage(nickName, nextMessage.getDestination(), nextMessage.getMessage());
+                    log_dao.logMessage(Logs.Type.MESSAGE, nickName, nextMessage.getDestination(), nextMessage.getMessage());
                 }
             }
         }
@@ -410,32 +391,32 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     @Override
     public void onJoin(String channel, String sender, String login, String hostname) {
         seen_dao.logSeen(sender, channel, "joined the channel");
-        log_dao.logMessage(sender, channel, "joined the channel");
+        log_dao.logMessage(Logs.Type.JOIN, sender, channel, "joined the channel");
     }
 
     @Override
     public void onQuit(String channel, String sender, String login, String hostname) {
         seen_dao.logSeen(sender, channel, "quit");
-        log_dao.logMessage(sender, channel, "quit");
+        log_dao.logMessage(Logs.Type.QUIT, sender, channel, "quit");
     }
 
     @Override
     public void onPart(String channel, String sender, String login, String hostname) {
         seen_dao.logSeen(sender, channel, "parted the channel");
-        log_dao.logMessage(sender, channel, "parted the channel");
+        log_dao.logMessage(Logs.Type.PART,  sender, channel, "parted the channel");
 
     }
 
     @Override
     public void onAction(String sender, String login, String hostname, String target, String action) {
         seen_dao.logSeen(sender, target, "did a /me " + action);
-        log_dao.logMessage(sender, target, "ACTION:" + action);
+        log_dao.logMessage(Logs.Type.ACTION, sender, target, "ACTION:" + action);
     }
 
     @Override
     public void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
         seen_dao.logSeen(recipientNick, channel, kickerNick + " kicked " + recipientNick + " with this reasoning: " + reason);
-        log_dao.logMessage(kickerNick, channel, "KICK:" + recipientNick);
+        log_dao.logMessage(Logs.Type.KICK, kickerNick, channel, "KICK:" + recipientNick);
     }
 
     public void onOp(){

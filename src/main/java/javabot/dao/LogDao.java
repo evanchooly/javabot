@@ -8,7 +8,7 @@ import java.util.Date;
 
 public interface LogDao {
 
-    void logMessage(String nick, String channel, String message);
+    void logMessage(Logs.Type type, String nick, String channel, String message);
 
     Logs getMessage(String nick, String channel);
 

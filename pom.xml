@@ -292,10 +292,11 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>5.1</version>
+            <version>5.5</version>
             <scope>test</scope>
             <classifier>jdk15</classifier>
         </dependency>
+<!--
 
         <dependency>
             <groupId>sun.jdk</groupId>
@@ -303,7 +304,7 @@
             <version>1.6.0</version>
             <scope>system</scope>
             <systemPath>${java.home}/../lib/tools.jar</systemPath>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.unitils</groupId>

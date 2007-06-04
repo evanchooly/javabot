@@ -3,6 +3,7 @@ package javabot.operations;
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.LogDao;
+import javabot.dao.model.Logs;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -27,7 +28,7 @@ public class ChannelLogOperation implements BotOperation {
         String channel = event.getChannel();
         String sender = event.getSender();
 
-        l_dao.logMessage(sender, channel, message);
+        l_dao.logMessage(Logs.Type.MESSAGE, sender, channel, message);
 
         return new ArrayList<Message>();
     }

@@ -36,6 +36,11 @@ public class Logs implements Serializable {
     @Column(name = "`updated`")
     private Date updated;
 
+    public enum Type { JOIN, PART, QUIT, ACTION, KICK, BAN, MESSAGE }
+
+    @Column(name = "`type`")
+    private String type;
+
     public Long getId() {
         return id;
     }
@@ -78,6 +83,14 @@ public class Logs implements Serializable {
 
     public boolean isAction() {
         return message!=null && message.startsWith("ACTION");
+    }
+
+    public Type getType() {
+        return Type.valueOf(type);
+    }
+
+    public void setType(Type type) {
+        this.type = type.toString();
     }
 
     public boolean isServerMessage() {
