@@ -349,22 +349,6 @@
             </exclusions>
         </dependency>
 
-	<!--
-        <dependency>
-            <groupId>org.openlaszlo</groupId>
-            <artifactId>openlaszlo</artifactId>
-            <version>4.0.2</version>
-            <type>war</type>
-        </dependency>
-	-->
-
-        <dependency>
-            <groupId>org.openlaszlo</groupId>
-            <artifactId>openlaszlo</artifactId>
-            <version>4.0.2</version>
-            <type>pom</type>
-        </dependency>
-
     </dependencies>
 
     <build>
