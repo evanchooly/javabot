@@ -11,7 +11,6 @@ import java.util.Date;
 import javabot.BotEvent;
 import javabot.Message;
 
-import com.rickyclarkson.java.util.TypeSafeList;
 
 /**
  * @author littlezoper

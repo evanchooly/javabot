@@ -4,10 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.TreeSet;
 import java.util.Set;
+import java.util.TreeSet;
 
-import com.rickyclarkson.java.util.TypeSafeList;
 import javabot.BotEvent;
 import javabot.Message;
 
@@ -24,11 +23,9 @@ public class UnixCommandOperation implements BotOperation {
 //        addFiles("/bin");
 //        addFiles("/usr/sbin");
 //        addFiles("/sbin");
-
         _commands.add("rm");
         _commands.add("ls");
         _commands.add("clear");
-
         _insults.add("dumbass");
         _insults.add("genius");
         _insults.add("Einstein");
@@ -53,11 +50,11 @@ public class UnixCommandOperation implements BotOperation {
      * @see BotOperation#handleMessage(BotEvent)
      */
     public List<Message> handleMessage(BotEvent event) {
-        return new ArrayList< Message>();
+        return new ArrayList<Message>();
     }
 
     public List<Message> handleChannelMessage(BotEvent event) {
-        List<Message> messages = new ArrayList< Message>();
+        List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();
         String channel = event.getChannel();
         String[] split = message.split(" ");

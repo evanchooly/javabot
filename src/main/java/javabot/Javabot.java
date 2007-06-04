@@ -1,10 +1,40 @@
 package javabot;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import javabot.dao.ChangesDao;
 import javabot.dao.FactoidDao;
 import javabot.dao.LogDao;
 import javabot.dao.SeenDao;
-import javabot.operations.*;
+import javabot.operations.AddFactoidOperation;
+import javabot.operations.AddFactoidOperation2;
+import javabot.operations.BotOperation;
+import javabot.operations.ChannelLogOperation;
+import javabot.operations.DictOperation;
+import javabot.operations.ForgetFactoidOperation;
+import javabot.operations.ForgetFactoidOperation2;
+import javabot.operations.GetFactoidOperation;
+import javabot.operations.GetFactoidOperation2;
+import javabot.operations.GuessOperation;
+import javabot.operations.JavadocOperation;
+import javabot.operations.KarmaChangeOperation;
+import javabot.operations.KarmaChangeOperation2;
+import javabot.operations.KarmaReadOperation;
+import javabot.operations.KarmaReadOperation2;
+import javabot.operations.LeaveOperation;
+import javabot.operations.LiteralOperation;
+import javabot.operations.QuitOperation;
+import javabot.operations.SeenOperation2;
+import javabot.operations.SpecialCasesOperation;
+import javabot.operations.StatsOperation;
+import javabot.operations.StatsOperation2;
+import javabot.operations.TellOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
@@ -15,17 +45,6 @@ import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletConfig;
-import javax.servlet.http.HttpServlet;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
 public class Javabot extends PircBot implements ChannelControl, Responder {
     private static final Log log = LogFactory.getLog(Javabot.class);
@@ -48,8 +67,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     public static final String JAVABOT_PROPERTIES = "javabot.properties";
 
     // Spring wiring
-    ApplicationContext context = new ClassPathXmlApplicationContext("/javabot/applicationContext.xml");
- 
+    private ApplicationContext context = new FileSystemXmlApplicationContext("applicationContext.xml");
+
     public FactoidDao factoid_dao = (FactoidDao) context.getBean("factoidDao");
 
     public ChangesDao change_dao = (ChangesDao) context.getBean("changesDao");
@@ -70,7 +89,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     private void loadConfig() throws JDOMException, IOException {
         SAXBuilder reader = new SAXBuilder(true);
         File configFile = getConfigFile();
-        Document document = null;
+        Document document;
         try {
             document = reader.build(configFile.toURI().toURL());
         } catch (Exception e) {
@@ -95,10 +114,9 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         loadIgnoreInfo(root);
 
     }
-    
+
     protected File getConfigFile() {
-        //return new File("config.xml");
-        return new File(new File(System.getProperty("user.home")), ".javabot/config.xml").getAbsoluteFile();
+        return new File("config.xml");
     }
 
     private void loadIgnoreInfo(Element root) {
@@ -116,6 +134,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         List operationNodes = root.getChildren("operation");
         Iterator iterator = operationNodes.iterator();
         operations = new ArrayList<BotOperation>();
+
 
         while (iterator.hasNext()) {
             Element node = (Element) iterator.next();
@@ -172,7 +191,9 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
             } catch (Exception exception) {
                 throw new RuntimeException(exception);
             }
-       }
+
+
+        }
     }
 
     private void loadStartStringInfo(Element root) {
@@ -228,10 +249,9 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         port = Integer.parseInt(serverNode.getAttributeValue("port"));
     }
 
-    public void main(String[] args) throws IOException, JDOMException {
+    public static void main(String[] args) throws IOException, JDOMException {
         log.info("Starting Javabot");
         Javabot bot = new Javabot();
-
         new PortListener(PORT_NUMBER, bot.getNickPassword()).start();
         bot.setMessageDelay(2000);
         bot.connect();

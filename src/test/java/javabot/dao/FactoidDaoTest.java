@@ -1,6 +1,5 @@
 package javabot.dao;
 
-import javabot.dao.model.Factoid;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;

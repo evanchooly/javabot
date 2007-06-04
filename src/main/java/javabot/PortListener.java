@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import com.rickyclarkson.java.lang.Debug;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -40,7 +39,7 @@ public class PortListener implements Runnable {
                     String line = reader.readLine();
                     log.debug(password);
                     if(password.equals(line)) {
-                        Debug.printDebug("About to exit");
+                        log.debug("About to exit");
                         _quit = true;
                     }
                     socket.close();

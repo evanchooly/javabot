@@ -3,7 +3,6 @@ package javabot.operations;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rickyclarkson.java.util.TypeSafeList;
 import javabot.BotEvent;
 import javabot.Database;
 import javabot.Message;

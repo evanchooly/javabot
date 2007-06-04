@@ -8,7 +8,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rickyclarkson.java.util.TypeSafeList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

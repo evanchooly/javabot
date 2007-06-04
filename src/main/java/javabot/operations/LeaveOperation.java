@@ -7,7 +7,6 @@ import javabot.BotEvent;
 import javabot.ChannelControl;
 import javabot.Message;
 
-import com.rickyclarkson.java.util.TypeSafeList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

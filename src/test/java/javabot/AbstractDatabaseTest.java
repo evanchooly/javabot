@@ -2,10 +2,10 @@ package javabot;
 
 import java.io.IOException;
 
-import org.testng.annotations.Test;
-import org.testng.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.testng.annotations.Test;
+import org.testng.Assert;
 
 /**
  * Created Jun 28, 2005

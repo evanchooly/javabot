@@ -3,10 +3,10 @@ package javabot.operations;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rickyclarkson.java.util.Arrays;
 import javabot.BotEvent;
 import javabot.Database;
 import javabot.Message;
+import javabot.util.Arrays;
 
 public class AddFactoidOperation implements BotOperation {
     private final Database database;
@@ -23,8 +23,7 @@ public class AddFactoidOperation implements BotOperation {
         String[] messageParts = message.split(" ");
         int partWithIs = Arrays.search(messageParts, "is");
         if(partWithIs != -1) {
-            Object keyParts = Arrays.subset(messageParts, 0, partWithIs);
-            String key = Arrays.toString(keyParts, " ");
+            String key = Arrays.toString(Arrays.subset(messageParts, 0, partWithIs), " ");
             key = key.toLowerCase();
             while(key.endsWith(".") || key.endsWith("?") || key.endsWith("!")) {
                 key = key.substring(0, key.length() - 1);

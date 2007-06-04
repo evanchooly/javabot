@@ -1,17 +1,17 @@
 package wicket.panels;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import wicket.pages.Index;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 // User: joed
 // Date: May 22, 2007
@@ -47,7 +47,7 @@ public class NavigationPanel extends Panel {
     }
 
     public static PageParameters newPageParameters(Date date, String channel) {
-        Map params = new HashMap();
+        Map<String, String> params = new HashMap<String, String>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateText = sdf.format(date);
 

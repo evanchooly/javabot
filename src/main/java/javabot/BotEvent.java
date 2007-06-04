@@ -36,6 +36,7 @@ public class BotEvent {
         return message;
     }
 
+    @Override
     public String toString() {
         return "BotEvent{" +
             "channel='" + channel + "'" +

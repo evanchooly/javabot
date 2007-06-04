@@ -1,5 +1,11 @@
 package wicket.panels;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javabot.dao.LogDao;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -10,12 +16,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import wicket.pages.Index;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 // Author: joed
 
@@ -57,7 +57,7 @@ public class ChannelBox extends Panel {
     }
 
     public static PageParameters newPageParameters(Date date, String channel) {
-        Map params = new HashMap();
+        Map<String, String> params = new HashMap<String, String>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateText = sdf.format(date);
 

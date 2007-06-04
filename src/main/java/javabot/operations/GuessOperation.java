@@ -1,15 +1,13 @@
 package javabot.operations;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import com.rickyclarkson.java.util.Arrays;
-import com.rickyclarkson.java.util.TypeSafeList;
 import javabot.BotEvent;
 import javabot.Database;
 import javabot.Message;
 import javabot.Factoid;
+import javabot.util.Arrays;
 
 /**
  * A little more intelligence creeping in. This searches the entire set of key/value pairs to find
@@ -84,18 +82,18 @@ public class GuessOperation implements BotOperation {
             if(next.indexOf("karma ") == 0) {
                 continue;
             }
-            for(int a = 0; a < words.length; a++) {
+            for(String word : words) {
                 int currentMatches = 0;
-                if(words[a].length() < 3) {
+                if(word.length() < 3) {
                     continue;
                 }
                 for(int b = 0; b < next.length(); b++) {
-                    int index = next.indexOf(words[a]);
+                    int index = next.indexOf(word);
                     if(index == -1) {
                         continue;
                     }
                     currentMatches++;
-                    b += words[a].length();
+                    b += word.length();
                 }
                 if(currentMatches > maxMatches) {
                     bestKey = nextKey;
@@ -103,16 +101,13 @@ public class GuessOperation implements BotOperation {
                 }
             }
         }
-        if(bestKey.equals("")) {
-            messages.add(new Message(channel, "No appropriate factoid found.",
-                false));
+        if("".equals(bestKey)) {
+            messages.add(new Message(channel, "No appropriate factoid found.", false));
             return messages;
         }
-        messages.add(new Message(channel, "I guess the factoid '" + bestKey
-            + "' might be appropriate:", false));
-        messages.addAll(new GetFactoidOperation(database).handleMessage(new BotEvent(
-            event.getChannel(), event.getSender(), event.getLogin(), event
-            .getHostname(), bestKey)));
+        messages.add(new Message(channel, "I guess the factoid '" + bestKey + "' might be appropriate:", false));
+        messages.addAll(new GetFactoidOperation(database).handleMessage(new BotEvent(event.getChannel(),
+            event.getSender(), event.getLogin(), event.getHostname(), bestKey)));
         return messages;
     }
 
