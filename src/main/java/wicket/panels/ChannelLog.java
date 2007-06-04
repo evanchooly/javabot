@@ -43,6 +43,9 @@ public class ChannelLog extends Panel {
             } else if (log.isServerMessage()) {
                 item.add(new SimpleAttributeModifier("class", "action"));
                 item.add(new ServerMessagePanel("messagePanel", new Model(log)));
+            } else if (log.isKick()){
+                item.add(new SimpleAttributeModifier("class","kick"));
+                item.add(new KickMessagePanel("messagePanel",new Model(log)));
             } else {
                 item.add(new NickMessagePanel("messagePanel", new Model(log)));
             }
