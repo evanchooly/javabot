@@ -19,6 +19,11 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
+    <bean id="channelDao" class="javabot.dao.ChannelConfigDaoHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+
     <bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
@@ -47,6 +52,7 @@
                 <value>javabot.dao.model.Change</value>
                 <value>javabot.dao.model.Seen</value>
                 <value>javabot.dao.model.Logs</value>
+                <value>javabot.dao.model.ChannelConfig</value>
             </list>
         </property>
         <property name="hibernateProperties">

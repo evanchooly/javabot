@@ -1,6 +1,8 @@
 CREATE SEQUENCE factoid_sequence;
 CREATE SEQUENCE seen_sequence;
 CREATE SEQUENCE log_sequence;
+CREATE SEQUENCE channels_sequence;
+
 
 CREATE  TABLE factoids(
         id BIGINT NOT NULL ,
@@ -17,6 +19,15 @@ CREATE TABLE changes(
         message VARCHAR(4000) NOT NULL,
         changeDate TIMESTAMP
         );
+
+CREATE TABLE channelconfig(
+        id BIGINT NOT NULL ,
+        channel VARCHAR(255) NOT NULL,
+        updated TIMESTAMP,
+        logged boolean
+);
+
+ALTER TABLE seen ALTER ID SET DEFAULT NEXTVAL('channels_sequence');
 
 CREATE TABLE seen(
 

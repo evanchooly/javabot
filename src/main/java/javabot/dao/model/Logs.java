@@ -36,7 +36,9 @@ public class Logs implements Serializable {
     @Column(name = "`updated`")
     private Date updated;
 
-    public enum Type { JOIN, PART, QUIT, ACTION, KICK, BAN, MESSAGE }
+    public enum Type {
+        JOIN, PART, QUIT, ACTION, KICK, BAN, MESSAGE
+    }
 
     @Column(name = "`type`")
     private String type;
@@ -82,7 +84,7 @@ public class Logs implements Serializable {
     }
 
     public boolean isAction() {
-        return message!=null && Type.ACTION.compareTo(getType()) == 0;
+        return message != null && Type.ACTION.compareTo(getType()) == 0;
     }
 
     public Type getType() {
@@ -94,13 +96,11 @@ public class Logs implements Serializable {
     }
 
     public boolean isKick() {
-        return message!=null && Type.KICK.compareTo(getType()) == 0;
+        return message != null && Type.KICK.compareTo(getType()) == 0;
     }
 
     public boolean isServerMessage() {
-        return message!=null && Type.JOIN.compareTo(getType()) == 0
-                || Type.PART.compareTo(getType()) == 0 ||
-                 Type.QUIT.compareTo(getType()) == 0;
+        return message != null && Type.JOIN.compareTo(getType()) == 0 || Type.PART.compareTo(getType()) == 0 || Type.QUIT.compareTo(getType()) == 0;
     }
 
 }

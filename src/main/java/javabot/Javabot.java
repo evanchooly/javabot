@@ -1,9 +1,6 @@
 package javabot;
 
-import javabot.dao.ChangesDao;
-import javabot.dao.FactoidDao;
-import javabot.dao.LogDao;
-import javabot.dao.SeenDao;
+import javabot.dao.*;
 import javabot.dao.model.Logs;
 import javabot.operations.*;
 import org.apache.commons.logging.Log;
@@ -58,6 +55,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     public SeenDao seen_dao = (SeenDao) context.getBean("seenDao");
 
     public LogDao log_dao = (LogDao) context.getBean("logDao");
+
+    public ChannelConfigDao channel_dao = (ChannelConfigDao) context.getBean("channelDao");
 
     private String htmlFileName;
 
@@ -266,7 +265,10 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     @Override
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
         seen_dao.logSeen(sender, channel,  "said: " + message);
+
+        if (channel_dao.getChannel(channel).getLogged()){
         log_dao.logMessage(Logs.Type.MESSAGE, sender, channel, message);
+        }
         log.info("Message " + message);
         if (isValidSender(sender)) {
 
@@ -313,12 +315,16 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                 if (nextMessage.isAction()) {
                     sendAction(nextMessage.getDestination(), nextMessage.getMessage());
                     seen_dao.logSeen(nickName, nextMessage.getDestination(), "did a /me " + nextMessage.getMessage());
+                    if (channel_dao.getChannel(channel).getLogged()){
                     log_dao.logMessage(Logs.Type.ACTION, nickName, nextMessage.getDestination(), "ACTION:" + nextMessage.getMessage());
-                } else {
+                    }
+                    } else {
                     sendMessage(nextMessage.getDestination(), nextMessage.getMessage());
                     seen_dao.logSeen(nickName, nextMessage.getDestination(),"said: " + nextMessage.getMessage());
+                    if (channel_dao.getChannel(channel).getLogged()){
                     log_dao.logMessage(Logs.Type.MESSAGE, nickName, nextMessage.getDestination(), nextMessage.getMessage());
-                }
+                    }
+                    }
             }
         }
         channelPreviousMessages.put(channel, message);
@@ -332,12 +338,16 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                 if (nextMessage.isAction()) {
                     sendAction(nextMessage.getDestination(), nextMessage.getMessage());
                     seen_dao.logSeen(nickName, nextMessage.getDestination(), "did a /me " + nextMessage.getMessage());
+                    if (channel_dao.getChannel(channel).getLogged()){
                     log_dao.logMessage(Logs.Type.ACTION, nickName, nextMessage.getDestination(), "ACTION:" + nextMessage.getMessage());
+                    }
                 } else {
                     sendMessage(nextMessage.getDestination(), nextMessage.getMessage());
                     seen_dao.logSeen(nickName, nextMessage.getDestination(), "said: " + nextMessage.getMessage());
+                    if (channel_dao.getChannel(channel).getLogged()){
                     log_dao.logMessage(Logs.Type.MESSAGE, nickName, nextMessage.getDestination(), nextMessage.getMessage());
-                }
+                    }
+                    }
             }
         }
     }
@@ -395,26 +405,34 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     @Override
     public void onQuit(String channel, String sender, String login, String hostname) {
         seen_dao.logSeen(sender, channel, "quit");
+        if (channel_dao.getChannel(channel).getLogged()){
         log_dao.logMessage(Logs.Type.QUIT, sender, channel, "quit");
+        }
     }
 
     @Override
     public void onPart(String channel, String sender, String login, String hostname) {
         seen_dao.logSeen(sender, channel, "parted the channel");
+        if (channel_dao.getChannel(channel).getLogged()){
         log_dao.logMessage(Logs.Type.PART,  sender, channel, "parted the channel");
+        }
 
     }
 
     @Override
     public void onAction(String sender, String login, String hostname, String target, String action) {
         seen_dao.logSeen(sender, target, "did a /me " + action);
+        if (channel_dao.getChannel(target).getLogged()){
         log_dao.logMessage(Logs.Type.ACTION, sender, target,  action);
+        }
     }
 
     @Override
     public void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
         seen_dao.logSeen(recipientNick, channel, kickerNick + " kicked " + recipientNick + " with this reasoning: " + reason);
+        if (channel_dao.getChannel(channel).getLogged()){
         log_dao.logMessage(Logs.Type.KICK, kickerNick, channel, " kicked " + recipientNick + " (" +reason +")");
+        }
     }
 
     public void onOp(){
