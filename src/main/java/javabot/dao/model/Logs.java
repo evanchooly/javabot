@@ -93,6 +93,10 @@ public class Logs implements Serializable {
         this.type = type.toString();
     }
 
+    public boolean isKick() {
+        return message!=null && Type.KICK.compareTo(getType()) == 0;
+    }
+
     public boolean isServerMessage() {
         return message!=null && Type.JOIN.compareTo(getType()) == 0
                 || Type.PART.compareTo(getType()) == 0 ||
