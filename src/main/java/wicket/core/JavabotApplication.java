@@ -2,7 +2,6 @@ package wicket.core;
 
 
 import org.apache.wicket.Request;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.AjaxServerAndClientTimeFilter;
@@ -17,7 +16,7 @@ import wicket.pages.Index;
 // 
 public class JavabotApplication extends WebApplication {
 
-    public void JavabotApplication() {
+    public JavabotApplication() {
 
     }
 
