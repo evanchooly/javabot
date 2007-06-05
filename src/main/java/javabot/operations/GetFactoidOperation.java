@@ -9,11 +9,11 @@ import org.apache.commons.logging.LogFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetFactoidOperation2 implements BotOperation {
-    private static final Log log = LogFactory.getLog(GetFactoidOperation2.class);
+public class GetFactoidOperation implements BotOperation {
+    private static final Log log = LogFactory.getLog(GetFactoidOperation.class);
     private FactoidDao m_dao;
 
-    public GetFactoidOperation2(final FactoidDao dao) {
+    public GetFactoidOperation(final FactoidDao dao) {
         m_dao = dao;
     }
 
@@ -55,7 +55,7 @@ public class GetFactoidOperation2 implements BotOperation {
                 messages.add(new Message(channel, sender + ", " + key + " is " + message, false));
             }
         } else {
-            List<Message> guessed = new GuessOperation2(m_dao).handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event.getHostname(), "guess " + message));
+            List<Message> guessed = new GuessOperation(m_dao).handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event.getHostname(), "guess " + message));
             Message guessedMessage = guessed.get(0);
             if (!"No appropriate factoid found.".equals(guessedMessage.getMessage())) {
                 messages.addAll(guessed);

@@ -6,7 +6,7 @@ import javabot.Message;
 import javabot.dao.ChangesDao;
 import javabot.dao.FactoidDao;
 import javabot.dao.model.Factoid;
-import javabot.operations.GuessOperation2;
+import javabot.operations.GuessOperation;
 import static org.easymock.EasyMock.*;
 import org.testng.Assert;
 import org.testng.annotations.Configuration;
@@ -32,13 +32,13 @@ public class GuessOperationsTest extends UnitilsTestNG {
     private FactoidDao f_dao;
     private ChangesDao c_dao;
 
-    private GuessOperation2 guessOperation;
+    private GuessOperation guessOperation;
 
     @Configuration(beforeTestMethod = true)
     public void setUp() {
         f_dao = createMock(FactoidDao.class);
         c_dao = createMock(ChangesDao.class);
-        guessOperation = new GuessOperation2(f_dao);
+        guessOperation = new GuessOperation(f_dao);
     }
 
     public void testDaoCount() {

@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class ForgetFactoidOperation2 implements BotOperation {
+public class ForgetFactoidOperation implements BotOperation {
     private FactoidDao f_dao;
     private ChangesDao c_dao;
     private String htmlFile;
     private Properties properties;
 
-    public ForgetFactoidOperation2(FactoidDao factoid_dao, ChangesDao change_dao, String file) {
+    public ForgetFactoidOperation(FactoidDao factoid_dao, ChangesDao change_dao, String file) {
         this.f_dao = factoid_dao;
         this.c_dao = change_dao;
         htmlFile = file;

@@ -38,7 +38,7 @@ public class ForgetFactoidOperationTest2 extends BaseOperationTest2 {
     }
 
     protected BotOperation getOperation2() {
-        return new ForgetFactoidOperation2(factoidDao, changesDao, "TEST");
+        return new ForgetFactoidOperation(factoidDao, changesDao, "TEST");
     }
 
     public void channelMessage() throws IOException {

@@ -8,11 +8,11 @@ import javabot.dao.FactoidDao;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KarmaReadOperation2 implements BotOperation {
+public class KarmaReadOperation implements BotOperation {
 
     private FactoidDao f_dao;
 
-    public KarmaReadOperation2(FactoidDao factoid_dao, ChangesDao change_dao, String file) {
+    public KarmaReadOperation(FactoidDao factoid_dao, ChangesDao change_dao, String file) {
         this.f_dao = factoid_dao;
     }
 

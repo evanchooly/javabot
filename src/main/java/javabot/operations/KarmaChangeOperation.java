@@ -12,16 +12,16 @@ import org.apache.commons.logging.LogFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KarmaChangeOperation2 implements BotOperation {
+public class KarmaChangeOperation implements BotOperation {
 
-    private static Log log = LogFactory.getLog(KarmaChangeOperation2.class);
+    private static Log log = LogFactory.getLog(KarmaChangeOperation.class);
     private final Javabot javabot;
 
     private FactoidDao f_dao;
     private ChangesDao c_dao;
     private String htmlFile;
 
-    public KarmaChangeOperation2(FactoidDao factoid_dao, ChangesDao change_dao, String file, final Javabot bot) {
+    public KarmaChangeOperation(FactoidDao factoid_dao, ChangesDao change_dao, String file, final Javabot bot) {
         this.f_dao = factoid_dao;
         this.c_dao = change_dao;
         javabot = bot;
@@ -73,7 +73,7 @@ public class KarmaChangeOperation2 implements BotOperation {
                 } else {
                     f_dao.updateFactoid(factoid, c_dao, htmlFile);
                 }
-                KarmaReadOperation2 karmaRead = new KarmaReadOperation2(f_dao, c_dao, htmlFile);
+                KarmaReadOperation karmaRead = new KarmaReadOperation(f_dao, c_dao, htmlFile);
                 messages.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event.getHostname(), "karma " + nick)));
             }
         }

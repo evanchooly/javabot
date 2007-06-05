@@ -26,8 +26,8 @@ public class GetFactoidOperationTest2 extends BaseOperationTest2 {
     @SpringBeanByType
     private ChangesDao changesDao;
 
-    protected GetFactoidOperation2 getOperation2() {
-        return new GetFactoidOperation2(factoidDao);
+    protected GetFactoidOperation getOperation2() {
+        return new GetFactoidOperation(factoidDao);
     }
 
     public void straightGets() throws IOException {
@@ -71,7 +71,7 @@ public class GetFactoidOperationTest2 extends BaseOperationTest2 {
     }
 
     public void badRandom() {
-        GetFactoidOperation2 operation = getOperation2();
+        GetFactoidOperation operation = getOperation2();
         String message = "(1|2";
         Assert.assertEquals(operation.processRandomList(message), message, "Should just return message");
 

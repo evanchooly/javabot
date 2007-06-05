@@ -9,10 +9,10 @@ import java.util.List;
 
 // joed - moved to Dao's
 
-public class StatsOperation2 implements BotOperation {
+public class StatsOperation implements BotOperation {
     private FactoidDao m_dao;
 
-    public StatsOperation2(FactoidDao m_dao) {
+    public StatsOperation(FactoidDao m_dao) {
         this.m_dao = m_dao;
     }
 

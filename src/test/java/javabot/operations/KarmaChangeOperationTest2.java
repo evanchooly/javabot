@@ -70,9 +70,9 @@ public class KarmaChangeOperationTest2 extends BaseOperationTest2 {
 
     protected BotOperation getOperation2() {
 
-        KarmaChangeOperation2 operation = null;
+        KarmaChangeOperation operation = null;
         try {
-            operation = new KarmaChangeOperation2(factoidDao, changesDao, "test", new Javabot());
+            operation = new KarmaChangeOperation(factoidDao, changesDao, "test", new Javabot());
             return operation;
         } catch (Exception e) {
             Assert.fail("Could not create operation");

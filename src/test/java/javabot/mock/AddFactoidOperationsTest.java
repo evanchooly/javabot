@@ -5,7 +5,7 @@ import javabot.Message;
 import javabot.dao.ChangesDao;
 import javabot.dao.FactoidDao;
 import javabot.dao.model.Factoid;
-import javabot.operations.AddFactoidOperation2;
+import javabot.operations.AddFactoidOperation;
 import static org.easymock.EasyMock.*;
 import org.testng.Assert;
 import org.testng.annotations.Configuration;
@@ -30,13 +30,13 @@ public class AddFactoidOperationsTest extends UnitilsTestNG {
 
     private FactoidDao f_dao;
     private ChangesDao c_dao;
-    private AddFactoidOperation2 addOperation;
+    private AddFactoidOperation addOperation;
 
     @Configuration(beforeTestMethod = true)
     public void setUp() {
         f_dao = createMock(FactoidDao.class);
         c_dao = createMock(ChangesDao.class);
-        addOperation = new AddFactoidOperation2(f_dao, c_dao, "test");
+        addOperation = new AddFactoidOperation(f_dao, c_dao, "test");
     }
 
     public void testDaoCount() {

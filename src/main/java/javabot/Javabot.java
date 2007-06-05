@@ -114,24 +114,11 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
             Element node = (Element) iterator.next();
             try {
                 Class operationClass = Class.forName(node.getAttributeValue("class"));
-                if (AddFactoidOperation.class.equals(operationClass)) {
-                    operations.add(new AddFactoidOperation(database));
-                } else if (DictOperation.class.equals(operationClass)) {
+
+                if (DictOperation.class.equals(operationClass)) {
                     operations.add(new DictOperation(dictHost));
-                } else
-                if (ForgetFactoidOperation.class.equals(operationClass)) {
-                    operations.add(new ForgetFactoidOperation(database));
-                } else if (GetFactoidOperation.class.equals(operationClass)) {
-                    operations.add(new GetFactoidOperation(database));
-                } else if (GuessOperation.class.equals(operationClass)) {
-                    operations.add(new GuessOperation(database));
                 } else if (JavadocOperation.class.equals(operationClass)) {
                     operations.add(new JavadocOperation(javadocSources, javadocBaseUrl));
-                } else
-                if (KarmaChangeOperation.class.equals(operationClass)) {
-                    operations.add(new KarmaChangeOperation(database, this));
-                } else if (KarmaReadOperation.class.equals(operationClass)) {
-                    operations.add(new KarmaReadOperation(database));
                 } else if (LeaveOperation.class.equals(operationClass)) {
                     operations.add(new LeaveOperation(this));
                 } else if (LiteralOperation.class.equals(operationClass)) {
@@ -141,28 +128,26 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                 } else
                 if (SpecialCasesOperation.class.equals(operationClass)) {
                     operations.add(new SpecialCasesOperation(this));
-                } else if (StatsOperation.class.equals(operationClass)) {
-                    operations.add(new StatsOperation(database));
                 } else if (TellOperation.class.equals(operationClass)) {
                     operations.add(new TellOperation(getNick(), this));
                 } else
-                if (AddFactoidOperation2.class.equals(operationClass)) {
-                    operations.add(new AddFactoidOperation2(factoid_dao, change_dao, htmlFileName));
+                if (AddFactoidOperation.class.equals(operationClass)) {
+                    operations.add(new AddFactoidOperation(factoid_dao, change_dao, htmlFileName));
                 } else
-                if (ForgetFactoidOperation2.class.equals(operationClass)) {
-                    operations.add(new ForgetFactoidOperation2(factoid_dao, change_dao, htmlFileName));
+                if (ForgetFactoidOperation.class.equals(operationClass)) {
+                    operations.add(new ForgetFactoidOperation(factoid_dao, change_dao, htmlFileName));
                 } else
-                if (GetFactoidOperation2.class.equals(operationClass)) {
-                    operations.add(new GetFactoidOperation2(factoid_dao));
+                if (GetFactoidOperation.class.equals(operationClass)) {
+                    operations.add(new GetFactoidOperation(factoid_dao));
                 } else
-                if (KarmaChangeOperation2.class.equals(operationClass)) {
-                    operations.add(new KarmaChangeOperation2(factoid_dao, change_dao, htmlFileName, this));
-                } else if (KarmaReadOperation2.class.equals(operationClass)) {
-                    operations.add(new KarmaReadOperation2(factoid_dao, change_dao, htmlFileName));
-                } else if (StatsOperation2.class.equals(operationClass)) {
-                    operations.add(new StatsOperation2(factoid_dao));
-                } else if (SeenOperation2.class.equals(operationClass)) {
-                    operations.add(new SeenOperation2(seen_dao));
+                if (KarmaChangeOperation.class.equals(operationClass)) {
+                    operations.add(new KarmaChangeOperation(factoid_dao, change_dao, htmlFileName, this));
+                } else if (KarmaReadOperation.class.equals(operationClass)) {
+                    operations.add(new KarmaReadOperation(factoid_dao, change_dao, htmlFileName));
+                } else if (StatsOperation.class.equals(operationClass)) {
+                    operations.add(new StatsOperation(factoid_dao));
+                } else if (SeenOperation.class.equals(operationClass)) {
+                    operations.add(new SeenOperation(seen_dao));
                 } else {
                     operations.add((BotOperation) operationClass.newInstance());
                 }

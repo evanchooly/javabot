@@ -12,11 +12,11 @@ import java.util.List;
  * A little more intelligence creeping in. This searches the entire set of key/value pairs to find
  * out which factoid has the most matches for the inputs provided.
  */
-public class GuessOperation2 implements BotOperation {
+public class GuessOperation implements BotOperation {
     private String[] ignoreList = {"you", "and", "are", "to", "that", "your", "do", "have", "a", "the", "be", "but", "can", "i", "who", "how", "get", "by", "is", "of", "out", "me", "an", "for", "use", "he", "she", "it"};
     private FactoidDao m_dao = null;
 
-    public GuessOperation2(FactoidDao factoidDao) {
+    public GuessOperation(FactoidDao factoidDao) {
         m_dao = factoidDao;
     }
 
@@ -85,7 +85,7 @@ public class GuessOperation2 implements BotOperation {
             return messages;
         }
         messages.add(new Message(channel, "I guess the factoid '" + bestKey + "' might be appropriate:", false));
-        messages.addAll(new GetFactoidOperation2(m_dao).handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event
+        messages.addAll(new GetFactoidOperation(m_dao).handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event
                 .getHostname(), bestKey)));
 
         return messages;

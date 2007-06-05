@@ -10,13 +10,13 @@ import org.apache.commons.logging.LogFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddFactoidOperation2 implements BotOperation {
-    private static final Log log = LogFactory.getLog(AddFactoidOperation2.class);
+public class AddFactoidOperation implements BotOperation {
+    private static final Log log = LogFactory.getLog(AddFactoidOperation.class);
     private FactoidDao f_dao;
     private ChangesDao c_dao;
     private String htmlFile;
 
-    public AddFactoidOperation2(FactoidDao f_dao, ChangesDao c_dao, String file) {
+    public AddFactoidOperation(FactoidDao f_dao, ChangesDao c_dao, String file) {
         this.f_dao = f_dao;
         this.c_dao = c_dao;
         htmlFile = file;

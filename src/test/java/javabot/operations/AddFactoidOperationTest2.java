@@ -105,13 +105,13 @@ public class AddFactoidOperationTest2 extends BaseOperationTest2 {
         String factoid = "should be the full (/hi there) factoid";
         testOperation2("asdf is <reply>" + factoid, OKAY, "Should have added the factoid.");
 
-        GetFactoidOperation2 operation = new GetFactoidOperation2(factoidDao);
+        GetFactoidOperation operation = new GetFactoidOperation(factoidDao);
         String errorMessage = "Should have found the factoid";
         testOperation2("asdf", factoid, errorMessage, operation);
     }
 
-    protected AddFactoidOperation2 getOperation2() {
-        return new AddFactoidOperation2(factoidDao, this.changesDao, "test");
+    protected AddFactoidOperation getOperation2() {
+        return new AddFactoidOperation(factoidDao, this.changesDao, "test");
     }
 
 }

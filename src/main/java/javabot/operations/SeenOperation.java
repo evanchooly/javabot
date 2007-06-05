@@ -13,12 +13,12 @@ import java.util.List;
 // Author : joed
 // Date  : Apr 8, 2007
 
-public class SeenOperation2 implements BotOperation {
+public class SeenOperation implements BotOperation {
 
-    private static Log log = LogFactory.getLog(SeenOperation2.class);
+    private static Log log = LogFactory.getLog(SeenOperation.class);
     private SeenDao s_dao;
 
-    public SeenOperation2(SeenDao dao) {
+    public SeenOperation(SeenDao dao) {
         this.s_dao = dao;
     }
 
