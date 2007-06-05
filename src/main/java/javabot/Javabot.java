@@ -137,6 +137,9 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                 if (ForgetFactoidOperation.class.equals(operationClass)) {
                     operations.add(new ForgetFactoidOperation(factoid_dao, change_dao, htmlFileName));
                 } else
+                 if (GuessOperation.class.equals(operationClass)) {
+                    operations.add(new GuessOperation(factoid_dao));
+                } else
                 if (GetFactoidOperation.class.equals(operationClass)) {
                     operations.add(new GetFactoidOperation(factoid_dao));
                 } else
