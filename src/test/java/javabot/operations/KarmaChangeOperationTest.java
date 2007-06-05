@@ -1,19 +1,18 @@
 package javabot.operations;
 
-import javabot.Javabot;
-import javabot.dao.ChangesDao;
-import javabot.dao.FactoidDao;
-import javabot.dao.model.Factoid;
+import org.testng.annotations.Test;
+import org.testng.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
-
+import javabot.dao.FactoidDao;
+import javabot.dao.ChangesDao;
+import javabot.dao.model.Factoid;
+import javabot.Javabot;
 
 @Test(groups = {"operations"})
-public class KarmaChangeOperationTest2 extends BaseOperationTest2 {
-    private static final Log log = LogFactory.getLog(KarmaChangeOperationTest2.class);
+public class KarmaChangeOperationTest extends BaseOperationTest {
+    private static final Log log = LogFactory.getLog(KarmaChangeOperationTest.class);
 
     @SpringBeanByType
     private FactoidDao factoidDao;

@@ -1,22 +1,22 @@
 package javabot.operations;
 
-import javabot.BotEvent;
-import javabot.Message;
-import javabot.dao.ChangesDao;
-import javabot.dao.FactoidDao;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
-
 import java.io.IOException;
 import java.util.List;
 
+import org.testng.annotations.Test;
+import org.testng.Assert;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.unitils.spring.annotation.SpringBeanByType;
+import javabot.dao.FactoidDao;
+import javabot.dao.ChangesDao;
+import javabot.BotEvent;
+import javabot.Message;
+
 @Test(groups = {"operations"})
 
-public class GetFactoidOperationTest2 extends BaseOperationTest2 {
-    private static Log log = LogFactory.getLog(GetFactoidOperationTest2.class);
+public class GetFactoidOperationTest extends BaseOperationTest {
+    private static Log log = LogFactory.getLog(GetFactoidOperationTest.class);
     private static final String PBV_VALUE = "Java only supports pass by value, not pass by reference (references to objects are passed by value).  See http://tinyurl.com/ynr5d3, http://tinyurl.com/ywlv6d (especially http://tinyurl.com/yvppac), and http://tinyurl.com/4wgdh (search for \"Passing Reference Data Type Arguments\")";
     private static final String ERROR_MESSAGE = "Should have found the factoid";
 
@@ -39,7 +39,8 @@ public class GetFactoidOperationTest2 extends BaseOperationTest2 {
     }
 
     public void seeGets() {
-        testOperation2("pebcak", getFoundMessage2("pebcak", "Problem Exists Between Keyboard " + "And Chair"), ERROR_MESSAGE);
+        testOperation2("pebcak", getFoundMessage2("pebcak", "Problem Exists Between Keyboard " + "And Chair"),
+            ERROR_MESSAGE);
     }
 
     public void seeReplyGets() {
@@ -59,7 +60,8 @@ public class GetFactoidOperationTest2 extends BaseOperationTest2 {
     }
 
     public void questionFactoid() {
-        testOperation2("how to use spinners?", getFoundMessage2("how to use spinners", "http://java.sun.com/docs/books/tutorial/uiswing/components/spinner.html"), ERROR_MESSAGE);
+        testOperation2("how to use spinners?", getFoundMessage2("how to use spinners", "http://java.sun.com/docs/books/tutorial/uiswing/components/spinner.html"),
+            ERROR_MESSAGE);
     }
 
     public void guessFactoid() {

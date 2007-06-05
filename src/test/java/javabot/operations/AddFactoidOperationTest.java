@@ -11,7 +11,7 @@ import javabot.dao.ChangesDao;
 import javabot.BotEvent;
 
 @Test(groups = {"operations"})
-public class AddFactoidOperationTest extends BaseOperationTest2 {
+public class AddFactoidOperationTest extends BaseOperationTest {
 
     @SpringBeanByType
     private FactoidDao factoidDao;

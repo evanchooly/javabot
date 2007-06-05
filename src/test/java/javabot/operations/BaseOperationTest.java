@@ -1,24 +1,23 @@
 package javabot.operations;
 
-import javabot.ApplicationException;
-import javabot.BotEvent;
-import javabot.Message;
-import javabot.dao.ChangesDao;
-import javabot.dao.FactoidDao;
+import java.util.List;
+
+import org.unitils.spring.annotation.SpringApplicationContext;
+import org.unitils.spring.annotation.SpringBeanByType;
+import org.unitils.UnitilsTestNG;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.testng.Assert;
-import org.unitils.UnitilsTestNG;
-import org.unitils.spring.annotation.SpringApplicationContext;
-import org.unitils.spring.annotation.SpringBeanByType;
-
-import java.util.List;
-
+import javabot.dao.FactoidDao;
+import javabot.dao.ChangesDao;
+import javabot.BotEvent;
+import javabot.Message;
+import javabot.ApplicationException;
 
 @SpringApplicationContext("test-application-config.xml")
-public class BaseOperationTest2 extends UnitilsTestNG {
-    private static final Log log = LogFactory.getLog(BaseOperationTest2.class);
+public class BaseOperationTest extends UnitilsTestNG {
+    private static final Log log = LogFactory.getLog(BaseOperationTest.class);
     protected static final String SENDER = "cheeser";
     protected static final String CHANNEL = "#test";
     protected static final String LOGIN = "";
@@ -37,10 +36,10 @@ public class BaseOperationTest2 extends UnitilsTestNG {
     private ChangesDao changesDao;
 
 
-    public BaseOperationTest2() {
+    public BaseOperationTest() {
     }
 
-    public BaseOperationTest2(String name) {
+    public BaseOperationTest(String name) {
     }
 
     protected void testOperation2(String message, String response, String errorMessage) {
@@ -92,6 +91,7 @@ public class BaseOperationTest2 extends UnitilsTestNG {
     }
 
     protected void forgetFactoid2(String name) {
-        testOperation2("forget " + name, "I forgot about " + name + ", " + SENDER + ".", "I never knew about " + name + " anyway, " + SENDER + ".", new ForgetFactoidOperation(factoidDao, changesDao, "test"));
+        testOperation2("forget " + name, "I forgot about " + name + ", " + SENDER + ".", "I never knew about " + name + " anyway, " + SENDER
+            + ".", new ForgetFactoidOperation(factoidDao, changesDao, "test"));
     }
 }

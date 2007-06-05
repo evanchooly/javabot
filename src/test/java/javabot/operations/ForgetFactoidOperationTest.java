@@ -1,15 +1,15 @@
 package javabot.operations;
 
-import javabot.BotEvent;
-import javabot.dao.ChangesDao;
-import javabot.dao.FactoidDao;
+import java.io.IOException;
+
+import org.testng.annotations.Test;
+import org.testng.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
-
-import java.io.IOException;
+import javabot.dao.FactoidDao;
+import javabot.dao.ChangesDao;
+import javabot.BotEvent;
 
 /**
  * Created Jun 30, 2005
@@ -17,8 +17,8 @@ import java.io.IOException;
  * @author <a href="mailto:javabot@cheeseronline.org">Justin Lee</a>
  */
 @Test(groups = {"operations"})
-public class ForgetFactoidOperationTest2 extends BaseOperationTest2 {
-    private static Log log = LogFactory.getLog(ForgetFactoidOperationTest2.class);
+public class ForgetFactoidOperationTest extends BaseOperationTest {
+    private static Log log = LogFactory.getLog(ForgetFactoidOperationTest.class);
 
     @SpringBeanByType
     private FactoidDao factoidDao;
