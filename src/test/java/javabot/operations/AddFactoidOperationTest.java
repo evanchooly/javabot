@@ -1,17 +1,17 @@
 package javabot.operations;
 
-import javabot.BotEvent;
-import javabot.dao.ChangesDao;
-import javabot.dao.FactoidDao;
-import org.testng.Assert;
-import org.testng.annotations.Configuration;
-import org.testng.annotations.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
-
 import java.io.IOException;
 
+import org.testng.annotations.Test;
+import org.testng.annotations.Configuration;
+import org.testng.Assert;
+import org.unitils.spring.annotation.SpringBeanByType;
+import javabot.dao.FactoidDao;
+import javabot.dao.ChangesDao;
+import javabot.BotEvent;
+
 @Test(groups = {"operations"})
-public class AddFactoidOperationTest2 extends BaseOperationTest2 {
+public class AddFactoidOperationTest extends BaseOperationTest2 {
 
     @SpringBeanByType
     private FactoidDao factoidDao;
@@ -19,11 +19,11 @@ public class AddFactoidOperationTest2 extends BaseOperationTest2 {
     @SpringBeanByType
     private ChangesDao changesDao;
 
-    public AddFactoidOperationTest2() {
+    public AddFactoidOperationTest() {
         super();
     }
 
-    public AddFactoidOperationTest2(String name) {
+    public AddFactoidOperationTest(String name) {
         super(name);
     }
 
@@ -56,7 +56,7 @@ public class AddFactoidOperationTest2 extends BaseOperationTest2 {
     public void factoidAdd() {
 
 
-        
+
 
         String errorMessage = "Should have added the factoid";
         testOperation2("test pong is pong", OKAY, errorMessage);
