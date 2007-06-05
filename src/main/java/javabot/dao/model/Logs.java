@@ -1,8 +1,15 @@
 package javabot.dao.model;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
 
 //
 // User: joed
@@ -13,26 +20,16 @@ import java.util.Date;
 @Entity
 @Table(name = "logs")
 public class Logs implements Serializable {
-
     @Id
     @Column(name = "`id`")
-    // For MySQL uncomment the AUTO strategy
-    // Postgresql had an existing sequence
-    //@GeneratedValue(strategy = GenerationType.AUTO)
-    @GeneratedValue(generator = "seen_sequence")
-    @SequenceGenerator(name = "seen_sequence", sequenceName = "seen_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-
     @Column(name = "`nick`")
     private String nick;
-
     @Column(name = "`channel`")
     private String channel;
-
     @Column(name = "`message`", length = 4000)
     private String message;
-
     @Column(name = "`updated`")
     private Date updated;
 
@@ -40,6 +37,7 @@ public class Logs implements Serializable {
         JOIN, PART, QUIT, ACTION, KICK, BAN, MESSAGE
     }
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "`type`")
     private String type;
 
@@ -100,7 +98,8 @@ public class Logs implements Serializable {
     }
 
     public boolean isServerMessage() {
-        return message != null && Type.JOIN.compareTo(getType()) == 0 || Type.PART.compareTo(getType()) == 0 || Type.QUIT.compareTo(getType()) == 0;
+        return message != null && Type.JOIN.compareTo(getType()) == 0 || Type.PART.compareTo(getType()) == 0
+            || Type.QUIT.compareTo(getType()) == 0;
     }
 
 }

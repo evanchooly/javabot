@@ -1,8 +1,16 @@
 package javabot.dao.model;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 //
 // User: joed
@@ -17,16 +25,14 @@ public class ChannelConfig implements Serializable {
 
     @Id
     @Column(name = "`id`")
-    // For MySQL uncomment the AUTO strategy
-    // Postgresql had an existing sequence
-    //@GeneratedValue(strategy = GenerationType.AUTO)
-    @GeneratedValue(generator = "channels_sequence")
-    @SequenceGenerator(name = "channels_sequence", sequenceName = "channels_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @SequenceGenerator(name = "channels_sequence", sequenceName = "channels_sequence", allocationSize = 1)
     private Long id;
 
     @Column(name = "`channel`")
     private String channel;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "`updated`")
     private Date updated;
 

@@ -189,7 +189,7 @@
 
     <target name="import-db" if="scp.password">
         <sshexec host="antwerkz.com" username="jlee" password="${scp.password}"
-                 command="pg_dump -OxCDf javabot.dump javabot" trust="yes"/>
+                 command="pg_dump -aOxCDf javabot.dump javabot" trust="yes"/>
         <scp file="jlee:${scp.password}@antwerkz.com:javabot.dump" localToFile="etc/db.sql" trust="yes"/>
         <sshexec host="antwerkz.com" username="jlee" password="${scp.password}" command="rm javabot.dump" trust="yes"
                  verbose="true"/>
