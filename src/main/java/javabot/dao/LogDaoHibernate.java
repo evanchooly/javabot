@@ -1,14 +1,17 @@
 package javabot.dao;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import javabot.dao.model.Factoid;
 import javabot.dao.model.Logs;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 // User: joed
 // Date: Apr 11, 2007
@@ -23,6 +26,7 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
         super(Logs.class);
     }
 
+    @SuppressWarnings({"unchecked"})
     public Iterator<Logs> dailyLog(String channel, Date date) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -74,10 +78,11 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
 
     }
 
+    @SuppressWarnings({"unchecked"})
     public List<String> loggedChannels() {
         String query = "select distinct s.channel from Logs s where s.channel like '#%'";
 
-        List<String> m_channels = getSession().createQuery(query).list();
+        List<String> m_channels = (List<String>)getSession().createQuery(query).list();
 
         if (m_channels == null) {
             return new ArrayList<String>();
