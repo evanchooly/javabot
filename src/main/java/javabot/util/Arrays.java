@@ -43,7 +43,6 @@ public class Arrays {
         boolean found = false;
         int index = -1;
         while(! (found = messageParts[++index].equals(s) && index < messageParts.length));
-
         return found ? index : -1;
     }
 }
