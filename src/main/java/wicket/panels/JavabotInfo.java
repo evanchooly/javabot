@@ -8,6 +8,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.time.Duration;
 import wicket.pages.Factoids;
+import wicket.pages.Karma;
 
 // Author: joed
 
@@ -21,6 +22,10 @@ public class JavabotInfo extends Panel {
         Link factoid = new BookmarkablePageLink("factoid_link", Factoids.class);
         factoid.add(new Label("factoid", "Factoids: "));
         add(factoid);
+
+        Link karma = new BookmarkablePageLink("karma_link", Karma.class);
+        karma.add(new Label("karma", "Karma ranking"));
+        add(karma);
 
         FactoidCount factoidCount = new FactoidCount("factoid_count");
         add(factoidCount);

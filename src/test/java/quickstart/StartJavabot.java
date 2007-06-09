@@ -1,12 +1,9 @@
 package quickstart;
 
-import javabot.Javabot;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.webapp.WebAppContext;
-
-import java.io.File;
 
 /**
  * StartJavabot
@@ -33,6 +30,7 @@ public class StartJavabot {
         web.setContextPath("/fn-javabot");
         web.setWar("src/main/webapp");
         web.setDistributable(true);
+
         server.addHandler(web);
 
         // JMX
@@ -41,18 +39,18 @@ public class StartJavabot {
         // server.getContainer().addEventListener(mBeanContainer);
         // mBeanContainer.start();
 
-        Javabot bot;
+        //Javabot bot;
         try {
-           bot = new Javabot() {
-                @Override
-                protected File getConfigFile() {
-                    return new File(new File(System.getProperty("user.home")), ".javabot/config.xml").getAbsoluteFile();
-                }
-            };
+            /*   bot = new Javabot() {
+                  @Override
+                  protected File getConfigFile() {
+                      return new File(new File(System.getProperty("user.home")), ".javabot/config.xml").getAbsoluteFile();
+                  }
+              };
 
-            bot.setMessageDelay(2000);
-            bot.connect();
-
+              bot.setMessageDelay(2000);
+              bot.connect();
+            */
             server.start();
             server.join();
 

@@ -3,8 +3,8 @@ package javabot.dao;
 import javabot.dao.model.Factoid;
 import javabot.dao.util.QueryParam;
 
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 // User: joed
 // Date: Apr 11, 2007
@@ -30,6 +30,10 @@ public interface FactoidDao {
     Iterator<Factoid> getIterator();
 
     Iterator<Factoid> getFactoids(QueryParam qp);
+
+    Iterator<Factoid> getKarmas(QueryParam qp);
+
+    Long getNumberOfKarmas();
 
     void updateFactoid(Factoid factoid, ChangesDao c_dao, String htmlFile);
 

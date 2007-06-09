@@ -40,6 +40,21 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
                 .setMaxResults(qp.getCount()).iterate();
     }
 
+    @SuppressWarnings("unchecked")
+    public Iterator<Factoid> getKarmas(QueryParam qp) {
+        StringBuilder query = new StringBuilder("from Factoid f where f.name like 'karma%'");
+
+        if (qp.hasSort()) {
+            query.append(" order by ")
+                    .append(qp.getSort())
+                    .append((qp.isSortAsc()) ? " asc" : " desc");
+        }
+
+        return getSession().createQuery(query.toString())
+                .setFirstResult(qp.getFirst())
+                .setMaxResults(qp.getCount()).iterate();
+    }
+
 
     @SuppressWarnings({"unchecked"})
     public List<Factoid> getFactoids() {
@@ -161,6 +176,13 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
 
     public Long getNumberOfFactoids() {
         String query = "select count(*) from Factoid f where f.name not like 'karma%'";
+        return (Long) getSession().createQuery(query).uniqueResult();
+
+    }
+
+
+    public Long getNumberOfKarmas() {
+        String query = "select count(*) from Factoid f where f.name like 'karma%'";
         return (Long) getSession().createQuery(query).uniqueResult();
 
     }
