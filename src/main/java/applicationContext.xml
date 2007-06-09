@@ -25,11 +25,11 @@
 
     <bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-         <property name="locations">
+        <property name="locations">
             <list>
-                <value>/WEB-INF/locations.properties</value>
+                <value>classpath:/locations.properties</value>
             </list>
-</property>
+        </property>
     </bean>
 
     <bean id="javabotDS" class="org.apache.commons.dbcp.BasicDataSource"
@@ -80,10 +80,10 @@
             </props>
         </property>
 
-        <!--
-                <property name="schemaUpdate"><value>true</value></property>
-        -->
 
+        <property name="schemaUpdate">
+            <value>true</value>
+        </property>
 
         <property name="dataSource" ref="javabotDS"/>
 

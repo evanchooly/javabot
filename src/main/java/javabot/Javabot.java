@@ -34,12 +34,12 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     private String password;
     private List<String> channels = new ArrayList<String>();
     private List<String> ignores = new ArrayList<String>();
-    private Database database;
+
     public static final int PORT_NUMBER = 2346;
     public static final String JAVABOT_PROPERTIES = "javabot.properties";
 
     // Spring wiring
-    ApplicationContext context = new ClassPathXmlApplicationContext("/javabot/applicationContext.xml");
+    ApplicationContext context = new ClassPathXmlApplicationContext("/applicationContext.xml");
 
     public FactoidDao factoid_dao = (FactoidDao) context.getBean("factoidDao");
 
@@ -76,7 +76,6 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
 
         String verbosity = root.getAttributeValue("verbose");
         setVerbose("true".equals(verbosity));
-        database = new JDBCDatabase(root);
         loadServerInfo(root);
         loadJavadocInfo(root);
         loadDictInfo(root);
@@ -122,28 +121,22 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                 } else if (LeaveOperation.class.equals(operationClass)) {
                     operations.add(new LeaveOperation(this));
                 } else if (LiteralOperation.class.equals(operationClass)) {
-                    operations.add(new LiteralOperation(database));
+                    operations.add(new LiteralOperation(factoid_dao));
                 } else if (QuitOperation.class.equals(operationClass)) {
                     operations.add(new QuitOperation(getNickPassword()));
-                } else
-                if (SpecialCasesOperation.class.equals(operationClass)) {
+                } else if (SpecialCasesOperation.class.equals(operationClass)) {
                     operations.add(new SpecialCasesOperation(this));
                 } else if (TellOperation.class.equals(operationClass)) {
                     operations.add(new TellOperation(getNick(), this));
-                } else
-                if (AddFactoidOperation.class.equals(operationClass)) {
+                } else if (AddFactoidOperation.class.equals(operationClass)) {
                     operations.add(new AddFactoidOperation(factoid_dao, change_dao, htmlFileName));
-                } else
-                if (ForgetFactoidOperation.class.equals(operationClass)) {
+                } else if (ForgetFactoidOperation.class.equals(operationClass)) {
                     operations.add(new ForgetFactoidOperation(factoid_dao, change_dao, htmlFileName));
-                } else
-                 if (GuessOperation.class.equals(operationClass)) {
+                } else if (GuessOperation.class.equals(operationClass)) {
                     operations.add(new GuessOperation(factoid_dao));
-                } else
-                if (GetFactoidOperation.class.equals(operationClass)) {
+                } else if (GetFactoidOperation.class.equals(operationClass)) {
                     operations.add(new GetFactoidOperation(factoid_dao));
-                } else
-                if (KarmaChangeOperation.class.equals(operationClass)) {
+                } else if (KarmaChangeOperation.class.equals(operationClass)) {
                     operations.add(new KarmaChangeOperation(factoid_dao, change_dao, htmlFileName, this));
                 } else if (KarmaReadOperation.class.equals(operationClass)) {
                     operations.add(new KarmaReadOperation(factoid_dao, change_dao, htmlFileName));
