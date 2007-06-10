@@ -9,6 +9,7 @@
     <property name="build.src.dir" location="${build}/main/"/>
     <property name="build.test.dir" location="${build}/test/"/>
     <property name="src.dir" location="src/main/java"/>
+    <property name="src.dir" location="src/main/resources"/>
     <property name="test.src.dir" location="src/test"/>
 
     <property name="emma.dir" location="${build}/emma"/>
@@ -242,7 +243,8 @@
             <dependency groupId="org.hibernate" artifactId="hibernate" version="3.2.4.sp1"/>
             <dependency groupId="org.apache.wicket" artifactId="wicket" version="1.3.0-incubating-SNAPSHOT"/>
             <dependency groupId="org.apache.wicket" artifactId="wicket-extensions" version="1.3.0-incubating-SNAPSHOT"/>
-            <dependency groupId="org.apache.wicket" artifactId="wicket-spring-annot" version="1.3.0-incubating-SNAPSHOT"/>
+            <dependency groupId="org.apache.wicket" artifactId="wicket-spring-annot"
+                        version="1.3.0-incubating-SNAPSHOT"/>
             <dependency groupId="jdom" artifactId="jdom" version="1.0"/>
             <dependency groupId="pircbot" artifactId="pircbot" version="1.4.2"/>
         </artifact:dependencies>

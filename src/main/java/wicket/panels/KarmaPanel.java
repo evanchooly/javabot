@@ -70,7 +70,7 @@ public class KarmaPanel extends Panel {
             }
         });
 
-        add(new OrderByBorder("orderByNick", "username", dp) {
+        add(new OrderByBorder("orderByNick", "nick", dp) {
             protected void onSortChanged() {
                 dataView.setCurrentPage(0);
             }

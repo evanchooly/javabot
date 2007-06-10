@@ -30,7 +30,7 @@ public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements Ka
         if (qp.hasSort()) {
             query.append(" order by ")
                     .append(qp.getSort())
-                    .append((qp.isSortAsc()) ? " asc" : " desc");
+                    .append((qp.isSortAsc()) ? " desc" : " asc");
         }
 
         return getSession().createQuery(query.toString())
