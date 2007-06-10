@@ -43,7 +43,7 @@ public class KarmaPanel extends Panel {
             protected void populateItem(final Item item) {
                 Karma f = (Karma) item.getModelObject();
                 //item.add(new Label("id", String.valueOf(f.getId())));
-                item.add(new Label("Nick", f.getName().substring("karma ".length())));
+                item.add(new Label("Nick", f.getName()));
                 item.add(new Label("Karma", String.valueOf(f.getValue())));
                 item.add(new Label("Last Donor", f.getUserName()));
                 item.add(new Label("Date", sdf.format(f.getUpdated())));

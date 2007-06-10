@@ -25,7 +25,7 @@ public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements Ka
 
     @SuppressWarnings("unchecked")
     public Iterator<Karma> getKarmas(QueryParam qp) {
-        StringBuilder query = new StringBuilder("from Karma f'");
+        StringBuilder query = new StringBuilder("from Karma");
 
         if (qp.hasSort()) {
             query.append(" order by ")
