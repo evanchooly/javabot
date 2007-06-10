@@ -1,21 +1,21 @@
 package javabot.operations;
 
-import org.testng.annotations.Test;
-import org.testng.Assert;
+import javabot.Javabot;
+import javabot.dao.ChangesDao;
+import javabot.dao.KarmaDao;
+import javabot.dao.model.Karma;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
-import javabot.dao.FactoidDao;
-import javabot.dao.ChangesDao;
-import javabot.dao.model.Factoid;
-import javabot.Javabot;
 
 @Test(groups = {"operations"})
 public class KarmaChangeOperationTest extends BaseOperationTest {
     private static final Log log = LogFactory.getLog(KarmaChangeOperationTest.class);
 
     @SpringBeanByType
-    private FactoidDao factoidDao;
+    private KarmaDao karmaDao;
 
     @SpringBeanByType
     private ChangesDao changesDao;
@@ -26,7 +26,7 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
         testOperation2("testjavabot--", "testjavabot has a karma level of 1, " + SENDER, "");
         testOperation2("testjavabot--", "testjavabot has a karma level of 0, " + SENDER, "");
         testOperation2("testjavabot--", "testjavabot has a karma level of -1, " + SENDER, "");
-        testOperation2("testjavabot++", "testjavabot has a karma level of 0, "  + SENDER, "");
+        testOperation2("testjavabot++", "testjavabot has a karma level of 0, " + SENDER, "");
     }
 
     public void logNew() {
@@ -60,8 +60,8 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
 
     private int getKarma(String target) {
         log.debug("target = " + target);
-        Factoid factoid = factoidDao.getFactoid("karma " + target);
-        String value = factoid.getValue();
+        Karma factoid = karmaDao.getKarma(target);
+        String value = factoid.getValue().toString();
         log.debug("value = " + value);
 
         return Integer.parseInt(value);
@@ -71,7 +71,7 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
 
         KarmaChangeOperation operation = null;
         try {
-            operation = new KarmaChangeOperation(factoidDao, changesDao, "test", new Javabot());
+            operation = new KarmaChangeOperation(karmaDao, changesDao, new Javabot());
             return operation;
         } catch (Exception e) {
             Assert.fail("Could not create operation");

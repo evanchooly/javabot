@@ -1,7 +1,7 @@
 package wicket.panels;
 
-import javabot.dao.FactoidDao;
-import javabot.dao.model.Factoid;
+import javabot.dao.KarmaDao;
+import javabot.dao.model.Karma;
 import javabot.dao.util.QueryParam;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
@@ -32,7 +32,7 @@ public class KarmaPanel extends Panel {
     //karma nick | value
 
     @SpringBean
-    FactoidDao dao;
+    KarmaDao dao;
 
     public KarmaPanel(String id) {
         super(id);
@@ -41,10 +41,10 @@ public class KarmaPanel extends Panel {
         SortableKarmaProvider dp = new SortableKarmaProvider(dao);
         final DataView dataView = new DataView("sorting", dp) {
             protected void populateItem(final Item item) {
-                Factoid f = (Factoid) item.getModelObject();
+                Karma f = (Karma) item.getModelObject();
                 //item.add(new Label("id", String.valueOf(f.getId())));
                 item.add(new Label("Nick", f.getName().substring("karma ".length())));
-                item.add(new Label("Karma", f.getValue()));
+                item.add(new Label("Karma", String.valueOf(f.getValue())));
                 item.add(new Label("Last Donor", f.getUserName()));
                 item.add(new Label("Date", sdf.format(f.getUpdated())));
 
@@ -91,12 +91,12 @@ public class KarmaPanel extends Panel {
     private class SortableKarmaProvider extends SortableDataProvider {
 
 
-        private FactoidDao m_dao;
+        private KarmaDao m_dao;
 
         /**
          * constructor
          */
-        public SortableKarmaProvider(FactoidDao dao) {
+        public SortableKarmaProvider(KarmaDao dao) {
             // set default sort
             setSort("name", true);
             this.m_dao = dao;
@@ -116,28 +116,28 @@ public class KarmaPanel extends Panel {
          * @see org.apache.wicket.markup.repeater.data.IDataProvider#size()
          */
         public int size() {
-            return m_dao.getNumberOfKarmas().intValue();
+            return m_dao.getCount().intValue();
         }
 
         /**
          * @see org.apache.wicket.markup.repeater.data.IDataProvider#model(Object)
          */
         public IModel model(Object object) {
-            return new DetachableKarmaModel((Factoid) object);
+            return new DetachableKarmaModel((Karma) object);
         }
     }
 
     private class DetachableKarmaModel extends LoadableDetachableModel {
         private long id;
-        private transient Factoid contact;
+        private transient Karma contact;
 
         @SpringBean
-        private FactoidDao m_dao;
+        private KarmaDao m_dao;
 
         /**
          * @param f
          */
-        public DetachableKarmaModel(Factoid f) {
+        public DetachableKarmaModel(Karma f) {
 
             this(f.getId());
             contact = f;
@@ -157,7 +157,7 @@ public class KarmaPanel extends Panel {
          * @see Object#hashCode()
          */
         public int hashCode() {
-            return new Long(id).hashCode();
+            return new Integer((int) id).hashCode();
         }
 
         /**
@@ -183,11 +183,11 @@ public class KarmaPanel extends Panel {
          */
         protected Object load() {
             // loads contact from the database
-            return getFactoidDB().get(id);
+            return getKarmaDB().get(id);
 
         }
 
-        protected FactoidDao getFactoidDB() {
+        protected KarmaDao getKarmaDB() {
             InjectorHolder.getInjector().inject(this);
             return m_dao;
         }

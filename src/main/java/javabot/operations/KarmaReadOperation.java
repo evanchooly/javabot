@@ -2,18 +2,17 @@ package javabot.operations;
 
 import javabot.BotEvent;
 import javabot.Message;
-import javabot.dao.ChangesDao;
-import javabot.dao.FactoidDao;
+import javabot.dao.KarmaDao;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class KarmaReadOperation implements BotOperation {
 
-    private FactoidDao f_dao;
+    private KarmaDao k_dao;
 
-    public KarmaReadOperation(FactoidDao factoid_dao, ChangesDao change_dao, String file) {
-        this.f_dao = factoid_dao;
+    public KarmaReadOperation(KarmaDao karma_dao) {
+        this.k_dao = karma_dao;
     }
 
     /**
@@ -33,12 +32,12 @@ public class KarmaReadOperation implements BotOperation {
             messages.add(new Message(channel, "I've never Seen a nick with a space " + "in, " + sender, false));
             return messages;
         }
-        int karma;
-        try {
-            karma = Integer.parseInt(f_dao.getFactoid("karma " + nick).getValue());
-        } catch (Exception exception) {
-            karma = 0;
+        Integer karma = 0;
+
+        if (k_dao.hasKarma(nick)) {
+            karma = k_dao.getKarma(nick).getValue();
         }
+
         if (nick.equals(sender)) {
             messages.add(new Message(channel, sender + ", you have a karma level of " + karma + ".", false));
         } else {

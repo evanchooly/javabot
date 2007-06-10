@@ -23,6 +23,10 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
+    <bean id="karmaDao" class="javabot.dao.KarmaDaoHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
     <bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
@@ -49,6 +53,7 @@
                 <value>javabot.dao.model.Seen</value>
                 <value>javabot.dao.model.Logs</value>
                 <value>javabot.dao.model.ChannelConfig</value>
+                <value>javabot.dao.model.Karma</value>
             </list>
         </property>
         <property name="hibernateProperties">

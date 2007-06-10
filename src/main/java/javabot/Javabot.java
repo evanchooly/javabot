@@ -51,6 +51,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
 
     public ChannelConfigDao channel_dao = (ChannelConfigDao) context.getBean("channelDao");
 
+    public KarmaDao karma_dao = (KarmaDao) context.getBean("karmaDao");
+
     private String htmlFileName;
 
     public Javabot() throws JDOMException, IOException {
@@ -137,9 +139,9 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                 } else if (GetFactoidOperation.class.equals(operationClass)) {
                     operations.add(new GetFactoidOperation(factoid_dao));
                 } else if (KarmaChangeOperation.class.equals(operationClass)) {
-                    operations.add(new KarmaChangeOperation(factoid_dao, change_dao, htmlFileName, this));
+                    operations.add(new KarmaChangeOperation(karma_dao, change_dao, this));
                 } else if (KarmaReadOperation.class.equals(operationClass)) {
-                    operations.add(new KarmaReadOperation(factoid_dao, change_dao, htmlFileName));
+                    operations.add(new KarmaReadOperation(karma_dao));
                 } else if (StatsOperation.class.equals(operationClass)) {
                     operations.add(new StatsOperation(factoid_dao));
                 } else if (SeenOperation.class.equals(operationClass)) {
