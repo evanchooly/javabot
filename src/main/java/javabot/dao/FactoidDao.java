@@ -31,10 +31,6 @@ public interface FactoidDao {
 
     Iterator<Factoid> getFactoids(QueryParam qp);
 
-    Iterator<Factoid> getKarmas(QueryParam qp);
-
-    Long getNumberOfKarmas();
-
     void updateFactoid(Factoid factoid, ChangesDao c_dao, String htmlFile);
 
 
