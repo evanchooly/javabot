@@ -43,8 +43,8 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
 
         return getSession().createQuery(query)
                 .setString("channel", channel)
-                .setString("tomorrow", sdf.format(tomorrow.getTime()).toString())
-                .setString("today", sdf.format(today.getTime()).toString())
+                .setString("tomorrow", sdf.format(tomorrow.getTime()))
+                .setString("today", sdf.format(today.getTime()))
                 .iterate();
     }
 
