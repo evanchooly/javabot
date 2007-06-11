@@ -7,11 +7,9 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 // User: joed
 // Date: Apr 11, 2007
@@ -26,18 +24,27 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
         super(Logs.class);
     }
 
-    @SuppressWarnings({"unchecked"})
     public Iterator<Logs> dailyLog(String channel, Date date) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        String query = "from Logs s WHERE s.channel = :channel" +
-                " AND DATE_FORMAT(s.updated,GET_FORMAT(DATE,'ISO')) = :updated" +
-                " ORDER BY s.updated ASC";
+        Calendar today = new GregorianCalendar();
+        try {
+            today.setTime(sdf.parse(sdf.format(date)));
+        } catch (ParseException e) {
+            log.error("Could not parse dates in LogDaoHibernate....");
+        }
+
+        Calendar tomorrow = new GregorianCalendar();
+        tomorrow.setTime(today.getTime());
+        tomorrow.add(Calendar.DATE, 1);
+
+        String query = "from Logs s WHERE s.channel = :channel" + " AND s.updated < :tomorrow" + " AND s.updated > :today" + " order by updated";
 
         return getSession().createQuery(query)
                 .setString("channel", channel)
-                .setString("updated", sdf.format(date))
+                .setString("tomorrow", sdf.format(tomorrow.getTime()).toString())
+                .setString("today", sdf.format(today.getTime()).toString())
                 .iterate();
     }
 

@@ -57,13 +57,26 @@ public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements Ka
 
     public void updateKarma(Karma karma, ChangesDao c_dao, String htmlFile) {
 
-        karma.setUpdated(new Date());
-        Session session = getSession();
-        Transaction transaction = session.beginTransaction();
-        session.update(karma);
-        transaction.commit();
+        if (hasKarma(karma.getName())) {
+            karma.setUpdated(new Date());
+            Session session = getSession();
+            Transaction transaction = session.beginTransaction();
+            session.update(karma);
+            transaction.commit();
 
-        c_dao.logChange(karma.getUserName() + " changed '" + karma.getName() + "' to '" + karma.getValue() + "'");
+            c_dao.logChange(karma.getUserName() + " changed '" + karma.getName() + "' to '" + karma.getValue() + "'");
+        } else {
+
+            karma.setUpdated(new Date());
+            Session session = getSession();
+            Transaction transaction = session.beginTransaction();
+            session.saveOrUpdate(karma);
+            transaction.commit();
+
+            c_dao.logChange(karma.getUserName() + " changed '" + karma.getName() + "' to '" + karma.getValue() + "'");
+
+        }
+
 
     }
 
