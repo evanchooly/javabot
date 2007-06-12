@@ -17,6 +17,8 @@ public interface ChannelConfigDao {
 
     ChannelConfig get(String name);
 
+    ChannelConfig getChannel(String name);
+
     void saveOrUpdate(ChannelConfig channel);
 
 }

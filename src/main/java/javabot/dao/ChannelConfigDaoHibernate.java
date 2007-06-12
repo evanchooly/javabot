@@ -68,6 +68,10 @@ public class ChannelConfigDaoHibernate extends AbstractDaoHibernate<Factoid> imp
 
     }
 
+    public ChannelConfig getChannel(String name){
+        return get(name);
+    }
+
 
     public boolean isChannel(String channel) {
         return get(channel).getChannel() != null;
