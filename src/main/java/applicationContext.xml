@@ -27,6 +27,10 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
+    <bean id="adminDao" class="javabot.dao.AdminDaoHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
     <bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
@@ -54,6 +58,7 @@
                 <value>javabot.dao.model.Logs</value>
                 <value>javabot.dao.model.ChannelConfig</value>
                 <value>javabot.dao.model.Karma</value>
+                <value>javabot.dao.model.Admin</value>
             </list>
         </property>
         <property name="hibernateProperties">

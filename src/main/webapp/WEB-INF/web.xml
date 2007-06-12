@@ -40,21 +40,32 @@
             <param-value>wicket.core.JavabotApplication
             </param-value>
         </init-param>
-        <init-param>
-            <param-name>filterPath</param-name>
-            <param-value>app</param-value>
-        </init-param>
+
     </filter>
 
     <filter-mapping>
         <filter-name>fn-javabot</filter-name>
-        <url-pattern>/app/*</url-pattern>
+        <url-pattern>/javabot/*</url-pattern>
     </filter-mapping>
 
-    <servlet>
-        <servlet-name>javabot</servlet-name>
-        <servlet-class>javabot.servlet.JavabotServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
+    <filter>
+        <filter-name>AdminApplication</filter-name>
+        <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
+        <init-param>
+            <param-name>applicationClassName</param-name>
+            <param-value>admininterface.admin.AdminApplication</param-value>
+        </init-param>
+    </filter>
 
+    <filter-mapping>
+        <filter-name>AdminApplication</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
+
+    <!-- <servlet>
+            <servlet-name>javabot</servlet-name>
+            <servlet-class>javabot.servlet.JavabotServlet</servlet-class>
+            <load-on-startup>1</load-on-startup>
+        </servlet>
+    -->
 </web-app>
