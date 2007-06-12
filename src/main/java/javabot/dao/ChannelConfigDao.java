@@ -1,7 +1,9 @@
 package javabot.dao;
 
 import javabot.dao.model.ChannelConfig;
+import javabot.dao.util.QueryParam;
 
+import java.util.Iterator;
 import java.util.List;
 
 // Author: joed
@@ -9,9 +11,12 @@ import java.util.List;
 
 public interface ChannelConfigDao {
 
-   List<ChannelConfig> getChannels() ;
+    List<ChannelConfig> getChannels();
 
-   ChannelConfig getChannel(String name);
+    Iterator<ChannelConfig> getIterator(QueryParam qp);
 
+    ChannelConfig get(String name);
+
+    void saveOrUpdate(ChannelConfig channel);
 
 }

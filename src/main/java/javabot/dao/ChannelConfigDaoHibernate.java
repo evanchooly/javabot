@@ -1,15 +1,12 @@
 package javabot.dao;
 
-import javabot.dao.model.Change;
-import javabot.dao.model.Factoid;
 import javabot.dao.model.ChannelConfig;
+import javabot.dao.model.Factoid;
+import javabot.dao.util.QueryParam;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 
 // User: joed
 // Date: Apr 11, 2007
@@ -24,7 +21,7 @@ public class ChannelConfigDaoHibernate extends AbstractDaoHibernate<Factoid> imp
 
     @SuppressWarnings({"unchecked"})
     public List<ChannelConfig> getChannels() {
-    String query = "from ChannelConfig m";
+        String query = "from ChannelConfig m";
 
         List<ChannelConfig> m_factoids = getSession().createQuery(query).list();
 
@@ -38,22 +35,78 @@ public class ChannelConfigDaoHibernate extends AbstractDaoHibernate<Factoid> imp
     }
 
 
-    public ChannelConfig getChannel(String channel) {
-            String query = "from ChannelConfig m where m.channel = :channel";
+    public Iterator<ChannelConfig> getIterator(QueryParam qp) {
+        StringBuilder query = new StringBuilder("from ChannelConfig c");
 
-            ChannelConfig m_channel = (ChannelConfig) getSession().createQuery(query)
-                    .setString("channel", channel)
-                    .setMaxResults(1)
-                    .uniqueResult();
+        if (qp.hasSort()) {
+            query.append(" order by ")
+                    .append(qp.getSort())
+                    .append((qp.isSortAsc()) ? " asc" : " desc");
+        }
 
-            if (m_channel == null) {
+        return getSession().createQuery(query.toString())
+                .setFirstResult(qp.getFirst())
+                .setMaxResults(qp.getCount()).iterate();
+    }
 
-               return  new ChannelConfig();
 
-            }
+    public ChannelConfig get(String name) {
+        String query = "from ChannelConfig m where m.channel = :channel";
 
-            return m_channel;
+        ChannelConfig m_channel = (ChannelConfig) getSession().createQuery(query)
+                .setString("channel", name)
+                .setMaxResults(1)
+                .uniqueResult();
+
+        if (m_channel == null) {
+
+            return new ChannelConfig();
 
         }
+
+        return m_channel;
+
+    }
+
+
+    public boolean isChannel(String channel) {
+        return get(channel).getChannel() != null;
+    }
+
+    public void saveOrUpdate(ChannelConfig channel) {
+
+        if (isChannel(channel.getChannel())) {
+            channel.setUpdated(new Date());
+            Session session = getSession();
+            Transaction transaction = session.beginTransaction();
+            session.update(channel);
+            transaction.commit();
+        } else {
+            channel.setUpdated(new Date());
+            Session session = getSession();
+            Transaction transaction = session.beginTransaction();
+            session.saveOrUpdate(channel);
+            transaction.commit();
+
+        }
+    }
+
+    public ChannelConfig getChannel(ChannelConfig channel) {
+        String query = "from ChannelConfig m where m.channel = :channel";
+
+        ChannelConfig m_channel = (ChannelConfig) getSession().createQuery(query)
+                .setString("channel", channel.getChannel())
+                .setMaxResults(1)
+                .uniqueResult();
+
+        if (m_channel == null) {
+
+            return new ChannelConfig();
+
+        }
+
+        return m_channel;
+
+    }
 
 }
