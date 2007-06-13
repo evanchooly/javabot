@@ -35,6 +35,7 @@
     nick CDATA #IMPLIED
     channel CDATA #IMPLIED
     message CDATA #IMPLIED
+    type CDATA #IMPLIED
     updated CDATA #IMPLIED
 >
 

@@ -1,57 +1,3 @@
-CREATE SEQUENCE factoid_sequence;
-CREATE SEQUENCE seen_sequence;
-CREATE SEQUENCE log_sequence;
-CREATE SEQUENCE channels_sequence;
-
-
-CREATE  TABLE factoids(
-        id BIGINT NOT NULL ,
-        name VARCHAR(255) NOT NULL,
-        value VARCHAR(2000) NOT NULL,
-        username VARCHAR(100) NOT NULL,
-        updated TIMESTAMP
-
-         );
-
-ALTER TABLE factoids ALTER ID SET DEFAULT NEXTVAL('factoid_sequence');
-
-CREATE TABLE changes(
-        message VARCHAR(4000) NOT NULL,
-        changeDate TIMESTAMP
-        );
-
-CREATE TABLE channelconfig(
-        id BIGINT NOT NULL ,
-        channel VARCHAR(255) NOT NULL,
-        updated TIMESTAMP,
-        logged boolean
-);
-
-ALTER TABLE seen ALTER ID SET DEFAULT NEXTVAL('channels_sequence');
-
-CREATE TABLE seen(
-
-        id BIGINT NOT NULL ,
-        nick VARCHAR(255) NOT NULL,
-        channel VARCHAR(255) NOT NULL,
-        message VARCHAR(4000) NOT NULL,
-        updated TIMESTAMP
-);
-
-ALTER TABLE seen ALTER ID SET DEFAULT NEXTVAL('seen_sequence');
-CREATE TABLE logs(
-
-        id BIGINT NOT NULL ,
-        nick VARCHAR(255) NOT NULL,
-        channel VARCHAR(255) NOT NULL,
-        message VARCHAR(4000) NOT NULL,
-        type VARCHAR(255) NOT NULL,
-        updated TIMESTAMP
-);
-
-ALTER TABLE logs ALTER ID SET DEFAULT NEXTVAL('log_sequence');
-
-
 INSERT INTO changes (message, changedate) VALUES ('cheeser removed ''foo''', '2005-07-25 08:20:24.121');
 INSERT INTO changes (message, changedate) VALUES ('cheeser added ''foo'' with a value of ''test''', '2005-07-25 08:20:28.678');
 INSERT INTO changes (message, changedate) VALUES ('cheeser removed ''foo''', '2005-07-25 08:20:31.162');
@@ -12872,13 +12818,4 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (4701, 'karma d
 INSERT INTO factoids (id, name, value, username, updated) VALUES (4592, 'karma pfn', '22', 'pr3d4t0r', '2007-04-17 15:54:26.016');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5947, 'karma fzlogik', '1', 'stork', '2007-04-17 17:02:43.171');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (3650, 'karma snooplsm', '6', 'whaley', '2007-04-17 23:25:14.797');
-
-
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO PUBLIC;
-
-
---
 

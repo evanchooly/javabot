@@ -19,7 +19,7 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="channelDao" class="javabot.dao.ChannelConfigDaoHibernate">
+    <bean id="channelDao" class="javabot.dao.ChannelDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
@@ -56,7 +56,7 @@
                 <value>javabot.dao.model.Change</value>
                 <value>javabot.dao.model.Seen</value>
                 <value>javabot.dao.model.Logs</value>
-                <value>javabot.dao.model.ChannelConfig</value>
+                <value>javabot.dao.model.Channel</value>
                 <value>javabot.dao.model.Karma</value>
                 <value>javabot.dao.model.Admin</value>
             </list>

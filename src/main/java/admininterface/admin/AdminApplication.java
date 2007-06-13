@@ -1,6 +1,7 @@
 package admininterface.admin;
 
 import org.apache.wicket.*;
+import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.protocol.http.WebApplication;
@@ -38,6 +39,8 @@ public class AdminApplication extends WebApplication {
 
     protected void init() {
         super.init();
+
+           addComponentInstantiationListener(new SpringComponentInjector(this));
 
         getSecuritySettings().setAuthorizationStrategy(new IAuthorizationStrategy() {
             public boolean isActionAuthorized(Component component, Action action) {

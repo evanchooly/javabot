@@ -14,7 +14,7 @@ public class SignOut extends AuthenticatedWebPage {
      */
     public SignOut(final PageParameters parameters) {
         getSession().invalidate();
-        add(new StyleSheetReference("stylesheet", getClass(), "css/style.css"));
+        add(new StyleSheetReference("stylesheet", getClass(), "style.css"));
 
     }
 }

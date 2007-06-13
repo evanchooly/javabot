@@ -23,7 +23,7 @@ public class SignIn extends WebPage {
      */
     public SignIn(final PageParameters parameters) {
 
-        add(new StyleSheetReference("stylesheet", getClass(), "css/style.css"));
+        add(new StyleSheetReference("stylesheet", getClass(), "style.css"));
 
         add(new SignInPanel("signInPanel") {
             public boolean signIn(String username, String password) {

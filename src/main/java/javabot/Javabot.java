@@ -49,7 +49,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
 
     public LogDao log_dao = (LogDao) context.getBean("logDao");
 
-    public ChannelConfigDao channel_dao = (ChannelConfigDao) context.getBean("channelDao");
+    public ChannelDao channel_dao = (ChannelDao) context.getBean("channelDao");
 
     public KarmaDao karma_dao = (KarmaDao) context.getBean("karmaDao");
 
@@ -58,7 +58,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     public Javabot() throws JDOMException, IOException {
         setName("javabot");
         setLogin("javabot");
-        setVersion("Javabot 1.9");
+        setVersion("Javabot 2.0");
         loadConfig();
     }
 

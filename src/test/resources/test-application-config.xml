@@ -19,6 +19,17 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
+    <bean id="channelDao" class="javabot.dao.ChannelDaoHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="karmaDao" class="javabot.dao.KarmaDaoHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="adminDao" class="javabot.dao.AdminDaoHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
 
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSource" />
 
@@ -39,11 +50,14 @@
                 <value>javabot.dao.model.Change</value>
                 <value>javabot.dao.model.Seen</value>
                 <value>javabot.dao.model.Logs</value>
+                <value>javabot.dao.model.Channel</value>
+                <value>javabot.dao.model.Karma</value>
+                <value>javabot.dao.model.Admin</value>
             </list>
         </property>
         <property name="hibernateProperties">
             <value>
-                hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+                hibernate.dialect=org.hibernate.dialect.MySQLDialect
                 hibernate.show_sql=true
                 use_outer_join=true
                 <!--<prop key="hibernate.current_session_context_class">thread</prop>
@@ -59,6 +73,11 @@
 
             </value>
         </property>
+
+        <property name="schemaUpdate">
+                  <value>true</value>
+              </property>
+        
     </bean>
 
 

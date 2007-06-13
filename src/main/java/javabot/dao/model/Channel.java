@@ -1,38 +1,28 @@
 package javabot.dao.model;
 
-import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import java.io.Serializable;
+import java.util.Date;
 
-//
-// User: joed
-// Date: Apr 11, 2007
-// Time: 2:22:19 PM
 
-//
 @Entity
-@Table(name = "channelconfig",uniqueConstraints = @UniqueConstraint(columnNames = { "`channel`"}))
-public class ChannelConfig implements Serializable {
+@Table(name = "channel")
 
+public class Channel implements Serializable {
 
     @Id
     @Column(name = "`id`")
     @GeneratedValue(strategy = GenerationType.AUTO)
-//    @SequenceGenerator(name = "channels_sequence", sequenceName = "channels_sequence", allocationSize = 1)
     private Long id;
 
     @Column(name = "`channel`")
     private String channel;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "`updated`")
     private Date updated;
 

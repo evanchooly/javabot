@@ -30,7 +30,6 @@ public class ChannelBox extends Panel {
 
         List<String> channels = l_dao.loggedChannels();
 
-
         RepeatingView repeating = new RepeatingView("logged_channels");
         add(repeating);
 
@@ -42,7 +41,6 @@ public class ChannelBox extends Panel {
                 Link link = new BookmarkablePageLink("link", Index.class, newPageParameters(new Date(), channel));
                 link.add(new Label("channel", channel));
                 item.add(link);
-
 
             }
 

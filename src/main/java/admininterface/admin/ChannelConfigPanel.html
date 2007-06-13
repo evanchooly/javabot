@@ -1,0 +1,29 @@
+<wicket:panel>
+    <h3>Channels configured</h3>
+
+    <div class="boxWrapper">
+        <div>
+            <table cellspacing="0" class="mytable">
+                <tr>
+                    <th class="lef">Id</th>
+                    <th>Channel</th>
+                    <th>Updated</th>
+                    <th>Logged</th>
+                </tr>
+
+                <tr wicket:id="logged_channels">
+                    <td class="lef"><span wicket:id="id">[id]</span></td>
+                    <td><a wicket:id="link"><span
+                            wicket:id="channel">[channel]</span></a></td>
+                    <td><span wicket:id="updated">[updated]</span></td>
+
+
+                    <td>
+                        <input wicket:id="logged" type="checkbox"/></td>
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
+</wicket:panel>
