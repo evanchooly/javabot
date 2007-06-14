@@ -35,7 +35,7 @@ public class ChangesPanel extends Panel {
     public ChangesPanel(String id) {
         super(id);
 
-        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         SortableChangeProvider dp = new SortableChangeProvider(dao);
         final DataView dataView = new DataView("sorting", dp) {
             protected void populateItem(final Item item) {
