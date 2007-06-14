@@ -64,7 +64,7 @@
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
-                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.show_sql">false</prop>
                 <!--
                                 <prop key="hibernate.cache.use_second_level_cache">false</prop>
                 -->
