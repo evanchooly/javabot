@@ -25,11 +25,11 @@ public class JavabotApplication extends WebApplication {
 
         getResourceSettings().setThrowExceptionOnMissingResource(false);
         getRequestCycleSettings().addResponseFilter(new AjaxServerAndClientTimeFilter());
-        getDebugSettings().setAjaxDebugModeEnabled(true);
+        getDebugSettings().setAjaxDebugModeEnabled(false);
         // getRequestCycleSettings().setBufferResponse(false);
         //getMarkupSettings().setStripWicketTags(true);
         mountBookmarkablePage("/home", Index.class);
-    
+
     }
 
     public Class getHomePage() {
