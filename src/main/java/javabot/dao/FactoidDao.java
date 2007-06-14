@@ -33,5 +33,8 @@ public interface FactoidDao {
 
     void updateFactoid(Factoid factoid, ChangesDao c_dao, String htmlFile);
 
+    Iterator<Factoid> getFactoidsFiltered(QueryParam qp, Factoid filter);
+
+    Long factoidCountFiltered(Factoid filter);
 
 }

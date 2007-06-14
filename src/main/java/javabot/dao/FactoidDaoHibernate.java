@@ -4,6 +4,7 @@ import javabot.dao.model.Factoid;
 import javabot.dao.util.QueryParam;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -163,5 +164,61 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         return (Long) getSession().createQuery(query).uniqueResult();
 
     }
+
+    public Long factoidCountFiltered(Factoid filter) {
+        return (Long) buildFindQuery(null, filter, true).uniqueResult();
+    }
+
+
+    public Iterator<Factoid> getFactoidsFiltered(QueryParam qp, Factoid filter) {
+
+        return (Iterator<Factoid>) buildFindQuery(qp, filter, false).iterate();
+
+    }
+
+    private Query buildFindQuery(QueryParam qp, Factoid filter, boolean count) {
+        StringBuffer hql = new StringBuffer();
+
+        if (count) {
+            hql.append("select count(*) ");
+        }
+        hql.append(" from Factoid target where 1=1 and target.name not like 'karma%' ");
+
+        if (filter.getName() != null) {
+            hql.append("and upper(target.name) like :name ");
+        }
+        if (filter.getUserName() != null) {
+            hql.append("and upper(target.userName) like :username ");
+        }
+
+        if (filter.getValue() != null) {
+            hql.append("and upper(target.value) like :value ");
+        }
+
+
+        if (!count && qp != null && qp.hasSort()) {
+            hql.append("order by upper(target.").append(qp.getSort()).append(
+                    ") ").append((qp.isSortAsc()) ? " asc" : " desc");
+        }
+
+        Query query = getSession().createQuery(hql.toString());
+
+        if (filter.getName() != null) {
+            query.setParameter("name", "%" + filter.getName().toUpperCase() + "%");
+        }
+        if (filter.getUserName() != null) {
+            query.setParameter("username", "%" + filter.getUserName() + "%");
+        }
+        if (filter.getValue() != null) {
+            query.setParameter("value", "%" + filter.getValue() + "%");
+        }
+
+        if (!count && qp != null) {
+            query.setFirstResult(qp.getFirst()).setMaxResults(qp.getCount());
+        }
+
+        return query;
+    }
+
 
 }

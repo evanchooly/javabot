@@ -3,19 +3,18 @@ package wicket.panels;
 import javabot.dao.FactoidDao;
 import javabot.dao.model.Factoid;
 import javabot.dao.util.QueryParam;
-import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
+import org.apache.wicket.Component;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.*;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.*;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import java.text.SimpleDateFormat;
@@ -28,6 +27,16 @@ import java.util.Iterator;
 // 
 public class FactoidsPanel extends Panel {
 
+    private class UpdatedPanel extends Panel {
+
+        public UpdatedPanel(String s, IModel iModel) {
+            super(s, iModel);
+            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Factoid factoid = (Factoid) iModel.getObject();
+            add(new Label("updated", sdf.format(factoid.getUpdated())));
+        }
+    }
+
     @SpringBean
     FactoidDao dao;
 
@@ -35,61 +44,71 @@ public class FactoidsPanel extends Panel {
     public FactoidsPanel(String id) {
         super(id);
 
-        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        SortableFactoidProvider dp = new SortableFactoidProvider(dao);
-        final DataView dataView = new DataView("sorting", dp) {
-            protected void populateItem(final Item item) {
-                Factoid f = (Factoid) item.getModelObject();
-                item.add(new Label("id", String.valueOf(f.getId())));
-                item.add(new Label("name", f.getName()));
-                item.add(new Label("value", f.getValue()));
-                item.add(new Label("user", f.getUserName()));
-                item.add(new Label("date", sdf.format(f.getUpdated())));
 
-                item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
-                    public Object getObject() {
-                        return (item.getIndex() % 2 == 1) ? "spec" : "odd";
-                    }
-                }));
-            }
+        IColumn[] columns = new IColumn[5];
+
+        columns[0] = new PropertyColumn(new Model("Id"),
+                "id", "id");
+
+        // creates a column with a text filter
+        columns[1] = new TextFilteredPropertyColumn(new Model("Name"),
+                "name", "name") {
         };
 
-        dataView.setItemsPerPage(40);
+        columns[2] = new TextFilteredPropertyColumn(new Model("Value"),
+                "value", "value") {
+        };
 
-        add(new OrderByBorder("orderByName", "name", dp) {
-            protected void onSortChanged() {
-                dataView.setCurrentPage(0);
-            }
-        });
+        columns[3] = new TextFilteredPropertyColumn(new Model("Added by"),
+                "userName", "userName") {
+        };
 
-        add(new OrderByBorder("orderByDate", "updated", dp) {
-            protected void onSortChanged() {
-                dataView.setCurrentPage(0);
-            }
-        });
 
-        add(new OrderByBorder("orderByNick", "username", dp) {
-            protected void onSortChanged() {
-                dataView.setCurrentPage(0);
+        columns[4] = new FilteredAbstractColumn(new Model("Updated")) {
+            // return the go-and-clear filter for the filter toolbar
+            public Component getFilter(String componentId, FilterForm form) {
+                return new GoAndClearFilter(componentId, form);
             }
-        });
 
-        add(new OrderByBorder("orderByValue", "value", dp) {
-            protected void onSortChanged() {
-                dataView.setCurrentPage(0);
+            // add the ActionPanel to the cell item
+            public void populateItem(Item cellItem, String componentId,
+                                     IModel model) {
+                cellItem.add(new UpdatedPanel(componentId, model));
             }
-        });
+
+        };
+
+
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SortableFactoidProvider dp = new SortableFactoidProvider(dao);
+        final DataTable dataView = new DataTable("dataView", columns, dp, 40);
+
+        dataView.addTopToolbar(new FilterToolbar(dataView, dp));
+
+        dataView.addTopToolbar(new NavigationToolbar(dataView));
+
+        dataView.addTopToolbar(new HeadersToolbar(dataView, dp));
 
         add(dataView);
 
-        add(new PagingNavigator("navigator", dataView));
     }
 
 
-    private class SortableFactoidProvider extends SortableDataProvider {
+    private class SortableFactoidProvider extends SortableDataProvider implements IFilterStateLocator {
 
 
         private FactoidDao m_dao;
+
+        private Factoid filter = new Factoid();
+
+        public Object getFilterState() {
+            return filter;
+        }
+
+        public void setFilterState(Object state) {
+            filter = (Factoid) state;
+        }
+
 
         /**
          * constructor
@@ -107,14 +126,14 @@ public class FactoidsPanel extends Panel {
             SortParam sp = getSort();
             QueryParam qp = new QueryParam(first, count, sp.getProperty(), sp.isAscending());
 
-            return (Iterator) m_dao.getFactoids(qp);
+            return (Iterator) m_dao.getFactoidsFiltered(qp, filter);
         }
 
         /**
          * @see org.apache.wicket.markup.repeater.data.IDataProvider#size()
          */
         public int size() {
-            return m_dao.getNumberOfFactoids().intValue();
+            return m_dao.factoidCountFiltered(filter).intValue();
         }
 
         /**

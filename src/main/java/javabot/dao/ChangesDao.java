@@ -50,9 +50,9 @@ public interface ChangesDao {
 
     public boolean findLog(String message);
 
-    Iterator<Change> getChanges(QueryParam qp);
+    Iterator<Change> getChanges(QueryParam qp, Change filter);
 
-    Long getNumberOfChanges();
+    Long getNumberOfChanges(Change filter);
 
     Change get(Long id);
 }

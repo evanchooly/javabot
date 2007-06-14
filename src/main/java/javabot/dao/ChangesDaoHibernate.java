@@ -3,8 +3,8 @@ package javabot.dao;
 import javabot.dao.model.Change;
 import javabot.dao.model.Factoid;
 import javabot.dao.util.QueryParam;
+import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -21,18 +21,10 @@ public class ChangesDaoHibernate extends AbstractDaoHibernate<Factoid> implement
     }
 
     @SuppressWarnings("unchecked")
-    public Iterator<Change> getChanges(QueryParam qp) {
-        StringBuilder query = new StringBuilder("from Change f ");
+    public Iterator<Change> getChanges(QueryParam qp, Change filter) {
 
-        if (qp.hasSort()) {
-            query.append(" order by ")
-                    .append(qp.getSort())
-                    .append((qp.isSortAsc()) ? " asc" : " desc");
-        }
+        return (Iterator<Change>) buildFindQuery(qp, filter, false).iterate();
 
-        return getSession().createQuery(query.toString())
-                .setFirstResult(qp.getFirst())
-                .setMaxResults(qp.getCount()).iterate();
     }
 
     public void logChange(String message) {
@@ -43,7 +35,7 @@ public class ChangesDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         change.setChangeDate(new Date());
 
         Session session = getSession();
-        Transaction transaction = session.beginTransaction();
+        org.hibernate.Transaction transaction = session.beginTransaction();
         session.save(change);
         transaction.commit();
     }
@@ -69,11 +61,11 @@ public class ChangesDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         return found;
     }
 
-    public Long getNumberOfChanges() {
-        String query = "select count(*) from Change c";
-        return (Long) getSession().createQuery(query).uniqueResult();
+    public Long getNumberOfChanges(Change filter) {
 
+        return (Long) buildFindQuery(null, filter, true).uniqueResult();
     }
+
 
     public Change get(Long id) {
         String query = "from Change m where m.id = :id";
@@ -90,6 +82,48 @@ public class ChangesDaoHibernate extends AbstractDaoHibernate<Factoid> implement
 
         return change;
 
+    }
+
+
+    private Query buildFindQuery(QueryParam qp, Change filter, boolean count) {
+        StringBuffer hql = new StringBuffer();
+
+        if (count) {
+            hql.append("select count(*) ");
+        }
+        hql.append(" from Change target where 1=1 ");
+        if (filter.getId() != null) {
+            hql.append("and target id like :id ");
+        }
+        if (filter.getMessage() != null) {
+            hql.append("and upper(target.message) like :message ");
+        }
+        if (filter.getChangeDate() != null) {
+            hql.append("and upper(target.changeDate) like :date ");
+        }
+
+        if (!count && qp != null && qp.hasSort()) {
+            hql.append("order by upper(target.").append(qp.getSort()).append(
+                    ") ").append((qp.isSortAsc()) ? " asc" : " desc");
+        }
+
+        Query query = getSession().createQuery(hql.toString());
+
+        if (filter.getId() != null) {
+            query.setParameter("id", "%" + filter.getId() + "%");
+        }
+        if (filter.getMessage() != null) {
+            query.setParameter("message", "%" + filter.getMessage().toUpperCase() + "%");
+        }
+        if (filter.getChangeDate() != null) {
+            query.setParameter("date", "%" + filter.getChangeDate() + "%");
+        }
+
+        if (!count && qp != null) {
+            query.setFirstResult(qp.getFirst()).setMaxResults(qp.getCount());
+        }
+
+        return query;
     }
 
 }
