@@ -1,5 +1,10 @@
 package javabot.dao;
 
+import javabot.dao.model.Change;
+import javabot.dao.util.QueryParam;
+
+import java.util.Iterator;
+
 //
 // This file is part of the OpenNMS(R) Application.
 //
@@ -45,5 +50,9 @@ public interface ChangesDao {
 
     public boolean findLog(String message);
 
+    Iterator<Change> getChanges(QueryParam qp);
 
+    Long getNumberOfChanges();
+
+    Change get(Long id);
 }

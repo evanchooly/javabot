@@ -2,10 +2,12 @@ package javabot.dao;
 
 import javabot.dao.model.Change;
 import javabot.dao.model.Factoid;
+import javabot.dao.util.QueryParam;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.Date;
+import java.util.Iterator;
 
 // User: joed
 // Date: Apr 11, 2007
@@ -16,6 +18,21 @@ public class ChangesDaoHibernate extends AbstractDaoHibernate<Factoid> implement
 
     public ChangesDaoHibernate() {
         super(Change.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    public Iterator<Change> getChanges(QueryParam qp) {
+        StringBuilder query = new StringBuilder("from Change f ");
+
+        if (qp.hasSort()) {
+            query.append(" order by ")
+                    .append(qp.getSort())
+                    .append((qp.isSortAsc()) ? " asc" : " desc");
+        }
+
+        return getSession().createQuery(query.toString())
+                .setFirstResult(qp.getFirst())
+                .setMaxResults(qp.getCount()).iterate();
     }
 
     public void logChange(String message) {
@@ -52,5 +69,27 @@ public class ChangesDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         return found;
     }
 
+    public Long getNumberOfChanges() {
+        String query = "select count(*) from Change c";
+        return (Long) getSession().createQuery(query).uniqueResult();
+
+    }
+
+    public Change get(Long id) {
+        String query = "from Change m where m.id = :id";
+
+        Change change = (Change) getSession().createQuery(query)
+                .setLong("id", id)
+                .setMaxResults(1)
+                .uniqueResult();
+
+        if (change == null) {
+
+            return new Change();
+        }
+
+        return change;
+
+    }
 
 }

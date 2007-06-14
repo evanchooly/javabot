@@ -7,6 +7,7 @@ import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.time.Duration;
+import wicket.pages.ChangeLogs;
 import wicket.pages.Factoids;
 import wicket.pages.Karma;
 
@@ -26,6 +27,10 @@ public class JavabotInfo extends Panel {
         Link karma = new BookmarkablePageLink("karma_link", Karma.class);
         karma.add(new Label("karma", "Karma ranking"));
         add(karma);
+
+        Link changes = new BookmarkablePageLink("changes_link", ChangeLogs.class);
+        changes.add(new Label("changes", "Changelog"));
+        add(changes);
 
         FactoidCount factoidCount = new FactoidCount("factoid_count");
         add(factoidCount);
