@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javabot.Database;
-import javabot.JDBCDatabase;
 import javabot.Factoid;
+import javabot.JDBCDatabase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
-import org.testng.annotations.Configuration;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -22,9 +22,9 @@ import org.testng.annotations.Test;
 public class FactoidsTests {
     public static final String FACTOID_FILENAME = "factoids.log";
     public static final String CHANGE_LOG = "factoidChange.log";
-    private static Log log = LogFactory.getLog(FactoidsTests.class);
+    private static final Log log = LogFactory.getLog(FactoidsTests.class);
 
-    @Configuration(beforeTestMethod = true)
+    @BeforeMethod
     public void clearLogs() {
         new File(JDBCDatabase.HTML_FILE).delete();
         new File(FACTOID_FILENAME).delete();

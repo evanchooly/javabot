@@ -42,9 +42,9 @@
         </path>
     </target>
 
-    <target name="main" depends="init, make-properties, validate-config">
+    <target name="main" depends="init, validate-config">
         <javac destDir="${build.src.dir}" srcDir="${src.dir}"
-               classpathref="project.class.path" debug="true">
+               classpathref="build.class.path" debug="true">
             <compilerarg line="-Xlint:unchecked"/>
         </javac>
         <javac destDir="${build.test.dir}" srcDir="${test.src.dir}"
@@ -176,13 +176,6 @@
         </java>
     </target>
 
-    <target name="make-properties" description="Generates the javabot and log4j properties files.">
-        <filter filtersfile="build.properties.sample"/>
-        <filter filtersfile="build.properties"/>
-        <copy file="etc/merge/log4j.properties" todir="etc" filtering="true" overwrite="true"/>
-        <copy file="etc/merge/javabot.properties" todir="etc" filtering="true" overwrite="true"/>
-    </target>
-
     <target name="validate-config" description="Validates the sample and active config files">
         <xmlvalidate file="config.xml"/>
         <xmlvalidate file="config.xml.sample"/>
@@ -209,11 +202,17 @@
     </target>
 
     <target name="war" depends="rebuild">
-        <war destfile="${build}/javabot.war" webxml="src/main/webapp/WEB-INF/web.xml">
-            <classes dir="${build.src.dir}"/>
+        <mkdir dir="build/war"/>
+        <copy todir="build/war">
             <fileset dir="src/main/webapp"/>
-            <lib dir="lib" includes="*.jar" excludes="servlet*"/>
-        </war>
+        </copy>
+        <copy todir="build/war/WEB-INF/lib" flatten="true">
+            <fileset refid="runtime.fileset"/>
+        </copy>
+        <copy todir="build/war/WEB-INF/classes">
+            <fileset dir="${build.src.dir}"/>
+        </copy>
+        <jar destfile="${build}/javabot.war" basedir="build/war"/>
     </target>
 
     <target name="deps">
@@ -237,6 +236,7 @@
             <remoteRepository refid="apache.cs.utah.edu"/>
             <remoteRepository refid="main"/>
 
+            <dependency groupId="commons-logging" artifactId="commons-logging" version="1.0.4"/>
             <dependency groupId="org.springframework" artifactId="spring" version="2.0.5"/>
             <dependency groupId="org.hibernate" artifactId="hibernate-annotations" version="3.3.0.ga"/>
             <dependency groupId="org.hibernate" artifactId="hibernate-entitymanager" version="3.2.1.ga"/>
@@ -256,7 +256,7 @@
             <remoteRepository refid="apache.cs.utah.edu"/>
             <remoteRepository refid="main"/>
 
-            <dependency groupId="easymock" artifactId="easymock" version="2.0"/>
+            <dependency groupId="org.easymock" artifactId="easymock" version="2.2"/>
             <dependency groupId="org.unitils" artifactId="unitils" version="1.0-rc-2"/>
             <dependency groupId="org.mortbay.jetty" artifactId="jetty" version="6.1.3"/>
             <dependency groupId="org.mortbay.jetty" artifactId="jetty-util" version="6.1.3"/>

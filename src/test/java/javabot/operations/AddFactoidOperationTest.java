@@ -2,13 +2,13 @@ package javabot.operations;
 
 import java.io.IOException;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.Configuration;
-import org.testng.Assert;
-import org.unitils.spring.annotation.SpringBeanByType;
-import javabot.dao.FactoidDao;
-import javabot.dao.ChangesDao;
 import javabot.BotEvent;
+import javabot.dao.ChangesDao;
+import javabot.dao.FactoidDao;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import org.unitils.spring.annotation.SpringBeanByType;
 
 @Test(groups = {"operations"})
 public class AddFactoidOperationTest extends BaseOperationTest {
@@ -27,7 +27,7 @@ public class AddFactoidOperationTest extends BaseOperationTest {
         super(name);
     }
 
-    @Configuration(beforeTestMethod = true)
+    @BeforeMethod
     public void setUp() {
         if (factoidDao.hasFactoid("test")) {
             factoidDao.forgetFactoid(SENDER, "test", changesDao, "test");

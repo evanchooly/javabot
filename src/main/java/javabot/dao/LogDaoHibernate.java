@@ -1,15 +1,20 @@
 package javabot.dao;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
+
 import javabot.dao.model.Factoid;
 import javabot.dao.model.Logs;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 // User: joed
 // Date: Apr 11, 2007
@@ -24,6 +29,7 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
         super(Logs.class);
     }
 
+    @SuppressWarnings({"unchecked"})
     public Iterator<Logs> dailyLog(String channel, Date date) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

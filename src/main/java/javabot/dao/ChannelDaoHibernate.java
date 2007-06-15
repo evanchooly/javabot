@@ -1,18 +1,18 @@
 package javabot.dao;
 
+import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Date;
+
 import javabot.dao.model.Channel;
 import javabot.dao.util.QueryParam;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
-import java.util.*;
-
-// User: joed
-// Date: Apr 11, 2007
-// Time: 2:41:22 PM
-
 
 public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implements ChannelDao {
 
@@ -52,6 +52,7 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
         return channels;
     }
 
+    @SuppressWarnings({"unchecked"})
     public Iterator<Channel> getIterator(QueryParam qp) {
         StringBuilder query = new StringBuilder("from Channel c");
 

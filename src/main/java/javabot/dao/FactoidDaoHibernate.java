@@ -1,5 +1,11 @@
 package javabot.dao;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import javabot.dao.model.Factoid;
 import javabot.dao.util.QueryParam;
 import org.apache.commons.logging.Log;
@@ -7,8 +13,6 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
-import java.util.*;
 
 // User: joed
 // Date: Apr 11, 2007
@@ -170,6 +174,7 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
     }
 
 
+    @SuppressWarnings({"unchecked"})
     public Iterator<Factoid> getFactoidsFiltered(QueryParam qp, Factoid filter) {
 
         return (Iterator<Factoid>) buildFindQuery(qp, filter, false).iterate();

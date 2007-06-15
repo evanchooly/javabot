@@ -1,11 +1,23 @@
 package wicket.panels;
 
+import java.text.SimpleDateFormat;
+import java.util.Iterator;
+
 import javabot.dao.ChangesDao;
 import javabot.dao.model.Change;
 import javabot.dao.util.QueryParam;
 import org.apache.wicket.Component;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.*;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.*;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.HeadersToolbar;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.NavigationToolbar;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.FilterForm;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.FilterToolbar;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.FilteredAbstractColumn;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.GoAndClearFilter;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilterStateLocator;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.TextFilteredPropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.injection.web.InjectorHolder;
@@ -17,47 +29,35 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
-
 // User: joed
 // Date: May 24, 2007
 // Time: 1:28:37 PM
 
 //
 public class ChangesPanel extends Panel {
-
     @SpringBean
     ChangesDao dao;
 
     private class UpdatedPanel extends Panel {
-
         public UpdatedPanel(String s, IModel iModel) {
             super(s, iModel);
             final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            Change change = (Change) iModel.getObject();
+            Change change = (Change)iModel.getObject();
             add(new Label("updated", sdf.format(change.getChangeDate())));
         }
     }
 
     public ChangesPanel(String id) {
         super(id);
-
-
         IColumn[] columns = new IColumn[3];
-
         columns[0] = new PropertyColumn(new Model("Id"),
-                "id", "id");
+            "id", "id");
 
         // creates a column with a text filter
         columns[1] = new TextFilteredPropertyColumn(new Model("Message"),
-                "message", "message") {
-
-
+            "message", "message") {
         };
-
         columns[2] = new FilteredAbstractColumn(new Model("Updated")) {
-
             // return the go-and-clear filter for the filter toolbar
             public Component getFilter(String componentId, FilterForm form) {
                 return new GoAndClearFilter(componentId, form);
@@ -65,34 +65,24 @@ public class ChangesPanel extends Panel {
 
             // add the ActionPanel to the cell item
             public void populateItem(Item cellItem, String componentId,
-                                     IModel model) {
+                IModel model) {
                 cellItem.add(new UpdatedPanel(componentId, model));
             }
 
         };
-
-
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         SortableChangeProvider dp = new SortableChangeProvider(dao);
         final DataTable dataView = new DataTable("dataView", columns, dp, 40);
-
         dataView.addTopToolbar(new FilterToolbar(dataView, dp));
-
         dataView.addTopToolbar(new NavigationToolbar(dataView));
-
         dataView.addTopToolbar(new HeadersToolbar(dataView, dp));
-
         add(dataView);
 
 
     }
 
-
     private class SortableChangeProvider extends SortableDataProvider implements IFilterStateLocator {
-
-
         private ChangesDao m_dao;
-
         private Change filter = new Change();
 
         public Object getFilterState() {
@@ -100,7 +90,7 @@ public class ChangesPanel extends Panel {
         }
 
         public void setFilterState(Object state) {
-            filter = (Change) state;
+            filter = (Change)state;
         }
 
         /**
@@ -118,7 +108,6 @@ public class ChangesPanel extends Panel {
         public Iterator iterator(int first, int count) {
             SortParam sp = getSort();
             QueryParam qp = new QueryParam(first, count, sp.getProperty(), sp.isAscending());
-
             return m_dao.getChanges(qp, filter);
         }
 
@@ -133,15 +122,13 @@ public class ChangesPanel extends Panel {
          * @see org.apache.wicket.markup.repeater.data.IDataProvider#model(Object)
          */
         public IModel model(Object object) {
-            return new DetachableChangeModel((Change) object);
+            return new DetachableChangeModel((Change)object);
         }
     }
 
     private class DetachableChangeModel extends LoadableDetachableModel {
         private long id;
         private transient Change contact;
-
-
         @SpringBean
         private ChangesDao m_dao;
 
@@ -149,7 +136,6 @@ public class ChangesPanel extends Panel {
          * @param f
          */
         public DetachableChangeModel(Change f) {
-
             this(f.getId());
             contact = f;
         }
@@ -158,7 +144,7 @@ public class ChangesPanel extends Panel {
          * @param id
          */
         public DetachableChangeModel(long id) {
-            if (id == 0) {
+            if(id == 0) {
                 throw new IllegalArgumentException();
             }
             this.id = id;
@@ -178,12 +164,12 @@ public class ChangesPanel extends Panel {
          * @see Object#equals(Object)
          */
         public boolean equals(final Object obj) {
-            if (obj == this) {
+            if(obj == this) {
                 return true;
-            } else if (obj == null) {
+            } else if(obj == null) {
                 return false;
-            } else if (obj instanceof DetachableChangeModel) {
-                DetachableChangeModel other = (DetachableChangeModel) obj;
+            } else if(obj instanceof DetachableChangeModel) {
+                DetachableChangeModel other = (DetachableChangeModel)obj;
                 return other.id == this.id;
             }
             return false;
