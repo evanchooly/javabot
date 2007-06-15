@@ -28,7 +28,8 @@ public class AdminSession extends WebSession {
      */
     public final boolean authenticate(final String username, final String password) {
 
-        ApplicationContext context = new ClassPathXmlApplicationContext("/applicationContext.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext(
+            "../../../webapp/WEB-INF/classes/applicationContext.xml");
 
         AdminDao dao = (AdminDao) context.getBean("adminDao");
 

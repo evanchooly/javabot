@@ -1,8 +1,36 @@
 package javabot;
 
-import javabot.dao.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javabot.dao.ChangesDao;
+import javabot.dao.ChannelDao;
+import javabot.dao.FactoidDao;
+import javabot.dao.KarmaDao;
+import javabot.dao.LogDao;
+import javabot.dao.SeenDao;
 import javabot.dao.model.Logs;
-import javabot.operations.*;
+import javabot.operations.AddFactoidOperation;
+import javabot.operations.BotOperation;
+import javabot.operations.DictOperation;
+import javabot.operations.ForgetFactoidOperation;
+import javabot.operations.GetFactoidOperation;
+import javabot.operations.GuessOperation;
+import javabot.operations.JavadocOperation;
+import javabot.operations.KarmaChangeOperation;
+import javabot.operations.KarmaReadOperation;
+import javabot.operations.LeaveOperation;
+import javabot.operations.LiteralOperation;
+import javabot.operations.QuitOperation;
+import javabot.operations.SeenOperation;
+import javabot.operations.SpecialCasesOperation;
+import javabot.operations.StatsOperation;
+import javabot.operations.TellOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
@@ -13,10 +41,6 @@ import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
 public class Javabot extends PircBot implements ChannelControl, Responder {
     private static final Log log = LogFactory.getLog(Javabot.class);
@@ -39,7 +63,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     public static final String JAVABOT_PROPERTIES = "javabot.properties";
 
     // Spring wiring
-    ApplicationContext context = new ClassPathXmlApplicationContext("/applicationContext.xml");
+    ApplicationContext context = new ClassPathXmlApplicationContext(
+        "../../webapp/WEB-INF/classes/applicationContext.xml");
 
     public FactoidDao factoid_dao = (FactoidDao) context.getBean("factoidDao");
 

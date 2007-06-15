@@ -216,15 +216,20 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate</artifactId>
-            <version>3.2.0.cr4</version>
+            <version>3.2.4.sp1</version>
 
         </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-annotations</artifactId>
-            <version>3.2.0.cr2</version>
+            <version>3.3.0.ga</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>3.3.1.ga</version>
         </dependency>
 
         <dependency>

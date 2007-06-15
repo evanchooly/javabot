@@ -15,18 +15,11 @@
         <param-value>classpath:applicationContext.xml</param-value>
     </context-param>
 
-    <listener>
-        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
-    </listener>
+    <listener><listener-class>org.springframework.web.util.Log4jConfigListener</listener-class></listener>
 
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
+    <listener><listener-class>org.springframework.web.context.ContextLoaderListener</listener-class></listener>
 
-    <context-param>
-        <param-name>configuration</param-name>
-        <param-value>development</param-value>
-    </context-param>
+    <context-param><param-name>configuration</param-name><param-value>development</param-value></context-param>
 
     <filter>
         <filter-name>fn-javabot</filter-name>
@@ -36,7 +29,6 @@
             <param-name>applicationClassName</param-name>
             <param-value>wicket.core.JavabotApplication</param-value>
         </init-param>
-
     </filter>
 
     <filter-mapping>
@@ -63,5 +55,4 @@
         <servlet-class>javabot.servlet.JavabotServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-
 </web-app>
