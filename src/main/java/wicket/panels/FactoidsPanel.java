@@ -4,7 +4,10 @@ import javabot.dao.FactoidDao;
 import javabot.dao.model.Factoid;
 import javabot.dao.util.QueryParam;
 import org.apache.wicket.Component;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.*;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.HeadersToolbar;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.NavigationToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.*;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
@@ -45,26 +48,27 @@ public class FactoidsPanel extends Panel {
         super(id);
 
 
-        IColumn[] columns = new IColumn[5];
+        IColumn[] columns = new IColumn[4];
 
-        columns[0] = new PropertyColumn(new Model("Id"),
-                "id", "id");
+        // columns[0] = new PropertyColumn(new Model("Id"),
+        //         "id", "id");
 
         // creates a column with a text filter
-        columns[1] = new TextFilteredPropertyColumn(new Model("Name"),
+        columns[0] = new TextFilteredPropertyColumn(new Model("Name"),
                 "name", "name") {
+
         };
 
-        columns[2] = new TextFilteredPropertyColumn(new Model("Value"),
+        columns[1] = new TextFilteredPropertyColumn(new Model("Value"),
                 "value", "value") {
         };
 
-        columns[3] = new TextFilteredPropertyColumn(new Model("Added by"),
+        columns[2] = new TextFilteredPropertyColumn(new Model("Added by"),
                 "userName", "userName") {
         };
 
 
-        columns[4] = new FilteredAbstractColumn(new Model("Updated")) {
+        columns[3] = new FilteredAbstractColumn(new Model("Updated")) {
             // return the go-and-clear filter for the filter toolbar
             public Component getFilter(String componentId, FilterForm form) {
                 return new GoAndClearFilter(componentId, form);
