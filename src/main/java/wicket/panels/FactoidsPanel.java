@@ -34,7 +34,7 @@ public class FactoidsPanel extends Panel {
 
         public UpdatedPanel(String s, IModel iModel) {
             super(s, iModel);
-            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Factoid factoid = (Factoid) iModel.getObject();
             add(new Label("updated", sdf.format(factoid.getUpdated())));
         }
