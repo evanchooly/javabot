@@ -7,12 +7,15 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 // User: joed
 // Date: Apr 11, 2007
 // Time: 2:41:22 PM
-
 
 public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements KarmaDao {
 
@@ -37,7 +40,6 @@ public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements Ka
                 .setFirstResult(qp.getFirst())
                 .setMaxResults(qp.getCount()).iterate();
     }
-
 
     @SuppressWarnings({"unchecked"})
     public Iterator<Karma> getIterator() {
@@ -98,7 +100,6 @@ public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements Ka
         session.save(karma);
         transaction.commit();
     }
-
 
     public Karma getKarma(String name) {
         String query = "from Karma m where m.name = :name";

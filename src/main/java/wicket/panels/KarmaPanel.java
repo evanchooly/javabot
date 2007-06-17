@@ -32,6 +32,7 @@ public class KarmaPanel extends Panel {
     //karma nick | value
 
     @SpringBean
+    private
     KarmaDao dao;
 
     public KarmaPanel(String id) {
@@ -83,22 +84,21 @@ public class KarmaPanel extends Panel {
         });
 
         add(dataView);
-
         add(new PagingNavigator("navigator", dataView));
     }
 
-
     private class SortableKarmaProvider extends SortableDataProvider {
-
 
         private KarmaDao m_dao;
 
         /**
          * constructor
+         *
+         * @param dao
          */
         public SortableKarmaProvider(KarmaDao dao) {
             // set default sort
-            setSort("name", true);
+            setSort("value", true);
             this.m_dao = dao;
         }
 
@@ -109,7 +109,7 @@ public class KarmaPanel extends Panel {
             SortParam sp = getSort();
             QueryParam qp = new QueryParam(first, count, sp.getProperty(), sp.isAscending());
 
-            return (Iterator) m_dao.getKarmas(qp);
+            return m_dao.getKarmas(qp);
         }
 
         /**
@@ -129,7 +129,6 @@ public class KarmaPanel extends Panel {
 
     private class DetachableKarmaModel extends LoadableDetachableModel {
         private long id;
-        private transient Karma contact;
 
         @SpringBean
         private KarmaDao m_dao;
@@ -137,15 +136,17 @@ public class KarmaPanel extends Panel {
         /**
          * @param f
          */
+        @SuppressWarnings({"JavaDoc", "UnnecessaryLocalVariable"})
         public DetachableKarmaModel(Karma f) {
 
             this(f.getId());
-            contact = f;
+            Karma contact = f;
         }
 
         /**
          * @param id
          */
+        @SuppressWarnings({"JavaDoc"})
         public DetachableKarmaModel(long id) {
             if (id == 0) {
                 throw new IllegalArgumentException();

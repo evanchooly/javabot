@@ -8,7 +8,12 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.HeadersToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.NavigationToolbar;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.*;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.FilterForm;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.FilterToolbar;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.FilteredAbstractColumn;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.GoAndClearFilter;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilterStateLocator;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.TextFilteredPropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.injection.web.InjectorHolder;
@@ -43,10 +48,8 @@ public class FactoidsPanel extends Panel {
     @SpringBean
     FactoidDao dao;
 
-
     public FactoidsPanel(String id) {
         super(id);
-
 
         IColumn[] columns = new IColumn[4];
 
@@ -67,7 +70,6 @@ public class FactoidsPanel extends Panel {
                 "userName", "userName") {
         };
 
-
         columns[3] = new FilteredAbstractColumn(new Model("Updated")) {
             // return the go-and-clear filter for the filter toolbar
             public Component getFilter(String componentId, FilterForm form) {
@@ -81,7 +83,6 @@ public class FactoidsPanel extends Panel {
             }
 
         };
-
 
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         SortableFactoidProvider dp = new SortableFactoidProvider(dao);
@@ -97,9 +98,7 @@ public class FactoidsPanel extends Panel {
 
     }
 
-
     private class SortableFactoidProvider extends SortableDataProvider implements IFilterStateLocator {
-
 
         private FactoidDao m_dao;
 
@@ -112,7 +111,6 @@ public class FactoidsPanel extends Panel {
         public void setFilterState(Object state) {
             filter = (Factoid) state;
         }
-
 
         /**
          * constructor
