@@ -88,7 +88,7 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
         return get(name);
     }
 
-    public boolean isChannel(String channel) {
+    private boolean isChannel(String channel) {
         return get(channel).getChannel() != null;
     }
 

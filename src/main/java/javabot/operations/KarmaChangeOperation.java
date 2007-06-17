@@ -76,9 +76,9 @@ public class KarmaChangeOperation implements BotOperation {
                 karma.setUserName(sender);
 
                 if (newKarma) {
-                    k_dao.addKarma(karma.getUserName(), karma.getName(), karma.getValue(), c_dao, htmlFile);
+                    k_dao.addKarma(karma.getUserName(), karma.getName(), karma.getValue());
                 } else {
-                    k_dao.updateKarma(karma, c_dao, htmlFile);
+                    k_dao.updateKarma(karma, c_dao);
                 }
                 KarmaReadOperation karmaRead = new KarmaReadOperation(k_dao);
                 messages.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event.getHostname(), "karma " + nick)));

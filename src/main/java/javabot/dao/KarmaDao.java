@@ -14,7 +14,7 @@ public interface KarmaDao {
 
     boolean hasKarma(String key);
 
-    void addKarma(String sender, String key, Integer value, ChangesDao c_dao, String htmlFile);
+    void addKarma(String sender, String key, Integer value);
 
     Karma getKarma(String nick);
 
@@ -26,6 +26,6 @@ public interface KarmaDao {
 
     Long getCount();
 
-    void updateKarma(Karma karma, ChangesDao c_dao, String htmlFile);
+    void updateKarma(Karma karma, ChangesDao c_dao);
 
 }

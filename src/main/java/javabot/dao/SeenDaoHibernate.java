@@ -15,8 +15,6 @@ import java.util.Date;
 
 public class SeenDaoHibernate extends AbstractDaoHibernate<Factoid> implements SeenDao {
 
-    private HtmlRoutines html = new HtmlRoutines();
-
     private static final Log log = LogFactory.getLog(SeenDaoHibernate.class);
 
     public SeenDaoHibernate() {

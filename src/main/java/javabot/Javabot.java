@@ -1,8 +1,28 @@
 package javabot;
 
-import javabot.dao.*;
+import javabot.dao.ChangesDao;
+import javabot.dao.ChannelDao;
+import javabot.dao.FactoidDao;
+import javabot.dao.KarmaDao;
+import javabot.dao.LogDao;
+import javabot.dao.SeenDao;
 import javabot.dao.model.Logs;
-import javabot.operations.*;
+import javabot.operations.AddFactoidOperation;
+import javabot.operations.BotOperation;
+import javabot.operations.DictOperation;
+import javabot.operations.ForgetFactoidOperation;
+import javabot.operations.GetFactoidOperation;
+import javabot.operations.GuessOperation;
+import javabot.operations.JavadocOperation;
+import javabot.operations.KarmaChangeOperation;
+import javabot.operations.KarmaReadOperation;
+import javabot.operations.LeaveOperation;
+import javabot.operations.LiteralOperation;
+import javabot.operations.QuitOperation;
+import javabot.operations.SeenOperation;
+import javabot.operations.SpecialCasesOperation;
+import javabot.operations.StatsOperation;
+import javabot.operations.TellOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
@@ -16,7 +36,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class Javabot extends PircBot implements ChannelControl, Responder {
     private static final Log log = LogFactory.getLog(Javabot.class);
@@ -39,20 +63,20 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     public static final String JAVABOT_PROPERTIES = "javabot.properties";
 
     // Spring wiring
-    ApplicationContext context = new ClassPathXmlApplicationContext(
+    private ApplicationContext context = new ClassPathXmlApplicationContext(
             "classpath:applicationContext.xml");
 
-    public FactoidDao factoid_dao = (FactoidDao) context.getBean("factoidDao");
+    private FactoidDao factoid_dao = (FactoidDao) context.getBean("factoidDao");
 
-    public ChangesDao change_dao = (ChangesDao) context.getBean("changesDao");
+    private ChangesDao change_dao = (ChangesDao) context.getBean("changesDao");
 
-    public SeenDao seen_dao = (SeenDao) context.getBean("seenDao");
+    private SeenDao seen_dao = (SeenDao) context.getBean("seenDao");
 
-    public LogDao log_dao = (LogDao) context.getBean("logDao");
+    private LogDao log_dao = (LogDao) context.getBean("logDao");
 
-    public ChannelDao channel_dao = (ChannelDao) context.getBean("channelDao");
+    private ChannelDao channel_dao = (ChannelDao) context.getBean("channelDao");
 
-    public KarmaDao karma_dao = (KarmaDao) context.getBean("karmaDao");
+    private KarmaDao karma_dao = (KarmaDao) context.getBean("karmaDao");
 
     private String htmlFileName;
 
@@ -66,7 +90,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     private void loadConfig() throws JDOMException, IOException {
         SAXBuilder reader = new SAXBuilder(true);
         File configFile = getConfigFile();
-        Document document = null;
+        Document document;
         try {
             document = reader.build(configFile.toURI().toURL());
         } catch (Exception e) {
@@ -219,6 +243,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         bot.connect();
     }
 
+    @SuppressWarnings({"EmptyCatchBlock"})
     private void sleep(int milliseconds) {
         try {
             Thread.sleep(milliseconds);
@@ -244,7 +269,6 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
             sleep(1000);
         }
     }
-
 
     @Override
     public void onMessage(String channel, String sender, String login, String hostname, String message) {

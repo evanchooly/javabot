@@ -13,7 +13,7 @@ import java.util.List;
 // Author: joed
 
 // Date  : Apr 12, 2007
-public class HtmlRoutines {
+class HtmlRoutines {
 
     private static final Log log = LogFactory.getLog(HtmlRoutines.class);
 
@@ -49,7 +49,7 @@ public class HtmlRoutines {
         html.append("</td>");
     }
 
-    protected String htmlize(String value) {
+    private String htmlize(String value) {
         String newValue = value.replaceAll("<", "&lt;");
         newValue = newValue.replaceAll(">", "&gt;");
         int startHttp = newValue.indexOf("http://");

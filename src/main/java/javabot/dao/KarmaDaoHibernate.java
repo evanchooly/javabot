@@ -57,7 +57,7 @@ public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements Ka
         return m_karma.iterator();
     }
 
-    public void updateKarma(Karma karma, ChangesDao c_dao, String htmlFile) {
+    public void updateKarma(Karma karma, ChangesDao c_dao) {
 
         if (hasKarma(karma.getName())) {
             karma.setUpdated(new Date());
@@ -86,7 +86,7 @@ public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements Ka
         return getKarma(key).getName() != null;
     }
 
-    public void addKarma(String sender, String key, Integer value, ChangesDao c_dao, String htmlFile) {
+    public void addKarma(String sender, String key, Integer value) {
 
         Karma karma = new Karma();
 
