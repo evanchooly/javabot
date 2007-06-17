@@ -1,18 +1,18 @@
 package javabot.dao;
 
-import java.util.Comparator;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Date;
-
 import javabot.dao.model.Channel;
 import javabot.dao.util.QueryParam;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implements ChannelDao {
 
@@ -34,7 +34,6 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
 
         return m_channels;
     }
-
 
     @SuppressWarnings({"unchecked"})
     public List<Channel> getChannels() {
@@ -67,7 +66,6 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
                 .setMaxResults(qp.getCount()).iterate();
     }
 
-
     public Channel get(String name) {
         String query = "from Channel m where m.channel = :channel";
 
@@ -89,7 +87,6 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
     public Channel getChannel(String name) {
         return get(name);
     }
-
 
     public boolean isChannel(String channel) {
         return get(channel).getChannel() != null;

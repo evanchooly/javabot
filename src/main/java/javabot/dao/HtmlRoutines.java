@@ -17,7 +17,6 @@ public class HtmlRoutines {
 
     private static final Log log = LogFactory.getLog(HtmlRoutines.class);
 
-
     public void dumpHTML(List<Factoid> factoids, String htmlFile) {
         PrintWriter writer = null;
         try {

@@ -2,9 +2,9 @@ package javabot.dao;
 
 import javabot.dao.model.Logs;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Date;
 
 public interface LogDao {
 

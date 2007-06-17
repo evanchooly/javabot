@@ -8,10 +8,13 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 // User: joed
-
 
 public class AdminDaoHibernate extends AbstractDaoHibernate<Karma> implements AdminDao {
 
@@ -36,7 +39,6 @@ public class AdminDaoHibernate extends AbstractDaoHibernate<Karma> implements Ad
                 .setFirstResult(qp.getFirst())
                 .setMaxResults(qp.getCount()).iterate();
     }
-
 
     @SuppressWarnings({"unchecked"})
     public Iterator<Admin> getIterator() {

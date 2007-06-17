@@ -13,7 +13,6 @@ import java.util.Iterator;
 // Date: Apr 11, 2007
 // Time: 2:41:22 PM
 
-
 public class ChangesDaoHibernate extends AbstractDaoHibernate<Factoid> implements ChangesDao {
 
     public ChangesDaoHibernate() {
@@ -66,7 +65,6 @@ public class ChangesDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         return (Long) buildFindQuery(null, filter, true).uniqueResult();
     }
 
-
     public Change get(Long id) {
         String query = "from Change m where m.id = :id";
 
@@ -83,7 +81,6 @@ public class ChangesDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         return change;
 
     }
-
 
     private Query buildFindQuery(QueryParam qp, Change filter, boolean count) {
         StringBuffer hql = new StringBuffer();

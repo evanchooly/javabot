@@ -8,12 +8,10 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.Date;
-import java.util.Properties;
 
 // User: joed
 // Date: Apr 11, 2007
 // Time: 2:41:22 PM
-
 
 public class SeenDaoHibernate extends AbstractDaoHibernate<Factoid> implements SeenDao {
 
@@ -27,7 +25,7 @@ public class SeenDaoHibernate extends AbstractDaoHibernate<Factoid> implements S
 
     public void logSeen(String nick, String channel, String message) {
 
-         if (isSeen(nick, channel)) {
+        if (isSeen(nick, channel)) {
 
             Seen oldSeen = getSeen(nick, channel);
             oldSeen.setMessage(message);
@@ -52,7 +50,7 @@ public class SeenDaoHibernate extends AbstractDaoHibernate<Factoid> implements S
             session.saveOrUpdate(lastSeen);
             transaction.commit();
 
-         }
+        }
 
     }
 

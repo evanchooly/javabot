@@ -1,5 +1,12 @@
 package javabot.dao;
 
+import javabot.dao.model.Factoid;
+import javabot.dao.model.Logs;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,17 +16,9 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
-import javabot.dao.model.Factoid;
-import javabot.dao.model.Logs;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
 // User: joed
 // Date: Apr 11, 2007
 // Time: 2:41:22 PM
-
 
 public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements LogDao {
 
@@ -54,7 +53,6 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
                 .iterate();
     }
 
-
     public void logMessage(Logs.Type type, String nick, String channel, String message) {
 
         Logs logMessage = new Logs();
@@ -82,7 +80,6 @@ public class LogDaoHibernate extends AbstractDaoHibernate<Factoid> implements Lo
                 .uniqueResult();
 
         if (m_user == null) {
-
 
             return new Logs();
         }

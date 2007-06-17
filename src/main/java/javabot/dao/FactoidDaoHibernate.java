@@ -1,11 +1,5 @@
 package javabot.dao;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
 import javabot.dao.model.Factoid;
 import javabot.dao.util.QueryParam;
 import org.apache.commons.logging.Log;
@@ -14,10 +8,15 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 // User: joed
 // Date: Apr 11, 2007
 // Time: 2:41:22 PM
-
 
 public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implements FactoidDao {
 
@@ -122,7 +121,6 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         session.delete(factoid);
         transaction.commit();
 
-
         html.dumpHTML(getFactoids(), htmlFile);
         c_dao.logChange(sender + " removed '" + key + "'");
     }
@@ -136,9 +134,7 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
                 .uniqueResult();
 
         if (m_factoid == null) {
-
-            Factoid notFound = new Factoid();
-            return notFound;
+            return new Factoid();
         }
 
         return m_factoid;
@@ -154,9 +150,7 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
                 .uniqueResult();
 
         if (m_factoid == null) {
-
-            Factoid notFound = new Factoid();
-            return notFound;
+            return new Factoid();
         }
 
         return m_factoid;
@@ -172,7 +166,6 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
     public Long factoidCountFiltered(Factoid filter) {
         return (Long) buildFindQuery(null, filter, true).uniqueResult();
     }
-
 
     @SuppressWarnings({"unchecked"})
     public Iterator<Factoid> getFactoidsFiltered(QueryParam qp, Factoid filter) {
@@ -199,7 +192,6 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         if (filter.getValue() != null) {
             hql.append("and upper(target.value) like :value ");
         }
-
 
         if (!count && qp != null && qp.hasSort()) {
             hql.append("order by upper(target.").append(qp.getSort()).append(
