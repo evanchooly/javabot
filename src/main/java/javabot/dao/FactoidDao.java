@@ -1,10 +1,10 @@
 package javabot.dao;
 
-import javabot.dao.model.Factoid;
-import javabot.dao.util.QueryParam;
-
 import java.util.Iterator;
 import java.util.List;
+
+import javabot.dao.model.Factoid;
+import javabot.dao.util.QueryParam;
 
 // User: joed
 // Date: Apr 11, 2007
@@ -15,9 +15,9 @@ public interface FactoidDao {
 
     boolean hasFactoid(String key);
 
-    void addFactoid(String sender, String key, String value, ChangesDao c_dao, String htmlFile);
+    void addFactoid(String sender, String key, String value, ChangesDao changesDao);
 
-    void forgetFactoid(String sender, String key, ChangesDao c_dao, String htmlFile);
+    void forgetFactoid(String sender, String key, ChangesDao changesDao);
 
     Factoid getFactoid(String key);
 
@@ -31,7 +31,7 @@ public interface FactoidDao {
 
     Iterator<Factoid> getFactoids(QueryParam qp);
 
-    void updateFactoid(Factoid factoid, ChangesDao c_dao, String htmlFile);
+    void updateFactoid(Factoid factoid, ChangesDao changesDao);
 
     Iterator<Factoid> getFactoidsFiltered(QueryParam qp, Factoid filter);
 

@@ -37,7 +37,7 @@ public class AdminSession extends WebSession {
             // Trivial password "db"
             if (dao.isAdmin(username)) {
 
-                if (dao.getAdmin(username).getUsername().equals(username) && dao.getAdmin(username).getPassword().equals(password)) {
+                if (dao.getAdmin(username).getUserName().equals(username) && dao.getAdmin(username).getPassword().equals(password)) {
                     user = username;
 
                 }

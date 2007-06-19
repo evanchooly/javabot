@@ -1,24 +1,20 @@
 package javabot.operations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.ChangesDao;
 import javabot.dao.FactoidDao;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 public class ForgetFactoidOperation implements BotOperation {
-    private FactoidDao f_dao;
-    private ChangesDao c_dao;
-    private String htmlFile;
-    private Properties properties;
+    private FactoidDao factoidDao;
+    private ChangesDao changesDao;
 
-    public ForgetFactoidOperation(FactoidDao factoid_dao, ChangesDao change_dao, String file) {
-        this.f_dao = factoid_dao;
-        this.c_dao = change_dao;
-        htmlFile = file;
+    public ForgetFactoidOperation(FactoidDao dao, ChangesDao cDao) {
+        factoidDao = dao;
+        changesDao = cDao;
     }
 
     public List<Message> handleMessage(BotEvent event) {
@@ -36,9 +32,9 @@ public class ForgetFactoidOperation implements BotOperation {
             }
             String key = message;
             key = key.toLowerCase();
-            if (f_dao.hasFactoid(key)) {
+            if (factoidDao.hasFactoid(key)) {
                 messages.add(new Message(channel, "I forgot about " + key + ", " + sender + ".", false));
-                f_dao.forgetFactoid(sender, key, c_dao, htmlFile);
+                factoidDao.forgetFactoid(sender, key, changesDao);
             } else {
                 messages.add(new Message(channel, "I never knew about " + key + " anyway, " + sender + ".", false));
             }

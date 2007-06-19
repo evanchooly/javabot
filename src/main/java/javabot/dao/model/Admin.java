@@ -1,67 +1,62 @@
 package javabot.dao.model;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-//
-// User: joed
-// Date: Apr 11, 2007
-
-// Time: 2:22:19 PM
 @Entity
 @Table(name = "admin")
 public class Admin implements Serializable {
-    @Id
-    @Column(name = "`id`")
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "`username`")
-    private String username;
-    @Column(name = "`password`")
+    private String userName;
     private String password;
-    @Column(name = "`fullname`")
-    private String channel;
-    @Column(name = "`updated`")
+    private String name;
     private Date updated;
 
+    @Id
+    @Column(name = "id")
+    @GeneratedValue
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long adminId) {
+        this.id = adminId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String adminName) {
+        this.userName = adminName;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPassword(String pwd) {
+        this.password = pwd;
     }
 
-    public String getChannel() {
-        return channel;
+    public String getName() {
+        return name;
     }
 
     public void setChannel(String channel) {
-        this.channel = channel;
+        name = channel;
     }
 
     public Date getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Date updated) {
-        this.updated = updated;
+    public void setUpdated(Date date) {
+        this.updated = date;
     }
 }

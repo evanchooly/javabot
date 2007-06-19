@@ -30,34 +30,30 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     @BeforeMethod
     public void setUp() {
         if (factoidDao.hasFactoid("test")) {
-            factoidDao.forgetFactoid(SENDER, "test", changesDao, "test");
+            factoidDao.forgetFactoid(SENDER, "test", changesDao);
         }
         if (factoidDao.hasFactoid("ping $1")) {
-            factoidDao.forgetFactoid(SENDER, "ping $1", changesDao, "test");
+            factoidDao.forgetFactoid(SENDER, "ping $1", changesDao);
         }
         if (factoidDao.hasFactoid("what")) {
-            factoidDao.forgetFactoid(SENDER, "what", changesDao, "test");
+            factoidDao.forgetFactoid(SENDER, "what", changesDao);
         }
         if (factoidDao.hasFactoid("what up")) {
-            factoidDao.forgetFactoid(SENDER, "what up", changesDao, "test");
+            factoidDao.forgetFactoid(SENDER, "what up", changesDao);
         }
         if (factoidDao.hasFactoid("test pong")) {
-            factoidDao.forgetFactoid(SENDER, "test pong", changesDao, "test");
+            factoidDao.forgetFactoid(SENDER, "test pong", changesDao);
         }
          if (factoidDao.hasFactoid("asdf")) {
-            factoidDao.forgetFactoid(SENDER, "asdf", changesDao, "test");
+            factoidDao.forgetFactoid(SENDER, "asdf", changesDao);
         }
          if (factoidDao.hasFactoid("12345")) {
-            factoidDao.forgetFactoid(SENDER, "12345", changesDao, "test");
+            factoidDao.forgetFactoid(SENDER, "12345", changesDao);
         }
 
     }
 
     public void factoidAdd() {
-
-
-
-
         String errorMessage = "Should have added the factoid";
         testOperation2("test pong is pong", OKAY, errorMessage);
         testOperation2("ping $1 is <action>sends some radar to $1, " + "awaits a response then forgets how long it took", OKAY, errorMessage);
@@ -110,8 +106,9 @@ public class AddFactoidOperationTest extends BaseOperationTest {
         testOperation2("asdf", factoid, errorMessage, operation);
     }
 
+    @Override
     protected AddFactoidOperation getOperation2() {
-        return new AddFactoidOperation(factoidDao, this.changesDao, "test");
+        return new AddFactoidOperation(factoidDao, this.changesDao);
     }
 
 }

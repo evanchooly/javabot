@@ -36,7 +36,7 @@ public class AddFactoidOperationsTest extends UnitilsTestNG {
     public void setUp() {
         f_dao = createMock(FactoidDao.class);
         c_dao = createMock(ChangesDao.class);
-        addOperation = new AddFactoidOperation(f_dao, c_dao, "test");
+        addOperation = new AddFactoidOperation(f_dao, c_dao);
     }
 
     public void testDaoCount() {
@@ -74,7 +74,7 @@ public class AddFactoidOperationsTest extends UnitilsTestNG {
         listOfFactoids.add(factoid);
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "magnificent is MAGNIFICENT");
         expect(f_dao.hasFactoid("magnificent")).andReturn(false);
-        f_dao.addFactoid("joed", "magnificent", "MAGNIFICENT", c_dao, "test");
+        f_dao.addFactoid("joed", "magnificent", "MAGNIFICENT", c_dao);
         replay(f_dao);
         List<Message> results = addOperation.handleMessage(event);
         Assert.assertEquals(results.get(0).getMessage(), "Okay, joed.");
@@ -88,7 +88,7 @@ public class AddFactoidOperationsTest extends UnitilsTestNG {
         listOfFactoids.add(factoid);
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "magnificent is bla bla bla bla bla");
         expect(f_dao.hasFactoid("magnificent")).andReturn(false);
-        f_dao.addFactoid("joed", "magnificent", "bla bla bla bla bla", c_dao, "test");
+        f_dao.addFactoid("joed", "magnificent", "bla bla bla bla bla", c_dao);
         replay(f_dao);
         List<Message> results = addOperation.handleMessage(event);
         Assert.assertEquals(results.get(0).getMessage(), "Okay, joed.");

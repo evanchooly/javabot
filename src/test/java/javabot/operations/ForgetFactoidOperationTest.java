@@ -28,7 +28,7 @@ public class ForgetFactoidOperationTest extends BaseOperationTest {
 
     public void forgetFactoid() {
         if (!factoidDao.hasFactoid("afky")) {
-            factoidDao.addFactoid(SENDER, "afky", "test", changesDao, "TEST");
+            factoidDao.addFactoid(SENDER, "afky", "test", changesDao);
         }
         testOperation2("forget afky", "I forgot about afky, " + SENDER + ".", "Should have forgotten factoid");
     }
@@ -37,8 +37,9 @@ public class ForgetFactoidOperationTest extends BaseOperationTest {
         testOperation2("forget asdfghjkl", "I never knew about asdfghjkl anyway, " + SENDER + ".", "Should not have known about factoid");
     }
 
+    @Override
     protected BotOperation getOperation2() {
-        return new ForgetFactoidOperation(factoidDao, changesDao, "TEST");
+        return new ForgetFactoidOperation(factoidDao, changesDao);
     }
 
     public void channelMessage() throws IOException {

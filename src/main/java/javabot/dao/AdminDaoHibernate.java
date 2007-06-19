@@ -49,7 +49,7 @@ public class AdminDaoHibernate extends AbstractDaoHibernate<Karma> implements Ad
 
         Collections.sort(m_admin, new Comparator<Admin>() {
             public int compare(Admin admin, Admin admin1) {
-                return admin.getUsername().compareTo(admin1.getUsername());
+                return admin.getUserName().compareTo(admin1.getUserName());
             }
         });
 
@@ -58,14 +58,14 @@ public class AdminDaoHibernate extends AbstractDaoHibernate<Karma> implements Ad
 
     public void updateAdmin(Admin admin, ChangesDao c_dao) {
 
-        if (isAdmin(admin.getUsername())) {
+        if (isAdmin(admin.getUserName())) {
             admin.setUpdated(new Date());
             Session session = getSession();
             Transaction transaction = session.beginTransaction();
             session.update(admin);
             transaction.commit();
 
-            c_dao.logChange(admin.getUsername() + " updated ");
+            c_dao.logChange(admin.getUserName() + " updated ");
         } else {
 
             admin.setUpdated(new Date());
@@ -74,7 +74,7 @@ public class AdminDaoHibernate extends AbstractDaoHibernate<Karma> implements Ad
             session.saveOrUpdate(admin);
             transaction.commit();
 
-            c_dao.logChange(admin.getUsername() + " added ");
+            c_dao.logChange(admin.getUserName() + " added ");
 
         }
 
@@ -82,7 +82,7 @@ public class AdminDaoHibernate extends AbstractDaoHibernate<Karma> implements Ad
     }
 
     public boolean isAdmin(String key) {
-        return getAdmin(key).getUsername() != null;
+        return getAdmin(key).getUserName() != null;
     }
 
     public Admin getAdmin(String username) {

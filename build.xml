@@ -1,8 +1,5 @@
 <project name="javabot" default="main" xmlns:artifact="urn:maven-artifact-ant">
 
-    <property file="build.properties"/>
-    <property file="build.default.properties"/>
-
     <property environment="env"/>
 
     <property name="build" location="build"/>
@@ -42,7 +39,7 @@
         </path>
     </target>
 
-    <target name="main" depends="init, validate-config">
+    <target name="main" depends="init">
         <javac destDir="${build.src.dir}" srcDir="${src.dir}"
                classpathref="build.class.path" debug="true">
             <compilerarg line="-Xlint:unchecked"/>
@@ -192,11 +189,6 @@
         <java classname="javabot.IndependentJavadocViewer" classpathref="javabot.cp" fork="true">
             <arg value="String"/>
         </java>
-    </target>
-
-    <target name="validate-config" description="Validates the sample and active config files">
-        <xmlvalidate file="config.xml"/>
-        <xmlvalidate file="config.xml.sample"/>
     </target>
 
     <target name="import-db" if="scp.password">

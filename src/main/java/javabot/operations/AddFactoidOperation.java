@@ -1,5 +1,8 @@
 package javabot.operations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.ChangesDao;
@@ -7,19 +10,14 @@ import javabot.dao.FactoidDao;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AddFactoidOperation implements BotOperation {
     private static final Log log = LogFactory.getLog(AddFactoidOperation.class);
-    private FactoidDao f_dao;
-    private ChangesDao c_dao;
-    private String htmlFile;
+    private FactoidDao factoidDao;
+    private ChangesDao changesDao;
 
-    public AddFactoidOperation(FactoidDao f_dao, ChangesDao c_dao, String file) {
-        this.f_dao = f_dao;
-        this.c_dao = c_dao;
-        htmlFile = file;
+    public AddFactoidOperation(FactoidDao dao, ChangesDao cDao) {
+        factoidDao = dao;
+        changesDao = cDao;
     }
 
     public List<Message> handleMessage(BotEvent event) {
@@ -49,7 +47,7 @@ public class AddFactoidOperation implements BotOperation {
                 messages.add(new Message(channel, "Invalid factoid value", false));
                 return messages;
             }
-            if (f_dao.hasFactoid(key)) {
+            if (factoidDao.hasFactoid(key)) {
                 messages.add(new Message(channel, "I already have a factoid with that name, " + sender, false));
                 return messages;
             }
@@ -57,7 +55,7 @@ public class AddFactoidOperation implements BotOperation {
             if (value.startsWith("<see>")) {
                 value = value.toLowerCase();
             }
-            f_dao.addFactoid(sender, key, value, c_dao, htmlFile);
+            factoidDao.addFactoid(sender, key, value, changesDao);
         } else {
             return new ArrayList<Message>();
 

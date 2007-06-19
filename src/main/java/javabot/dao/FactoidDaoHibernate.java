@@ -1,5 +1,11 @@
 package javabot.dao;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import javabot.dao.model.Factoid;
 import javabot.dao.util.QueryParam;
 import org.apache.commons.logging.Log;
@@ -8,20 +14,11 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
 // User: joed
 // Date: Apr 11, 2007
 // Time: 2:41:22 PM
 
 public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implements FactoidDao {
-
-    private HtmlRoutines html = new HtmlRoutines();
-
     private static final Log log = LogFactory.getLog(FactoidDaoHibernate.class);
 
     public FactoidDaoHibernate() {
@@ -76,7 +73,7 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         return m_factoids.iterator();
     }
 
-    public void updateFactoid(Factoid factoid, ChangesDao c_dao, String htmlFile) {
+    public void updateFactoid(Factoid factoid, ChangesDao changesDao) {
 
         factoid.setUpdated(new Date());
         Session session = getSession();
@@ -84,16 +81,14 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         session.update(factoid);
         transaction.commit();
 
-        c_dao.logChange(factoid.getUserName() + " changed '" + factoid.getName() + "' to '" + factoid.getValue() + "'");
-        html.dumpHTML(getFactoids(), htmlFile);
-
+        changesDao.logChange(factoid.getUserName() + " changed '" + factoid.getName() + "' to '" + factoid.getValue() + "'");
     }
 
     public boolean hasFactoid(String key) {
         return getFactoid(key).getName() != null;
     }
 
-    public void addFactoid(String sender, String key, String value, ChangesDao c_dao, String htmlFile) {
+    public void addFactoid(String sender, String key, String value, ChangesDao changesDao) {
 
         Factoid factoid = new Factoid();
 
@@ -106,13 +101,10 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         Transaction transaction = session.beginTransaction();
         session.save(factoid);
         transaction.commit();
-        c_dao.logAdd(sender, key, value);
-
-        html.dumpHTML(getFactoids(), htmlFile);
-
+        changesDao.logAdd(sender, key, value);
     }
 
-    public void forgetFactoid(String sender, String key, ChangesDao c_dao, String htmlFile) {
+    public void forgetFactoid(String sender, String key, ChangesDao changesDao) {
 
         Factoid factoid = getFactoid(key);
 
@@ -121,8 +113,7 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         session.delete(factoid);
         transaction.commit();
 
-        html.dumpHTML(getFactoids(), htmlFile);
-        c_dao.logChange(sender + " removed '" + key + "'");
+        changesDao.logChange(sender + " removed '" + key + "'");
     }
 
     public Factoid getFactoid(String name) {

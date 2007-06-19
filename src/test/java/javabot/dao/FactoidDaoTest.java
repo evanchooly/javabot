@@ -20,9 +20,9 @@ public class FactoidDaoTest extends BaseServiceTest {
 
     @Test(groups = {"operations"})
     public void testInsertfactoid() {
-        factoidDao.addFactoid("joed2", "test2", "#test", changesDao, "test");
+        factoidDao.addFactoid("joed2", "test2", "#test", changesDao);
         Assert.assertTrue(factoidDao.hasFactoid("test2"));
-        factoidDao.forgetFactoid("joed2", "test2", changesDao, "test");
+        factoidDao.forgetFactoid("joed2", "test2", changesDao);
         //Assert.assertFalse(factoidDao.hasFactoid("test2"));
     }
 
@@ -30,14 +30,14 @@ public class FactoidDaoTest extends BaseServiceTest {
     public void countFactoids() {
         String key = "test factoid";
         String value = "test value";
-        final Long count = factoidDao.getNumberOfFactoids();
+        Long count = factoidDao.getNumberOfFactoids();
 
-        factoidDao.addFactoid("cheeser", key, value, changesDao, "test");
-        final Long count2 = factoidDao.getNumberOfFactoids();
+        factoidDao.addFactoid("cheeser", key, value, changesDao);
+        Long count2 = factoidDao.getNumberOfFactoids();
 
         Assert.assertNotSame(count, count2,"Not the same");
 
-        factoidDao.forgetFactoid("cheeser", key, changesDao, "test");
+        factoidDao.forgetFactoid("cheeser", key, changesDao);
     }
 
 }

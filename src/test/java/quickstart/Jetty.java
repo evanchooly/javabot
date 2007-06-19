@@ -15,7 +15,7 @@ import org.mortbay.jetty.nio.SelectChannelConnector;
 public class Jetty {
 
     /**
-     * Main function, stkarts the jetty server.
+     * Main function, starts the jetty server.
      *
      * @param args
      * @throws Exception

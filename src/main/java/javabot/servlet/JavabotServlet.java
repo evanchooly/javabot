@@ -1,6 +1,5 @@
 package javabot.servlet;
 
-import java.io.File;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,16 +21,11 @@ public class JavabotServlet extends HttpServlet {
     public void init(final ServletConfig servletConfig) throws ServletException {
         log.info("Starting Javabot");
        try {
-            bot = new Javabot() {
-                @Override
-                protected File getConfigFile() {
-                    return new File(new File(System.getProperty("user.home")), ".javabot/config.xml").getAbsoluteFile();
-                }
-            };
+            bot = new Javabot();
         } catch(Exception e) {
             log.error(e.getMessage(), e);
             System.out.println(e);
-            throw new RuntimeException(e.getMessage());
+            throw new ServletException(e.getMessage());
         }
 //        new PortListener(Javabot.PORT_NUMBER, bot.getNickPassword()).start();
         bot.setMessageDelay(2000);

@@ -35,7 +35,6 @@
         <property name="locations">
             <list>
                 <value>classpath:locations.properties</value>
-                <value>classpath:locations-override.properties</value>
             </list>
         </property>
     </bean>

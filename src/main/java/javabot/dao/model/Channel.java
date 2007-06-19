@@ -1,63 +1,52 @@
 package javabot.dao.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 @Entity
 @Table(name = "channel")
-
 public class Channel implements Serializable {
-
-    @Id
-    @Column(name = "`id`")
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @Column(name = "`channel`")
-    private String channel;
-
-    @Column(name = "`updated`")
+    private String name;
     private Date updated;
-
-    @Column(name = "`logged`")
     private Boolean logged;
 
+    @Id
+    @GeneratedValue
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long channelId) {
+        this.id = channelId;
     }
 
     public String getChannel() {
-        return channel;
+        return name;
     }
 
     public void setChannel(String channel) {
-        this.channel = channel;
+        name = channel;
     }
 
     public Date getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Date updated) {
-        this.updated = updated;
+    public void setUpdated(Date date) {
+        this.updated = date;
     }
 
     public Boolean getLogged() {
         return logged;
     }
 
-    public void setLogged(Boolean logged) {
-        this.logged = logged;
+    public void setLogged(Boolean isLogged) {
+        this.logged = isLogged;
     }
 }
