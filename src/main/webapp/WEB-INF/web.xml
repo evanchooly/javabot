@@ -27,7 +27,7 @@
         </filter-class>
         <init-param>
             <param-name>applicationClassName</param-name>
-            <param-value>wicket.core.JavabotApplication</param-value>
+            <param-value>javabot.wicket.core.JavabotApplication</param-value>
         </init-param>
     </filter>
 
@@ -41,7 +41,7 @@
         <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
         <init-param>
             <param-name>applicationClassName</param-name>
-            <param-value>admininterface.admin.AdminApplication</param-value>
+            <param-value>javabot.admin.AdminApplication</param-value>
         </init-param>
     </filter>
 

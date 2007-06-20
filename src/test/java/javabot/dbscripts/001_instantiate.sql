@@ -3568,7 +3568,7 @@ INSERT INTO changes (message, changedate) VALUES ('dmlloyd|work changed ''karma 
 INSERT INTO changes (message, changedate) VALUES ('cheeser changed ''karma steve973'' to ''5''', '2006-03-21 09:50:08.30');
 INSERT INTO changes (message, changedate) VALUES ('tieTYT changed ''karma freeone3000'' to ''5''', '2006-03-21 17:28:10.607');
 INSERT INTO changes (message, changedate) VALUES ('cheeser removed ''wicket''', '2006-03-21 20:17:06.109');
-INSERT INTO changes (message, changedate) VALUES ('cheeser added ''wicket'' with a value of ''a component based web application framework written in java.  See http://wicket.sourceforge.net/ for more details.''', '2006-03-21 20:17:06.727');
+INSERT INTO changes (message, changedate) VALUES ('cheeser added ''wicket'' with a value of ''a component based web application framework written in java.  See http://javabot.wicket.sourceforge.net/ for more details.''', '2006-03-21 20:17:06.727');
 INSERT INTO changes (message, changedate) VALUES ('kinabalu changed ''karma wicket'' to ''12''', '2006-03-21 20:20:07.966');
 INSERT INTO changes (message, changedate) VALUES ('kinabalu changed ''karma wicket'' to ''13''', '2006-03-21 20:20:10.376');
 INSERT INTO changes (message, changedate) VALUES ('draven changed ''karma cheese'' to ''2''', '2006-03-21 20:21:35.86');
@@ -9176,7 +9176,7 @@ INSERT INTO changes (message, changedate) VALUES ('NikkiWade changed ''karma kin
 INSERT INTO changes (message, changedate) VALUES ('litespeed added ''~references'' with a value of ''http://mindprod.com/jgloss/reference.html''', '2007-03-11 07:02:15.734');
 INSERT INTO changes (message, changedate) VALUES ('GnarlyBob changed ''karma lunk'' to ''25''', '2007-03-11 09:25:37.077');
 INSERT INTO changes (message, changedate) VALUES ('cheeser removed ''nikkiwade''', '2007-03-11 14:13:26.616');
-INSERT INTO changes (message, changedate) VALUES ('wicket changed ''karma wicket'' to ''17''', '2007-03-12 12:32:25.006');
+INSERT INTO changes (message, changedate) VALUES ('wicket changed ''karma javabot.wicket'' to ''17''', '2007-03-12 12:32:25.006');
 INSERT INTO changes (message, changedate) VALUES ('joed_work changed ''karma wicket'' to ''18''', '2007-03-12 12:32:39.763');
 INSERT INTO changes (message, changedate) VALUES ('joed_work changed ''karma wicket'' to ''19''', '2007-03-12 12:32:56.165');
 INSERT INTO changes (message, changedate) VALUES ('flippo added ''foo++'' with a value of ''already incremented to infinity''', '2007-03-12 12:33:56.797');
