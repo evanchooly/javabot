@@ -27,9 +27,9 @@
         </filter-class>
         <init-param>
             <param-name>applicationClassName</param-name>
-            <param-value>javabot.wicket.core.JavabotApplication</param-value>
+            <param-value>wicket.core.JavabotApplication</param-value>
         </init-param>
-    </filter>
+    </filter>2
 
     <filter-mapping>
         <filter-name>fn-javabot</filter-name>
