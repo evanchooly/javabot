@@ -424,11 +424,11 @@ table.grid td.filter-td {
 }
 
 table.grid td.filter-td input.go {
-    width: 45%;
+    width: 100%;
 }
 
 table.grid td.filter-td input.clear {
-    width: 45%;
+    width: 100%;
 }
 
 table.grid td.filter-td input {
@@ -439,4 +439,18 @@ table.grid td.filter-td input {
 table.grid td.filter-td select {
     width: 100%;
     font-size: 0.6em;
+}
+
+/* Forms */
+/* Magik(tm) */
+
+INPUT,TEXTAREA {
+    border-left: 1px solid #C1DAD7;
+    border-top: 1px solid #C1DAD7;
+    border-bottom: 1px solid #C1DAD7;
+    border-right: 1px solid #C1DAD7;
+    background: #f5fafa url( ../img/bg_header.jpg ) no-repeat;
+    font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+    color: #797268;
+    width: 100%;
 }
