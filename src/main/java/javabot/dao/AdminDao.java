@@ -1,9 +1,9 @@
 package javabot.dao;
 
+import java.util.Iterator;
+
 import javabot.dao.model.Admin;
 import javabot.dao.util.QueryParam;
-
-import java.util.Iterator;
 
 // User: joed
 // Date: Apr 11, 2007
@@ -11,6 +11,7 @@ import java.util.Iterator;
 
 //
 public interface AdminDao {
+    String AUTHENTICATE = "Admin.authenticate";
 
     boolean isAdmin(String key);
 

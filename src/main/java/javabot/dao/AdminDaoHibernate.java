@@ -1,5 +1,11 @@
 package javabot.dao;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import javabot.dao.model.Admin;
 import javabot.dao.model.Karma;
 import javabot.dao.util.QueryParam;
@@ -7,12 +13,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
 // User: joed
 
@@ -86,19 +86,17 @@ public class AdminDaoHibernate extends AbstractDaoHibernate<Karma> implements Ad
     }
 
     public Admin getAdmin(String username) {
-        String query = "from Admin m where m.username = :username";
 
-        Admin m_admin = (Admin) getSession().createQuery(query)
+        Admin admin = (Admin) getSession().getNamedQuery(AdminDao.AUTHENTICATE)
                 .setString("username", username)
                 .setMaxResults(1)
                 .uniqueResult();
 
-        if (m_admin == null) {
-
+        if (admin == null) {
             return new Admin();
         }
 
-        return m_admin;
+        return admin;
 
     }
 

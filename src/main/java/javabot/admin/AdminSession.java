@@ -1,6 +1,7 @@
 package javabot.admin;
 
 import javabot.dao.AdminDao;
+import javabot.dao.model.Admin;
 import org.apache.wicket.Request;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebSession;
@@ -27,18 +28,15 @@ public class AdminSession extends WebSession {
      * @return True if the user was authenticated
      */
     public final boolean authenticate(String username, String password) {
-        ApplicationContext context = new ClassPathXmlApplicationContext(
-            "../../../webapp/WEB-INF/classes/applicationContext.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
         AdminDao dao = (AdminDao)context.getBean("adminDao");
         if(user == null) {
             // Trivial password "db"
             if(dao.isAdmin(username)) {
-                if(dao.getAdmin(username).getUserName().equals(username) && dao.getAdmin(username).getPassword()
-                    .equals(password)) {
+                Admin admin = dao.getAdmin(username);
+                if(admin.getUserName().equals(username) && admin.getPassword().equals(password)) {
                     user = username;
-
                 }
-
             }
         }
         return user != null;

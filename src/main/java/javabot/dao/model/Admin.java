@@ -6,10 +6,17 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
+import javabot.dao.AdminDao;
 
 @Entity
 @Table(name = "admin")
+@NamedQueries({
+    @NamedQuery(name = AdminDao.AUTHENTICATE, query = "from Admin m where m.userName = :username")
+})
 public class Admin implements Serializable {
     private Long id;
     private String userName;
