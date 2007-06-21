@@ -1,7 +1,10 @@
 package javabot.admin;
 
-import org.apache.wicket.*;
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
+import org.apache.wicket.Component;
+import org.apache.wicket.Request;
+import org.apache.wicket.Response;
+import org.apache.wicket.RestartResponseAtInterceptPageException;
+import org.apache.wicket.Session;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.protocol.http.WebApplication;
@@ -10,49 +13,35 @@ import org.apache.wicket.protocol.http.request.CryptedUrlWebRequestCodingStrateg
 import org.apache.wicket.protocol.http.request.WebRequestCodingStrategy;
 import org.apache.wicket.request.IRequestCodingStrategy;
 import org.apache.wicket.request.IRequestCycleProcessor;
-//
+import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 
-// Author: joed
-
-// Date  : Jun 11, 2007
 public class AdminApplication extends WebApplication {
-
-    /**
-     * Constructor.
-     */
     public AdminApplication() {
     }
-
 
     @Override
     public Class getHomePage() {
         return Home.class;
     }
 
-    /**
-     * @see WebApplication#newSession(Request, Response)
-     */
     @Override
     public Session newSession(Request request, Response response) {
         return new AdminSession(AdminApplication.this, request);
     }
 
-
     @Override
     protected void init() {
         super.init();
-
-           addComponentInstantiationListener(new SpringComponentInjector(this));
-
+        addComponentInstantiationListener(new SpringComponentInjector(this));
         getSecuritySettings().setAuthorizationStrategy(new IAuthorizationStrategy() {
             public boolean isActionAuthorized(Component component, Action action) {
                 return true;
             }
 
             public boolean isInstantiationAuthorized(Class componentClass) {
-                if (AuthenticatedWebPage.class.isAssignableFrom(componentClass)) {
+                if(AuthenticatedWebPage.class.isAssignableFrom(componentClass)) {
                     // Is user signed in?
-                    if (((AdminSession) Session.get()).isSignedIn()) {
+                    if(((AdminSession)Session.get()).isSignedIn()) {
                         // okay to proceed
                         return true;
                     }
@@ -65,9 +54,6 @@ public class AdminApplication extends WebApplication {
         });
     }
 
-    /**
-     * @see WebApplication#newRequestCycleProcessor()
-     */
     @Override
     protected IRequestCycleProcessor newRequestCycleProcessor() {
         return new WebRequestCycleProcessor() {
@@ -77,8 +63,4 @@ public class AdminApplication extends WebApplication {
             }
         };
     }
-
-
 }
-
-

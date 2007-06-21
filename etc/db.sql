@@ -1,3 +1,24 @@
+--
+-- PostgreSQL database dump
+--
+
+SET client_encoding = 'SQL_ASCII';
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: factoid_sequence; Type: SEQUENCE SET; Schema: public; Owner: jlee
+--
+
+SELECT pg_catalog.setval('factoid_sequence', 6357, true);
+
+
+--
+-- Data for Name: changes; Type: TABLE DATA; Schema: public; Owner: jlee
+--
+
 INSERT INTO changes (message, changedate) VALUES ('r0bby added ''inally'' with a value of ''<reply>see http://java.sun.com/docs/books/tutorial/essential/exceptions/finally.html''', '2007-06-01 00:56:49.474');
 INSERT INTO changes (message, changedate) VALUES ('r0bby removed ''finally''', '2007-06-01 00:57:21.294');
 INSERT INTO changes (message, changedate) VALUES ('r0bby added ''finally'' with a value of ''<reply>see http://java.sun.com/docs/books/tutorial/essential/exceptions/finally.html''', '2007-06-01 00:57:21.577');
@@ -331,6 +352,72 @@ INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''aolbonics'' 
 INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r removed ''aolbonics''', '2007-06-15 21:51:10.912');
 INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''aolbonics'' with a value of ''talking like a retard using speech as if you were on AIM or using single letters for you, are, you are, you''re, see, etc.  Talking like this is frowned upon in ##java and may result in you being silenced. We want to prevent you from making a fool of yourself like this idiot: http://forums.oracle.com/forums/thread.jspa?threadID=499980&start=0&tstart=0''', '2007-06-15 21:51:11.23');
 INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''java literacy'' with a value of ''<reply>$who, please review this before you continue: http://eugeneciurana.com/galereya/view_photo.php?set_albumName=Humor&id=469758086_051b1dd752''', '2007-06-15 21:52:25.008');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma ernimril'' to ''79''', '2007-06-16 11:04:36.547');
+INSERT INTO changes (message, changedate) VALUES ('joed changed ''karma pr3d4t0r'' to ''327''', '2007-06-16 16:39:59.697');
+INSERT INTO changes (message, changedate) VALUES ('andresgr changed ''karma psst'' to ''3''', '2007-06-16 18:33:17.375');
+INSERT INTO changes (message, changedate) VALUES ('psst added ''javadiff'' with a value of ''discussed at http://www.acet.rdg.ac.uk/~mjeg/resources/javadiff/index.php''', '2007-06-16 18:55:14.451');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''karma zurich'' with a value of ''1''', '2007-06-16 19:51:33.331');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma zurich'' to ''2''', '2007-06-16 19:51:36.033');
+INSERT INTO changes (message, changedate) VALUES ('kinabalu changed ''karma parishilton'' to ''3''', '2007-06-16 19:53:40.428');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''karma e-z'' with a value of ''1''', '2007-06-16 21:47:21.911');
+INSERT INTO changes (message, changedate) VALUES ('r0bby changed ''karma kinabalu'' to ''79''', '2007-06-16 23:52:39.524');
+INSERT INTO changes (message, changedate) VALUES ('r0bby changed ''karma kinabalu'' to ''80''', '2007-06-16 23:52:43.506');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma kinabalu'' to ''81''', '2007-06-16 23:57:17.478');
+INSERT INTO changes (message, changedate) VALUES ('r0bby changed ''karma kinabalu'' to ''82''', '2007-06-16 23:57:22.757');
+INSERT INTO changes (message, changedate) VALUES ('DRMacIver added ''karma dartmanx2'' with a value of ''1''', '2007-06-17 08:29:25.868');
+INSERT INTO changes (message, changedate) VALUES ('Stephmw added ''ugt'' with a value of ''Universial Greeting Time. Created in #mipslinux, it is a rule that states that whenever somebody enters an IRC channel it is always morning, and it is always late when the person leaves. The local time of any other people in the channel, including the greeter, is irrelevant. http://www.total-knowledge.com/~ilya/mips/ugt.html''', '2007-06-17 09:11:16.827');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r removed ''concurrency''', '2007-06-17 11:57:43.16');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''concurrency'' with a value of ''<reply>Java had a sophisticated concurrency package that you can view at http://java.sun.com/j2se/1.5.0/docs/guide/concurrency/index.html''', '2007-06-17 11:57:43.411');
+INSERT INTO changes (message, changedate) VALUES ('DRMacIver added ''karma gravedigger'' with a value of ''1''', '2007-06-17 13:13:45.413');
+INSERT INTO changes (message, changedate) VALUES ('ErZo changed ''karma gravedigger'' to ''2''', '2007-06-17 13:14:19.799');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma mc__'' to ''0''', '2007-06-17 13:38:31.162');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma mc__'' to ''1''', '2007-06-17 13:38:35.642');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''karma fanta'' with a value of ''1''', '2007-06-17 13:48:40.401');
+INSERT INTO changes (message, changedate) VALUES ('LumberCartel changed ''karma drmaciver'' to ''26''', '2007-06-17 17:58:01.45');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma psst'' to ''4''', '2007-06-17 19:59:10.573');
+INSERT INTO changes (message, changedate) VALUES ('Fanook added ''karma [krustofski]'' with a value of ''1''', '2007-06-18 00:41:15.686');
+INSERT INTO changes (message, changedate) VALUES ('Fanook changed ''karma fanook'' to ''23''', '2007-06-18 00:41:23.419');
+INSERT INTO changes (message, changedate) VALUES ('r0bby changed ''karma sohail'' to ''10''', '2007-06-18 01:53:43.247');
+INSERT INTO changes (message, changedate) VALUES ('r0bby changed ''karma konstandinos'' to ''7''', '2007-06-18 21:47:57.138');
+INSERT INTO changes (message, changedate) VALUES ('r0bby changed ''karma konstandinos'' to ''8''', '2007-06-18 21:48:08.06');
+INSERT INTO changes (message, changedate) VALUES ('xi5hnik added ''karma rockermono'' with a value of ''1''', '2007-06-19 01:34:00.852');
+INSERT INTO changes (message, changedate) VALUES ('DRMacIver changed ''karma bevin'' to ''41''', '2007-06-19 07:32:26.212');
+INSERT INTO changes (message, changedate) VALUES ('ilyak added ''gettext'' with a value of ''http://xnap-commons.sourceforge.net/gettext-commons/''', '2007-06-19 07:32:47.502');
+INSERT INTO changes (message, changedate) VALUES ('cheeser added ''jarsigner'' with a value of ''http://java.sun.com/j2se/1.5.0/docs/tooldocs/windows/jarsigner.html''', '2007-06-19 09:26:54.401');
+INSERT INTO changes (message, changedate) VALUES ('cheeser removed ''jarsigner''', '2007-06-19 09:27:09.55');
+INSERT INTO changes (message, changedate) VALUES ('cheeser added ''jarsigner'' with a value of ''http://java.sun.com/javase/6/docs/technotes/tools/windows/jarsigner.html''', '2007-06-19 09:27:09.856');
+INSERT INTO changes (message, changedate) VALUES ('jottinger changed ''karma bevin'' to ''42''', '2007-06-19 10:10:01.762');
+INSERT INTO changes (message, changedate) VALUES ('r0bby removed ''write dumb code''', '2007-06-19 12:04:51.791');
+INSERT INTO changes (message, changedate) VALUES ('r0bby added ''write dumb code'' with a value of ''<reply> The following is an article written by Brian Goetz Advising Java programmers against premature optimization of their code: http://java.sun.com/developer/technicalArticles/Interviews/goetz_qa.html''', '2007-06-19 12:04:52.38');
+INSERT INTO changes (message, changedate) VALUES ('r0bby removed ''write dumb code''', '2007-06-19 12:05:32.429');
+INSERT INTO changes (message, changedate) VALUES ('r0bby added ''write dumb code'' with a value of ''<reply> The following is an article written by Brian Goetz advising Java programmers against premature optimization of their code: http://java.sun.com/developer/technicalArticles/Interviews/goetz_qa.html''', '2007-06-19 12:05:32.687');
+INSERT INTO changes (message, changedate) VALUES ('r0bby removed ''regex''', '2007-06-19 13:02:49.294');
+INSERT INTO changes (message, changedate) VALUES ('r0bby added ''regex'' with a value of ''<reply>the regular expressions tutorial at http://java.sun.com/docs/books/tutorial/extra/regex/index.html, additionally take a look at the cheat sheet on the wiki at is the regular expressions tutorial at http://java.sun.com/docs/books/tutorial/extra/regex/index.html''', '2007-06-19 13:02:49.499');
+INSERT INTO changes (message, changedate) VALUES ('r0bby removed ''regex''', '2007-06-19 13:03:08.155');
+INSERT INTO changes (message, changedate) VALUES ('r0bby added ''regex'' with a value of ''<reply>The regular expressions tutorial at http://java.sun.com/docs/books/tutorial/extra/regex/index.html, additionally take a look at the cheat sheet on the wiki at is the regular expressions tutorial at http://java.sun.com/docs/books/tutorial/extra/regex/index.html''', '2007-06-19 13:03:08.366');
+INSERT INTO changes (message, changedate) VALUES ('r0bby removed ''regex''', '2007-06-19 13:03:54.814');
+INSERT INTO changes (message, changedate) VALUES ('r0bby added ''regex'' with a value of ''<reply>The regular expressions tutorial at http://java.sun.com/docs/books/tutorial/extra/regex/index.html, additionally take a look at the cheat sheet on the wiki at is the regular expressions tutorial at (06.19.07 13:03:10) <r0bby> regex''', '2007-06-19 13:03:55.174');
+INSERT INTO changes (message, changedate) VALUES ('r0bby added ''(06.19.07 13:03:11) <javabot> the regular expressions tutorial at http://java.sun.com/docs/books/tutorial/extra/regex/index.html, additionally take a look at the cheat sheet on the wiki at'' with a value of ''the regular expressions tutorial at http://java.sun.com/docs/books/tutorial/extra/regex/index.html''', '2007-06-19 13:03:55.424');
+INSERT INTO changes (message, changedate) VALUES ('r0bby added ''the regular expressions tutorial at http://java.sun.com/docs/books/tutorial/extra/regex/index.html, additionally take a look at the cheat sheet on the wiki at'' with a value of ''the regular expressions tutorial at The regular expressions tutorial at http://java.sun.com/docs/books/tutorial/extra/regex/index.html, additionally take a look at the cheat sheet on the wiki at is the regular expressions tutorial at http://javachannel.net/wiki/pmwiki.php/FAQ/Regexp''', '2007-06-19 13:05:02.863');
+INSERT INTO changes (message, changedate) VALUES ('r0bby removed ''regex''', '2007-06-19 13:05:25.356');
+INSERT INTO changes (message, changedate) VALUES ('r0bby added ''regex'' with a value of ''<reply> The regular expressions tutorial at http://java.sun.com/docs/books/tutorial/extra/regex/index.html, additionally take a look at the cheat sheet on the wiki at is the regular expressions tutorial at The regular expressions tutorial at http://java.sun.com/docs/books/tutorial/extra/regex/index.html, additionally take a look at the cheat sheet on the wiki at is the regular expressions tutorial at http://javachannel.net/wiki/pmwiki''', '2007-06-19 13:05:25.595');
+INSERT INTO changes (message, changedate) VALUES ('r0bby removed ''regex''', '2007-06-19 13:06:52.629');
+INSERT INTO changes (message, changedate) VALUES ('r0bby added ''regex'' with a value of ''<reply> read the tutorial on regex at http://java.sun.com/docs/books/tutorial/essential/regex, additionally see the cheat sheet on the wiki at http://javachannel.net/wiki/pmwiki''', '2007-06-19 13:07:30.021');
+INSERT INTO changes (message, changedate) VALUES ('r0bby removed ''regex''', '2007-06-19 13:09:40.753');
+INSERT INTO changes (message, changedate) VALUES ('r0bby added ''regex'' with a value of ''<reply>read the tutorial on regex at http://java.sun.com/docs/books/tutorial/essential/regex, additionally see the cheat sheet on the wiki at http://javachannel.net/wiki/pmwiki/FAQ/Regexp''', '2007-06-19 13:09:40.991');
+INSERT INTO changes (message, changedate) VALUES ('r0bby removed ''regex''', '2007-06-19 13:10:24.981');
+INSERT INTO changes (message, changedate) VALUES ('r0bby added ''regex'' with a value of ''<reply>read the tutorial on regex at http://java.sun.com/docs/books/tutorial/essential/regex, additionally see the cheat sheet on the wiki at http://javachannel.net/wiki/pmwiki.php/FAQ/Regexp''', '2007-06-19 13:10:25.233');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r added ''karma pryon'' with a value of ''1''', '2007-06-20 09:36:04.049');
+INSERT INTO changes (message, changedate) VALUES ('DRMacIver added ''karma multi_io'' with a value of ''1''', '2007-06-20 11:57:25.356');
+INSERT INTO changes (message, changedate) VALUES ('r0bby removed ''synchronization''', '2007-06-20 13:17:04.645');
+INSERT INTO changes (message, changedate) VALUES ('r0bby added ''synchronization'' with a value of ''<reply>you can find information on synchronization at http://java.sun.com/docs/books/tutorial/essential/concurrency/sync.html''', '2007-06-20 13:17:05.148');
+INSERT INTO changes (message, changedate) VALUES ('kinabalu changed ''karma joed'' to ''43''', '2007-06-20 14:09:28.544');
+INSERT INTO changes (message, changedate) VALUES ('cheeser changed ''karma kinabalu'' to ''83''', '2007-06-20 16:40:27.912');
+INSERT INTO changes (message, changedate) VALUES ('Logi removed ''dict $1''', '2007-06-20 17:45:44.489');
+INSERT INTO changes (message, changedate) VALUES ('Logi added ''dict $1'' with a value of ''http://www.dict.org/bin/Dict?Form=Dict2&Database=*&Query=$1''', '2007-06-20 17:45:46.367');
+INSERT INTO changes (message, changedate) VALUES ('Logi removed ''dict $1''', '2007-06-20 17:46:33.068');
+INSERT INTO changes (message, changedate) VALUES ('Logi added ''dict $1'' with a value of ''http://dictionary.reference.com/browse/$1''', '2007-06-20 17:46:33.278');
+INSERT INTO changes (message, changedate) VALUES ('vinse changed ''karma logi'' to ''66''', '2007-06-20 18:15:13.65');
 
 
 --
@@ -892,7 +979,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (1054, 'rfc2616
 INSERT INTO factoids (id, name, value, username, updated) VALUES (1057, 'problem', '<reply>any specific problem or do we have to use our crystal balls?', 'cheeser', '2005-06-28 21:53:50.594');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (1061, 'mouarf', 'Massively Obstinate Unintelligent And Ridiculous Frenchman, or French for roflmao.', 'cheeser', '2005-06-28 21:53:51.53');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (1063, 'bidirectional collections', 'http://www.hibernate.org/hib_docs/reference/en/html/collections.html#collections-s1-10', 'cheeser', '2005-06-28 21:53:52.076');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (1067, 'synchronization', '<reply>You can find info on synchronization at http://java.sun.com/docs/books/tutorial/together/bingo/synchronized.html', 'cheeser', '2005-06-28 21:53:53.075');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (1068, 'lazy git', '<reply>$who throws LazyGitException', 'cheeser', '2005-06-28 21:53:53.283');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (1071, 'wiki $1', 'http://c2.com/cgi/wiki?$1', 'cheeser', '2005-06-28 21:53:54.016');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (1072, 'javaalmanac $1', '<reply>http://javaalmanac.com/cgi-bin/search/find.pl?words=$1', 'cheeser', '2005-06-28 21:53:54.368');
@@ -1074,7 +1160,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (1430, 'seppuku
 INSERT INTO factoids (id, name, value, username, updated) VALUES (1431, 'swing+awt', 'a dumb idea unless you are a Java guru, which you probably aren''t.  If you insist in doing this anyway, at least read http://java.sun.com/products/jfc/tsc/articles/mixing/', 'cheeser', '2005-06-28 21:55:41.184');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (1435, 'scissors', '<reply>(rock|paper|scissors)', 'cheeser', '2005-06-28 21:55:42.516');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (1437, 'paper', '<reply>(rock|paper|scissors)', 'cheeser', '2005-06-28 21:55:43.185');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (1440, 'dict $1', 'http://www.dict.org/bin/Dict?Form=Dict2&Database=*&Query=$1', 'cheeser', '2005-06-28 21:55:44.254');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (1443, 'jmp', 'Java Memory Profiler at http://www.khelekore.org/jmp/ - written by ernimril', 'cheeser', '2005-06-28 21:55:45.233');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (1449, 'jess', 'The Java Expert System Shell, a rule based engine written in java. http://herzberg.ca.sandia.gov/jess/', 'cheeser', '2005-06-28 21:55:47.212');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (1453, 'euroenglish', 'http://www.icw-net.com/howto/funstuff/euroengl.htm', 'cheeser', '2005-06-28 21:55:48.546');
@@ -1572,7 +1657,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (2789, 'data ty
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2793, 'newby ide', '<see>newbie ide', 'ricky_clarkson', '2005-11-07 16:54:26.616');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2795, 'tablelayout', 'a layout manager that provides all the power of GridBagLayout, but is simple and easy to use: https://tablelayout.dev.java.net/', 'pchapman', '2005-11-08 08:36:35.544');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2799, 'newbie errors', 'http://www.skylit.com/javamethods/appxf.html', 'vinse_work', '2005-11-08 19:24:14.596');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (2802, 'regex', '<see>regex tutorial', 'ricky_clarkson', '2005-11-09 10:18:23.579');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2805, 'you are stupid', '<reply>$who: You''re the one talking to a bot.', 'ricky_clarkson', '2005-11-09 10:40:13.559');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2811, 'msg the bot', '<reply>You can send me private messages, these annoy other users less.  Note that in private messages, you don''t need the "~".', 'ricky_clarkson', '2005-11-11 05:13:41.09');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2812, 'msg teh bot', '<reply>You cna sned me privte msgs, theze annoi otha users less.  Noat taht in prvt msgs, you dun need teh "~". lol', 'ricky_clarkson', '2005-11-11 05:15:17.965');
@@ -2977,7 +3061,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (5575, 'karma t
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5577, 'mvel', '<reply>MVEL is the MVFLEX Expression Language. http://mvel.codehaus.org', 'cbrock', '2007-02-11 18:39:27.117');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5580, 'ridicule $1', '<action>points at $1 and (laughs|says "you suck!"|says "you''re a ''tard")', 'cheeser', '2007-02-12 15:18:12.819');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5582, 'abelle', '<see>abeille', 'cheeser', '2007-02-12 17:17:07.598');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (821, 'karma bevin', '40', 'NikkiWade', '2007-03-04 11:55:55.844');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5584, 'karma ardonik', '1', 'pr3d4t0r', '2007-02-12 23:54:26.783');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (4612, 'karma kemik', '-1', 'whats_in_a_name', '2007-02-13 01:21:34.886');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5373, 'karma chesticles', '4', 'pr3d4t0r', '2007-02-13 08:20:56.365');
@@ -3124,7 +3207,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (1796, 'karma k
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5796, 'grok', 'to understand something so well that it is fully absorbed into oneself.', 'DRMacIver', '2007-03-23 06:22:01.078');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (4056, 'karma melearnin', '9', 'Stephmw', '2007-03-23 09:11:19.707');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5797, 'karma chrislewis', '1', 'cheeser', '2007-03-23 11:32:11.074');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (5798, 'write dumb code', '<reply> read: http://java.sun.com/developer/technicalArticles/Interviews/goetz_qa.html', 'r0bby', '2007-03-24 16:51:57.128');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5785, 'karma wolfeon', '2', 'mohadib', '2007-03-25 14:41:44.404');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5805, 'karma dtu3zohtln', '-1', 'pr3d4t0r', '2007-03-25 15:31:58.726');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5593, 'karma doc|home', '3', 'pr3d4t0r', '2007-03-25 16:40:47.03');
@@ -3134,7 +3216,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (5809, 'ternary
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5810, 'karma keyhack', '1', 'littlezoper', '2007-03-26 15:02:45.017');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5814, 'java', 'not an acronym, see http://java.sun.com', 'Stephmw', '2007-03-27 07:52:28.417');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5815, 'karma edburns', '1', 'littlezoper', '2007-03-27 08:11:06.704');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (5816, 'karma mc__', '-1', 'mc__', '2007-03-27 16:07:21.261');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5817, 'collections', '<see>collections api', 'Fanook', '2007-03-27 22:58:48.331');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5818, 'collections api', '<reply>The Collections API is available at http://java.sun.com/j2se/1.5.0/docs/guide/collections/reference.html also see http://java.sun.com/docs/books/tutorial/collections/index.html', 'r0bby', '2007-03-27 22:59:11.585');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5822, 'bite $1', '<action>chomps down on $1''s leg...mmm tastes like chicken', 'r0bby_', '2007-03-28 08:34:20.009');
@@ -3374,11 +3455,8 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (6179, 'karma d
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6180, 'dewi++', '<reply>Huh? Wha? Go away!', 'cybereal', '2007-05-27 03:00:23.376');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6181, 'cybereal--', '<reply>$who, cybereal''s karma is 308', 'cybereal', '2007-05-27 03:57:44.612');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6125, 'karma msingh', '-3', 'r0bby', '2007-05-27 04:14:47.836');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (2236, 'karma logi', '65', 'pr3d4t0r', '2007-05-27 12:53:25.28');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6182, 'karma landonf', '3', 'pr3d4t0r', '2007-05-27 16:07:10.288');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (5636, 'karma psst', '2', 'r0bby', '2007-05-27 19:02:03.072');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6183, 'karma dilas', '1', 'mohadib', '2007-05-27 19:23:48.449');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (798, 'karma ernimril', '78', 'r0bby', '2007-05-27 19:36:04.406');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6186, 'ops', '<reply>Say hello to your mighty lords: cheeser, pr3d4t0r, jottinger, Javageek, jor, Logi, Sou|cutter, {aaron}, kinabalu, flippo, and joed.  If you have an issue with channel operations, contact any of the above.', 'r0bby', '2007-05-27 21:29:09.005');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (1180, 'karma jwormy', '35', 'r0bby', '2007-05-27 21:49:13.336');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6187, 'chanserv--', '<reply>No way.', 'cybereal', '2007-05-27 23:49:41.643');
@@ -3456,7 +3534,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (6268, 'regexp'
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6269, 'appservers', 'http://en.wikipedia.org/wiki/Matrix_of_Application_Servers#Java', 'dmlloyd', '2007-06-08 16:20:21.096');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6270, 'applets', '<see>applet', 'r0bby', '2007-06-08 18:13:34.041');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6149, 'karma kingkrusty', '4', 'mohadib', '2007-06-08 18:58:26.979');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (5375, 'karma joed', '42', 'joed', '2007-06-08 22:02:24.403');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6271, 'karma plazma', '0', 'joed', '2007-06-08 22:03:36.583');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6272, 'all hail javabot', '<reply> I accept all forms of monetary compensation', 'wng_z3r0', '2007-06-08 22:08:49.675');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6273, 'ctor', '<reply>A constructor.', 'whats_in_a_name', '2007-06-08 22:43:04.916');
@@ -3469,28 +3546,22 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (4843, 'karma w
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2175, 'karma javabot', '91', 'dibridagoe', '2007-06-10 06:46:58.234');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2850, 'karma mickmcmack', '22', 'dibridagoe', '2007-06-10 07:58:04.074');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6279, 'tinyurl', 'a service that lets you assign a long URL to a short one; that makes it easier on the eyes and easier to cut and paste if you''re running a console IRC client.  http://tinyurl.com', 'pr3d4t0r', '2007-06-10 12:56:41.398');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (5916, 'karma konstandinos', '6', 'pr3d4t0r', '2007-06-10 21:32:58.977');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6281, 'karma dacc', '1', 'r0bby', '2007-06-11 04:53:11.856');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6282, 'karma herebedragon', '-1', 'HereBeDragon', '2007-06-11 04:57:24.578');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6283, 'jsf maven repo', '<say>For information on downloading the JSF RI jars via Maven, please see the JSF RI FAQ entry: http://tinyurl.com/25xmj2', 'littlezoper', '2007-06-11 09:32:36.792');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (299, 'karma eidolon', '17', 'cbrock', '2007-06-11 12:31:07.496');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6284, 'wildcards', 'http://www.angelikalanger.com/GenericsFAQ/JavaGenericsFAQ.html#Wildcards . Also, see generics', 'DRMacIver', '2007-06-11 13:32:15.579');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (4701, 'karma drmaciver', '25', 'cbrock', '2007-06-11 13:37:20.607');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5163, 'karma dibridagoe', '-3', 'sohail', '2007-06-11 14:30:16.573');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6285, 'spoonfeed', '<see>spoonfeeding', 'r0bby', '2007-06-11 23:43:46.091');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6286, 'karma koshii', '1', 'pr3d4t0r', '2007-06-12 01:49:27.921');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (6287, 'concurrency', 'Java 5 added a concurrency package (http://java.sun.com/j2se/1.5.0/docs/guide/concurrency/index.html) based on a more extensive library by Doug Lea (http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html)', 'Logi', '2007-06-12 06:55:01.652');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6289, 'consumer jre', 'http://java.sun.com/developer/technicalArticles/javase/consumerjre/', 'cheeser', '2007-06-12 15:47:44.21');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6290, 'java kernel', '<see>consumer jre', 'cheeser', '2007-06-12 15:48:12.578');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6291, 'spring', 'a Java/JEE Application Framework - http://www.springframework.org/', 'cheeser', '2007-06-12 16:47:36.084');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6292, 'jibx', 'a framework for binding XML data to Java objects.   More information at http://jibx.sourceforge.net/', 'eidolon', '2007-06-12 18:46:37.195');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (3294, 'karma sou|cutter', '27', 'joed', '2007-06-12 18:47:48.966');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6294, 'mmm javabot', '<action>purrs', 'r0bby', '2007-06-12 18:48:19.379');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (4647, 'karma sohail', '9', 'joed', '2007-06-12 20:06:40.866');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (4592, 'karma pfn', '31', 'joed', '2007-06-12 20:15:27.338');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6295, 'unitils', '<reply>http://unitils.org/summary.html', 'joed', '2007-06-12 20:37:21.124');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (4174, 'karma fanook', '24', 'dibridagoe', '2007-06-13 01:54:02.369');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (5658, 'karma kinabalu', '78', 'pr3d4t0r', '2007-06-13 02:11:40.70');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6296, 'pulp fiction', '<reply>(You feel that sting, big boy, huh? That''s pride FUCKIN'' with you! You gotta fight through that shit!|Say what again. SAY WHAT AGAIN. I dare you, I double dare you, motherfucker. Say what one more goddamn time.|English, motherfucker, do you speak it?|Zed''s dead, baby. Zed''s dead.|Well, let''s not start sucking each other''s dicks quite yet.|I''m sorry.  Did I break your concentration?)', 'cheeser', '2007-06-13 09:53:22.072');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6297, 'karma jeremyw', '32', 'r0bby', '2007-06-13 14:16:47.17');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6303, 'homework', 'meant to be done by *you* so *you* learn something. Don''t be a retard and try to cheat. You''ll only piss us off.', 'r0bby', '2007-06-13 15:08:13.274');
@@ -3505,7 +3576,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (5295, 'karma a
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2234, 'karma dmlloyd', '42', 'KAAPA', '2007-06-14 09:23:39.683');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6312, 'karma ishi', '1', 'pr3d4t0r', '2007-06-14 09:52:03.609');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6313, 'karma bubblewrap', '1', 'pr3d4t0r', '2007-06-14 10:14:42.548');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (6256, 'karma parishilton', '2', 'waz', '2007-06-14 10:27:56.887');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2241, 'karma jottinger', '124', 'kinabalu', '2007-06-14 10:57:51.782');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6316, 'busy $1', '<reply>$who, http://tinyurl.com/yqlpmt', 'cheeser', '2007-06-14 12:58:44.095');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6317, 'jsf welcome file', 'http://learnjsf.com/wp/2006/12/19/jsf-welcome-file-gotcha/', 'dmlloyd', '2007-06-14 13:03:05.727');
@@ -3518,10 +3588,42 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (6320, 'ty', 't
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6321, 'splash screen', 'http://java.sun.com/developer/technicalArticles/J2SE/Desktop/javase6/splashscreen/', 'cheeser', '2007-06-15 10:05:34.767');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6322, 'splashscreen', '<see>splash screen', 'cheeser', '2007-06-15 10:05:44.996');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6323, 'splash', '<see>splash screen', 'cheeser', '2007-06-15 10:05:50.627');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (2238, 'karma pr3d4t0r', '326', 'iGeek', '2007-06-15 12:20:53.442');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6325, 'comfort $1', '<action>gives $1 a hug', 'r0bby', '2007-06-15 16:57:06.045');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6327, 'aolbonics', 'talking like a retard using speech as if you were on AIM or using single letters for you, are, you are, you''re, see, etc.  Talking like this is frowned upon in ##java and may result in you being silenced. We want to prevent you from making a fool of yourself like this idiot: http://forums.oracle.com/forums/thread.jspa?threadID=499980&start=0&tstart=0', 'pr3d4t0r', '2007-06-15 21:51:11.156');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6328, 'java literacy', '<reply>$who, please review this before you continue: http://eugeneciurana.com/galereya/view_photo.php?set_albumName=Humor&id=469758086_051b1dd752', 'pr3d4t0r', '2007-06-15 21:52:24.986');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (798, 'karma ernimril', '79', 'pr3d4t0r', '2007-06-16 11:04:36.445');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (2238, 'karma pr3d4t0r', '327', 'joed', '2007-06-16 16:39:59.492');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6329, 'javadiff', 'discussed at http://www.acet.rdg.ac.uk/~mjeg/resources/javadiff/index.php', 'psst', '2007-06-16 18:55:14.317');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6330, 'karma zurich', '2', 'pr3d4t0r', '2007-06-16 19:51:36.004');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6256, 'karma parishilton', '3', 'kinabalu', '2007-06-16 19:53:40.408');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6331, 'karma e-z', '1', 'pr3d4t0r', '2007-06-16 21:47:21.856');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6332, 'karma dartmanx2', '1', 'DRMacIver', '2007-06-17 08:29:25.753');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6333, 'ugt', 'Universial Greeting Time. Created in #mipslinux, it is a rule that states that whenever somebody enters an IRC channel it is always morning, and it is always late when the person leaves. The local time of any other people in the channel, including the greeter, is irrelevant. http://www.total-knowledge.com/~ilya/mips/ugt.html', 'Stephmw', '2007-06-17 09:11:16.80');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6334, 'concurrency', '<reply>Java had a sophisticated concurrency package that you can view at http://java.sun.com/j2se/1.5.0/docs/guide/concurrency/index.html', 'pr3d4t0r', '2007-06-17 11:57:43.391');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6335, 'karma gravedigger', '2', 'ErZo', '2007-06-17 13:14:19.738');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (5816, 'karma mc__', '1', 'pr3d4t0r', '2007-06-17 13:38:35.616');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6336, 'karma fanta', '1', 'pr3d4t0r', '2007-06-17 13:48:40.354');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (4701, 'karma drmaciver', '26', 'LumberCartel', '2007-06-17 17:58:01.387');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (5636, 'karma psst', '4', 'pr3d4t0r', '2007-06-17 19:59:10.205');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6337, 'karma [krustofski]', '1', 'Fanook', '2007-06-18 00:41:15.451');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (4174, 'karma fanook', '23', 'Fanook', '2007-06-18 00:41:23.381');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (4647, 'karma sohail', '10', 'r0bby', '2007-06-18 01:53:42.965');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (5916, 'karma konstandinos', '8', 'r0bby', '2007-06-18 21:48:08.034');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6338, 'karma rockermono', '1', 'xi5hnik', '2007-06-19 01:34:00.473');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6339, 'gettext', 'http://xnap-commons.sourceforge.net/gettext-commons/', 'ilyak', '2007-06-19 07:32:47.423');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6341, 'jarsigner', 'http://java.sun.com/javase/6/docs/technotes/tools/windows/jarsigner.html', 'cheeser', '2007-06-19 09:27:09.841');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (821, 'karma bevin', '42', 'jottinger', '2007-06-19 10:10:01.038');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6343, 'write dumb code', '<reply> The following is an article written by Brian Goetz advising Java programmers against premature optimization of their code: http://java.sun.com/developer/technicalArticles/Interviews/goetz_qa.html', 'r0bby', '2007-06-19 12:05:32.668');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6347, '(06.19.07 13:03:11) <javabot> the regular expressions tutorial at http://java.sun.com/docs/books/tutorial/extra/regex/index.html, additionally take a look at the cheat sheet on the wiki at', 'the regular expressions tutorial at http://java.sun.com/docs/books/tutorial/extra/regex/index.html', 'r0bby', '2007-06-19 13:03:55.409');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6348, 'the regular expressions tutorial at http://java.sun.com/docs/books/tutorial/extra/regex/index.html, additionally take a look at the cheat sheet on the wiki at', 'the regular expressions tutorial at The regular expressions tutorial at http://java.sun.com/docs/books/tutorial/extra/regex/index.html, additionally take a look at the cheat sheet on the wiki at is the regular expressions tutorial at http://javachannel.net/wiki/pmwiki.php/FAQ/Regexp', 'r0bby', '2007-06-19 13:05:02.644');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6352, 'regex', '<reply>read the tutorial on regex at http://java.sun.com/docs/books/tutorial/essential/regex, additionally see the cheat sheet on the wiki at http://javachannel.net/wiki/pmwiki.php/FAQ/Regexp', 'r0bby', '2007-06-19 13:10:25.173');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6353, 'karma pryon', '1', 'pr3d4t0r', '2007-06-20 09:36:03.048');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6354, 'karma multi_io', '1', 'DRMacIver', '2007-06-20 11:57:25.226');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6355, 'synchronization', '<reply>you can find information on synchronization at http://java.sun.com/docs/books/tutorial/essential/concurrency/sync.html', 'r0bby', '2007-06-20 13:17:05.066');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (5375, 'karma joed', '43', 'kinabalu', '2007-06-20 14:09:28.264');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (5658, 'karma kinabalu', '83', 'cheeser', '2007-06-20 16:40:27.804');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6357, 'dict $1', 'http://dictionary.reference.com/browse/$1', 'Logi', '2007-06-20 17:46:33.264');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (2236, 'karma logi', '66', 'vinse', '2007-06-20 18:15:13.61');
 
 
 --
