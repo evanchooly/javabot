@@ -15,7 +15,7 @@ import javabot.dao.FactoidDao;
 import javabot.dao.KarmaDao;
 import javabot.dao.LogDao;
 import javabot.dao.SeenDao;
-import javabot.dao.model.Logs;
+import javabot.model.Logs;
 import javabot.operations.AddFactoidOperation;
 import javabot.operations.BotOperation;
 import javabot.operations.DictOperation;

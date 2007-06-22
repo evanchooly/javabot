@@ -3,7 +3,7 @@ package javabot.operations;
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.FactoidDao;
-import javabot.dao.model.Factoid;
+import javabot.model.Factoid;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -14,7 +14,7 @@ public class Home extends AuthenticatedWebPage {
      */
     public Home(PageParameters parameters) {
         add(new StyleSheetReference("stylesheet", getClass(), "style.css"));
-        ChannelConfigPanel channels = new ChannelConfigPanel("channels");
-        add(channels);
+        add(new ChannelConfigPanel("channels"));
+        add(new BotConfigPanel("bot"));
     }
 }

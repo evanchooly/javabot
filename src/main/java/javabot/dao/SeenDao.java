@@ -1,6 +1,6 @@
 package javabot.dao;
 
-import javabot.dao.model.Seen;
+import javabot.model.Seen;
 
 public interface SeenDao {
 

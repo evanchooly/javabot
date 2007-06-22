@@ -1,7 +1,7 @@
 package javabot.wicket.panels;
 
 import javabot.dao.LogDao;
-import javabot.dao.model.Logs;
+import javabot.model.Logs;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;

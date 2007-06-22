@@ -8,7 +8,7 @@ import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.ChangesDao;
 import javabot.dao.FactoidDao;
-import javabot.dao.model.Factoid;
+import javabot.model.Factoid;
 import javabot.operations.AddFactoidOperation;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;

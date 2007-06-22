@@ -1,7 +1,7 @@
 package javabot.wicket.panels;
 
 import javabot.dao.ChangesDao;
-import javabot.dao.model.Change;
+import javabot.model.Change;
 import javabot.dao.util.QueryParam;
 import org.apache.wicket.Component;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;

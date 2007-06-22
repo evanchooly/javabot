@@ -1,6 +1,6 @@
 package javabot.dao;
 
-import javabot.dao.model.Change;
+import javabot.model.Change;
 import javabot.dao.util.QueryParam;
 
 import java.util.Iterator;

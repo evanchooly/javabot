@@ -3,7 +3,7 @@ package javabot.dao;
 import java.util.Iterator;
 import java.util.List;
 
-import javabot.dao.model.Factoid;
+import javabot.model.Factoid;
 import javabot.dao.util.QueryParam;
 
 // User: joed

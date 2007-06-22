@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javabot.dao.ChannelDao;
-import javabot.dao.model.Channel;
+import javabot.model.Channel;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -42,7 +42,6 @@ public class ChannelConfigPanel extends Panel {
                 check.setEnabled(false);
                 item.add(check);
             }
-
         } else {
             WebMarkupContainer item = new WebMarkupContainer(repeating.newChildId());
             repeating.add(item);

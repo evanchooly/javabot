@@ -57,7 +57,6 @@
 	<operation class="javabot.operations.DaysUntilOperation"/>
 	<operation class="javabot.operations.DictOperation"/>
 	<operation class="javabot.operations.ForgetFactoidOperation"/>
-	<operation class="javabot.operations.GoogleOperation"/>
 	<operation class="javabot.operations.GuessOperation"/>
 	<operation class="javabot.operations.IgnoreOperation"/>
 	<operation class="javabot.operations.JavadocOperation"/>

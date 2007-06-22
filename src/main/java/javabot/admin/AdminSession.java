@@ -1,7 +1,7 @@
 package javabot.admin;
 
 import javabot.dao.AdminDao;
-import javabot.dao.model.Admin;
+import javabot.model.Admin;
 import org.apache.wicket.Request;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebSession;

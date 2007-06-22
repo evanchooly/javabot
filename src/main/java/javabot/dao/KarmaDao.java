@@ -1,6 +1,6 @@
 package javabot.dao;
 
-import javabot.dao.model.Karma;
+import javabot.model.Karma;
 import javabot.dao.util.QueryParam;
 
 import java.util.Iterator;

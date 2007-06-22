@@ -1,7 +1,7 @@
 package javabot.wicket.panels;
 
 import javabot.dao.FactoidDao;
-import javabot.dao.model.Factoid;
+import javabot.model.Factoid;
 import javabot.dao.util.QueryParam;
 import org.apache.wicket.Component;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;

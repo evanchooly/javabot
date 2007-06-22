@@ -3,7 +3,7 @@ package javabot.operations;
 import javabot.Javabot;
 import javabot.dao.ChangesDao;
 import javabot.dao.KarmaDao;
-import javabot.dao.model.Karma;
+import javabot.model.Karma;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;

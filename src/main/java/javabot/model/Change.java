@@ -1,4 +1,4 @@
-package javabot.dao.model;
+package javabot.model;
 
 import java.io.Serializable;
 import java.util.Date;

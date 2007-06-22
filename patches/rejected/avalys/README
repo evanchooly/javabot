@@ -1,3 +1,0 @@
-These patches were rejected because of the use of Class.forName on arbitrary classes, which is a security risk and a memory leak.
-
-If you wish to use them locally, apply method_support_2.patch then overridden_method_support.patch then constructor_support.patch.  method_support.patch was obsoleted by method_support_2.patch

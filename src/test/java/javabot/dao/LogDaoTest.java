@@ -1,6 +1,6 @@
 package javabot.dao;
 
-import javabot.dao.model.Logs;
+import javabot.model.Logs;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;

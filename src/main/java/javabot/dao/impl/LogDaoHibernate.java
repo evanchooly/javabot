@@ -1,7 +1,9 @@
-package javabot.dao;
+package javabot.dao.impl;
 
-import javabot.dao.model.Factoid;
-import javabot.dao.model.Logs;
+import javabot.model.Factoid;
+import javabot.model.Logs;
+import javabot.dao.AbstractDaoHibernate;
+import javabot.dao.LogDao;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;

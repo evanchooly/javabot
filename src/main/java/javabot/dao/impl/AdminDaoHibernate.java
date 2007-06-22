@@ -1,4 +1,4 @@
-package javabot.dao;
+package javabot.dao.impl;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -6,9 +6,12 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import javabot.dao.model.Admin;
-import javabot.dao.model.Karma;
+import javabot.model.Admin;
+import javabot.model.Karma;
 import javabot.dao.util.QueryParam;
+import javabot.dao.AbstractDaoHibernate;
+import javabot.dao.AdminDao;
+import javabot.dao.ChangesDao;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;

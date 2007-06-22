@@ -1,17 +1,20 @@
-package javabot.dao;
-
-import javabot.dao.model.Karma;
-import javabot.dao.util.QueryParam;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+package javabot.dao.impl;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import javabot.dao.util.QueryParam;
+import javabot.dao.AbstractDaoHibernate;
+import javabot.dao.KarmaDao;
+import javabot.dao.ChangesDao;
+import javabot.model.Karma;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 // User: joed
 // Date: Apr 11, 2007

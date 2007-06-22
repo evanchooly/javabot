@@ -1,13 +1,15 @@
-package javabot.dao;
-
-import javabot.dao.model.Change;
-import javabot.dao.model.Factoid;
-import javabot.dao.util.QueryParam;
-import org.hibernate.Query;
-import org.hibernate.Session;
+package javabot.dao.impl;
 
 import java.util.Date;
 import java.util.Iterator;
+
+import javabot.dao.util.QueryParam;
+import javabot.dao.AbstractDaoHibernate;
+import javabot.dao.ChangesDao;
+import javabot.model.Change;
+import javabot.model.Factoid;
+import org.hibernate.Query;
+import org.hibernate.Session;
 
 // User: joed
 // Date: Apr 11, 2007

@@ -6,7 +6,7 @@ import org.apache.wicket.model.IModel;
 
 import java.text.SimpleDateFormat;
 
-import javabot.dao.model.Logs;
+import javabot.model.Logs;
 
 /**
  * ServerMessagePanel

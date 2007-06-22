@@ -1,7 +1,7 @@
 package javabot.wicket.panels;
 
 import javabot.dao.KarmaDao;
-import javabot.dao.model.Karma;
+import javabot.model.Karma;
 import javabot.dao.util.QueryParam;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;

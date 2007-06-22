@@ -7,7 +7,7 @@ import java.util.List;
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.FactoidDao;
-import javabot.dao.model.Factoid;
+import javabot.model.Factoid;
 import javabot.operations.GuessOperation;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;

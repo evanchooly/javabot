@@ -1,11 +1,4 @@
-package javabot.dao;
-
-import javabot.dao.model.Channel;
-import javabot.dao.util.QueryParam;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+package javabot.dao.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +6,15 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import javabot.dao.util.QueryParam;
+import javabot.dao.AbstractDaoHibernate;
+import javabot.dao.ChannelDao;
+import javabot.model.Channel;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implements ChannelDao {
 

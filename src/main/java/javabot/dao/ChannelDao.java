@@ -1,10 +1,10 @@
 package javabot.dao;
 
-import javabot.dao.model.Channel;
-import javabot.dao.util.QueryParam;
-
 import java.util.Iterator;
 import java.util.List;
+
+import javabot.dao.util.QueryParam;
+import javabot.model.Channel;
 
 // Author: joed
 // Date  : Apr 12, 2007

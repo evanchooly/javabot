@@ -3,7 +3,7 @@ package javabot.dao;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
-import javabot.dao.model.Channel;
+import javabot.model.Channel;
 
 import java.util.List;
 

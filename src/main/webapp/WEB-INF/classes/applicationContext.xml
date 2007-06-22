@@ -2,31 +2,35 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-    <bean id="factoidDao" class="javabot.dao.FactoidDaoHibernate">
+    <bean id="configDao" class="javabot.dao.impl.ConfigHibernateDao">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="changesDao" class="javabot.dao.ChangesDaoHibernate">
+    <bean id="factoidDao" class="javabot.dao.impl.FactoidDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="seenDao" class="javabot.dao.SeenDaoHibernate">
+    <bean id="changesDao" class="javabot.dao.impl.ChangesDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="logDao" class="javabot.dao.LogDaoHibernate">
+    <bean id="seenDao" class="javabot.dao.impl.SeenDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="channelDao" class="javabot.dao.ChannelDaoHibernate">
+    <bean id="logDao" class="javabot.dao.impl.LogDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="karmaDao" class="javabot.dao.KarmaDaoHibernate">
+    <bean id="channelDao" class="javabot.dao.impl.ChannelDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="adminDao" class="javabot.dao.AdminDaoHibernate">
+    <bean id="karmaDao" class="javabot.dao.impl.KarmaDaoHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="adminDao" class="javabot.dao.impl.AdminDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
@@ -50,13 +54,14 @@
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="annotatedClasses">
             <list>
-                <value>javabot.dao.model.Factoid</value>
-                <value>javabot.dao.model.Change</value>
-                <value>javabot.dao.model.Seen</value>
-                <value>javabot.dao.model.Logs</value>
-                <value>javabot.dao.model.Channel</value>
-                <value>javabot.dao.model.Karma</value>
-                <value>javabot.dao.model.Admin</value>
+                <value>javabot.model.Factoid</value>
+                <value>javabot.model.Change</value>
+                <value>javabot.model.Config</value>
+                <value>javabot.model.Seen</value>
+                <value>javabot.model.Logs</value>
+                <value>javabot.model.Channel</value>
+                <value>javabot.model.Karma</value>
+                <value>javabot.model.Admin</value>
             </list>
         </property>
         <property name="hibernateProperties">

@@ -1,16 +1,23 @@
-package javabot.dao.model;
+package javabot.model;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 //
 // User: joed
+// Date: Apr 11, 2007
+// Time: 2:22:19 PM
 
 //
 @Entity
-@Table(name = "karma")
-public class Karma implements Serializable {
+@Table(name = "factoids")
+public class Factoid implements Serializable {
     @Id
     @Column(name = "`id`")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,8 +27,8 @@ public class Karma implements Serializable {
     @Column(name = "`name`", length = 255)
     private String name;
     @Column(name = "`value`", length = 2000)
-    private Integer value;
-    @Column(name = "`nick`", length = 100)
+    private String value;
+    @Column(name = "`username`", length = 100)
     private String userName;
     @Column(name = "`updated`")
     private Date updated;
@@ -42,11 +49,11 @@ public class Karma implements Serializable {
         this.name = name;
     }
 
-    public Integer getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

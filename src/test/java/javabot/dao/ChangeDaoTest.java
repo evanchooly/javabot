@@ -1,6 +1,6 @@
 package javabot.dao;
 
-import javabot.dao.model.Change;
+import javabot.model.Change;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;

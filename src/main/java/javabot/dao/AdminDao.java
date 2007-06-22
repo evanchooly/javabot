@@ -2,7 +2,7 @@ package javabot.dao;
 
 import java.util.Iterator;
 
-import javabot.dao.model.Admin;
+import javabot.model.Admin;
 import javabot.dao.util.QueryParam;
 
 // User: joed

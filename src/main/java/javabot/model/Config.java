@@ -1,12 +1,18 @@
-package javabot.dao.model;
+package javabot.model;
 
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Version;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
+import javabot.dao.ConfigDao;
 import javabot.operations.BotOperation;
 
 /**
@@ -16,6 +22,9 @@ import javabot.operations.BotOperation;
  */
 @Entity
 @Table(name="configuration")
+@NamedQueries({
+    @NamedQuery(name= ConfigDao.GET_CONFIG, query="select c from Config c")
+})
 public class Config implements Serializable {
     private Long id;
     private String server;
@@ -23,6 +32,7 @@ public class Config implements Serializable {
     private String prefixes;
     private String nick;
     private String password;
+    private Long version;
 
     private List<BotOperation> operations;
     private List<Channel> channels;
@@ -37,6 +47,7 @@ public class Config implements Serializable {
         id = configId;
     }
 
+    @OneToMany
     public List<Channel> getChannels() {
         return channels;
     }
@@ -53,6 +64,7 @@ public class Config implements Serializable {
         nick = botName;
     }
 
+    @Transient
     public List<BotOperation> getOperations() {
         return operations;
     }
@@ -91,5 +103,14 @@ public class Config implements Serializable {
 
     public void setServer(String ircServer) {
         server = ircServer;
+    }
+
+    @Version
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long value) {
+        version = value;
     }
 }
