@@ -307,9 +307,11 @@ a {
 }
 
 #mytable {
-    width: 700px;
+    width: 600px;
     padding: 0;
-    margin: 0;
+    margin-right: 0 !important;
+    margin-right: 16px;
+    border-collapse: separate;
 }
 
 thead.filters-tr.td {
@@ -456,3 +458,10 @@ INPUT, TEXTAREA {
     width: 100%;
 }
 
+div.scrollWrapper {
+
+    overflow-y: hidden;
+    overflow-x: auto;
+    width: 100%;
+
+}
