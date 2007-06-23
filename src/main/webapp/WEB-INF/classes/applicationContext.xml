@@ -79,7 +79,7 @@
 
                 <prop key="hibernate.bytecode.use_reflection_optimizer">true</prop>
                 <prop key="hibernate.connection.release_mode">after_transaction</prop>
-                <prop key="hibernate.cglib.use_reflection_optimizer">true</prop>
+                <prop key="hibernate.bytecode.use_reflection_optimizer">true</prop>
                 <prop key="hibernate.transaction.flush_before_completion">true</prop>
                 <prop key="hibernate.transaction.auto_close_session">true</prop>
                 <prop key="hibernate.current_session_context_class">thread</prop>

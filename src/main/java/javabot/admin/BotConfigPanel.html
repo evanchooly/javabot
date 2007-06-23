@@ -11,6 +11,15 @@
                             <input wicket:id="server" type="text">
                             <input wicket:id="port" type="text" size="5">
                         </td>
+                        <td rowspan="12" valign="top">Operations</td>
+                        <td rowspan="12">
+                            <span wicket:id="operations">
+                                <span wicket:id="operationItems">
+                                    <input type="checkbox" wicket:id="check"/>
+                                    <span wicket:id="operation">[this is where number will be]</span><br/>
+                                </span>
+                            </span>
+                        </td>
                     </tr>
                     <tr>
                         <td>Nick</td>
@@ -25,7 +34,7 @@
                         <td><input wicket:id="prefixes" type="text"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><input type="submit" value="Save"></td>
+                        <td colspan="2" align="center"><input wicket:id="submit" type="submit" value="Save"></td>
                     </tr>
                 </table>
             </form>

@@ -7,13 +7,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
 import javabot.dao.ConfigDao;
-import javabot.operations.BotOperation;
+import org.hibernate.annotations.CollectionOfElements;
 
 /**
  * Created Jun 17, 2007
@@ -34,7 +33,7 @@ public class Config implements Serializable {
     private String password;
     private Long version;
 
-    private List<BotOperation> operations;
+    private List<String> operations;
     private List<Channel> channels;
 
     @Id
@@ -64,12 +63,12 @@ public class Config implements Serializable {
         nick = botName;
     }
 
-    @Transient
-    public List<BotOperation> getOperations() {
+    @CollectionOfElements
+    public List<String> getOperations() {
         return operations;
     }
 
-    public void setOperations(List<BotOperation> list) {
+    public void setOperations(List<String> list) {
         operations = list;
     }
 
