@@ -2,6 +2,7 @@ package javabot.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.ArrayList;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -33,8 +34,8 @@ public class Config implements Serializable {
     private String password;
     private Long version;
 
-    private List<String> operations;
-    private List<Channel> channels;
+    private List<String> operations = new ArrayList<String>();
+    private List<Channel> channels = new ArrayList<Channel>();
 
     @Id
     @GeneratedValue

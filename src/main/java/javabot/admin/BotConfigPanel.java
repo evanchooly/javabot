@@ -2,6 +2,7 @@ package javabot.admin;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Collections;
 
 import javabot.dao.ConfigDao;
 import javabot.model.Config;
@@ -80,6 +81,10 @@ public class BotConfigPanel extends Panel {
         TimeOperation.class.getName(),
         UnixCommandOperation.class.getName());
 
+    static {
+        Collections.sort(OPERATIONS);
+    }
+
     public BotConfigPanel(String s) {
         super(s);
         buildPanel();
@@ -120,10 +125,10 @@ public class BotConfigPanel extends Panel {
             };
             checks.add(checksList);
 
-            add(new Button("submit") {
+            add(new Button("save") {
                 @Override
                 public void onSubmit() {
-                    Config config = (Config)getModelObject();
+                    Config config = (Config)getParent().getModelObject();
                     dao.save(config);
                 }
             });

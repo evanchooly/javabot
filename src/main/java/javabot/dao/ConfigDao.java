@@ -1,6 +1,7 @@
 package javabot.dao;
 
 import javabot.model.Config;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created Jun 21, 2007
@@ -12,5 +13,6 @@ public interface ConfigDao {
 
     Config get();
 
+    @Transactional
     void save(Config config);
 }

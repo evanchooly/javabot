@@ -85,9 +85,7 @@
                 <prop key="hibernate.current_session_context_class">thread</prop>
             </props>
         </property>
-        <property name="schemaUpdate">
-            <value>true</value>
-        </property>
+        <property name="schemaUpdate" value="true"/>
         <property name="dataSource" ref="javabotDS"/>
     </bean>
 
