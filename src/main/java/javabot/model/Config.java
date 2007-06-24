@@ -1,8 +1,8 @@
 package javabot.model;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.ArrayList;
+import javabot.dao.ConfigDao;
+import org.hibernate.annotations.CollectionOfElements;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,9 +11,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
-
-import javabot.dao.ConfigDao;
-import org.hibernate.annotations.CollectionOfElements;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created Jun 17, 2007
@@ -21,10 +20,10 @@ import org.hibernate.annotations.CollectionOfElements;
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
 @Entity
-@Table(name="configuration")
+@Table(name = "configuration")
 @NamedQueries({
-    @NamedQuery(name= ConfigDao.GET_CONFIG, query="select c from Config c")
-})
+@NamedQuery(name = ConfigDao.GET_CONFIG, query = "select c from Config c")
+        })
 public class Config implements Serializable {
     private Long id;
     private String server;
@@ -34,8 +33,8 @@ public class Config implements Serializable {
     private String password;
     private Long version;
 
-    private List<String> operations = new ArrayList<String>();
-    private List<Channel> channels = new ArrayList<Channel>();
+    private List<String> operations;
+    private List<Channel> channels;
 
     @Id
     @GeneratedValue
