@@ -1,5 +1,14 @@
 package javabot;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import javabot.dao.ChangesDao;
 import javabot.dao.ChannelDao;
 import javabot.dao.FactoidDao;
@@ -9,7 +18,6 @@ import javabot.dao.SeenDao;
 import javabot.model.Logs;
 import javabot.operations.AddFactoidOperation;
 import javabot.operations.BotOperation;
-import javabot.operations.DictOperation;
 import javabot.operations.ForgetFactoidOperation;
 import javabot.operations.GetFactoidOperation;
 import javabot.operations.GuessOperation;
@@ -25,29 +33,18 @@ import javabot.operations.StatsOperation;
 import javabot.operations.TellOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 public class Javabot extends PircBot implements ChannelControl, Responder {
     private static final Log log = LogFactory.getLog(Javabot.class);
     private final Map<String, String> channelPreviousMessages = new HashMap<String, String>();
     private List<BotOperation> operations;
     private String host;
-    private String dictHost;
     private String nickName;
     private int port;
     private String javadocSources;
@@ -55,75 +52,66 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     private String[] startStrings;
     private int authWait;
     private String password;
-    private List<String> channels = new ArrayList<String>();
+    private List<Channel> channels = new ArrayList<Channel>();
     private List<String> ignores = new ArrayList<String>();
-    public static final int PORT_NUMBER = 2347;
+    public static final int PORT_NUMBER = 2346;
     public static final String JAVABOT_PROPERTIES = "javabot.properties";
     private ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
-    private FactoidDao factoidDao = (FactoidDao) context.getBean("factoidDao");
-    private ChangesDao changeDao = (ChangesDao) context.getBean("changesDao");
-    private SeenDao seenDao = (SeenDao) context.getBean("seenDao");
-    private LogDao logDao = (LogDao) context.getBean("logDao");
-    private ChannelDao channelDao = (ChannelDao) context.getBean("channelDao");
-    private KarmaDao karmaDao = (KarmaDao) context.getBean("karmaDao");
+    private FactoidDao factoidDao = (FactoidDao)context.getBean("factoidDao");
+    private ChangesDao changeDao = (ChangesDao)context.getBean("changesDao");
+    private SeenDao seenDao = (SeenDao)context.getBean("seenDao");
+    private LogDao logDao = (LogDao)context.getBean("logDao");
+    private ChannelDao channelDao = (ChannelDao)context.getBean("channelDao");
+    private KarmaDao karmaDao = (KarmaDao)context.getBean("karmaDao");
+    private ConfigDao configDao = (ConfigDao)context.getBean("configDao");
+    private boolean disconnecting = false;
 
-    public Javabot() throws JDOMException, IOException {
-        setName("javabot");
-        setLogin("javabot");
+    public Javabot() {
         setVersion("Javabot 2.0");
+
         loadConfig();
+
+        setMessageDelay(2000);
+        connect();
     }
 
-    private void loadConfig() throws JDOMException, IOException {
-        SAXBuilder reader = new SAXBuilder(true);
-        Document document = null;
+    private void loadConfig() {
         try {
-            reader.setValidation(false);
-            File configFile = getConfigFile();
-            if (configFile != null) {
-                document = reader.build(configFile);
-                Element root = document.getRootElement();
-                loadServerInfo(root);
-                loadJavadocInfo(root);
-                loadDictInfo(root);
-                loadNickName(root);
-                loadChannelInfo(root);
-                loadAuthenticationInfo(root);
-                loadStartStringInfo(root);
-                loadOperationInfo(root);
-                loadIgnoreInfo(root);
-            }
-        } catch (Exception e) {
+            Config config = configDao.get();
+            host = config.getServer();
+            port = config.getPort();
+            setName(config.getNick());
+            setLogin(config.getNick());
+            setNickPassword(config.getPassword());
+
+            javadocSources = "docref.xml";
+            javadocBaseUrl = "http://java.sun.com/javase/6/docs/api/";
+            channels = config.getChannels();
+            authWait = 3000;
+
+            startStrings = config.getPrefixes().split(" ");
+
+            loadOperationInfo(config);
+        } catch(Exception e) {
             log.info(e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    protected File getConfigFile() {
-        return new File(new File(System.getProperty("user.home")), ".javabot/config.xml").getAbsoluteFile();
+    protected InputStream getConfigFile() {
+        File file = new File("config.xml");
+        return getClass().getResourceAsStream("/config.xml");
     }
 
-    private void loadIgnoreInfo(Element root) {
-        List<Element> ignoreNodes = new ArrayList<Element>();
-        for (Object element : root.getChildren("ignore")) {
-            ignoreNodes.add((Element) element);
-        }
-        for (Element node : ignoreNodes) {
-            ignores.add(node.getAttributeValue("name"));
-        }
-    }
-
-    private void loadOperationInfo(Element root) {
-        List operationNodes = root.getChildren("operation");
+    private void loadOperationInfo(Config root) {
+        List operationNodes = root.getOperations();
         Iterator iterator = operationNodes.iterator();
         operations = new ArrayList<BotOperation>();
         while (iterator.hasNext()) {
             Element node = (Element) iterator.next();
             try {
                 Class operationClass = Class.forName(node.getAttributeValue("class"));
-                if (DictOperation.class.equals(operationClass)) {
-                    operations.add(new DictOperation(dictHost));
-                } else if (JavadocOperation.class.equals(operationClass)) {
+                if(JavadocOperation.class.equals(operationClass)) {
                     operations.add(new JavadocOperation(javadocSources, javadocBaseUrl));
                 } else if (LeaveOperation.class.equals(operationClass)) {
                     operations.add(new LeaveOperation(this));
@@ -161,66 +149,11 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         }
     }
 
-    private void loadStartStringInfo(Element root) {
-        List startNodes = root.getChildren("message");
-        Iterator iterator = startNodes.iterator();
-        startStrings = new String[startNodes.size()];
-        int index = 0;
-        while (iterator.hasNext()) {
-            Element node = (Element) iterator.next();
-            startStrings[index] = node.getAttributeValue("tag");
-            index++;
-        }
-    }
-
-    private void loadAuthenticationInfo(Element root) {
-        Element authNode = root.getChild("auth");
-        authWait = Integer.parseInt(authNode.getAttributeValue("wait"));
-        setNickPassword(authNode.getAttributeValue("password"));
-        Element nickNode = root.getChild("nick");
-        setName(nickNode.getAttributeValue("name"));
-    }
-
-    private void loadChannelInfo(Element root) {
-        List channelNodes = root.getChildren("channel");
-        for (Object channelNode : channelNodes) {
-            Element node = (Element) channelNode;
-            channels.add(node.getAttributeValue("name"));
-        }
-    }
-
-    private void loadDictInfo(Element root) {
-        Element dictNode = root.getChild("dict");
-        dictHost = dictNode.getAttributeValue("host");
-    }
-
-    private void loadNickName(Element root) {
-        Element nickNode = root.getChild("nick");
-        nickName = nickNode.getAttributeValue("name");
-    }
-
-    private void loadJavadocInfo(Element root) {
-        Element javadocNode = root.getChild("javadoc");
-        javadocSources = javadocNode.getAttributeValue("reference-xml");
-        if (javadocSources == null) {
-            throw new IllegalStateException(
-                    "The config file must supply a reference-xml attribute, as per the config.xml.sample file.");
-        }
-        javadocBaseUrl = javadocNode.getAttributeValue("base-url");
-    }
-
-    private void loadServerInfo(Element root) {
-        Element serverNode = root.getChild("server");
-        host = serverNode.getAttributeValue("name");
-        port = Integer.parseInt(serverNode.getAttributeValue("port"));
-    }
-
     public void main(String[] args) throws IOException, JDOMException {
         log.info("Starting Javabot");
         Javabot bot = new Javabot();
         new PortListener(PORT_NUMBER, bot.getNickPassword()).start();
-        bot.setMessageDelay(2000);
-        bot.connect();
+
     }
 
     @SuppressWarnings({"EmptyCatchBlock"})
@@ -236,12 +169,11 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         boolean connected = false;
         while (!connected) {
             try {
-                log.debug(host + ":" + port);
                 connect(host, port);
                 sendRawLine("PRIVMSG NickServ :identify " + getNickPassword());
                 sleep(authWait);
-                for (String channel : channels) {
-                    joinChannel(channel);
+                for(Channel channel : channels) {
+                    joinChannel(channel.getChannel());
                 }
                 connected = true;
             } catch (Exception exception) {
@@ -359,7 +291,9 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
 
     @Override
     public void onDisconnect() {
-        connect();
+        if(!disconnecting) {
+            connect();
+        }
     }
 
     public String getPreviousMessage(String channel) {
@@ -441,10 +375,6 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     public void onOp() {
     }
 
-    public String getDictHost() {
-        return dictHost;
-    }
-
     public String getJavadocSources() {
         return javadocSources;
     }
@@ -470,8 +400,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     }
 
     public void shutdown() {
+        disconnecting = true;
         disconnect();
-
     }
 
     @Override

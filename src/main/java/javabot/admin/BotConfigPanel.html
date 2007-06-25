@@ -1,43 +1,46 @@
 <html xmlns:wicket="http://www.wicketframework.org">
-<wicket:panel>
-    <h3>Bot Configuration</h3>
+    <wicket:panel>
+        <h3>Bot Configuration</h3>
 
-    <div class="boxWrapper">
-        <form wicket:id="form">
-            <table cellspacing="0" class="mytable">
-                <tr>
-                    <td>Server</td>
-                    <td>
-                        <input wicket:id="server" type="text">
-                        <input wicket:id="port" type="text" size="5">
-                    </td>
-                    <td rowspan="12" valign="top">Operations</td>
-                    <td rowspan="12">
+        <div class="boxWrapper">
+            <form wicket:id="form">
+                <table cellspacing="0" class="mytable">
+                    <tr>
+                        <td>Server</td>
+                        <td>
+                            <input wicket:id="server" type="text">
+                            <input wicket:id="port" type="text" size="5">
+                        </td>
+                        <td rowspan="12" valign="top">Operations</td>
+                        <td rowspan="12">
                             <span wicket:id="operations">
                                 <span wicket:id="operationItems">
                                     <input type="checkbox" wicket:id="check"/>
                                     <span wicket:id="operation">[this is where number will be]</span><br/>
                                 </span>
                             </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Nick</td>
-                    <td><input wicket:id="nick" type="text"></td>
-                </tr>
-                <tr>
-                    <td>Password</td>
-                    <td><input wicket:id="password" type="password"></td>
-                </tr>
-                <tr>
-                    <td>Response Prefixes</td>
-                    <td><input wicket:id="prefixes" type="text"></td>
-                </tr>
-                <tr>
-                    <td colspan="2" align="center"><input wicket:id="save" type="submit" value="Save"></td>
-                </tr>
-            </table>
-        </form>
-    </div>
-</wicket:panel>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Nick</td>
+                        <td><input wicket:id="nick" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td>Password</td>
+                        <td><input wicket:id="password" type="password"></td>
+                    </tr>
+                    <tr>
+                        <td>Response Prefixes</td>
+                        <td><input wicket:id="prefixes" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center">
+                            <input wicket:id="save" type="submit" value="Save">
+                            <input wicket:id="start" type="submit" value="Start">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </wicket:panel>
 </html>

@@ -1,8 +1,8 @@
 package javabot.admin;
 
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.resources.StyleSheetReference;
 
 // Author: joed
 
@@ -21,7 +21,6 @@ public class SignIn extends WebPage {
      * @param parameters The page parameters
      */
     public SignIn(PageParameters parameters) {
-        add(new StyleSheetReference("stylesheet", getClass(), "style.css"));
         add(new SignInPanel("signInPanel") {
             @Override
             public boolean signIn(String username, String password) {
