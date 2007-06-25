@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,8 +34,8 @@ public class Config implements Serializable {
     private String password;
     private Long version;
 
-    private List<String> operations;
-    private List<Channel> channels;
+    private List<String> operations = new ArrayList<String>();
+    private List<Channel> channels = new ArrayList<Channel>();
 
     @Id
     @GeneratedValue
