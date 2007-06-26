@@ -59,7 +59,50 @@ public class SeeLoopTest extends BaseServiceTest {
 
     }
 
-      @Test(groups = {"operations"})
+    //Test of Fanooks patches.
+    //Muchas gracias.
+    @Test(groups = {"operations"})
+    public void createCircularSee2() {
+
+        factoidDao.addFactoid("test", "see1", "<see>see2", changesDao);
+        factoidDao.addFactoid("test", "see2", "<see>see3", changesDao);
+        factoidDao.addFactoid("test", "see3", "<see>see1", changesDao);
+
+        BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "see1");
+        List<Message> results = getFactoidOperation.handleMessage(event);
+
+        Assert.assertEquals("Reference loop detected for factoid '<see>see2'.", results.get(0).getMessage());
+
+        factoidDao.forgetFactoid("test", "see1", changesDao);
+        factoidDao.forgetFactoid("test", "see2", changesDao);
+        factoidDao.forgetFactoid("test", "see3", changesDao);
+    }
+
+
+    /*
+   seetest : "Bzzt $who"
+seetest2 : <see> seetest
+seetest3 : <see> seetest2
+    */
+
+    @Test(groups = {"operations"})
+    public void followReferencesCorrectly() {
+
+        factoidDao.addFactoid("test", "see1", "Bzzt $who", changesDao);
+        factoidDao.addFactoid("test", "see2", "<see>see1", changesDao);
+        factoidDao.addFactoid("test", "see3", "<see>see2", changesDao);
+
+        BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "see3");
+        List<Message> results = getFactoidOperation.handleMessage(event);
+
+        Assert.assertEquals("joed, see1 is Bzzt joed", results.get(0).getMessage());
+
+        factoidDao.forgetFactoid("test", "see1", changesDao);
+        factoidDao.forgetFactoid("test", "see2", changesDao);
+        factoidDao.forgetFactoid("test", "see3", changesDao);
+    }
+
+    @Test(groups = {"operations"})
     public void createNormalSee() {
 
         factoidDao.addFactoid("test", "see1", "<see>see2", changesDao);
@@ -74,7 +117,6 @@ public class SeeLoopTest extends BaseServiceTest {
         factoidDao.forgetFactoid("test", "see1", changesDao);
         factoidDao.forgetFactoid("test", "see2", changesDao);
         factoidDao.forgetFactoid("test", "see3", changesDao);
-
 
     }
 
