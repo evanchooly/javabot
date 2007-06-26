@@ -1,24 +1,21 @@
 package javabot.dao.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import javabot.dao.util.QueryParam;
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.ChannelDao;
+import javabot.dao.ConfigDao;
+import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import javabot.model.Config;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implements ChannelDao {
-
-    private static final Log log = LogFactory.getLog(ChannelDaoHibernate.class);
+    private ConfigDao configDao;
 
     public ChannelDaoHibernate() {
         super(Channel.class);
@@ -27,62 +24,44 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
     @SuppressWarnings({"unchecked"})
     public List<String> configuredChannels() {
         String query = "select distinct s.channel from Channel s";
-
-        List<String> m_channels = (List<String>) getSession().createQuery(query).list();
-
-        if (m_channels == null) {
+        List<String> m_channels = (List<String>)getSession().createQuery(query).list();
+        if(m_channels == null) {
             return new ArrayList<String>();
         }
-
         return m_channels;
     }
 
     @SuppressWarnings({"unchecked"})
     public List<Channel> getChannels() {
-
-        String query = "From Channel c";
-
-        List<Channel> channels = getSession().createQuery(query).list();
-
-        Collections.sort(channels, new Comparator<Channel>() {
-            public int compare(Channel channel, Channel channel1) {
-                return channel.getChannel().compareTo(channel1.getChannel());
-            }
-        });
-
-        return channels;
+        return (List<Channel>)getSession().getNamedQuery(ChannelDao.ALL).list();
     }
 
     @SuppressWarnings({"unchecked"})
     public Iterator<Channel> getIterator(QueryParam qp) {
         StringBuilder query = new StringBuilder("from Channel c");
-
-        if (qp.hasSort()) {
+        if(qp.hasSort()) {
             query.append(" order by ")
-                    .append(qp.getSort())
-                    .append((qp.isSortAsc()) ? " asc" : " desc");
+                .append(qp.getSort())
+                .append((qp.isSortAsc()) ? " asc" : " desc");
         }
-
         return getSession().createQuery(query.toString())
-                .setFirstResult(qp.getFirst())
-                .setMaxResults(qp.getCount()).iterate();
+            .setFirstResult(qp.getFirst())
+            .setMaxResults(qp.getCount()).iterate();
     }
 
     public Channel get(String name) {
-        String query = "from Channel m where m.channel = :channel";
-
-        Channel m_channel = (Channel) getSession().createQuery(query)
-                .setString("channel", name)
-                .setMaxResults(1)
-                .uniqueResult();
-
-        if (m_channel == null) {
-
-            return new Channel();
-
+        Channel channel = (Channel)getSession().getNamedQuery(ChannelDao.BY_NAME)
+            .setString("channel", name)
+            .uniqueResult();
+        if(channel == null) {
+            channel = new Channel();
+            Config config = configDao.get();
+            channel.setConfig(config);
+//            config.getChannels().add(channel);
+//            configDao.saveOrUpdate(config);
+            saveOrUpdate(channel);
         }
-
-        return m_channel;
+        return channel;
 
     }
 
@@ -91,43 +70,22 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
     }
 
     private boolean isChannel(String channel) {
-        return get(channel).getChannel() != null;
+        return get(channel).getName() != null;
     }
 
     public void saveOrUpdate(Channel channel) {
-
-        if (isChannel(channel.getChannel())) {
-            channel.setUpdated(new Date());
-            Session session = getSession();
-            Transaction transaction = session.beginTransaction();
-            session.update(channel);
-            transaction.commit();
-        } else {
-            channel.setUpdated(new Date());
-            Session session = getSession();
-            Transaction transaction = session.beginTransaction();
-            session.saveOrUpdate(channel);
-            transaction.commit();
-
-        }
+        channel.setUpdated(new Date());
+        Session session = getSession();
+        Transaction transaction = session.beginTransaction();
+        session.saveOrUpdate(channel);
+        transaction.commit();
     }
 
-    public Channel getChannel(Channel channel) {
-        String query = "from Channel m where m.channel = :channel";
-
-        Channel m_channel = (Channel) getSession().createQuery(query)
-                .setString("channel", channel.getChannel())
-                .setMaxResults(1)
-                .uniqueResult();
-
-        if (m_channel == null) {
-
-            return new Channel();
-
-        }
-
-        return m_channel;
-
+    public ConfigDao getConfigDao() {
+        return configDao;
     }
 
+    public void setConfigDao(ConfigDao dao) {
+        configDao = dao;
+    }
 }

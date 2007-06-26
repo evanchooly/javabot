@@ -4,28 +4,30 @@
 
         <div class="boxWrapper">
             <div>
-                <table cellspacing="0" class="mytable">
-                    <tr>
-                        <th class="lef">Id</th>
-                        <th>Channel</th>
-                        <th>Updated</th>
-                        <th>Logged</th>
-                    </tr>
+                <form wicket:id="form">
+                    <table cellspacing="0" class="mytable">
+                        <tr>
+                            <td>
+                                <table cellspacing="0" class="mytable">
+                                    <tr>
+                                        <th>Channel</th>
+                                        <th>Updated</th>
+                                        <th>Logged</th>
+                                    </tr>
 
-                    <tr wicket:id="logged_channels">
-                        <td class="lef"><span wicket:id="id">[id]</span></td>
-                        <td><a wicket:id="link"><span
-                            wicket:id="channel">[channel]</span></a></td>
-                        <td><span wicket:id="updated">[updated]</span></td>
-
-
-                        <td>
-                            <input wicket:id="logged" type="checkbox"/></td>
-                    </tr>
-                </table>
-
+                                    <tr wicket:id="channels">
+                                        <td><a wicket:id="link"><span wicket:id="name">[channel]</span></a></td>
+                                        <td><span wicket:id="updated">[updated]</span></td>
+                                        <td><input wicket:id="logged" type="checkbox"/></td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td><input wicket:id="newChannel" type="text" width="10"></td>
+                            <td><input wicket:id="add" type="submit" value="Add Channel"></td>
+                        </tr>
+                    </table>
+                </form>
             </div>
-
         </div>
     </wicket:panel>
 </html>

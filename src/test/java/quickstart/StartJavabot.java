@@ -33,32 +33,12 @@ public class StartJavabot {
 
         server.addHandler(web);
 
-        // JMX
-        // MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-        // MBeanContainer mBeanContainer = new MBeanContainer(mBeanServer);
-        // server.getContainer().addEventListener(mBeanContainer);
-        // mBeanContainer.start();
-
-        //Javabot bot;
         try {
-            /*   bot = new Javabot() {
-                  @Override
-                  protected File getConfigFile() {
-                      return new File(new File(System.getProperty("user.home")), ".javabot/config.xml").getAbsoluteFile();
-                  }
-              };
-
-              bot.setMessageDelay(2000);
-              bot.connect();
-            */
             server.start();
             server.join();
-
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(100);
         }
-
-
     }
 }

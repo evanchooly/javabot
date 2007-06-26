@@ -13,6 +13,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
 import org.unitils.UnitilsTestNG;
 
 /**
@@ -22,11 +23,11 @@ import org.unitils.UnitilsTestNG;
 public class ChannelOperationsTest extends UnitilsTestNG {
     private ChannelDao c_dao;
 
-    @org.testng.annotations.BeforeMethod()
+    @BeforeMethod()
     public void setUp() {
         c_dao = createMock(ChannelDao.class);
         Channel config = new Channel();
-        config.setChannel("test");
+        config.setName("test");
         config.setId((long)1);
         config.setUpdated(new Date());
         c_dao.saveOrUpdate(config);
@@ -37,7 +38,7 @@ public class ChannelOperationsTest extends UnitilsTestNG {
     public void testDaoCount() {
         reset(c_dao);
         Channel config = new Channel();
-        config.setChannel("test");
+        config.setName("test");
         config.setId((long)1);
         config.setUpdated(new Date());
         expect(c_dao.getChannel("test")).andReturn(config);
@@ -48,10 +49,9 @@ public class ChannelOperationsTest extends UnitilsTestNG {
 
     public void testDaoCount2() {
         List<Channel> listOfChannels = new LinkedList<Channel>();
-        Integer id = 100;
         reset(c_dao);
         Channel config = new Channel();
-        config.setChannel("test");
+        config.setName("test");
         config.setId((long)1);
         config.setUpdated(new Date());
         listOfChannels.add(config);
@@ -65,10 +65,9 @@ public class ChannelOperationsTest extends UnitilsTestNG {
         List<Channel> listOfChannels = new ArrayList<Channel>();
         List<String> ret_this = new ArrayList<String>();
         ret_this.add("test");
-        Integer id = 100;
         reset(c_dao);
         Channel config = new Channel();
-        config.setChannel("test");
+        config.setName("test");
         config.setId((long)1);
         config.setUpdated(new Date());
         listOfChannels.add(config);

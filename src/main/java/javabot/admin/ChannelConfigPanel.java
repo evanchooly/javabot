@@ -1,62 +1,84 @@
 package javabot.admin;
 
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javabot.dao.ChannelDao;
+import javabot.dao.ConfigDao;
 import javabot.model.Channel;
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 
 public class ChannelConfigPanel extends Panel {
-    @SpringBean
-    private ChannelDao dao;
-
     public ChannelConfigPanel(String id) {
         super(id);
-        List<String> channels = dao.configuredChannels();
-        RepeatingView repeating = new RepeatingView("logged_channels");
-        add(repeating);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        if(!channels.isEmpty()) {
-            for(String channel : channels) {
-                WebMarkupContainer item = new WebMarkupContainer(repeating.newChildId());
-                Channel chan = dao.getChannel(channel);
-                repeating.add(item);
-                item.add(new Label("id", chan.getId().toString()));
-                Link link = new BookmarkablePageLink("link", Home.class, newPageParameters(chan.getId().toString()));
-                link.add(new Label("channel", chan.getChannel()));
-                item.add(link);
-                item.add(new Label("updated", sdf.format(chan.getUpdated())));
-                CheckBox check = new CheckBox("logged", new PropertyModel(chan, "getLogged"));
-                check.setEnabled(false);
-                item.add(check);
-            }
-        } else {
-            WebMarkupContainer item = new WebMarkupContainer(repeating.newChildId());
-            repeating.add(item);
-            item.add(new Label("id", ""));
-            Link link = new BookmarkablePageLink("link", Home.class);
-            link.add(new Label("channel", "No channels configured"));
-            item.add(link);
-            item.add(new Label("updated", ""));
-            item.add(new Label("logged", ""));
+        add(new ChannelForm());
+    }
+
+    private static class ChannelForm extends Form {
+        @SpringBean
+        private ChannelDao dao;
+        @SpringBean
+        private ConfigDao configDao;
+        private String newChannel;
+
+        public ChannelForm() {
+            super("form");
+            setModel(new CompoundPropertyModel(new LoadableDetachableModel() {
+                @Override
+                protected Object load() {
+                    return configDao.get();
+                }
+            }));
+            add(new ListView("channels") {
+                @Override
+                protected void populateItem(ListItem item) {
+                    item.setModel(new CompoundPropertyModel((Channel)item.getModelObject()));
+                    Link link = new Link("link") {
+                        @Override
+                        public void onClick() {
+                            setResponsePage(Home.class);
+                        }
+                    };
+                    link.add(new Label("name"));
+                    item.add(link);
+                    item.add(new Label("updated"));
+                    item.add(new AjaxCheckBox("logged") {
+                        @Override
+                        protected void onUpdate(AjaxRequestTarget target) {
+                            Channel channel = (Channel)getParent().getModelObject();
+                            dao.saveOrUpdate(channel);
+                        }
+                    });
+                }
+            });
+
+            add(new TextField("newChannel", new PropertyModel(this, "newChannel")));
+            add(new Button("add") {
+                @Override
+                public void onSubmit() {
+                    dao.getChannel(newChannel);
+                    setResponsePage(getPage().getClass());
+                }
+            });
+        }
+
+        public String getNewChannel() {
+            return newChannel;
+        }
+
+        public void setNewChannel(String newChannel) {
+            this.newChannel = newChannel;
         }
     }
 
-    public static PageParameters newPageParameters(String channel) {
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("0", channel);
-        return new PageParameters(params);
-    }
 }

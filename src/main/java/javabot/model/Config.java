@@ -1,8 +1,8 @@
 package javabot.model;
 
-import javabot.dao.ConfigDao;
-import org.hibernate.annotations.CollectionOfElements;
-
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,9 +11,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+
+import javabot.dao.ConfigDao;
+import org.hibernate.annotations.CollectionOfElements;
 
 /**
  * Created Jun 17, 2007
@@ -47,7 +47,7 @@ public class Config implements Serializable {
         id = configId;
     }
 
-    @OneToMany
+    @OneToMany(mappedBy = "config")
     public List<Channel> getChannels() {
         return channels;
     }

@@ -24,6 +24,7 @@
 
     <bean id="channelDao" class="javabot.dao.impl.ChannelDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="configDao" ref="configDao"/>
     </bean>
 
     <bean id="karmaDao" class="javabot.dao.impl.KarmaDaoHibernate">

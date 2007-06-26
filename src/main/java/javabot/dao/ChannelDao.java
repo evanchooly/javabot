@@ -6,10 +6,10 @@ import java.util.List;
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
 
-// Author: joed
-// Date  : Apr 12, 2007
-
+@SuppressWarnings({"ConstantNamingConvention"})
 public interface ChannelDao {
+    String BY_NAME = "Channel.byName";
+    String ALL = "Channel.all";
 
     List<Channel> getChannels();
 
