@@ -320,8 +320,9 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     @Override
     public void onPrivateMessage(String sender, String login, String hostname, String message) {
         if (isOnSameChannelAs(sender)) {
-            handleAnyMessage(sender, sender, login, hostname, message);
             logDao.logMessage(Logs.Type.MESSAGE, sender, sender, message);
+            handleAnyMessage(sender, sender, login, hostname, message);
+
         }
     }
 
