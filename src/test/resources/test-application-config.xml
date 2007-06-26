@@ -3,6 +3,10 @@
 
 <beans>
 
+   <bean id="configDao" class="javabot.dao.impl.ConfigHibernateDao">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
     <bean id="factoidDao" class="javabot.dao.impl.FactoidDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
@@ -21,6 +25,7 @@
 
     <bean id="channelDao" class="javabot.dao.impl.ChannelDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="configDao" ref="configDao"/>
     </bean>
 
     <bean id="karmaDao" class="javabot.dao.impl.KarmaDaoHibernate">
@@ -30,7 +35,6 @@
     <bean id="adminDao" class="javabot.dao.impl.AdminDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
-
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSource" />
 
     <!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -45,9 +49,10 @@
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="annotatedClasses">
-            <list>
+              <list>
                 <value>javabot.model.Factoid</value>
                 <value>javabot.model.Change</value>
+                <value>javabot.model.Config</value>
                 <value>javabot.model.Seen</value>
                 <value>javabot.model.Logs</value>
                 <value>javabot.model.Channel</value>

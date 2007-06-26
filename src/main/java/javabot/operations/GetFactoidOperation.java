@@ -7,14 +7,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class GetFactoidOperation implements BotOperation {
     private static final Log log = LogFactory.getLog(GetFactoidOperation.class);
     private FactoidDao m_dao;
+    private Set<String> backtrack;
 
     public GetFactoidOperation(final FactoidDao dao) {
         m_dao = dao;
+        backtrack = new HashSet<String>();
+
     }
 
     public List<Message> handleMessage(BotEvent event) {
@@ -44,7 +49,15 @@ public class GetFactoidOperation implements BotOperation {
 
             if (message.startsWith("<see>")) {
                 if (m_dao.hasFactoid(message.substring("<see>".length()).toLowerCase())) {
-                    message = m_dao.getFactoid(message.substring("<see>".length()).toLowerCase()).getValue();
+
+                    if (!backtrack.contains(message)) {
+                        backtrack.add(message);
+                        getFactoid(message.substring("<see>".length()).trim(), sender, messages, channel, event);
+                    } else {
+                        messages.add(new Message(channel, "Reference loop detected for factoid '" + message + "'.", false));
+                    }
+                    backtrack.clear();
+                    //                   message = m_dao.getFactoid(message.substring("<see>".length()).toLowerCase()).getValue();
                 }
             }
             if (message.startsWith("<reply>")) {
