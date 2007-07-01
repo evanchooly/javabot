@@ -1,39 +1,35 @@
 package javabot.dao;
 
-import java.util.Iterator;
 import java.util.List;
 
-import javabot.model.Factoid;
 import javabot.dao.util.QueryParam;
+import javabot.model.Factoid;
 
-// User: joed
-// Date: Apr 11, 2007
-// Time: 2:41:02 PM
-
-// 
+@SuppressWarnings({"ConstantNamingConvention"})
 public interface FactoidDao {
+    String ALL = "Factoid.all";
+    String COUNT = "Factoid.count";
+    String BY_NAME = "Factoid.byName";
 
     boolean hasFactoid(String key);
 
-    void addFactoid(String sender, String key, String value, ChangesDao changesDao);
+    void addFactoid(String sender, String key, String value);
 
-    void forgetFactoid(String sender, String key, ChangesDao changesDao);
+    void delete(String sender, String key);
 
     Factoid getFactoid(String key);
 
-    Factoid get(Long id);
+    Factoid find(Long id);
 
-    Long getNumberOfFactoids();
+    Long count();
 
     List<Factoid> getFactoids();
 
-    Iterator<Factoid> getIterator();
+    List<Factoid> find(QueryParam qp);
 
-    Iterator<Factoid> getFactoids(QueryParam qp);
+    void save(Factoid factoid);
 
-    void updateFactoid(Factoid factoid, ChangesDao changesDao);
-
-    Iterator<Factoid> getFactoidsFiltered(QueryParam qp, Factoid filter);
+    List<Factoid> getFactoidsFiltered(QueryParam qp, Factoid filter);
 
     Long factoidCountFiltered(Factoid filter);
 

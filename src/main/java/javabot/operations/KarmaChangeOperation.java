@@ -1,28 +1,28 @@
 package javabot.operations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
-import javabot.dao.ChangesDao;
+import javabot.dao.ChangeDao;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class KarmaChangeOperation implements BotOperation {
 
     private static Log log = LogFactory.getLog(KarmaChangeOperation.class);
     private final Javabot javabot;
 
-    private ChangesDao c_dao;
-    private KarmaDao k_dao;
+    private ChangeDao c_dao;
+    private KarmaDao dao;
     private String htmlFile;
 
-    public KarmaChangeOperation(KarmaDao karma_dao, ChangesDao change_dao, final Javabot bot) {
-        this.k_dao = karma_dao;
+    public KarmaChangeOperation(KarmaDao karma_dao, ChangeDao change_dao, final Javabot bot) {
+        this.dao = karma_dao;
         this.c_dao = change_dao;
         javabot = bot;
 
@@ -46,11 +46,9 @@ public class KarmaChangeOperation implements BotOperation {
                 boolean newKarma = false;
                 Karma karma = new Karma();
 
-                if (k_dao.hasKarma(nick)) {
-
-                    karma = k_dao.getKarma(nick);
+                if (dao.hasKarma(nick)) {
+                    karma = dao.getKarma(nick);
                     karmavalue = (karma.getValue());
-
                 }
 
                 if (karmavalue == 0) {
@@ -76,11 +74,11 @@ public class KarmaChangeOperation implements BotOperation {
                 karma.setUserName(sender);
 
                 if (newKarma) {
-                    k_dao.addKarma(karma.getUserName(), karma.getName(), karma.getValue());
+                    dao.addKarma(karma.getUserName(), karma.getName(), karma.getValue());
                 } else {
-                    k_dao.updateKarma(karma, c_dao);
+                    dao.updateKarma(karma);
                 }
-                KarmaReadOperation karmaRead = new KarmaReadOperation(k_dao);
+                KarmaReadOperation karmaRead = new KarmaReadOperation(dao);
                 messages.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event.getHostname(), "karma " + nick)));
             }
         }

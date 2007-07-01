@@ -5,68 +5,70 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-//
-// User: joed
-// Date: Apr 11, 2007
-// Time: 2:22:19 PM
+import javabot.dao.SeenDao;
+
 @Entity
-@Table(name = "seen", uniqueConstraints = @UniqueConstraint(columnNames = {"`nick`", "`channel`"}))
+@Table(name = "seen", uniqueConstraints = @UniqueConstraint(columnNames = {"nick", "channel"}))
+@NamedQueries({
+    @NamedQuery(name=SeenDao.BY_NAME_AND_CHANNEL, query="select s from Seen s where s.nick = :nick AND s.channel = :channel")
+})
 public class Seen implements Serializable {
-    @Id
-    @Column(name = "`id`")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+
     private Long id;
-    @Column(name = "`nick`")
     private String nick;
-    @Column(name = "`channel`")
     private String channel;
-    @Column(name = "`message`", length = 2000)
     private String message;
-    @Column(name = "`updated`")
     private Date updated;
 
+    @Id
+    @GeneratedValue
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long seenId) {
+        id = seenId;
     }
 
     public String getNick() {
         return nick;
     }
 
-    public void setNick(String nick) {
-        this.nick = nick;
+    public void setNick(String name) {
+        nick = name;
     }
 
     public String getChannel() {
         return channel;
     }
 
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void setChannel(String channelName) {
+        channel = channelName;
     }
 
+    @Column(length = 2000)
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMessage(String seenMessage) {
+        message = seenMessage;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Date updated) {
-        this.updated = updated;
+    public void setUpdated(Date date) {
+        updated = date;
     }
 }

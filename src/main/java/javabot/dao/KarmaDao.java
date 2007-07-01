@@ -1,16 +1,14 @@
 package javabot.dao;
 
-import javabot.model.Karma;
+import java.util.List;
+
 import javabot.dao.util.QueryParam;
+import javabot.model.Karma;
 
-import java.util.Iterator;
-
-// User: joed
-// Date: Apr 11, 2007
-// Time: 2:41:02 PM
-
-//
 public interface KarmaDao {
+    String ALL = "Karma.all";
+    String COUNT = "Karma.count";
+    String BY_NAME = "Karma.byName";
 
     boolean hasKarma(String key);
 
@@ -20,12 +18,12 @@ public interface KarmaDao {
 
     Karma get(Long id);
 
-    Iterator<Karma> getIterator();
+    List<Karma> findAll();
 
-    Iterator<Karma> getKarmas(QueryParam qp);
+    List<Karma> getKarmas(QueryParam qp);
 
     Long getCount();
 
-    void updateKarma(Karma karma, ChangesDao c_dao);
+    void updateKarma(Karma karma);
 
 }

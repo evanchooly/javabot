@@ -9,7 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.unitils.spring.annotation.SpringBeanByType;
 import javabot.dao.FactoidDao;
-import javabot.dao.ChangesDao;
+import javabot.dao.ChangeDao;
 import javabot.BotEvent;
 import javabot.Message;
 
@@ -24,7 +24,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     private FactoidDao factoidDao;
 
     @SpringBeanByType
-    private ChangesDao changesDao;
+    private ChangeDao changeDao;
 
     protected GetFactoidOperation getOperation2() {
         return new GetFactoidOperation(factoidDao);

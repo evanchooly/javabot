@@ -11,7 +11,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 public class ChangeDaoTest extends BaseServiceTest {
 
     @SpringBeanByType
-    private ChangesDao changeDao;
+    private ChangeDao changeDao;
 
     @Test
     public void testFilterCount() {
@@ -19,7 +19,7 @@ public class ChangeDaoTest extends BaseServiceTest {
         String testing = System.currentTimeMillis() + "test";
         Change change = new Change();
         changeDao.logAdd(testing, testing, testing);
-        Assert.assertTrue(1 < changeDao.getNumberOfChanges(change).intValue());
+        Assert.assertTrue(1 < changeDao.count(change).intValue());
 
     }
 
@@ -29,7 +29,7 @@ public class ChangeDaoTest extends BaseServiceTest {
         Change change = new Change();
         changeDao.logAdd(testing, testing, testing);
         change.setMessage(testing);
-        Assert.assertEquals(1, (long) changeDao.getNumberOfChanges(change));
+        Assert.assertEquals(1, (long) changeDao.count(change));
     }
 
 }

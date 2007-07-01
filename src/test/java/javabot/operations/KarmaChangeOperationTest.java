@@ -1,7 +1,7 @@
 package javabot.operations;
 
 import javabot.Javabot;
-import javabot.dao.ChangesDao;
+import javabot.dao.ChangeDao;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;
 import org.apache.commons.logging.Log;
@@ -18,7 +18,7 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
     private KarmaDao karmaDao;
 
     @SpringBeanByType
-    private ChangesDao changesDao;
+    private ChangeDao changeDao;
 
     public void updateKarma() {
         testOperation2("testjavabot++", "testjavabot has a karma level of 1, " + SENDER, "");
@@ -35,7 +35,7 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
         testOperation2(target + "++", target + " has a karma level of 1, " + SENDER, "");
         String message = SENDER + " added 'karma " + target + "' with " + "a value of '1'";
         log.debug("looking for " + message);
-        Assert.assertTrue(changesDao.findLog(message));
+        Assert.assertTrue(changeDao.findLog(message));
         forgetFactoid2("karma " + target);
         log.debug("END ADDLOG");
     }
@@ -47,7 +47,7 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
         testOperation2(target + "++", target + " has a karma level of " + karma + ", " + SENDER, "");
         String message = SENDER + " changed 'karma " + target + "' to" + " '" + karma + "'";
         log.debug("looking for " + message);
-        Assert.assertTrue(changesDao.findLog(message));
+        Assert.assertTrue(changeDao.findLog(message));
         log.debug("END LOGCHANGED");
     }
 
@@ -71,7 +71,7 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
 
         KarmaChangeOperation operation = null;
         try {
-            operation = new KarmaChangeOperation(karmaDao, changesDao, new Javabot());
+            operation = new KarmaChangeOperation(karmaDao, changeDao, new Javabot());
             return operation;
         } catch (Exception e) {
             Assert.fail("Could not create operation");

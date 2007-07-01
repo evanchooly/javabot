@@ -6,7 +6,7 @@ import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Message;
-import javabot.dao.ChangesDao;
+import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
 import javabot.operations.AddFactoidOperation;
@@ -19,36 +19,31 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.unitils.UnitilsTestNG;
 
-/**
- * @author joed
- */
 @Test(groups = {"operations"})
 public class AddFactoidOperationsTest extends UnitilsTestNG {
     private static final String CHANNEL = "#TEST";
     private static final String SENDER = "joed";
     private static final String LOGIN = "joed";
     private static final String HOSTNAME = "localhost";
-    private FactoidDao f_dao;
-    private ChangesDao c_dao;
+    private FactoidDao factoidDao;
     private AddFactoidOperation addOperation;
 
     @BeforeMethod
     public void setUp() {
-        f_dao = createMock(FactoidDao.class);
-        c_dao = createMock(ChangesDao.class);
-        addOperation = new AddFactoidOperation(f_dao, c_dao);
+        factoidDao = createMock(FactoidDao.class);
+        addOperation = new AddFactoidOperation(factoidDao, createMock(ChangeDao.class));
     }
 
     public void testDaoCount() {
-        reset(f_dao);
+        reset(factoidDao);
         Integer expectedCount = 1;
-        expect(f_dao.getNumberOfFactoids()).andReturn(expectedCount.longValue());
-        replay(f_dao);
-        Assert.assertEquals(1, f_dao.getNumberOfFactoids().intValue());
+        expect(factoidDao.count()).andReturn(expectedCount.longValue());
+        replay(factoidDao);
+        Assert.assertEquals(1, factoidDao.count().intValue());
     }
 
     public void testAlreadyHaveFactoid() {
-        reset(f_dao);
+        reset(factoidDao);
         List<Factoid> listOfFactoids = new LinkedList<Factoid>();
         Integer id = 100;
         Factoid factoid = new Factoid();
@@ -59,40 +54,37 @@ public class AddFactoidOperationsTest extends UnitilsTestNG {
         factoid.setUserName(SENDER);
         listOfFactoids.add(factoid);
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "magnificent is MAGNIFICENT");
-        expect(f_dao.hasFactoid("magnificent")).andReturn(true);
-        expect(f_dao.getFactoid("magnificent")).andReturn(factoid);
-        expect(f_dao.getFactoid("magnificent")).andReturn(factoid);
-        replay(f_dao);
+        expect(factoidDao.hasFactoid("magnificent")).andReturn(true);
+        expect(factoidDao.getFactoid("magnificent")).andReturn(factoid);
+        expect(factoidDao.getFactoid("magnificent")).andReturn(factoid);
+        replay(factoidDao);
         List<Message> results = addOperation.handleMessage(event);
         Assert.assertEquals(results.get(0).getMessage(), "I already have a factoid with that name, joed");
     }
 
     public void testAddFactoid() {
-        reset(f_dao);
+        reset(factoidDao);
         List<Factoid> listOfFactoids = new LinkedList<Factoid>();
         Factoid factoid = new Factoid();
         listOfFactoids.add(factoid);
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "magnificent is MAGNIFICENT");
-        expect(f_dao.hasFactoid("magnificent")).andReturn(false);
-        f_dao.addFactoid("joed", "magnificent", "MAGNIFICENT", c_dao);
-        replay(f_dao);
+        expect(factoidDao.hasFactoid("magnificent")).andReturn(false);
+        factoidDao.addFactoid("joed", "magnificent", "MAGNIFICENT");
+        replay(factoidDao);
         List<Message> results = addOperation.handleMessage(event);
         Assert.assertEquals(results.get(0).getMessage(), "Okay, joed.");
-
     }
 
     public void testAddLongFactoid() {
-        reset(f_dao);
+        reset(factoidDao);
         List<Factoid> listOfFactoids = new LinkedList<Factoid>();
         Factoid factoid = new Factoid();
         listOfFactoids.add(factoid);
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "magnificent is bla bla bla bla bla");
-        expect(f_dao.hasFactoid("magnificent")).andReturn(false);
-        f_dao.addFactoid("joed", "magnificent", "bla bla bla bla bla", c_dao);
-        replay(f_dao);
+        expect(factoidDao.hasFactoid("magnificent")).andReturn(false);
+        factoidDao.addFactoid("joed", "magnificent", "bla bla bla bla bla");
+        replay(factoidDao);
         List<Message> results = addOperation.handleMessage(event);
         Assert.assertEquals(results.get(0).getMessage(), "Okay, joed.");
-
     }
-
 }

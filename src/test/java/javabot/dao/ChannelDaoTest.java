@@ -17,7 +17,7 @@ public class ChannelDaoTest extends BaseServiceTest {
         Channel channel = new Channel();
         channel.setName(testing);
         channel.setLogged(true);
-        channelDao.saveOrUpdate(channel);
+        channelDao.save(channel);
         Assert.assertNotNull(channelDao.getChannel(testing));
     }
 

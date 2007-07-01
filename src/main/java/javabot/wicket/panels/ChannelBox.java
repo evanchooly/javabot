@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javabot.dao.LogDao;
+import javabot.dao.LogsDao;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -23,7 +23,7 @@ import javabot.wicket.pages.Index;
 public class ChannelBox extends Panel {
 
     @SpringBean
-    private LogDao l_dao;
+    private LogsDao l_dao;
 
     public ChannelBox(String id) {
         super(id);

@@ -4,33 +4,31 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
-//
-// User: joed
-// Date: Apr 11, 2007
-// Time: 2:22:19 PM
+import javabot.dao.LogsDao;
 
-//
 @Entity
 @Table(name = "logs")
+@NamedQueries({
+    @NamedQuery(name= LogsDao.TODAY, query = "from Logs s WHERE s.channel=:channel AND s.updated < :tomorrow AND"
+        + " s.updated > :today order by updated"),
+    @NamedQuery(name=LogsDao.LOGGED_CHANNELS, query="select distinct s.channel from Logs s where s.channel like '#%'")
+})
 public class Logs implements Serializable {
-    @Id
-    @Column(name = "`id`")
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "`nick`")
     private String nick;
-    @Column(name = "`channel`")
     private String channel;
-    @Column(name = "`message`", length = 4000)
     private String message;
-    @Column(name = "`updated`")
     private Date updated;
 
     public enum Type {
@@ -38,68 +36,72 @@ public class Logs implements Serializable {
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "`type`")
-    private String type;
+    private Type type;
 
+    @Id
+    @GeneratedValue
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long logsId) {
+        id = logsId;
     }
 
     public String getNick() {
         return nick;
     }
 
-    public void setNick(String nick) {
-        this.nick = nick;
+    public void setNick(String user) {
+        nick = user;
     }
 
     public String getChannel() {
         return channel;
     }
 
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void setChannel(String chanName) {
+        channel = chanName;
     }
 
+    @Column(length = 4000)
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMessage(String logMessage) {
+        message = logMessage;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Date updated) {
-        this.updated = updated;
-    }
-
-    public boolean isAction() {
-        return message != null && Type.ACTION.compareTo(getType()) == 0;
+    public void setUpdated(Date date) {
+        updated = date;
     }
 
     public Type getType() {
-        return Type.valueOf(type);
+        return type;
     }
 
-    public void setType(Type type) {
-        this.type = type.toString();
+    public void setType(Type value) {
+        type = value;
     }
 
+    @Transient
+    public boolean isAction() {
+        return message != null && Type.ACTION == getType();
+    }
+
+    @Transient
     public boolean isKick() {
-        return message != null && Type.KICK.compareTo(getType()) == 0;
+        return message != null && Type.KICK==getType();
     }
 
+    @Transient
     public boolean isServerMessage() {
-        return message != null && Type.JOIN.compareTo(getType()) == 0 || Type.PART.compareTo(getType()) == 0
-            || Type.QUIT.compareTo(getType()) == 0;
+        return message != null && Type.JOIN == getType() || Type.PART == getType() || Type.QUIT == getType();
     }
-
 }

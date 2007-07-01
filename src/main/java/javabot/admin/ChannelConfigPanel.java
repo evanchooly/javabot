@@ -56,7 +56,7 @@ public class ChannelConfigPanel extends Panel {
                         @Override
                         protected void onUpdate(AjaxRequestTarget target) {
                             Channel channel = (Channel)getParent().getModelObject();
-                            dao.saveOrUpdate(channel);
+                            dao.save(channel);
                         }
                     });
                 }

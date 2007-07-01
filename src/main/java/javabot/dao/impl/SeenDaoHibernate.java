@@ -4,18 +4,15 @@ import java.util.Date;
 
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.SeenDao;
-import javabot.model.Factoid;
 import javabot.model.Seen;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 // User: joed
 // Date: Apr 11, 2007
 // Time: 2:41:22 PM
 
-public class SeenDaoHibernate extends AbstractDaoHibernate<Factoid> implements SeenDao {
+public class SeenDaoHibernate extends AbstractDaoHibernate<Seen> implements SeenDao {
     private static final Log log = LogFactory.getLog(SeenDaoHibernate.class);
 
     public SeenDaoHibernate() {
@@ -23,25 +20,15 @@ public class SeenDaoHibernate extends AbstractDaoHibernate<Factoid> implements S
     }
 
     public void logSeen(String nick, String channel, String message) {
-        if(isSeen(nick, channel)) {
-            Seen oldSeen = getSeen(nick, channel);
-            oldSeen.setMessage(message);
-            oldSeen.setUpdated(new Date());
-            Session session = getSession();
-            Transaction transaction = session.beginTransaction();
-            session.saveOrUpdate(oldSeen);
-            transaction.commit();
-        } else {
-            Seen lastSeen = new Seen();
-            lastSeen.setNick(nick);
-            lastSeen.setChannel(channel);
-            lastSeen.setMessage(message);
-            lastSeen.setUpdated(new Date());
-            Session session = getSession();
-            Transaction transaction = session.beginTransaction();
-            session.saveOrUpdate(lastSeen);
-            transaction.commit();
+        Seen seen = getSeen(nick, channel);
+        if(seen == null) {
+            seen = new Seen();
+            seen.setNick(nick);
+            seen.setChannel(channel);
         }
+        seen.setMessage(message);
+        seen.setUpdated(new Date());
+        save(seen);
     }
 
     public boolean isSeen(String nick, String channel) {
@@ -49,15 +36,9 @@ public class SeenDaoHibernate extends AbstractDaoHibernate<Factoid> implements S
     }
 
     public Seen getSeen(String nick, String channel) {
-        String query = "from Seen s where s.nick = :nick" + " AND s.channel = :channel";
-        Seen m_user = (Seen)getSession().createQuery(query)
-            .setString("nick", nick)
-            .setString("channel", channel)
-            .setMaxResults(1)
-            .uniqueResult();
-        if(m_user == null) {
-            return new Seen();
-        }
-        return m_user;
+        return (Seen)getEntityManager().createNamedQuery(SeenDao.BY_NAME_AND_CHANNEL)
+            .setParameter("nick", nick)
+            .setParameter("channel", channel)
+            .getSingleResult();
     }
 }

@@ -1,28 +1,19 @@
 package javabot.dao.impl;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
-import javabot.dao.util.QueryParam;
 import javabot.dao.AbstractDaoHibernate;
+import javabot.dao.ChangeDao;
 import javabot.dao.KarmaDao;
-import javabot.dao.ChangesDao;
+import javabot.dao.util.QueryParam;
 import javabot.model.Karma;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
-// User: joed
-// Date: Apr 11, 2007
-// Time: 2:41:22 PM
 
 public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements KarmaDao {
-
     private static final Log log = LogFactory.getLog(KarmaDaoHibernate.class);
+    private ChangeDao changeDao;
 
     public KarmaDaoHibernate() {
         super(Karma.class);
@@ -30,116 +21,54 @@ public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements Ka
     }
 
     @SuppressWarnings("unchecked")
-    public Iterator<Karma> getKarmas(QueryParam qp) {
+    public List<Karma> getKarmas(QueryParam qp) {
         StringBuilder query = new StringBuilder("from Karma");
-
-        if (qp.hasSort()) {
+        if(qp.hasSort()) {
             query.append(" order by ")
-                    .append(qp.getSort())
-                    .append((qp.isSortAsc()) ? " desc" : " asc");
+                .append(qp.getSort())
+                .append((qp.isSortAsc()) ? " desc" : " asc");
         }
-
-        return getSession().createQuery(query.toString())
-                .setFirstResult(qp.getFirst())
-                .setMaxResults(qp.getCount()).iterate();
+        return getEntityManager().createQuery(query.toString())
+            .setFirstResult(qp.getFirst())
+            .setMaxResults(qp.getCount()).getResultList();
     }
 
     @SuppressWarnings({"unchecked"})
-    public Iterator<Karma> getIterator() {
-
-        String query = "from Karma m";
-
-        List<Karma> m_karma = getSession().createQuery(query).list();
-
-        Collections.sort(m_karma, new Comparator<Karma>() {
-            public int compare(Karma karma, Karma karma1) {
-                return karma.getName().compareTo(karma1.getName());
-            }
-        });
-
-        return m_karma.iterator();
+    public List<Karma> findAll() {
+        return getEntityManager().createNamedQuery(KarmaDao.ALL).getResultList();
     }
 
-    public void updateKarma(Karma karma, ChangesDao c_dao) {
-
-        if (hasKarma(karma.getName())) {
-            karma.setUpdated(new Date());
-            Session session = getSession();
-            Transaction transaction = session.beginTransaction();
-            session.update(karma);
-            transaction.commit();
-
-            c_dao.logChange(karma.getUserName() + " changed '" + karma.getName() + "' to '" + karma.getValue() + "'");
-        } else {
-
-            karma.setUpdated(new Date());
-            Session session = getSession();
-            Transaction transaction = session.beginTransaction();
-            session.saveOrUpdate(karma);
-            transaction.commit();
-
-            c_dao.logChange(karma.getUserName() + " changed '" + karma.getName() + "' to '" + karma.getValue() + "'");
-
-        }
-
-
+    public void updateKarma(Karma toUpdate) {
+        Karma karma = getKarma(toUpdate.getName());
+        karma.setUpdated(new Date());
+        changeDao.logChange(karma.getUserName() + " changed '" + karma.getName() + "' to '" + karma.getValue() + "'");
+        save(karma);
     }
 
     public boolean hasKarma(String key) {
-        return getKarma(key).getName() != null;
+        return getKarma(key) != null;
     }
 
     public void addKarma(String sender, String key, Integer value) {
-
         Karma karma = new Karma();
-
         karma.setName(key);
         karma.setValue(value);
         karma.setUserName(sender);
         karma.setUpdated(new Date());
-
-        Session session = getSession();
-        Transaction transaction = session.beginTransaction();
-        session.save(karma);
-        transaction.commit();
+        save(karma);
     }
 
     public Karma getKarma(String name) {
-        String query = "from Karma m where m.name = :name";
-
-        Karma m_karma = (Karma) getSession().createQuery(query)
-                .setString("name", name)
-                .setMaxResults(1)
-                .uniqueResult();
-
-        if (m_karma == null) {
-
-            return new Karma();
-        }
-
-        return m_karma;
-
+        return (Karma)getEntityManager().createNamedQuery(KarmaDao.BY_NAME)
+            .setParameter("name", name)
+            .getSingleResult();
     }
 
     public Karma get(Long id) {
-        String query = "from Karma m where m.id = :id";
-
-        Karma karma = (Karma) getSession().createQuery(query)
-                .setLong("id", id)
-                .setMaxResults(1)
-                .uniqueResult();
-
-        if (karma == null) {
-
-            return new Karma();
-        }
-
-        return karma;
-
+        return load(id);
     }
 
     public Long getCount() {
-        String query = "select count(*) from Karma";
-        return (Long) getSession().createQuery(query).uniqueResult();
+        return (Long)getEntityManager().createQuery(KarmaDao.COUNT).getSingleResult();
     }
 }

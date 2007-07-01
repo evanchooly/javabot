@@ -4,25 +4,15 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-//
-
-// Author: joed
-
-// Date  : Apr 15, 2007
 public class FactoidDaoTest extends BaseServiceTest {
-
-
     @SpringBeanByType
     private FactoidDao factoidDao;
 
-    @SpringBeanByType
-    private ChangesDao changesDao;
-
     @Test(groups = {"operations"})
     public void testInsertfactoid() {
-        factoidDao.addFactoid("joed2", "test2", "#test", changesDao);
+        factoidDao.addFactoid("joed2", "test2", "#test");
         Assert.assertTrue(factoidDao.hasFactoid("test2"));
-        factoidDao.forgetFactoid("joed2", "test2", changesDao);
+        factoidDao.delete("joed2", "test2");
         //Assert.assertFalse(factoidDao.hasFactoid("test2"));
     }
 
@@ -30,15 +20,10 @@ public class FactoidDaoTest extends BaseServiceTest {
     public void countFactoids() {
         String key = "test factoid";
         String value = "test value";
-        Long count = factoidDao.getNumberOfFactoids();
-
-        factoidDao.addFactoid("cheeser", key, value, changesDao);
-        Long count2 = factoidDao.getNumberOfFactoids();
-
-        Assert.assertNotSame(count, count2,"Not the same");
-
-        factoidDao.forgetFactoid("cheeser", key, changesDao);
+        Long count = factoidDao.count();
+        factoidDao.addFactoid("cheeser", key, value);
+        Long count2 = factoidDao.count();
+        Assert.assertNotSame(count, count2, "Not the same");
+        factoidDao.delete("cheeser", key);
     }
-
 }
-

@@ -1,65 +1,56 @@
 package javabot.dao;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import javabot.dao.util.EntityNotFoundException;
-import org.hibernate.SessionFactory;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-//
-// User: joed
-// Date: Apr 11, 2007
-// Time: 2:42:42 PM
-
-/*                     
-* Created by: Andrew Lombardi
- * Copyright 2006 Mystic Coders, LLC
- */
-
-public class AbstractDaoHibernate<T> extends HibernateDaoSupport {
-
-    // MEMBERS
+public class AbstractDaoHibernate<T> {
 
     private Class entityClass;
-    private SessionFactory sessionFactory;
-
-    // CONSTRUCTORS
+    private EntityManager entityManager;
 
     protected AbstractDaoHibernate(Class dataClass) {
         super();
         this.entityClass = dataClass;
     }
 
-    // METHODS
+    @PersistenceContext
+    public void setEntityManager(EntityManager manager) {
+        this.entityManager = manager;
+    }
+
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
 
     @SuppressWarnings("unchecked")
-    private T load(Long id) {
-        return (T) getSession().get(entityClass, id);
+    public T load(Long id) {
+        return (T)getEntityManager().find(entityClass, id);
     }
 
     @SuppressWarnings("unchecked")
     private T loadChecked(Long id) throws EntityNotFoundException {
         T persistedObject = load(id);
-
-        if (persistedObject == null) {
+        if(persistedObject == null) {
             throw new EntityNotFoundException(entityClass, id);
         }
-
         return persistedObject;
     }
 
     public void merge(T detachedObject) {
-        getSession().merge(detachedObject);
+        getEntityManager().merge(detachedObject);
     }
 
     public void save(T persistedObject) {
-        getSession().saveOrUpdate(persistedObject);
+        getEntityManager().persist(persistedObject);
     }
 
     private void delete(T persistedObject) {
-        getSession().delete(persistedObject);
+        getEntityManager().remove(persistedObject);
     }
 
     public void delete(Long id) {
         delete(loadChecked(id));
     }
-
 }

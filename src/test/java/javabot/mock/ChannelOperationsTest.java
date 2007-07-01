@@ -30,7 +30,7 @@ public class ChannelOperationsTest extends UnitilsTestNG {
         config.setName("test");
         config.setId((long)1);
         config.setUpdated(new Date());
-        c_dao.saveOrUpdate(config);
+        c_dao.save(config);
 
     }
 

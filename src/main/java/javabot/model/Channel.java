@@ -11,11 +11,14 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.CascadeType;
 
+import javabot.dao.ChannelDao;
+
 @Entity
 @Table(name = "channel")
 @NamedQueries({
-    @NamedQuery(name="Channel.all", query= "from Channel c order by c.name"),
-    @NamedQuery(name="Channel.byName", query= "from Channel c where c.name = :channel")
+    @NamedQuery(name=ChannelDao.ALL, query= "select c from Channel c order by c.name"),
+    @NamedQuery(name=ChannelDao.BY_NAME, query= "select c from Channel c where c.name = :channel"),
+    @NamedQuery(name= ChannelDao.CONFIGURED_CHANNELS, query= "select distinct s.name from Channel s")
 })
 public class Channel implements Serializable {
     private Long id;
@@ -31,7 +34,7 @@ public class Channel implements Serializable {
     }
 
     public void setId(Long channelId) {
-        this.id = channelId;
+        id = channelId;
     }
 
     public Date getUpdated() {
@@ -39,7 +42,7 @@ public class Channel implements Serializable {
     }
 
     public void setUpdated(Date date) {
-        this.updated = date;
+        updated = date;
     }
 
     public Boolean getLogged() {
@@ -47,7 +50,7 @@ public class Channel implements Serializable {
     }
 
     public void setLogged(Boolean isLogged) {
-        this.logged = isLogged;
+        logged = isLogged;
     }
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -55,16 +58,16 @@ public class Channel implements Serializable {
         return config;
     }
 
-    public void setConfig(Config config) {
-        this.config = config;
+    public void setConfig(Config chanConfig) {
+        config = chanConfig;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String chanName) {
+        name = chanName;
     }
 
     @Override

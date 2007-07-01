@@ -197,18 +197,6 @@
         <scp file="jlee:${scp.password}@antwerkz.com:javabot.dump" localToFile="etc/db.sql" trust="yes"/>
         <sshexec host="antwerkz.com" username="jlee" password="${scp.password}" command="rm javabot.dump" trust="yes"
                  verbose="true"/>
-        <!-- exec executable="dropdb">
-            <arg line="javabot"/>
-        </exec>
-        <exec executable="createdb">
-            <arg line="javabot"/>
-        </exec>
-        <exec executable="psql">
-            <arg line="javabot -f etc/javabot.sql"/>
-        </exec>
-        <exec executable="psql">
-            <arg line="javabot -f etc/db.sql"/>
-        </exec -->
     </target>
 
     <target name="deps">
@@ -217,7 +205,6 @@
                 <pathelement location="lib/maven-ant-tasks-2.0.6.jar"/>
             </classpath>
         </typedef>
-
 
         <artifact:remoteRepository id="main" url="http://repo1.maven.org/maven2/"/>
         <artifact:remoteRepository id="apache.cs.utah.edu" url="http://apache.cs.utah.edu"/>
@@ -235,13 +222,16 @@
             <remoteRepository refid="apache.cs.utah.edu"/>
             <remoteRepository refid="main"/>
 
-
+            <dependency groupId="oswego-concurrent" artifactId="concurrent" version="1.3.4"/>
+            <dependency groupId="xerces" artifactId="xercesImpl" version="2.8.1"/>
             <dependency groupId="org.slf4j" artifactId="slf4j-api" version="1.3.1"/>
             <dependency groupId="org.slf4j" artifactId="slf4j-log4j12" version="1.3.1"/>
             <dependency groupId="mysql" artifactId="mysql-connector-java" version="5.0.5"/>
-            <dependency groupId="commons-dbcp" artifactId="commons-dbcp" version="1.2.1"/>
+            <dependency groupId="commons-dbcp" artifactId="commons-dbcp" version="1.2.1">
+                <exclusion groupId="xerces" artifactId="xercesImpl"/>
+            </dependency>
             <dependency groupId="commons-logging" artifactId="commons-logging" version="1.0.4"/>
-            <dependency groupId="org.springframework" artifactId="spring" version="2.0.5"/>
+            <dependency groupId="org.springframework" artifactId="spring" version="2.0.6"/>
             <dependency groupId="org.hibernate" artifactId="hibernate-annotations" version="3.3.0.ga"/>
             <dependency groupId="org.hibernate" artifactId="hibernate-entitymanager" version="3.3.1.ga"/>
             <dependency groupId="org.hibernate" artifactId="hibernate" version="3.2.4.sp1"/>
@@ -253,19 +243,6 @@
             <dependency groupId="jdom" artifactId="jdom" version="1.0"/>
             <dependency groupId="pircbot" artifactId="pircbot" version="1.4.2"/>
             <dependency groupId="mysql" artifactId="mysql-connector-java" version="3.1.14"/>
-        </artifact:dependencies>
-
-        <artifact:dependencies>
-            <remoteRepository refid="wicket.repository"/>
-            <remoteRepository refid="java.net.repository"/>
-            <remoteRepository refid="maven2.java.net.repository"/>
-            <remoteRepository refid="jboss.repository"/>
-            <remoteRepository refid="apache.cs.utah.edu"/>
-            <remoteRepository refid="main"/>
-
-
-            <dependency groupId="org.apache.wicket" artifactId="wicket" version="1.3.0-incubating-SNAPSHOT" classifier="javadoc"/>
-            <dependency groupId="org.apache.wicket" artifactId="wicket" version="1.3.0-incubating-SNAPSHOT" classifier="sources"/>
         </artifact:dependencies>
 
         <artifact:dependencies pathId="build.path">
@@ -282,6 +259,9 @@
             <dependency groupId="org.mortbay.jetty" artifactId="jetty-util" version="6.1.3"/>
             <dependency groupId="org.testng" artifactId="testng" version="5.5"/>
             <dependency groupId="org.testng" artifactId="testng" version="5.5" classifier="jdk15"/>
+
+            <dependency groupId="org.apache.wicket" artifactId="wicket" version="1.3.0-incubating-SNAPSHOT" classifier="javadoc"/>
+            <dependency groupId="org.apache.wicket" artifactId="wicket" version="1.3.0-incubating-SNAPSHOT" classifier="sources"/>
         </artifact:dependencies>
 
     </target>

@@ -139,7 +139,7 @@ public class BotConfigPanel extends Panel {
 
         @Override
         public void onSubmit() {
-            dao.saveOrUpdate((Config) getModelObject());
+            dao.save((Config) getModelObject());
         }
     }
 }

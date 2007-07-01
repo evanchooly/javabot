@@ -1,12 +1,13 @@
 package javabot.dao;
 
-import javabot.model.Logs;
-
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
-public interface LogDao {
+import javabot.model.Logs;
+
+public interface LogsDao {
+    String TODAY = "Logs.today";
+    String LOGGED_CHANNELS = "Logs.loggedChannels";
 
     void logMessage(Logs.Type type, String nick, String channel, String message);
 
@@ -14,6 +15,5 @@ public interface LogDao {
 
     List<String> loggedChannels();
 
-    Iterator<Logs> dailyLog(String channel, Date date);
-
+    List<Logs> dailyLog(String channel, Date date);
 }

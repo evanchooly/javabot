@@ -40,9 +40,9 @@ public class GuessOperationsTest extends UnitilsTestNG {
         reset(f_dao);
         Integer expectedCount = 1;
         //f_dao.addFactoid(SENDER,"heya","HEYA",c_dao,"test");
-        expect(f_dao.getNumberOfFactoids()).andReturn(expectedCount.longValue());
+        expect(f_dao.count()).andReturn(expectedCount.longValue());
         replay(f_dao);
-        Assert.assertEquals(1, f_dao.getNumberOfFactoids().intValue());
+        Assert.assertEquals(1, f_dao.count().intValue());
 
     }
 

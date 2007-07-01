@@ -11,7 +11,7 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="changesDao" class="javabot.dao.impl.ChangesDaoHibernate">
+    <bean id="changeDao" class="javabot.dao.impl.ChangeDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
@@ -19,7 +19,7 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="logDao" class="javabot.dao.impl.LogDaoHibernate">
+    <bean id="logDao" class="javabot.dao.impl.LogsDaoHibernate">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 

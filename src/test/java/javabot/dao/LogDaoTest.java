@@ -1,47 +1,37 @@
 package javabot.dao;
 
+import java.util.Date;
+import java.util.List;
+
 import javabot.model.Logs;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import java.util.List;
-import java.util.Iterator;
-import java.util.Date;
-
-// Author: joed
-
-// Date  : Apr 15, 2007
 public class LogDaoTest extends BaseServiceTest {
-
     @SpringBeanByType
-    private LogDao logDao;
+    private LogsDao logsDao;
 
     @Test
     public void addLogMessage() {
         String nick = System.currentTimeMillis() + "test";
-        logDao.logMessage(Logs.Type.MESSAGE, nick, "#test", "test");
-        Logs log = logDao.getMessage(nick, "#test");
+        logsDao.logMessage(Logs.Type.MESSAGE, nick, "#test", "test");
+        Logs log = logsDao.getMessage(nick, "#test");
         Assert.assertEquals(log.getMessage(), "test");
     }
 
     @Test
-    public void findChannels(){
-
+    public void findChannels() {
         String nick = System.currentTimeMillis() + "test";
-         logDao.logMessage(Logs.Type.MESSAGE, nick, "#test", "test");
-
-        List channels = logDao.loggedChannels();
-        Assert.assertEquals("#test",channels.get(0));
+        logsDao.logMessage(Logs.Type.MESSAGE, nick, "#test", "test");
+        List channels = logsDao.loggedChannels();
+        Assert.assertEquals("#test", channels.get(0));
     }
 
     @Test
-    public void getDailyLog(){
+    public void getDailyLog() {
         // Assumes logging to #test
-        Iterator<Logs> logdata = logDao.dailyLog("#test",new Date());
-        Assert.assertNotNull(logdata.hasNext(),"1");
+        List<Logs> logdata = logsDao.dailyLog("#test", new Date());
+        Assert.assertFalse(logdata.isEmpty(), "Should have log data");
     }
-
-
-
 }

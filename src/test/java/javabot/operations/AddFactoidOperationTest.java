@@ -3,7 +3,7 @@ package javabot.operations;
 import java.io.IOException;
 
 import javabot.BotEvent;
-import javabot.dao.ChangesDao;
+import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -17,7 +17,7 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     private FactoidDao factoidDao;
 
     @SpringBeanByType
-    private ChangesDao changesDao;
+    private ChangeDao changeDao;
 
     public AddFactoidOperationTest() {
         super();
@@ -30,27 +30,26 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     @BeforeMethod
     public void setUp() {
         if (factoidDao.hasFactoid("test")) {
-            factoidDao.forgetFactoid(SENDER, "test", changesDao);
+            factoidDao.delete(SENDER, "test");
         }
         if (factoidDao.hasFactoid("ping $1")) {
-            factoidDao.forgetFactoid(SENDER, "ping $1", changesDao);
+            factoidDao.delete(SENDER, "ping $1");
         }
         if (factoidDao.hasFactoid("what")) {
-            factoidDao.forgetFactoid(SENDER, "what", changesDao);
+            factoidDao.delete(SENDER, "what");
         }
         if (factoidDao.hasFactoid("what up")) {
-            factoidDao.forgetFactoid(SENDER, "what up", changesDao);
+            factoidDao.delete(SENDER, "what up");
         }
         if (factoidDao.hasFactoid("test pong")) {
-            factoidDao.forgetFactoid(SENDER, "test pong", changesDao);
+            factoidDao.delete(SENDER, "test pong");
         }
          if (factoidDao.hasFactoid("asdf")) {
-            factoidDao.forgetFactoid(SENDER, "asdf", changesDao);
+            factoidDao.delete(SENDER, "asdf");
         }
          if (factoidDao.hasFactoid("12345")) {
-            factoidDao.forgetFactoid(SENDER, "12345", changesDao);
+            factoidDao.delete(SENDER, "12345");
         }
-
     }
 
     public void factoidAdd() {
@@ -63,13 +62,9 @@ public class AddFactoidOperationTest extends BaseOperationTest {
 
     @Test(dependsOnMethods = {"factoidAdd"})
     public void duplicateAdd() throws IOException {
-
         String errorMessage = "Should not have added the factoid";
-
         String message = "test pong is pong";
-
         testOperation2(message, OKAY, errorMessage);
-
         testOperation2(message, ALREADY_HAVE_FACTOID, errorMessage);
     }
 
@@ -86,9 +81,8 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     }
 
     public void addLog() {
-
         testOperation2("12345 is 12345", OKAY, "Should have added the factoid.");
-        Assert.assertTrue(changesDao.findLog(SENDER + " added '" + 12345 + "' with a value of '" + 12345 + "'"));
+        Assert.assertTrue(changeDao.findLog(SENDER + " added '" + 12345 + "' with a value of '" + 12345 + "'"));
         forgetFactoid2("12345");
     }
 
@@ -108,7 +102,6 @@ public class AddFactoidOperationTest extends BaseOperationTest {
 
     @Override
     protected AddFactoidOperation getOperation2() {
-        return new AddFactoidOperation(factoidDao, this.changesDao);
+        return new AddFactoidOperation(factoidDao, changeDao);
     }
-
 }

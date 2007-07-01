@@ -1,12 +1,12 @@
 package javabot.operations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A little more intelligence creeping in. This searches the entire set of key/value pairs to find
@@ -21,7 +21,7 @@ public class GuessOperation implements BotOperation {
     }
 
     /**
-     * @see javabot.operations.BotOperation#handleMessage(javabot.BotEvent)
+     * @see BotOperation#handleMessage(BotEvent)
      */
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();

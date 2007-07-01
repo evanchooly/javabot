@@ -5,7 +5,7 @@ import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Message;
-import javabot.dao.ChangesDao;
+import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,11 +13,11 @@ import org.apache.commons.logging.LogFactory;
 public class AddFactoidOperation implements BotOperation {
     private static final Log log = LogFactory.getLog(AddFactoidOperation.class);
     private FactoidDao factoidDao;
-    private ChangesDao changesDao;
+    private ChangeDao changeDao;
 
-    public AddFactoidOperation(FactoidDao dao, ChangesDao cDao) {
+    public AddFactoidOperation(FactoidDao dao, ChangeDao cDao) {
         factoidDao = dao;
-        changesDao = cDao;
+        changeDao = cDao;
     }
 
     public List<Message> handleMessage(BotEvent event) {
@@ -55,7 +55,7 @@ public class AddFactoidOperation implements BotOperation {
             if (value.startsWith("<see>")) {
                 value = value.toLowerCase();
             }
-            factoidDao.addFactoid(sender, key, value, changesDao);
+            factoidDao.addFactoid(sender, key, value);
         } else {
             return new ArrayList<Message>();
 
@@ -66,5 +66,21 @@ public class AddFactoidOperation implements BotOperation {
 
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();
+    }
+
+    public ChangeDao getChangeDao() {
+        return changeDao;
+    }
+
+    public void setChangeDao(ChangeDao dao) {
+        changeDao = dao;
+    }
+
+    public FactoidDao getFactoidDao() {
+        return factoidDao;
+    }
+
+    public void setFactoidDao(FactoidDao dao) {
+        factoidDao = dao;
     }
 }

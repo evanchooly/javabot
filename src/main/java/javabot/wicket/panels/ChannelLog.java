@@ -1,6 +1,8 @@
 package javabot.wicket.panels;
 
-import javabot.dao.LogDao;
+import java.util.Date;
+
+import javabot.dao.LogsDao;
 import javabot.model.Logs;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -9,33 +11,17 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-
-//
-// Author: joed
-
-// Date  : May 18, 2007
 public class ChannelLog extends Panel {
-
     @SpringBean
-    LogDao m_logs;
+    private LogsDao dao;
 
     public ChannelLog(String id, String channel, Date date) {
         super(id);
-
-        final Iterator logs = m_logs.dailyLog(channel, date);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
         RepeatingView repeating = new RepeatingView("channel_log");
-
         add(repeating);
-        while (logs.hasNext()) {
+        for(Logs log : dao.dailyLog(channel, date)) {
             WebMarkupContainer item = new WebMarkupContainer(repeating.newChildId());
-
             repeating.add(item);
-            Logs log = (Logs) logs.next();
 
             if (log.isAction()) {
                 item.add(new SimpleAttributeModifier("class", "action"));
@@ -49,11 +35,6 @@ public class ChannelLog extends Panel {
             } else {
                 item.add(new NickMessagePanel("messagePanel", new Model(log)));
             }
-
         }
-
-
     }
-
-
 }

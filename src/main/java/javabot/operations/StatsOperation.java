@@ -32,7 +32,7 @@ public class StatsOperation implements BotOperation {
         if (message.toLowerCase().startsWith("stats")) {
             long uptime = System.currentTimeMillis() - startTime;
             long days = uptime / 86400000;
-            messages.add(new Message(event.getChannel(), "I have been up for " + days + " days, " + "have served " + numberOfMessages + " messages, and have " + m_dao.getNumberOfFactoids() + " factoids.", false));
+            messages.add(new Message(event.getChannel(), "I have been up for " + days + " days, " + "have served " + numberOfMessages + " messages, and have " + m_dao.count() + " factoids.", false));
         }
 
         return messages;

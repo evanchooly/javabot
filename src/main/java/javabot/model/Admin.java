@@ -15,7 +15,8 @@ import javabot.dao.AdminDao;
 @Entity
 @Table(name = "admin")
 @NamedQueries({
-    @NamedQuery(name = AdminDao.AUTHENTICATE, query = "from Admin m where m.userName = :username")
+    @NamedQuery(name = AdminDao.AUTHENTICATE, query = "from Admin m where m.userName = :username"),
+    @NamedQuery(name = AdminDao.ALL, query = "from Admin m order by userName")
 })
 public class Admin implements Serializable {
     private Long id;

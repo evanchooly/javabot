@@ -2,33 +2,24 @@ package javabot.operations;
 
 import java.io.IOException;
 
-import org.testng.annotations.Test;
-import org.testng.Assert;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.unitils.spring.annotation.SpringBeanByType;
-import javabot.dao.FactoidDao;
-import javabot.dao.ChangesDao;
 import javabot.BotEvent;
+import javabot.dao.ChangeDao;
+import javabot.dao.FactoidDao;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import org.unitils.spring.annotation.SpringBeanByType;
 
-/**
- * Created Jun 30, 2005
- *
- * @author <a href="mailto:javabot@cheeseronline.org">Justin Lee</a>
- */
 @Test(groups = {"operations"})
 public class ForgetFactoidOperationTest extends BaseOperationTest {
-    private static Log log = LogFactory.getLog(ForgetFactoidOperationTest.class);
-
     @SpringBeanByType
     private FactoidDao factoidDao;
 
     @SpringBeanByType
-    private ChangesDao changesDao;
+    private ChangeDao changeDao;
 
     public void forgetFactoid() {
         if (!factoidDao.hasFactoid("afky")) {
-            factoidDao.addFactoid(SENDER, "afky", "test", changesDao);
+            factoidDao.addFactoid(SENDER, "afky", "test");
         }
         testOperation2("forget afky", "I forgot about afky, " + SENDER + ".", "Should have forgotten factoid");
     }
@@ -39,7 +30,7 @@ public class ForgetFactoidOperationTest extends BaseOperationTest {
 
     @Override
     protected BotOperation getOperation2() {
-        return new ForgetFactoidOperation(factoidDao, changesDao);
+        return new ForgetFactoidOperation(factoidDao, changeDao);
     }
 
     public void channelMessage() throws IOException {

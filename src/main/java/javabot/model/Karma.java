@@ -1,68 +1,75 @@
 package javabot.model;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-//
-// User: joed
+import javabot.dao.KarmaDao;
 
-//
 @Entity
 @Table(name = "karma")
+@NamedQueries({
+    @NamedQuery(name= KarmaDao.ALL, query= "from Karma k order by k.name"),
+    @NamedQuery(name= KarmaDao.COUNT, query= "select count(*) from Karma"),
+    @NamedQuery(name= KarmaDao.BY_NAME, query="from Karma m where m.name = :name")
+})
 public class Karma implements Serializable {
-    @Id
-    @Column(name = "`id`")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-//    @GeneratedValue(generator = "factoid_sequence")
-//    @SequenceGenerator(name = "factoid_sequence", sequenceName = "factoid_sequence", allocationSize = 1)
     private Long id;
-    @Column(name = "`name`", length = 255)
     private String name;
-    @Column(name = "`value`", length = 2000)
     private Integer value;
-    @Column(name = "`nick`", length = 100)
     private String userName;
-    @Column(name = "`updated`")
     private Date updated;
 
+    @Id
+    @GeneratedValue
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long karmId) {
+        id = karmId;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String karmaName) {
+        name = karmaName;
     }
 
+    @Column
     public Integer getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
-        this.value = value;
+    public void setValue(Integer karmaValue) {
+        value = karmaValue;
     }
 
+    @Column(length = 100)
     public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUserName(String usrName) {
+        userName = usrName;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Date updated) {
-        this.updated = updated;
+    public void setUpdated(Date date) {
+        updated = date;
     }
 }

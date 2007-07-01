@@ -13,6 +13,4 @@ public interface ConfigDao {
     Config get();
 
     void save(Config config);
-
-    void saveOrUpdate(Config config);
 }

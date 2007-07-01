@@ -28,7 +28,7 @@ public class FactoidCount extends Label {
         }
 
         public Object getObject() {
-            return dao.getNumberOfFactoids();
+            return dao.count();
         }
     }
 }

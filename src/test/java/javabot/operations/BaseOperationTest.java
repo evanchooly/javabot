@@ -10,7 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.testng.Assert;
 import javabot.dao.FactoidDao;
-import javabot.dao.ChangesDao;
+import javabot.dao.ChangeDao;
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.ApplicationException;
@@ -33,7 +33,7 @@ public class BaseOperationTest extends UnitilsTestNG {
     private FactoidDao factoidDao;
 
     @SpringBeanByType
-    private ChangesDao changesDao;
+    private ChangeDao changeDao;
 
 
     public BaseOperationTest() {
@@ -92,6 +92,6 @@ public class BaseOperationTest extends UnitilsTestNG {
 
     protected void forgetFactoid2(String name) {
         testOperation2("forget " + name, "I forgot about " + name + ", " + SENDER + ".", "I never knew about " + name + " anyway, " + SENDER
-            + ".", new ForgetFactoidOperation(factoidDao, changesDao));
+            + ".", new ForgetFactoidOperation(factoidDao, changeDao));
     }
 }

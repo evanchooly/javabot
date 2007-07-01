@@ -1,8 +1,6 @@
 package javabot.dao.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javabot.dao.AbstractDaoHibernate;
@@ -11,8 +9,6 @@ import javabot.dao.ConfigDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
 import javabot.model.Config;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implements ChannelDao {
     private ConfigDao configDao;
@@ -23,43 +19,36 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
 
     @SuppressWarnings({"unchecked"})
     public List<String> configuredChannels() {
-        String query = "select distinct s.channel from Channel s";
-        List<String> m_channels = (List<String>)getSession().createQuery(query).list();
-        if(m_channels == null) {
-            return new ArrayList<String>();
-        }
-        return m_channels;
+        return (List<String>)getEntityManager().createNamedQuery(CONFIGURED_CHANNELS).getResultList();
     }
 
     @SuppressWarnings({"unchecked"})
     public List<Channel> getChannels() {
-        return (List<Channel>)getSession().getNamedQuery(ChannelDao.ALL).list();
+        return (List<Channel>)getEntityManager().createNamedQuery(ChannelDao.ALL).getResultList();
     }
 
     @SuppressWarnings({"unchecked"})
-    public Iterator<Channel> getIterator(QueryParam qp) {
+    public List<Channel> find(QueryParam qp) {
         StringBuilder query = new StringBuilder("from Channel c");
         if(qp.hasSort()) {
             query.append(" order by ")
                 .append(qp.getSort())
                 .append((qp.isSortAsc()) ? " asc" : " desc");
         }
-        return getSession().createQuery(query.toString())
+        return getEntityManager().createQuery(query.toString())
             .setFirstResult(qp.getFirst())
-            .setMaxResults(qp.getCount()).iterate();
+            .setMaxResults(qp.getCount()).getResultList();
     }
 
     public Channel get(String name) {
-        Channel channel = (Channel)getSession().getNamedQuery(ChannelDao.BY_NAME)
-            .setString("channel", name)
-            .uniqueResult();
+        Channel channel = (Channel)getEntityManager().createNamedQuery(ChannelDao.BY_NAME)
+            .setParameter("channel", name)
+            .getSingleResult();
         if(channel == null) {
             channel = new Channel();
             Config config = configDao.get();
             channel.setConfig(config);
-//            config.getChannels().add(channel);
-//            configDao.saveOrUpdate(config);
-            saveOrUpdate(channel);
+            save(channel);
         }
         return channel;
 
@@ -69,16 +58,10 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
         return get(name);
     }
 
-    private boolean isChannel(String channel) {
-        return get(channel).getName() != null;
-    }
-
-    public void saveOrUpdate(Channel channel) {
+    @Override
+    public void save(Channel channel) {
         channel.setUpdated(new Date());
-        Session session = getSession();
-        Transaction transaction = session.beginTransaction();
-        session.saveOrUpdate(channel);
-        transaction.commit();
+        super.save(channel);
     }
 
     public ConfigDao getConfigDao() {

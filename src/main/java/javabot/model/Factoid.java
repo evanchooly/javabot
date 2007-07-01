@@ -5,71 +5,72 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-//
-// User: joed
-// Date: Apr 11, 2007
-// Time: 2:22:19 PM
+import javabot.dao.FactoidDao;
 
-//
 @Entity
 @Table(name = "factoids")
+@NamedQueries({
+    @NamedQuery(name= FactoidDao.ALL, query="from Factoid f"),
+    @NamedQuery(name= FactoidDao.COUNT, query= "select count(*) from Factoid f"),
+    @NamedQuery(name= FactoidDao.BY_NAME, query= "from Factoid m where m.name = :name")
+
+})
 public class Factoid implements Serializable {
-    @Id
-    @Column(name = "`id`")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-//    @GeneratedValue(generator = "factoid_sequence")
-//    @SequenceGenerator(name = "factoid_sequence", sequenceName = "factoid_sequence", allocationSize = 1)
     private Long id;
-    @Column(name = "`name`", length = 255)
     private String name;
-    @Column(name = "`value`", length = 2000)
     private String value;
-    @Column(name = "`username`", length = 100)
     private String userName;
-    @Column(name = "`updated`")
     private Date updated;
 
+    @Id
+    @GeneratedValue
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long factoidId) {
+        id = factoidId;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String factoidName) {
+        name = factoidName;
     }
 
+    @Column(length = 2000)
     public String getValue() {
         return value;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setValue(String factoidValue) {
+        value = factoidValue;
     }
 
+    @Column(length = 100)
     public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUserName(String user) {
+        userName = user;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Date updated) {
-        this.updated = updated;
+    public void setUpdated(Date date) {
+        updated = date;
     }
 }
