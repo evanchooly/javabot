@@ -21,43 +21,42 @@ import org.unitils.UnitilsTestNG;
  */
 @Test(groups = {"operations"})
 public class ChannelOperationsTest extends UnitilsTestNG {
-    private ChannelDao c_dao;
+    private ChannelDao channelDao;
 
     @BeforeMethod()
     public void setUp() {
-        c_dao = createMock(ChannelDao.class);
+        channelDao = createMock(ChannelDao.class);
         Channel config = new Channel();
         config.setName("test");
-        config.setId((long)1);
+        config.setId(1L);
         config.setUpdated(new Date());
-        c_dao.save(config);
+        channelDao.save(config);
 
     }
 
     @Test
     public void testDaoCount() {
-        reset(c_dao);
+        reset(channelDao);
         Channel config = new Channel();
         config.setName("test");
-        config.setId((long)1);
+        config.setId(1L);
         config.setUpdated(new Date());
-        expect(c_dao.getChannel("test")).andReturn(config);
-        replay(c_dao);
-        Assert.assertEquals(1, c_dao.getChannel("test").getId().intValue()
-        );
+        expect(channelDao.get("test")).andReturn(config);
+        replay(channelDao);
+        Assert.assertEquals(1, channelDao.get("test").getId().intValue());
     }
 
     public void testDaoCount2() {
         List<Channel> listOfChannels = new LinkedList<Channel>();
-        reset(c_dao);
+        reset(channelDao);
         Channel config = new Channel();
         config.setName("test");
-        config.setId((long)1);
+        config.setId(1L);
         config.setUpdated(new Date());
         listOfChannels.add(config);
-        expect(c_dao.getChannels()).andReturn(listOfChannels);
-        replay(c_dao);
-        Assert.assertEquals(1, c_dao.getChannels().size()
+        expect(channelDao.getChannels()).andReturn(listOfChannels);
+        replay(channelDao);
+        Assert.assertEquals(1, channelDao.getChannels().size()
         );
     }
 
@@ -65,21 +64,21 @@ public class ChannelOperationsTest extends UnitilsTestNG {
         List<Channel> listOfChannels = new ArrayList<Channel>();
         List<String> ret_this = new ArrayList<String>();
         ret_this.add("test");
-        reset(c_dao);
+        reset(channelDao);
         Channel config = new Channel();
         config.setName("test");
-        config.setId((long)1);
+        config.setId(1L);
         config.setUpdated(new Date());
         listOfChannels.add(config);
-        expect(c_dao.configuredChannels()).andReturn(ret_this);
-        replay(c_dao);
-        Assert.assertEquals("test", c_dao.configuredChannels().get(0)
+        expect(channelDao.configuredChannels()).andReturn(ret_this);
+        replay(channelDao);
+        Assert.assertEquals("test", channelDao.configuredChannels().get(0)
         );
     }
 
     public void testAlreadyHaveFactoid() {
-        reset(c_dao);
-        replay(c_dao);
+        reset(channelDao);
+        replay(channelDao);
 
     }
 
@@ -98,7 +97,7 @@ public class ChannelOperationsTest extends UnitilsTestNG {
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "magnificent is MAGNIFICENT");
 
         expect(f_dao.hasFactoid("magnificent")).andReturn(false);
-        f_dao.addFactoid("joed", "magnificent", "MAGNIFICENT", c_dao, "test");
+        f_dao.addFactoid("joed", "magnificent", "MAGNIFICENT", channelDao, "test");
 
         replay(f_dao);
 
@@ -119,7 +118,7 @@ public class ChannelOperationsTest extends UnitilsTestNG {
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "magnificent is bla bla bla bla bla");
 
         expect(f_dao.hasFactoid("magnificent")).andReturn(false);
-        f_dao.addFactoid("joed", "magnificent", "bla bla bla bla bla", c_dao, "test");
+        f_dao.addFactoid("joed", "magnificent", "bla bla bla bla bla", channelDao, "test");
 
         replay(f_dao);
 

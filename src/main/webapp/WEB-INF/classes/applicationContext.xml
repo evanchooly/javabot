@@ -61,7 +61,9 @@
 
     <bean id="logDao" class="javabot.dao.impl.LogsDaoHibernate"/>
 
-    <bean id="channelDao" class="javabot.dao.impl.ChannelDaoHibernate"/>
+    <bean id="channelDao" class="javabot.dao.impl.ChannelDaoHibernate">
+        <property name="configDao" ref="configDao"/>
+    </bean>
 
     <bean id="karmaDao" class="javabot.dao.impl.KarmaDaoHibernate"/>
 

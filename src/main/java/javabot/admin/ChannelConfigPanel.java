@@ -66,7 +66,7 @@ public class ChannelConfigPanel extends Panel {
             add(new Button("add") {
                 @Override
                 public void onSubmit() {
-                    dao.getChannel(newChannel);
+                    dao.create(newChannel);
                     setResponsePage(getPage().getClass());
                 }
             });
@@ -76,8 +76,8 @@ public class ChannelConfigPanel extends Panel {
             return newChannel;
         }
 
-        public void setNewChannel(String newChannel) {
-            this.newChannel = newChannel;
+        public void setNewChannel(String channel) {
+            newChannel = channel;
         }
     }
 

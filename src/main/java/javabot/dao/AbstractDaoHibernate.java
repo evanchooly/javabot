@@ -4,14 +4,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import javabot.dao.util.EntityNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class AbstractDaoHibernate<T> {
 
     private Class entityClass;
     private EntityManager entityManager;
 
     protected AbstractDaoHibernate(Class dataClass) {
-        super();
         this.entityClass = dataClass;
     }
 

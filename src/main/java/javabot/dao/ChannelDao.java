@@ -19,8 +19,7 @@ public interface ChannelDao {
 
     Channel get(String name);
 
-    Channel getChannel(String name);
+    Channel create(String name);
 
     void save(Channel channel);
-
 }

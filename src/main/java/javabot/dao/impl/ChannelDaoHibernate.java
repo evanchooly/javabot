@@ -41,21 +41,21 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
     }
 
     public Channel get(String name) {
-        Channel channel = (Channel)getEntityManager().createNamedQuery(ChannelDao.BY_NAME)
+        return (Channel)getEntityManager().createNamedQuery(ChannelDao.BY_NAME)
             .setParameter("channel", name)
             .getSingleResult();
-        if(channel == null) {
-            channel = new Channel();
-            Config config = configDao.get();
-            channel.setConfig(config);
-            save(channel);
-        }
-        return channel;
 
     }
 
-    public Channel getChannel(String name) {
-        return get(name);
+    public Channel create(String name) {
+        Channel channel = new Channel();
+        Config config = configDao.get();
+        channel.setName(name);
+        channel.setConfig(config);
+        config.getChannels().add(channel);
+        save(channel);
+        configDao.save(config);
+        return channel;
     }
 
     @Override
