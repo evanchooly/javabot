@@ -3,19 +3,19 @@ package javabot.admin;
 import javabot.dao.AdminDao;
 import javabot.model.Admin;
 import org.apache.wicket.Request;
+import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebSession;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-// Author: joed
-// Date  : Jun 11, 2007
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 public class AdminSession extends WebSession {
+    @SpringBean
+    private AdminDao dao;
     private String user;
 
     protected AdminSession(WebApplication application, Request request) {
         super(application, request);
+        InjectorHolder.getInjector().inject(this);
     }
 
     /**
@@ -28,10 +28,7 @@ public class AdminSession extends WebSession {
      * @return True if the user was authenticated
      */
     public final boolean authenticate(String username, String password) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
-        AdminDao dao = (AdminDao)context.getBean("adminDao");
         if(user == null) {
-            // Trivial password "db"
             if(dao.isAdmin(username)) {
                 Admin admin = dao.getAdmin(username);
                 if(admin.getUserName().equals(username) && admin.getPassword().equals(password)) {
@@ -42,26 +39,15 @@ public class AdminSession extends WebSession {
         return user != null;
     }
 
-    /**
-     * @return True if user is signed in
-     */
     public boolean isSignedIn() {
         return user != null;
     }
 
-    /**
-     * @return User
-     */
     public String getUser() {
         return user;
     }
 
-    /**
-     * @param value New user
-     */
     public void setUser(String value) {
         user = value;
     }
-
-
 }

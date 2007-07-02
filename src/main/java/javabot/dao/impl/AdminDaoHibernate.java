@@ -1,6 +1,7 @@
 package javabot.dao.impl;
 
 import java.util.List;
+import javax.persistence.EntityManager;
 
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.AdminDao;
@@ -24,5 +25,10 @@ public class AdminDaoHibernate extends AbstractDaoHibernate<Admin> implements Ad
         return (Admin)getEntityManager().createNamedQuery(AdminDao.AUTHENTICATE)
             .setParameter("username", username)
             .getSingleResult();
+    }
+
+    @Override
+    public void setEntityManager(EntityManager manager) {
+        super.setEntityManager(manager);
     }
 }
