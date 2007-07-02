@@ -7,7 +7,6 @@ import java.util.List;
 import javabot.dao.ConfigDao;
 import javabot.model.Config;
 import javabot.operations.AddFactoidOperation;
-import javabot.operations.BotOperation;
 import javabot.operations.DaysToChristmasOperation;
 import javabot.operations.DaysUntilOperation;
 import javabot.operations.DictOperation;
@@ -31,7 +30,6 @@ import javabot.operations.StatsOperation;
 import javabot.operations.TellOperation;
 import javabot.operations.TimeOperation;
 import javabot.operations.UnixCommandOperation;
-import javabot.wicket.core.JavabotApplication;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Check;
@@ -58,7 +56,6 @@ public class BotConfigPanel extends Panel {
 
     private static final List<String> OPERATIONS = Arrays.asList(
             AddFactoidOperation.class.getName(),
-            BotOperation.class.getName(),
             DaysToChristmasOperation.class.getName(),
             DaysUntilOperation.class.getName(),
             DictOperation.class.getName(),
@@ -128,13 +125,15 @@ public class BotConfigPanel extends Panel {
             checks.add(checksList);
 
             add(new Button("save"));
-            add(new Button("start") {
+            Button start = new Button("start") {
                 @Override
                 public void onSubmit() {
-                    JavabotApplication app = (JavabotApplication)getApplication();
+                    AdminApplication app = (AdminApplication)getApplication();
                     app.bounceBot();
                 }
-            });
+            };
+            start.setDefaultFormProcessing(false);
+            add(start);
         }
 
         @Override

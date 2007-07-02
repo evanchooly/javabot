@@ -1,5 +1,6 @@
 package javabot.admin;
 
+import javabot.Javabot;
 import org.apache.wicket.Component;
 import org.apache.wicket.Request;
 import org.apache.wicket.Response;
@@ -16,6 +17,8 @@ import org.apache.wicket.request.IRequestCycleProcessor;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 
 public class AdminApplication extends WebApplication {
+    private Javabot bot;
+
     public AdminApplication() {
     }
 
@@ -62,5 +65,12 @@ public class AdminApplication extends WebApplication {
                 return new CryptedUrlWebRequestCodingStrategy(new WebRequestCodingStrategy());
             }
         };
+    }
+
+    public void bounceBot() {
+        if(bot != null) {
+            bot.dispose();
+        }
+        bot = new Javabot();
     }
 }

@@ -10,7 +10,6 @@ import javabot.wicket.pages.Index;
 import javabot.Javabot;
 
 public class JavabotApplication extends WebApplication {
-    private Javabot bot;
 
     @Override
     protected void init() {
@@ -31,12 +30,5 @@ public class JavabotApplication extends WebApplication {
     @Override
     public Session newSession(Request request, Response response) {
         return new JavabotSession(JavabotApplication.this, request);
-    }
-
-    public void bounceBot() {
-        if(bot != null) {
-            bot.dispose();
-        }
-        bot = new Javabot();
     }
 }

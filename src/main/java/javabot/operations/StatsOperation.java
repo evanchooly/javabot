@@ -1,28 +1,23 @@
 package javabot.operations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.FactoidDao;
 
-import java.util.ArrayList;
-import java.util.List;
-
-// joed - moved to Dao's
-
 public class StatsOperation implements BotOperation {
-    private FactoidDao m_dao;
+    private FactoidDao factoidDao;
 
-    public StatsOperation(FactoidDao m_dao) {
-        this.m_dao = m_dao;
+    public StatsOperation(FactoidDao dao) {
+        factoidDao = dao;
     }
 
-    private static long startTime = System.currentTimeMillis();
+    private static final long startTime = System.currentTimeMillis();
 
-    private static int numberOfMessages = 0;
+    private int numberOfMessages = 0;
 
-    /**
-     * @see BotOperation#handleMessage(BotEvent)
-     */
     public List<Message> handleMessage(BotEvent event) {
         numberOfMessages++;
         List<Message> messages = new ArrayList<Message>();
@@ -32,7 +27,8 @@ public class StatsOperation implements BotOperation {
         if (message.toLowerCase().startsWith("stats")) {
             long uptime = System.currentTimeMillis() - startTime;
             long days = uptime / 86400000;
-            messages.add(new Message(event.getChannel(), "I have been up for " + days + " days, " + "have served " + numberOfMessages + " messages, and have " + m_dao.count() + " factoids.", false));
+            messages.add(new Message(event.getChannel(), "I have been up for " + days + " days, have served "
+                + numberOfMessages + " messages, and have " + factoidDao.count() + " factoids.", false));
         }
 
         return messages;

@@ -24,7 +24,7 @@ public class Channel implements Serializable {
     private Long id;
     private String name;
     private Date updated;
-    private Boolean logged;
+    private Boolean logged = true;
     private Config config;
 
     @Id

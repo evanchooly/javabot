@@ -1,6 +1,7 @@
 package javabot.dao.impl;
 
 import java.util.Date;
+import javax.persistence.NoResultException;
 
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.SeenDao;
@@ -36,9 +37,15 @@ public class SeenDaoHibernate extends AbstractDaoHibernate<Seen> implements Seen
     }
 
     public Seen getSeen(String nick, String channel) {
-        return (Seen)getEntityManager().createNamedQuery(SeenDao.BY_NAME_AND_CHANNEL)
+        Seen seen = null;
+        try {
+            seen = (Seen)getEntityManager().createNamedQuery(SeenDao.BY_NAME_AND_CHANNEL)
             .setParameter("nick", nick)
-            .setParameter("channel", channel)
-            .getSingleResult();
+                .setParameter("channel", channel)
+                .getSingleResult();
+        } catch(NoResultException e) {
+            // hasn't been seen yet.
+        }
+        return seen;
     }
 }
