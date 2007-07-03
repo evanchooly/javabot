@@ -1,8 +1,5 @@
 package javabot.dao.impl;
 
-import java.util.Date;
-import java.util.List;
-
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.ChangeDao;
 import javabot.dao.KarmaDao;
@@ -10,6 +7,9 @@ import javabot.dao.util.QueryParam;
 import javabot.model.Karma;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import java.util.Date;
+import java.util.List;
 
 public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements KarmaDao {
     private static final Log log = LogFactory.getLog(KarmaDaoHibernate.class);
@@ -23,14 +23,14 @@ public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements Ka
     @SuppressWarnings("unchecked")
     public List<Karma> getKarmas(QueryParam qp) {
         StringBuilder query = new StringBuilder("from Karma");
-        if(qp.hasSort()) {
+        if (qp.hasSort()) {
             query.append(" order by ")
-                .append(qp.getSort())
-                .append((qp.isSortAsc()) ? " desc" : " asc");
+                    .append(qp.getSort())
+                    .append((qp.isSortAsc()) ? " desc" : " asc");
         }
         return getEntityManager().createQuery(query.toString())
-            .setFirstResult(qp.getFirst())
-            .setMaxResults(qp.getCount()).getResultList();
+                .setFirstResult(qp.getFirst())
+                .setMaxResults(qp.getCount()).getResultList();
     }
 
     @SuppressWarnings({"unchecked"})
@@ -59,9 +59,9 @@ public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements Ka
     }
 
     public Karma getKarma(String name) {
-        return (Karma)getEntityManager().createNamedQuery(KarmaDao.BY_NAME)
-            .setParameter("name", name)
-            .getSingleResult();
+        return (Karma) getEntityManager().createNamedQuery(KarmaDao.BY_NAME)
+                .setParameter("name", name)
+                .getSingleResult();
     }
 
     public Karma get(Long id) {
@@ -69,6 +69,6 @@ public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements Ka
     }
 
     public Long getCount() {
-        return (Long)getEntityManager().createQuery(KarmaDao.COUNT).getSingleResult();
+        return (Long) getEntityManager().createQuery("select count(*) from Karma").getSingleResult();
     }
 }

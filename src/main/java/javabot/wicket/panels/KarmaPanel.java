@@ -1,8 +1,5 @@
 package javabot.wicket.panels;
 
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
-
 import javabot.dao.KarmaDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Karma;
@@ -20,6 +17,9 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+
+import java.text.SimpleDateFormat;
+import java.util.Iterator;
 
 // User: joed
 // Date: May 24, 2007
@@ -120,8 +120,6 @@ public class KarmaPanel extends Panel {
     private class DetachableKarmaModel extends LoadableDetachableModel {
         private long id;
 
-        @SpringBean
-        private KarmaDao dao;
         public DetachableKarmaModel(Karma f) {
             this(f.getId());
         }
@@ -140,6 +138,7 @@ public class KarmaPanel extends Panel {
 
         /**
          * used for dataview with ReuseIfModelsEqualStrategy item reuse strategy
+         *
          * @see ReuseIfModelsEqualStrategy
          */
         @Override

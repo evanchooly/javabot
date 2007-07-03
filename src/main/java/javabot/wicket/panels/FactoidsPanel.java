@@ -1,8 +1,5 @@
 package javabot.wicket.panels;
 
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
-
 import javabot.dao.FactoidDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Factoid;
@@ -27,6 +24,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+
+import java.text.SimpleDateFormat;
+import java.util.Iterator;
 
 public class FactoidsPanel extends Panel {
 
@@ -90,7 +90,7 @@ public class FactoidsPanel extends Panel {
             SortParam sp = getSort();
             QueryParam qp = new QueryParam(first, count, sp.getProperty(), sp.isAscending());
 
-            return (Iterator) m_dao.getFactoidsFiltered(qp, filter);
+            return m_dao.getFactoidsFiltered(qp, filter).iterator();
         }
 
         public int size() {

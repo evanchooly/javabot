@@ -1,14 +1,14 @@
 package javabot.dao.impl;
 
-import java.util.Date;
-import java.util.List;
-
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.ChannelDao;
 import javabot.dao.ConfigDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
 import javabot.model.Config;
+
+import java.util.Date;
+import java.util.List;
 
 public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implements ChannelDao {
     private ConfigDao configDao;
@@ -19,31 +19,31 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
 
     @SuppressWarnings({"unchecked"})
     public List<String> configuredChannels() {
-        return (List<String>)getEntityManager().createNamedQuery(CONFIGURED_CHANNELS).getResultList();
+        return (List<String>) getEntityManager().createNamedQuery(CONFIGURED_CHANNELS).getResultList();
     }
 
     @SuppressWarnings({"unchecked"})
     public List<Channel> getChannels() {
-        return (List<Channel>)getEntityManager().createNamedQuery(ChannelDao.ALL).getResultList();
+        return (List<Channel>) getEntityManager().createNamedQuery(ChannelDao.ALL).getResultList();
     }
 
     @SuppressWarnings({"unchecked"})
     public List<Channel> find(QueryParam qp) {
         StringBuilder query = new StringBuilder("from Channel c");
-        if(qp.hasSort()) {
+        if (qp.hasSort()) {
             query.append(" order by ")
-                .append(qp.getSort())
-                .append((qp.isSortAsc()) ? " asc" : " desc");
+                    .append(qp.getSort())
+                    .append((qp.isSortAsc()) ? " asc" : " desc");
         }
         return getEntityManager().createQuery(query.toString())
-            .setFirstResult(qp.getFirst())
-            .setMaxResults(qp.getCount()).getResultList();
+                .setFirstResult(qp.getFirst())
+                .setMaxResults(qp.getCount()).getResultList();
     }
 
     public Channel get(String name) {
-        return (Channel)getEntityManager().createNamedQuery(ChannelDao.BY_NAME)
-            .setParameter("channel", name)
-            .getSingleResult();
+        return (Channel) getEntityManager().createNamedQuery(ChannelDao.BY_NAME)
+                .setParameter("channel", name)
+                .getSingleResult();
 
     }
 
@@ -61,7 +61,7 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
     @Override
     public void save(Channel channel) {
         channel.setUpdated(new Date());
-        super.save(channel);
+        super.merge(channel);
     }
 
     public ConfigDao getConfigDao() {

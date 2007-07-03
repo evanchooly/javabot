@@ -1,13 +1,13 @@
 package javabot.dao.impl;
 
+import javabot.dao.AbstractDaoHibernate;
+import javabot.dao.LogsDao;
+import javabot.model.Logs;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-
-import javabot.dao.AbstractDaoHibernate;
-import javabot.dao.LogsDao;
-import javabot.model.Logs;
 
 public class LogsDaoHibernate extends AbstractDaoHibernate<Logs> implements LogsDao {
     public LogsDaoHibernate() {
@@ -22,10 +22,10 @@ public class LogsDaoHibernate extends AbstractDaoHibernate<Logs> implements Logs
         tomorrow.setTime(today.getTime());
         tomorrow.add(Calendar.DATE, 1);
         return getEntityManager().createNamedQuery(LogsDao.TODAY)
-            .setParameter("channel", channel)
-            .setParameter("tomorrow", tomorrow.getTime())
-            .setParameter("today", today)
-            .getResultList();
+                .setParameter("channel", channel)
+                .setParameter("tomorrow", tomorrow.getTime())
+                .setParameter("today", today.getTime())
+                .getResultList();
     }
 
     public void logMessage(Logs.Type type, String nick, String channel, String message) {
@@ -40,10 +40,10 @@ public class LogsDaoHibernate extends AbstractDaoHibernate<Logs> implements Logs
 
     public Logs getMessage(String nick, String channel) {
         String query = "from Logs s where s.nick = :nick AND s.channel = :channel";
-        return (Logs)getEntityManager().createQuery(query)
-            .setParameter("nick", nick)
-            .setParameter("channel", channel.toLowerCase())
-            .getSingleResult();
+        return (Logs) getEntityManager().createQuery(query)
+                .setParameter("nick", nick)
+                .setParameter("channel", channel.toLowerCase())
+                .getSingleResult();
     }
 
     @SuppressWarnings({"unchecked"})
