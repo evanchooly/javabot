@@ -21,18 +21,18 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
     private ChangeDao changeDao;
 
     public void updateKarma() {
-        testOperation2("testjavabot++", "testjavabot has a karma level of 1, " + SENDER, "");
-        testOperation2("testjavabot++", "testjavabot has a karma level of 2, " + SENDER, "");
-        testOperation2("testjavabot--", "testjavabot has a karma level of 1, " + SENDER, "");
-        testOperation2("testjavabot--", "testjavabot has a karma level of 0, " + SENDER, "");
-        testOperation2("testjavabot--", "testjavabot has a karma level of -1, " + SENDER, "");
-        testOperation2("testjavabot++", "testjavabot has a karma level of 0, " + SENDER, "");
+        testOperation("testjavabot++", "testjavabot has a karma level of 1, " + SENDER, "");
+        testOperation("testjavabot++", "testjavabot has a karma level of 2, " + SENDER, "");
+        testOperation("testjavabot--", "testjavabot has a karma level of 1, " + SENDER, "");
+        testOperation("testjavabot--", "testjavabot has a karma level of 0, " + SENDER, "");
+        testOperation("testjavabot--", "testjavabot has a karma level of -1, " + SENDER, "");
+        testOperation("testjavabot++", "testjavabot has a karma level of 0, " + SENDER, "");
     }
 
     public void logNew() {
         log.debug("BEGIN ADDLOG");
         String target = "karmachange2";
-        testOperation2(target + "++", target + " has a karma level of 1, " + SENDER, "");
+        testOperation(target + "++", target + " has a karma level of 1, " + SENDER, "");
         String message = SENDER + " added 'karma " + target + "' with " + "a value of '1'";
         log.debug("looking for " + message);
         Assert.assertTrue(changeDao.findLog(message));
@@ -44,7 +44,7 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
         log.debug("BEGIN LOGCHANGED");
         String target = "javabot";
         int karma = getKarma(target) + 1;
-        testOperation2(target + "++", target + " has a karma level of " + karma + ", " + SENDER, "");
+        testOperation(target + "++", target + " has a karma level of " + karma + ", " + SENDER, "");
         String message = SENDER + " changed 'karma " + target + "' to" + " '" + karma + "'";
         log.debug("looking for " + message);
         Assert.assertTrue(changeDao.findLog(message));
@@ -67,7 +67,7 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
         return Integer.parseInt(value);
     }
 
-    protected BotOperation getOperation2() {
+    protected BotOperation getOperation() {
 
         KarmaChangeOperation operation = null;
         try {

@@ -36,10 +36,10 @@ public class ChangeDaoHibernate extends AbstractDaoHibernate<Change> implements 
 
     public boolean findLog(String message) {
         String query = "from Change c where c.message = :message";
-        Change change = (Change)getEntityManager().createQuery(query)
+        List change = getEntityManager().createQuery(query)
             .setParameter("message", message)
-            .getSingleResult();
-        return change != null;
+            .getResultList();
+        return change != null && ! change.isEmpty();
     }
 
     public Long count(Change filter) {

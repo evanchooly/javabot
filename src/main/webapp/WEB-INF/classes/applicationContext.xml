@@ -54,7 +54,9 @@
 
     <bean id="configDao" class="javabot.dao.impl.ConfigHibernateDao"/>
 
-    <bean id="factoidDao" class="javabot.dao.impl.FactoidDaoHibernate"/>
+    <bean id="factoidDao" class="javabot.dao.impl.FactoidDaoHibernate">
+        <property name="changeDao" ref="changeDao"/>
+    </bean>
     <bean id="changeDao" class="javabot.dao.impl.ChangeDaoHibernate"/>
 
     <bean id="seenDao" class="javabot.dao.impl.SeenDaoHibernate"/>

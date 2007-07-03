@@ -42,8 +42,8 @@ public class BaseOperationTest extends UnitilsTestNG {
     public BaseOperationTest(String name) {
     }
 
-    protected void testOperation2(String message, String response, String errorMessage) {
-        testOperation2(message, response, errorMessage, getOperation2());
+    protected void testOperation(String message, String response, String errorMessage) {
+        testOperation2(message, response, errorMessage, getOperation());
     }
 
     protected void testOperation2(String message, String response, String errorMessage, BotOperation operation) {
@@ -56,7 +56,7 @@ public class BaseOperationTest extends UnitilsTestNG {
     }
 
     protected void testOperation2(String message, String[] responses, String errorMessage) {
-        testOperation2(message, responses, errorMessage, getOperation2());
+        testOperation2(message, responses, errorMessage, getOperation());
     }
 
     protected void testOperation2(String message, String[] responses, String errorMessage, BotOperation operation) {
@@ -77,7 +77,7 @@ public class BaseOperationTest extends UnitilsTestNG {
         }
     }
 
-    protected BotOperation getOperation2() {
+    protected BotOperation getOperation() {
         throw new ApplicationException("Implement this method on " + getClass().getName());
     }
 

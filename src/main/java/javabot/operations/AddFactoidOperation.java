@@ -26,7 +26,7 @@ public class AddFactoidOperation implements BotOperation {
         String channel = event.getChannel();
         String sender = event.getSender();
 
-        if (message.toLowerCase().contains(" is ")) {
+        if (message.toLowerCase().contains(" is")) {
 
             String key = message.substring(0, message.indexOf(" is"));
             key = key.toLowerCase();

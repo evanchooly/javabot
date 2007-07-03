@@ -54,46 +54,40 @@ public class AddFactoidOperationTest extends BaseOperationTest {
 
     public void factoidAdd() {
         String errorMessage = "Should have added the factoid";
-        testOperation2("test pong is pong", OKAY, errorMessage);
-        testOperation2("ping $1 is <action>sends some radar to $1, " + "awaits a response then forgets how long it took", OKAY, errorMessage);
-        testOperation2("what? is a question", OKAY, errorMessage);
-        testOperation2("what up? is <see>what?", OKAY, errorMessage);
+        testOperation("test pong is pong", OKAY, errorMessage);
+        testOperation("ping $1 is <action>sends some radar to $1, " + "awaits a response then forgets how long it took", OKAY, errorMessage);
+        testOperation("what? is a question", OKAY, errorMessage);
+        testOperation("what up? is <see>what?", OKAY, errorMessage);
     }
 
     @Test(dependsOnMethods = {"factoidAdd"})
     public void duplicateAdd() throws IOException {
         String errorMessage = "Should not have added the factoid";
         String message = "test pong is pong";
-        testOperation2(message, OKAY, errorMessage);
-        testOperation2(message, ALREADY_HAVE_FACTOID, errorMessage);
-    }
-
-    public void blankFactoid() throws IOException {
-        String response = "Invalid factoid name";
-        String errorMessage = "Should not have added the factoid";
-        testOperation2("is pong", response, errorMessage);
+        testOperation(message, OKAY, errorMessage);
+        testOperation(message, ALREADY_HAVE_FACTOID, errorMessage);
     }
 
     public void blankValue() {
         String response = "Invalid factoid value";
         String errorMessage = "Should not have added the factoid";
-        testOperation2("pong is", response, errorMessage);
+        testOperation("pong is", response, errorMessage);
     }
 
     public void addLog() {
-        testOperation2("12345 is 12345", OKAY, "Should have added the factoid.");
+        testOperation("12345 is 12345", OKAY, "Should have added the factoid.");
         Assert.assertTrue(changeDao.findLog(SENDER + " added '" + 12345 + "' with a value of '" + 12345 + "'"));
         forgetFactoid2("12345");
     }
 
     public void channelMessage() throws IOException {
         BotEvent event = new BotEvent("#test", SENDER, "", "localhost", "pong is");
-        Assert.assertEquals(getOperation2().handleChannelMessage(event).size(), 0, "Should be an empty list");
+        Assert.assertEquals(getOperation().handleChannelMessage(event).size(), 0, "Should be an empty list");
     }
 
     public void parensFactoids() {
         String factoid = "should be the full (/hi there) factoid";
-        testOperation2("asdf is <reply>" + factoid, OKAY, "Should have added the factoid.");
+        testOperation("asdf is <reply>" + factoid, OKAY, "Should have added the factoid.");
 
         GetFactoidOperation operation = new GetFactoidOperation(factoidDao);
         String errorMessage = "Should have found the factoid";
@@ -101,7 +95,7 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     }
 
     @Override
-    protected AddFactoidOperation getOperation2() {
+    protected AddFactoidOperation getOperation() {
         return new AddFactoidOperation(factoidDao, changeDao);
     }
 }
