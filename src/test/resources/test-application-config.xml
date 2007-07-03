@@ -1,91 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
 
-<beans>
-
-   <bean id="configDao" class="javabot.dao.impl.ConfigHibernateDao">
-        <property name="sessionFactory" ref="sessionFactory"/>
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:locations.properties</value>
+            </list>
+        </property>
     </bean>
 
-    <bean id="factoidDao" class="javabot.dao.impl.FactoidDaoHibernate">
-        <property name="sessionFactory" ref="sessionFactory"/>
+    <bean id="dataSource" class="org.unitils.database.UnitilsDataSource"/>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="showSql" value="true"/>
+                <property name="generateDdl" value="true"/>
+                <property name="databasePlatform" value="${hibernate.dialect}"/>
+            </bean>
+        </property>
     </bean>
 
-    <bean id="changeDao" class="javabot.dao.impl.ChangeDaoHibernate">
-        <property name="sessionFactory" ref="sessionFactory"/>
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+        <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean id="seenDao" class="javabot.dao.impl.SeenDaoHibernate">
-        <property name="sessionFactory" ref="sessionFactory"/>
+    <tx:annotation-driven/>
+
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+
+    <bean class="org.springframework.transaction.interceptor.TransactionAttributeSourceAdvisor">
+        <property name="transactionInterceptor" ref="transactionInterceptor"/>
     </bean>
 
-    <bean id="logDao" class="javabot.dao.impl.LogsDaoHibernate">
-        <property name="sessionFactory" ref="sessionFactory"/>
+    <bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="transactionAttributeSource">
+            <bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
+        </property>
     </bean>
+
+    <bean id="configDao" class="javabot.dao.impl.ConfigHibernateDao"/>
+
+    <bean id="factoidDao" class="javabot.dao.impl.FactoidDaoHibernate"/>
+    <bean id="changeDao" class="javabot.dao.impl.ChangeDaoHibernate"/>
+
+    <bean id="seenDao" class="javabot.dao.impl.SeenDaoHibernate"/>
+
+    <bean id="logDao" class="javabot.dao.impl.LogsDaoHibernate"/>
 
     <bean id="channelDao" class="javabot.dao.impl.ChannelDaoHibernate">
-        <property name="sessionFactory" ref="sessionFactory"/>
         <property name="configDao" ref="configDao"/>
     </bean>
 
-    <bean id="karmaDao" class="javabot.dao.impl.KarmaDaoHibernate">
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
+    <bean id="karmaDao" class="javabot.dao.impl.KarmaDaoHibernate"/>
 
-    <bean id="adminDao" class="javabot.dao.impl.AdminDaoHibernate">
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
-    <bean id="dataSource" class="org.unitils.database.UnitilsDataSource" />
-
-    <!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.hsqldb.Driver"/>
-        <property name="url" value="jdbc:hsqldb:javabot-test"/>
-        <property name="username" value="sa"/>
-        <property name="password" value=""/>
-    </bean>
--->
-
-
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="annotatedClasses">
-              <list>
-                <value>javabot.model.Factoid</value>
-                <value>javabot.model.Change</value>
-                <value>javabot.model.Config</value>
-                <value>javabot.model.Seen</value>
-                <value>javabot.model.Logs</value>
-                <value>javabot.model.Channel</value>
-                <value>javabot.model.Karma</value>
-                <value>javabot.model.Admin</value>
-            </list>
-        </property>
-        <property name="hibernateProperties">
-            <value>
-                hibernate.dialect=org.hibernate.dialect.MySQLDialect
-                hibernate.show_sql=true
-                use_outer_join=true
-                <!--<prop key="hibernate.current_session_context_class">thread</prop>
-                <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>-->
-
-                hibernate.bytecode.use_reflection_optimizer=true
-                hibernate.cglib.use_reflection_optimizer=true
-                hibernate.transaction.flush_before_completion=true
-                hibernate.current_session_context_class=thread
-
-                hibernate.connection.release_mode=after_transaction
-                hibernate.transaction.auto_close_session=true
-
-            </value>
-        </property>
-
-        <property name="schemaUpdate">
-                  <value>true</value>
-              </property>
-        
-    </bean>
-
-
-    
+    <bean id="adminDao" class="javabot.dao.impl.AdminDaoHibernate"/>
 
 </beans>

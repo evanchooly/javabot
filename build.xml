@@ -36,6 +36,12 @@
         <path id="build.class.path">
             <path refid="build.path"/>
             <path refid="project.class.path"/>
+            <pathelement location="etc"/>
+            <pathelement location="build/test"/>
+            <pathelement location="${ant.core.lib}"/>
+            <pathelement path="src/main/webapp/WEB-INF/classes/META-INF"/>
+            <pathelement location="src/test/resources"/>
+            <pathelement location="build/war/WEB-INF/classes/"/>
         </path>
     </target>
 
@@ -51,8 +57,6 @@
         <copy todir="${build.src.dir}">
             <fileset dir="${src.dir}" excludes="**/*.java"/>
         </copy>
-
-
     </target>
 
     <target name="war" depends="main">
@@ -260,8 +264,10 @@
             <dependency groupId="org.testng" artifactId="testng" version="5.5"/>
             <dependency groupId="org.testng" artifactId="testng" version="5.5" classifier="jdk15"/>
 
-            <dependency groupId="org.apache.wicket" artifactId="wicket" version="1.3.0-incubating-SNAPSHOT" classifier="javadoc"/>
-            <dependency groupId="org.apache.wicket" artifactId="wicket" version="1.3.0-incubating-SNAPSHOT" classifier="sources"/>
+            <dependency groupId="org.apache.wicket" artifactId="wicket" version="1.3.0-incubating-SNAPSHOT"
+                        classifier="javadoc"/>
+            <dependency groupId="org.apache.wicket" artifactId="wicket" version="1.3.0-incubating-SNAPSHOT"
+                        classifier="sources"/>
         </artifact:dependencies>
 
     </target>
@@ -270,7 +276,7 @@
         <taskdef name="mvnProject" classname="javabot.util.ProjectConfigTask" classpathref="build.class.path"/>
 
         <copy tofile="test.iml" file="javabot.iml" overwrite="true"/>
-        <mvnProject idea="test.iml">
+        <mvnProject idea="javabot.iml">
             <path refid="build.class.path"/>
         </mvnProject>
     </target>

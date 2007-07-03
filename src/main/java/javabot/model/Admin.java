@@ -60,10 +60,6 @@ public class Admin implements Serializable {
         this.name = name;
     }
 
-    public void setChannel(String channel) {
-        name = channel;
-    }
-
     public Date getUpdated() {
         return updated;
     }

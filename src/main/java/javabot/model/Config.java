@@ -64,6 +64,7 @@ public class Config implements Serializable {
         nick = botName;
     }
 
+    @SuppressWarnings({"JpaModelErrorInspection"})
     @CollectionOfElements
     public List<String> getOperations() {
         return operations;

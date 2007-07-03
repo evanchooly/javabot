@@ -108,6 +108,9 @@ public class ProjectConfigTask extends Task {
         if(url.endsWith(".jar")) {
             url = url.replaceAll("file:", "jar://").replaceAll(".jar$", ".jar!/");
         }
+        if(url.startsWith("file:")) {
+            url = url.replaceAll("file:", "file://");
+        }
         return url;
     }
 
