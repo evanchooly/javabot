@@ -63,7 +63,9 @@
         <property name="configDao" ref="configDao"/>
     </bean>
 
-    <bean id="karmaDao" class="javabot.dao.impl.KarmaDaoHibernate"/>
+    <bean id="karmaDao" class="javabot.dao.impl.KarmaDaoHibernate">
+        <property name="changeDao" ref="changeDao"/>
+    </bean>
 
     <bean id="adminDao" class="javabot.dao.impl.AdminDaoHibernate"/>
 

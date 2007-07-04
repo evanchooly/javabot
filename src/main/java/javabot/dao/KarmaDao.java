@@ -10,13 +10,9 @@ public interface KarmaDao {
     String COUNT = "Karma.count";
     String BY_NAME = "Karma.byName";
 
-    boolean hasKarma(String key);
+    Karma find(String nick);
 
-    void addKarma(String sender, String key, Integer value);
-
-    Karma getKarma(String nick);
-
-    Karma get(Long id);
+    Karma find(Long id);
 
     List<Karma> findAll();
 
@@ -24,6 +20,5 @@ public interface KarmaDao {
 
     Long getCount();
 
-    void updateKarma(Karma karma);
-
+    void save(Karma karma);
 }

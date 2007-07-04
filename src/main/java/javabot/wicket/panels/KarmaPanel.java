@@ -1,5 +1,8 @@
 package javabot.wicket.panels;
 
+import java.text.SimpleDateFormat;
+import java.util.Iterator;
+
 import javabot.dao.KarmaDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Karma;
@@ -17,9 +20,6 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
 
 // User: joed
 // Date: May 24, 2007
@@ -156,7 +156,7 @@ public class KarmaPanel extends Panel {
 
         @Override
         protected Object load() {
-            return dao.get(id);
+            return dao.find(id);
         }
     }
 }

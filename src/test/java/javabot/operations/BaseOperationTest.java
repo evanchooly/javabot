@@ -43,23 +43,21 @@ public class BaseOperationTest extends UnitilsTestNG {
     }
 
     protected void testOperation(String message, String response, String errorMessage) {
-        testOperation2(message, response, errorMessage, getOperation());
+        testOperation(message, response, errorMessage, getOperation());
     }
 
-    protected void testOperation2(String message, String response, String errorMessage, BotOperation operation) {
+    protected void testOperation(String message, String response, String errorMessage, BotOperation operation) {
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, message);
         List<Message> results = operation.handleMessage(event);
         Assert.assertTrue(!results.isEmpty());
-        Message result = results.get(0);
-        log.debug("result = " + result);
-        Assert.assertEquals(response, result.getMessage(), errorMessage);
+        Assert.assertEquals(results.get(0).getMessage(), response, errorMessage);
     }
 
-    protected void testOperation2(String message, String[] responses, String errorMessage) {
-        testOperation2(message, responses, errorMessage, getOperation());
+    protected void testOperation(String message, String[] responses, String errorMessage) {
+        testOperation(message, responses, errorMessage, getOperation());
     }
 
-    protected void testOperation2(String message, String[] responses, String errorMessage, BotOperation operation) {
+    protected void testOperation(String message, String[] responses, String errorMessage, BotOperation operation) {
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, message);
         List<Message> results = operation.handleMessage(event);
         Message result = results.get(0);
@@ -91,7 +89,7 @@ public class BaseOperationTest extends UnitilsTestNG {
     }
 
     protected void forgetFactoid2(String name) {
-        testOperation2("forget " + name, "I forgot about " + name + ", " + SENDER + ".", "I never knew about " + name + " anyway, " + SENDER
+        testOperation("forget " + name, "I forgot about " + name + ", " + SENDER + ".", "I never knew about " + name + " anyway, " + SENDER
             + ".", new ForgetFactoidOperation(factoidDao, changeDao));
     }
 }

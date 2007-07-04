@@ -4,28 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javabot.BotEvent;
-import javabot.Javabot;
 import javabot.Message;
-import javabot.dao.ChangeDao;
 import javabot.dao.KarmaDao;
+import javabot.dao.SeenDao;
 import javabot.model.Karma;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class KarmaChangeOperation implements BotOperation {
-
-    private static Log log = LogFactory.getLog(KarmaChangeOperation.class);
-    private final Javabot javabot;
-
-    private ChangeDao c_dao;
     private KarmaDao dao;
-    private String htmlFile;
+    private SeenDao seenDao;
 
-    public KarmaChangeOperation(KarmaDao karma_dao, ChangeDao change_dao, final Javabot bot) {
-        this.dao = karma_dao;
-        this.c_dao = change_dao;
-        javabot = bot;
-
+    public KarmaChangeOperation(KarmaDao karmaDao, SeenDao sDao) {
+        dao = karmaDao;
+        seenDao = sDao;
     }
 
     public List<Message> handleMessage(BotEvent event) {
@@ -33,53 +23,35 @@ public class KarmaChangeOperation implements BotOperation {
         String message = event.getMessage();
         String sender = event.getSender();
         String channel = event.getChannel();
-        if (message.indexOf(" ") != -1) {
+        if(message.indexOf(" ") != -1) {
             return messages;
         }
-        if (message.endsWith("++") || message.endsWith("--")) {
+        if(message.endsWith("++") || message.endsWith("--")) {
             String nick = message.substring(0, message.length() - 2);
-            if (!javabot.isOnSameChannelAs(nick)) {
+            if(!seenDao.isSeen(nick, channel)) {
                 messages.add(new Message(channel, "I don't know who that is.", false));
             } else {
                 nick = nick.toLowerCase();
-                Integer karmavalue = 0;
-                boolean newKarma = false;
-                Karma karma = new Karma();
-
-                if (dao.hasKarma(nick)) {
-                    karma = dao.getKarma(nick);
-                    karmavalue = (karma.getValue());
-                }
-
-                if (karmavalue == 0) {
-                    newKarma = true;
+                Karma karma = dao.find(nick);
+                if(karma == null) {
                     karma = new Karma();
-
                     karma.setName(nick);
-                    karma.setValue(0);
-                    karma.setUserName(sender);
-
                 }
-
-                if (nick.equals(sender.toLowerCase())) {
+                if(nick.equals(sender.toLowerCase())) {
                     messages.add(new Message(channel, "Changing one's own karma is not permitted.", false));
                     message = "--";
                 }
-                if (message.endsWith("++")) {
-                    karmavalue++;
+                if(message.endsWith("++")) {
+                    karma.setValue(karma.getValue() + 1);
                 } else {
-                    karmavalue--;
+                    karma.setValue(karma.getValue() - 1);
                 }
-                karma.setValue(karmavalue);
                 karma.setUserName(sender);
+                dao.save(karma);
 
-                if (newKarma) {
-                    dao.addKarma(karma.getUserName(), karma.getName(), karma.getValue());
-                } else {
-                    dao.updateKarma(karma);
-                }
                 KarmaReadOperation karmaRead = new KarmaReadOperation(dao);
-                messages.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event.getHostname(), "karma " + nick)));
+                messages.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(),
+                    event.getLogin(), event.getHostname(), "karma " + nick)));
             }
         }
         return messages;

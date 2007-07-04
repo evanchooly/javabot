@@ -1,5 +1,9 @@
 package javabot.dao.impl;
 
+import java.util.Date;
+import java.util.List;
+import javax.persistence.NoResultException;
+
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.ChangeDao;
 import javabot.dao.KarmaDao;
@@ -7,9 +11,6 @@ import javabot.dao.util.QueryParam;
 import javabot.model.Karma;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.Date;
-import java.util.List;
 
 public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements KarmaDao {
     private static final Log log = LogFactory.getLog(KarmaDaoHibernate.class);
@@ -38,37 +39,29 @@ public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements Ka
         return getEntityManager().createNamedQuery(KarmaDao.ALL).getResultList();
     }
 
-    public void updateKarma(Karma toUpdate) {
-        Karma karma = getKarma(toUpdate.getName());
+    @Override
+    public void save(Karma karma) {
         karma.setUpdated(new Date());
+        super.save(karma);
         changeDao.logChange(karma.getUserName() + " changed '" + karma.getName() + "' to '" + karma.getValue() + "'");
-        save(karma);
     }
 
-    public boolean hasKarma(String key) {
-        return getKarma(key) != null;
-    }
-
-    public void addKarma(String sender, String key, Integer value) {
-        Karma karma = new Karma();
-        karma.setName(key);
-        karma.setValue(value);
-        karma.setUserName(sender);
-        karma.setUpdated(new Date());
-        save(karma);
-    }
-
-    public Karma getKarma(String name) {
-        return (Karma) getEntityManager().createNamedQuery(KarmaDao.BY_NAME)
+    public Karma find(String name) {
+        Karma karma = null;
+        try {
+            karma = (Karma)getEntityManager().createNamedQuery(KarmaDao.BY_NAME)
                 .setParameter("name", name)
                 .getSingleResult();
-    }
-
-    public Karma get(Long id) {
-        return load(id);
+        } catch(NoResultException e) {
+        }
+        return karma;
     }
 
     public Long getCount() {
-        return (Long) getEntityManager().createQuery("select count(*) from Karma").getSingleResult();
+        return (Long) getEntityManager().createQuery("select count(k) from Karma k").getSingleResult();
+    }
+
+    public void setChangeDao(ChangeDao dao) {
+        this.changeDao = dao;
     }
 }

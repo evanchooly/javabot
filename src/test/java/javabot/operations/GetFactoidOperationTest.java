@@ -17,7 +17,10 @@ import javabot.Message;
 
 public class GetFactoidOperationTest extends BaseOperationTest {
     private static Log log = LogFactory.getLog(GetFactoidOperationTest.class);
-    private static final String PBV_VALUE = "Java only supports pass by value, not pass by reference (references to objects are passed by value).  See http://tinyurl.com/ynr5d3, http://tinyurl.com/ywlv6d (especially http://tinyurl.com/yvppac), and http://tinyurl.com/4wgdh (search for \"Passing Reference Data Type Arguments\")";
+    private static final String PBV_VALUE = "Java only supports pass by value, not pass by reference (references"
+        + " to objects are passed by value). See http://tinyurl.com/ynr5d3, http://tinyurl.com/ywlv6d (especially"
+        + " http://tinyurl.com/yvppac), and http://tinyurl.com/4wgdh (search for \"Passing Reference Data Type "
+        + "Arguments\")";
     private static final String ERROR_MESSAGE = "Should have found the factoid";
 
     @SpringBeanByType
@@ -39,7 +42,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void seeGets() {
-        testOperation("pebcak", getFoundMessage2("pebcak", "Problem Exists Between Keyboard " + "And Chair"),
+        testOperation("pebcak", getFoundMessage2("pebkac", "Problem Exists Between Keyboard And Chair"),
             ERROR_MESSAGE);
     }
 
@@ -56,12 +59,12 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void randomList() {
-        testOperation2("coin", new String[]{"heads", "tails"}, ERROR_MESSAGE);
+        testOperation("coin", new String[]{"heads", "tails"}, ERROR_MESSAGE);
     }
 
     public void questionFactoid() {
-        testOperation("how to use spinners?", getFoundMessage2("how to use spinners", "http://java.sun.com/docs/books/tutorial/uiswing/components/spinner.html"),
-            ERROR_MESSAGE);
+        testOperation("how to use spinners?", getFoundMessage2("how to use spinners",
+            "http://java.sun.com/docs/books/tutorial/uiswing/components/spinner.html"), ERROR_MESSAGE);
     }
 
     public void guessFactoid() {

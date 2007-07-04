@@ -1,8 +1,8 @@
 package javabot.operations;
 
-import javabot.Javabot;
 import javabot.dao.ChangeDao;
 import javabot.dao.KarmaDao;
+import javabot.dao.SeenDao;
 import javabot.model.Karma;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,14 +19,19 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
 
     @SpringBeanByType
     private ChangeDao changeDao;
+    @SpringBeanByType
+    private SeenDao seenDao;
 
     public void updateKarma() {
-        testOperation("testjavabot++", "testjavabot has a karma level of 1, " + SENDER, "");
-        testOperation("testjavabot++", "testjavabot has a karma level of 2, " + SENDER, "");
-        testOperation("testjavabot--", "testjavabot has a karma level of 1, " + SENDER, "");
-        testOperation("testjavabot--", "testjavabot has a karma level of 0, " + SENDER, "");
-        testOperation("testjavabot--", "testjavabot has a karma level of -1, " + SENDER, "");
-        testOperation("testjavabot++", "testjavabot has a karma level of 0, " + SENDER, "");
+        seenDao.logSeen("testjavabot", CHANNEL, "dude!");
+        Karma karma = karmaDao.find("testjavabot");
+        int value = karma.getValue();
+        testOperation("testjavabot++", "testjavabot has a karma level of " + (value++) + ", " + SENDER, "");
+        testOperation("testjavabot++", "testjavabot has a karma level of " + (value++) + ", " + SENDER, "");
+        testOperation("testjavabot--", "testjavabot has a karma level of " + (value--) + ", " + SENDER, "");
+        testOperation("testjavabot--", "testjavabot has a karma level of " + (value--) + ", " + SENDER, "");
+        testOperation("testjavabot--", "testjavabot has a karma level of " + (value--) + ", " + SENDER, "");
+        testOperation("testjavabot++", "testjavabot has a karma level of " + (value++) + ", " + SENDER, "");
     }
 
     public void logNew() {
@@ -53,28 +58,29 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
 
     public void changeOwnKarma() {
         int karma = getKarma(SENDER);
-        testOperation2(SENDER + "++", new String[]{"Changing one's own karma is not permitted.", "You now have a karma level of " + (karma - 1)}, "");
+        testOperation(SENDER + "++", new String[]{"Changing one's own karma is not permitted.", "You now have a karma level of " + (karma - 1)}, "");
         int karma2 = getKarma(SENDER);
         Assert.assertTrue(karma2 == karma - 1, "Should have lost one karma point.");
     }
 
     private int getKarma(String target) {
         log.debug("target = " + target);
-        Karma factoid = karmaDao.getKarma(target);
+        Karma factoid = karmaDao.find(target);
         String value = factoid.getValue().toString();
         log.debug("value = " + value);
 
         return Integer.parseInt(value);
     }
 
+    @Override
     protected BotOperation getOperation() {
 
         KarmaChangeOperation operation = null;
         try {
-            operation = new KarmaChangeOperation(karmaDao, changeDao, new Javabot());
+            operation = new KarmaChangeOperation(karmaDao, seenDao);
             return operation;
         } catch (Exception e) {
-            Assert.fail("Could not create operation");
+            Assert.fail("Could not create operation: " + e.getMessage());
         }
 
         return operation;

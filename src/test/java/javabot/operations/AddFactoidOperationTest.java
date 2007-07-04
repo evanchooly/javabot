@@ -91,7 +91,7 @@ public class AddFactoidOperationTest extends BaseOperationTest {
 
         GetFactoidOperation operation = new GetFactoidOperation(factoidDao);
         String errorMessage = "Should have found the factoid";
-        testOperation2("asdf", factoid, errorMessage, operation);
+        testOperation("asdf", factoid, errorMessage, operation);
     }
 
     @Override

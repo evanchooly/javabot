@@ -46,10 +46,6 @@ public class ChangeDaoHibernate extends AbstractDaoHibernate<Change> implements 
         return (Long)buildFindQuery(null, filter, true).getSingleResult();
     }
 
-    public Change find(Long id) {
-        return load(id);
-    }
-
     // TODO clean this up
     private Query buildFindQuery(QueryParam qp, Change filter, boolean count) {
         StringBuilder hql = new StringBuilder();

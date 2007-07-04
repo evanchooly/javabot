@@ -2,6 +2,7 @@ package javabot.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
 import javabot.dao.util.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,13 +27,13 @@ public class AbstractDaoHibernate<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public T load(Long id) {
+    public T find(Long id) {
         return (T)getEntityManager().find(entityClass, id);
     }
 
     @SuppressWarnings("unchecked")
     private T loadChecked(Long id) throws EntityNotFoundException {
-        T persistedObject = load(id);
+        T persistedObject = find(id);
         if(persistedObject == null) {
             throw new EntityNotFoundException(entityClass, id);
         }
@@ -44,7 +45,11 @@ public class AbstractDaoHibernate<T> {
     }
 
     public void save(T persistedObject) {
-        getEntityManager().persist(persistedObject);
+        try {
+            getEntityManager().persist(persistedObject);
+        } catch(PersistenceException e) {
+            getEntityManager().persist(getEntityManager().merge(persistedObject));
+        }
     }
 
     private void delete(T persistedObject) {

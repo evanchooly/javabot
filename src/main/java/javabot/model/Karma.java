@@ -24,7 +24,7 @@ import javabot.dao.KarmaDao;
 public class Karma implements Serializable {
     private Long id;
     private String name;
-    private Integer value;
+    private Integer value = 0;
     private String userName;
     private Date updated;
 

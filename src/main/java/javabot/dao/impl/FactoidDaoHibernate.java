@@ -40,11 +40,12 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
     public void save(Factoid factoid) {
         factoid.setUpdated(new Date());
         super.save(factoid);
-        changeDao.logChange(factoid.getUserName() + " changed '" + factoid.getName() + "' to '" + factoid.getValue() + "'");
+        changeDao
+            .logChange(factoid.getUserName() + " changed '" + factoid.getName() + "' to '" + factoid.getValue() + "'");
     }
 
     public boolean hasFactoid(String key) {
-        return getFactoid(key).getName() != null;
+        return getFactoid(key) != null;
     }
 
     public void addFactoid(String sender, String key, String value) {
@@ -64,20 +65,14 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
     }
 
     public Factoid getFactoid(String name) {
-        Factoid factoid;
+        Factoid factoid = null;
         try {
             factoid = (Factoid)getEntityManager().createNamedQuery(FactoidDao.BY_NAME)
                 .setParameter("name", name)
                 .getSingleResult();
-
         } catch(NoResultException e) {
-            factoid = new Factoid();
         }
         return factoid;
-    }
-
-    public Factoid find(Long id) {
-        return load(id);
     }
 
     public Long count() {
