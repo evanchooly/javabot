@@ -33,7 +33,7 @@ public class SeenDaoHibernate extends AbstractDaoHibernate<Seen> implements Seen
     }
 
     public boolean isSeen(String nick, String channel) {
-        return getSeen(nick, channel).getNick() != null;
+        return getSeen(nick, channel) != null;
     }
 
     public Seen getSeen(String nick, String channel) {

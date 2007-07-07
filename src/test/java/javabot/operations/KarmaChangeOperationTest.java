@@ -65,11 +65,10 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
 
     private int getKarma(String target) {
         log.debug("target = " + target);
-        Karma factoid = karmaDao.find(target);
-        String value = factoid.getValue().toString();
-        log.debug("value = " + value);
+        Karma karma = karmaDao.find(target);
+        log.debug("value = " + karma.getValue());
 
-        return Integer.parseInt(value);
+        return karma.getValue();
     }
 
     @Override
