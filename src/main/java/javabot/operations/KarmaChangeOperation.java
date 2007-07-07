@@ -8,6 +8,7 @@ import javabot.Message;
 import javabot.dao.KarmaDao;
 import javabot.dao.SeenDao;
 import javabot.model.Karma;
+import org.springframework.transaction.annotation.Transactional;
 
 public class KarmaChangeOperation implements BotOperation {
     private KarmaDao dao;
@@ -18,6 +19,7 @@ public class KarmaChangeOperation implements BotOperation {
         seenDao = sDao;
     }
 
+    @Transactional
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();
@@ -32,14 +34,14 @@ public class KarmaChangeOperation implements BotOperation {
                 messages.add(new Message(channel, "I don't know who that is.", false));
             } else {
                 nick = nick.toLowerCase();
+                if(nick.equals(sender.toLowerCase())) {
+                    messages.add(new Message(channel, "Changing one's own karma is not permitted.", false));
+                    message = "--";
+                }
                 Karma karma = dao.find(nick);
                 if(karma == null) {
                     karma = new Karma();
                     karma.setName(nick);
-                }
-                if(nick.equals(sender.toLowerCase())) {
-                    messages.add(new Message(channel, "Changing one's own karma is not permitted.", false));
-                    message = "--";
                 }
                 if(message.endsWith("++")) {
                     karma.setValue(karma.getValue() + 1);

@@ -11,6 +11,7 @@ public interface KarmaDao extends BaseDao<Karma> {
     String COUNT = "Karma.count";
     String BY_NAME = "Karma.byName";
 
+    @Transactional
     Karma find(String nick);
 
     Karma find(Long id);

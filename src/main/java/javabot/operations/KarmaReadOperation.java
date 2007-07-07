@@ -32,9 +32,9 @@ public class KarmaReadOperation implements BotOperation {
         Karma karma = karmaDao.find(nick);
         if(karma != null) {
             if(nick.equals(sender)) {
-                messages.add(new Message(channel, sender + ", you have a karma level of " + karma + ".", false));
+                messages.add(new Message(channel, sender + ", you have a karma level of " + karma.getValue() + ".", false));
             } else {
-                messages.add(new Message(channel, nick + " has a karma level of " + karma + ", " + sender, false));
+                messages.add(new Message(channel, nick + " has a karma level of " + karma.getValue() + ", " + sender, false));
             }
         } else {
             messages.add(new Message(channel, nick + " has no karma, " + sender, false));

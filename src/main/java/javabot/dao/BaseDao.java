@@ -10,5 +10,5 @@ import javabot.model.Persistent;
 public interface BaseDao<T> {
     void save(Persistent persistent);
 
-    public void delete(Long id);
+    void delete(Long id);
 }

@@ -25,7 +25,7 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
     public void updateKarma() {
         seenDao.logSeen("testjavabot", CHANNEL, "dude!");
         Karma karma = karmaDao.find("testjavabot");
-        int value = karma.getValue();
+        int value = karma != null ? karma.getValue() : 0;
         testOperation("testjavabot++", "testjavabot has a karma level of " + (value++) + ", " + SENDER, "");
         testOperation("testjavabot++", "testjavabot has a karma level of " + (value++) + ", " + SENDER, "");
         testOperation("testjavabot--", "testjavabot has a karma level of " + (value--) + ", " + SENDER, "");

@@ -41,8 +41,12 @@ public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements Ka
 
     public void save(Karma karma) {
         karma.setUpdated(new Date());
+        if(karma.getId() == null) {
+            super.save(karma);
+        } else {
+            merge(karma);
+        }
         changeDao.logChange(karma.getUserName() + " changed '" + karma.getName() + "' to '" + karma.getValue() + "'");
-        super.save(karma);
     }
 
     public Karma find(String name) {

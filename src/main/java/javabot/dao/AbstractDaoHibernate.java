@@ -1,15 +1,13 @@
 package javabot.dao;
 
 import javax.persistence.EntityManager;
-
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 
-import org.springframework.transaction.annotation.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import javabot.dao.util.EntityNotFoundException;
 import javabot.model.Persistent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public class AbstractDaoHibernate<T> implements BaseDao<T> {
@@ -49,13 +47,13 @@ public class AbstractDaoHibernate<T> implements BaseDao<T> {
     }
 
     public void save(Persistent persistedObject) {
-        try {
+//        try {
             entityManager.persist(persistedObject);
-        } catch(PersistenceException e) {
-            Persistent persistent = entityManager.merge(persistedObject);
+//        } catch(PersistenceException e) {
+//            Persistent persistent = entityManager.merge(persistedObject);
 //            log.error(e.getMessage(), e);
 //            throw e;
-        }
+//        }
     }
 
     public void delete(Persistent persistedObject) {
