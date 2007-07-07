@@ -23,7 +23,7 @@ import org.dom4j.rule.Stylesheet;
 /**
  * Created Jun 22, 2007
  *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
+ * @author <a href="mailto:javabot@cheeseronline.org">cheeser</a>
  */
 public class ProjectConfigTask extends Task {
     private String idea;

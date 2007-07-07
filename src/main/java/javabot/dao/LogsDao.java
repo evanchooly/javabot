@@ -5,7 +5,7 @@ import java.util.List;
 
 import javabot.model.Logs;
 
-public interface LogsDao {
+public interface LogsDao extends BaseDao<Logs> {
     String TODAY = "Logs.today";
     String LOGGED_CHANNELS = "Logs.loggedChannels";
 

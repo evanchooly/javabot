@@ -5,12 +5,10 @@ import javabot.model.Config;
 /**
  * Created Jun 21, 2007
  *
- * @author <a href="mailto:javabot@cheeseronline.org">Justin Lee</a>
+ * @author <a href="mailto:javabot@cheeseronline.org">cheeser</a>
  */
-public interface ConfigDao {
+public interface ConfigDao extends BaseDao<Config> {
     String GET_CONFIG = "Config.get";
 
     Config get();
-
-    void save(Config config);
 }

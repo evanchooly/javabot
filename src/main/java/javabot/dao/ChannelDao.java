@@ -6,7 +6,7 @@ import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
 
 @SuppressWarnings({"ConstantNamingConvention"})
-public interface ChannelDao {
+public interface ChannelDao extends BaseDao<Channel> {
     String BY_NAME = "Channel.byName";
     String ALL = "Channel.all";
     String CONFIGURED_CHANNELS = "Channel.configure";

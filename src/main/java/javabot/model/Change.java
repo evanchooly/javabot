@@ -11,15 +11,9 @@ import javax.persistence.Column;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-//
-// User: joed
-// Date: Apr 11, 2007
-// Time: 2:22:19 PM
-
-//
 @Entity
 @Table(name = "changes")
-public class Change implements Serializable {
+public class Change implements Serializable, Persistent {
 
     private Long id;
     private String message;

@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Created Feb 5, 2007
  *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
+ * @author <a href="mailto:javabot@cheeseronline.org">cheeser</a>
  */
 public class JavabotServlet extends HttpServlet {
     private static final Log log = LogFactory.getLog(JavabotServlet.class);

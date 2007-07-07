@@ -36,7 +36,6 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         return (List<Factoid>)getEntityManager().createNamedQuery(ALL).getResultList();
     }
 
-    @Override
     public void save(Factoid factoid) {
         factoid.setUpdated(new Date());
         super.save(factoid);

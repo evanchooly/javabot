@@ -1,14 +1,14 @@
 package javabot.dao.impl;
 
+import java.util.Date;
+import java.util.List;
+
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.ChannelDao;
 import javabot.dao.ConfigDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
 import javabot.model.Config;
-
-import java.util.Date;
-import java.util.List;
 
 public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implements ChannelDao {
     private ConfigDao configDao;
@@ -58,7 +58,6 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
         return channel;
     }
 
-    @Override
     public void save(Channel channel) {
         channel.setUpdated(new Date());
         super.merge(channel);

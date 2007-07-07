@@ -12,7 +12,7 @@ import org.jdom.Element;
 /**
  * Created Jun 26, 2005
  *
- * @author <a href="mailto:javabot@cheeseronline.org">Justin Lee</a>
+ * @author <a href="mailto:javabot@cheeseronline.org">cheeser</a>
  */
 public abstract class AbstractDatabase implements Database {
     private static final Log log = LogFactory.getLog(AbstractDatabase.class);

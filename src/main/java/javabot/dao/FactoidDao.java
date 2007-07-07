@@ -6,7 +6,7 @@ import javabot.dao.util.QueryParam;
 import javabot.model.Factoid;
 
 @SuppressWarnings({"ConstantNamingConvention"})
-public interface FactoidDao {
+public interface FactoidDao extends BaseDao<Factoid> {
     String ALL = "Factoid.all";
     String COUNT = "Factoid.count";
     String BY_NAME = "Factoid.byName";
@@ -26,8 +26,6 @@ public interface FactoidDao {
     List<Factoid> getFactoids();
 
     List<Factoid> find(QueryParam qp);
-
-    void save(Factoid factoid);
 
     List<Factoid> getFactoidsFiltered(QueryParam qp, Factoid filter);
 

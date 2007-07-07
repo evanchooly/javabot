@@ -1,15 +1,19 @@
 package javabot.dao;
 
 import javax.persistence.EntityManager;
+
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
-import javabot.dao.util.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import javabot.dao.util.EntityNotFoundException;
+import javabot.model.Persistent;
 
 @Transactional
-public class AbstractDaoHibernate<T> {
-
+public class AbstractDaoHibernate<T> implements BaseDao<T> {
+    private static final Logger log = LoggerFactory.getLogger(AbstractDaoHibernate.class);
     private Class entityClass;
     private EntityManager entityManager;
 
@@ -40,23 +44,25 @@ public class AbstractDaoHibernate<T> {
         return persistedObject;
     }
 
-    public void merge(T detachedObject) {
+    public void merge(Persistent detachedObject) {
         getEntityManager().merge(detachedObject);
     }
 
-    public void save(T persistedObject) {
+    public void save(Persistent persistedObject) {
         try {
-            getEntityManager().persist(persistedObject);
+            entityManager.persist(persistedObject);
         } catch(PersistenceException e) {
-            getEntityManager().persist(getEntityManager().merge(persistedObject));
+            Persistent persistent = entityManager.merge(persistedObject);
+//            log.error(e.getMessage(), e);
+//            throw e;
         }
     }
 
-    private void delete(T persistedObject) {
+    public void delete(Persistent persistedObject) {
         getEntityManager().remove(persistedObject);
     }
 
     public void delete(Long id) {
-        delete(loadChecked(id));
+        delete((Persistent)loadChecked(id));
     }
 }

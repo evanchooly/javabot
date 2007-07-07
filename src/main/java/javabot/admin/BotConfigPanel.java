@@ -48,7 +48,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 /**
  * Created Jun 21, 2007
  *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
+ * @author <a href="mailto:javabot@cheeseronline.org">cheeser</a>
  */
 public class BotConfigPanel extends Panel {
     @SpringBean

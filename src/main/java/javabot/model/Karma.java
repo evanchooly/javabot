@@ -21,7 +21,7 @@ import javabot.dao.KarmaDao;
     @NamedQuery(name= KarmaDao.COUNT, query= "select count(*) from Karma"),
     @NamedQuery(name= KarmaDao.BY_NAME, query="from Karma m where m.name = :name")
 })
-public class Karma implements Serializable {
+public class Karma implements Serializable, Persistent {
     private Long id;
     private String name;
     private Integer value = 0;

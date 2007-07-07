@@ -18,14 +18,14 @@ import org.hibernate.annotations.CollectionOfElements;
 /**
  * Created Jun 17, 2007
  *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
+ * @author <a href="mailto:javabot@cheeseronline.org">cheeser</a>
  */
 @Entity
 @Table(name = "configuration")
 @NamedQueries({
 @NamedQuery(name = ConfigDao.GET_CONFIG, query = "select c from Config c")
         })
-public class Config implements Serializable {
+public class Config implements Serializable, Persistent {
     private Long id;
     private String server;
     private Integer port;

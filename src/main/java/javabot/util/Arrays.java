@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created Jun 3, 2007
  *
- * @author <a href="mailto:javabot@cheeseronline.org">Justin Lee</a>
+ * @author <a href="mailto:javabot@cheeseronline.org">cheeser</a>
  */
 public class Arrays {
     public static String[] subset(String[] array, int i, int i1) {

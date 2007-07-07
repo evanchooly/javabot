@@ -20,7 +20,7 @@ import javabot.dao.ChannelDao;
     @NamedQuery(name=ChannelDao.BY_NAME, query= "select c from Channel c where c.name = :channel"),
     @NamedQuery(name= ChannelDao.CONFIGURED_CHANNELS, query= "select distinct s.name from Channel s")
 })
-public class Channel implements Serializable {
+public class Channel implements Serializable, Persistent {
     private Long id;
     private String name;
     private Date updated;

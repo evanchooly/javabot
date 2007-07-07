@@ -39,11 +39,10 @@ public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements Ka
         return getEntityManager().createNamedQuery(KarmaDao.ALL).getResultList();
     }
 
-    @Override
     public void save(Karma karma) {
         karma.setUpdated(new Date());
-        super.save(karma);
         changeDao.logChange(karma.getUserName() + " changed '" + karma.getName() + "' to '" + karma.getValue() + "'");
+        super.save(karma);
     }
 
     public Karma find(String name) {

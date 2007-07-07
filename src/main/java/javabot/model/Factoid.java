@@ -22,7 +22,7 @@ import javabot.dao.FactoidDao;
     @NamedQuery(name= FactoidDao.BY_NAME, query= "from Factoid m where m.name = :name")
 
 })
-public class Factoid implements Serializable {
+public class Factoid implements Serializable, Persistent {
     private Long id;
     private String name;
     private String value;

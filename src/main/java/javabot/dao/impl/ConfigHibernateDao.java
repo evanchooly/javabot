@@ -7,7 +7,7 @@ import javabot.model.Config;
 /**
  * Created Jun 21, 2007
  *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
+ * @author <a href="mailto:javabot@cheeseronline.org">cheeser</a>
  */
 public class ConfigHibernateDao extends AbstractDaoHibernate<Config> implements ConfigDao {
     protected ConfigHibernateDao() {

@@ -20,7 +20,7 @@ import javabot.dao.SeenDao;
 @NamedQueries({
     @NamedQuery(name=SeenDao.BY_NAME_AND_CHANNEL, query="select s from Seen s where s.nick = :nick AND s.channel = :channel")
 })
-public class Seen implements Serializable {
+public class Seen implements Serializable, Persistent {
 
     private Long id;
     private String nick;

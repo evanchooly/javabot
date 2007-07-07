@@ -18,7 +18,7 @@ import javabot.dao.AdminDao;
     @NamedQuery(name = AdminDao.AUTHENTICATE, query = "from Admin m where m.userName = :username"),
     @NamedQuery(name = AdminDao.ALL, query = "from Admin m order by userName")
 })
-public class Admin implements Serializable {
+public class Admin implements Serializable, Persistent {
     private Long id;
     private String userName;
     private String password;
