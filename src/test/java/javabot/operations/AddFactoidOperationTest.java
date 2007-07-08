@@ -77,7 +77,7 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     public void addLog() {
         testOperation("12345 is 12345", OKAY, "Should have added the factoid.");
         Assert.assertTrue(changeDao.findLog(SENDER + " added '" + 12345 + "' with a value of '" + 12345 + "'"));
-        forgetFactoid2("12345");
+        forgetFactoid("12345");
     }
 
     public void channelMessage() throws IOException {

@@ -1,13 +1,12 @@
 package javabot.dao.impl;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.LogsDao;
 import javabot.model.Logs;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
 
 public class LogsDaoHibernate extends AbstractDaoHibernate<Logs> implements LogsDao {
     public LogsDaoHibernate() {
@@ -16,16 +15,21 @@ public class LogsDaoHibernate extends AbstractDaoHibernate<Logs> implements Logs
 
     @SuppressWarnings({"unchecked"})
     public List<Logs> dailyLog(String channel, Date date) {
-        Calendar today = Calendar.getInstance();
-        today.setTime(date);
-        Calendar tomorrow = new GregorianCalendar();
-        tomorrow.setTime(today.getTime());
-        tomorrow.add(Calendar.DATE, 1);
-        return getEntityManager().createNamedQuery(LogsDao.TODAY)
-                .setParameter("channel", channel)
-                .setParameter("tomorrow", tomorrow.getTime())
-                .setParameter("today", today.getTime())
-                .getResultList();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR, 0);
+        cal.clear(Calendar.MINUTE);
+        cal.clear(Calendar.SECOND);
+        cal.clear(Calendar.MILLISECOND);
+        Date today = cal.getTime();
+        cal.add(Calendar.DATE, 1);
+        Date tomorrow = cal.getTime();
+        List list = getEntityManager().createNamedQuery(LogsDao.TODAY)
+            .setParameter("channel", channel)
+            .setParameter("today", today)
+            .setParameter("tomorrow", tomorrow)
+            .getResultList();
+        return list;
     }
 
     public void logMessage(Logs.Type type, String nick, String channel, String message) {

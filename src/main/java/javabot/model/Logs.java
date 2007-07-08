@@ -20,8 +20,8 @@ import javabot.dao.LogsDao;
 @Entity
 @Table(name = "logs")
 @NamedQueries({
-    @NamedQuery(name= LogsDao.TODAY, query = "from Logs s WHERE s.channel=:channel AND s.updated < :tomorrow AND"
-        + " s.updated > :today order by updated"),
+    @NamedQuery(name= LogsDao.TODAY, query = "from Logs s WHERE s.channel=:channel AND s.updated between :today and"
+        + " :tomorrow order by updated"),
     @NamedQuery(name=LogsDao.LOGGED_CHANNELS, query="select distinct s.channel from Logs s where s.channel like '#%'")
 })
 public class Logs implements Serializable, Persistent {

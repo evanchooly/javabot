@@ -19,7 +19,7 @@ import javabot.dao.KarmaDao;
 @NamedQueries({
     @NamedQuery(name= KarmaDao.ALL, query= "from Karma k order by k.name"),
     @NamedQuery(name= KarmaDao.COUNT, query= "select count(*) from Karma"),
-    @NamedQuery(name= KarmaDao.BY_NAME, query="from Karma m where m.name = :name")
+    @NamedQuery(name= KarmaDao.BY_NAME, query="from Karma k where k.name = :name")
 })
 public class Karma implements Serializable, Persistent {
     private Long id;

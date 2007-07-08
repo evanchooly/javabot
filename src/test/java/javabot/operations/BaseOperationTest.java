@@ -88,7 +88,7 @@ public class BaseOperationTest extends UnitilsTestNG {
         return SENDER + ", " + factoid + " is " + value;
     }
 
-    protected void forgetFactoid2(String name) {
+    protected void forgetFactoid(String name) {
         testOperation("forget " + name, "I forgot about " + name + ", " + SENDER + ".", "I never knew about " + name + " anyway, " + SENDER
             + ".", new ForgetFactoidOperation(factoidDao, changeDao));
     }

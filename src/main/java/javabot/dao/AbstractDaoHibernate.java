@@ -47,13 +47,7 @@ public class AbstractDaoHibernate<T> implements BaseDao<T> {
     }
 
     public void save(Persistent persistedObject) {
-//        try {
-            entityManager.persist(persistedObject);
-//        } catch(PersistenceException e) {
-//            Persistent persistent = entityManager.merge(persistedObject);
-//            log.error(e.getMessage(), e);
-//            throw e;
-//        }
+        entityManager.persist(persistedObject);
     }
 
     public void delete(Persistent persistedObject) {

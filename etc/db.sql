@@ -12,7 +12,7 @@ SET search_path = public, pg_catalog;
 -- Name: factoid_sequence; Type: SEQUENCE SET; Schema: public; Owner: jlee
 --
 
-SELECT pg_catalog.setval('factoid_sequence', 6454, true);
+SELECT pg_catalog.setval('factoid_sequence', 6458, true);
 
 
 --
@@ -685,6 +685,14 @@ INSERT INTO changes (message, changedate) VALUES ('whats_in_a_name changed ''kar
 INSERT INTO changes (message, changedate) VALUES ('joed changed ''karma cbrock'' to ''6''', '2007-07-06 15:26:52.28');
 INSERT INTO changes (message, changedate) VALUES ('whaley changed ''karma cheeser'' to ''351''', '2007-07-06 16:23:36.681');
 INSERT INTO changes (message, changedate) VALUES ('pfn added ''httpserver'' with a value of ''http://java.sun.com/javase/6/docs/jre/api/net/httpserver/spec/overview-summary.html''', '2007-07-06 23:22:12.05');
+INSERT INTO changes (message, changedate) VALUES ('surial removed ''xml''', '2007-07-07 00:57:35.781');
+INSERT INTO changes (message, changedate) VALUES ('surial added ''xml'' with a value of ''best parsed with XOM (http://www.xom.nu/ ), JAXB (http://java.sun.com/xml/jaxb/ ), JDOM (http://www.jdom.org/ ) or XmlMap (http://www.zwitserloot.com/java-boilerplate/mox ). If you like pain, you may wish to check out SAX or DOM  (http://java.sun.com/xml/tutorial_intro.html ).''', '2007-07-07 00:57:36.529');
+INSERT INTO changes (message, changedate) VALUES ('ernimril added ''tijmp'' with a value of ''a small, fast and easy to use memory profiler for java/6 and later. See http://www.khelekore.org/jmp/tijmp/''', '2007-07-07 09:02:17.261');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma flippo'' to ''63''', '2007-07-07 12:54:50.58');
+INSERT INTO changes (message, changedate) VALUES ('r0bby removed ''javabot''', '2007-07-07 19:25:37.93');
+INSERT INTO changes (message, changedate) VALUES ('r0bby added ''javabot'' with a value of ''<reply> for an FAQ and quick tutorial on how to use javabot see: http://javachannel.net/wiki/pmwiki.php/FAQ/Javabot''', '2007-07-07 19:25:38.409');
+INSERT INTO changes (message, changedate) VALUES ('r0bby added ''javabot tutorial'' with a value of ''<see>javabot''', '2007-07-07 19:26:01.246');
+INSERT INTO changes (message, changedate) VALUES ('cheeser removed ''type safe collection''', '2007-07-07 19:49:29.432');
 
 
 --
@@ -863,7 +871,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (308, 'how to u
 INSERT INTO factoids (id, name, value, username, updated) VALUES (309, 'bomb $1', '<action>drops a humongous exploding turd on $1', 'cheeser', '2005-06-28 21:51:32.825');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (312, 'how to use combo boxes', 'http://java.sun.com/docs/books/tutorial/uiswing/components/combobox.html', 'cheeser', '2005-06-28 21:51:33.109');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (314, 'yard', 'Yet Another Requirements Defect', 'cheeser', '2005-06-28 21:51:33.299');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (315, 'type safe collection', 'http://lavender.cime.net/~ricky/typesafecollections.html - provides run-time type safety.  As of Java 1.5, compile-time type safety is built into the language.  You can use both together if you like, or either at your option.', 'cheeser', '2005-06-28 21:51:33.391');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (316, 'plaf', '<reply>Information on working with the Look & Feel can be found at http://java.sun.com/docs/books/tutorial/uiswing/misc/plaf.html', 'cheeser', '2005-06-28 21:51:33.48');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (317, 'rtj', 'real-time java ( https://rtsj.dev.java.net/ )', 'cheeser', '2005-06-28 21:51:33.721');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (318, 'joda time', 'an excellent date/time implementation for Java.  http://joda-time.sourceforge.net', 'cheeser', '2005-06-28 21:51:33.825');
@@ -2922,7 +2929,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (2733, 'karma c
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5030, 'pfn', 'the Prostate Freedom Network', 'sweeper', '2006-11-19 15:45:45.619');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5036, 'google $1', '<reply>http://www.googleityoumoron.com/?go=$1', 'surial', '2006-11-19 16:56:37.471');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5037, 'troll $1', '<reply>$1, please go away!', 'surial', '2006-11-19 16:57:18.846');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (5038, 'xml', 'best parsed with XOM (http://www.xom.nu/ ), JAXB (http://java.sun.com/xml/jaxb/ ), or XmlMap (http://www.zwitserloot.com/java-boilerplate/mox ). If you like pain, you may wish to check out SAX or DOM  (http://java.sun.com/xml/tutorial_intro.html ).', 'surialAWAY', '2006-11-19 18:14:00.444');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5040, 'google2 $1', '<reply>something $1', 'surialAWAY', '2006-11-19 19:20:52.531');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5042, 'html in swing', 'http://java.sun.com/docs/books/tutorial/uiswing/components/html.html', 'surial', '2006-11-19 19:58:31.391');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5046, 'dsj', 'http://www.humatic.de/htools/dsj.htm', 'surial', '2006-11-20 08:55:55.149');
@@ -3647,7 +3653,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (6128, 'binky',
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5542, 'karma victori', '2', 'mnguyen', '2007-05-11 02:01:03.178');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6130, 'karma blackest', '1', 'pr3d4t0r', '2007-05-11 20:45:41.162');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6132, 'operator precedence', 'http://www.uni-bonn.de/~manfear/javaoperators.php', 'stork', '2007-05-12 08:09:20.692');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (6133, 'javabot', '<see>source', 'r0bby', '2007-05-12 22:07:58.202');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2443, 'karma stork', '2', 'xerxes_', '2007-05-13 15:19:59.799');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6136, 'karma _^_', '0', 'MrUnknown', '2007-05-13 16:12:48.181');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6135, 'karma griswald', '1', 'griswald', '2007-05-13 21:42:54.693');
@@ -3834,7 +3839,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (2877, 'karma v
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6360, 'onejar', '<see>one-jar', 'cheeser', '2007-06-21 17:00:59.36');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6361, 'jar in a jar', '<reply>the JVM will not load jars from jars by default.  there are projects to side step that limitation.  use "~one-jar" or "~fatjar" to learn more.', 'cheeser', '2007-06-21 17:02:07.249');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6363, '1+1', '<reply>3 DUH', 'r0bby', '2007-06-21 20:04:37.965');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (2005, 'karma flippo', '62', 'cheeser', '2007-06-21 22:14:22.622');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6364, 'cheeser', 'a crazy fella.... http://img523.imageshack.us/img523/941/cheeserjk7.png', 'mohadib', '2007-06-21 22:59:03.648');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6370, 'foo', '<see> bar', 'r0bby', '2007-06-22 00:34:20.879');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (4592, 'karma pfn', '33', 'Cool123', '2007-06-22 16:45:42.857');
@@ -3939,6 +3943,11 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (6230, 'karma c
 INSERT INTO factoids (id, name, value, username, updated) VALUES (4063, 'karma cbrock', '6', 'joed', '2007-07-06 15:26:52.206');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2233, 'karma cheeser', '351', 'whaley', '2007-07-06 16:23:36.204');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6454, 'httpserver', 'http://java.sun.com/javase/6/docs/jre/api/net/httpserver/spec/overview-summary.html', 'pfn', '2007-07-06 23:22:11.673');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6455, 'xml', 'best parsed with XOM (http://www.xom.nu/ ), JAXB (http://java.sun.com/xml/jaxb/ ), JDOM (http://www.jdom.org/ ) or XmlMap (http://www.zwitserloot.com/java-boilerplate/mox ). If you like pain, you may wish to check out SAX or DOM  (http://java.sun.com/xml/tutorial_intro.html ).', 'surial', '2007-07-07 00:57:36.38');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6456, 'tijmp', 'a small, fast and easy to use memory profiler for java/6 and later. See http://www.khelekore.org/jmp/tijmp/', 'ernimril', '2007-07-07 09:02:17.038');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (2005, 'karma flippo', '63', 'pr3d4t0r', '2007-07-07 12:54:50.467');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6457, 'javabot', '<reply> for an FAQ and quick tutorial on how to use javabot see: http://javachannel.net/wiki/pmwiki.php/FAQ/Javabot', 'r0bby', '2007-07-07 19:25:38.35');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6458, 'javabot tutorial', '<see>javabot', 'r0bby', '2007-07-07 19:26:01.201');
 
 
 --
