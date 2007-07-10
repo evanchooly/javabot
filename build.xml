@@ -61,6 +61,7 @@
 
     <target name="war" depends="main">
         <mkdir dir="build/war"/>
+        <touch file="src/main/webapp/WEB-inf/classes/locations-override.properties"/>
         <copy todir="build/war">
             <fileset dir="src/main/webapp"/>
         </copy>
@@ -177,14 +178,6 @@
         <delete dir="docRefBuild"/>
     </target>
 
-    <target name="killbot" depends="main" description="Kills any running bot">
-        <java classname="javabot.Killbot" classpathref="javabot.cp" fork="true"/>
-    </target>
-
-    <target name="run" depends="killbot" description="Starts the bot">
-        <java classname="javabot.Javabot" classpathref="javabot.cp" fork="true" spawn="true"/>
-    </target>
-
     <target name="javadocs">
         <property name="blah" refid="javabot.cp"/>
 
@@ -247,6 +240,7 @@
             <dependency groupId="jdom" artifactId="jdom" version="1.0"/>
             <dependency groupId="pircbot" artifactId="pircbot" version="1.4.2"/>
             <dependency groupId="mysql" artifactId="mysql-connector-java" version="3.1.14"/>
+            <dependency groupId="postgresql" artifactId="postgresql" version="8.2-504.jdbc4"/>
         </artifact:dependencies>
 
         <artifact:dependencies pathId="build.path">

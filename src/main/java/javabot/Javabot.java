@@ -1,5 +1,12 @@
 package javabot;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import javabot.dao.ChangeDao;
 import javabot.dao.ChannelDao;
 import javabot.dao.ConfigDao;
@@ -32,13 +39,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.jdom.JDOMException;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 public class Javabot extends PircBot implements ChannelControl, Responder {
     private static final Log log = LogFactory.getLog(Javabot.class);
@@ -313,14 +313,6 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         if (!disconnecting) {
             connect();
         }
-    }
-
-    public String getPreviousMessage(String channel) {
-        if (channelPreviousMessages.containsKey(channel)) {
-            log.debug("getPreviousMessage for channel " + channel + " key " + channelPreviousMessages.containsKey(channel));
-            return channelPreviousMessages.get(channel);
-        }
-        return "";
     }
 
     public boolean isOnSameChannelAs(String nick) {

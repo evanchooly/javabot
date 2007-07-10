@@ -30,7 +30,6 @@ public class LogDaoTest extends BaseServiceTest {
 
     @Test
     public void getDailyLog() {
-        // Assumes logging to #test
         List<Logs> logdata = logsDao.dailyLog("#test", new Date());
         Assert.assertFalse(logdata.isEmpty(), "Should have log data");
     }

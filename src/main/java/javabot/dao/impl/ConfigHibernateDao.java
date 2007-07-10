@@ -1,5 +1,7 @@
 package javabot.dao.impl;
 
+import javax.persistence.NoResultException;
+
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.ConfigDao;
 import javabot.model.Config;
@@ -15,8 +17,10 @@ public class ConfigHibernateDao extends AbstractDaoHibernate<Config> implements 
     }
 
     public Config get() {
-        Config config = (Config) getEntityManager().createNamedQuery(ConfigDao.GET_CONFIG).getSingleResult();
-        if (config == null) {
+        Config config;
+        try {
+            config = (Config) getEntityManager().createNamedQuery(ConfigDao.GET_CONFIG).getSingleResult();
+        } catch(NoResultException e) {
             config = new Config();
             save(config);
         }

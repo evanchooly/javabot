@@ -693,6 +693,14 @@ INSERT INTO changes (message, changedate) VALUES ('r0bby removed ''javabot''', '
 INSERT INTO changes (message, changedate) VALUES ('r0bby added ''javabot'' with a value of ''<reply> for an FAQ and quick tutorial on how to use javabot see: http://javachannel.net/wiki/pmwiki.php/FAQ/Javabot''', '2007-07-07 19:25:38.409');
 INSERT INTO changes (message, changedate) VALUES ('r0bby added ''javabot tutorial'' with a value of ''<see>javabot''', '2007-07-07 19:26:01.246');
 INSERT INTO changes (message, changedate) VALUES ('cheeser removed ''type safe collection''', '2007-07-07 19:49:29.432');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma jottinger'' to ''129''', '2007-07-07 21:02:08.301');
+INSERT INTO changes (message, changedate) VALUES ('joed changed ''karma cbrock'' to ''7''', '2007-07-07 21:02:56.483');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma cheeser'' to ''352''', '2007-07-07 21:37:54.932');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma r0bby'' to ''26''', '2007-07-07 21:47:00.06');
+INSERT INTO changes (message, changedate) VALUES ('pr3d4t0r changed ''karma waz'' to ''91''', '2007-07-07 22:13:27.363');
+INSERT INTO changes (message, changedate) VALUES ('r0bby changed ''karma pr3d4t0r'' to ''330''', '2007-07-07 22:39:11.317');
+INSERT INTO changes (message, changedate) VALUES ('joed changed ''karma pr3d4t0r'' to ''331''', '2007-07-08 00:18:15.303');
+INSERT INTO changes (message, changedate) VALUES ('whaley changed ''karma r0bby'' to ''27''', '2007-07-08 19:36:46.72');
 
 
 --
@@ -3888,7 +3896,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (6417, 'ex $1',
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6418, 'regular', '<see>regex', 'r0bby', '2007-06-29 14:51:57.439');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6419, 'books', '<reply>http://java.sun.com/docs/books/tutorial/information/download.html', 'r0bby', '2007-06-29 14:52:54.851');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (158, 'karma lunk', '26', 'kinabalu', '2007-06-29 14:57:53.824');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (2241, 'karma jottinger', '128', 'zendo', '2007-06-29 15:21:45.207');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2440, 'karma tietyt', '18', 'zendo', '2007-06-29 15:21:59.926');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6422, 'magic numbers', '<reply>see http://tinyurl.com/92rkj', 'r0bby', '2007-06-29 19:14:13.992');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6423, 'karma qbert', '-1', 'qbert', '2007-06-29 20:44:48.102');
@@ -3907,7 +3914,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (6429, 'karma r
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5671, 'karma lumbercartel', '3', 'rohan', '2007-07-02 05:02:32.002');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6430, 'karma sadism', '1', 'jottinger', '2007-07-02 08:03:17.487');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5636, 'karma psst', '6', 'jottinger', '2007-07-02 08:05:44.818');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (2238, 'karma pr3d4t0r', '329', 'lunk', '2007-07-02 08:08:58.392');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6431, 'anonymous class', 'essentially a local class without a name.  See http://www.developer.com/java/other/article.php/3300881', 'eidolon', '2007-07-02 10:39:51.673');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6432, 'karma saksoz', '-4', 'saksoz', '2007-07-02 10:41:55.674');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6434, 'webservice', 'a term commonly used to refer to web based resources intended for access by software, usually involving an XML stream of some kind.  Example terms for further research include SOAP, XML-RPC, REST, JSON, and HTTP.', 'cybereal', '2007-07-02 11:19:14.869');
@@ -3918,7 +3924,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (6335, 'karma g
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6437, 'ad hominem', '<reply>People who make ad hominem attacks are of the basest, most worthless kinds of individuals I''ve ever had the displeasure ofturning my nose up to. I spurn them as I would spurn a rabid dog.', 'r0bby_', '2007-07-02 15:04:49.454');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (133, 'karma mohadib', '87', 'kemik', '2007-07-02 16:45:16.195');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (4174, 'karma fanook', '23', 'pr3d4t0r', '2007-07-03 00:04:33.075');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (3160, 'karma r0bby', '25', 'GraveDigger', '2007-07-03 03:47:18.661');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6440, 'captcha', '"Completely Automated Public Test to tell Computers and Humans Apart". See http://jcaptcha.sourceforge.net/ for a good Java Captcha library.', 'DRMacIver', '2007-07-03 07:34:13.69');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6441, 'fast', 'not always the most important factor in design, as exemplified here: http://img255.imageshack.us/img255/4726/dogandsprinkler758x370be3.jpg', 'cybereal', '2007-07-03 10:44:21.28');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6442, 'transient', '<reply>Variables may be marked transient to indicate that they are not part of the persistent state of an object.  While transient is intended for use by them, the JLS does not specify the details of persistence services; see the specification of java.io.Serializable for an example of such a service.', 'cybereal', '2007-07-03 10:53:21.893');
@@ -3937,17 +3942,20 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (6450, 'karma m
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6451, 'bomb mohadib', '<reply>no u', 'mohadib', '2007-07-04 21:09:43.188');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6452, '~malta', 'a country in the Mediterranean sea', 'dmic', '2007-07-05 16:32:22.842');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6453, 'karma loesh', '1', 'cheeser', '2007-07-05 16:35:03.408');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (2201, 'karma waz', '90', 'r0bby', '2007-07-05 22:56:39.448');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5375, 'karma joed', '48', 'whaley', '2007-07-05 23:20:37.873');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6230, 'karma cybereal', '12', 'whats_in_a_name', '2007-07-06 00:44:03.001');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (4063, 'karma cbrock', '6', 'joed', '2007-07-06 15:26:52.206');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (2233, 'karma cheeser', '351', 'whaley', '2007-07-06 16:23:36.204');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6454, 'httpserver', 'http://java.sun.com/javase/6/docs/jre/api/net/httpserver/spec/overview-summary.html', 'pfn', '2007-07-06 23:22:11.673');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (4063, 'karma cbrock', '7', 'joed', '2007-07-07 21:02:56.451');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (2233, 'karma cheeser', '352', 'pr3d4t0r', '2007-07-07 21:37:54.872');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6455, 'xml', 'best parsed with XOM (http://www.xom.nu/ ), JAXB (http://java.sun.com/xml/jaxb/ ), JDOM (http://www.jdom.org/ ) or XmlMap (http://www.zwitserloot.com/java-boilerplate/mox ). If you like pain, you may wish to check out SAX or DOM  (http://java.sun.com/xml/tutorial_intro.html ).', 'surial', '2007-07-07 00:57:36.38');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6456, 'tijmp', 'a small, fast and easy to use memory profiler for java/6 and later. See http://www.khelekore.org/jmp/tijmp/', 'ernimril', '2007-07-07 09:02:17.038');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2005, 'karma flippo', '63', 'pr3d4t0r', '2007-07-07 12:54:50.467');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6457, 'javabot', '<reply> for an FAQ and quick tutorial on how to use javabot see: http://javachannel.net/wiki/pmwiki.php/FAQ/Javabot', 'r0bby', '2007-07-07 19:25:38.35');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6458, 'javabot tutorial', '<see>javabot', 'r0bby', '2007-07-07 19:26:01.201');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (2241, 'karma jottinger', '129', 'pr3d4t0r', '2007-07-07 21:02:08.272');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (2201, 'karma waz', '91', 'pr3d4t0r', '2007-07-07 22:13:27.172');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (2238, 'karma pr3d4t0r', '331', 'joed', '2007-07-08 00:18:15.262');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (3160, 'karma r0bby', '27', 'whaley', '2007-07-08 19:36:46.608');
 
 
 --
