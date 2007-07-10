@@ -354,9 +354,9 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
 
     @Override
     public void onJoin(String channel, String sender, String login, String hostname) {
-        seenDao.logSeen(sender, channel, "joined the channel");
+        seenDao.logSeen(sender, channel, ":" + hostname + " joined the channel");
         if (channelDao.get(channel).getLogged()) {
-            logsDao.logMessage(Logs.Type.JOIN, sender, channel, "joined the channel");
+            logsDao.logMessage(Logs.Type.JOIN, sender, channel, ":" + hostname + " joined the channel");
         }
     }
 
