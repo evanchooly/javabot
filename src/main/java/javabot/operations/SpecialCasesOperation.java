@@ -27,6 +27,9 @@ public class SpecialCasesOperation implements BotOperation {
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();
+
+        log.debug("SpecialCasesOperation: " + message);
+
         String lowerMessage = message.toLowerCase();
         if (lowerMessage.startsWith("no")) {
             message = message.substring("no".length());

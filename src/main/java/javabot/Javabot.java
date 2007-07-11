@@ -1,12 +1,5 @@
 package javabot;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import javabot.dao.ChangeDao;
 import javabot.dao.ChannelDao;
 import javabot.dao.ConfigDao;
@@ -39,6 +32,13 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.jdom.JDOMException;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class Javabot extends PircBot implements ChannelControl, Responder {
     private static final Log log = LogFactory.getLog(Javabot.class);
@@ -118,8 +118,6 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                     operations.add(new SpecialCasesOperation(this));
                 } else if (TellOperation.class.equals(operationClass)) {
                     operations.add(new TellOperation(getNick(), this));
-                } else if (AddFactoidOperation.class.equals(operationClass)) {
-                    operations.add(new AddFactoidOperation(factoidDao, changeDao));
                 } else if (ForgetFactoidOperation.class.equals(operationClass)) {
                     operations.add(new ForgetFactoidOperation(factoidDao, changeDao));
                 } else if (GuessOperation.class.equals(operationClass)) {
@@ -133,7 +131,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                 } else if (SeenOperation.class.equals(operationClass)) {
                     operations.add(new SeenOperation(seenDao));
                 } else {
-                    if (!GetFactoidOperation.class.equals(operationClass)) {
+                    if (!GetFactoidOperation.class.equals(operationClass) && !AddFactoidOperation.class.equals(operationClass)) {
                         operations.add((BotOperation) operationClass.newInstance());
                     }
                 }
@@ -144,6 +142,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
             }
         }
 
+        operations.add(operations.size(), new AddFactoidOperation(factoidDao, changeDao));
         operations.add(operations.size(), new GetFactoidOperation(factoidDao));
 
         for (BotOperation operation : operations) {

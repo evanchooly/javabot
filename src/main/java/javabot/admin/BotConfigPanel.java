@@ -32,7 +32,7 @@ public class BotConfigPanel extends Panel {
     private ConfigDao dao;
 
     private static final List<String> OPERATIONS = Arrays.asList(
-            AddFactoidOperation.class.getName(),
+            //AddFactoidOperation.class.getName(),
             DaysToChristmasOperation.class.getName(),
             DaysUntilOperation.class.getName(),
             DictOperation.class.getName(),
