@@ -301,7 +301,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     @Override
     public void onInvite(String targetNick, String sourceNick, String sourceLogin, String sourceHostname,
                          String channel) {
-        if (!channels.contains(channel)) {
+        log.debug("Invited to " + channel + " by " + sourceNick);
+        if (!channel.equals(channelDao.get(channel).getName())) {
             return;
         }
         joinChannel(channel);
