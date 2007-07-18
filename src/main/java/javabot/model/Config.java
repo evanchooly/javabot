@@ -36,6 +36,7 @@ public class Config implements Serializable, Persistent {
 
     private List<String> operations = new ArrayList<String>();
     private List<Channel> channels = new ArrayList<Channel>();
+    private List<Admin> admins = new ArrayList<Admin>();
 
     @Id
     @GeneratedValue
@@ -54,6 +55,15 @@ public class Config implements Serializable, Persistent {
 
     public void setChannels(List<Channel> list) {
         channels = list;
+    }
+
+    @OneToMany(mappedBy = "config")
+    public List<Admin> getAdmins() {
+        return admins;
+    }
+
+    public void setAdmins(List<Admin> list) {
+        admins = list;
     }
 
     public String getNick() {

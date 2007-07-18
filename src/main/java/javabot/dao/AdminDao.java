@@ -14,4 +14,5 @@ public interface AdminDao extends BaseDao<Admin> {
 
     List<Admin> findAll();
 
+    void create(String newAdmin, String newPassword);
 }

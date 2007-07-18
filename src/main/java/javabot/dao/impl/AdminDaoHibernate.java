@@ -1,13 +1,18 @@
 package javabot.dao.impl;
 
 import java.util.List;
+import java.util.Date;
 import javax.persistence.EntityManager;
 
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.AdminDao;
+import javabot.dao.ConfigDao;
 import javabot.model.Admin;
+import javabot.model.Config;
 
 public class AdminDaoHibernate extends AbstractDaoHibernate<Admin> implements AdminDao {
+    private ConfigDao configDao;
+
     public AdminDaoHibernate() {
         super(Admin.class);
     }
@@ -31,5 +36,26 @@ public class AdminDaoHibernate extends AbstractDaoHibernate<Admin> implements Ad
     @Override
     public void setEntityManager(EntityManager manager) {
         super.setEntityManager(manager);
+    }
+
+    public void create(String newAdmin, String newPassword) {
+        Admin admin = new Admin();
+        admin.setUserName(newAdmin);
+        admin.setPassword(newPassword);
+        admin.setUpdated(new Date());
+
+        Config config = configDao.get();
+        admin.setConfig(config);
+        config.getAdmins().add(admin);
+        save(admin);
+        configDao.save(config);
+    }
+
+    public ConfigDao getConfigDao() {
+        return configDao;
+    }
+
+    public void setConfigDao(ConfigDao dao) {
+        this.configDao = dao;
     }
 }

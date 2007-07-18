@@ -1,7 +1,5 @@
 package javabot.admin;
 
-import java.util.List;
-
 import javabot.dao.AdminDao;
 import javabot.model.Admin;
 import org.apache.wicket.Request;
@@ -34,20 +32,6 @@ public class AdminSession extends WebSession {
      */
     public final boolean authenticate(String username, String password) {
         if(user == null) {
-            List<Admin> list = null;
-            try {
-                list = dao.findAll();
-                if(list.isEmpty()) {
-                    Admin admin = new Admin();
-                    admin.setUserName("cheeser");
-                    admin.setName("cheeser");
-                    admin.setPassword("cheeser");
-                    dao.save(admin);
-                }
-            } catch(Exception e) {
-                log.error(e.getMessage(), e);
-                throw new RuntimeException(e.getMessage());
-            }
             Admin admin = dao.getAdmin(username);
             if(admin.getUserName().equals(username) && admin.getPassword().equals(password)) {
                 user = username;

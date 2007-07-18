@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.ManyToOne;
+import javax.persistence.CascadeType;
 
 import javabot.dao.AdminDao;
 
@@ -22,8 +24,8 @@ public class Admin implements Serializable, Persistent {
     private Long id;
     private String userName;
     private String password;
-    private String name;
     private Date updated;
+    private Config config;
 
     @Id
     @Column(name = "id")
@@ -52,19 +54,20 @@ public class Admin implements Serializable, Persistent {
         password = pwd;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String adminName) {
-        name = adminName;
-    }
-
     public Date getUpdated() {
         return updated;
     }
 
     public void setUpdated(Date date) {
         updated = date;
+    }
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    public Config getConfig() {
+        return config;
+    }
+
+    public void setConfig(Config chanConfig) {
+        config = chanConfig;
     }
 }

@@ -50,6 +50,16 @@ public class AdminApplication extends WebApplication {
         addComponentInstantiationListener(new SpringComponentInjector(this));
         getSecuritySettings().setAuthorizationStrategy(new AdminAuthorizationStrategy());
         InjectorHolder.getInjector().inject(this);
+        List<Admin> list = null;
+        try {
+            list = dao.findAll();
+            if(list.isEmpty()) {
+                dao.create("cheeser", "cheeser");
+            }
+        } catch(Exception e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

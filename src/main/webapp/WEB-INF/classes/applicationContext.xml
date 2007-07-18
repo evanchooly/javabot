@@ -72,6 +72,8 @@
         <property name="changeDao" ref="changeDao"/>
     </bean>
 
-    <bean id="adminDao" class="javabot.dao.impl.AdminDaoHibernate"/>
+    <bean id="adminDao" class="javabot.dao.impl.AdminDaoHibernate">
+        <property name="configDao" ref="configDao"/>
+    </bean>
 
 </beans>
