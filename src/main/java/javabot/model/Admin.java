@@ -15,8 +15,8 @@ import javabot.dao.AdminDao;
 @Entity
 @Table(name = "admin")
 @NamedQueries({
-    @NamedQuery(name = AdminDao.AUTHENTICATE, query = "from Admin m where m.userName = :username"),
-    @NamedQuery(name = AdminDao.ALL, query = "from Admin m order by userName")
+    @NamedQuery(name = AdminDao.AUTHENTICATE, query = "select a from Admin a where a.userName = :username"),
+    @NamedQuery(name = AdminDao.FIND_ALL, query = "select a from Admin a order by a.userName")
 })
 public class Admin implements Serializable, Persistent {
     private Long id;
@@ -33,7 +33,7 @@ public class Admin implements Serializable, Persistent {
     }
 
     public void setId(Long adminId) {
-        this.id = adminId;
+        id = adminId;
     }
 
     public String getUserName() {
@@ -41,7 +41,7 @@ public class Admin implements Serializable, Persistent {
     }
 
     public void setUserName(String adminName) {
-        this.userName = adminName;
+        userName = adminName;
     }
 
     public String getPassword() {
@@ -49,15 +49,15 @@ public class Admin implements Serializable, Persistent {
     }
 
     public void setPassword(String pwd) {
-        this.password = pwd;
+        password = pwd;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String adminName) {
+        name = adminName;
     }
 
     public Date getUpdated() {
@@ -65,6 +65,6 @@ public class Admin implements Serializable, Persistent {
     }
 
     public void setUpdated(Date date) {
-        this.updated = date;
+        updated = date;
     }
 }

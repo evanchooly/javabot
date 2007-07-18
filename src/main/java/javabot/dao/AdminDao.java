@@ -6,7 +6,7 @@ import javabot.model.Admin;
 
 public interface AdminDao extends BaseDao<Admin> {
     String AUTHENTICATE = "Admin.authenticate";
-    String ALL = "Admin.all";
+    String FIND_ALL = "Admin.findAll";
 
     boolean isAdmin(String key);
 

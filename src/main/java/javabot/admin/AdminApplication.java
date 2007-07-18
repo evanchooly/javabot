@@ -1,6 +1,10 @@
 package javabot.admin;
 
+import java.util.List;
+
 import javabot.Javabot;
+import javabot.model.Admin;
+import javabot.dao.AdminDao;
 import org.apache.wicket.Component;
 import org.apache.wicket.Request;
 import org.apache.wicket.Response;
@@ -8,16 +12,24 @@ import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.Session;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
+import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequestCycleProcessor;
 import org.apache.wicket.protocol.http.request.CryptedUrlWebRequestCodingStrategy;
 import org.apache.wicket.protocol.http.request.WebRequestCodingStrategy;
 import org.apache.wicket.request.IRequestCodingStrategy;
 import org.apache.wicket.request.IRequestCycleProcessor;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AdminApplication extends WebApplication {
+    private static final Logger log = LoggerFactory.getLogger(AdminApplication.class);
     private Javabot bot;
+
+    @SpringBean
+    private AdminDao dao;
 
     public AdminApplication() {
     }
@@ -36,25 +48,8 @@ public class AdminApplication extends WebApplication {
     protected void init() {
         super.init();
         addComponentInstantiationListener(new SpringComponentInjector(this));
-        getSecuritySettings().setAuthorizationStrategy(new IAuthorizationStrategy() {
-            public boolean isActionAuthorized(Component component, Action action) {
-                return true;
-            }
-
-            public boolean isInstantiationAuthorized(Class componentClass) {
-                if(AuthenticatedWebPage.class.isAssignableFrom(componentClass)) {
-                    // Is user signed in?
-                    if(((AdminSession)Session.get()).isSignedIn()) {
-                        // okay to proceed
-                        return true;
-                    }
-
-                    // Force sign in
-                    throw new RestartResponseAtInterceptPageException(SignIn.class);
-                }
-                return true;
-            }
-        });
+        getSecuritySettings().setAuthorizationStrategy(new AdminAuthorizationStrategy());
+        InjectorHolder.getInjector().inject(this);
     }
 
     @Override
@@ -72,5 +67,21 @@ public class AdminApplication extends WebApplication {
             bot.dispose();
         }
         bot = new Javabot();
+    }
+
+    private static class AdminAuthorizationStrategy implements IAuthorizationStrategy {
+        public boolean isActionAuthorized(Component component, Action action) {
+            return true;
+        }
+
+        public boolean isInstantiationAuthorized(Class componentClass) {
+            if(AuthenticatedWebPage.class.isAssignableFrom(componentClass)) {
+                if(((AdminSession)Session.get()).isSignedIn()) {
+                    return true;
+                }
+                throw new RestartResponseAtInterceptPageException(SignIn.class);
+            }
+            return true;
+        }
     }
 }

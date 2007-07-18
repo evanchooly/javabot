@@ -5,21 +5,7 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.webapp.WebAppContext;
 
-/**
- * StartJavabot
- * <p/>
- * Created by: Andrew Lombardi
- * Copyright 2006 Mystic Coders, LLC
- */
-
 public class StartJavabot {
-
-    /**
-     * Main function, starts the jetty server.
-     *
-     * @param args
-     * @throws Exception
-     */
     public static void main(String[] args) throws Exception {
         Server server = new Server();
         SelectChannelConnector connector = new SelectChannelConnector();

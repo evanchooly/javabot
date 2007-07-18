@@ -1,32 +1,74 @@
 package javabot.admin;
 
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.util.value.ValueMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-// Author: joed
-
-// Date  : Jun 11, 2007
 public class SignIn extends WebPage {
-    /**
-     * Construct
-     */
+    private static final Logger log = LoggerFactory.getLogger(SignIn.class);
+    private PasswordTextField password;
+    private TextField username;
+
     public SignIn() {
-        this(null);
+        add(new FeedbackPanel("feedback"));
+        add(new SignInForm("signInForm"));
+    }
+
+    private class SignInForm extends Form {
+        private final ValueMap properties = new ValueMap();
+        private boolean rememberMe = true;
+
+        public SignInForm(String id) {
+            super(id);
+            add(username = new TextField("username", new PropertyModel(properties, "username")));
+            add(password = new PasswordTextField("password", new PropertyModel(properties, "password")));
+        }
+
+        @Override
+        public final void onSubmit() {
+            log.debug("submitting form");
+            if(signIn(getUsername(), getPassword())) {
+                log.debug("success");
+                setResponsePage(getApplication().getHomePage());
+            } else {
+                log.debug("hrm.");
+                error(getLocalizer().getString("loginError", this, "Unable to sign you in"));
+            }
+        }
+
+        public boolean signIn(String username, String password) {
+            try {
+                log.debug("signing in");
+                return ((AdminSession)getSession()).authenticate(username, password);
+            } catch(Throwable t) {
+                log.debug(t.getMessage(), t);
+                log.debug("done signing in");
+                return false;
+            }
+        }
     }
 
     /**
-     * Constructor
+     * Convenience method to access the password.
      *
-     * @param parameters The page parameters
+     * @return The password
      */
-    public SignIn(PageParameters parameters) {
-        add(new SignInPanel("signInPanel") {
-            @Override
-            public boolean signIn(String username, String password) {
-                return ((AdminSession)getSession()).authenticate(username, password);
-            }
-        });
+    public String getPassword() {
+        return password.getModelObjectAsString();
     }
 
+    /**
+     * Convenience method to access the username.
+     *
+     * @return The user name
+     */
+    public String getUsername() {
+        return username.getModelObjectAsString();
+    }
 }

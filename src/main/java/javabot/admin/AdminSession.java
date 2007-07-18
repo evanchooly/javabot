@@ -1,5 +1,7 @@
 package javabot.admin;
 
+import java.util.List;
+
 import javabot.dao.AdminDao;
 import javabot.model.Admin;
 import org.apache.wicket.Request;
@@ -7,8 +9,11 @@ import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AdminSession extends WebSession {
+    private static final Logger log = LoggerFactory.getLogger(AdminSession.class);
     @SpringBean
     private AdminDao dao;
     private String user;
@@ -29,11 +34,23 @@ public class AdminSession extends WebSession {
      */
     public final boolean authenticate(String username, String password) {
         if(user == null) {
-            if(dao.isAdmin(username)) {
-                Admin admin = dao.getAdmin(username);
-                if(admin.getUserName().equals(username) && admin.getPassword().equals(password)) {
-                    user = username;
+            List<Admin> list = null;
+            try {
+                list = dao.findAll();
+                if(list.isEmpty()) {
+                    Admin admin = new Admin();
+                    admin.setUserName("cheeser");
+                    admin.setName("cheeser");
+                    admin.setPassword("cheeser");
+                    dao.save(admin);
                 }
+            } catch(Exception e) {
+                log.error(e.getMessage(), e);
+                throw new RuntimeException(e.getMessage());
+            }
+            Admin admin = dao.getAdmin(username);
+            if(admin.getUserName().equals(username) && admin.getPassword().equals(password)) {
+                user = username;
             }
         }
         return user != null;

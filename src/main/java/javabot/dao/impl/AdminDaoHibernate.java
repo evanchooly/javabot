@@ -14,7 +14,8 @@ public class AdminDaoHibernate extends AbstractDaoHibernate<Admin> implements Ad
 
     @SuppressWarnings({"unchecked"})
     public List<Admin> findAll() {
-        return getEntityManager().createQuery(AdminDao.ALL).getResultList();
+        return getEntityManager().createNamedQuery(AdminDao.FIND_ALL)
+            .getResultList();
     }
 
     public boolean isAdmin(String key) {

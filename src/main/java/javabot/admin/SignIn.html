@@ -17,7 +17,31 @@
 
             <div id="content">
                 <div class='featurebox_center'>
-                    <span wicket:id="signInPanel"/>
+                    <span wicket:id="feedback"/>
+
+                    <form wicket:id="signInForm">
+                        <table>
+                            <tr>
+                                <td align="right">Username:</td>
+                                <td>
+                                    <input wicket:id="username" type="text" value="foo@goo.moo" size="30"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right">Password:</td>
+                                <td>
+                                    <input wicket:id="password" type="password" value="password" size="30"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input type="submit" name="submit" value="Sign In"/>
+                                    <input type="reset" value="Reset"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
                 </div>
             </div>
             <br style="clear:both;border:none"/>
