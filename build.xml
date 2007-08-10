@@ -182,14 +182,6 @@
         <delete dir="docRefBuild"/>
     </target>
 
-    <target name="javadocs">
-        <property name="blah" refid="javabot.cp"/>
-
-        <java classname="javabot.IndependentJavadocViewer" classpathref="javabot.cp" fork="true">
-            <arg value="String"/>
-        </java>
-    </target>
-
     <target name="import-db" if="scp.password">
         <sshexec host="antwerkz.com" username="jlee" password="${scp.password}"
                  command="pg_dump -aOxCDf javabot.dump javabot" trust="yes"/>

@@ -16,7 +16,7 @@ import javabot.Message;
 import javabot.ApplicationException;
 
 @SpringApplicationContext("test-application-config.xml")
-public class BaseOperationTest extends UnitilsTestNG {
+public abstract class BaseOperationTest extends UnitilsTestNG {
     private static final Log log = LogFactory.getLog(BaseOperationTest.class);
     protected static final String SENDER = "cheeser";
     protected static final String CHANNEL = "#test";
@@ -75,16 +75,13 @@ public class BaseOperationTest extends UnitilsTestNG {
         }
     }
 
-    protected BotOperation getOperation() {
-        throw new ApplicationException("Implement this method on " + getClass().getName());
-    }
+    protected abstract BotOperation getOperation();
 
-
-    public String getForgetMessage2(String factoid) {
+    public String getForgetMessage(String factoid) {
         return "I forgot about " + factoid + ", " + SENDER + ".";
     }
 
-    protected String getFoundMessage2(String factoid, String value) {
+    protected String getFoundMessage(String factoid, String value) {
         return SENDER + ", " + factoid + " is " + value;
     }
 

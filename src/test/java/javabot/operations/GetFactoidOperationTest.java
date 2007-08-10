@@ -34,7 +34,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void straightGets() throws IOException {
-        testOperation("api", getFoundMessage2("api", "http://java.sun.com/javase/6/docs/api/"), ERROR_MESSAGE);
+        testOperation("api", getFoundMessage("api", "http://java.sun.com/javase/6/docs/api/"), ERROR_MESSAGE);
     }
 
     public void replyGets() {
@@ -42,7 +42,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void seeGets() {
-        testOperation("pebcak", getFoundMessage2("pebkac", "Problem Exists Between Keyboard And Chair"),
+        testOperation("pebcak", getFoundMessage("pebkac", "Problem Exists Between Keyboard And Chair"),
             ERROR_MESSAGE);
     }
 
@@ -63,7 +63,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void questionFactoid() {
-        testOperation("how to use spinners?", getFoundMessage2("how to use spinners",
+        testOperation("how to use spinners?", getFoundMessage("how to use spinners",
             "http://java.sun.com/docs/books/tutorial/uiswing/components/spinner.html"), ERROR_MESSAGE);
     }
 

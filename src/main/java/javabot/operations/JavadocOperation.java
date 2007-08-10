@@ -1,24 +1,20 @@
 package javabot.operations;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import javabot.BotEvent;
-import javabot.JavadocParser;
 import javabot.Message;
+import javabot.dao.ClazzDao;
+import javabot.javadoc.Clazz;
+import javabot.javadoc.Method;
 
-/**
- * @author ricky_clarkson
- */
 public class JavadocOperation implements BotOperation {
-    JavadocParser javadocParser;
-    private final String javadocSources;
-    private final String javadocBaseUrl;
+    private ClazzDao dao;
+    private static final String BASE_URL = "http://java.sun.com/javase/6/docs/api/";
 
-    public JavadocOperation(String sources, String url) {
-        javadocSources = sources;
-        javadocBaseUrl = url;
+    public JavadocOperation(ClazzDao clazzDao) {
+        dao = clazzDao;
     }
 
     /**
@@ -28,21 +24,39 @@ public class JavadocOperation implements BotOperation {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();
         if(message.toLowerCase().startsWith("javadoc ")) {
-            if(javadocParser == null) {
-                try {
-                    javadocParser = new JavadocParser(new File(javadocSources),javadocBaseUrl);
-                } catch(Exception exception) {
-                    throw new RuntimeException(exception);
+            String[] urls;
+            String key = message.substring("javadoc ".length()).trim();
+            int openIndex = key.indexOf('(');
+            if(openIndex == -1) {
+                Clazz[] classes = dao.getClass(key);
+                urls = new String[classes.length];
+                int index = 0;
+                for(Clazz clazz : classes) {
+                    urls[index++] = clazz.getClassUrl(BASE_URL);
+                }
+            } else {
+                int finalIndex = key.lastIndexOf('.', openIndex);
+                int closeIndex = key.indexOf(')');
+                if(closeIndex == -1 || finalIndex == -1) {
+                    urls = new String[0];
+                }
+                String className = key.substring(0, finalIndex);
+                String methodName = key.substring(finalIndex + 1, openIndex);
+                String signatureTypes = key.substring(openIndex + 1, closeIndex);
+                List<Method> list = dao.getMethods(className, methodName, signatureTypes, BASE_URL);
+                urls = new String[list.size()];
+                int index = 0;
+                for(Method method : list) {
+                    urls[index++] = method.getMethodUrl(BASE_URL);
                 }
             }
-            String key = message.substring("javadoc ".length()).trim();
-            String[] urls = javadocParser.javadoc(key);
+//            String[] urls = javadocParser.javadoc(key);
             String sender = event.getSender();
             for(String url : urls) {
                 messages.add(new Message(event.getChannel(), sender + ", please see " + url, false));
             }
             if(messages.isEmpty()) {
-                messages.add(new Message(event.getChannel(),"I don't know of any documentation for " + key, false));
+                messages.add(new Message(event.getChannel(), "I don't know of any documentation for " + key, false));
             }
         }
         return messages;

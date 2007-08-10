@@ -1,0 +1,12 @@
+<html xmlns:wicket="http://www.wicketframework.org">
+    <wicket:panel>
+        Javadoc jar upload
+        <form wicket:id="form">
+            <label for="upload">File</label>
+            <input wicket:id="fileInput" id="upload" type="file"/>
+            <input type="submit" value="Upload!"/>
+            <span wicket:id="progress">[[ajax upload progressbar]]</span>
+        </form>
+    </wicket:panel>
+</html>
+
