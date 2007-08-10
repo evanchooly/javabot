@@ -28,7 +28,13 @@ import javabot.model.Persistent;
     @NamedQuery(name = ClazzDao.GET_BY_NAME, query = "select c from Clazz c where "
         + "className=:name"),
     @NamedQuery(name = ClazzDao.GET_BY_PACKAGE_AND_NAME, query = "select c from Clazz c where "
-        + "packageName=:package and className=:name")
+        + "packageName=:package and className=:name"),
+    @NamedQuery(name = ClazzDao.GET_METHOD_NO_SIG, query = "select m from Method m where "
+        + "m.clazz.id=:classId and m.methodName=:name"),
+    @NamedQuery(name = ClazzDao.GET_METHOD, query = "select m from Method m where "
+        + "m.clazz.id=:classId and m.methodName=:name and (shortSignatureTypes=:params"
+        + " or shortSignatureStripped=:params or longSignatureTypes=:params"
+        + " or longSignatureStripped=:params)")
 })
 public class Clazz implements Persistent {
     private Long id;

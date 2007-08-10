@@ -1,6 +1,7 @@
 package javabot.dao.impl;
 
 import java.util.List;
+import java.util.ArrayList;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
@@ -45,18 +46,40 @@ public class ClazzDaoHibernate extends AbstractDaoHibernate<Clazz> implements Cl
     @SuppressWarnings({"unchecked", "ToArrayCallWithZeroLengthArrayArgument"})
     public Clazz[] getClass(String name) {
         Query query;
-        if(name.indexOf(".") == 0) {
+        if(name.indexOf(".") == -1) {
             query = getEntityManager().createNamedQuery(ClazzDao.GET_BY_NAME);
             query.setParameter("name", name);
         } else {
-            query = getEntityManager().createNamedQuery(ClazzDao.GET_BY_NAME);
+            query = getEntityManager().createNamedQuery(ClazzDao.GET_BY_PACKAGE_AND_NAME);
             query.setParameter("name", name.substring(name.lastIndexOf(".") + 1));
-            query.setParameter("package", name.substring(0, name.lastIndexOf(".") - 1));
+            query.setParameter("package", name.substring(0, name.lastIndexOf(".")));
         }
         return (Clazz[])query.getResultList().toArray(new Clazz[0]);
     }
 
+    @SuppressWarnings({"unchecked"})
     public List<Method> getMethods(String className, String methodName, String signatureTypes, String baseUrl) {
-        return null;
+        Clazz[] classes = getClass(className);
+        List<Method> methods = new ArrayList<Method>();
+        for(Clazz clazz : classes) {
+            methods.addAll(getMethods(methodName, signatureTypes, clazz));
+        }
+        return methods;
+    }
+
+    private List getMethods(String name, String signatureTypes, Clazz clazz) {
+        List methods = new ArrayList<Method>();
+        Query query;
+        if("*".equals(signatureTypes)) {
+            query = getEntityManager().createNamedQuery(ClazzDao.GET_METHOD_NO_SIG)
+                .setParameter("classId", clazz.getId())
+                .setParameter("name", name);
+        } else {
+            query = getEntityManager().createNamedQuery(ClazzDao.GET_METHOD)
+                .setParameter("classId", clazz.getId())
+                .setParameter("name", name)
+                .setParameter("params", signatureTypes);
+        }
+        return query.getResultList();
     }
 }

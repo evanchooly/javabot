@@ -55,6 +55,8 @@
     
     <bean id="changeDao" class="javabot.dao.impl.ChangeDaoHibernate"/>
 
+    <bean id="clazzDao" class="javabot.dao.impl.ClazzDaoHibernate"/>
+
     <bean id="seenDao" class="javabot.dao.impl.SeenDaoHibernate"/>
 
     <bean id="logDao" class="javabot.dao.impl.LogsDaoHibernate"/>
