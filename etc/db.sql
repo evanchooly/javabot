@@ -12,7 +12,7 @@ SET search_path = public, pg_catalog;
 -- Name: factoid_sequence; Type: SEQUENCE SET; Schema: public; Owner: jlee
 --
 
-SELECT pg_catalog.setval('factoid_sequence', 6723, true);
+SELECT pg_catalog.setval('factoid_sequence', 6724, true);
 
 
 --
@@ -1658,6 +1658,11 @@ INSERT INTO changes (message, changedate, id) VALUES ('surial changed ''karma r0
 INSERT INTO changes (message, changedate, id) VALUES ('ojacobson added ''cljp'' with a value of ''comp.lang.java.programmer''', '2007-08-09 19:07:06.211', NULL);
 INSERT INTO changes (message, changedate, id) VALUES ('ojacobson added ''cjlp'' with a value of ''<reply>Learn to type, fucko!''', '2007-08-09 19:07:14.58', NULL);
 INSERT INTO changes (message, changedate, id) VALUES ('surial removed ''cljp''', '2007-08-09 19:07:26.686', NULL);
+INSERT INTO changes (message, changedate, id) VALUES ('tieTYT changed ''karma dmlloyd'' to ''44''', '2007-08-09 20:51:50.708', NULL);
+INSERT INTO changes (message, changedate, id) VALUES ('surial changed ''karma meeper'' to ''-17''', '2007-08-09 20:52:37.292', NULL);
+INSERT INTO changes (message, changedate, id) VALUES ('g[r]eek changed ''karma ojacobson'' to ''15''', '2007-08-09 23:14:19.469', NULL);
+INSERT INTO changes (message, changedate, id) VALUES ('whaley changed ''karma aditsu'' to ''16''', '2007-08-09 23:55:53.933', NULL);
+INSERT INTO changes (message, changedate, id) VALUES ('ojacobson added ''sucks'' with a value of ''<reply>All software sucks.  All hardware sucks.  The best you can do is pick a poison that tastes good.''', '2007-08-09 23:56:38.453', NULL);
 
 
 --
@@ -4906,7 +4911,6 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (6586, 'karma o
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6580, 'karma dfr', '2', 'AMcBain', '2007-07-23 16:56:59.415');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6587, 'layout managers', 'http://java.sun.com/docs/books/tutorial/uiswing/layout/index.html If the layout managers that come with the jdk dont satisfy you, have a look at FormLayout, TableLayout, PercentLayout or HTMLLayout (ask me about each of those to learn more). Book chapter at http://javafaq.mine.nu/lookup?290', 'Fanook', '2007-07-23 22:04:12.135');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2201, 'karma waz', '96', 'pr3d4t0r', '2007-07-23 23:56:25.308');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (5295, 'karma aditsu', '15', 'dibridagoe', '2007-07-24 02:47:26.895');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6588, 'java gpl', '<reply>http://www.sun.com/software/opensource/java/faq.jsp#b2_1', 'cheeser', '2007-07-24 09:15:24.601');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (998, 'karma pandora--', '10', 'r0bby', '2007-07-24 13:10:08.36');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (299, 'karma eidolon', '20', '[TechGuy]', '2007-07-25 13:07:29.026');
@@ -5007,24 +5011,26 @@ INSERT INTO factoids (id, name, value, username, updated) VALUES (5156, 'karma d
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6708, 'easymock', '<reply>For an easy way to create mock objects for unit testing please see http://www.easymock.org', 'r0bby', '2007-08-08 09:39:39.801');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6709, 'same', 'a tool to find copy paste code. For more information see http://sf.net/projects/same/', 'ernimril', '2007-08-08 12:44:19.558');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2202, 'karma stephmw', '44', '[TechGuy]', '2007-08-08 15:57:26.568');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (2558, 'karma meeper', '-18', 'whaley', '2007-08-08 16:51:58.461');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6663, 'karma deebo', '2', 'jottinger', '2007-08-09 07:03:03.976');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6713, 'javabot: aaa', 'say fff', 'csaba', '2007-08-09 09:45:41.411');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2798, 'karma blafasel', '25', 'leip', '2007-08-09 11:48:31.763');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (2234, 'karma dmlloyd', '43', 'Logi', '2007-08-09 12:56:26.877');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6716, 'lart', '<action> takes the JDK javadocs and smacks $1 upside the head.', 'eido', '2007-08-09 14:43:02.19');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6717, 'karma aiyailives', '1', 'jottinger', '2007-08-09 14:44:39.467');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6718, '~lart $1', '<action>takes the JDK javadocs and smacks $1 upside the head.', 'eido', '2007-08-09 14:45:34.26');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6720, 'humility', 'something that everyone coming to IRC needs to learn while they''re asking questions, whether they believe they''re right or not.', 'eido', '2007-08-09 14:49:16.762');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2241, 'karma jottinger', '134', 'eido', '2007-08-09 15:12:49.758');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5654, 'karma zaph0d^', '2', 'r0bby', '2007-08-09 15:27:29.957');
-INSERT INTO factoids (id, name, value, username, updated) VALUES (6489, 'karma ojacobson', '14', 'surial', '2007-08-09 18:19:08.187');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (4744, 'karma surial', '34', 'ojacobson', '2007-08-09 18:19:23.511');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (5375, 'karma joed', '51', 'surial', '2007-08-09 18:22:42.948');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6721, 'cheeser+', '<reply>cheeser has a karma level of 8, $who', 'ojacobson', '2007-08-09 18:23:56.63');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (2233, 'karma cheeser', '370', 'ojacobson', '2007-08-09 18:24:43.408');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (3160, 'karma r0bby', '36', 'surial', '2007-08-09 18:29:06.748');
 INSERT INTO factoids (id, name, value, username, updated) VALUES (6723, 'cjlp', '<reply>Learn to type, fucko!', 'ojacobson', '2007-08-09 19:07:14.544');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (2234, 'karma dmlloyd', '44', 'tieTYT', '2007-08-09 20:51:50.596');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (2558, 'karma meeper', '-17', 'surial', '2007-08-09 20:52:37.23');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6489, 'karma ojacobson', '15', 'g[r]eek', '2007-08-09 23:14:19.299');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (5295, 'karma aditsu', '16', 'whaley', '2007-08-09 23:55:53.823');
+INSERT INTO factoids (id, name, value, username, updated) VALUES (6724, 'sucks', '<reply>All software sucks.  All hardware sucks.  The best you can do is pick a poison that tastes good.', 'ojacobson', '2007-08-09 23:56:38.196');
 
 
 --
