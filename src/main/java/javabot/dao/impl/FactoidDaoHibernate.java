@@ -113,10 +113,10 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
             query.setParameter("name", "%" + filter.getName().toUpperCase() + "%");
         }
         if(filter.getUserName() != null) {
-            query.setParameter("username", "%" + filter.getUserName() + "%");
+            query.setParameter("username", "%" + filter.getUserName().toUpperCase() + "%");
         }
         if(filter.getValue() != null) {
-            query.setParameter("value", "%" + filter.getValue() + "%");
+            query.setParameter("value", "%" + filter.getValue().toUpperCase() + "%");
         }
         if(!count && qp != null) {
             query.setFirstResult(qp.getFirst()).setMaxResults(qp.getCount());
