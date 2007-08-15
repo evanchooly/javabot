@@ -32,23 +32,18 @@ public class SignIn extends WebPage {
 
         @Override
         public final void onSubmit() {
-            log.debug("submitting form");
             if(signIn(getUsername(), getPassword())) {
-                log.debug("success");
                 setResponsePage(getApplication().getHomePage());
             } else {
-                log.debug("hrm.");
                 error(getLocalizer().getString("loginError", this, "Unable to sign you in"));
             }
         }
 
         public boolean signIn(String username, String password) {
             try {
-                log.debug("signing in");
                 return ((AdminSession)getSession()).authenticate(username, password);
             } catch(Throwable t) {
                 log.debug(t.getMessage(), t);
-                log.debug("done signing in");
                 return false;
             }
         }

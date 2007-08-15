@@ -66,6 +66,7 @@ public class ChangeDaoHibernate extends AbstractDaoHibernate<Change> implements 
             hql.append("order by upper(target.").append(qp.getSort()).append(
                 ") ").append((qp.isSortAsc()) ? " asc" : " desc");
         }
+
         Query query = getEntityManager().createQuery(hql.toString());
         if(filter.getId() != null) {
             query.setParameter("id", "%" + filter.getId() + "%");

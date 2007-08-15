@@ -11,11 +11,11 @@ import java.util.zip.ZipFile;
 import com.sun.javadoc.Doclet;
 import com.sun.javadoc.RootDoc;
 import com.sun.tools.javadoc.Main;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StructureDoclet extends Doclet {
-    private static final Log log = LogFactory.getLog(StructureDoclet.class);
+    private static final Logger log = LoggerFactory.getLogger(StructureDoclet.class);
 
     public static boolean start(RootDoc doc) {
         new StructureReference().process(doc);

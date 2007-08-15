@@ -39,10 +39,12 @@ public class JavadocPanel extends Panel {
         protected void onSubmit() {
             if(srcZipPath != null) {
                 try {
-                    new StructureDoclet().parse(new File(srcZipPath));
+//                    new StructureDoclet().parse(new File(srcZipPath));
                 } catch(Exception e) {
-                    throw new IllegalStateException("Unable to write file");
+                    error(e.getMessage());
                 }
+
+                info("done");
             }
         }
     }
