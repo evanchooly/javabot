@@ -2,12 +2,11 @@ package javabot.admin;
 
 import java.io.File;
 
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.upload.FileUploadField;
-import org.apache.wicket.markup.html.form.upload.FileUpload;
-import org.apache.wicket.extensions.ajax.markup.html.form.upload.UploadProgressBar;
 import javabot.javadoc.StructureDoclet;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.PropertyModel;
 
 /**
  * Created Jul 19, 2007
@@ -17,33 +16,31 @@ import javabot.javadoc.StructureDoclet;
 public class JavadocPanel extends Panel {
     public JavadocPanel(String id) {
         super(id);
-
-        FileUploadForm ajaxSimpleUploadForm = new FileUploadForm("form");
-        ajaxSimpleUploadForm.add(new UploadProgressBar("progress", ajaxSimpleUploadForm));
-        add(ajaxSimpleUploadForm);
+        add(new FileUploadForm("form"));
     }
 
     private class FileUploadForm extends Form {
-        private FileUploadField fileUploadField;
+        private String srcZipPath;
 
         public FileUploadForm(String name) {
             super(name);
-            setMultiPart(true);
-            add(fileUploadField = new FileUploadField("fileInput"));
+            add(new TextField("file", new PropertyModel(this, "srcZipPath")));
+        }
+
+        public String getSrcZipPath() {
+            return srcZipPath;
+        }
+
+        public void setSrcZipPath(String filePath) {
+            srcZipPath = filePath;
         }
 
         @Override
         protected void onSubmit() {
-            FileUpload upload = fileUploadField.getFileUpload();
-            if(upload != null) {
+            if(srcZipPath != null) {
                 try {
-                    File newFile = File.createTempFile("source", "zip");
-                    newFile.createNewFile();
-                    upload.writeTo(newFile);
-                    info("saved file: " + upload.getClientFileName());
-                    new StructureDoclet().parse(newFile);
-                }
-                catch(Exception e) {
+                    new StructureDoclet().parse(new File(srcZipPath));
+                } catch(Exception e) {
                     throw new IllegalStateException("Unable to write file");
                 }
             }
