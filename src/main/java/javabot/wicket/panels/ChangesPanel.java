@@ -76,7 +76,7 @@ public class ChangesPanel extends Panel {
         }
 
         public SortableChangeProvider(ChangeDao changeDao) {
-            setSort("changeDate", true);
+            setSort("changeDate",false);
             this.dao = changeDao;
         }
 
