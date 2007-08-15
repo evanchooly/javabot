@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * @author ricky_clarkson
- * @author ernimeril  - Throttle patch
+ * @author ernimril  - Throttle patch
  */
 
 public class TellOperation implements BotOperation {
