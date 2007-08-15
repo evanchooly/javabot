@@ -19,6 +19,8 @@ import com.sun.javadoc.ConstructorDoc;
 import com.sun.javadoc.MethodDoc;
 import javabot.dao.ClazzDao;
 import javabot.model.Persistent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @Table(name = "classes")
@@ -37,6 +39,8 @@ import javabot.model.Persistent;
         + " or longSignatureStripped=:params)")
 })
 public class Clazz implements Persistent {
+    private static final Logger log = LoggerFactory.getLogger(Clazz.class);
+
     private Long id;
     private String packageName;
     private String className;
@@ -62,6 +66,7 @@ public class Clazz implements Persistent {
         if(doc.superclass() != null) {
             superClass = doc.superclass().qualifiedName();
         }
+        System.out.println("creating class " + this);
         methods = new ArrayList<Method>(doc.methods().length + doc.constructors().length);
         for(MethodDoc methodDoc : doc.methods()) {
             methods.add(new Method(methodDoc, this));
@@ -138,5 +143,10 @@ public class Clazz implements Persistent {
             }
             return compare;
         }
+    }
+
+    @Override
+    public String toString() {
+        return packageName + "." + className;
     }
 }

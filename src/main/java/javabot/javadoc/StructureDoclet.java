@@ -25,6 +25,7 @@ public class StructureDoclet extends Doclet {
     public void parse(File file) {
         File rootDir = null;
         try {
+            System.out.println("processing " + file);
             ZipFile zip = new ZipFile(file);
             rootDir = new File(System.getProperty("java.io.tmpdir"), "javadoc" + System.currentTimeMillis());
             rootDir.mkdir();
