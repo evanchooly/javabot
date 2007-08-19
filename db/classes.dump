@@ -11,18 +11,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table "classes"
---
-
-CREATE TABLE "classes" (
-  "id" bigint(20) NOT NULL,
-  "className" varchar(255) default NULL,
-  "packageName" varchar(255) default NULL,
-  "superClass" varchar(255) default NULL,
-  PRIMARY KEY  ("id")
-);
-
---
 -- Dumping data for table "classes"
 --
 
@@ -1431,4 +1419,4 @@ INSERT INTO "classes" VALUES (5798,'ZipFile','java.util.zip','java.lang.Object')
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2007-08-19  1:48:55
+-- Dump completed on 2007-08-19 18:51:23

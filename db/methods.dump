@@ -11,23 +11,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table "methods"
---
-
-CREATE TABLE "methods" (
-  "id" bigint(20) NOT NULL,
-  "longSignatureStripped" text,
-  "longSignatureTypes" text,
-  "methodName" varchar(255) default NULL,
-  "paramCount" int(11) default NULL,
-  "shortSignatureStripped" text,
-  "shortSignatureTypes" text,
-  "clazz_id" bigint(20) default NULL,
-  PRIMARY KEY  ("id"),
-  KEY "FK38F44BB2446B4B9" ("clazz_id")
-);
-
---
 -- Dumping data for table "methods"
 --
 
@@ -14133,4 +14116,4 @@ INSERT INTO "methods" VALUES (58603,'','','size',0,'','',5798);
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2007-08-19  1:48:55
+-- Dump completed on 2007-08-19 18:51:23

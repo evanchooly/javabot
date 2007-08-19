@@ -193,7 +193,7 @@
             <attribute name="table"/>
             <sequential>
                 <exec executable="mysqldump">
-                    <arg line="-u javabot --password=javabot -B javabot --tables @{table} -r db/@{table}.dump --skip-opt -n --compatible=postgresql"/>
+                    <arg line="-u javabot --password=javabot -B javabot --tables @{table} -r db/@{table}.dump --skip-opt -n --compatible=postgresql --no-create-info"/>
                 </exec>
             </sequential>
         </macrodef>
