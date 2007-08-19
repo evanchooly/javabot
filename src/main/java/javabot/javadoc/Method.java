@@ -10,7 +10,6 @@ import javax.persistence.Transient;
 
 import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.Parameter;
-import javabot.dao.ClazzDao;
 
 @Entity
 @Table(name = "methods")
@@ -35,7 +34,6 @@ public class Method {
         Parameter[] parameters = doc.parameters();
         StringBuilder longTypes = new StringBuilder();
         StringBuilder shortTypes = new StringBuilder();
-
         for(Parameter parameter : parameters) {
             if(paramCount != 0) {
                 longTypes.append(", ");
@@ -93,7 +91,7 @@ public class Method {
         longSignatureStripped = stripped;
     }
 
-    @Column(length=1000)
+    @Column(length = 1000)
     public String getLongSignatureTypes() {
         return longSignatureTypes;
     }

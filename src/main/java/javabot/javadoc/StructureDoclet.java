@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -22,7 +24,7 @@ public class StructureDoclet extends Doclet {
         return false;
     }
 
-    public void parse(File file) {
+    public void parse(File file, String packages) {
         File rootDir = null;
         try {
             System.out.println("processing " + file);
@@ -36,12 +38,17 @@ public class StructureDoclet extends Doclet {
             }
             String name = getClass().getSimpleName();
             String docletClass = getClass().getName();
-            Main.execute(name, docletClass, new String[]{
-                "-subpackages", "java",
-                "-sourcepath", rootDir.getAbsolutePath()
-            });
-        } catch(IOException e) {
-            log.error(e.getMessage(), e);
+            List<String> args = new ArrayList<String>();
+            args.add("-sourcepath");
+            args.add(rootDir.getAbsolutePath());
+            for(String sub : packages.split(" ")) {
+                args.add("-subpackages");
+                args.add(sub);
+            }
+            System.out.println("Executing");
+            Main.execute(name, docletClass, args.toArray(new String[args.size()]));
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
             throw new RuntimeException(e.getMessage());
         } finally {
             if(rootDir != null) {
@@ -51,7 +58,7 @@ public class StructureDoclet extends Doclet {
     }
 
     private void delete(File file) {
-        if(!file.isFile()) {
+        if(file.isDirectory()) {
             for(File content : file.listFiles()) {
                 delete(content);
             }

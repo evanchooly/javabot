@@ -20,11 +20,13 @@ public class JavadocPanel extends Panel {
     }
 
     private class FileUploadForm extends Form {
-        private String srcZipPath;
+        private String srcZipPath = "/tmp/src.zip";
+        private String packages = "java javax org";
 
         public FileUploadForm(String name) {
             super(name);
             add(new TextField("file", new PropertyModel(this, "srcZipPath")));
+            add(new TextField("packages", new PropertyModel(this, "packages")));
         }
 
         public String getSrcZipPath() {
@@ -35,11 +37,19 @@ public class JavadocPanel extends Panel {
             srcZipPath = filePath;
         }
 
+        public String getPackages() {
+            return packages;
+        }
+
+        public void setPackages(String pkgs) {
+            packages = pkgs;
+        }
+        
         @Override
         protected void onSubmit() {
             if(srcZipPath != null) {
                 try {
-                    new StructureDoclet().parse(new File(srcZipPath));
+                    new StructureDoclet().parse(new File(srcZipPath), packages);
                 } catch(Exception e) {
                     error(e.getMessage());
                 }

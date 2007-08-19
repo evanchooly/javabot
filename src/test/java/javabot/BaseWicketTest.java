@@ -16,8 +16,8 @@ import javabot.admin.AdminApplication;
  */
 public class BaseWicketTest extends AbstractTransactionalSpringContextTests {
     private static final String[] LOCATIONS = {
-        "classpath:applicationContext.xml",
-        "classpath:applicationContext-test.xml"
+        "classpath:applicationContext.xml"/*,
+        "classpath:applicationContext-test.xml"*/
     };
     private WicketTester tester;
 

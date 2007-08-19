@@ -17,9 +17,9 @@ public class StructureDocletTest extends BaseWicketTest {
     private ClazzDao clazzDao;
 
     public void processSources() {
-        File file = new File("src.zip");
+        File file = new File("/tmp/src.zip");
         if(file.exists()) {
-            new StructureDoclet().parse(file);
+            new StructureDoclet().parse(file, "java javax org");
         }
     }
 }
