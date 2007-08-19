@@ -188,8 +188,11 @@
                 </exec>
             </sequential>
         </macrodef>
+        <tableDump table="changes"/>
         <tableDump table="factoids"/>
         <tableDump table="karma"/>
+        <tableDump table="logs"/>
+        <tableDump table="seen"/>
     </target>
 
     <target name="export-javadoc">
