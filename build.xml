@@ -15,6 +15,15 @@
     <property name="build.report.dir" location="${build}/reports"/>
     <property name="junit.report.dir" location="${build.report.dir}/junitreport"/>
 
+    	<macrodef name="tableDump">
+		<attribute name="table"/>
+		<sequential>
+			<exec executable="pg_dump">
+				<arg line="-t @{table} -aOxCDf db/@{table}.dump javabot"/>
+			</exec>
+		</sequential>
+	</macrodef>
+
     <target name="init" depends="deps">
         <mkdir dir="build"/>
         <mkdir dir="${build}/main"/>
@@ -175,6 +184,16 @@
         <sshexec host="antwerkz.com" username="jlee" password="${scp.password}" command="rm javabot.dump" trust="yes"
                  verbose="true"/>
         <exec command="etc/trim.sh"/>
+    </target>
+
+    <target name="export-production-db">
+	<tableDump table="factoids"/>
+	<tableDump table="karma"/>
+    </target>
+
+    <target name="export-javadoc">
+	<tableDump table="classes"/>
+	<tableDump table="methods"/>
     </target>
 
     <target name="deps">
