@@ -77,7 +77,7 @@
 
     <target name="rebuild" depends="clean, main"/>
 
-    <target name="test" depends="main, import-db">
+    <target name="test" depends="main">
         <antcall target="test-with-xml"/>
         <antcall target="test-all"/>
     </target>
@@ -164,15 +164,19 @@
         </emma>
     </target>
 
-    <target name="import-db" if="scp.password">
-        <property name="javabot.host" value="antwerkz.com"/>
-
-        <sshexec host="${javabot.host}" username="jlee" password="${scp.password}"
-                 command="pg_dump -U javabot -aOxCDf javabot.dump javabot" trust="yes"/>
-        <scp file="jlee:${scp.password}@${javabot.host}:javabot.dump" localToFile="etc/temp.sql" trust="yes"/>
-        <sshexec host="${javabot.host}" username="jlee" password="${scp.password}" command="rm javabot.dump" trust="yes"
-                 verbose="true"/>
-        <exec command="etc/trim.sh"/>
+    <target name="import-javadoc">
+        <exec executable="psql" outputproperty="deletemethods.out">
+		<arg line="-U javabot -c 'delete from methods'"/>
+	</exec>
+        <exec executable="psql" outputproperty="deleteclasses.out">
+		<arg line="-U javabot -c 'delete from classes'"/>
+	</exec>
+        <exec executable="psql" outputproperty="classes.out">
+		<arg line="-U javabot -f db/classes.dump"/>
+	</exec>
+        <exec executable="psql" outputproperty="methods.out">
+		<arg line="-U javabot -f db/methods.dump"/>
+	</exec>
     </target>
 
     <target name="export-production-db">
