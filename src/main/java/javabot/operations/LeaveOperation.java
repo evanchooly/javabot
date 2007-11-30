@@ -1,14 +1,13 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javabot.BotEvent;
 import javabot.ChannelControl;
 import javabot.Message;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ricky_clarkson
@@ -17,16 +16,15 @@ public class LeaveOperation implements BotOperation {
     private final ChannelControl channelControl;
     private static Log log = LogFactory.getLog(LeaveOperation.class);
 
-    public LeaveOperation(final ChannelControl channelControl)
-    {
-        this.channelControl=channelControl;
+    public LeaveOperation(final ChannelControl channelControl) {
+        this.channelControl = channelControl;
     }
 
     /**
      * @see BotOperation#handleMessage(BotEvent)
      */
     public List<Message> handleMessage(BotEvent event) {
-        List<Message> messages = new ArrayList< Message>();
+        List<Message> messages = new ArrayList<Message>();
 
         final String message = event.getMessage();
         final String channel = event.getChannel();
@@ -35,22 +33,23 @@ public class LeaveOperation implements BotOperation {
         if ("leave".equals(message.toLowerCase())) {
             if (channel.equals(sender)) {
                 messages.add(new Message(channel, "I cannot leave a private "
-                    + "message, " + sender + ".", false));
+                        + "message, " + sender + ".", false));
 
                 return messages;
             }
 
             messages
-                .add(new Message(channel, "I'll be back in one hour", false));
+                    .add(new Message(channel, "I'll be back...", false));
 
             new Thread(new Runnable() {
                 public void run() {
                     channelControl.partChannel
-                (channel, "I was asked to leave.");
+                            (channel, "I was asked to leave.");
 
                     try {
-                        Thread.sleep(3600 * 1000);
-                    } catch (Exception exception) {
+                        Thread.sleep(60000 * 15);
+                        //Thread.sleep(3600 * 1000);
+                    } catch (InterruptedException exception) {
                         log.error(exception.getMessage(), exception);
                     }
 
@@ -64,8 +63,7 @@ public class LeaveOperation implements BotOperation {
 
     }
 
-    public List<Message> handleChannelMessage(BotEvent event)
-    {
-            return new ArrayList<Message>();
+    public List<Message> handleChannelMessage(BotEvent event) {
+        return new ArrayList<Message>();
     }
 }
