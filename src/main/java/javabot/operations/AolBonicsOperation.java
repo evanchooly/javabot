@@ -34,6 +34,8 @@ public class AolBonicsOperation implements BotOperation {
         phrases.add("ppl");
         phrases.add("ru");
         phrases.add("j00");
+        phrases.add("cuz");
+        phrases.add("coz");
         // Slightly questionable....
         // phrases.add("lol");
         phrases.add("ftw");
