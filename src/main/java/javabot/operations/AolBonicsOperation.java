@@ -29,13 +29,22 @@ public class AolBonicsOperation implements BotOperation {
         phrases.add("r");
         phrases.add("lolz");
         phrases.add("l33t");
+        phrases.add("1337");
         phrases.add("kewl");
         phrases.add("ppl");
+        phrases.add("ru");
+        phrases.add("j00");
+        // Slightly questionable....
+        // phrases.add("lol");
+        phrases.add("ftw");
 
         insults.add("dumbass");
         insults.add("genius");
         insults.add("Einstein");
         insults.add("pal");
+        insults.add("nimrod");
+        insults.add("dork");
+
         random = new Random();
     }
 
@@ -54,7 +63,7 @@ public class AolBonicsOperation implements BotOperation {
         log.debug("AolBonicsOperation: " + message);
         Boolean notDone = true;
         for (String bad : split) {
-            if (phrases.contains(bad.toLowerCase()) && notDone) {
+            if (phrases.contains(bad.toLowerCase().replaceAll("\\!|\\.|\\?|,", "")) && notDone) {
                 notDone = false;
                 messages.add(new Message(channel, event.getSender()
                         + ": Please skip the aolbonics, " + getInsult(), false));
