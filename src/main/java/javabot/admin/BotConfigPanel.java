@@ -1,12 +1,8 @@
 package javabot.admin;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import javabot.dao.ConfigDao;
 import javabot.model.Config;
-import javabot.operations.AddFactoidOperation;
+import javabot.operations.AolBonicsOperation;
 import javabot.operations.DaysToChristmasOperation;
 import javabot.operations.DaysUntilOperation;
 import javabot.operations.DictOperation;
@@ -44,6 +40,10 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created Jun 21, 2007
  *
@@ -76,6 +76,7 @@ public class BotConfigPanel extends Panel {
             StatsOperation.class.getName(),
             TellOperation.class.getName(),
             TimeOperation.class.getName(),
+            AolBonicsOperation.class.getName(),
             UnixCommandOperation.class.getName());
 
     static {
