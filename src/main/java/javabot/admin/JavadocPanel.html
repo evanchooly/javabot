@@ -2,10 +2,12 @@
     <wicket:panel>
         Javadoc jar upload
         <form wicket:id="form">
-            <label for="file">File</label>
-            <input wicket:id="file" id="file" type="text"/>
-            <br/><label for="packages">Packages</label>
+            <label for="api">API Name</label>
+            <input wicket:id="api" id="api" type="text"/>
+            <br><label for="packages">Packages</label>
             <input wicket:id="packages" id="packages" type="text"/>
+            <br/><label for="file">File</label>
+            <input wicket:id="file" id="file" type="text"/>
             <input type="submit" value="Process"/>
         </form>
     </wicket:panel>

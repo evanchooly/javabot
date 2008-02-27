@@ -21,6 +21,7 @@ public class JavadocPanel extends Panel {
 
     private class FileUploadForm extends Form {
         private String srcZipPath = "/tmp/src.zip";
+        private String api = "JDK";
         private String packages = "java javax org";
 
         public FileUploadForm(String name) {
@@ -44,12 +45,20 @@ public class JavadocPanel extends Panel {
         public void setPackages(String pkgs) {
             packages = pkgs;
         }
-        
+
+        public String getApi() {
+            return api;
+        }
+
+        public void setApi(String library) {
+            api = library;
+        }
+
         @Override
         protected void onSubmit() {
             if(srcZipPath != null) {
                 try {
-                    new StructureDoclet().parse(new File(srcZipPath), packages);
+                    new StructureDoclet().parse(api, new File(srcZipPath), packages);
                 } catch(Exception e) {
                     error(e.getMessage());
                 }

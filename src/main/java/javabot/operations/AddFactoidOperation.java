@@ -25,16 +25,16 @@ public class AddFactoidOperation implements BotOperation {
         String message = event.getMessage();
         String channel = event.getChannel();
         String sender = event.getSender();
-        if(message.toLowerCase().contains(" is")) {
-            String key = message.substring(0, message.indexOf(" is"));
+        if(message.toLowerCase().contains(" is ")) {
+            String key = message.substring(0, message.indexOf(" is "));
             key = key.toLowerCase();
             while(key.endsWith(".") || key.endsWith("?") || key.endsWith("!")) {
                 key = key.substring(0, key.length() - 1);
             }
-            int index = message.indexOf("is ");
+            int index = message.indexOf(" is ");
             String value = null;
             if(index != -1) {
-                value = message.substring(index + 3, message.length());
+                value = message.substring(index + 4, message.length());
             }
             if(key.trim().length() == 0) {
                 messages.add(new Message(channel, "Invalid factoid name", false));

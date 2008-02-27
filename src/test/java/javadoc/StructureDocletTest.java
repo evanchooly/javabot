@@ -19,7 +19,7 @@ public class StructureDocletTest extends BaseWicketTest {
     public void processSources() {
         File file = new File("/tmp/src.zip");
         if(file.exists()) {
-            new StructureDoclet().parse(file, "java javax org");
+            new StructureDoclet().parse("JDK", file, "java javax org");
         }
     }
 }

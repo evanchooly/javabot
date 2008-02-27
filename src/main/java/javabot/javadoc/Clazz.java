@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -25,7 +26,7 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Table(name = "classes")
 @NamedQueries({
-    @NamedQuery(name = ClazzDao.DELETE_ALL, query = "delete from Clazz"),
+    @NamedQuery(name = ClazzDao.DELETE_ALL, query = "delete from Clazz c where c.api=:api"),
     @NamedQuery(name = ClazzDao.DELETE_ALL_METHODS, query = "delete from Method"),
     @NamedQuery(name = ClazzDao.GET_BY_NAME, query = "select c from Clazz c where "
         + "className=:name"),
@@ -42,6 +43,7 @@ public class Clazz implements Persistent {
     private static final Logger log = LoggerFactory.getLogger(Clazz.class);
 
     private Long id;
+    private String api;
     private String packageName;
     private String className;
     private String superClass;
@@ -75,6 +77,15 @@ public class Clazz implements Persistent {
             methods.add(new Method(conDoc, this));
         }
         Collections.sort(methods, new MethodComparator());
+    }
+
+    @Column(nullable = false)
+    public String getApi() {
+        return api;
+    }
+
+    public void setApi(String api) {
+        this.api = api;
     }
 
     @Transient

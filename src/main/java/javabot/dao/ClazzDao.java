@@ -19,7 +19,7 @@ public interface ClazzDao extends BaseDao<Clazz> {
     String GET_METHOD_NO_SIG = "ClazzDao.getMethodNoSig";
     String GET_METHOD = "ClazzDao.getMethod";
 
-    void deleteAll();
+    void deleteAll(String pkgName);
 
     Clazz getOrCreate(ClassDoc classDoc);
 

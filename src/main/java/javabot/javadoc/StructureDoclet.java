@@ -18,14 +18,17 @@ import org.slf4j.LoggerFactory;
 
 public class StructureDoclet extends Doclet {
     private static final Logger log = LoggerFactory.getLogger(StructureDoclet.class);
+    private static String pkgName;
 
     public static boolean start(RootDoc doc) {
-        new StructureReference().process(doc);
+        new StructureReference().process(pkgName, doc);
         return false;
     }
 
-    public void parse(File file, String packages) {
+    public void parse(String api, File file, String packages) {
+        pkgName = api;
         File rootDir = null;
+        pkgName = api;
         try {
             System.out.println("processing " + file);
             ZipFile zip = new ZipFile(file);

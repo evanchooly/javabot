@@ -22,22 +22,26 @@ public class KarmaChangeOperation implements BotOperation {
         String message = event.getMessage();
         String sender = event.getSender();
         String channel = event.getChannel();
-        if(message.indexOf(" ") != -1) {
+        String nick = message.substring(0, message.length() - 2).trim().toLowerCase();
+        if (message.contains(" ") || "".equals(nick)) {
             return messages;
         }
-        if(message.endsWith("++") || message.endsWith("--")) {
-            String nick = message.substring(0, message.length() - 2);
-            nick = nick.toLowerCase();
-            if(nick.equals(sender.toLowerCase())) {
+        if(!channel.startsWith("#") && (message.endsWith("++") || message.endsWith("--"))) {
+            messages.add(new Message(channel, "Sorry, karma changes are not allowed in private messages.", false));
+            return messages;
+        }
+
+        if (message.endsWith("++") || message.endsWith("--")) {
+            if (nick.equals(sender.toLowerCase())) {
                 messages.add(new Message(channel, "Changing one's own karma is not permitted.", false));
                 message = "--";
             }
             Karma karma = dao.find(nick);
-            if(karma == null) {
+            if (karma == null) {
                 karma = new Karma();
                 karma.setName(nick);
             }
-            if(message.endsWith("++")) {
+            if (message.endsWith("++")) {
                 karma.setValue(karma.getValue() + 1);
             } else {
                 karma.setValue(karma.getValue() - 1);
@@ -46,7 +50,7 @@ public class KarmaChangeOperation implements BotOperation {
             dao.save(karma);
             KarmaReadOperation karmaRead = new KarmaReadOperation(dao);
             messages.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(),
-                event.getLogin(), event.getHostname(), "karma " + nick)));
+                    event.getLogin(), event.getHostname(), "karma " + nick)));
         }
         return messages;
     }
@@ -54,4 +58,5 @@ public class KarmaChangeOperation implements BotOperation {
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();
     }
+
 }

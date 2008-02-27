@@ -9,6 +9,6 @@ public class Home extends AuthenticatedWebPage {
         add(new ChannelConfigPanel("channels"));
         add(new AdminConfigPanel("admins"));
         add(new BotConfigPanel("bot"));
-        add(new JavadocPanel("javadoc"));
+//        add(new JavadocPanel("javadoc"));
     }
 }

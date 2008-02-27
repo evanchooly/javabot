@@ -63,7 +63,7 @@ public class FactoidsPanel extends Panel {
         SortableFactoidProvider dp = new SortableFactoidProvider(dao);
         DataTable dataView = new DataTable("dataView", columns, dp, 40);
 
-        dataView.addTopToolbar(new FilterToolbar(dataView, dp));
+//        dataView.addTopToolbar(new FilterToolbar(dataView, dp));
         dataView.addTopToolbar(new NavigationToolbar(dataView));
         dataView.addTopToolbar(new HeadersToolbar(dataView, dp));
         add(dataView);

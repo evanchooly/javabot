@@ -21,9 +21,15 @@ public class ClazzDaoHibernate extends AbstractDaoHibernate<Clazz> implements Cl
         super(Clazz.class);
     }
 
-    public void deleteAll() {
-        getEntityManager().createNamedQuery(ClazzDao.DELETE_ALL_METHODS).executeUpdate();
-        getEntityManager().createNamedQuery(ClazzDao.DELETE_ALL).executeUpdate();
+    public void deleteAll(String pkgName) {
+//        getEntityManager()
+//            .createNamedQuery(ClazzDao.DELETE_ALL_METHODS)
+//            .setParameter("api", pkgName)
+//            .executeUpdate();
+        getEntityManager()
+            .createNamedQuery(ClazzDao.DELETE_ALL)
+            .setParameter("api", pkgName)
+            .executeUpdate();
         getEntityManager().flush();
     }
 

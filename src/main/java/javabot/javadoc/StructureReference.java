@@ -14,8 +14,8 @@ public class StructureReference {
         InjectorHolder.getInjector().inject(this);
     }
 
-    public void process(RootDoc doc) {
-        clazzDao.deleteAll();
+    public void process(String pkgName, RootDoc doc) {
+        clazzDao.deleteAll(pkgName);
         ClassDoc[] classDocs = doc.classes();
         for(ClassDoc cd : classDocs) {
             Clazz reference = clazzDao.getOrCreate(cd);
