@@ -106,6 +106,8 @@ public class TellOperation implements BotOperation {
         } else if (isPrivateMessage && !javabot.isOnSameChannelAs (nick)) {
             messages.add(new Message(sender, "I will not send a message to someone who is not on any"
               + " of my channels.", false));
+        } else if (thing.endsWith("++") || thing.endsWith("--")) {
+            messages.add(new Message(channel, "I'm afraid I can't let you do that, Dave.", false));
         } else {
             List<Message> responses = javabot.getResponses(nick, nick, login, hostname, thing);
             addTold(nick, thing);
