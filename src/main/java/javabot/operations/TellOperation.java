@@ -100,7 +100,7 @@ public class TellOperation implements BotOperation {
             messages.add(new Message(channel, "I don't want to talk to myself", false));
         } else if (alreadyTold(nick, thing)) {
             log.debug("skipping tell of " + thing + " to " + nick + ", already told " + nick + " about " + thing);
-            messages.add(new Message(channel, sender + " ...", false));
+            messages.add(new Message(channel, sender + ", Slow down, Speedy Gonzalez!", false));
         } else if (!javabot.userIsOnChannel(nick, channel)) {
             messages.add(new Message(channel, "The user " + nick + " is not on " + channel, false));
         } else if (isPrivateMessage && !javabot.isOnSameChannelAs (nick)) {
