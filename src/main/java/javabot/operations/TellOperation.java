@@ -6,6 +6,7 @@ import javabot.Message;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +49,24 @@ public class TellOperation implements BotOperation {
         }
     }
 
+    private static final class TellSubject {
+        private final String target;
+        private final String subject;
+  
+        public TellSubject (String target, String subject) {
+            this.target = target;
+            this.subject = subject;
+        }
+  
+        public String getTarget () {
+            return target;
+        }
+        
+        public String getSubject () {
+            return subject;
+        }
+    }
+    
     /**
      * @see BotOperation#handleMessage(BotEvent)
      */
@@ -58,71 +77,96 @@ public class TellOperation implements BotOperation {
         String login = event.getLogin();
         String hostname = event.getHostname();
         String sender = event.getSender();
-        if (!message.startsWith("tell ")) {
-            return messages;
+
+        boolean isPrivateMessage = sender.equals(channel);
+        
+        if (!isTellCommand (message)) {
+          return messages;
         }
-        if (message.indexOf("about") == -1) {
+        TellSubject tellSubject = parseTellSubject (message);
+        if (tellSubject == null) {
             messages.add(new Message(channel, "The syntax is: tell nick about factoid - you missed out the 'about', "
                     + sender, false));
             return messages;
         }
-        message = message.substring("tell ".length());
-        String nick = message.substring(0, message.indexOf(" "));
+ 
+        String nick = tellSubject.getTarget ();
+        if ("me".equals(nick)) {
+          nick = sender;
+        }
+        String thing = tellSubject.getSubject ();
+
         if (nick.equals(ownNick)) {
             messages.add(new Message(channel, "I don't want to talk to myself", false));
-            return messages;
-        }
-        if ("me".equals(nick)) {
-            nick = sender;
-        }
-        if (sender.equals(channel)) {
-            //private message
-            if (javabot.isOnSameChannelAs(nick)) {
-                messages.add(new Message(nick, sender + " wants to tell you the following:", false));
-                String thing = message.substring(message.indexOf("about ") + "about ".length());
-                messages.addAll(javabot.getResponses(nick, nick, login, hostname, thing));
-                messages.add(new Message(sender, "I told " + nick + " about " + thing + ".", false));
-                return messages;
-            } else {
-                messages.add(new Message(sender, "I will not send a message to someone who is not on any"
-                        + " of my channels.", false));
-            }
-            return messages;
-        }
-        //channel message
-        if (javabot.userIsOnChannel(nick, channel)) {
-            String newMessage = message.substring(message.indexOf("about ") + "about ".length());
-            if (alreadyTold(nick, newMessage)) {
-                log.debug("skipping tell of " + newMessage + " to " + nick + ", already told " + message);
-                messages.add(new Message(channel, event.getSender() + " ...", false));
-
-            } else {
-                addTold(nick, newMessage);
-                List<Message> responses = javabot.getResponses(channel, nick, login, hostname, newMessage);
-                log.debug(sender + " is telling " + nick + " about " + newMessage);
-                int length = responses.size();
-                for (int a = 0; a < length; a++) {
-                    Message next = responses.get(a);
-                    if (!next.getMessage().startsWith(nick)) {
-                        responses.remove(a);
-                        StringBuilder newMessage2 = new StringBuilder(nick);
-                        newMessage2.append(", ");
-                        String javabotNick = javabot.getNick();
-                        if (next.isAction()) {
-                            newMessage2.append(javabotNick).append(" ");
-                        }
-                        newMessage2.append(next.getMessage());
-                        responses.add(a, new Message(next.getDestination(), newMessage2.toString(), false));
-                    }
-                }
-                messages.addAll(responses);
-            }
-
-        } else {
+        } else if (alreadyTold(nick, thing)) {
+            log.debug("skipping tell of " + thing + " to " + nick + ", already told " + nick + " about " + thing);
+            messages.add(new Message(channel, sender + " ...", false));
+        } else if (!javabot.userIsOnChannel(nick, channel)) {
             messages.add(new Message(channel, "The user " + nick + " is not on " + channel, false));
+        } else if (isPrivateMessage && !javabot.isOnSameChannelAs (nick)) {
+            messages.add(new Message(sender, "I will not send a message to someone who is not on any"
+              + " of my channels.", false));
+        } else {
+            List<Message> responses = javabot.getResponses(nick, nick, login, hostname, thing);
+            addTold(nick, thing);
+
+            if (isPrivateMessage) {
+                messages.add(new Message(nick, sender + " wants to tell you the following:", false));
+                messages.addAll(responses);
+                messages.add(new Message(sender, "I told " + nick + " about " + thing + ".", false));
+            } else {
+                log.debug(sender + " is telling " + nick + " about " + thing);
+                for (Message response : responses) {
+                    messages.add(prependNickToReply (channel, nick,
+                        response));
+                }
+            }
         }
 
         return messages;
+    }
+
+    private Message prependNickToReply (String channel, String nick,
+        Message response) {
+      String reply = response.getMessage ();
+      if (!reply.startsWith(nick)) {
+          if (response.isAction()) {
+              reply = MessageFormat.format ("{0}, {1} {2}", nick, javabot.getNick (), reply);
+          } else {
+              reply = MessageFormat.format ("{0}, {1}", nick, reply);
+          }
+      }
+      return new Message(channel, reply, false);
+    }
+
+    private TellSubject parseTellSubject(String message) {
+        if (message.startsWith ("tell "))
+            return parseLonghand (message);
+        return parseShorthand (message);
+    }
+
+    private TellSubject parseLonghand (String message) {
+        message = message.substring("tell ".length());
+        String nick = message.substring(0, message.indexOf(" "));
+
+        int about = message.indexOf("about ");
+        if (about < 0)
+            return null;
+        String thing = message.substring(about + "about ".length());
+        
+        return new TellSubject (nick, thing);
+    }
+
+    private TellSubject parseShorthand (String message) {
+        int space = message.indexOf (' ');
+        if (space < 0)
+            return null;
+      
+        return new TellSubject (message.substring (1, space), message.substring (space + 1));
+    }
+
+    private boolean isTellCommand(String message) {
+      return message.startsWith("tell ") || message.startsWith("~");
     }
 
     private boolean alreadyTold(String nick, String msg) {
@@ -131,7 +175,7 @@ public class TellOperation implements BotOperation {
         for (int i = 0, j = lastTells.size(); i < j; i++) {
             TellInfo ti = lastTells.get(i);
             log.debug(ti.nick + " " + ti.msg);
-            if ((now - ti.getWhen() < THROTTLE_TIME) && ti.match(nick, msg))
+            if (now - ti.getWhen() < THROTTLE_TIME && ti.match(nick, msg))
                 return true;
         }
         return false;
