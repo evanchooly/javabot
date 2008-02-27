@@ -9,6 +9,7 @@ import javabot.operations.DictOperation;
 import javabot.operations.ForgetFactoidOperation;
 import javabot.operations.GuessOperation;
 import javabot.operations.IgnoreOperation;
+import javabot.operations.InfoOperation;
 import javabot.operations.JavadocOperation;
 import javabot.operations.KarmaChangeOperation;
 import javabot.operations.KarmaReadOperation;
@@ -61,6 +62,7 @@ public class BotConfigPanel extends Panel {
             ForgetFactoidOperation.class.getName(),
             GuessOperation.class.getName(),
             IgnoreOperation.class.getName(),
+            InfoOperation.class.getName(),
             JavadocOperation.class.getName(),
             KarmaChangeOperation.class.getName(),
             KarmaReadOperation.class.getName(),

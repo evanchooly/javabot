@@ -33,6 +33,7 @@ import javabot.operations.SeenOperation;
 import javabot.operations.SpecialCasesOperation;
 import javabot.operations.StatsOperation;
 import javabot.operations.TellOperation;
+import javabot.operations.InfoOperation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.injection.web.InjectorHolder;
@@ -129,6 +130,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
                     operations.add(new StatsOperation(factoidDao));
                 } else if(SeenOperation.class.equals(operationClass)) {
                     operations.add(new SeenOperation(seenDao));
+                } else if(InfoOperation.class.equals(operationClass)) {
+                    operations.add(new InfoOperation(factoidDao));
                 } else {
                     if(!GetFactoidOperation.class.equals(operationClass) && !AddFactoidOperation.class
                         .equals(operationClass)) {
