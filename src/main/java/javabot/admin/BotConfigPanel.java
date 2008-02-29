@@ -26,6 +26,7 @@ import javabot.operations.StatsOperation;
 import javabot.operations.TellOperation;
 import javabot.operations.TimeOperation;
 import javabot.operations.UnixCommandOperation;
+import javabot.operations.GoogleOperation;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Check;
@@ -60,6 +61,7 @@ public class BotConfigPanel extends Panel {
             DaysUntilOperation.class.getName(),
             DictOperation.class.getName(),
             ForgetFactoidOperation.class.getName(),
+            GoogleOperation.class.getName(),
             GuessOperation.class.getName(),
             IgnoreOperation.class.getName(),
             InfoOperation.class.getName(),
