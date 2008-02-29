@@ -70,8 +70,7 @@ public class Method {
     }
 
     public String getMethodUrl(String baseUrl) {
-        return clazz.getQualifiedName() + "." + getLongSignature() + ": " +
-            clazz.getClassHTMLPage(baseUrl) + "#" + getLongSignature().replaceAll(" ", "%20");
+        return clazz.getClassHTMLPage(baseUrl) + "#" + getLongSignature().replaceAll(" ", "%20");
     }
 
     public String getMethodName() {

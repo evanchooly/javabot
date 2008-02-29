@@ -50,10 +50,17 @@ public class JavadocOperation implements BotOperation {
                     urls[index++] = method.getMethodUrl(BASE_URL);
                 }
             }
-//            String[] urls = javadocParser.javadoc(key);
-            String sender = event.getSender();
-            for(String url : urls) {
-                messages.add(new Message(event.getChannel(), sender + ", please see " + url, false));
+            if(urls.length != 0) {
+                StringBuilder urlMessage = new StringBuilder(event.getSender() + ", please see ");
+                int index;
+                for(index = 0; index < 3 && index < urls.length; index++) {
+                    urlMessage.append(index != 0 ? ", " : "")
+                        .append(urls[index]);
+                }
+                if(index < urls.length) {
+                    urlMessage.append(" and others");
+                }
+                messages.add(new Message(event.getChannel(), urlMessage.toString(), false));
             }
             if(messages.isEmpty()) {
                 messages.add(new Message(event.getChannel(), "I don't know of any documentation for " + key, false));

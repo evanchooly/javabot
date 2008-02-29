@@ -52,7 +52,7 @@ public class ClazzDaoHibernate extends AbstractDaoHibernate<Clazz> implements Cl
     @SuppressWarnings({"unchecked", "ToArrayCallWithZeroLengthArrayArgument"})
     public Clazz[] getClass(String name) {
         Query query;
-        if(name.indexOf(".") == -1) {
+        if(!name.contains(".")) {
             query = getEntityManager().createNamedQuery(ClazzDao.GET_BY_NAME);
             query.setParameter("name", name);
         } else {
