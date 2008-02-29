@@ -29,15 +29,15 @@ import org.slf4j.LoggerFactory;
     @NamedQuery(name = ClazzDao.DELETE_ALL, query = "delete from Clazz c where c.api=:api"),
     @NamedQuery(name = ClazzDao.DELETE_ALL_METHODS, query = "delete from Method"),
     @NamedQuery(name = ClazzDao.GET_BY_NAME, query = "select c from Clazz c where "
-        + "className=:name"),
+        + "upper(className)=:name"),
     @NamedQuery(name = ClazzDao.GET_BY_PACKAGE_AND_NAME, query = "select c from Clazz c where "
-        + "packageName=:package and className=:name"),
+        + "upper(packageName)=:package and upper(className)=:name"),
     @NamedQuery(name = ClazzDao.GET_METHOD_NO_SIG, query = "select m from Method m where "
-        + "m.clazz.id=:classId and m.methodName=:name"),
+        + "m.clazz.id=:classId and upper(m.methodName)=:name"),
     @NamedQuery(name = ClazzDao.GET_METHOD, query = "select m from Method m where "
-        + "m.clazz.id=:classId and m.methodName=:name and (shortSignatureTypes=:params"
-        + " or shortSignatureStripped=:params or longSignatureTypes=:params"
-        + " or longSignatureStripped=:params)")
+        + "m.clazz.id=:classId and upper(m.methodName)=:name and (upper(shortSignatureTypes)=:params"
+        + " or upper(shortSignatureStripped)=:params or upper(longSignatureTypes)=:params"
+        + " or upper(longSignatureStripped)=:params)")
 })
 public class Clazz implements Persistent {
     private static final Logger log = LoggerFactory.getLogger(Clazz.class);

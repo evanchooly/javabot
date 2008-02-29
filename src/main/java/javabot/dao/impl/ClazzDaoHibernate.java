@@ -40,8 +40,8 @@ public class ClazzDaoHibernate extends AbstractDaoHibernate<Clazz> implements Cl
         String className = aClass.getSimpleName();
         try {
             clazz = (Clazz)getEntityManager().createNamedQuery(ClazzDao.GET_BY_PACKAGE_AND_NAME)
-                .setParameter("package", pkg)
-                .setParameter("name", className)
+                .setParameter("package", pkg.toUpperCase())
+                .setParameter("name", className.toUpperCase())
                 .getSingleResult();
         } catch(NoResultException e) {
             clazz = new Clazz(classDoc);
@@ -54,11 +54,11 @@ public class ClazzDaoHibernate extends AbstractDaoHibernate<Clazz> implements Cl
         Query query;
         if(!name.contains(".")) {
             query = getEntityManager().createNamedQuery(ClazzDao.GET_BY_NAME);
-            query.setParameter("name", name);
+            query.setParameter("name", name.toUpperCase());
         } else {
             query = getEntityManager().createNamedQuery(ClazzDao.GET_BY_PACKAGE_AND_NAME);
-            query.setParameter("name", name.substring(name.lastIndexOf(".") + 1));
-            query.setParameter("package", name.substring(0, name.lastIndexOf(".")));
+            query.setParameter("name", name.substring(name.lastIndexOf(".") + 1).toUpperCase());
+            query.setParameter("package", name.substring(0, name.lastIndexOf(".")).toUpperCase());
         }
         return (Clazz[])query.getResultList().toArray(new Clazz[0]);
     }
@@ -79,12 +79,12 @@ public class ClazzDaoHibernate extends AbstractDaoHibernate<Clazz> implements Cl
         if("*".equals(signatureTypes)) {
             query = getEntityManager().createNamedQuery(ClazzDao.GET_METHOD_NO_SIG)
                 .setParameter("classId", clazz.getId())
-                .setParameter("name", name);
+                .setParameter("name", name.toUpperCase());
         } else {
             query = getEntityManager().createNamedQuery(ClazzDao.GET_METHOD)
                 .setParameter("classId", clazz.getId())
-                .setParameter("name", name)
-                .setParameter("params", signatureTypes);
+                .setParameter("name", name.toUpperCase())
+                .setParameter("params", signatureTypes.toUpperCase());
         }
         return query.getResultList();
     }
