@@ -1,12 +1,12 @@
 package javabot.dao.impl;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.LogsDao;
 import javabot.model.Logs;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class LogsDaoHibernate extends AbstractDaoHibernate<Logs> implements LogsDao {
     public LogsDaoHibernate() {
@@ -25,10 +25,10 @@ public class LogsDaoHibernate extends AbstractDaoHibernate<Logs> implements Logs
         cal.add(Calendar.DATE, 1);
         Date tomorrow = cal.getTime();
         List list = getEntityManager().createNamedQuery(LogsDao.TODAY)
-            .setParameter("channel", channel)
-            .setParameter("today", today)
-            .setParameter("tomorrow", tomorrow)
-            .getResultList();
+                .setParameter("channel", channel)
+                .setParameter("today", today)
+                .setParameter("tomorrow", tomorrow)
+                .getResultList();
         return list;
     }
 
@@ -43,7 +43,7 @@ public class LogsDaoHibernate extends AbstractDaoHibernate<Logs> implements Logs
     }
 
     public Logs getMessage(String nick, String channel) {
-        String query = "from Logs s where s.nick = :nick AND s.channel = :channel";
+        String query = "select s from Logs s where s.nick = :nick AND s.channel = :channel";
         return (Logs) getEntityManager().createQuery(query)
                 .setParameter("nick", nick)
                 .setParameter("channel", channel.toLowerCase())

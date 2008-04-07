@@ -1,5 +1,9 @@
 <wicket:panel>
-    <table wicket:id="dataView" cellspacing="0" class="mytable" width="100%">
 
-    </table>
+    <form wicket:id="filter-form">
+        <input type="hidden" name="tracker" wicket:id="focus-tracker"/>
+        <table wicket:id="dataView" cellspacing="0" class="mytable" width="100%">
+
+        </table>
+    </form>
 </wicket:panel>

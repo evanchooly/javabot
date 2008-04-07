@@ -1,8 +1,5 @@
 package javabot.wicket.panels;
 
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
-
 import javabot.dao.ChangeDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Change;
@@ -28,6 +25,9 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import java.text.SimpleDateFormat;
+import java.util.Iterator;
+
 public class ChangesPanel extends Panel {
     @SpringBean
     ChangeDao dao;
@@ -36,7 +36,7 @@ public class ChangesPanel extends Panel {
         public UpdatedPanel(String s, IModel iModel) {
             super(s, iModel);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            Change change = (Change)iModel.getObject();
+            Change change = (Change) iModel.getObject();
             add(new Label("updated", sdf.format(change.getChangeDate())));
         }
     }
@@ -55,12 +55,26 @@ public class ChangesPanel extends Panel {
             }
 
         };
+
         SortableChangeProvider dp = new SortableChangeProvider(dao);
-        DataTable dataView = new DataTable("dataView", columns, dp, 40);
-//        dataView.addTopToolbar(new FilterToolbar(dataView, dp));
+        final DataTable dataView = new DataTable("dataView", columns, dp, 40);
         dataView.addTopToolbar(new NavigationToolbar(dataView));
         dataView.addTopToolbar(new HeadersToolbar(dataView, dp));
-        add(dataView);
+
+        FilterForm form = new FilterForm("filter-form", dp) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void onSubmit() {
+                dataView.setCurrentPage(0);
+            }
+        };
+
+        dataView.addTopToolbar(new FilterToolbar(dataView, form, dp));
+        form.add(dataView);
+        add(form);
+
+
     }
 
     private class SortableChangeProvider extends SortableDataProvider implements IFilterStateLocator {
@@ -72,11 +86,11 @@ public class ChangesPanel extends Panel {
         }
 
         public void setFilterState(Object state) {
-            filter = (Change)state;
+            filter = (Change) state;
         }
 
         public SortableChangeProvider(ChangeDao changeDao) {
-            setSort("changeDate",false);
+            setSort("changeDate", false);
             this.dao = changeDao;
         }
 
@@ -91,7 +105,7 @@ public class ChangesPanel extends Panel {
         }
 
         public IModel model(Object object) {
-            return new DetachableChangeModel((Change)object);
+            return new DetachableChangeModel((Change) object);
         }
     }
 
@@ -103,7 +117,7 @@ public class ChangesPanel extends Panel {
         }
 
         public DetachableChangeModel(long changeId) {
-            if(changeId == 0) {
+            if (changeId == 0) {
                 throw new IllegalArgumentException();
             }
             this.id = changeId;
@@ -121,12 +135,12 @@ public class ChangesPanel extends Panel {
          */
         @Override
         public boolean equals(Object obj) {
-            if(obj == this) {
+            if (obj == this) {
                 return true;
-            } else if(obj == null) {
+            } else if (obj == null) {
                 return false;
-            } else if(obj instanceof DetachableChangeModel) {
-                DetachableChangeModel other = (DetachableChangeModel)obj;
+            } else if (obj instanceof DetachableChangeModel) {
+                DetachableChangeModel other = (DetachableChangeModel) obj;
                 return other.id == this.id;
             }
             return false;

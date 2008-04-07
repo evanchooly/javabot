@@ -52,21 +52,38 @@ public class FactoidsPanel extends Panel {
         columns[1] = new TextFilteredPropertyColumn(new Model("Value"), "value", "value");
         columns[2] = new TextFilteredPropertyColumn(new Model("Added by"), "userName", "userName");
         columns[3] = new FilteredAbstractColumn(new Model("Updated")) {
+            // return the go-and-clear filter for the filter toolbar
             public Component getFilter(String componentId, FilterForm form) {
                 return new GoAndClearFilter(componentId, form);
             }
 
-            public void populateItem(Item cellItem, String componentId, IModel model) {
+            public void populateItem(Item cellItem, String componentId,
+                                     IModel model) {
                 cellItem.add(new UpdatedPanel(componentId, model));
             }
         };
-        SortableFactoidProvider dp = new SortableFactoidProvider(dao);
-        DataTable dataView = new DataTable("dataView", columns, dp, 40);
 
-//        dataView.addTopToolbar(new FilterToolbar(dataView, dp));
+        SortableFactoidProvider dp = new SortableFactoidProvider(dao);
+        final DataTable dataView = new DataTable("dataView", columns, dp, 40);
+
+        final FilterForm form = new FilterForm("filter-form", dp) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void onSubmit() {
+                dataView.setCurrentPage(0);
+            }
+        };
+
+        dataView.addTopToolbar(new FilterToolbar(dataView, form, dp));
+        form.add(dataView);
+
         dataView.addTopToolbar(new NavigationToolbar(dataView));
         dataView.addTopToolbar(new HeadersToolbar(dataView, dp));
-        add(dataView);
+
+        add(form);
+
+
     }
 
     private class SortableFactoidProvider extends SortableDataProvider implements IFilterStateLocator {

@@ -1,13 +1,13 @@
 package javabot.dao.impl;
 
-import java.util.Date;
-import java.util.List;
-import javax.persistence.Query;
-
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.ChangeDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Change;
+
+import javax.persistence.Query;
+import java.util.Date;
+import java.util.List;
 
 // User: joed
 // Date: Apr 11, 2007
@@ -35,49 +35,49 @@ public class ChangeDaoHibernate extends AbstractDaoHibernate<Change> implements 
     }
 
     public boolean findLog(String message) {
-        String query = "from Change c where c.message = :message";
+        String query = "select c from Change c where c.message = :message";
         List change = getEntityManager().createQuery(query)
-            .setParameter("message", message)
-            .getResultList();
-        return change != null && ! change.isEmpty();
+                .setParameter("message", message)
+                .getResultList();
+        return change != null && !change.isEmpty();
     }
 
     public Long count(Change filter) {
-        return (Long)buildFindQuery(null, filter, true).getSingleResult();
+        return (Long) buildFindQuery(null, filter, true).getSingleResult();
     }
 
     // TODO clean this up
     private Query buildFindQuery(QueryParam qp, Change filter, boolean count) {
         StringBuilder hql = new StringBuilder();
-        if(count) {
+        if (count) {
             hql.append("select count(*) ");
         }
         hql.append(" from Change target where 1=1 ");
-        if(filter.getId() != null) {
+        if (filter.getId() != null) {
             hql.append("and target id like :id ");
         }
-        if(filter.getMessage() != null) {
+        if (filter.getMessage() != null) {
             hql.append("and upper(target.message) like :message ");
         }
-        if(filter.getChangeDate() != null) {
+        if (filter.getChangeDate() != null) {
             hql.append("and upper(target.changeDate) like :date ");
         }
-        if(!count && qp != null && qp.hasSort()) {
+        if (!count && qp != null && qp.hasSort()) {
             hql.append("order by upper(target.").append(qp.getSort()).append(
-                ") ").append((qp.isSortAsc()) ? " asc" : " desc");
+                    ") ").append((qp.isSortAsc()) ? " asc" : " desc");
         }
 
         Query query = getEntityManager().createQuery(hql.toString());
-        if(filter.getId() != null) {
+        if (filter.getId() != null) {
             query.setParameter("id", "%" + filter.getId() + "%");
         }
-        if(filter.getMessage() != null) {
+        if (filter.getMessage() != null) {
             query.setParameter("message", "%" + filter.getMessage().toUpperCase() + "%");
         }
-        if(filter.getChangeDate() != null) {
+        if (filter.getChangeDate() != null) {
             query.setParameter("date", "%" + filter.getChangeDate() + "%");
         }
-        if(!count && qp != null) {
+        if (!count && qp != null) {
             query.setFirstResult(qp.getFirst()).setMaxResults(qp.getCount());
         }
         return query;
