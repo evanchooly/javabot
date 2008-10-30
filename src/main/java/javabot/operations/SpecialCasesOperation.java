@@ -3,22 +3,22 @@ package javabot.operations;
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.Responder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ricky_clarkson
  */
 public class SpecialCasesOperation implements BotOperation {
-
-    private static final Log log = LogFactory.getLog(SpecialCasesOperation.class);
+    private static final Logger log = LoggerFactory.getLogger(SpecialCasesOperation.class);
     private final Responder responder;
 
-    public SpecialCasesOperation(final Responder responder) {
-        this.responder = responder;
+    public SpecialCasesOperation(Responder resp) {
+        responder = resp;
     }
 
     /**
@@ -27,8 +27,9 @@ public class SpecialCasesOperation implements BotOperation {
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();
-
-        log.debug("SpecialCasesOperation: " + message);
+        if(log.isDebugEnabled()) {
+            log.debug("SpecialCasesOperation: " + message);
+        }
 
         String lowerMessage = message.toLowerCase();
         if (lowerMessage.startsWith("no")) {
@@ -39,13 +40,15 @@ public class SpecialCasesOperation implements BotOperation {
             }
 
             message = message.replaceAll("^\\s+", "");
-
-            log.debug("SpecialCasesOperation: " + message);
+            if(log.isDebugEnabled()) {
+                log.debug("SpecialCasesOperation: " + message);
+            }
 
             String key = message.substring(0, message.indexOf(" is "));
             key = key.replaceAll("^\\s+", "");
-
-            log.debug("SpecialCasesOperation: Key " + key);
+            if(log.isDebugEnabled()) {
+                log.debug("SpecialCasesOperation: Key " + key);
+            }
             responder.getResponses(event.getChannel(), event.getSender(),
                     event.getLogin(), event.getHostname(), "forget " + key
             );

@@ -21,8 +21,8 @@ public class Method {
     private String shortSignatureTypes;
     private String longSignatureStripped;
     private String shortSignatureStripped;
-    private String url;
     private Integer paramCount = 0;
+    private String methodUrl;
 
     public Method() {
     }
@@ -47,6 +47,7 @@ public class Method {
         shortSignatureTypes = shortTypes.toString();
         longSignatureStripped = longSignatureTypes.replaceAll(" ", "");
         shortSignatureStripped = shortSignatureTypes.replaceAll(" ", "");
+        methodUrl = clazz.getClassUrl() + "#" + (doc.name() + "(" + longSignatureTypes + ")").replaceAll(" ", "%20");
     }
 
     @Id
@@ -60,17 +61,17 @@ public class Method {
     }
 
     @Transient
-    public String getLongSignature() {
-        return methodName + "(" + longSignatureTypes + ")";
-    }
-
-    @Transient
     public String getShortSignature() {
         return methodName + "(" + shortSignatureTypes + ")";
     }
 
-    public String getMethodUrl(String baseUrl) {
-        return clazz.getClassHTMLPage(baseUrl) + "#" + getLongSignature().replaceAll(" ", "%20");
+    @Column(length=2000)
+    public String getMethodUrl() {
+        return methodUrl;
+    }
+
+    public void setMethodUrl(String methodUrl) {
+        this.methodUrl = methodUrl;
     }
 
     public String getMethodName() {

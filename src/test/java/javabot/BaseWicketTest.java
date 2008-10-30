@@ -1,13 +1,18 @@
 package javabot;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import javax.servlet.ServletContext;
 
-import org.testng.annotations.BeforeMethod;
-import org.apache.wicket.util.tester.WicketTester;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.web.context.support.XmlWebApplicationContext;
-import org.springframework.web.context.WebApplicationContext;
 import javabot.admin.AdminApplication;
+import org.apache.wicket.util.tester.WicketTester;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.XmlWebApplicationContext;
+import org.testng.annotations.BeforeMethod;
 
 /**
  * Created Jul 29, 2007
@@ -15,11 +20,17 @@ import javabot.admin.AdminApplication;
  * @author <a href="mailto:javabot@cheeseronline.org">cheeser</a>
  */
 public class BaseWicketTest extends AbstractTransactionalSpringContextTests {
+    private static final Logger log = LoggerFactory.getLogger(BaseWicketTest.class);
+
     private static final String[] LOCATIONS = {
         "classpath:applicationContext.xml"/*,
         "classpath:applicationContext-test.xml"*/
     };
     private WicketTester tester;
+
+    public BaseWicketTest() {
+        setPopulateProtectedVariables(true);
+    }
 
     @Override
     protected String[] getConfigLocations() {
@@ -28,7 +39,26 @@ public class BaseWicketTest extends AbstractTransactionalSpringContextTests {
 
     @BeforeMethod
     public void init() {
-        tester = new WicketTester(new TestAdminApplication());
+        tester = new WicketTester(new TestAdminApplication()) {
+            @Override
+            public void dumpPage() {
+                try {
+                    FileOutputStream fos = null;
+                    try {
+                        File file = new File(getPreviousRenderedPage().getPageClass().getSimpleName() + ".html");
+                        fos = new FileOutputStream(file);
+                    } finally {
+                        if(fos != null) {
+                            fos.flush();
+                            fos.close();
+                        }
+                    }
+                } catch(IOException e) {
+                    log.error(e.getMessage(), e);
+                    throw new ApplicationException(e.getMessage());
+                }
+            }
+        };
     }
 
     @Override
@@ -49,5 +79,9 @@ public class BaseWicketTest extends AbstractTransactionalSpringContextTests {
             context.setServletContext(servletContext);
             super.init();
         }
+    }
+
+    public WicketTester getTester() {
+        return tester;
     }
 }

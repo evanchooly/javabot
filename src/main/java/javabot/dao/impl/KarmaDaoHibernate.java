@@ -9,11 +9,14 @@ import javabot.dao.ChangeDao;
 import javabot.dao.KarmaDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Karma;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements KarmaDao {
-    private static final Log log = LogFactory.getLog(KarmaDaoHibernate.class);
+    private static final Logger log = LoggerFactory.getLogger(KarmaDaoHibernate.class);
+
+    @Autowired
     private ChangeDao changeDao;
 
     public KarmaDaoHibernate() {
@@ -27,7 +30,7 @@ public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements Ka
         if (qp.hasSort()) {
             query.append(" order by ")
                     .append(qp.getSort())
-                    .append((qp.isSortAsc()) ? " desc" : " asc");
+                    .append(qp.isSortAsc() ? " desc" : " asc");
         }
         return getEntityManager().createQuery(query.toString())
                 .setFirstResult(qp.getFirst())
@@ -62,9 +65,5 @@ public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements Ka
 
     public Long getCount() {
         return (Long) getEntityManager().createQuery("select count(k) from Karma k").getSingleResult();
-    }
-
-    public void setChangeDao(ChangeDao dao) {
-        this.changeDao = dao;
     }
 }

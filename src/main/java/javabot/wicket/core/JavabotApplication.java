@@ -1,13 +1,12 @@
 package javabot.wicket.core;
 
+import javabot.wicket.pages.Index;
 import org.apache.wicket.Request;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.AjaxServerAndClientTimeFilter;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import javabot.wicket.pages.Index;
-import javabot.Javabot;
 
 public class JavabotApplication extends WebApplication {
 
@@ -29,6 +28,6 @@ public class JavabotApplication extends WebApplication {
 
     @Override
     public Session newSession(Request request, Response response) {
-        return new JavabotSession(JavabotApplication.this, request);
+        return new JavabotSession(this, request);
     }
 }

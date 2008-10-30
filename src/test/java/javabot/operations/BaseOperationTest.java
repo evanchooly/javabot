@@ -2,46 +2,37 @@ package javabot.operations;
 
 import java.util.List;
 
-import org.unitils.spring.annotation.SpringApplicationContext;
-import org.unitils.spring.annotation.SpringBeanByType;
-import org.unitils.UnitilsTestNG;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.context.ApplicationContext;
-import org.testng.Assert;
-import javabot.dao.FactoidDao;
-import javabot.dao.ChangeDao;
 import javabot.BotEvent;
 import javabot.Message;
-import javabot.ApplicationException;
+import javabot.dao.ChangeDao;
+import javabot.dao.FactoidDao;
+import org.springframework.context.ApplicationContext;
+import org.testng.Assert;
+import org.unitils.UnitilsTestNG;
+import org.unitils.spring.annotation.SpringApplicationContext;
+import org.unitils.spring.annotation.SpringBeanByType;
 
 @SpringApplicationContext("test-application-config.xml")
 public abstract class BaseOperationTest extends UnitilsTestNG {
-    private static final Log log = LogFactory.getLog(BaseOperationTest.class);
     protected static final String SENDER = "cheeser";
     protected static final String CHANNEL = "#test";
     protected static final String LOGIN = "";
     protected static final String HOSTNAME = "localhost";
     public static final String OKAY = "Okay, " + SENDER + ".";
     public static final String ALREADY_HAVE_FACTOID = "I already have a factoid with that name, " + SENDER;
-
-
     @SpringApplicationContext
     ApplicationContext springApplicationContext;
-
     @SpringBeanByType
     private FactoidDao factoidDao;
-
     @SpringBeanByType
     private ChangeDao changeDao;
-
 
     public BaseOperationTest() {
     }
 
     public BaseOperationTest(String name) {
     }
-
+    
     protected void testOperation(String message, String response, String errorMessage) {
         testOperation(message, response, errorMessage, getOperation());
     }
@@ -62,15 +53,15 @@ public abstract class BaseOperationTest extends UnitilsTestNG {
         List<Message> results = operation.handleMessage(event);
         Message result = results.get(0);
         boolean success = false;
-        for (String response : responses) {
+        for(String response : responses) {
             try {
                 Assert.assertEquals(response, result.getMessage(), errorMessage);
                 success = true;
-            } catch (AssertionError ae) {
+            } catch(AssertionError ae) {
                 // try next
             }
         }
-        if (!success) {
+        if(!success) {
             Assert.fail(errorMessage);
         }
     }
@@ -86,7 +77,8 @@ public abstract class BaseOperationTest extends UnitilsTestNG {
     }
 
     protected void forgetFactoid(String name) {
-        testOperation("forget " + name, "I forgot about " + name + ", " + SENDER + ".", "I never knew about " + name + " anyway, " + SENDER
-            + ".", new ForgetFactoidOperation(factoidDao, changeDao));
+        testOperation("forget " + name, "I forgot about " + name + ", " + SENDER + ".",
+            "I never knew about " + name + " anyway, " + SENDER
+                + ".", new ForgetFactoidOperation(factoidDao, changeDao));
     }
 }

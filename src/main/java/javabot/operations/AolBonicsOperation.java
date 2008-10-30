@@ -2,8 +2,6 @@ package javabot.operations;
 
 import javabot.BotEvent;
 import javabot.Message;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +9,14 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * User: joed
  */
 public class AolBonicsOperation implements BotOperation {
-
-    private static final Log log = LogFactory.getLog(AolBonicsOperation.class);
-
+    private static final Logger log = LoggerFactory.getLogger(AolBonicsOperation.class);
     private final Set<String> phrases = new TreeSet<String>();
     private final List<String> insults = new ArrayList<String>();
     private final Random random;
@@ -63,7 +62,9 @@ public class AolBonicsOperation implements BotOperation {
         String message = event.getMessage();
         String channel = event.getChannel();
         String[] split = message.split(" ");
-        log.debug("AolBonicsOperation: " + message);
+        if(log.isDebugEnabled()) {
+            log.debug("AolBonicsOperation: " + message);
+        }
         Boolean notDone = true;
         for (String bad : split) {
             if (phrases.contains(bad.toLowerCase().replaceAll("\\!|\\.|\\?|,", "")) && notDone) {

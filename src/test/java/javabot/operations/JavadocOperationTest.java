@@ -1,5 +1,6 @@
 package javabot.operations;
 
+import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
 import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -11,6 +12,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
  */
 @Test(groups = {"operations"})
 public class JavadocOperationTest extends BaseOperationTest {
+    @SpringBeanByType
+    private ApiDao apiDao;
     @SpringBeanByType
     private ClazzDao clazzDao;
 
@@ -31,14 +34,15 @@ public class JavadocOperationTest extends BaseOperationTest {
         testOperation("javadoc String.split(String)", "cheeser, please see java.lang.String.split(java.lang.String): "
             + "http://java.sun.com/javase/6/docs/api/java/lang/String.html#split(java.lang.String)",
             "Should have found method");
-        testOperation("javadoc String.split(java.lang.String)", "cheeser, please see java.lang.String.split(java.lang.String): "
-            + "http://java.sun.com/javase/6/docs/api/java/lang/String.html#split(java.lang.String)",
+        testOperation("javadoc String.split(java.lang.String)",
+            "cheeser, please see java.lang.String.split(java.lang.String): "
+                + "http://java.sun.com/javase/6/docs/api/java/lang/String.html#split(java.lang.String)",
             "Should have found method");
 
     }
 
     @Override
     protected BotOperation getOperation() {
-        return new JavadocOperation(clazzDao);
+        return new JavadocOperation(apiDao, clazzDao);
     }
 }

@@ -17,9 +17,9 @@ import javabot.dao.FactoidDao;
 @Entity
 @Table(name = "factoids")
 @NamedQueries({
-    @NamedQuery(name= FactoidDao.ALL, query="from Factoid f"),
-    @NamedQuery(name= FactoidDao.COUNT, query= "select count(*) from Factoid f"),
-    @NamedQuery(name= FactoidDao.BY_NAME, query= "from Factoid m where m.name = :name")
+    @NamedQuery(name= FactoidDao.ALL, query="select f from Factoid f"),
+    @NamedQuery(name= FactoidDao.COUNT, query= "select count(f) from Factoid f"),
+    @NamedQuery(name= FactoidDao.BY_NAME, query= "select m from Factoid m where m.name = :name")
 
 })
 public class Factoid implements Serializable, Persistent {

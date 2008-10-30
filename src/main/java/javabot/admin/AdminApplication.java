@@ -1,9 +1,6 @@
 package javabot.admin;
 
-import java.util.List;
-
 import javabot.Javabot;
-import javabot.model.Admin;
 import javabot.dao.AdminDao;
 import org.apache.wicket.Component;
 import org.apache.wicket.Request;
@@ -23,7 +20,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
 
 public class AdminApplication extends WebApplication {
     private static final Logger log = LoggerFactory.getLogger(AdminApplication.class);
@@ -42,7 +38,7 @@ public class AdminApplication extends WebApplication {
 
     @Override
     public Session newSession(Request request, Response response) {
-        return new AdminSession(AdminApplication.this, request);
+        return new AdminSession(this, request);
     }
 
     @Override
@@ -51,15 +47,13 @@ public class AdminApplication extends WebApplication {
         addComponentInstantiationListener(new SpringComponentInjector(this));
         getSecuritySettings().setAuthorizationStrategy(new AdminAuthorizationStrategy());
         InjectorHolder.getInjector().inject(this);
-        List<Admin> list = null;
         try {
-            list = dao.findAll();
-            if(list.isEmpty()) {
+            if(dao.findAll().isEmpty()) {
                 dao.create("cheeser", "cheeser");
             }
         } catch(Exception e) {
             log.error(e.getMessage(), e);
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 

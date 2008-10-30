@@ -16,12 +16,12 @@ public class AbstractDaoHibernate<T> implements BaseDao<T> {
     private EntityManager entityManager;
 
     protected AbstractDaoHibernate(Class dataClass) {
-        this.entityClass = dataClass;
+        entityClass = dataClass;
     }
 
     @PersistenceContext
     public void setEntityManager(EntityManager manager) {
-        this.entityManager = manager;
+        entityManager = manager;
     }
 
     public EntityManager getEntityManager() {
@@ -48,6 +48,7 @@ public class AbstractDaoHibernate<T> implements BaseDao<T> {
 
     public void save(Persistent persistedObject) {
         entityManager.persist(persistedObject);
+        entityManager.flush();
     }
 
     public void delete(Persistent persistedObject) {

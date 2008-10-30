@@ -1,13 +1,18 @@
 package javabot.wicket.pages;
 
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.markup.html.resources.StyleSheetReference;
-import javabot.wicket.core.JavabotPage;
-import javabot.wicket.panels.*;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javabot.wicket.core.JavabotPage;
+import javabot.wicket.panels.ChannelBox;
+import javabot.wicket.panels.ChannelLog;
+import javabot.wicket.panels.Credits;
+import javabot.wicket.panels.JavabotInfo;
+import javabot.wicket.panels.NavigationPanel;
+import javabot.wicket.panels.WelcomePanel;
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.markup.html.resources.StyleSheetReference;
 
 // User: joed
 // Date: May 17, 2007
@@ -56,9 +61,7 @@ public class Index extends JavabotPage {
             WelcomePanel welcome = new WelcomePanel("Welcome");
             add(welcome);
         }
-
-        JavabotInfo javabotInfo = new JavabotInfo("info");
-        add(javabotInfo);
+        add(new JavabotInfo("info"));
 
         Credits credits = new Credits("credits");
         add(credits);

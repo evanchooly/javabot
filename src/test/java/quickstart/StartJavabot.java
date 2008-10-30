@@ -13,8 +13,8 @@ public class StartJavabot {
         server.setConnectors(new Connector[]{connector});
 
         WebAppContext web = new WebAppContext();
-        web.setContextPath("/fn-javabot");
-        web.setWar("src/main/webapp");
+        web.setContextPath("/javabot");
+        web.setWar("build/war");
         web.setDistributable(true);
 
         server.addHandler(web);

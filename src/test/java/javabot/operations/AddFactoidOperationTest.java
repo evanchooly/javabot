@@ -20,7 +20,6 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     private ChangeDao changeDao;
 
     public AddFactoidOperationTest() {
-        super();
     }
 
     public AddFactoidOperationTest(String name) {

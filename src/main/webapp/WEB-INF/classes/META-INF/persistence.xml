@@ -2,5 +2,17 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
     version="1.0">
-    <persistence-unit name="javabot" transaction-type="RESOURCE_LOCAL"/>
+    <persistence-unit name="javabot" transaction-type="RESOURCE_LOCAL">
+        <class>javabot.javadoc.Clazz</class>
+        <class>javabot.javadoc.Method</class>
+        <class>javabot.model.Admin</class>
+        <class>javabot.model.Change</class>
+        <class>javabot.model.Channel</class>
+        <class>javabot.model.Config</class>
+        <class>javabot.model.Factoid</class>
+        <class>javabot.model.Karma</class>
+        <class>javabot.model.Logs</class>
+        <class>javabot.model.Persistent</class>
+        <class>javabot.model.Seen</class>
+    </persistence-unit>
 </persistence>

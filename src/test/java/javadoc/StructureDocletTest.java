@@ -14,12 +14,16 @@ import org.testng.annotations.Test;
  */
 @Test
 public class StructureDocletTest extends BaseWicketTest {
-    private ClazzDao clazzDao;
+    protected ClazzDao clazzDao;
 
     public void processSources() {
-        File file = new File("/tmp/src.zip");
+        File file = new File("src.zip");
         if(file.exists()) {
-            new StructureDoclet().parse("JDK", file, "java javax org");
+            new StructureDoclet().parse(file, "Java6", "http://java.sun.com/javase/6/docs/api/", "java javax");
+            clazzDao.getEntityManager().flush();
+            clazzDao.getEntityManager().close();
+            setComplete();
+            endTransaction();
         }
     }
 }

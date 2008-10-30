@@ -2,15 +2,14 @@ package javabot.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.ManyToOne;
-import javax.persistence.CascadeType;
 
 import javabot.dao.AdminDao;
 
@@ -26,9 +25,8 @@ public class Admin implements Serializable, Persistent {
     private String password;
     private Date updated;
     private Config config;
-
+                                    
     @Id
-    @Column(name = "id")
     @GeneratedValue
     public Long getId() {
         return id;

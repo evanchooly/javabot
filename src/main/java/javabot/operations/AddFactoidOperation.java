@@ -7,11 +7,11 @@ import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AddFactoidOperation implements BotOperation {
-    private static final Log log = LogFactory.getLog(AddFactoidOperation.class);
+    private static final Logger log = LoggerFactory.getLogger(AddFactoidOperation.class);
     private FactoidDao factoidDao;
     private ChangeDao changeDao;
 
@@ -40,8 +40,10 @@ public class AddFactoidOperation implements BotOperation {
                 messages.add(new Message(channel, "Invalid factoid name", false));
                 return messages;
             }
-            log.debug("Value: " + value);
-            log.debug("Key: " + key);
+            if(log.isDebugEnabled()) {
+                log.debug("Value: " + value);
+                log.debug("Key: " + key);
+            }
             if(value == null || value.trim().length() == 0) {
                 messages.add(new Message(channel, "Invalid factoid value", false));
                 return messages;

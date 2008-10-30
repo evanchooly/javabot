@@ -4,16 +4,18 @@ import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GetFactoidOperation implements BotOperation {
-    private static final Log log = LogFactory.getLog(GetFactoidOperation.class);
+    private static final Logger log = LoggerFactory.getLogger(GetFactoidOperation.class);
+    
     private FactoidDao factoidDao;
 
     public GetFactoidOperation(final FactoidDao dao) {
@@ -29,7 +31,9 @@ public class GetFactoidOperation implements BotOperation {
     private void getFactoid(String toFind, String sender, List<Message> messages, String channel, BotEvent event,
                             Set<String> backtrack) {
         String message = toFind;
-        log.debug(sender + " : " + message);
+        if(log.isDebugEnabled()) {
+            log.debug(sender + " : " + message);
+        }
         if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
             message = message.substring(0, message.length() - 1);
         }

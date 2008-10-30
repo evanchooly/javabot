@@ -7,25 +7,24 @@ import java.util.List;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ricky_clarkson
  * @author ernimril  - Throttle patch
  */
 public class TellOperation implements BotOperation {
-    private static final Log log = LogFactory.getLog(TellOperation.class);
+    private static final Logger log = LoggerFactory.getLogger(TellOperation.class);
     private final String ownNick;
     private final Javabot javabot;
     private static final int MAX_TELL_MEMORY = 100;
     private static final int THROTTLE_TIME = 10 * 1000; // 10 secs.
     private final List<TellInfo> lastTells = new ArrayList<TellInfo>(MAX_TELL_MEMORY);
 
-    public TellOperation(final String myNick, final Javabot bot) {
+    public TellOperation(String myNick, Javabot bot) {
         ownNick = myNick;
         javabot = bot;
-
     }
 
     private static final class TellInfo {
@@ -94,7 +93,9 @@ public class TellOperation implements BotOperation {
         if(nick.equals(ownNick)) {
             messages.add(new Message(channel, "I don't want to talk to myself", false));
         } else if(alreadyTold(nick, thing)) {
-            log.debug("skipping tell of " + thing + " to " + nick + ", already told " + nick + " about " + thing);
+            if(log.isDebugEnabled()) {
+                log.debug("skipping tell of " + thing + " to " + nick + ", already told " + nick + " about " + thing);
+            }
             messages.add(new Message(channel, sender + ", Slow down, Speedy Gonzalez!", false));
         } else if(!javabot.userIsOnChannel(nick, channel)) {
             messages.add(new Message(channel, "The user " + nick + " is not on " + channel, false));
@@ -111,7 +112,9 @@ public class TellOperation implements BotOperation {
                 messages.addAll(responses);
                 messages.add(new Message(sender, "I told " + nick + " about " + thing + ".", false));
             } else {
-                log.debug(sender + " is telling " + nick + " about " + thing);
+                if(log.isDebugEnabled()) {
+                    log.debug(sender + " is telling " + nick + " about " + thing);
+                }
                 for(Message response : responses) {
                     messages.add(prependNickToReply(channel, nick,
                         response));
@@ -166,10 +169,14 @@ public class TellOperation implements BotOperation {
 
     private boolean alreadyTold(String nick, String msg) {
         long now = System.currentTimeMillis();
-        log.debug("alreadyTold: " + nick + " " + msg);
+        if(log.isDebugEnabled()) {
+            log.debug("alreadyTold: " + nick + " " + msg);
+        }
         for(int i = 0, j = lastTells.size(); i < j; i++) {
             TellInfo ti = lastTells.get(i);
-            log.debug(ti.nick + " " + ti.msg);
+            if(log.isDebugEnabled()) {
+                log.debug(ti.nick + " " + ti.msg);
+            }
             if(now - ti.getWhen() < THROTTLE_TIME && ti.match(nick, msg)) {
                 return true;
             }

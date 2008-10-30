@@ -1,13 +1,13 @@
 package javabot.dao.impl;
 
+import java.util.Date;
+import java.util.List;
+import javax.persistence.Query;
+
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.ChangeDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Change;
-
-import javax.persistence.Query;
-import java.util.Date;
-import java.util.List;
 
 // User: joed
 // Date: Apr 11, 2007
@@ -64,7 +64,7 @@ public class ChangeDaoHibernate extends AbstractDaoHibernate<Change> implements 
         }
         if (!count && qp != null && qp.hasSort()) {
             hql.append("order by upper(target.").append(qp.getSort()).append(
-                    ") ").append((qp.isSortAsc()) ? " asc" : " desc");
+                ") ").append(qp.isSortAsc() ? " asc" : " desc");
         }
 
         Query query = getEntityManager().createQuery(hql.toString());

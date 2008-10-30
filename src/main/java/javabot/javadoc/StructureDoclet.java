@@ -18,44 +18,47 @@ import org.slf4j.LoggerFactory;
 
 public class StructureDoclet extends Doclet {
     private static final Logger log = LoggerFactory.getLogger(StructureDoclet.class);
-    private static String pkgName;
+    private static String apiName;
+    private static String baseUrl;
 
     public static boolean start(RootDoc doc) {
-        new StructureReference().process(pkgName, doc);
+        new StructureReference().process(doc, apiName, baseUrl);
         return false;
     }
 
-    public void parse(String api, File file, String packages) {
-        pkgName = api;
-        File rootDir = null;
-        pkgName = api;
-        try {
-            System.out.println("processing " + file);
-            ZipFile zip = new ZipFile(file);
-            rootDir = new File(System.getProperty("java.io.tmpdir"), "javadoc" + System.currentTimeMillis());
-            rootDir.mkdir();
-            rootDir.deleteOnExit();
-            Enumeration<? extends ZipEntry> enumeration = zip.entries();
-            while(enumeration.hasMoreElements()) {
-                extract(rootDir, zip, enumeration.nextElement());
-            }
-            String name = getClass().getSimpleName();
-            String docletClass = getClass().getName();
-            List<String> args = new ArrayList<String>();
-            args.add("-sourcepath");
-            args.add(rootDir.getAbsolutePath());
-            for(String sub : packages.split(" ")) {
-                args.add("-subpackages");
-                args.add(sub);
-            }
-            System.out.println("Executing");
-            Main.execute(name, docletClass, args.toArray(new String[args.size()]));
-        } catch(Exception e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e.getMessage());
-        } finally {
-            if(rootDir != null) {
-                delete(rootDir);
+    public void parse(File file, String api, String url, String packages) {
+        synchronized(getClass()) {
+            apiName = api;
+            baseUrl = url;
+            File rootDir = null;
+            try {
+                System.out.println("processing " + file);
+                ZipFile zip = new ZipFile(file);
+                rootDir = new File(System.getProperty("java.io.tmpdir"), "javadoc" + System.currentTimeMillis());
+                rootDir.mkdir();
+                rootDir.deleteOnExit();
+                Enumeration<? extends ZipEntry> enumeration = zip.entries();
+                while(enumeration.hasMoreElements()) {
+                    extract(rootDir, zip, enumeration.nextElement());
+                }
+                String name = getClass().getSimpleName();
+                String docletClass = getClass().getName();
+                List<String> args = new ArrayList<String>();
+                args.add("-sourcepath");
+                args.add(rootDir.getAbsolutePath());
+                for(String sub : packages.split(" ")) {
+                    args.add("-subpackages");
+                    args.add(sub);
+                }
+                System.out.println("Executing");
+                Main.execute(name, docletClass, args.toArray(new String[args.size()]));
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
+                throw new RuntimeException(e.getMessage());
+            } finally {
+                if(rootDir != null) {
+                    delete(rootDir);
+                }
             }
         }
     }

@@ -9,8 +9,10 @@ import javabot.dao.AdminDao;
 import javabot.dao.ConfigDao;
 import javabot.model.Admin;
 import javabot.model.Config;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class AdminDaoHibernate extends AbstractDaoHibernate<Admin> implements AdminDao {
+    @Autowired
     private ConfigDao configDao;
 
     public AdminDaoHibernate() {
@@ -47,15 +49,11 @@ public class AdminDaoHibernate extends AbstractDaoHibernate<Admin> implements Ad
         Config config = configDao.get();
         admin.setConfig(config);
         config.getAdmins().add(admin);
-        save(admin);
         configDao.save(config);
+        save(admin);
     }
 
     public ConfigDao getConfigDao() {
         return configDao;
-    }
-
-    public void setConfigDao(ConfigDao dao) {
-        this.configDao = dao;
     }
 }

@@ -6,15 +6,15 @@ import javax.persistence.NoResultException;
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.SeenDao;
 import javabot.model.Seen;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // User: joed
 // Date: Apr 11, 2007
 // Time: 2:41:22 PM
 
 public class SeenDaoHibernate extends AbstractDaoHibernate<Seen> implements SeenDao {
-    private static final Log log = LogFactory.getLog(SeenDaoHibernate.class);
+    private static final Logger log = LoggerFactory.getLogger(SeenDaoHibernate.class);
 
     public SeenDaoHibernate() {
         super(Seen.class);

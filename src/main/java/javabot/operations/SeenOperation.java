@@ -3,19 +3,19 @@ package javabot.operations;
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.SeenDao;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 // Author : joed
 // Date  : Apr 8, 2007
 
 public class SeenOperation implements BotOperation {
-
-    private static Log log = LogFactory.getLog(SeenOperation.class);
+    private static final Logger log = LoggerFactory.getLogger(SeenOperation.class);
     private SeenDao s_dao;
 
     public SeenOperation(SeenDao dao) {

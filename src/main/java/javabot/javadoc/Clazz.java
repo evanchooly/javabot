@@ -14,6 +14,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.ManyToOne;
+import javax.persistence.FetchType;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.ConstructorDoc;
@@ -27,27 +29,28 @@ import org.slf4j.LoggerFactory;
 @Table(name = "classes")
 @NamedQueries({
     @NamedQuery(name = ClazzDao.DELETE_ALL, query = "delete from Clazz c where c.api=:api"),
-    @NamedQuery(name = ClazzDao.DELETE_ALL_METHODS, query = "delete from Method"),
+    @NamedQuery(name = ClazzDao.DELETE_ALL_METHODS, query = "delete from Method m where m.clazz.api=:api"),
     @NamedQuery(name = ClazzDao.GET_BY_NAME, query = "select c from Clazz c where "
-        + "upper(className)=:name"),
+        + "upper(c.className)=:name"),
     @NamedQuery(name = ClazzDao.GET_BY_PACKAGE_AND_NAME, query = "select c from Clazz c where "
-        + "upper(packageName)=:package and upper(className)=:name"),
+        + "c.packageName=:package and c.api=:api and upper(c.className)=:name"),
     @NamedQuery(name = ClazzDao.GET_METHOD_NO_SIG, query = "select m from Method m where "
         + "m.clazz.id=:classId and upper(m.methodName)=:name"),
-    @NamedQuery(name = ClazzDao.GET_METHOD, query = "select m from Method m where "
-        + "m.clazz.id=:classId and upper(m.methodName)=:name and (upper(shortSignatureTypes)=:params"
-        + " or upper(shortSignatureStripped)=:params or upper(longSignatureTypes)=:params"
-        + " or upper(longSignatureStripped)=:params)")
+    @NamedQuery(name = ClazzDao.GET_METHOD, query = "select m from Clazz c join c.methods m where "
+        + "m.clazz.id=:classId and upper(m.methodName)=:name and (upper(m.shortSignatureTypes)=:params"
+        + " or upper(m.shortSignatureStripped)=:params or upper(m.longSignatureTypes)=:params"
+        + " or upper(m.longSignatureStripped)=:params)")
 })
 public class Clazz implements Persistent {
     private static final Logger log = LoggerFactory.getLogger(Clazz.class);
-
+    
     private Long id;
-    private String api;
+    private Api api;
     private String packageName;
     private String className;
-    private String superClass;
+    private Clazz superClass;
     private List<Method> methods;
+    private String classUrl;
 
     public Clazz() {
     }
@@ -62,50 +65,62 @@ public class Clazz implements Persistent {
         id = classId;
     }
 
-    public Clazz(ClassDoc doc) {
-        packageName = doc.containingPackage().name();
-        className = doc.name();
-        if(doc.superclass() != null) {
-            superClass = doc.superclass().qualifiedName();
-        }
-        System.out.println("creating class " + this);
-        methods = new ArrayList<Method>(doc.methods().length + doc.constructors().length);
-        for(MethodDoc methodDoc : doc.methods()) {
-            methods.add(new Method(methodDoc, this));
-        }
-        for(ConstructorDoc conDoc : doc.constructors()) {
-            methods.add(new Method(conDoc, this));
-        }
-        Collections.sort(methods, new MethodComparator());
+    public Clazz(Api apiName, String pkg, String name) {
+        api = apiName;
+        packageName = pkg;
+        className = name;
     }
 
-    @Column(nullable = false)
-    public String getApi() {
+    public final void populate(ClassDoc doc, ClazzDao dao) {
+        if(doc != null && (methods == null || methods.isEmpty())) {
+            String pkg = doc.containingPackage().name();
+            packageName = pkg;
+            className = doc.name();
+            ClassDoc superClazz = doc.superclass();
+            if(superClazz != null) {
+                superClass = dao.getOrCreate(null, api, superClazz.containingPackage().name(), superClazz.name());
+            }
+            System.out.println("creating class " + this);
+            methods = new ArrayList<Method>(doc.methods().length + doc.constructors().length);
+            String path = pkg == null ? "" : pkg.replaceAll("\\.", "/") + "/";
+            classUrl = getApi().getBaseUrl() + "/" + path + className + ".html";
+            dao.save(this);
+            for(MethodDoc methodDoc : doc.methods()) {
+                methods.add(new Method(methodDoc, this));
+            }
+            for(ConstructorDoc conDoc : doc.constructors()) {
+                methods.add(new Method(conDoc, this));
+            }
+            Collections.sort(methods, new MethodComparator());
+        }
+    }
+
+    @ManyToOne
+    public Api getApi() {
         return api;
     }
 
-    public void setApi(String api) {
+    public void setApi(Api api) {
         this.api = api;
     }
 
     @Transient
-    private String getWildcardMethodUrl(String methodName, String baseUrl) {
+    private String getWildcardMethodUrl(String methodName) {
         for(Method method : methods) {
             if(method.getMethodName().equalsIgnoreCase(methodName)) {
-                return method.getMethodUrl(baseUrl);
+                return method.getMethodUrl();
             }
         }
         return null;
     }
 
-    @Transient
-    public String getClassUrl(String baseUrl) {
-        return getQualifiedName() + ": " + getClassHTMLPage(baseUrl);
+    @Column(length = 1000)
+    public String getClassUrl() {
+        return classUrl;
     }
 
-    public String getClassHTMLPage(String baseUrl) {
-        String path = packageName == null ? "" : packageName.replaceAll("\\.", "/") + "/";
-        return baseUrl + path + className + ".html";
+    public void setClassUrl(String classUrl) {
+        this.classUrl = classUrl;
     }
 
     public String getPackageName() {
@@ -124,16 +139,12 @@ public class Clazz implements Persistent {
         className = name;
     }
 
-    @Transient
-    public String getQualifiedName() {
-        return (packageName == null ? "" : packageName + ".") + className;
-    }
-
-    public String getSuperClass() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    public Clazz getSuperClass() {
         return superClass;
     }
 
-    public void setSuperClass(String aClass) {
+    public void setSuperClass(Clazz aClass) {
         superClass = aClass;
     }
 

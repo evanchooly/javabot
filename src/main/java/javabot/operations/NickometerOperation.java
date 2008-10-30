@@ -2,19 +2,20 @@ package javabot.operations;
 
 import javabot.BotEvent;
 import javabot.Message;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ricky_clarkson
  * @janitor joed
  */
 public class NickometerOperation implements BotOperation {
-    private static final Log log = LogFactory.getLog(NickometerOperation.class);
-
+    private static final Logger log = LoggerFactory.getLogger(NickometerOperation.class);
+    
     /**
      * @see BotOperation#handleMessage(BotEvent)
      */
@@ -23,8 +24,9 @@ public class NickometerOperation implements BotOperation {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();
         String[] messageParts = message.split(" ");
-
-        log.debug("Nickometer :" + message);
+        if(log.isDebugEnabled()) {
+            log.debug("Nickometer :" + message);
+        }
 
         List<String> words2 = new ArrayList<String>();
 
@@ -34,7 +36,7 @@ public class NickometerOperation implements BotOperation {
             }
         }
 
-        if (!("nickometer".equals(words2.get(0)) && (words2.size() > 1))) {
+        if (!(words2.size() > 1 && "nickometer".equals(words2.get(0)))) {
             return messages;
         } else {
             String nick = words2.get(1);

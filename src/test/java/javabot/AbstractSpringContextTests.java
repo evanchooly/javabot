@@ -21,8 +21,8 @@ import java.util.Map;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.ObjectUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Superclass for TestNG test cases using a Spring context.
@@ -50,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
 public abstract class AbstractSpringContextTests {
 
   /** Logger available to subclasses */
-  protected final Log logger = LogFactory.getLog(getClass());
+  protected static final Logger logger = LoggerFactory.getLogger(AbstractSpringContextTests.class);
   
   /**
    * Map of context keys returned by subclasses of this class, to

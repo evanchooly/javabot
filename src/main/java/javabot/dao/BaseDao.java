@@ -1,5 +1,7 @@
 package javabot.dao;
 
+import javax.persistence.EntityManager;
+
 import javabot.model.Persistent;
 
 /**
@@ -11,4 +13,6 @@ public interface BaseDao<T> {
     void save(Persistent persistent);
 
     void delete(Long id);
+
+    EntityManager getEntityManager();
 }

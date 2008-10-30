@@ -5,15 +5,14 @@ import java.util.Date;
 import javabot.dao.ChangeDao;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Test(groups = {"operations"})
 public class KarmaChangeOperationTest extends BaseOperationTest {
-    private static final Log log = LogFactory.getLog(KarmaChangeOperationTest.class);
     @SpringBeanByType
     private KarmaDao karmaDao;
     @SpringBeanByType
@@ -22,12 +21,12 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
     public void updateKarma() {
         Karma karma = karmaDao.find("testjavabot");
         int value = karma != null ? karma.getValue() : 0;
-        testOperation("testjavabot++", "testjavabot has a karma level of " + (++value) + ", " + SENDER, "");
-        testOperation("testjavabot++", "testjavabot has a karma level of " + (++value) + ", " + SENDER, "");
-        testOperation("testjavabot--", "testjavabot has a karma level of " + (--value) + ", " + SENDER, "");
-        testOperation("testjavabot--", "testjavabot has a karma level of " + (--value) + ", " + SENDER, "");
-        testOperation("testjavabot--", "testjavabot has a karma level of " + (--value) + ", " + SENDER, "");
-        testOperation("testjavabot++", "testjavabot has a karma level of " + (++value) + ", " + SENDER, "");
+        testOperation("testjavabot++", "testjavabot has a karma level of " + ++value + ", " + SENDER, "");
+        testOperation("testjavabot++", "testjavabot has a karma level of " + ++value + ", " + SENDER, "");
+        testOperation("testjavabot--", "testjavabot has a karma level of " + --value + ", " + SENDER, "");
+        testOperation("testjavabot--", "testjavabot has a karma level of " + --value + ", " + SENDER, "");
+        testOperation("testjavabot--", "testjavabot has a karma level of " + --value + ", " + SENDER, "");
+        testOperation("testjavabot++", "testjavabot has a karma level of " + ++value + ", " + SENDER, "");
     }
 
     public void logNew() {
@@ -43,7 +42,6 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
         String target = "javabot";
         int karma = getKarma(target) + 1;
         testOperation(target + "++", target + " has a karma level of " + karma + ", " + SENDER, "");
-        String message = SENDER + " changed '" + target + "' to" + " '" + karma + "'";
     }
 
     public void changeOwnKarma() {

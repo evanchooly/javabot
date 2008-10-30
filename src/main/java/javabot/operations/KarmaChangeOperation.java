@@ -8,12 +8,12 @@ import javabot.Message;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;
 import org.springframework.transaction.annotation.Transactional;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KarmaChangeOperation implements BotOperation {
     private KarmaDao dao;
-    private static final Log log = LogFactory.getLog(TellOperation.class);
+    private static final Logger log = LoggerFactory.getLogger(KarmaChangeOperation.class);
     private static final int MAX_THROTTLE_MEM = 100;
     private static final int THROTTLE_TIME = 20 * 1000; // 20 seconds.
     private final List<KarmaInfo> lastKarmaChange = new ArrayList<KarmaInfo>(MAX_THROTTLE_MEM);
@@ -60,7 +60,9 @@ public class KarmaChangeOperation implements BotOperation {
         }
         if(message.endsWith("++") || message.endsWith("--")) {
             if(alreadyChanged(sender,nick)) {
-                log.debug("skipping karma change by "+nick+"for "+nick);
+                if(log.isDebugEnabled()) {
+                    log.debug("skipping karma change by "+nick+"for "+nick);
+                }
                 messages.add(new Message(channel,"Rest those fingers, Tex",false));
                 return messages;
             }
@@ -90,9 +92,13 @@ public class KarmaChangeOperation implements BotOperation {
 
     private boolean alreadyChanged(String nick, String target) {
         long now = System.currentTimeMillis();
-        log.debug("already Changed: " + target + "'s" + "by "+nick );
+        if(log.isDebugEnabled()) {
+            log.debug("already Changed: " + target + "'s" + "by "+nick );
+        }
         for(KarmaInfo ki : lastKarmaChange) {
-            log.debug(ki.nick + "changed the karma of " + ki.target);
+            if(log.isDebugEnabled()) {
+                log.debug(ki.nick + "changed the karma of " + ki.target);
+            }
             if(now - ki.getWhen() < THROTTLE_TIME && ki.match(nick, target))
                 return true;
         }

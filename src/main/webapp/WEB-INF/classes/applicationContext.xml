@@ -2,8 +2,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
@@ -39,6 +42,8 @@
 
     <tx:annotation-driven/>
 
+    <context:annotation-config/>
+
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
@@ -53,11 +58,12 @@
         </property>
     </bean>
 
+    <bean id="apiDao" class="javabot.dao.impl.ApiDaoHibernate"/>
+
     <bean id="configDao" class="javabot.dao.impl.ConfigHibernateDao"/>
 
-    <bean id="factoidDao" class="javabot.dao.impl.FactoidDaoHibernate">
-        <property name="changeDao" ref="changeDao"/>
-    </bean>
+    <bean id="factoidDao" class="javabot.dao.impl.FactoidDaoHibernate"/>
+
     <bean id="changeDao" class="javabot.dao.impl.ChangeDaoHibernate"/>
 
     <bean id="clazzDao" class="javabot.dao.impl.ClazzDaoHibernate"/>
@@ -66,15 +72,9 @@
 
     <bean id="logDao" class="javabot.dao.impl.LogsDaoHibernate"/>
 
-    <bean id="channelDao" class="javabot.dao.impl.ChannelDaoHibernate">
-        <property name="configDao" ref="configDao"/>
-    </bean>
+    <bean id="channelDao" class="javabot.dao.impl.ChannelDaoHibernate"/>
 
-    <bean id="karmaDao" class="javabot.dao.impl.KarmaDaoHibernate">
-        <property name="changeDao" ref="changeDao"/>
-    </bean>
+    <bean id="karmaDao" class="javabot.dao.impl.KarmaDaoHibernate"/>
 
-    <bean id="adminDao" class="javabot.dao.impl.AdminDaoHibernate">
-        <property name="configDao" ref="configDao"/>
-    </bean>
+    <bean id="adminDao" class="javabot.dao.impl.AdminDaoHibernate"/>
 </beans>

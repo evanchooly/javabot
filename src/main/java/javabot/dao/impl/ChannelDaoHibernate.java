@@ -9,8 +9,10 @@ import javabot.dao.ConfigDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
 import javabot.model.Config;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implements ChannelDao {
+    @Autowired
     private ConfigDao configDao;
 
     public ChannelDaoHibernate() {
@@ -33,7 +35,7 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
         if (qp.hasSort()) {
             query.append(" order by ")
                     .append(qp.getSort())
-                    .append((qp.isSortAsc()) ? " asc" : " desc");
+                    .append(qp.isSortAsc() ? " asc" : " desc");
         }
         return getEntityManager().createQuery(query.toString())
                 .setFirstResult(qp.getFirst())
@@ -60,7 +62,7 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
 
     public void save(Channel channel) {
         channel.setUpdated(new Date());
-        super.merge(channel);
+        merge(channel);
     }
 
     public ConfigDao getConfigDao() {

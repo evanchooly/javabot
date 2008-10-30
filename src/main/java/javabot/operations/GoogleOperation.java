@@ -8,16 +8,16 @@ import java.io.UnsupportedEncodingException;
 
 import javabot.BotEvent;
 import javabot.Message;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ricky_clarkson
  */
 public class GoogleOperation implements BotOperation {
     private static final String PLAIN_GOOGLE = "http://www.google.com/search?q=";
-    private static final Log log = LogFactory.getLog(GoogleOperation.class);
-
+    private static final Logger log = LoggerFactory.getLogger(GoogleOperation.class);
+    
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();

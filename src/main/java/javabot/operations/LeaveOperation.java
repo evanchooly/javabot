@@ -3,21 +3,22 @@ package javabot.operations;
 import javabot.BotEvent;
 import javabot.ChannelControl;
 import javabot.Message;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ricky_clarkson
  */
 public class LeaveOperation implements BotOperation {
     private final ChannelControl channelControl;
-    private static Log log = LogFactory.getLog(LeaveOperation.class);
+    private static final Logger log = LoggerFactory.getLogger(LeaveOperation.class);
 
-    public LeaveOperation(final ChannelControl channelControl) {
-        this.channelControl = channelControl;
+    public LeaveOperation(ChannelControl control) {
+        channelControl = control;
     }
 
     /**
@@ -26,9 +27,9 @@ public class LeaveOperation implements BotOperation {
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
 
-        final String message = event.getMessage();
+        String message = event.getMessage();
         final String channel = event.getChannel();
-        final String sender = event.getSender();
+        String sender = event.getSender();
 
         if ("leave".equals(message.toLowerCase())) {
             if (channel.equals(sender)) {
