@@ -12,7 +12,7 @@ import org.unitils.UnitilsTestNG;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-@SpringApplicationContext("test-application-config.xml")
+@SpringApplicationContext("classpath:test-application-config.xml")
 public abstract class BaseOperationTest extends UnitilsTestNG {
     protected static final String SENDER = "cheeser";
     protected static final String CHANNEL = "#test";

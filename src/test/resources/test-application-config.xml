@@ -9,16 +9,17 @@
         <property name="locations">
             <list>
                 <value>classpath:locations.properties</value>
+                <value>classpath:locations-override.properties</value>
             </list>
         </property>
     </bean>
 
-    <bean id="dataSource" class="org.unitils.database.UnitilsDataSource"/>
+    <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="jpaVendorAdapter">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+            <bean class="org.unitils.orm.jpa.util.provider.hibernate.UnitilsHibernateJpaVendorAdapter">
                 <property name="showSql" value="true"/>
                 <property name="generateDdl" value="true"/>
                 <property name="databasePlatform" value="${hibernate.dialect}"/>
@@ -49,9 +50,7 @@
 
     <bean id="configDao" class="javabot.dao.impl.ConfigHibernateDao"/>
 
-    <bean id="factoidDao" class="javabot.dao.impl.FactoidDaoHibernate">
-        <property name="changeDao" ref="changeDao"/>
-    </bean>
+    <bean id="factoidDao" class="javabot.dao.impl.FactoidDaoHibernate"/>
     
     <bean id="changeDao" class="javabot.dao.impl.ChangeDaoHibernate"/>
 
@@ -61,13 +60,9 @@
 
     <bean id="logDao" class="javabot.dao.impl.LogsDaoHibernate"/>
 
-    <bean id="channelDao" class="javabot.dao.impl.ChannelDaoHibernate">
-        <property name="configDao" ref="configDao"/>
-    </bean>
+    <bean id="channelDao" class="javabot.dao.impl.ChannelDaoHibernate"/>
 
-    <bean id="karmaDao" class="javabot.dao.impl.KarmaDaoHibernate">
-        <property name="changeDao" ref="changeDao"/>
-    </bean>
+    <bean id="karmaDao" class="javabot.dao.impl.KarmaDaoHibernate"/>
 
     <bean id="adminDao" class="javabot.dao.impl.AdminDaoHibernate"/>
 

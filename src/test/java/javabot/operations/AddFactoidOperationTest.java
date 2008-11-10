@@ -10,7 +10,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-@Test(groups = {"operations"})
+@Test(groups = {"operations"}, enabled=false)
 public class AddFactoidOperationTest extends BaseOperationTest {
 
     @SpringBeanByType

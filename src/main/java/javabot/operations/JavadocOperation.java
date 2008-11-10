@@ -34,9 +34,8 @@ public class JavadocOperation implements BotOperation {
                 for(String name : names) {
                     builder.append(name).append(" ");
                 }
-                messages.add(
-                    new Message(event.getChannel(), event.getSender() + ", I know of the following APIs: " + builder,
-                        false));
+                messages.add(new Message(event.getChannel(), event.getSender()
+                    + ", I know of the following APIs: " + builder, false));
             } else {
                 int openIndex = key.indexOf('(');
                 if(openIndex == -1) {
@@ -63,16 +62,20 @@ public class JavadocOperation implements BotOperation {
                     }
                 }
                 if(urls.length != 0) {
-                    StringBuilder urlMessage = new StringBuilder(event.getSender() + ", please see ");
-                    int index;
-                    for(index = 0; index < 3 && index < urls.length; index++) {
+                    StringBuilder preamble = new StringBuilder();
+                    StringBuilder urlMessage = new StringBuilder();
+                    for(int index = 0;  index < urls.length; index++) {
                         urlMessage.append(index != 0 ? ", " : "")
                             .append(urls[index]);
                     }
-                    if(index < urls.length) {
-                        urlMessage.append(" and others");
+                    if(urls.length > 3) {
+                        messages.add(new Message(event.getChannel(), event.getSender() + ", too many results found."
+                            + "  Please see your private messages for results", false));
+                        messages.add(new Message(event.getSender(), event.getSender() + ", please see " + urlMessage,
+                            false));
+                    } else {
+                        messages.add(new Message(event.getChannel(), urlMessage.toString(), false));
                     }
-                    messages.add(new Message(event.getChannel(), urlMessage.toString(), false));
                 }
                 if(messages.isEmpty()) {
                     messages

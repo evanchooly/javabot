@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
  *
  * @author <a href="mailto:javabot@cheeseronline.org">cheeser</a>
  */
-@Test
+@Test//(enabled = false)
 public class StructureDocletTest extends BaseWicketTest {
     protected ClazzDao clazzDao;
 

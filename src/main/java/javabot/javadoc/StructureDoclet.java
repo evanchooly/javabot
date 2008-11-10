@@ -31,16 +31,10 @@ public class StructureDoclet extends Doclet {
             apiName = api;
             baseUrl = url;
             File rootDir = null;
+            boolean zipFile = file.getName().endsWith(".zip");
             try {
                 System.out.println("processing " + file);
-                ZipFile zip = new ZipFile(file);
-                rootDir = new File(System.getProperty("java.io.tmpdir"), "javadoc" + System.currentTimeMillis());
-                rootDir.mkdir();
-                rootDir.deleteOnExit();
-                Enumeration<? extends ZipEntry> enumeration = zip.entries();
-                while(enumeration.hasMoreElements()) {
-                    extract(rootDir, zip, enumeration.nextElement());
-                }
+                rootDir = zipFile ? processZip(file, rootDir) : file;
                 String name = getClass().getSimpleName();
                 String docletClass = getClass().getName();
                 List<String> args = new ArrayList<String>();
@@ -56,11 +50,23 @@ public class StructureDoclet extends Doclet {
                 System.out.println(e.getMessage());
                 throw new RuntimeException(e.getMessage());
             } finally {
-                if(rootDir != null) {
+                if(zipFile && rootDir != null) {
                     delete(rootDir);
                 }
             }
         }
+    }
+
+    private File processZip(File file, File rootDir) throws IOException {
+        ZipFile zip = new ZipFile(file);
+        File dir = new File(System.getProperty("java.io.tmpdir"), "javadoc" + System.currentTimeMillis());
+        dir.mkdir();
+        dir.deleteOnExit();
+        Enumeration<? extends ZipEntry> enumeration = zip.entries();
+        while(enumeration.hasMoreElements()) {
+            extract(dir, zip, enumeration.nextElement());
+        }
+        return dir;
     }
 
     private void delete(File file) {
