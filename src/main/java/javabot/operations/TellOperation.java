@@ -76,46 +76,46 @@ public class TellOperation implements BotOperation {
         String hostname = event.getHostname();
         String sender = event.getSender();
         boolean isPrivateMessage = sender.equals(channel);
-        if(!isTellCommand(message)) {
+        if (!isTellCommand(message)) {
             return messages;
         }
         TellSubject tellSubject = parseTellSubject(message);
-        if(tellSubject == null) {
+        if (tellSubject == null) {
             messages.add(new Message(channel, "The syntax is: tell nick about factoid - you missed out the 'about', "
                 + sender, false));
             return messages;
         }
         String nick = tellSubject.getTarget();
-        if("me".equals(nick)) {
+        if ("me".equals(nick)) {
             nick = sender;
         }
         String thing = tellSubject.getSubject();
-        if(nick.equals(ownNick)) {
+        if (nick.equals(ownNick)) {
             messages.add(new Message(channel, "I don't want to talk to myself", false));
-        } else if(alreadyTold(nick, thing)) {
-            if(log.isDebugEnabled()) {
+        } else if (alreadyTold(nick, thing)) {
+            if (log.isDebugEnabled()) {
                 log.debug("skipping tell of " + thing + " to " + nick + ", already told " + nick + " about " + thing);
             }
             messages.add(new Message(channel, sender + ", Slow down, Speedy Gonzalez!", false));
-        } else if(!javabot.userIsOnChannel(nick, channel)) {
+        } else if (!javabot.userIsOnChannel(nick, channel)) {
             messages.add(new Message(channel, "The user " + nick + " is not on " + channel, false));
-        } else if(isPrivateMessage && !javabot.isOnSameChannelAs(nick)) {
+        } else if (isPrivateMessage && !javabot.isOnSameChannelAs(nick)) {
             messages.add(new Message(sender, "I will not send a message to someone who is not on any"
                 + " of my channels.", false));
-        } else if(thing.endsWith("++") || thing.endsWith("--")) {
+        } else if (thing.endsWith("++") || thing.endsWith("--")) {
             messages.add(new Message(channel, "I'm afraid I can't let you do that, Dave.", false));
         } else {
             List<Message> responses = javabot.getResponses(nick, nick, login, hostname, thing);
             addTold(nick, thing);
-            if(isPrivateMessage) {
+            if (isPrivateMessage) {
                 messages.add(new Message(nick, sender + " wants to tell you the following:", false));
                 messages.addAll(responses);
                 messages.add(new Message(sender, "I told " + nick + " about " + thing + ".", false));
             } else {
-                if(log.isDebugEnabled()) {
+                if (log.isDebugEnabled()) {
                     log.debug(sender + " is telling " + nick + " about " + thing);
                 }
-                for(Message response : responses) {
+                for (Message response : responses) {
                     messages.add(prependNickToReply(channel, nick,
                         response));
                 }
@@ -127,8 +127,8 @@ public class TellOperation implements BotOperation {
     private Message prependNickToReply(String channel, String nick,
         Message response) {
         String reply = response.getMessage();
-        if(!reply.startsWith(nick)) {
-            if(response.isAction()) {
+        if (!reply.startsWith(nick)) {
+            if (response.isAction()) {
                 reply = MessageFormat.format("{0}, {1} {2}", nick, javabot.getNick(), reply);
             } else {
                 reply = MessageFormat.format("{0}, {1}", nick, reply);
@@ -138,7 +138,7 @@ public class TellOperation implements BotOperation {
     }
 
     private TellSubject parseTellSubject(String message) {
-        if(message.startsWith("tell ")) {
+        if (message.startsWith("tell ")) {
             return parseLonghand(message);
         }
         return parseShorthand(message);
@@ -148,7 +148,7 @@ public class TellOperation implements BotOperation {
         message = message.substring("tell ".length());
         String nick = message.substring(0, message.indexOf(" "));
         int about = message.indexOf("about ");
-        if(about < 0) {
+        if (about < 0) {
             return null;
         }
         String thing = message.substring(about + "about ".length());
@@ -156,11 +156,15 @@ public class TellOperation implements BotOperation {
     }
 
     private TellSubject parseShorthand(String message) {
-        int space = message.indexOf(' ');
-        if(space < 0) {
-            return null;
+        String target = message;//.substring(0, space);
+        for (String start : javabot.getStartStrings()) {
+            if (target.startsWith(start)) {
+                target = target.substring(start.length()).trim();
+            }
         }
-        return new TellSubject(message.substring(1, space), message.substring(space + 1));
+        int space = target.indexOf(' ');
+        return space < 0 ? null
+            : new TellSubject(target.substring(0, space).trim(), target.substring(space + 1).trim());
     }
 
     private boolean isTellCommand(String message) {
@@ -169,15 +173,15 @@ public class TellOperation implements BotOperation {
 
     private boolean alreadyTold(String nick, String msg) {
         long now = System.currentTimeMillis();
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("alreadyTold: " + nick + " " + msg);
         }
-        for(int i = 0, j = lastTells.size(); i < j; i++) {
+        for (int i = 0, j = lastTells.size(); i < j; i++) {
             TellInfo ti = lastTells.get(i);
-            if(log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 log.debug(ti.nick + " " + ti.msg);
             }
-            if(now - ti.getWhen() < THROTTLE_TIME && ti.match(nick, msg)) {
+            if (now - ti.getWhen() < THROTTLE_TIME && ti.match(nick, msg)) {
                 return true;
             }
         }
@@ -187,7 +191,7 @@ public class TellOperation implements BotOperation {
     private void addTold(String nick, String msg) {
         TellInfo ti = new TellInfo(nick, msg);
         lastTells.add(ti);
-        if(lastTells.size() > MAX_TELL_MEMORY) {
+        if (lastTells.size() > MAX_TELL_MEMORY) {
             lastTells.remove(0);
         }
     }

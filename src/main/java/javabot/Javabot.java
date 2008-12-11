@@ -434,4 +434,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
             log.info(string);
         }
     }
+
+    public String[] getStartStrings() {
+        return startStrings;
+    }
 }
