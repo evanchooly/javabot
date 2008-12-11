@@ -1,5 +1,4 @@
 <project name="javabot" default="main" xmlns:artifact="urn:maven-artifact-ant">
-
     <property name="build" location="build"/>
     <property name="build.src.dir" location="${build}/main/"/>
     <property name="build.test.dir" location="${build}/test/"/>
