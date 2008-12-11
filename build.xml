@@ -176,21 +176,13 @@
             </classpath>
         </typedef>
 
-        <artifact:remoteRepository id="main" url="http://repo1.maven.org/maven2/"/>
-        <artifact:remoteRepository id="apache.cs.utah.edu" url="http://apache.cs.utah.edu"/>
-        <artifact:remoteRepository id="wicket.repository" url="http://wicketstuff.org/maven/repository"/>
         <artifact:remoteRepository id="maven2.java.net.repository" url="http://download.java.net/maven/2/"/>
-        <artifact:remoteRepository id="jboss.repository" url="http://repository.jboss.com/maven2/"/>
         <artifact:remoteRepository id="java.net.repository"
                                    url="https://maven-repository.dev.java.net/nonav/repository/" layout="legacy"/>
 
         <artifact:dependencies pathId="project.path" filesetId="runtime.fileset">
-            <remoteRepository refid="wicket.repository"/>
             <remoteRepository refid="java.net.repository"/>
             <remoteRepository refid="maven2.java.net.repository"/>
-            <remoteRepository refid="jboss.repository"/>
-            <remoteRepository refid="apache.cs.utah.edu"/>
-            <remoteRepository refid="main"/>
 
             <dependency groupId="oswego-concurrent" artifactId="concurrent" version="1.3.4"/>
             <!--<dependency groupId="xerces" artifactId="xercesImpl" version="2.8.1"/>-->
@@ -211,16 +203,13 @@
             <dependency groupId="org.apache.wicket" artifactId="wicket-spring-annot" version="${wicket.version}"/>
             <dependency groupId="pircbot" artifactId="pircbot" version="1.4.2"/>
             <dependency groupId="mysql" artifactId="mysql-connector-java" version="3.1.14"/>
-            <dependency groupId="postgresql" artifactId="postgresql" version="8.2-504.jdbc3"/>
+            <dependency groupId="postgresql" artifactId="postgresql" version="8.3-603.jdbc4"/>
             <dependency groupId="hsqldb" artifactId="hsqldb" version="1.8.0.7"/>
         </artifact:dependencies>
 
         <artifact:dependencies pathId="build.path">
-            <remoteRepository refid="wicket.repository"/>
             <remoteRepository refid="maven2.java.net.repository"/>
             <remoteRepository refid="java.net.repository"/>
-            <remoteRepository refid="apache.cs.utah.edu"/>
-            <remoteRepository refid="main"/>
 
             <!--<dependency groupId="jaxen" artifactId="jaxen" version="1.1.1"/>-->
             <dependency groupId="org.easymock" artifactId="easymock" version="2.3"/>
