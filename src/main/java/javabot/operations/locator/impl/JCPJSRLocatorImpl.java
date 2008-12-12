@@ -64,7 +64,7 @@ public class JCPJSRLocatorImpl implements JCPJSRLocator {
             }
 
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            retVal.put("title", "Could not determine JSR information");
             e.printStackTrace();
         }
         return retVal;

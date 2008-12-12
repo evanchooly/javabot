@@ -68,6 +68,7 @@ public class TellOperation implements BotOperation {
     /**
      * @see BotOperation#handleMessage(BotEvent)
      */
+    @Override
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();
@@ -176,8 +177,7 @@ public class TellOperation implements BotOperation {
         if (log.isDebugEnabled()) {
             log.debug("alreadyTold: " + nick + " " + msg);
         }
-        for (int i = 0, j = lastTells.size(); i < j; i++) {
-            TellInfo ti = lastTells.get(i);
+        for (TellInfo ti : lastTells) {
             if (log.isDebugEnabled()) {
                 log.debug(ti.nick + " " + ti.msg);
             }
@@ -196,6 +196,7 @@ public class TellOperation implements BotOperation {
         }
     }
 
+    @Override
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();
     }
