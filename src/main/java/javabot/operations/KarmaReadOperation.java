@@ -12,7 +12,7 @@ public class KarmaReadOperation implements BotOperation {
     private KarmaDao karmaDao;
 
     public KarmaReadOperation(KarmaDao dao) {
-        this.karmaDao = dao;
+        karmaDao = dao;
     }
 
     public List<Message> handleMessage(BotEvent event) {
@@ -25,7 +25,7 @@ public class KarmaReadOperation implements BotOperation {
         }
         String nick = message.substring("karma ".length());
         nick = nick.toLowerCase();
-        if(nick.indexOf(" ") != -1) {
+        if(nick.contains(" ")) {
             messages.add(new Message(channel, "I've never Seen a nick with a space " + "in, " + sender, false));
             return messages;
         }
