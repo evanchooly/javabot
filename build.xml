@@ -219,8 +219,7 @@
             <dependency groupId="org.mortbay.jetty" artifactId="jetty" version="6.1.9"/>
             <dependency groupId="org.mortbay.jetty" artifactId="jetty-util" version="6.1.9"/>
             <!--<dependency groupId="org.testng" artifactId="testng" version="5.8"/>-->
-            <dependency groupId="org.testng" artif
-                        actId="testng" version="5.8" classifier="jdk15"/>
+            <dependency groupId="org.testng" artifactId="testng" version="5.8" classifier="jdk15"/>
 
             <dependency groupId="org.apache.wicket" artifactId="wicket" version="${wicket.version}"
                         classifier="javadoc"/>
