@@ -1,14 +1,20 @@
 package javabot;
 
+import java.text.MessageFormat;
+
 public class Message {
     private final String destination;
     private final String message;
-    private final boolean action;
+    private BotEvent event;
 
-    public Message(String dest, String value, boolean isAction) {
+    public Message(String dest, BotEvent evt, String value) {
         destination = dest;
         message = value;
-        action = isAction;
+        event = evt;
+    }
+
+    public BotEvent getEvent() {
+        return event;
     }
 
     public String getDestination() {
@@ -19,15 +25,24 @@ public class Message {
         return message;
     }
 
-    public boolean isAction() {
-        return action;
+    public String formatResponse(Javabot bot, String nick) {
+        return MessageFormat.format("{0}, {1}", nick, getMessage());
     }
 
+    public String logEntry() {
+        return "said: " + getMessage();
+    }
+
+    public void send(Javabot bot) {
+        bot.postMessage(this);
+    }
+
+    @Override
     public String toString() {
-        return "Message{" +
+        return getClass().getSimpleName() + " {" +
             "destination='" + destination + "'" +
             ", message='" + message + "'" +
-            ", action=" + action +
+            ", event='" + event + "'" +
             "}";
     }
 }

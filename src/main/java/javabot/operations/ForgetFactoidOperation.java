@@ -5,18 +5,18 @@ import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Message;
-import javabot.dao.ChangeDao;
+import javabot.Javabot;
 import javabot.dao.FactoidDao;
 
-public class ForgetFactoidOperation implements BotOperation {
+public class ForgetFactoidOperation extends BotOperation {
     private FactoidDao factoidDao;
-    private ChangeDao changeDao;
 
-    public ForgetFactoidOperation(FactoidDao dao, ChangeDao cDao) {
+    public ForgetFactoidOperation(Javabot javabot, FactoidDao dao) {
+        super(javabot);
         factoidDao = dao;
-        changeDao = cDao;
     }
 
+    @Override
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String channel = event.getChannel();
@@ -33,16 +33,18 @@ public class ForgetFactoidOperation implements BotOperation {
             String key = message;
             key = key.toLowerCase();
             if (factoidDao.hasFactoid(key)) {
-                messages.add(new Message(channel, "I forgot about " + key + ", " + sender + ".", false));
+                messages.add(new Message(channel, event, "I forgot about " + key + ", " + sender + "."));
                 factoidDao.delete(sender, key);
             } else {
-                messages.add(new Message(channel, "I never knew about " + key + " anyway, " + sender + ".", false));
+                messages.add(new Message(channel, event,
+                    "I never knew about " + key + " anyway, " + sender + "."));
             }
         }
         return messages;
     }
 
 
+    @Override
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();
     }

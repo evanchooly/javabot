@@ -5,14 +5,20 @@ import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Message;
+import javabot.Javabot;
 
 /**
  * @author ricky_clarkson
  */
-public class Rot13Operation implements BotOperation {
+public class Rot13Operation extends BotOperation {
+    public Rot13Operation(Javabot javabot) {
+        super(javabot);
+    }
+
     /**
      * @see BotOperation#handleMessage(BotEvent)
      */
+    @Override
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();
@@ -37,10 +43,11 @@ public class Rot13Operation implements BotOperation {
             }
             answer.setCharAt(a, c);
         }
-        messages.add(new Message(channel, answer.toString(), false));
+        messages.add(new Message(channel, event, answer.toString()));
         return messages;
     }
 
+    @Override
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();
     }

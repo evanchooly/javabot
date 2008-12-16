@@ -6,6 +6,7 @@ import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Message;
+import javabot.Javabot;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
 import javabot.operations.GuessOperation;
@@ -33,7 +34,7 @@ public class GuessOperationsTest extends UnitilsTestNG {
     @BeforeMethod
     public void setUp() {
         f_dao = createMock(FactoidDao.class);
-        guessOperation = new GuessOperation(f_dao);
+        guessOperation = new GuessOperation(new Javabot(), f_dao);
     }
 
     public void testDaoCount() {

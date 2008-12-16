@@ -3,6 +3,7 @@ package javabot.dao;
 import java.util.List;
 
 import javabot.BotEvent;
+import javabot.Javabot;
 import javabot.Message;
 import javabot.operations.GetFactoidOperation;
 import org.testng.Assert;
@@ -30,7 +31,7 @@ public class SeeLoopTest extends BaseServiceTest {
     @BeforeMethod
     public void setUp() {
 
-        getFactoidOperation = new GetFactoidOperation(factoidDao);
+        getFactoidOperation = new GetFactoidOperation(new Javabot(), factoidDao);
     }
 
 

@@ -5,20 +5,22 @@ import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Message;
+import javabot.Javabot;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KarmaChangeOperation implements BotOperation {
+public class KarmaChangeOperation extends BotOperation {
     private KarmaDao dao;
     private static final Logger log = LoggerFactory.getLogger(KarmaChangeOperation.class);
     private static final int MAX_THROTTLE_MEM = 100;
     private static final int THROTTLE_TIME = 20 * 1000; // 20 seconds.
     private final List<KarmaInfo> lastKarmaChange = new ArrayList<KarmaInfo>(MAX_THROTTLE_MEM);
 
-    public KarmaChangeOperation(KarmaDao karmaDao) {
+    public KarmaChangeOperation(Javabot bot, KarmaDao karmaDao) {
+        super(bot);
         dao = karmaDao;
     }
 
@@ -44,6 +46,7 @@ public class KarmaChangeOperation implements BotOperation {
         }
     }
 
+    @Override
     @Transactional
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
@@ -55,7 +58,7 @@ public class KarmaChangeOperation implements BotOperation {
             return messages;
         }
         if(!channel.startsWith("#") && (message.endsWith("++") || message.endsWith("--"))) {
-            messages.add(new Message(channel, "Sorry, karma changes are not allowed in private messages.", false));
+            messages.add(new Message(channel, event, "Sorry, karma changes are not allowed in private messages."));
             return messages;
         }
         if(message.endsWith("++") || message.endsWith("--")) {
@@ -63,12 +66,12 @@ public class KarmaChangeOperation implements BotOperation {
                 if(log.isDebugEnabled()) {
                     log.debug("skipping karma change by "+nick+"for "+nick);
                 }
-                messages.add(new Message(channel,"Rest those fingers, Tex",false));
+                messages.add(new Message(channel, event, "Rest those fingers, Tex"));
                 return messages;
             }
             addKarmaChanged(sender,nick);
             if(nick.equals(sender.toLowerCase())) {
-                messages.add(new Message(channel, "Changing one's own karma is not permitted.", false));
+                messages.add(new Message(channel, event, "Changing one's own karma is not permitted."));
                 message = "--";
             }
             Karma karma = dao.find(nick);
@@ -83,7 +86,7 @@ public class KarmaChangeOperation implements BotOperation {
             }
             karma.setUserName(sender);
             dao.save(karma);
-            KarmaReadOperation karmaRead = new KarmaReadOperation(dao);
+            KarmaReadOperation karmaRead = new KarmaReadOperation(getBot(), dao);
             messages.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(),
                     event.getLogin(), event.getHostname(), "karma " + nick)));
         }
@@ -113,6 +116,7 @@ public class KarmaChangeOperation implements BotOperation {
             lastKarmaChange.remove(0);
     }
 
+    @Override
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();
     }

@@ -5,12 +5,17 @@ import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Message;
+import javabot.Javabot;
 import javabot.operations.locator.JCPJSRLocator;
 import javabot.operations.locator.impl.JCPJSRLocatorImpl;
 
-public class JSROperation implements BotOperation {
+public class JSROperation extends BotOperation {
     JCPJSRLocator locator=new JCPJSRLocatorImpl();
-    
+
+    public JSROperation(Javabot javabot) {
+        super(javabot);
+    }
+
     @Override
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
@@ -20,7 +25,7 @@ public class JSROperation implements BotOperation {
             String jsrString = message.substring("jsr ".length());
             try {
                 int jsr=Integer.parseInt(jsrString);
-                messages.add(new Message(channel, locator.findInformation(jsr), false));
+                messages.add(new Message(channel, event, locator.findInformation(jsr)));
             } catch(NumberFormatException nfe) {
             }
 

@@ -20,6 +20,7 @@ public class SeenDaoHibernate extends AbstractDaoHibernate<Seen> implements Seen
         super(Seen.class);
     }
 
+    @Override
     public void logSeen(String nick, String channel, String message) {
         Seen seen = getSeen(nick, channel);
         if(seen == null) {
@@ -32,10 +33,12 @@ public class SeenDaoHibernate extends AbstractDaoHibernate<Seen> implements Seen
         save(seen);
     }
 
+    @Override
     public boolean isSeen(String nick, String channel) {
         return getSeen(nick, channel) != null;
     }
 
+    @Override
     public Seen getSeen(String nick, String channel) {
         Seen seen = null;
         try {

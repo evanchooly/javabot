@@ -2,6 +2,8 @@ package javabot.dao.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.ChannelDao;
@@ -14,21 +16,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implements ChannelDao {
     @Autowired
     private ConfigDao configDao;
+    private Map<String, Boolean> logCache = new HashMap<String, Boolean>();
 
     public ChannelDaoHibernate() {
         super(Channel.class);
     }
 
+    @Override
     @SuppressWarnings({"unchecked"})
     public List<String> configuredChannels() {
         return (List<String>) getEntityManager().createNamedQuery(CONFIGURED_CHANNELS).getResultList();
     }
 
+    @Override
     @SuppressWarnings({"unchecked"})
     public List<Channel> getChannels() {
         return (List<Channel>) getEntityManager().createNamedQuery(ChannelDao.ALL).getResultList();
     }
 
+    @Override
     @SuppressWarnings({"unchecked"})
     public List<Channel> find(QueryParam qp) {
         StringBuilder query = new StringBuilder("from Channel c");
@@ -42,6 +48,18 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
                 .setMaxResults(qp.getCount()).getResultList();
     }
 
+    @Override
+    public boolean isLogged(String channel) {
+        Boolean logged = logCache.get(channel);
+        if(logged == null) {
+            logged = get(channel).getLogged();
+            logCache.put(channel, logged);
+        }
+
+        return logged;
+    }
+
+    @Override
     public Channel get(String name) {
         return (Channel) getEntityManager().createNamedQuery(ChannelDao.BY_NAME)
                 .setParameter("channel", name)
@@ -49,6 +67,7 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
 
     }
 
+    @Override
     public Channel create(String name) {
         Channel channel = new Channel();
         channel.setName(name);
@@ -60,6 +79,7 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
         return channel;
     }
 
+    @Override
     public void save(Channel channel) {
         channel.setUpdated(new Date());
         merge(channel);

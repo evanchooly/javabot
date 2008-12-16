@@ -1,12 +1,13 @@
 package javabot.operations;
 
-import javabot.BotEvent;
-import javabot.Message;
-import javabot.dao.FactoidDao;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.text.SimpleDateFormat;
+
+import javabot.BotEvent;
+import javabot.Message;
+import javabot.Javabot;
+import javabot.dao.FactoidDao;
 
 
 /**
@@ -15,13 +16,15 @@ import java.text.SimpleDateFormat;
  * @author Robert O'Connor <robby DOT oconnor AT gmail.com>
  * @author ricky_clarkson - original code (mostly pulled from LiteralOperation
  */
-public class InfoOperation implements BotOperation {
+public class InfoOperation extends BotOperation {
     private final FactoidDao dao;
 
-    public InfoOperation(FactoidDao factoidDao) {
+    public InfoOperation(Javabot bot, FactoidDao factoidDao) {
+        super(bot);
         dao = factoidDao;
     }
 
+    @Override
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage().toLowerCase();
@@ -30,18 +33,17 @@ public class InfoOperation implements BotOperation {
             String key = message.substring("info ".length());
             if (dao.hasFactoid(key)) {
                 SimpleDateFormat sdfDate = new SimpleDateFormat("MM-dd-yyyy' at 'K:mm a, z");
-                messages.add(new Message(channel, key+ " was added by: "+ dao.getFactoid(key).getUserName()
+                messages.add(new Message(channel, event, key+ " was added by: "+ dao.getFactoid(key).getUserName()
                         +" on "+sdfDate.format(dao.getFactoid(key).getUpdated())+
-                        " and has a literal value of: "+ dao.getFactoid(key).getValue(),
-                        false));
+                        " and has a literal value of: "+ dao.getFactoid(key).getValue()));
                 return messages;
             }
-            messages.add(new Message(channel, "I have no factoid called \"" + key + "\"",
-                    false));
+            messages.add(new Message(channel, event, "I have no factoid called \"" + key + "\""));
         }
         return messages;
     }
 
+    @Override
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();
     }

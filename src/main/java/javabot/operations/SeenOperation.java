@@ -1,27 +1,25 @@
 package javabot.operations;
 
-import javabot.BotEvent;
-import javabot.Message;
-import javabot.dao.SeenDao;
-
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import javabot.BotEvent;
+import javabot.Javabot;
+import javabot.Message;
+import javabot.dao.SeenDao;
 // Author : joed
 // Date  : Apr 8, 2007
 
-public class SeenOperation implements BotOperation {
-    private static final Logger log = LoggerFactory.getLogger(SeenOperation.class);
-    private SeenDao s_dao;
+public class SeenOperation extends BotOperation {
+    private SeenDao dao;
 
-    public SeenOperation(SeenDao dao) {
-        this.s_dao = dao;
+    public SeenOperation(Javabot javabot, SeenDao dao) {
+        super(javabot);
+        this.dao = dao;
     }
 
+    @Override
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage().toLowerCase();
@@ -29,15 +27,18 @@ public class SeenOperation implements BotOperation {
         String sender = event.getSender();
         if (message.startsWith("seen ")) {
             String key = message.substring("seen ".length());
-            if (s_dao.isSeen(key, channel)) {
-                messages.add(new Message(channel, sender + ", At " + DateFormat.getInstance().format(s_dao.getSeen(key, channel).getUpdated()) + " " + key + " " + s_dao.getSeen(key, channel).getMessage(), false));
+            if (dao.isSeen(key, channel)) {
+                messages.add(new Message(channel, event,
+                    sender + ", At " + DateFormat.getInstance().format(dao.getSeen(key, channel).getUpdated()) + " "
+                        + key + " " + dao.getSeen(key, channel).getMessage()));
                 return messages;
             }
-            messages.add(new Message(channel, sender + ", I have no information about \"" + key + "\"", false));
+            messages.add(new Message(channel, event, sender + ", I have no information about \"" + key + "\""));
         }
         return messages;
     }
 
+    @Override
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();
     }

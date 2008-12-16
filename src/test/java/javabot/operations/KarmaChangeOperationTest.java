@@ -5,11 +5,10 @@ import java.util.Date;
 import javabot.dao.ChangeDao;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;
+import javabot.Javabot;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Test(groups = {"operations"})
 public class KarmaChangeOperationTest extends BaseOperationTest {
@@ -62,7 +61,7 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
     protected BotOperation getOperation() {
         KarmaChangeOperation operation = null;
         try {
-            operation = new KarmaChangeOperation(karmaDao);
+            operation = new KarmaChangeOperation(new Javabot(), karmaDao);
             return operation;
         } catch(Exception e) {
             Assert.fail("Could not create operation: " + e.getMessage());

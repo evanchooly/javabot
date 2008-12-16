@@ -5,11 +5,12 @@ import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Message;
+import javabot.Javabot;
 
 /**
  * @author ricky_clarkson
  */
-public class Magic8BallOperation implements BotOperation {
+public class Magic8BallOperation extends BotOperation {
     String[] responses = {
         "Yes",
         "Definitely",
@@ -35,20 +36,26 @@ public class Magic8BallOperation implements BotOperation {
         "I'm getting something about JFK, but I don't think it's relevant"
     };
 
+    public Magic8BallOperation(Javabot javabot) {
+        super(javabot);
+    }
+
     /**
      * @see BotOperation#handleMessage(BotEvent)
      */
+    @Override
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage().toLowerCase();
         String channel = event.getChannel();
         if(message.startsWith("should i ") || message.startsWith("magic8")) {
             int responseNumber = (int)(Math.random() * responses.length);
-            messages.add(new Message(channel, responses[responseNumber], false));
+            messages.add(new Message(channel, event, responses[responseNumber]));
         }
         return messages;
     }
 
+    @Override
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();
     }

@@ -1,27 +1,30 @@
 package javabot.operations;
 
-import javabot.BotEvent;
-import javabot.Message;
-import javabot.dao.FactoidDao;
-import javabot.model.Factoid;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javabot.Action;
+import javabot.BotEvent;
+import javabot.Javabot;
+import javabot.Message;
+import javabot.dao.FactoidDao;
+import javabot.model.Factoid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GetFactoidOperation implements BotOperation {
+public class GetFactoidOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(GetFactoidOperation.class);
     
     private FactoidDao factoidDao;
 
-    public GetFactoidOperation(final FactoidDao dao) {
+    public GetFactoidOperation(Javabot bot, FactoidDao dao) {
+        super(bot);
         factoidDao = dao;
     }
 
+    @Override
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         getFactoid(event.getMessage(), event.getSender(), messages, event.getChannel(), event, new HashSet<String>());
@@ -54,17 +57,18 @@ public class GetFactoidOperation implements BotOperation {
                     backtrack.add(message);
                     getFactoid(message.substring("<see>".length()).trim(), sender, messages, channel, event, backtrack);
                 } else {
-                    messages.add(new Message(channel, "Reference loop detected for factoid '" + message + "'.", false));
+                    messages.add(new Message(channel, event,
+                        "Reference loop detected for factoid '" + message + "'."));
                 }
             } else if (message.startsWith("<reply>")) {
-                messages.add(new Message(channel, message.substring("<reply>".length()), false));
+                messages.add(new Message(channel, event, message.substring("<reply>".length())));
             } else if (message.startsWith("<action>")) {
-                messages.add(new Message(channel, message.substring("<action>".length()), true));
+                messages.add(new Action(channel, event, message.substring("<action>".length())));
             } else {
-                messages.add(new Message(channel, sender + ", " + key + " is " + message, false));
+                messages.add(new Message(channel, event, sender + ", " + key + " is " + message));
             }
         } else {
-            List<Message> guessed = new GuessOperation(factoidDao).handleMessage(new BotEvent(event.getChannel(),
+            List<Message> guessed = new GuessOperation(getBot(), factoidDao).handleMessage(new BotEvent(event.getChannel(),
                     event.getSender(), event.getLogin(), event.getHostname(), "guess " + message));
             Message guessedMessage = guessed.get(0);
             if (!"No appropriate factoid found.".equals(guessedMessage.getMessage())) {
@@ -72,7 +76,7 @@ public class GetFactoidOperation implements BotOperation {
             }
         }
         if (messages.isEmpty()) {
-            messages.add(new Message(channel, sender + ", I have no idea what " + message + " is.", false));
+            messages.add(new Message(channel, event, sender + ", I have no idea what " + message + " is."));
         }
     }
 
@@ -94,6 +98,7 @@ public class GetFactoidOperation implements BotOperation {
         return result;
     }
 
+    @Override
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();
     }

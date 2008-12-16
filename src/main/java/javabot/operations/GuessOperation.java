@@ -5,6 +5,7 @@ import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Message;
+import javabot.Javabot;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
 
@@ -12,17 +13,19 @@ import javabot.model.Factoid;
  * A little more intelligence creeping in. This searches the entire set of key/value pairs to find
  * out which factoid has the most matches for the inputs provided.
  */
-public class GuessOperation implements BotOperation {
+public class GuessOperation extends BotOperation {
     private String[] ignoreList = {"you", "and", "are", "to", "that", "your", "do", "have", "a", "the", "be", "but", "can", "i", "who", "how", "get", "by", "is", "of", "out", "me", "an", "for", "use", "he", "she", "it"};
-    private FactoidDao m_dao = null;
+    private FactoidDao dao = null;
 
-    public GuessOperation(FactoidDao factoidDao) {
-        m_dao = factoidDao;
+    public GuessOperation(Javabot bot, FactoidDao factoidDao) {
+        super(bot);
+        dao = factoidDao;
     }
 
     /**
      * @see BotOperation#handleMessage(BotEvent)
      */
+    @Override
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage().toLowerCase();
@@ -50,7 +53,7 @@ public class GuessOperation implements BotOperation {
 
         int maxMatches = 0;
         String bestKey = "";
-        for (Factoid factoid : m_dao.getFactoids()) {
+        for (Factoid factoid : dao.getFactoids()) {
             String nextKey = factoid.getName();
             //			String nextValue=database.getFactoid(nextKey);
             String next = nextKey;
@@ -80,17 +83,18 @@ public class GuessOperation implements BotOperation {
                 }
             }
         }
-        if (bestKey.equals("")) {
-            messages.add(new Message(channel, "No appropriate factoid found.", false));
+        if (bestKey.length() == 0) {
+            messages.add(new Message(channel, event, "No appropriate factoid found."));
             return messages;
         }
-        messages.add(new Message(channel, "I guess the factoid '" + bestKey + "' might be appropriate:", false));
-        messages.addAll(new GetFactoidOperation(m_dao).handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event
+        messages.add(new Message(channel, event, "I guess the factoid '" + bestKey + "' might be appropriate:"));
+        messages.addAll(new GetFactoidOperation(getBot(), dao).handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event
                 .getHostname(), bestKey)));
 
         return messages;
     }
 
+    @Override
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();
     }

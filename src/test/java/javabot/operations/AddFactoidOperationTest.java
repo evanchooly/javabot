@@ -3,6 +3,7 @@ package javabot.operations;
 import java.io.IOException;
 
 import javabot.BotEvent;
+import javabot.Javabot;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
 import org.testng.Assert;
@@ -88,13 +89,13 @@ public class AddFactoidOperationTest extends BaseOperationTest {
         String factoid = "should be the full (/hi there) factoid";
         testOperation("asdf is <reply>" + factoid, OKAY, "Should have added the factoid.");
 
-        GetFactoidOperation operation = new GetFactoidOperation(factoidDao);
+        GetFactoidOperation operation = new GetFactoidOperation(new Javabot(), factoidDao);
         String errorMessage = "Should have found the factoid";
         testOperation("asdf", factoid, errorMessage, operation);
     }
 
     @Override
     protected AddFactoidOperation getOperation() {
-        return new AddFactoidOperation(factoidDao, changeDao);
+        return new AddFactoidOperation(new Javabot(), factoidDao, changeDao);
     }
 }

@@ -1,29 +1,28 @@
 package javabot.operations;
 
-import javabot.BotEvent;
-import javabot.Message;
-import javabot.Responder;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import javabot.BotEvent;
+import javabot.Javabot;
+import javabot.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author ricky_clarkson
  */
-public class SpecialCasesOperation implements BotOperation {
+public class SpecialCasesOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(SpecialCasesOperation.class);
-    private final Responder responder;
 
-    public SpecialCasesOperation(Responder resp) {
-        responder = resp;
+    public SpecialCasesOperation(Javabot javabot) {
+        super(javabot);
     }
 
     /**
      * @see BotOperation#handleMessage(BotEvent)
      */
+    @Override
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();
@@ -49,10 +48,10 @@ public class SpecialCasesOperation implements BotOperation {
             if(log.isDebugEnabled()) {
                 log.debug("SpecialCasesOperation: Key " + key);
             }
-            responder.getResponses(event.getChannel(), event.getSender(),
+            getBot().getResponses(event.getChannel(), event.getSender(),
                     event.getLogin(), event.getHostname(), "forget " + key
             );
-            messages.addAll(responder.getResponses(event.getChannel(),
+            messages.addAll(getBot().getResponses(event.getChannel(),
                     event.getSender(), event.getLogin(), event.getHostname(),
                     message));
             return messages;
@@ -60,6 +59,7 @@ public class SpecialCasesOperation implements BotOperation {
         return messages;
     }
 
+    @Override
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();
     }

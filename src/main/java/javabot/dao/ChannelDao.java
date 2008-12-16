@@ -22,4 +22,6 @@ public interface ChannelDao extends BaseDao<Channel> {
     Channel create(String name);
 
     void save(Channel channel);
+
+    boolean isLogged(String channel);
 }

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javabot.BotEvent;
+import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
@@ -31,7 +32,7 @@ public class AddFactoidOperationsTest extends UnitilsTestNG {
     @BeforeMethod
     public void setUp() {
         factoidDao = createMock(FactoidDao.class);
-        addOperation = new AddFactoidOperation(factoidDao, createMock(ChangeDao.class));
+        addOperation = new AddFactoidOperation(new Javabot(), factoidDao, createMock(ChangeDao.class));
     }
 
     public void testDaoCount() {

@@ -3,14 +3,16 @@ package javabot.operations;
 import java.io.IOException;
 import java.util.List;
 
+import javabot.Action;
 import javabot.BotEvent;
 import javabot.Message;
+import javabot.Javabot;
 import javabot.dao.FactoidDao;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-@Test(groups = {"operations"})
+@Test
 public class GetFactoidOperationTest extends BaseOperationTest {
     private static final String PBV_VALUE = "Java only supports pass by value, not pass by reference (references"
         + " to objects are passed by value). See http://tinyurl.com/ynr5d3, http://tinyurl.com/ywlv6d (especially"
@@ -22,7 +24,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
 
     @Override
     protected GetFactoidOperation getOperation() {
-        return new GetFactoidOperation(factoidDao);
+        return new GetFactoidOperation(new Javabot(), factoidDao);
     }
 
     public void straightGets() throws IOException {
@@ -80,9 +82,10 @@ public class GetFactoidOperationTest extends BaseOperationTest {
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "hug " + SENDER);
         List<Message> results = getOperation().handleMessage(event);
         Message result = results.get(0);
-        Assert.assertEquals(result.isAction(), true, "Should be an action.");
+        Assert.assertTrue(result instanceof Action, "Should be an action.");
     }
 
+    @Test
     public void channelMessage() throws IOException {
         BotEvent event = new BotEvent("#test", SENDER, "", "localhost", "pong is");
         Assert.assertEquals(getOperation().handleChannelMessage(event).size(), 0, "Should be an empty list");

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Message;
+import javabot.Javabot;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
 import org.springframework.context.ApplicationContext;
@@ -79,6 +80,6 @@ public abstract class BaseOperationTest extends UnitilsTestNG {
     protected void forgetFactoid(String name) {
         testOperation("forget " + name, "I forgot about " + name + ", " + SENDER + ".",
             "I never knew about " + name + " anyway, " + SENDER
-                + ".", new ForgetFactoidOperation(factoidDao, changeDao));
+                + ".", new ForgetFactoidOperation(new Javabot(), factoidDao));
     }
 }

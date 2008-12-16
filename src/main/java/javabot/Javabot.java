@@ -42,19 +42,17 @@ import org.jibble.pircbot.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Javabot extends PircBot implements ChannelControl, Responder {
+public class Javabot extends PircBot {
     private static final Logger log = LoggerFactory.getLogger(Javabot.class);
     private final Map<String, String> channelPreviousMessages = new HashMap<String, String>();
     private List<BotOperation> operations = new LinkedList<BotOperation>();
     private String host;
     private int port;
-    private String javabotNick;
     private String[] startStrings;
     private int authWait;
     private String password;
     private List<Channel> channels = new ArrayList<Channel>();
     private List<String> ignores = new ArrayList<String>();
-    public static final String JAVABOT_PROPERTIES = "javabot.properties";
     @SpringBean
     private FactoidDao factoidDao;
     @SpringBean
@@ -88,7 +86,6 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
             host = config.getServer();
             port = config.getPort();
             setName(config.getNick());
-            javabotNick = config.getNick();
             setLogin(config.getNick());
             setNickPassword(config.getPassword());
             channels = config.getChannels();
@@ -102,49 +99,50 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
         }
     }
 
+    @SuppressWarnings({"unchecked"})
     private void loadOperationInfo(Config root) {
         List<String> operationNodes = root.getOperations();
         for(String operationNode : operationNodes) {
             try {
-                Class operationClass = Class.forName(operationNode);
+                Class<BotOperation> operationClass = (Class<BotOperation>) Class.forName(operationNode);
                 if(JavadocOperation.class.equals(operationClass)) {
-                    operations.add(new JavadocOperation(apiDao, clazzDao));
+                    operations.add(new JavadocOperation(this, apiDao, clazzDao));
                 } else if(LeaveOperation.class.equals(operationClass)) {
-                    operations.add(new LeaveOperation(this));
+                    add(new LeaveOperation(this));
                 } else if(LiteralOperation.class.equals(operationClass)) {
-                    operations.add(new LiteralOperation(factoidDao));
+                    add(new LiteralOperation(this, factoidDao));
                 } else if(QuitOperation.class.equals(operationClass)) {
-                    operations.add(new QuitOperation(getNickPassword()));
+                    add(new QuitOperation(this, getNickPassword()));
                 } else if(SpecialCasesOperation.class.equals(operationClass)) {
-                    operations.add(new SpecialCasesOperation(this));
+                    add(new SpecialCasesOperation(this));
                 } else if(TellOperation.class.equals(operationClass)) {
-                    operations.add(new TellOperation(getNick(), this));
+                    add(new TellOperation(this, getNick()));
                 } else if(ForgetFactoidOperation.class.equals(operationClass)) {
-                    operations.add(new ForgetFactoidOperation(factoidDao, changeDao));
+                    add(new ForgetFactoidOperation(this, factoidDao));
                 } else if(GuessOperation.class.equals(operationClass)) {
-                    operations.add(new GuessOperation(factoidDao));
+                    add(new GuessOperation(this, factoidDao));
                 } else if (KarmaChangeOperation.class.equals(operationClass)) {
-                    operations.add(new KarmaChangeOperation(karmaDao));
+                    add(new KarmaChangeOperation(this, karmaDao));
                 } else if (KarmaReadOperation.class.equals(operationClass)) {
-                    operations.add(new KarmaReadOperation(karmaDao));
+                    add(new KarmaReadOperation(this, karmaDao));
                 } else if(StatsOperation.class.equals(operationClass)) {
-                    operations.add(new StatsOperation(factoidDao));
+                    add(new StatsOperation(this, factoidDao));
                 } else if(SeenOperation.class.equals(operationClass)) {
-                    operations.add(new SeenOperation(seenDao));
+                    add(new SeenOperation(this, seenDao));
                 } else if(InfoOperation.class.equals(operationClass)) {
-                    operations.add(new InfoOperation(factoidDao));
+                    add(new InfoOperation(this, factoidDao));
                 } else {
                     if(!GetFactoidOperation.class.equals(operationClass) && !AddFactoidOperation.class
                         .equals(operationClass)) {
-                        operations.add((BotOperation)operationClass.newInstance());
+                        add(operationClass.getConstructor(getClass()).newInstance(this));
                     }
                 }
             } catch(Exception exception) {
                 throw new RuntimeException(exception);
             }
         }
-        operations.add(operations.size(), new AddFactoidOperation(factoidDao, changeDao));
-        operations.add(operations.size(), new GetFactoidOperation(factoidDao));
+        add(new AddFactoidOperation(this, factoidDao, changeDao));
+        add(new GetFactoidOperation(this, factoidDao));
         for(BotOperation operation : operations) {
             if(log.isDebugEnabled()) {
                 log.debug(operation.getClass().getCanonicalName());
@@ -153,11 +151,16 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
 
     }
 
+    private void add(BotOperation operation) {
+        InjectorHolder.getInjector().inject(operation);
+        operations.add(operation);
+    }
+
     public void main(String[] args) throws IOException {
         if(log.isInfoEnabled()) {
             log.info("Starting Javabot");
         }
-        Javabot bot = new Javabot();
+        new Javabot();
     }
 
     @SuppressWarnings({"EmptyCatchBlock"})
@@ -169,7 +172,7 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     }
 
     @SuppressWarnings({"StringContatenationInLoop"})
-    public void connect() {
+    public final void connect() {
         boolean connected = false;
         while(!connected) {
             try {
@@ -243,35 +246,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     private void handleAnyMessage(String channel, String sender, String login, String hostname, String message) {
         List<Message> messages = getResponses(channel, sender, login, hostname, message);
         if(messages != null) {
-            String nick = sender;
-            sender = javabotNick;
             for(Message nextMessage : messages) {
-                if(nextMessage.isAction()) {
-                    sendAction(nextMessage.getDestination(), nextMessage.getMessage());
-                    if(log.isDebugEnabled()) {
-                        log.debug("handleAnyMessage: Sender " + nick + " Message " + message + " Channel " + channel);
-                    }
-                    seenDao.logSeen(sender, nextMessage.getDestination(), "did a /me " + nextMessage.getMessage());
-                    if(!channel.equals(nick)) {
-                        if(channelDao.get(channel).getLogged()) {
-                            logsDao.logMessage(Logs.Type.ACTION, sender, nextMessage.getDestination(),
-                                nextMessage.getMessage());
-                        }
-                    }
-                } else {
-                    sendMessage(nextMessage.getDestination(), nextMessage.getMessage());
-                    if(log.isDebugEnabled()) {
-                        log.debug("handleAnyMessage: Type Message - Sender " + nick + " Message " + message + " Channel "
-                        + channel);
-                    }
-                    seenDao.logSeen(sender, nextMessage.getDestination(), "said: " + nextMessage.getMessage());
-                    if(!channel.equals(nick)) {
-                        if(channelDao.get(channel).getLogged()) {
-                            logsDao.logMessage(Logs.Type.MESSAGE, sender, nextMessage.getDestination(),
-                                nextMessage.getMessage());
-                        }
-                    }
-                }
+                nextMessage.send(this);
             }
         }
         channelPreviousMessages.put(channel, message);
@@ -281,29 +257,8 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     private void handleAnyChannelMessage(String channel, String sender, String login, String hostname, String message) {
         List<Message> messages = getChannelResponses(channel, sender, login, hostname, message);
         if(messages != null) {
-            sender = javabotNick;
-            for(Message nextMessage : messages) {
-                if(nextMessage.isAction()) {
-                    sendAction(nextMessage.getDestination(), nextMessage.getMessage());
-                    if(log.isDebugEnabled()) {
-                        log.debug("handleAnyChannelMessage: Sender " + sender + " Message " + message);
-                    }
-                    seenDao.logSeen(sender, nextMessage.getDestination(), "did a /me " + nextMessage.getMessage());
-                    if(channelDao.get(channel).getLogged()) {
-                        logsDao.logMessage(Logs.Type.ACTION, sender, nextMessage.getDestination(),
-                            nextMessage.getMessage());
-                    }
-                } else {
-                    sendMessage(nextMessage.getDestination(), nextMessage.getMessage());
-                    if(log.isDebugEnabled()) {
-                        log.debug("handleAnyChannelMessage: Sender " + sender + " Message " + message);
-                    }
-                    seenDao.logSeen(sender, nextMessage.getDestination(), "said: " + nextMessage.getMessage());
-                    if(channelDao.get(channel).getLogged()) {
-                        logsDao.logMessage(Logs.Type.MESSAGE, sender, nextMessage.getDestination(),
-                            nextMessage.getMessage());
-                    }
-                }
+            for(Message msg : messages) {
+                msg.send(this);
             }
         }
     }
@@ -438,4 +393,32 @@ public class Javabot extends PircBot implements ChannelControl, Responder {
     public String[] getStartStrings() {
         return startStrings;
     }
+
+    public void postMessage(Message message) {
+        sendMessage(message.getDestination(), message.getMessage());
+        logMessage(message);
+    }
+
+    public void postAction(Message message) {
+        sendAction(message.getDestination(), message.getMessage());
+        logMessage(message);
+    }
+
+    protected final void logMessage(Message message) {
+        if (log.isDebugEnabled()) {
+            log.debug("Message " + message.getMessage());
+        }
+        BotEvent event = message.getEvent();
+        String sender = event.getSender();
+
+        seenDao.logSeen(sender, message.getDestination(), message.logEntry());
+
+        String channel = event.getChannel();
+        if (!channel.equals(sender)) {
+            if (channelDao.isLogged(channel)) {
+                logsDao.logMessage(Logs.Type.MESSAGE, sender, message.getDestination(), message.getMessage());
+            }
+        }
+    }
+
 }

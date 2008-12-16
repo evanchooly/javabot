@@ -1,27 +1,28 @@
 package javabot.operations;
 
-import javabot.BotEvent;
-import javabot.Message;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javabot.BotEvent;
+import javabot.Javabot;
+import javabot.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * User: joed
  */
-public class AolBonicsOperation implements BotOperation {
+public class AolBonicsOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(AolBonicsOperation.class);
     private final Set<String> phrases = new TreeSet<String>();
     private final List<String> insults = new ArrayList<String>();
     private final Random random;
 
-    public AolBonicsOperation() {
+    public AolBonicsOperation(Javabot bot) {
+        super(bot);
         phrases.add("u");
         phrases.add("omg");
         phrases.add("plz");
@@ -51,12 +52,14 @@ public class AolBonicsOperation implements BotOperation {
     }
 
     /**
-     * @see BotOperation#handleMessage(javabot.BotEvent)
+     * @see BotOperation#handleMessage(BotEvent)
      */
+    @Override
     public List<Message> handleMessage(BotEvent event) {
         return new ArrayList<Message>();
     }
 
+    @Override
     public List<Message> handleChannelMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();
@@ -67,10 +70,9 @@ public class AolBonicsOperation implements BotOperation {
         }
         Boolean notDone = true;
         for (String bad : split) {
-            if (phrases.contains(bad.toLowerCase().replaceAll("\\!|\\.|\\?|,", "")) && notDone) {
+            if (phrases.contains(bad.toLowerCase().replaceAll("!|\\.|\\?|,", "")) && notDone) {
                 notDone = false;
-                messages.add(new Message(channel, event.getSender()
-                        + ": Please skip the aolbonics, " + getInsult(), false));
+                messages.add(new Message(channel, event, event.getSender() + ": Please skip the aolbonics, " + getInsult()));
             }
         }
         return messages;

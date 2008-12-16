@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,17 +13,16 @@ import org.slf4j.LoggerFactory;
  * @author ricky_clarkson
  * @author ernimril  - Throttle patch
  */
-public class TellOperation implements BotOperation {
+public class TellOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(TellOperation.class);
     private final String ownNick;
-    private final Javabot javabot;
     private static final int MAX_TELL_MEMORY = 100;
     private static final int THROTTLE_TIME = 10 * 1000; // 10 secs.
     private final List<TellInfo> lastTells = new ArrayList<TellInfo>(MAX_TELL_MEMORY);
 
-    public TellOperation(String myNick, Javabot bot) {
+    public TellOperation(Javabot bot, String myNick) {
+        super(bot);
         ownNick = myNick;
-        javabot = bot;
     }
 
     private static final class TellInfo {
@@ -82,8 +80,8 @@ public class TellOperation implements BotOperation {
         }
         TellSubject tellSubject = parseTellSubject(message);
         if (tellSubject == null) {
-            messages.add(new Message(channel, "The syntax is: tell nick about factoid - you missed out the 'about', "
-                + sender, false));
+            messages.add(new Message(channel, event, "The syntax is: tell nick about factoid - you missed out the 'about', "
+                + sender));
             return messages;
         }
         String nick = tellSubject.getTarget();
@@ -92,32 +90,32 @@ public class TellOperation implements BotOperation {
         }
         String thing = tellSubject.getSubject();
         if (nick.equals(ownNick)) {
-            messages.add(new Message(channel, "I don't want to talk to myself", false));
+            messages.add(new Message(channel, event, "I don't want to talk to myself"));
         } else if (alreadyTold(nick, thing)) {
             if (log.isDebugEnabled()) {
                 log.debug("skipping tell of " + thing + " to " + nick + ", already told " + nick + " about " + thing);
             }
-            messages.add(new Message(channel, sender + ", Slow down, Speedy Gonzalez!", false));
-        } else if (!javabot.userIsOnChannel(nick, channel)) {
-            messages.add(new Message(channel, "The user " + nick + " is not on " + channel, false));
-        } else if (isPrivateMessage && !javabot.isOnSameChannelAs(nick)) {
-            messages.add(new Message(sender, "I will not send a message to someone who is not on any"
-                + " of my channels.", false));
+            messages.add(new Message(channel, event,sender + ", Slow down, Speedy Gonzalez!"));
+        } else if (!getBot().userIsOnChannel(nick, channel)) {
+            messages.add(new Message(channel, event,"The user " + nick + " is not on " + channel));
+        } else if (isPrivateMessage && !getBot().isOnSameChannelAs(nick)) {
+            messages.add(new Message(sender, event,"I will not send a message to someone who is not on any"
+                + " of my channels."));
         } else if (thing.endsWith("++") || thing.endsWith("--")) {
-            messages.add(new Message(channel, "I'm afraid I can't let you do that, Dave.", false));
+            messages.add(new Message(channel, event,"I'm afraid I can't let you do that, Dave."));
         } else {
-            List<Message> responses = javabot.getResponses(nick, nick, login, hostname, thing);
+            List<Message> responses = getBot().getResponses(nick, nick, login, hostname, thing);
             addTold(nick, thing);
             if (isPrivateMessage) {
-                messages.add(new Message(nick, sender + " wants to tell you the following:", false));
+                messages.add(new Message(nick, event,sender + " wants to tell you the following:"));
                 messages.addAll(responses);
-                messages.add(new Message(sender, "I told " + nick + " about " + thing + ".", false));
+                messages.add(new Message(sender, event,"I told " + nick + " about " + thing + "."));
             } else {
                 if (log.isDebugEnabled()) {
                     log.debug(sender + " is telling " + nick + " about " + thing);
                 }
                 for (Message response : responses) {
-                    messages.add(prependNickToReply(channel, nick,
+                    messages.add(prependNickToReply(channel, event, nick,
                         response));
                 }
             }
@@ -125,17 +123,8 @@ public class TellOperation implements BotOperation {
         return messages;
     }
 
-    private Message prependNickToReply(String channel, String nick,
-        Message response) {
-        String reply = response.getMessage();
-        if (!reply.startsWith(nick)) {
-            if (response.isAction()) {
-                reply = MessageFormat.format("{0}, {1} {2}", nick, javabot.getNick(), reply);
-            } else {
-                reply = MessageFormat.format("{0}, {1}", nick, reply);
-            }
-        }
-        return new Message(channel, reply, false);
+    private Message prependNickToReply(String channel, BotEvent event, String nick, Message response) {
+        return new Message(channel, event, response.formatResponse(getBot(), nick));
     }
 
     private TellSubject parseTellSubject(String message) {
@@ -146,19 +135,19 @@ public class TellOperation implements BotOperation {
     }
 
     private TellSubject parseLonghand(String message) {
-        message = message.substring("tell ".length());
-        String nick = message.substring(0, message.indexOf(" "));
-        int about = message.indexOf("about ");
+        String body = message.substring("tell ".length());
+        String nick = body.substring(0, body.indexOf(" "));
+        int about = body.indexOf("about ");
         if (about < 0) {
             return null;
         }
-        String thing = message.substring(about + "about ".length());
+        String thing = body.substring(about + "about ".length());
         return new TellSubject(nick, thing);
     }
 
     private TellSubject parseShorthand(String message) {
         String target = message;//.substring(0, space);
-        for (String start : javabot.getStartStrings()) {
+        for (String start : getBot().getStartStrings()) {
             if (target.startsWith(start)) {
                 target = target.substring(start.length()).trim();
             }

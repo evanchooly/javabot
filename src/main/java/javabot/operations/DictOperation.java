@@ -11,24 +11,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javabot.BotEvent;
+import javabot.Javabot;
 import javabot.Message;
 import javabot.util.Arrays;
 
 /**
  * @author ricky_clarkson
  */
-public class DictOperation implements BotOperation {
+public class DictOperation extends BotOperation {
     private final String host;
+    private final static int PORT = 2628;
 
-    public DictOperation(String dictHost) {
+    public DictOperation(Javabot bot, String dictHost) {
+        super(bot);
         host = dictHost;
     }
-
-    private final static int PORT = 2628;
 
     /**
      * @see BotOperation#handleMessage(BotEvent)
      */
+    @Override
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();
@@ -55,12 +57,12 @@ public class DictOperation implements BotOperation {
             do {
                 input = bufferedReader.readLine();
                 if(input != null && !"".equals(input.trim()) && (input.charAt(0) < '0' || input.charAt(0) > '9')
-                    && !input.equals(".")) {
-                    messages.add(new Message(sender, input, false));
+                    && !".".equals(input)) {
+                    messages.add(new Message(sender, event, input));
                 }
                 if(input != null && input.startsWith("151")) {
                     String message2 = input.replaceFirst("[^\"]*\"[^\"]*\" ", "");
-                    messages.add(new Message(sender, message2, false));
+                    messages.add(new Message(sender, event, message2));
                 }
             } while(input != null);
             reader.close();
@@ -68,17 +70,18 @@ public class DictOperation implements BotOperation {
             writer.close();
             outputStream.close();
         } catch(Exception exception) {
-            messages.add(new Message(sender, exception.toString(), false));
+            messages.add(new Message(sender, event, exception.toString()));
         }
         if(messages.isEmpty()) {
-            messages.add(new Message(channel, "I cannot find a definition for " + message, false));
+            messages.add(new Message(channel, event, "I cannot find a definition for " + message));
         } else {
-            messages.add(0, new Message(channel, "I'll tell you what that means in a " + "private message, " + sender,
-                false));
+            messages.add(0, new Message(channel, event,
+                "I'll tell you what that means in a " + "private message, " + sender));
         }
         return messages;
     }
 
+    @Override
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();
     }

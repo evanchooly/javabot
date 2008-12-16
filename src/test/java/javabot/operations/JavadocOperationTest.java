@@ -2,7 +2,7 @@ package javabot.operations;
 
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
-import org.testng.annotations.Test;
+import javabot.Javabot;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 /**
@@ -10,7 +10,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
  *
  * @author <a href="mailto:javabot@cheeseronline.org">cheeser</a>
  */
-@Test(groups = {"operations"})
 public class JavadocOperationTest extends BaseOperationTest {
     @SpringBeanByType
     private ApiDao apiDao;
@@ -43,6 +42,6 @@ public class JavadocOperationTest extends BaseOperationTest {
 
     @Override
     protected BotOperation getOperation() {
-        return new JavadocOperation(apiDao, clazzDao);
+        return new JavadocOperation(new Javabot(), apiDao, clazzDao);
     }
 }

@@ -4,22 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javabot.BotEvent;
+import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AddFactoidOperation implements BotOperation {
+public class AddFactoidOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(AddFactoidOperation.class);
     private FactoidDao factoidDao;
     private ChangeDao changeDao;
 
-    public AddFactoidOperation(FactoidDao dao, ChangeDao cDao) {
+    public AddFactoidOperation(Javabot bot, FactoidDao dao, ChangeDao cDao) {
+        super(bot);
         factoidDao = dao;
         changeDao = cDao;
     }
 
+    @Override
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();
@@ -37,7 +40,7 @@ public class AddFactoidOperation implements BotOperation {
                 value = message.substring(index + 4, message.length());
             }
             if(key.trim().length() == 0) {
-                messages.add(new Message(channel, "Invalid factoid name", false));
+                messages.add(new Message(channel, event, "Invalid factoid name"));
                 return messages;
             }
             if(log.isDebugEnabled()) {
@@ -45,14 +48,14 @@ public class AddFactoidOperation implements BotOperation {
                 log.debug("Key: " + key);
             }
             if(value == null || value.trim().length() == 0) {
-                messages.add(new Message(channel, "Invalid factoid value", false));
+                messages.add(new Message(channel, event, "Invalid factoid value"));
                 return messages;
             }
             if(factoidDao.hasFactoid(key)) {
-                messages.add(new Message(channel, "I already have a factoid with that name, " + sender, false));
+                messages.add(new Message(channel, event, "I already have a factoid with that name, " + sender));
                 return messages;
             }
-            messages.add(new Message(channel, "Okay, " + sender + ".", false));
+            messages.add(new Message(channel, event, "Okay, " + sender + "."));
             if(value.startsWith("<see>")) {
                 value = value.toLowerCase();
             }
@@ -65,6 +68,7 @@ public class AddFactoidOperation implements BotOperation {
 
     }
 
+    @Override
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();
     }

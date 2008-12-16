@@ -1,11 +1,11 @@
 package javabot.operations;
 
-import javabot.BotEvent;
-import javabot.Message;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import javabot.BotEvent;
+import javabot.Message;
+import javabot.Javabot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,12 +13,17 @@ import org.slf4j.LoggerFactory;
  * @author ricky_clarkson
  * @janitor joed
  */
-public class NickometerOperation implements BotOperation {
+public class NickometerOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(NickometerOperation.class);
-    
+
+    public NickometerOperation(Javabot javabot) {
+        super(javabot);
+    }
+
     /**
      * @see BotOperation#handleMessage(BotEvent)
      */
+    @Override
     public List<Message> handleMessage(BotEvent event) {
 
         List<Message> messages = new ArrayList<Message>();
@@ -55,11 +60,12 @@ public class NickometerOperation implements BotOperation {
             double tempLameness = (double) lameness / nick.length();
             tempLameness = Math.sqrt(tempLameness);
             lameness = (int) (tempLameness * 100);
-            messages.add(new Message(event.getChannel(), "The nick " + nick + " is " + lameness + "% lame.", false));
+            messages.add(new Message(event.getChannel(), event, "The nick " + nick + " is " + lameness + "% lame."));
         }
         return messages;
     }
 
+    @Override
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();
     }

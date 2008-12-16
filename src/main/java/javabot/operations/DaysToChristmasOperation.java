@@ -6,14 +6,20 @@ import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Message;
+import javabot.Javabot;
 
 /**
  * @author ricky_clarkson
  */
-public class DaysToChristmasOperation implements BotOperation {
+public class DaysToChristmasOperation extends BotOperation {
+    public DaysToChristmasOperation(Javabot javabot) {
+        super(javabot);
+    }
+
     /**
      * @see BotOperation#handleMessage(BotEvent)
      */
+    @Override
     public List<Message> handleMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         if(!"countdown to christmas".equals(event.getMessage().toLowerCase())) {
@@ -25,11 +31,11 @@ public class DaysToChristmasOperation implements BotOperation {
         Calendar today = Calendar.getInstance();
         long millis = calendar.getTimeInMillis() - today.getTimeInMillis();
         millis /= 86400000;
-        messages.add(new Message(event.getChannel(),
-            "There are " + millis + " days until Christmas.", false));
+        messages.add(new Message(event.getChannel(), event, "There are " + millis + " days until Christmas."));
         return messages;
     }
 
+    @Override
     public List<Message> handleChannelMessage(BotEvent event) {
         return new ArrayList<Message>();
 	}
