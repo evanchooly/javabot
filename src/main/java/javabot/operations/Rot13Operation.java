@@ -46,9 +46,4 @@ public class Rot13Operation extends BotOperation {
         messages.add(new Message(channel, event, answer.toString()));
         return messages;
     }
-
-    @Override
-    public List<Message> handleChannelMessage(BotEvent event) {
-        return new ArrayList<Message>();
-    }
 }

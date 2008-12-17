@@ -6,6 +6,7 @@ import java.util.List;
 
 import javabot.dao.ConfigDao;
 import javabot.model.Config;
+import javabot.operations.AdminOperation;
 import javabot.operations.AolBonicsOperation;
 import javabot.operations.DaysToChristmasOperation;
 import javabot.operations.DaysUntilOperation;
@@ -37,7 +38,6 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Check;
 import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -57,6 +57,7 @@ public class BotConfigPanel extends Panel {
     private ConfigDao dao;
     private static final List<String> OPERATIONS = Arrays.asList(
         //AddFactoidOperation.class.getName(),
+        AdminOperation.class.getName(),
         DaysToChristmasOperation.class.getName(),
         DaysUntilOperation.class.getName(),
         DictOperation.class.getName(),
@@ -115,7 +116,7 @@ public class BotConfigPanel extends Panel {
             add(new TextField("port").setRequired(true));
             add(new TextField("nick").setRequired(true));
             add(new TextField("prefixes").setRequired(true));
-            add(new PasswordTextField("password").setRequired(true));
+            add(new TextField("password").setRequired(true));
             CheckGroup checks = new CheckGroup("operations");
             add(checks);
             ListView checksList = new ListView("operationItems", OPERATIONS) {

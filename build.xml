@@ -201,7 +201,7 @@
             <dependency groupId="org.apache.wicket" artifactId="wicket-extensions" version="${wicket.version}"/>
             <dependency groupId="org.apache.wicket" artifactId="wicket-auth-roles" version="${wicket.version}"/>
             <dependency groupId="org.apache.wicket" artifactId="wicket-spring-annot" version="${wicket.version}"/>
-            <dependency groupId="pircbot" artifactId="pircbot" version="1.4.2"/>
+            <dependency groupId="pircbot" artifactId="pircbot" version="1.4.6"/>
             <dependency groupId="mysql" artifactId="mysql-connector-java" version="3.1.14"/>
             <dependency groupId="postgresql" artifactId="postgresql" version="8.3-603.jdbc4"/>
             <dependency groupId="hsqldb" artifactId="hsqldb" version="1.8.0.7"/>

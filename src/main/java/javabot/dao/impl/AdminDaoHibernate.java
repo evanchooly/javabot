@@ -19,19 +19,30 @@ public class AdminDaoHibernate extends AbstractDaoHibernate<Admin> implements Ad
         super(Admin.class);
     }
 
+    @Override
     @SuppressWarnings({"unchecked"})
     public List<Admin> findAll() {
         return getEntityManager().createNamedQuery(AdminDao.FIND_ALL)
             .getResultList();
     }
 
-    public boolean isAdmin(String key) {
-        return getAdmin(key).getUserName() != null;
+    @Override
+    public boolean isAdmin(String user, String hostName) {
+        return getAdmin(user, hostName).getUserName() != null;
     }
 
-    public Admin getAdmin(String username) {
+    @Override
+    public Admin getAdmin(String userName) {
         return (Admin)getEntityManager().createNamedQuery(AdminDao.AUTHENTICATE)
-            .setParameter("username", username)
+            .setParameter("username", userName)
+            .getSingleResult();
+    }
+
+    @Override
+    public Admin getAdmin(String userName, String hostName) {
+        return (Admin)getEntityManager().createNamedQuery(AdminDao.FIND_WITH_HOST)
+            .setParameter("username", userName)
+            .setParameter("hostName", hostName)
             .getSingleResult();
     }
 
@@ -40,11 +51,13 @@ public class AdminDaoHibernate extends AbstractDaoHibernate<Admin> implements Ad
         super.setEntityManager(manager);
     }
 
-    public void create(String newAdmin, String newPassword) {
+    @Override
+    public void create(String newAdmin, String newPassword, String newHostName) {
         Admin admin = new Admin();
         admin.setUserName(newAdmin);
         admin.setPassword(newPassword);
         admin.setUpdated(new Date());
+        admin.setHostName(newHostName);
 
         Config config = configDao.get();
         admin.setConfig(config);

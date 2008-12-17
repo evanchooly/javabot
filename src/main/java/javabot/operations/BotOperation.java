@@ -1,5 +1,6 @@
 package javabot.operations;
 
+import java.util.Collections;
 import java.util.List;
 
 import javabot.BotEvent;
@@ -23,7 +24,11 @@ public abstract class BotOperation {
      * @param event
      * @return
      */
-    public abstract List<Message> handleMessage(BotEvent event);
+    public List<Message> handleMessage(BotEvent event) {
+        return Collections.emptyList();
+    }
 
-    public abstract List<Message> handleChannelMessage(BotEvent event);
+    public List<Message> handleChannelMessage(BotEvent event) {
+        return Collections.emptyList();
+    }
 }

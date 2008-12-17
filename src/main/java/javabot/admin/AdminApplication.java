@@ -49,7 +49,7 @@ public class AdminApplication extends WebApplication {
         InjectorHolder.getInjector().inject(this);
         try {
             if(dao.findAll().isEmpty()) {
-                dao.create("cheeser", "cheeser");
+                dao.create("cheeser", "cheeser", "unaffiliated/cheeser");
             }
         } catch(Exception e) {
             log.error(e.getMessage(), e);
@@ -75,10 +75,12 @@ public class AdminApplication extends WebApplication {
     }
 
     private static class AdminAuthorizationStrategy implements IAuthorizationStrategy {
+        @Override
         public boolean isActionAuthorized(Component component, Action action) {
             return true;
         }
 
+        @Override
         public boolean isInstantiationAuthorized(Class componentClass) {
             if(AuthenticatedWebPage.class.isAssignableFrom(componentClass)) {
                 if(((AdminSession)Session.get()).isSignedIn()) {

@@ -182,9 +182,4 @@ public class TellOperation extends BotOperation {
             lastTells.remove(0);
         }
     }
-
-    @Override
-    public List<Message> handleChannelMessage(BotEvent event) {
-        return new ArrayList<Message>();
-    }
 }

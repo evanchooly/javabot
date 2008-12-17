@@ -83,7 +83,7 @@ public class Javabot extends PircBot {
             authWait = 3000;
             startStrings = config.getPrefixes().split(" ");
             loadOperationInfo(config);
-            setMessageDelay(2000);
+//            setMessageDelay(2000);
         } catch (Exception e) {
             log.debug(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
@@ -142,9 +142,15 @@ public class Javabot extends PircBot {
             try {
                 connect(host, port);
                 sendRawLine("PRIVMSG NickServ :identify " + getNickPassword());
+                
                 sleep(authWait);
-                for (Channel channel : channels) {
-                    joinChannel(channel.getName());
+                for (final Channel channel : channels) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            joinChannel(channel.getName());
+                        }
+                    }).start();
                 }
                 connected = true;
             } catch (Exception exception) {
@@ -165,9 +171,8 @@ public class Javabot extends PircBot {
         }
         if (isValidSender(sender)) {
             for (String startString : startStrings) {
-                int length = startString.length();
                 if (message.startsWith(startString)) {
-                    handleAnyMessage(channel, sender, login, hostname, message.substring(length).trim());
+                    handleAnyMessage(channel, sender, login, hostname, message.substring(startString.length()).trim());
                     return;
                 }
             }

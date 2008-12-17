@@ -26,9 +26,4 @@ public class IgnoreOperation extends BotOperation {
         }*/
         return messages;
     }
-
-    @Override
-    public List<Message> handleChannelMessage(BotEvent event) {
-        return new ArrayList<Message>();
-    }
 }

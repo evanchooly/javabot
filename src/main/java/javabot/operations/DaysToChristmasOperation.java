@@ -34,9 +34,4 @@ public class DaysToChristmasOperation extends BotOperation {
         messages.add(new Message(event.getChannel(), event, "There are " + millis + " days until Christmas."));
         return messages;
     }
-
-    @Override
-    public List<Message> handleChannelMessage(BotEvent event) {
-        return new ArrayList<Message>();
-	}
 }

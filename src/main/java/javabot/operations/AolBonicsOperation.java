@@ -51,15 +51,7 @@ public class AolBonicsOperation extends BotOperation {
         random = new Random();
     }
 
-    /**
-     * @see BotOperation#handleMessage(BotEvent)
-     */
-    @Override
-    public List<Message> handleMessage(BotEvent event) {
-        return new ArrayList<Message>();
-    }
-
-    @Override
+        @Override
     public List<Message> handleChannelMessage(BotEvent event) {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();

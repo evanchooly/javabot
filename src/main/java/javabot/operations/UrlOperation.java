@@ -45,9 +45,4 @@ public abstract class UrlOperation extends BotOperation {
     protected abstract String getBaseUrl();
 
     protected abstract String getTrigger();
-
-    @Override
-    public List<Message> handleChannelMessage(BotEvent event) {
-        return new ArrayList<Message>();
-    }
 }

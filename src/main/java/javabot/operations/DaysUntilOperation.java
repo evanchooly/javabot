@@ -65,9 +65,4 @@ public class DaysUntilOperation extends BotOperation {
             sender + ":  there are " + (int) days + " days until " + message + "."));
         return messages;
     }
-
-    @Override
-    public List<Message> handleChannelMessage(BotEvent event) {
-        return new ArrayList<Message>();
-	}
 }

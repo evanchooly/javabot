@@ -116,9 +116,4 @@ public class KarmaChangeOperation extends BotOperation {
         if(lastKarmaChange.size() > MAX_THROTTLE_MEM)
             lastKarmaChange.remove(0);
     }
-
-    @Override
-    public List<Message> handleChannelMessage(BotEvent event) {
-        return new ArrayList<Message>();
-    }
 }
