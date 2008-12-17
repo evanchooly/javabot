@@ -41,7 +41,7 @@ public class JavadocOperationTest extends BaseOperationTest {
     }
 
     @Override
-    protected BotOperation getOperation() {
-        return new JavadocOperation(new Javabot(), apiDao, clazzDao);
+    protected BotOperation createOperation() {
+        return new JavadocOperation(new Javabot());
     }
 }

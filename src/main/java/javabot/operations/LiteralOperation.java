@@ -4,19 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javabot.BotEvent;
-import javabot.Message;
 import javabot.Javabot;
+import javabot.Message;
 import javabot.dao.FactoidDao;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author ricky_clarkson
  */
 public class LiteralOperation extends BotOperation {
-    private final FactoidDao dao;
+    @Autowired
+    private FactoidDao dao;
 
-    public LiteralOperation(Javabot bot, FactoidDao factoidDatabase) {
+    public LiteralOperation(Javabot bot) {
         super(bot);
-        dao = factoidDatabase;
     }
 
     /**

@@ -13,15 +13,15 @@ import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class GetFactoidOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(GetFactoidOperation.class);
-    
+    @Autowired
     private FactoidDao factoidDao;
 
-    public GetFactoidOperation(Javabot bot, FactoidDao dao) {
+    public GetFactoidOperation(Javabot bot) {
         super(bot);
-        factoidDao = dao;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class GetFactoidOperation extends BotOperation {
                 messages.add(new Message(channel, event, sender + ", " + key + " is " + message));
             }
         } else {
-            List<Message> guessed = new GuessOperation(getBot(), factoidDao).handleMessage(new BotEvent(event.getChannel(),
+            List<Message> guessed = new GuessOperation(getBot()).handleMessage(new BotEvent(event.getChannel(),
                     event.getSender(), event.getLogin(), event.getHostname(), "guess " + message));
             Message guessedMessage = guessed.get(0);
             if (!"No appropriate factoid found.".equals(guessedMessage.getMessage())) {

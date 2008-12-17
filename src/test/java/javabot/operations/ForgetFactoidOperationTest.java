@@ -30,8 +30,8 @@ public class ForgetFactoidOperationTest extends BaseOperationTest {
     }
 
     @Override
-    protected BotOperation getOperation() {
-        return new ForgetFactoidOperation(new Javabot(), factoidDao);
+    protected BotOperation createOperation() {
+        return new ForgetFactoidOperation(new Javabot());
     }
 
     public void channelMessage() throws IOException {

@@ -8,7 +8,7 @@ import javabot.BotEvent;
 import javabot.Message;
 import javabot.Javabot;
 import javabot.dao.FactoidDao;
-
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Simple operation to pull who added the factoid and
@@ -17,11 +17,11 @@ import javabot.dao.FactoidDao;
  * @author ricky_clarkson - original code (mostly pulled from LiteralOperation
  */
 public class InfoOperation extends BotOperation {
-    private final FactoidDao dao;
+    @Autowired
+    private FactoidDao dao;
 
-    public InfoOperation(Javabot bot, FactoidDao factoidDao) {
+    public InfoOperation(Javabot bot) {
         super(bot);
-        dao = factoidDao;
     }
 
     @Override

@@ -34,7 +34,7 @@ public class GuessOperationsTest extends UnitilsTestNG {
     @BeforeMethod
     public void setUp() {
         f_dao = createMock(FactoidDao.class);
-        guessOperation = new GuessOperation(new Javabot(), f_dao);
+        guessOperation = new GuessOperation(new Javabot());
     }
 
     public void testDaoCount() {

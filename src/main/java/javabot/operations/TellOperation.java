@@ -15,14 +15,12 @@ import org.slf4j.LoggerFactory;
  */
 public class TellOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(TellOperation.class);
-    private final String ownNick;
     private static final int MAX_TELL_MEMORY = 100;
     private static final int THROTTLE_TIME = 10 * 1000; // 10 secs.
     private final List<TellInfo> lastTells = new ArrayList<TellInfo>(MAX_TELL_MEMORY);
 
-    public TellOperation(Javabot bot, String myNick) {
+    public TellOperation(Javabot bot) {
         super(bot);
-        ownNick = myNick;
     }
 
     private static final class TellInfo {
@@ -89,7 +87,7 @@ public class TellOperation extends BotOperation {
             nick = sender;
         }
         String thing = tellSubject.getSubject();
-        if (nick.equals(ownNick)) {
+        if (nick.equals(getBot().getNick())) {
             messages.add(new Message(channel, event, "I don't want to talk to myself"));
         } else if (alreadyTold(nick, thing)) {
             if (log.isDebugEnabled()) {

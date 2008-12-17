@@ -89,13 +89,13 @@ public class AddFactoidOperationTest extends BaseOperationTest {
         String factoid = "should be the full (/hi there) factoid";
         testOperation("asdf is <reply>" + factoid, OKAY, "Should have added the factoid.");
 
-        GetFactoidOperation operation = new GetFactoidOperation(new Javabot(), factoidDao);
+        GetFactoidOperation operation = new GetFactoidOperation(new Javabot());
         String errorMessage = "Should have found the factoid";
         testOperation("asdf", factoid, errorMessage, operation);
     }
 
     @Override
-    protected AddFactoidOperation getOperation() {
-        return new AddFactoidOperation(new Javabot(), factoidDao, changeDao);
+    protected BotOperation createOperation() {
+        return new AddFactoidOperation(new Javabot());
     }
 }

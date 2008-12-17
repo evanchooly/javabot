@@ -7,13 +7,14 @@ import javabot.BotEvent;
 import javabot.Message;
 import javabot.Javabot;
 import javabot.dao.FactoidDao;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class StatsOperation extends BotOperation {
+    @Autowired
     private FactoidDao factoidDao;
 
-    public StatsOperation(Javabot javabot, FactoidDao dao) {
+    public StatsOperation(Javabot javabot) {
         super(javabot);
-        factoidDao = dao;
     }
 
     private static final long startTime = System.currentTimeMillis();

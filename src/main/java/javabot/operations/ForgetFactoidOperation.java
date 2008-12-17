@@ -7,13 +7,14 @@ import javabot.BotEvent;
 import javabot.Message;
 import javabot.Javabot;
 import javabot.dao.FactoidDao;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class ForgetFactoidOperation extends BotOperation {
+    @Autowired
     private FactoidDao factoidDao;
 
-    public ForgetFactoidOperation(Javabot javabot, FactoidDao dao) {
+    public ForgetFactoidOperation(Javabot javabot) {
         super(javabot);
-        factoidDao = dao;
     }
 
     @Override

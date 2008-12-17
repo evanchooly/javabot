@@ -67,7 +67,13 @@ public abstract class BaseOperationTest extends UnitilsTestNG {
         }
     }
 
-    protected abstract BotOperation getOperation();
+    protected final BotOperation getOperation() {
+        BotOperation operation = createOperation();
+        springApplicationContext.getAutowireCapableBeanFactory().autowireBean(operation);
+        return operation;
+    }
+
+    protected abstract BotOperation createOperation();
 
     public String getForgetMessage(String factoid) {
         return "I forgot about " + factoid + ", " + SENDER + ".";
@@ -80,6 +86,6 @@ public abstract class BaseOperationTest extends UnitilsTestNG {
     protected void forgetFactoid(String name) {
         testOperation("forget " + name, "I forgot about " + name + ", " + SENDER + ".",
             "I never knew about " + name + " anyway, " + SENDER
-                + ".", new ForgetFactoidOperation(new Javabot(), factoidDao));
+                + ".", new ForgetFactoidOperation(new Javabot()));
     }
 }

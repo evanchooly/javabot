@@ -58,14 +58,7 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
     }
 
     @Override
-    protected BotOperation getOperation() {
-        KarmaChangeOperation operation = null;
-        try {
-            operation = new KarmaChangeOperation(new Javabot(), karmaDao);
-            return operation;
-        } catch(Exception e) {
-            Assert.fail("Could not create operation: " + e.getMessage());
-        }
-        return operation;
+    protected BotOperation createOperation() {
+        return new KarmaChangeOperation(new Javabot());
     }
 }

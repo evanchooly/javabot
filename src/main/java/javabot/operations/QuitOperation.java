@@ -11,11 +11,9 @@ import org.slf4j.LoggerFactory;
 
 public class QuitOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(QuitOperation.class);
-    private final String password;
 
-    public QuitOperation(Javabot javabot, String value) {
+    public QuitOperation(Javabot javabot) {
         super(javabot);
-        password = value;
     }
 
     @Override
@@ -23,7 +21,7 @@ public class QuitOperation extends BotOperation {
         List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();
         if(message.toLowerCase().startsWith("quit ")) {
-            if(message.substring("quit ".length()).equals(password)) {
+            if(message.substring("quit ".length()).equals(getBot().getNickPassword())) {
                 if(log.isDebugEnabled()) {
                     log.debug("About to quit");
                 }

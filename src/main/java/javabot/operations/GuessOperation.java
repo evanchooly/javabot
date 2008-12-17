@@ -8,18 +8,19 @@ import javabot.Message;
 import javabot.Javabot;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * A little more intelligence creeping in. This searches the entire set of key/value pairs to find
  * out which factoid has the most matches for the inputs provided.
  */
 public class GuessOperation extends BotOperation {
-    private String[] ignoreList = {"you", "and", "are", "to", "that", "your", "do", "have", "a", "the", "be", "but", "can", "i", "who", "how", "get", "by", "is", "of", "out", "me", "an", "for", "use", "he", "she", "it"};
-    private FactoidDao dao = null;
+    private final String[] ignoreList = {"you", "and", "are", "to", "that", "your", "do", "have", "a", "the", "be", "but", "can", "i", "who", "how", "get", "by", "is", "of", "out", "me", "an", "for", "use", "he", "she", "it"};
+    @Autowired
+    private FactoidDao dao;
 
-    public GuessOperation(Javabot bot, FactoidDao factoidDao) {
+    public GuessOperation(Javabot bot) {
         super(bot);
-        dao = factoidDao;
     }
 
     /**
@@ -88,7 +89,7 @@ public class GuessOperation extends BotOperation {
             return messages;
         }
         messages.add(new Message(channel, event, "I guess the factoid '" + bestKey + "' might be appropriate:"));
-        messages.addAll(new GetFactoidOperation(getBot(), dao).handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event
+        messages.addAll(new GetFactoidOperation(getBot()).handleMessage(new BotEvent(event.getChannel(), event.getSender(), event.getLogin(), event
                 .getHostname(), bestKey)));
 
         return messages;

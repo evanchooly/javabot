@@ -8,15 +8,16 @@ import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.SeenDao;
+import org.springframework.beans.factory.annotation.Autowired;
 // Author : joed
 // Date  : Apr 8, 2007
 
 public class SeenOperation extends BotOperation {
+    @Autowired
     private SeenDao dao;
 
-    public SeenOperation(Javabot javabot, SeenDao dao) {
+    public SeenOperation(Javabot javabot) {
         super(javabot);
-        this.dao = dao;
     }
 
     @Override

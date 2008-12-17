@@ -23,8 +23,8 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     private FactoidDao factoidDao;
 
     @Override
-    protected GetFactoidOperation getOperation() {
-        return new GetFactoidOperation(new Javabot(), factoidDao);
+    protected BotOperation createOperation() {
+        return new GetFactoidOperation(new Javabot());
     }
 
     public void straightGets() throws IOException {
@@ -70,7 +70,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void badRandom() {
-        GetFactoidOperation operation = getOperation();
+        GetFactoidOperation operation = (GetFactoidOperation) getOperation();
         String message = "(1|2";
         Assert.assertEquals(operation.processRandomList(message), message, "Should just return message");
         message = "(1)";

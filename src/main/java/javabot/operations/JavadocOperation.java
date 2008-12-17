@@ -15,12 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class JavadocOperation extends BotOperation {
     @Autowired
     private ApiDao apiDao;
+    @Autowired
     private ClazzDao dao;
 
-    public JavadocOperation(Javabot bot, ApiDao aDao, ClazzDao clazzDao) {
+    public JavadocOperation(Javabot bot) {
         super(bot);
-//        apiDao = aDao;
-        dao = clazzDao;
     }
 
     /**

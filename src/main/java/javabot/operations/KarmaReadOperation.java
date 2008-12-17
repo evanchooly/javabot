@@ -8,13 +8,14 @@ import javabot.Message;
 import javabot.Javabot;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class KarmaReadOperation extends BotOperation {
+    @Autowired
     private KarmaDao karmaDao;
 
-    public KarmaReadOperation(Javabot javabot, KarmaDao dao) {
+    public KarmaReadOperation(Javabot javabot) {
         super(javabot);
-        karmaDao = dao;
     }
 
     @Override

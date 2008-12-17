@@ -10,16 +10,17 @@ import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class AddFactoidOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(AddFactoidOperation.class);
+    @Autowired
     private FactoidDao factoidDao;
+    @Autowired
     private ChangeDao changeDao;
 
-    public AddFactoidOperation(Javabot bot, FactoidDao dao, ChangeDao cDao) {
+    public AddFactoidOperation(Javabot bot) {
         super(bot);
-        factoidDao = dao;
-        changeDao = cDao;
     }
 
     @Override

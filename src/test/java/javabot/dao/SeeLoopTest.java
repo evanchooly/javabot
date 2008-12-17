@@ -31,7 +31,7 @@ public class SeeLoopTest extends BaseServiceTest {
     @BeforeMethod
     public void setUp() {
 
-        getFactoidOperation = new GetFactoidOperation(new Javabot(), factoidDao);
+        getFactoidOperation = new GetFactoidOperation(new Javabot());
     }
 
 

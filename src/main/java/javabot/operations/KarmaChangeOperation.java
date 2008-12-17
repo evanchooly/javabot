@@ -9,19 +9,20 @@ import javabot.Javabot;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class KarmaChangeOperation extends BotOperation {
+    @Autowired
     private KarmaDao dao;
     private static final Logger log = LoggerFactory.getLogger(KarmaChangeOperation.class);
     private static final int MAX_THROTTLE_MEM = 100;
     private static final int THROTTLE_TIME = 20 * 1000; // 20 seconds.
     private final List<KarmaInfo> lastKarmaChange = new ArrayList<KarmaInfo>(MAX_THROTTLE_MEM);
 
-    public KarmaChangeOperation(Javabot bot, KarmaDao karmaDao) {
+    public KarmaChangeOperation(Javabot bot) {
         super(bot);
-        dao = karmaDao;
     }
 
     // most of this code is ripped from ernimril's
@@ -86,7 +87,7 @@ public class KarmaChangeOperation extends BotOperation {
             }
             karma.setUserName(sender);
             dao.save(karma);
-            KarmaReadOperation karmaRead = new KarmaReadOperation(getBot(), dao);
+            KarmaReadOperation karmaRead = new KarmaReadOperation(getBot());
             messages.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(),
                     event.getLogin(), event.getHostname(), "karma " + nick)));
         }
