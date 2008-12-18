@@ -15,7 +15,7 @@ import org.jibble.pircbot.User;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-public class AddAdminCommand implements Command {
+public class AddAdmin implements Command {
     @Autowired
     private AdminDao dao;
 

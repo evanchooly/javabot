@@ -12,6 +12,8 @@ import javabot.model.Persistent;
 public interface BaseDao<T> {
     void save(Persistent persistent);
 
+    void delete(Persistent persistent);
+
     void delete(Long id);
 
     EntityManager getEntityManager();

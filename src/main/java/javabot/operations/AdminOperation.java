@@ -68,7 +68,7 @@ public class AdminOperation extends BotOperation implements ApplicationContextAw
         throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         String name = params.get(0);
         name = name.substring(0, 1).toUpperCase() + name.substring(1);
-        String className = Command.class.getPackage().getName() + "." + name + "Command";
+        String className = Command.class.getPackage().getName() + "." + name;
         Class<Command> clazz = (Class<Command>) Class.forName(className);
         Command command = clazz.newInstance();
         context.getAutowireCapableBeanFactory().autowireBean(command);

@@ -1,9 +1,10 @@
 package javabot.dao.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
+import javax.persistence.PersistenceException;
 
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.ChannelDao;
@@ -11,6 +12,7 @@ import javabot.dao.ConfigDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
 import javabot.model.Config;
+import javabot.model.Persistent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implements ChannelDao {
@@ -20,6 +22,19 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
 
     public ChannelDaoHibernate() {
         super(Channel.class);
+    }
+
+    @Override
+    public void delete(Persistent persistedObject) {
+        Channel channel = (Channel) getEntityManager().merge(persistedObject);
+        channel.getConfig().getChannels().remove(channel);
+        channel.setConfig(null);
+        super.delete(channel);
+    }
+
+    @Override
+    public void delete(Long id) {
+        delete(find(id));
     }
 
     @Override
@@ -52,8 +67,13 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
     public boolean isLogged(String channel) {
         Boolean logged = logCache.get(channel);
         if(logged == null) {
-            logged = get(channel).getLogged();
-            logCache.put(channel, logged);
+            Channel chan = get(channel);
+            if(channel != null) {
+                logged = chan.getLogged();
+                logCache.put(channel, logged);
+            } else {
+                logged = Boolean.FALSE;
+            }
         }
 
         return logged;
@@ -61,16 +81,24 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
 
     @Override
     public Channel get(String name) {
-        return (Channel) getEntityManager().createNamedQuery(ChannelDao.BY_NAME)
+        Channel channel = null;
+        try {
+            channel = (Channel) getEntityManager().createNamedQuery(ChannelDao.BY_NAME)
                 .setParameter("channel", name)
                 .getSingleResult();
+            return channel;
+        } catch (PersistenceException e) {
+            // ignore
+        }
+        return channel;
 
     }
 
     @Override
-    public Channel create(String name) {
+    public Channel create(String name, Boolean logged) {
         Channel channel = new Channel();
         channel.setName(name);
+        channel.setLogged(logged);
         Config config = configDao.get();
         channel.setConfig(config);
         config.getChannels().add(channel);

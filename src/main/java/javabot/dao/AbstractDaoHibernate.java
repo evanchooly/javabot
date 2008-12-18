@@ -51,6 +51,7 @@ public class AbstractDaoHibernate<T> implements BaseDao<T> {
         entityManager.flush();
     }
 
+    @Transactional
     public void delete(Persistent persistedObject) {
         getEntityManager().remove(persistedObject);
     }

@@ -19,7 +19,7 @@ public interface ChannelDao extends BaseDao<Channel> {
 
     Channel get(String name);
 
-    Channel create(String name);
+    Channel create(String name, Boolean logged);
 
     void save(Channel channel);
 
