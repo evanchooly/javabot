@@ -64,7 +64,7 @@ public class Javabot extends PircBot {
     private ApplicationContext context;
 
     public Javabot() {
-        setVersion("Javabot 2.0");
+        setVersion("Javabot 2.5");
         InjectorHolder.getInjector().inject(this);
         context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
         loadConfig();
