@@ -2,15 +2,16 @@ package javabot.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.CascadeType;
+import javax.persistence.Table;
 
+import javabot.Javabot;
 import javabot.dao.ChannelDao;
 
 @Entity
@@ -23,6 +24,7 @@ import javabot.dao.ChannelDao;
 public class Channel implements Serializable, Persistent {
     private Long id;
     private String name;
+    private String key;
     private Date updated;
     private Boolean logged = true;
     private Config config;
@@ -43,6 +45,14 @@ public class Channel implements Serializable, Persistent {
 
     public void setUpdated(Date date) {
         updated = date;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public Boolean getLogged() {
@@ -78,5 +88,13 @@ public class Channel implements Serializable, Persistent {
             ", name='" + name + '\'' +
             ", updated=" + updated +
             '}';
+    }
+
+    public void join(Javabot bot) {
+        if (getKey() == null) {
+            bot.joinChannel(getName());
+        } else {
+            bot.joinChannel(getName(), getKey());
+        }
     }
 }

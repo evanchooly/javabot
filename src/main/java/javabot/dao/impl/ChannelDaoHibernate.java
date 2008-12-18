@@ -95,10 +95,11 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
     }
 
     @Override
-    public Channel create(String name, Boolean logged) {
+    public Channel create(String name, Boolean logged, String key) {
         Channel channel = new Channel();
         channel.setName(name);
         channel.setLogged(logged);
+        channel.setKey(key);
         Config config = configDao.get();
         channel.setConfig(config);
         config.getChannels().add(channel);

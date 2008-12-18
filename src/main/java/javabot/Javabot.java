@@ -148,7 +148,7 @@ public class Javabot extends PircBot {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            joinChannel(channel.getName());
+                            channel.join(Javabot.this);
                         }
                     }).start();
                 }
