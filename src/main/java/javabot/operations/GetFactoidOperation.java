@@ -68,7 +68,9 @@ public class GetFactoidOperation extends BotOperation {
                 messages.add(new Message(channel, event, sender + ", " + key + " is " + message));
             }
         } else {
-            List<Message> guessed = new GuessOperation(getBot()).handleMessage(new BotEvent(event.getChannel(),
+            GuessOperation operation = new GuessOperation(getBot());
+            inject(operation);
+            List<Message> guessed = operation.handleMessage(new BotEvent(event.getChannel(),
                     event.getSender(), event.getLogin(), event.getHostname(), "guess " + message));
             Message guessedMessage = guessed.get(0);
             if (!"No appropriate factoid found.".equals(guessedMessage.getMessage())) {
