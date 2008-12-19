@@ -69,7 +69,6 @@ public class GetFactoidOperation extends BotOperation {
             }
         } else {
             GuessOperation operation = (GuessOperation) getBot().getOperation(GuessOperation.class.getName());
-            inject(operation);
             List<Message> guessed = operation.handleMessage(new BotEvent(event.getChannel(),
                     event.getSender(), event.getLogin(), event.getHostname(), "guess " + message));
             Message guessedMessage = guessed.get(0);

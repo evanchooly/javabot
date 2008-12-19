@@ -89,7 +89,6 @@ public class KarmaChangeOperation extends BotOperation {
             dao.save(karma);
             KarmaReadOperation karmaRead = (KarmaReadOperation) getBot()
                 .getOperation(KarmaReadOperation.class.getName());
-            inject(karmaRead);
             messages.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(),
                 event.getLogin(), event.getHostname(), "karma " + nick)));
         }
