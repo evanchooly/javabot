@@ -42,7 +42,7 @@ public class ChannelConfigPanel extends Panel {
             add(new ListView("channels") {
                 @Override
                 protected void populateItem(ListItem item) {
-                    item.setModel(new CompoundPropertyModel((Channel)item.getModelObject()));
+                    item.setModel(new CompoundPropertyModel(item.getModelObject()));
                     Link link = new Link("link") {
                         @Override
                         public void onClick() {
@@ -66,7 +66,6 @@ public class ChannelConfigPanel extends Panel {
             add(new Button("add") {
                 @Override
                 public void onSubmit() {
-                    dao.create(newChannel);
                     setResponsePage(getPage().getClass());
                 }
             });

@@ -3,7 +3,6 @@ package javabot;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +33,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class Javabot extends PircBot {
     private static final Logger log = LoggerFactory.getLogger(Javabot.class);
     private final Map<String, String> channelPreviousMessages = new HashMap<String, String>();
-    private List<BotOperation> operations = new LinkedList<BotOperation>();
+    private Map<String, BotOperation> operations = new HashMap<String, BotOperation>();
     private String host;
     private int port;
     private String[] startStrings;
@@ -106,18 +105,14 @@ public class Javabot extends PircBot {
         }
         add(new AddFactoidOperation(this));
         add(new GetFactoidOperation(this));
-        for (BotOperation operation : operations) {
-            if (log.isDebugEnabled()) {
-                log.debug(operation.getClass().getCanonicalName());
-            }
-        }
-
     }
 
     private void add(BotOperation operation) {
-//        InjectorHolder.getInjector().inject(operation);
         context.getAutowireCapableBeanFactory().autowireBean(operation);
-        operations.add(operation);
+        operations.put(operation.getClass().getName(), operation);
+        if (log.isDebugEnabled()) {
+            log.debug(operation.getClass().getCanonicalName());
+        }
     }
 
     public void main(String[] args) throws IOException {
@@ -188,7 +183,7 @@ public class Javabot extends PircBot {
         if (log.isDebugEnabled()) {
             log.debug("getResponses " + message);
         }
-        for (BotOperation operation : operations) {
+        for (BotOperation operation : operations.values()) {
             List<Message> messages = operation.handleMessage(new BotEvent(channel, sender, login, hostname, message));
             if (!messages.isEmpty()) {
                 return messages;
@@ -202,7 +197,7 @@ public class Javabot extends PircBot {
         if (log.isDebugEnabled()) {
             log.debug("getChannelResponses " + message);
         }
-        for (BotOperation operation : operations) {
+        for (BotOperation operation : operations.values()) {
             List<Message> messages = operation
                 .handleChannelMessage(new BotEvent(channel, sender, login, hostname, message));
             if (!messages.isEmpty()) {
@@ -389,4 +384,7 @@ public class Javabot extends PircBot {
         }
     }
 
+    public BotOperation getOperation(String name) {
+        return operations.get(name);
+    }
 }
