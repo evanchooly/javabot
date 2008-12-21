@@ -26,7 +26,7 @@ public class Message {
     }
 
     public String formatResponse(Javabot bot, String nick) {
-        return MessageFormat.format("{0}, {1}", nick, getMessage());
+        return getMessage().startsWith(nick) ? getMessage() : MessageFormat.format("{0}, {1}", nick, getMessage());
     }
 
     public String logEntry() {

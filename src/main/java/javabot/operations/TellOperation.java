@@ -178,7 +178,7 @@ public class TellOperation extends BotOperation {
     private void addTold(String nick, String msg) {
         TellInfo ti = new TellInfo(nick, msg);
         lastTells.add(ti);
-        if (lastTells.size() > MAX_TELL_MEMORY) {
+        while (lastTells.size() > MAX_TELL_MEMORY) {
             lastTells.remove(0);
         }
     }
