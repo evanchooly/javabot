@@ -1,5 +1,7 @@
 package javabot.operations;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,17 +48,27 @@ public class AdminOperation extends BotOperation implements ApplicationContextAw
                         messages.addAll(command.execute(getBot(), event, args));
                     } catch (ClassNotFoundException e) {
                         messages.add(new Message(channel, event, params[0] + " command not found"));
+                        privMessageStackTrace(event, messages, e);
                     } catch (Exception e) {
+                        privMessageStackTrace(event, messages, e);
                         messages.add(new Message(channel, event, "Could not execute command: " + params[0]
                             + ", " + e.getMessage()));
                     }
                 }
             } else {
                 messages.add(new Message(channel, event, event.getSender() + ", you're not an admin"));
-
             }
         }
         return messages;
+    }
+
+    private void privMessageStackTrace(BotEvent event, List<Message> messages, Exception e) {
+        StringWriter writer = new StringWriter();
+        PrintWriter w = new PrintWriter(writer);
+        e.printStackTrace(w);
+        for(String line : writer.toString().split("\\n")) {
+            messages.add(new Message(event.getSender(), event, line));
+        }
     }
 
     private boolean isAdmin(BotEvent event) {

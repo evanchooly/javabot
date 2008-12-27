@@ -20,13 +20,17 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationContext;
+import org.springframework.beans.BeansException;
 
-public class AdminApplication extends WebApplication {
+public class AdminApplication extends WebApplication implements ApplicationContextAware {
     private static final Logger log = LoggerFactory.getLogger(AdminApplication.class);
     private Javabot bot;
 
     @SpringBean
     private AdminDao dao;
+    private ApplicationContext context;
 
     public AdminApplication() {
     }
@@ -72,6 +76,12 @@ public class AdminApplication extends WebApplication {
             bot.dispose();
         }
         bot = new Javabot();
+//        context.getAutowireCapableBeanFactory().autowireBean(bot);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        context = applicationContext;
     }
 
     private static class AdminAuthorizationStrategy implements IAuthorizationStrategy {

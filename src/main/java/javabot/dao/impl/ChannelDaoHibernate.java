@@ -98,7 +98,7 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
     public Channel create(String name, Boolean logged, String key) {
         Channel channel = new Channel();
         channel.setName(name);
-        channel.setLogged(logged);
+        channel.setLogged(logged == null ? Boolean.TRUE : logged);
         channel.setKey(key);
         Config config = configDao.get();
         channel.setConfig(config);

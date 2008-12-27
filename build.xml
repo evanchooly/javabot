@@ -5,7 +5,7 @@
     <property name="build.test.dir" location="${build}/test/"/>
     <property name="src.dir" location="src/main/java"/>
     <property name="src.dir" location="src/main/resources"/>
-    <property name="test.src.dir" location="src/test"/>
+    <property name="test.src.dir" location="src/test/java"/>
 
     <property name="build.report.dir" location="${build}/reports"/>
     <property name="junit.report.dir" location="${build.report.dir}/junitreport"/>
@@ -37,34 +37,37 @@
             <path refid="project.path"/>
             <pathelement location="${build.src.dir}"/>
         </path>
+        
         <path id="build.class.path">
             <path refid="build.path"/>
             <path refid="project.class.path"/>
             <pathelement location="etc"/>
-            <pathelement location="build/test"/>
-            <pathelement location="${ant.core.lib}"/>
-            <pathelement path="src/main/webapp/WEB-INF/classes/META-INF"/>
-            <pathelement location="src/test/resources"/>
+            <pathelement location="${build.test.dir}"/>
+            <!--<pathelement location="${ant.core.lib}"/>-->
             <pathelement location="build/war/WEB-INF/classes/"/>
         </path>
     </target>
 
-    <target name="main" depends="init">
+    <target name="compile-src">
         <javac destDir="${build.src.dir}" srcDir="${src.dir}"
-               classpathref="build.class.path" debug="true">
-            <compilerarg line="-Xlint:unchecked"/>
-        </javac>
-        <javac destDir="${build.test.dir}" srcDir="${test.src.dir}"
-               classpathref="build.class.path" debug="true">
-            <compilerarg line="-Xlint:unchecked"/>
+               classpathref="project.class.path" debug="true">
         </javac>
         <copy todir="${build.src.dir}">
             <fileset dir="${src.dir}" excludes="**/*.java"/>
         </copy>
+    </target>
+    
+    <target name="compile-test">
+        <javac destDir="${build.test.dir}" srcDir="${test.src.dir}"
+               classpathref="build.class.path" debug="true">
+        </javac>
+
         <copy todir="${build.test.dir}">
-            <fileset dir="${test.src.dir}/resources"/>
+            <fileset dir="${test.src.dir}/../resources"/>
         </copy>
     </target>
+
+    <target name="main" depends="init, compile-src, compile-test"/>
 
     <target name="war" depends="main">
         <mkdir dir="build/war"/>
@@ -119,8 +122,9 @@
         <taskdef name="testng" classname="org.testng.TestNGAntTask" classpathref="build.class.path"/>
 
         <testng classpathref="build.class.path" outputDir="${build.report.dir}" sourcedir="${test.src.dir}"
-                haltOnfailure="false">
-            <classfileset dir="${build.test.dir}"/>
+                haltOnfailure="false" dumpCommand="true">
+            <classfileset dir="${build.test.dir}" includes="**/Admin*"/>
+            <jvmarg value="-debug" />
         </testng>
 
         <junitreport todir="${junit.report.dir}">
@@ -134,17 +138,17 @@
 
     <target name="import-javadoc">
         <exec executable="psql" outputproperty="deletemethods.out">
-		<arg line="-U javabot -c 'delete from methods'"/>
-	</exec>
+            <arg line="-U javabot -c 'delete from methods'"/>
+        </exec>
         <exec executable="psql" outputproperty="deleteclasses.out">
-		<arg line="-U javabot -c 'delete from classes'"/>
-	</exec>
+            <arg line="-U javabot -c 'delete from classes'"/>
+        </exec>
         <exec executable="psql" outputproperty="classes.out">
-		<arg line="-U javabot -f db/classes.dump"/>
-	</exec>
+            <arg line="-U javabot -f db/classes.dump"/>
+        </exec>
         <exec executable="psql" outputproperty="methods.out">
-		<arg line="-U javabot -f db/methods.dump"/>
-	</exec>
+            <arg line="-U javabot -f db/methods.dump"/>
+        </exec>
     </target>
 
     <target name="export-production-db" depends="export-javadoc">
@@ -220,15 +224,15 @@
             <dependency groupId="org.unitils" artifactId="unitils" version="2.0" classifier="sources"/>
             <dependency groupId="org.mortbay.jetty" artifactId="jetty" version="6.1.9"/>
             <dependency groupId="org.mortbay.jetty" artifactId="jetty-util" version="6.1.9"/>
-            <!--<dependency groupId="org.testng" artifactId="testng" version="5.8"/>-->
             <dependency groupId="org.testng" artifactId="testng" version="5.8" classifier="jdk15"/>
+            <dependency groupId="org.testng" artifactId="testng" version="5.8" classifier="sources"/>
 
             <dependency groupId="org.apache.wicket" artifactId="wicket" version="${wicket.version}"
                         classifier="javadoc"/>
             <dependency groupId="org.apache.wicket" artifactId="wicket" version="${wicket.version}"
                         classifier="sources"/>
             <dependency groupId="nekohtml" artifactid="nekohtml" version="1.9.6.2" classifier="sources"/>
-     </artifact:dependencies>
+        </artifact:dependencies>
     </target>
 
     <target name="update-project" depends="main">

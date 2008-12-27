@@ -3,6 +3,7 @@ package javabot;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,13 +28,15 @@ import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class Javabot extends PircBot {
+public class Javabot extends PircBot implements ApplicationContextAware {
     private static final Logger log = LoggerFactory.getLogger(Javabot.class);
     private final Map<String, String> channelPreviousMessages = new HashMap<String, String>();
-    private Map<String, BotOperation> operations = new HashMap<String, BotOperation>();
+    private Map<String, BotOperation> operations = new LinkedHashMap<String, BotOperation>();
     private String host;
     private int port;
     private String[] startStrings;
@@ -386,5 +389,10 @@ public class Javabot extends PircBot {
 
     public BotOperation getOperation(String name) {
         return operations.get(name);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        context = applicationContext;
     }
 }

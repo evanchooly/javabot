@@ -3,18 +3,18 @@ package javabot.operations;
 import java.util.List;
 
 import javabot.BotEvent;
-import javabot.Message;
 import javabot.Javabot;
+import javabot.Message;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
+import org.jibble.pircbot.PircBot;
 import org.springframework.context.ApplicationContext;
 import org.testng.Assert;
-import org.unitils.UnitilsTestNG;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 @SpringApplicationContext("classpath:test-application-config.xml")
-public abstract class BaseOperationTest extends UnitilsTestNG {
+public abstract class BaseOperationTest /*extends UnitilsTestNG*/ {
     protected static final String SENDER = "cheeser";
     protected static final String CHANNEL = "#test";
     protected static final String LOGIN = "";
@@ -27,13 +27,44 @@ public abstract class BaseOperationTest extends UnitilsTestNG {
     private FactoidDao factoidDao;
     @SpringBeanByType
     private ChangeDao changeDao;
+    private Javabot bot;
+    private PircBot testBot;
 
     public BaseOperationTest() {
+        createBot();
     }
 
     public BaseOperationTest(String name) {
+        this();
     }
-    
+
+    protected final Javabot createBot() {
+        if(bot != null) {
+            bot.disconnect();
+            bot.dispose();
+        }
+        bot = new Javabot();
+        inject(bot);
+
+        return bot;
+    }
+
+    public Javabot getJavabot() {
+        if(bot == null) {
+            createBot();
+        }
+        return bot;
+    }
+
+    public PircBot getTestBot() {
+       if(testBot == null) {
+           testBot = new PircBot() {
+           };
+       }
+
+       return testBot;
+    }
+
     protected void testOperation(String message, String response, String errorMessage) {
         testOperation(message, response, errorMessage, getOperation());
     }
@@ -69,8 +100,12 @@ public abstract class BaseOperationTest extends UnitilsTestNG {
 
     protected final BotOperation getOperation() {
         BotOperation operation = createOperation();
-        springApplicationContext.getAutowireCapableBeanFactory().autowireBean(operation);
+        inject(operation);
         return operation;
+    }
+
+    private void inject(Object object) {
+        springApplicationContext.getAutowireCapableBeanFactory().autowireBean(object);
     }
 
     protected abstract BotOperation createOperation();
