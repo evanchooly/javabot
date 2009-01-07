@@ -6,7 +6,6 @@ import java.util.List;
 import javabot.Action;
 import javabot.BotEvent;
 import javabot.Message;
-import javabot.Javabot;
 import javabot.dao.FactoidDao;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -24,7 +23,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
 
     @Override
     protected BotOperation createOperation() {
-        return new GetFactoidOperation(new Javabot());
+        return new GetFactoidOperation(getJavabot());
     }
 
     public void straightGets() throws IOException {

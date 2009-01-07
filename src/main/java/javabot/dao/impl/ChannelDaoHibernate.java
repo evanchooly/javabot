@@ -18,22 +18,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implements ChannelDao {
     @Autowired
     private ConfigDao configDao;
-    private Map<String, Boolean> logCache = new HashMap<String, Boolean>();
+    private final Map<String, Boolean> logCache = new HashMap<String, Boolean>();
 
     public ChannelDaoHibernate() {
         super(Channel.class);
     }
 
     @Override
-    public void delete(Persistent persistedObject) {
-        Channel channel = (Channel) getEntityManager().merge(persistedObject);
-        channel.getConfig().getChannels().remove(channel);
+    public void delete(final Persistent persistedObject) {
+        final Channel channel = (Channel) getEntityManager().merge(persistedObject);
         channel.setConfig(null);
         super.delete(channel);
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(final Long id) {
         delete(find(id));
     }
 
@@ -51,8 +50,8 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
 
     @Override
     @SuppressWarnings({"unchecked"})
-    public List<Channel> find(QueryParam qp) {
-        StringBuilder query = new StringBuilder("from Channel c");
+    public List<Channel> find(final QueryParam qp) {
+        final StringBuilder query = new StringBuilder("from Channel c");
         if (qp.hasSort()) {
             query.append(" order by ")
                     .append(qp.getSort())
@@ -64,11 +63,11 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
     }
 
     @Override
-    public boolean isLogged(String channel) {
+    public boolean isLogged(final String channel) {
         Boolean logged = logCache.get(channel);
         if(logged == null) {
-            Channel chan = get(channel);
-            if(channel != null) {
+            final Channel chan = get(channel);
+            if(chan != null) {
                 logged = chan.getLogged();
                 logCache.put(channel, logged);
             } else {
@@ -80,7 +79,7 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
     }
 
     @Override
-    public Channel get(String name) {
+    public Channel get(final String name) {
         Channel channel = null;
         try {
             channel = (Channel) getEntityManager().createNamedQuery(ChannelDao.BY_NAME)
@@ -95,21 +94,20 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
     }
 
     @Override
-    public Channel create(String name, Boolean logged, String key) {
-        Channel channel = new Channel();
+    public Channel create(final String name, final Boolean logged, final String key) {
+        final Channel channel = new Channel();
         channel.setName(name);
         channel.setLogged(logged == null ? Boolean.TRUE : logged);
         channel.setKey(key);
-        Config config = configDao.get();
+        final Config config = configDao.get();
         channel.setConfig(config);
-        config.getChannels().add(channel);
         save(channel);
         configDao.save(config);
         return channel;
     }
 
     @Override
-    public void save(Channel channel) {
+    public void save(final Channel channel) {
         channel.setUpdated(new Date());
         merge(channel);
     }
@@ -118,7 +116,7 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
         return configDao;
     }
 
-    public void setConfigDao(ConfigDao dao) {
+    public void setConfigDao(final ConfigDao dao) {
         configDao = dao;
     }
 }

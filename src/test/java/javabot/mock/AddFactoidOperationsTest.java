@@ -5,8 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javabot.BotEvent;
-import javabot.Javabot;
 import javabot.Message;
+import javabot.dao.BaseServiceTest;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
 import javabot.operations.AddFactoidOperation;
@@ -17,10 +17,9 @@ import static org.easymock.EasyMock.reset;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.unitils.UnitilsTestNG;
 
 @Test(groups = {"operations"})
-public class AddFactoidOperationsTest extends UnitilsTestNG {
+public class AddFactoidOperationsTest extends BaseServiceTest {
     private static final String CHANNEL = "#TEST";
     private static final String SENDER = "joed";
     private static final String LOGIN = "joed";
@@ -31,7 +30,7 @@ public class AddFactoidOperationsTest extends UnitilsTestNG {
     @BeforeMethod
     public void setUp() {
         factoidDao = createMock(FactoidDao.class);
-        addOperation = new AddFactoidOperation(new Javabot());
+        addOperation = new AddFactoidOperation(getJavabot());
     }
 
     public void testDaoCount() {

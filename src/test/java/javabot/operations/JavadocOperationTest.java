@@ -2,7 +2,6 @@ package javabot.operations;
 
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
-import javabot.Javabot;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 /**
@@ -42,6 +41,6 @@ public class JavadocOperationTest extends BaseOperationTest {
 
     @Override
     protected BotOperation createOperation() {
-        return new JavadocOperation(new Javabot());
+        return new JavadocOperation(getJavabot());
     }
 }

@@ -50,7 +50,7 @@
 
     <target name="compile-src">
         <javac destDir="${build.src.dir}" srcDir="${src.dir}"
-               classpathref="project.class.path" debug="true">
+               classpathref="build.class.path" debug="true">
         </javac>
         <copy todir="${build.src.dir}">
             <fileset dir="${src.dir}" excludes="**/*.java"/>
@@ -224,6 +224,7 @@
             <dependency groupId="org.unitils" artifactId="unitils" version="2.0" classifier="sources"/>
             <dependency groupId="org.mortbay.jetty" artifactId="jetty" version="6.1.9"/>
             <dependency groupId="org.mortbay.jetty" artifactId="jetty-util" version="6.1.9"/>
+            <dependency groupId="org.mortbay.jetty" artifactId="servlet-api-2.5" version="6.1.9"/>
             <dependency groupId="org.testng" artifactId="testng" version="5.8" classifier="jdk15"/>
             <dependency groupId="org.testng" artifactId="testng" version="5.8" classifier="sources"/>
 

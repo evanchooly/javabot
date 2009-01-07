@@ -20,17 +20,14 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationContext;
-import org.springframework.beans.BeansException;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
-public class AdminApplication extends WebApplication implements ApplicationContextAware {
+public class AdminApplication extends WebApplication {
     private static final Logger log = LoggerFactory.getLogger(AdminApplication.class);
     private Javabot bot;
 
     @SpringBean
     private AdminDao dao;
-    private ApplicationContext context;
 
     public AdminApplication() {
     }
@@ -41,7 +38,7 @@ public class AdminApplication extends WebApplication implements ApplicationConte
     }
 
     @Override
-    public Session newSession(Request request, Response response) {
+    public Session newSession(final Request request, final Response response) {
         return new AdminSession(this, request);
     }
 
@@ -75,23 +72,17 @@ public class AdminApplication extends WebApplication implements ApplicationConte
         if(bot != null) {
             bot.dispose();
         }
-        bot = new Javabot();
-//        context.getAutowireCapableBeanFactory().autowireBean(bot);
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        context = applicationContext;
+        bot = new Javabot(WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext()));
     }
 
     private static class AdminAuthorizationStrategy implements IAuthorizationStrategy {
         @Override
-        public boolean isActionAuthorized(Component component, Action action) {
+        public boolean isActionAuthorized(final Component component, final Action action) {
             return true;
         }
 
         @Override
-        public boolean isInstantiationAuthorized(Class componentClass) {
+        public boolean isInstantiationAuthorized(final Class componentClass) {
             if(AuthenticatedWebPage.class.isAssignableFrom(componentClass)) {
                 if(((AdminSession)Session.get()).isSignedIn()) {
                     return true;

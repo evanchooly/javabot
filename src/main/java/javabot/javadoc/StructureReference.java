@@ -5,25 +5,25 @@ import com.sun.javadoc.RootDoc;
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
 import org.apache.wicket.injection.web.InjectorHolder;
-import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class StructureReference {
-    @SpringBean
+    @Autowired
     private ApiDao apiDao;
-    @SpringBean
+    @Autowired
     private ClazzDao clazzDao;
 
     public StructureReference() {
         InjectorHolder.getInjector().inject(this);
     }
 
-    public void process(RootDoc doc, String apiName, String baseUrl) {
+    public void process(final RootDoc doc, final String apiName, final String baseUrl) {
         apiDao.delete(apiName);
-        Api api = new Api(apiName, baseUrl);
+        final Api api = new Api(apiName, baseUrl);
         apiDao.save(api);
-        ClassDoc[] classDocs = doc.classes();
-        for(ClassDoc cd : classDocs) {
-            Clazz reference = clazzDao.getOrCreate(cd, api, cd.containingPackage().name(), cd.name());
+        final ClassDoc[] classDocs = doc.classes();
+        for(final ClassDoc cd : classDocs) {
+            final Clazz reference = clazzDao.getOrCreate(cd, api, cd.containingPackage().name(), cd.name());
         }
     }
 }

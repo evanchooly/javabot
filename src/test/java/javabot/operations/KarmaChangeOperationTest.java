@@ -5,7 +5,6 @@ import java.util.Date;
 import javabot.dao.ChangeDao;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;
-import javabot.Javabot;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -59,6 +58,6 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
 
     @Override
     protected BotOperation createOperation() {
-        return new KarmaChangeOperation(new Javabot());
+        return new KarmaChangeOperation(getJavabot());
     }
 }
