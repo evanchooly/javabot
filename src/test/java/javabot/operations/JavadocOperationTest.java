@@ -1,7 +1,13 @@
 package javabot.operations;
 
+import java.util.List;
+
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
+import javabot.BotEvent;
+import javabot.Message;
+import org.testng.annotations.Test;
+import org.testng.Assert;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 /**
@@ -9,6 +15,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
  *
  * @author <a href="mailto:javabot@cheeseronline.org">cheeser</a>
  */
+@Test
 public class JavadocOperationTest extends BaseOperationTest {
     @SpringBeanByType
     private ApiDao apiDao;
@@ -16,26 +23,25 @@ public class JavadocOperationTest extends BaseOperationTest {
     private ClazzDao clazzDao;
 
     public void string() {
-        testOperation("javadoc String", "cheeser, please see java.lang.String: http://java.sun.com/javase/6/"
-            + "docs/api/java/lang/String.html", "Should have found class");
-        testOperation("javadoc java.lang.String", "cheeser, please see java.lang.String: http://java.sun.com/javase/6/"
-            + "docs/api/java/lang/String.html", "Should have found class");
+        final String response = "http://is.gd/6UoM (JDK)";
+        final String errorMessage = "Should have found class";
+        final BotOperation operation = getOperation();
+
+        BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "javadoc String");
+        List<Message> results = operation.handleMessage(event);
+        Assert.assertTrue(!results.isEmpty());
+        Assert.assertEquals(results.get(0).getMessage(), response, errorMessage);
+
+        event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "javadoc java.lang.String");
+        results = operation.handleMessage(event);
+        Assert.assertTrue(!results.isEmpty());
+        Assert.assertEquals(results.get(0).getMessage(), response, errorMessage);
     }
 
     public void methods() {
-        testOperation("javadoc String.split(*)", new String[]{
-            "cheeser, please see java.lang.String.split(java.lang.String): "
-                + "http://java.sun.com/javase/6/docs/api/java/lang/String.html#split(java.lang.String)",
-            "cheeser, please see java.lang.String.split(java.lang.String, int): "
-                + "http://java.sun.com/javase/6/docs/api/java/lang/String.html#split(java.lang.String,%20int)",
-        }, "Should have found method");
-        testOperation("javadoc String.split(String)", "cheeser, please see java.lang.String.split(java.lang.String): "
-            + "http://java.sun.com/javase/6/docs/api/java/lang/String.html#split(java.lang.String)",
-            "Should have found method");
-        testOperation("javadoc String.split(java.lang.String)",
-            "cheeser, please see java.lang.String.split(java.lang.String): "
-                + "http://java.sun.com/javase/6/docs/api/java/lang/String.html#split(java.lang.String)",
-            "Should have found method");
+        testOperation("javadoc String.split(*)", "http://is.gd/eOPq (JDK), http://is.gd/eOPr (JDK)", "Should have found method");
+        testOperation("javadoc String.split(String)", "http://is.gd/eOPq (JDK)", "Should have found method");
+        testOperation("javadoc String.split(java.lang.String)", "http://is.gd/eOPq (JDK)", "Should have found method");
 
     }
 

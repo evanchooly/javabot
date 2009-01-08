@@ -13,89 +13,91 @@ import java.util.zip.ZipFile;
 import com.sun.javadoc.Doclet;
 import com.sun.javadoc.RootDoc;
 import com.sun.tools.javadoc.Main;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+/**
+ * @noinspection StaticNonFinalField
+ */
 public class StructureDoclet extends Doclet {
-    private static final Logger log = LoggerFactory.getLogger(StructureDoclet.class);
     private static String apiName;
     private static String baseUrl;
 
-    public static boolean start(RootDoc doc) {
+    /**
+     * @noinspection MethodOverridesStaticMethodOfSuperclass
+     */
+    public static boolean start(final RootDoc doc) {
         new StructureReference().process(doc, apiName, baseUrl);
         return false;
     }
 
-    public void parse(File file, String api, String url, String packages) {
-        synchronized(getClass()) {
-            apiName = api;
-            baseUrl = url;
-            File rootDir = null;
-            boolean zipFile = file.getName().endsWith(".zip");
-            try {
-                System.out.println("processing " + file);
-                rootDir = zipFile ? processZip(file, rootDir) : file;
-                String name = getClass().getSimpleName();
-                String docletClass = getClass().getName();
-                List<String> args = new ArrayList<String>();
-                args.add("-sourcepath");
-                args.add(rootDir.getAbsolutePath());
-                for(String sub : packages.split(" ")) {
-                    args.add("-subpackages");
-                    args.add(sub);
-                }
-                System.out.println("Executing");
-                Main.execute(name, docletClass, args.toArray(new String[args.size()]));
-            } catch(Exception e) {
-                System.out.println(e.getMessage());
-                throw new RuntimeException(e.getMessage());
-            } finally {
-                if(zipFile && rootDir != null) {
-                    delete(rootDir);
-                }
+    public static void parse(final File file, final String api, final String url, final String packages) {
+        apiName = api;
+        baseUrl = url;
+        File rootDir = null;
+        final boolean zipFile = file.getName().endsWith(".zip");
+        try {
+            System.out.println("processing " + file);
+            rootDir = zipFile ? processZip(file) : file;
+            final String name = StructureDoclet.class.getSimpleName();
+            final String docletClass = StructureDoclet.class.getName();
+            final List<String> args = new ArrayList<String>();
+            args.add("-sourcepath");
+            args.add(rootDir.getAbsolutePath());
+            for (final String sub : packages.split(" ")) {
+                args.add("-subpackages");
+                args.add(sub);
+            }
+            System.out.println("Executing");
+            Main.execute(name, docletClass, args.toArray(new String[args.size()]));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        } finally {
+            if (zipFile && rootDir != null) {
+                delete(rootDir);
             }
         }
     }
 
-    private File processZip(File file, File rootDir) throws IOException {
-        ZipFile zip = new ZipFile(file);
-        File dir = new File(System.getProperty("java.io.tmpdir"), "javadoc" + System.currentTimeMillis());
+    private static File processZip(final File file) throws IOException {
+        final ZipFile zip = new ZipFile(file);
+        final File dir = new File(System.getProperty("java.io.tmpdir"), "javadoc" + System.currentTimeMillis());
         dir.mkdir();
         dir.deleteOnExit();
-        Enumeration<? extends ZipEntry> enumeration = zip.entries();
-        while(enumeration.hasMoreElements()) {
+        final Enumeration<? extends ZipEntry> enumeration = zip.entries();
+        while (enumeration.hasMoreElements()) {
             extract(dir, zip, enumeration.nextElement());
         }
         return dir;
     }
 
-    private void delete(File file) {
-        if(file.isDirectory()) {
-            for(File content : file.listFiles()) {
+    private static void delete(final File file) {
+        if (file.isDirectory()) {
+            for (final File content : file.listFiles()) {
                 delete(content);
             }
         }
         file.delete();
     }
 
-    private void extract(File rootDir, ZipFile zip, ZipEntry entry) throws IOException {
+    private static void extract(final File rootDir, final ZipFile zip, final ZipEntry entry) throws IOException {
         FileOutputStream outputStream = null;
         try {
-            InputStream stream = zip.getInputStream(entry);
-            File output = new File(rootDir, entry.getName());
-            if(entry.isDirectory()) {
+            final InputStream stream = zip.getInputStream(entry);
+            final File output = new File(rootDir, entry.getName());
+            if (entry.isDirectory()) {
                 output.mkdirs();
             } else {
                 output.getParentFile().mkdirs();
                 outputStream = new FileOutputStream(output);
-                byte[] bytes = new byte[8 * 1024];
+                final byte[] bytes = new byte[8 * 1024];
                 int read;
-                while((read = stream.read(bytes)) != -1) {
+                while ((read = stream.read(bytes)) != -1) {
                     outputStream.write(bytes, 0, read);
                 }
             }
         } finally {
-            if(outputStream != null) {
+            if (outputStream != null) {
                 outputStream.flush();
                 outputStream.close();
             }

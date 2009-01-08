@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.Assert;
-import org.testng.annotations.AfterSuite;
 import org.unitils.spring.annotation.SpringApplicationContext;
 
 @SpringApplicationContext("classpath:test-application-config.xml")
@@ -139,14 +138,5 @@ public abstract class BaseOperationTest /*extends UnitilsTestNG*/ {
         testOperation("forget " + name, "I forgot about " + name + ", " + SENDER + ".",
             "I never knew about " + name + " anyway, " + SENDER
                 + ".", new ForgetFactoidOperation(getJavabot()));
-    }
-
-    @AfterSuite
-    public void holdIt() {
-        try {
-            Thread.sleep(300000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e.getMessage());
-        }
     }
 }

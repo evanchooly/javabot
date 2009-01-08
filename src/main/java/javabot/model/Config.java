@@ -28,10 +28,10 @@ import org.hibernate.annotations.CollectionOfElements;
         })
 public class Config implements Serializable, Persistent {
     private Long id;
-    private String server;
-    private Integer port;
-    private String prefixes;
-    private String nick;
+    private String server = "irc.freenode.org";
+    private Integer port = 6667;
+    private String prefixes = "~";
+    private String nick = "test-javabot-" + System.currentTimeMillis();
     private String password;
     private Long version;
 

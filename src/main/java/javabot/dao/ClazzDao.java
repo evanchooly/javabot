@@ -16,6 +16,7 @@ public interface ClazzDao extends BaseDao<Clazz> {
     String DELETE_ALL = "ClazzDao.deleteAll";
     String DELETE_ALL_METHODS = "ClazzDao.deleteAllMethods";
     String GET_BY_NAME = "ClazzDao.getByName";
+    String GET_BY_API_PACKAGE_AND_NAME = "ClazzDao.getByAPIAndPackageAndName";
     String GET_BY_PACKAGE_AND_NAME = "ClazzDao.getByPackageAndName";
     String GET_METHOD_NO_SIG = "ClazzDao.getMethodNoSig";
     String GET_METHOD = "ClazzDao.getMethod";

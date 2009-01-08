@@ -10,10 +10,11 @@ import javax.persistence.Transient;
 
 import com.sun.javadoc.ExecutableMemberDoc;
 import com.sun.javadoc.Parameter;
+import javabot.model.Persistent;
 
 @Entity
 @Table(name = "methods")
-public class Method {
+public final class Method extends JavadocElement implements Persistent {
     private Clazz clazz;
     private String methodName;
     private Long id;
@@ -22,19 +23,18 @@ public class Method {
     private String longSignatureStripped;
     private String shortSignatureStripped;
     private Integer paramCount = 0;
-    private String methodUrl;
 
     public Method() {
     }
 
     @SuppressWarnings({"StringConcatenationInsideStringBufferAppend", "StringContatenationInLoop"})
-    public Method(ExecutableMemberDoc doc, Clazz parent) {
+    public Method(final ExecutableMemberDoc doc, final Clazz parent) {
         clazz = parent;
         methodName = doc.name();
-        Parameter[] parameters = doc.parameters();
-        StringBuilder longTypes = new StringBuilder();
-        StringBuilder shortTypes = new StringBuilder();
-        for(Parameter parameter : parameters) {
+        final Parameter[] parameters = doc.parameters();
+        final StringBuilder longTypes = new StringBuilder();
+        final StringBuilder shortTypes = new StringBuilder();
+        for(final Parameter parameter : parameters) {
             if(paramCount != 0) {
                 longTypes.append(", ");
                 shortTypes.append(", ");
@@ -47,7 +47,7 @@ public class Method {
         shortSignatureTypes = shortTypes.toString();
         longSignatureStripped = longSignatureTypes.replaceAll(" ", "");
         shortSignatureStripped = shortSignatureTypes.replaceAll(" ", "");
-        methodUrl = clazz.getClassUrl() + "#" + (doc.name() + "(" + longSignatureTypes + ")").replaceAll(" ", "%20");
+        setLongUrl( clazz.getLongUrl() + "#" + (doc.name() + "(" + longSignatureTypes + ")").replaceAll(" ", "%20"));
     }
 
     @Id
@@ -56,7 +56,7 @@ public class Method {
         return id;
     }
 
-    public void setId(Long methodId) {
+    public void setId(final Long methodId) {
         id = methodId;
     }
 
@@ -65,20 +65,11 @@ public class Method {
         return methodName + "(" + shortSignatureTypes + ")";
     }
 
-    @Column(length=2000)
-    public String getMethodUrl() {
-        return methodUrl;
-    }
-
-    public void setMethodUrl(String methodUrl) {
-        this.methodUrl = methodUrl;
-    }
-
     public String getMethodName() {
         return methodName;
     }
 
-    public void setMethodName(String name) {
+    public void setMethodName(final String name) {
         methodName = name;
     }
 
@@ -87,7 +78,7 @@ public class Method {
         return longSignatureStripped;
     }
 
-    public void setLongSignatureStripped(String stripped) {
+    public void setLongSignatureStripped(final String stripped) {
         longSignatureStripped = stripped;
     }
 
@@ -96,7 +87,7 @@ public class Method {
         return longSignatureTypes;
     }
 
-    public void setLongSignatureTypes(String types) {
+    public void setLongSignatureTypes(final String types) {
         longSignatureTypes = types;
     }
 
@@ -105,7 +96,7 @@ public class Method {
         return shortSignatureStripped;
     }
 
-    public void setShortSignatureStripped(String stripped) {
+    public void setShortSignatureStripped(final String stripped) {
         shortSignatureStripped = stripped;
     }
 
@@ -114,7 +105,7 @@ public class Method {
         return shortSignatureTypes;
     }
 
-    public void setShortSignatureTypes(String types) {
+    public void setShortSignatureTypes(final String types) {
         shortSignatureTypes = types;
     }
 
@@ -123,7 +114,7 @@ public class Method {
         return clazz;
     }
 
-    public void setClazz(Clazz parent) {
+    public void setClazz(final Clazz parent) {
         clazz = parent;
     }
 
@@ -131,7 +122,7 @@ public class Method {
         return paramCount;
     }
 
-    public void setParamCount(Integer count) {
+    public void setParamCount(final Integer count) {
         paramCount = count;
     }
 }

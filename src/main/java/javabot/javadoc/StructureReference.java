@@ -4,8 +4,8 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.RootDoc;
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
-import org.apache.wicket.injection.web.InjectorHolder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class StructureReference {
     @Autowired
@@ -13,11 +13,9 @@ public class StructureReference {
     @Autowired
     private ClazzDao clazzDao;
 
-    public StructureReference() {
-        InjectorHolder.getInjector().inject(this);
-    }
-
     public void process(final RootDoc doc, final String apiName, final String baseUrl) {
+        new ClassPathXmlApplicationContext("classpath:applicationContext.xml")
+            .getAutowireCapableBeanFactory().autowireBean(this);
         apiDao.delete(apiName);
         final Api api = new Api(apiName, baseUrl);
         apiDao.save(api);

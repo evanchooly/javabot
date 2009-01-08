@@ -19,7 +19,7 @@ public class StructureDocletTest extends BaseWicketTest {
     public void processSources() {
         File file = new File("src.zip");
         if(file.exists()) {
-            new StructureDoclet().parse(file, "Java6", "http://java.sun.com/javase/6/docs/api/", "java javax");
+            StructureDoclet.parse(file, "JDK", "http://java.sun.com/javase/6/docs/api/", "java javax");
             clazzDao.getEntityManager().flush();
             clazzDao.getEntityManager().close();
             setComplete();

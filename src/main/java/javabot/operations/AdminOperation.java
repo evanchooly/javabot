@@ -28,22 +28,22 @@ public class AdminOperation extends BotOperation implements ApplicationContextAw
     @Autowired
     private AdminDao dao;
 
-    public AdminOperation(Javabot javabot) {
+    public AdminOperation(final Javabot javabot) {
         super(javabot);
     }
 
     @Override
-    public List<Message> handleMessage(BotEvent event) {
-        List<Message> messages = new ArrayList<Message>();
-        String message = event.getMessage();
-        String channel = event.getChannel();
+    public List<Message> handleMessage(final BotEvent event) {
+        final List<Message> messages = new ArrayList<Message>();
+        final String message = event.getMessage();
+        final String channel = event.getChannel();
         if (message.startsWith(ADMIN_PREFIX)) {
             if(isAdmin(event)) {
-                String[] params = message.substring(ADMIN_PREFIX.length()).trim().split(" ");
-                List<String> args = new ArrayList<String>(Arrays.asList(params));
+                final String[] params = message.substring(ADMIN_PREFIX.length()).trim().split(" ");
+                final List<String> args = new ArrayList<String>(Arrays.asList(params));
                 if (!args.isEmpty()) {
                     try {
-                        Command command = getCommand(args);
+                        final Command command = getCommand(args);
                         args.remove(0);
                         messages.addAll(command.execute(getBot(), event, args));
                     } catch (ClassNotFoundException e) {
@@ -62,33 +62,37 @@ public class AdminOperation extends BotOperation implements ApplicationContextAw
         return messages;
     }
 
-    private void privMessageStackTrace(BotEvent event, List<Message> messages, Exception e) {
-        StringWriter writer = new StringWriter();
-        PrintWriter w = new PrintWriter(writer);
-        e.printStackTrace(w);
-        for(String line : writer.toString().split("\\n")) {
-            messages.add(new Message(event.getSender(), event, line));
+    private void privMessageStackTrace(final BotEvent event, final List<Message> messages, final Exception e) {
+        final StringWriter writer = new StringWriter();
+        final PrintWriter w = new PrintWriter(writer);
+        try {
+            e.printStackTrace(w);
+            for(final String line : writer.toString().split("\\n")) {
+                messages.add(new Message(event.getSender(), event, line));
+            }
+        } finally {
+            w.close();
         }
     }
 
-    private boolean isAdmin(BotEvent event) {
+    private boolean isAdmin(final BotEvent event) {
         return dao.isAdmin(event.getSender(), event.getHostname());
     }
 
     @SuppressWarnings({"unchecked"})
-    private Command getCommand(List<String> params)
+    private Command getCommand(final List<String> params)
         throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         String name = params.get(0);
         name = name.substring(0, 1).toUpperCase() + name.substring(1);
-        String className = Command.class.getPackage().getName() + "." + name;
-        Class<Command> clazz = (Class<Command>) Class.forName(className);
-        Command command = clazz.newInstance();
+        final String className = Command.class.getPackage().getName() + "." + name;
+        final Class<Command> clazz = (Class<Command>) Class.forName(className);
+        final Command command = clazz.newInstance();
         context.getAutowireCapableBeanFactory().autowireBean(command);
         return command;
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
         context = applicationContext;
     }
 }

@@ -9,7 +9,7 @@ public class GoogleOperation extends UrlOperation {
 
     @Override
     protected String getBaseUrl() {
-        return "http://www.google.com/search?q=";
+        return "http://letmegooglethatforyou.com/?q=";
     }
 
     @Override
