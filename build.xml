@@ -186,8 +186,8 @@
                                    url="https://maven-repository.dev.java.net/nonav/repository/" layout="legacy"/>
 
         <artifact:dependencies pathId="project.path" filesetId="runtime.fileset">
-            <remoteRepository refid="java.net.repository"/>
             <remoteRepository refid="antwerkz.repository"/>
+            <remoteRepository refid="java.net.repository"/>
             <remoteRepository refid="maven2.java.net.repository"/>
 
             <dependency groupId="oswego-concurrent" artifactId="concurrent" version="1.3.4"/>
