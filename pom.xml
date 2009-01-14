@@ -151,6 +151,15 @@
           <target>1.5</target>
         </configuration>
       </plugin>
+
+      <!-- Remove or comment out this plugin element to re-enable tests. -->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+
+        <configuration>
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
