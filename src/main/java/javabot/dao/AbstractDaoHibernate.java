@@ -54,7 +54,7 @@ public class AbstractDaoHibernate<T> implements BaseDao<T> {
 
     @Transactional
     public void delete(final Persistent persistedObject) {
-        getEntityManager().remove(persistedObject);
+        getEntityManager().remove(getEntityManager().merge(persistedObject));
     }
 
     public void delete(final Long id) {

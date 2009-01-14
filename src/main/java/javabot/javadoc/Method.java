@@ -8,8 +8,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.sun.javadoc.ExecutableMemberDoc;
-import com.sun.javadoc.Parameter;
 import javabot.model.Persistent;
 
 @Entity
@@ -28,26 +26,24 @@ public final class Method extends JavadocElement implements Persistent {
     }
 
     @SuppressWarnings({"StringConcatenationInsideStringBufferAppend", "StringContatenationInLoop"})
-    public Method(final ExecutableMemberDoc doc, final Clazz parent) {
+    public Method(final String signature, final Clazz parent) {
         clazz = parent;
-        methodName = doc.name();
-        final Parameter[] parameters = doc.parameters();
-        final StringBuilder longTypes = new StringBuilder();
+        final int leftParen = signature.indexOf("(");
+        final String[] params = signature.substring(leftParen + 1, signature.length() - 1).split(",");
+        methodName = signature.substring(0, leftParen);
         final StringBuilder shortTypes = new StringBuilder();
-        for(final Parameter parameter : parameters) {
-            if(paramCount != 0) {
-                longTypes.append(", ");
+        for(final String parameter : params) {
+            if(shortTypes.length() != 0) {
                 shortTypes.append(", ");
             }
-            longTypes.append(parameter.type().qualifiedTypeName() + parameter.type().dimension());
-            shortTypes.append(parameter.type().typeName() + parameter.type().dimension());
-            paramCount++;
+            shortTypes.append(parameter.substring(parameter.lastIndexOf(".") + 1));
         }
-        longSignatureTypes = longTypes.toString();
+        paramCount = params.length;
+        longSignatureTypes = signature.substring(leftParen + 1, signature.length() - 1);
         shortSignatureTypes = shortTypes.toString();
         longSignatureStripped = longSignatureTypes.replaceAll(" ", "");
         shortSignatureStripped = shortSignatureTypes.replaceAll(" ", "");
-        setLongUrl( clazz.getLongUrl() + "#" + (doc.name() + "(" + longSignatureTypes + ")").replaceAll(" ", "%20"));
+        setLongUrl( clazz.getLongUrl() + "#" + signature.replaceAll(" ", "%20"));
     }
 
     @Id

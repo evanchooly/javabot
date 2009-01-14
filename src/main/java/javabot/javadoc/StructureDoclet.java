@@ -7,13 +7,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import com.sun.javadoc.Doclet;
 import com.sun.javadoc.RootDoc;
 import com.sun.tools.javadoc.Main;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @noinspection StaticNonFinalField
@@ -41,6 +41,7 @@ public class StructureDoclet extends Doclet {
             final String name = StructureDoclet.class.getSimpleName();
             final String docletClass = StructureDoclet.class.getName();
             final List<String> args = new ArrayList<String>();
+            args.add("-cp build/main:build/test");
             args.add("-sourcepath");
             args.add(rootDir.getAbsolutePath());
             for (final String sub : packages.split(" ")) {
@@ -48,6 +49,11 @@ public class StructureDoclet extends Doclet {
                 args.add(sub);
             }
             System.out.println("Executing");
+            System.out.println(args);
+            System.out.println(System.getProperty("java.class.path"));
+            for (final Entry<Object, Object> entry : System.getProperties().entrySet()) {
+//                System.out.println(entry.getKey() + " : " + entry.getValue());
+            }
             Main.execute(name, docletClass, args.toArray(new String[args.size()]));
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -102,5 +108,9 @@ public class StructureDoclet extends Doclet {
                 outputStream.close();
             }
         }
+    }
+
+    public static void main(String[] args) {
+        StructureDoclet.parse(new File(args[0]), args[1], args[2], args.length == 4 ? args[3] : "");
     }
 }

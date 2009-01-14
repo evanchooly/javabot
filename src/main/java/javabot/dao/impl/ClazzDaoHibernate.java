@@ -3,13 +3,10 @@ package javabot.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import com.sun.javadoc.ClassDoc;
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.ClazzDao;
-import javabot.javadoc.Api;
 import javabot.javadoc.Clazz;
 import javabot.javadoc.Method;
 
@@ -24,6 +21,14 @@ public class ClazzDaoHibernate extends AbstractDaoHibernate<Clazz> implements Cl
     }
 
     @SuppressWarnings({"unchecked"})
+    public List<Clazz> findAll(final String api) {
+        final EntityManager em = getEntityManager();
+        return em.createQuery("select c from Clazz c where c.api.name=:api")
+            .setParameter("api", api)
+            .getResultList();
+    }
+
+    @SuppressWarnings({"unchecked"})
     public void deleteAll(final String api) {
         final EntityManager em = getEntityManager();
         em.createQuery("delete from Clazz c where c.api.name=:api")
@@ -31,7 +36,7 @@ public class ClazzDaoHibernate extends AbstractDaoHibernate<Clazz> implements Cl
             .executeUpdate();
         getEntityManager().flush();
     }
-
+/*
     public Clazz getOrCreate(final ClassDoc classDoc, final Api api, final String packageName, final String name) {
         Clazz clazz;
         final String pkg = classDoc == null ?  packageName : classDoc.containingPackage().name();
@@ -45,14 +50,15 @@ public class ClazzDaoHibernate extends AbstractDaoHibernate<Clazz> implements Cl
             clazz = new Clazz(api, pkg, name);
             save(clazz);
         }
-        clazz.populate(classDoc, this);
+        clazz.populate(this);
         return clazz;
     }
+*/
 
     @SuppressWarnings({"unchecked"})
     public Clazz[] getClass(final String name) {
         final Query query;
-        if(!name.contains(".")) {
+        if (!name.contains(".")) {
             query = getEntityManager().createNamedQuery(ClazzDao.GET_BY_NAME);
             query.setParameter("name", name.toUpperCase());
         } else {
@@ -63,14 +69,23 @@ public class ClazzDaoHibernate extends AbstractDaoHibernate<Clazz> implements Cl
             query.setParameter("package", pkgName);
         }
         final List list = query.getResultList();
-        return (Clazz[])list.toArray(new Clazz[list.size()]);
+        return (Clazz[]) list.toArray(new Clazz[list.size()]);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public Clazz[] getClass(final String pkg, final String name) {
+        final Query query = getEntityManager().createNamedQuery(ClazzDao.GET_BY_PACKAGE_AND_NAME);
+        query.setParameter("name", name);
+        query.setParameter("package", pkg);
+        final List list = query.getResultList();
+        return (Clazz[]) list.toArray(new Clazz[list.size()]);
     }
 
     @SuppressWarnings({"unchecked"})
     public List<Method> getMethods(final String className, final String methodName, final String signatureTypes) {
         final Clazz[] classes = getClass(className);
         final List<Method> methods = new ArrayList<Method>();
-        for(final Clazz clazz : classes) {
+        for (final Clazz clazz : classes) {
             methods.addAll(getMethods(methodName, signatureTypes, clazz));
         }
         return methods;
@@ -78,7 +93,7 @@ public class ClazzDaoHibernate extends AbstractDaoHibernate<Clazz> implements Cl
 
     private List getMethods(final String name, final String signatureTypes, final Clazz clazz) {
         final Query query;
-        if("*".equals(signatureTypes)) {
+        if ("*".equals(signatureTypes)) {
             query = getEntityManager().createNamedQuery(ClazzDao.GET_METHOD_NO_SIG)
                 .setParameter("classId", clazz.getId())
                 .setParameter("name", name.toUpperCase());
