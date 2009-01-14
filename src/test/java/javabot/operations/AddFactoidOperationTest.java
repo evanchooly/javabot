@@ -23,7 +23,7 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     }
 
     public AddFactoidOperationTest(String name) {
-        super(name);
+        this();
     }
 
     @BeforeMethod

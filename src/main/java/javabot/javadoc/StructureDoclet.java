@@ -41,7 +41,7 @@ public class StructureDoclet extends Doclet {
             final String name = StructureDoclet.class.getSimpleName();
             final String docletClass = StructureDoclet.class.getName();
             final List<String> args = new ArrayList<String>();
-            args.add("-cp build/main:build/test");
+//            args.add("-cp build/main:build/test");
             args.add("-sourcepath");
             args.add(rootDir.getAbsolutePath());
             for (final String sub : packages.split(" ")) {

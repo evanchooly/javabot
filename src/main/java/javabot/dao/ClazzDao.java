@@ -2,6 +2,8 @@ package javabot.dao;
 
 import java.util.List;
 
+import com.sun.javadoc.ClassDoc;
+import javabot.javadoc.Api;
 import javabot.javadoc.Clazz;
 import javabot.javadoc.Method;
 
@@ -22,7 +24,7 @@ public interface ClazzDao extends BaseDao<Clazz> {
     List<Clazz> findAll(String api);
 
     void deleteAll(String pkgName);
-//    Clazz getOrCreate(ClassDoc classDoc, Api api, String packageName, String name);
+    Clazz getOrCreate(ClassDoc classDoc, Api api, String packageName, String name);
 
     Clazz[] getClass(String name);
 

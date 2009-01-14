@@ -3,10 +3,13 @@ package javabot.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import com.sun.javadoc.ClassDoc;
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.ClazzDao;
+import javabot.javadoc.Api;
 import javabot.javadoc.Clazz;
 import javabot.javadoc.Method;
 
@@ -36,7 +39,6 @@ public class ClazzDaoHibernate extends AbstractDaoHibernate<Clazz> implements Cl
             .executeUpdate();
         getEntityManager().flush();
     }
-/*
     public Clazz getOrCreate(final ClassDoc classDoc, final Api api, final String packageName, final String name) {
         Clazz clazz;
         final String pkg = classDoc == null ?  packageName : classDoc.containingPackage().name();
@@ -50,10 +52,9 @@ public class ClazzDaoHibernate extends AbstractDaoHibernate<Clazz> implements Cl
             clazz = new Clazz(api, pkg, name);
             save(clazz);
         }
-        clazz.populate(this);
+        clazz.populate(classDoc, this);
         return clazz;
     }
-*/
 
     @SuppressWarnings({"unchecked"})
     public Clazz[] getClass(final String name) {
