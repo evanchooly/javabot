@@ -21,24 +21,26 @@ public class AddChannel implements Command {
     private static final String LOGGED = "logged";
 
     @Override
-    public List<Message> execute(Javabot bot, BotEvent event, List<String> args) {
-        List<Message> messages = new ArrayList<Message>();
+    public List<Message> execute(final Javabot bot, final BotEvent event, final List<String> args) {
+        final List<Message> messages = new ArrayList<Message>();
         if (args.isEmpty()) {
             messages.add(new Message(event.getChannel(), event, "usage: addChannel <channel> ("
                 + LOGGED + ") (password)"));
             messages.add(new Message(event.getChannel(), event,
                 "usage: the password and 'logged' are optional and can appear in any order"));
         } else {
-            String channelName = args.remove(0);
+            final String channelName = args.remove(0);
             Boolean logged = null;
             String key = null;
             while (!args.isEmpty()) {
-                String next = args.remove(0);
+                final String next = args.remove(0);
                 logged = logged == null && LOGGED.equals(next);
                 if(!LOGGED.equals(next) && key == null) {
                     key = next;
                 }
             }
+            logged = logged == null ? Boolean.TRUE : logged;
+            
             Channel channel = dao.get(channelName);
             if (channel == null) {
                 channel = dao.create(channelName, logged, key);

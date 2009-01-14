@@ -3,13 +3,10 @@ package javabot.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import com.sun.javadoc.ClassDoc;
 import javabot.dao.AbstractDaoHibernate;
 import javabot.dao.ClazzDao;
-import javabot.javadoc.Api;
 import javabot.javadoc.Clazz;
 import javabot.javadoc.Method;
 
@@ -24,60 +21,79 @@ public class ClazzDaoHibernate extends AbstractDaoHibernate<Clazz> implements Cl
     }
 
     @SuppressWarnings({"unchecked"})
-    public void deleteAll(String api) {
-        EntityManager em = getEntityManager();
+    public List<Clazz> findAll(final String api) {
+        final EntityManager em = getEntityManager();
+        return em.createQuery("select c from Clazz c where c.api.name=:api")
+            .setParameter("api", api)
+            .getResultList();
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void deleteAll(final String api) {
+        final EntityManager em = getEntityManager();
         em.createQuery("delete from Clazz c where c.api.name=:api")
             .setParameter("api", api)
             .executeUpdate();
         getEntityManager().flush();
     }
-
-    public Clazz getOrCreate(ClassDoc classDoc, Api api, String packageName, String name) {
+/*
+    public Clazz getOrCreate(final ClassDoc classDoc, final Api api, final String packageName, final String name) {
         Clazz clazz;
-        String pkg = classDoc == null ?  packageName : classDoc.containingPackage().name();
-        String className = classDoc == null ? name : classDoc.name();
+        final String pkg = classDoc == null ?  packageName : classDoc.containingPackage().name();
         try {
-            clazz = (Clazz)getEntityManager().createNamedQuery(ClazzDao.GET_BY_PACKAGE_AND_NAME)
+            clazz = (Clazz)getEntityManager().createNamedQuery(ClazzDao.GET_BY_API_PACKAGE_AND_NAME)
                 .setParameter("api", api)
                 .setParameter("package", packageName)
-                .setParameter("name", name.toUpperCase())
+                .setParameter("name", name)
                 .getSingleResult();
         } catch(NoResultException e) {
             clazz = new Clazz(api, pkg, name);
             save(clazz);
         }
-        clazz.populate(classDoc, this);
+        clazz.populate(this);
         return clazz;
     }
+*/
 
     @SuppressWarnings({"unchecked"})
-    public Clazz[] getClass(String name) {
-        Query query;
-        if(!name.contains(".")) {
+    public Clazz[] getClass(final String name) {
+        final Query query;
+        if (!name.contains(".")) {
             query = getEntityManager().createNamedQuery(ClazzDao.GET_BY_NAME);
             query.setParameter("name", name.toUpperCase());
         } else {
+            final String className = name.substring(name.lastIndexOf(".") + 1).toUpperCase();
+            final String pkgName = name.substring(0, name.lastIndexOf(".")).toUpperCase();
             query = getEntityManager().createNamedQuery(ClazzDao.GET_BY_PACKAGE_AND_NAME);
-            query.setParameter("name", name.substring(name.lastIndexOf(".") + 1).toUpperCase());
-            query.setParameter("package", name.substring(0, name.lastIndexOf(".")).toUpperCase());
+            query.setParameter("name", className);
+            query.setParameter("package", pkgName);
         }
-        List list = query.getResultList();
-        return (Clazz[])list.toArray(new Clazz[list.size()]);
+        final List list = query.getResultList();
+        return (Clazz[]) list.toArray(new Clazz[list.size()]);
     }
 
     @SuppressWarnings({"unchecked"})
-    public List<Method> getMethods(String className, String methodName, String signatureTypes) {
-        Clazz[] classes = getClass(className);
-        List<Method> methods = new ArrayList<Method>();
-        for(Clazz clazz : classes) {
+    public Clazz[] getClass(final String pkg, final String name) {
+        final Query query = getEntityManager().createNamedQuery(ClazzDao.GET_BY_PACKAGE_AND_NAME);
+        query.setParameter("name", name);
+        query.setParameter("package", pkg);
+        final List list = query.getResultList();
+        return (Clazz[]) list.toArray(new Clazz[list.size()]);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public List<Method> getMethods(final String className, final String methodName, final String signatureTypes) {
+        final Clazz[] classes = getClass(className);
+        final List<Method> methods = new ArrayList<Method>();
+        for (final Clazz clazz : classes) {
             methods.addAll(getMethods(methodName, signatureTypes, clazz));
         }
         return methods;
     }
 
-    private List getMethods(String name, String signatureTypes, Clazz clazz) {
-        Query query;
-        if("*".equals(signatureTypes)) {
+    private List getMethods(final String name, final String signatureTypes, final Clazz clazz) {
+        final Query query;
+        if ("*".equals(signatureTypes)) {
             query = getEntityManager().createNamedQuery(ClazzDao.GET_METHOD_NO_SIG)
                 .setParameter("classId", clazz.getId())
                 .setParameter("name", name.toUpperCase());

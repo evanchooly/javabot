@@ -11,6 +11,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import javax.persistence.FetchType;
 
 import javabot.dao.ConfigDao;
 import org.hibernate.annotations.CollectionOfElements;
@@ -27,15 +28,15 @@ import org.hibernate.annotations.CollectionOfElements;
         })
 public class Config implements Serializable, Persistent {
     private Long id;
-    private String server;
-    private Integer port;
-    private String prefixes;
-    private String nick;
+    private String server = "irc.freenode.org";
+    private Integer port = 6667;
+    private String prefixes = "~";
+    private String nick = "test-javabot-" + System.currentTimeMillis();
     private String password;
     private Long version;
 
     private List<String> operations = new ArrayList<String>();
-    private List<Channel> channels = new ArrayList<Channel>();
+//    private List<Channel> channels = new ArrayList<Channel>();
     private List<Admin> admins = new ArrayList<Admin>();
 
     @Id
@@ -44,25 +45,25 @@ public class Config implements Serializable, Persistent {
         return id;
     }
 
-    public void setId(Long configId) {
+    public void setId(final Long configId) {
         id = configId;
     }
 
-    @OneToMany(mappedBy = "config")
-    public List<Channel> getChannels() {
-        return channels;
-    }
-
-    public void setChannels(List<Channel> list) {
-        channels = list;
-    }
+//    @OneToMany(mappedBy = "config")
+//    public List<Channel> getChannels() {
+//        return channels;
+//    }
+//
+//    public void setChannels(List<Channel> list) {
+//        channels = list;
+//    }
 
     @OneToMany(mappedBy = "config")
     public List<Admin> getAdmins() {
         return admins;
     }
 
-    public void setAdmins(List<Admin> list) {
+    public void setAdmins(final List<Admin> list) {
         admins = list;
     }
 
@@ -70,17 +71,17 @@ public class Config implements Serializable, Persistent {
         return nick;
     }
 
-    public void setNick(String botName) {
+    public void setNick(final String botName) {
         nick = botName;
     }
 
     @SuppressWarnings({"JpaModelErrorInspection"})
-    @CollectionOfElements
+    @CollectionOfElements(fetch = FetchType.EAGER)
     public List<String> getOperations() {
         return operations;
     }
 
-    public void setOperations(List<String> list) {
+    public void setOperations(final List<String> list) {
         operations = list;
     }
 
@@ -88,7 +89,7 @@ public class Config implements Serializable, Persistent {
         return password;
     }
 
-    public void setPassword(String value) {
+    public void setPassword(final String value) {
         password = value;
     }
 
@@ -96,7 +97,7 @@ public class Config implements Serializable, Persistent {
         return port;
     }
 
-    public void setPort(Integer portNum) {
+    public void setPort(final Integer portNum) {
         port = portNum;
     }
 
@@ -104,7 +105,7 @@ public class Config implements Serializable, Persistent {
         return prefixes;
     }
 
-    public void setPrefixes(String nicks) {
+    public void setPrefixes(final String nicks) {
         prefixes = nicks;
     }
 
@@ -112,7 +113,7 @@ public class Config implements Serializable, Persistent {
         return server;
     }
 
-    public void setServer(String ircServer) {
+    public void setServer(final String ircServer) {
         server = ircServer;
     }
 
@@ -121,7 +122,7 @@ public class Config implements Serializable, Persistent {
         return version;
     }
 
-    public void setVersion(Long value) {
+    public void setVersion(final Long value) {
         version = value;
     }
 }

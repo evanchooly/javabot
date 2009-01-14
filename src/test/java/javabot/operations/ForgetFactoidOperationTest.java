@@ -3,7 +3,6 @@ package javabot.operations;
 import java.io.IOException;
 
 import javabot.BotEvent;
-import javabot.Javabot;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
 import org.testng.Assert;
@@ -31,7 +30,7 @@ public class ForgetFactoidOperationTest extends BaseOperationTest {
 
     @Override
     protected BotOperation createOperation() {
-        return new ForgetFactoidOperation(new Javabot());
+        return new ForgetFactoidOperation(getJavabot());
     }
 
     public void channelMessage() throws IOException {

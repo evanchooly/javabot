@@ -1,29 +1,34 @@
 package javabot.javadoc;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Comparator;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.ManyToOne;
-import javax.persistence.FetchType;
 
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.ConstructorDoc;
-import com.sun.javadoc.MethodDoc;
 import javabot.dao.ClazzDao;
 import javabot.model.Persistent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.cyberneko.html.parsers.DOMParser;
+import org.jaxen.JaxenException;
+import org.jaxen.dom.DOMXPath;
+import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.html.HTMLElement;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 @Entity
 @Table(name = "classes")
@@ -32,8 +37,10 @@ import org.slf4j.LoggerFactory;
     @NamedQuery(name = ClazzDao.DELETE_ALL_METHODS, query = "delete from Method m where m.clazz.api=:api"),
     @NamedQuery(name = ClazzDao.GET_BY_NAME, query = "select c from Clazz c where "
         + "upper(c.className)=:name"),
+    @NamedQuery(name = ClazzDao.GET_BY_API_PACKAGE_AND_NAME, query = "select c from Clazz c where "
+        + "c.packageName=:package and c.api=:api and c.className=:name"),
     @NamedQuery(name = ClazzDao.GET_BY_PACKAGE_AND_NAME, query = "select c from Clazz c where "
-        + "c.packageName=:package and c.api=:api and upper(c.className)=:name"),
+        + "upper(c.packageName)=upper(:package) and upper(c.className)=upper(:name)"),
     @NamedQuery(name = ClazzDao.GET_METHOD_NO_SIG, query = "select m from Method m where "
         + "m.clazz.id=:classId and upper(m.methodName)=:name"),
     @NamedQuery(name = ClazzDao.GET_METHOD, query = "select m from Clazz c join c.methods m where "
@@ -41,16 +48,13 @@ import org.slf4j.LoggerFactory;
         + " or upper(m.shortSignatureStripped)=:params or upper(m.longSignatureTypes)=:params"
         + " or upper(m.longSignatureStripped)=:params)")
 })
-public class Clazz implements Persistent {
-    private static final Logger log = LoggerFactory.getLogger(Clazz.class);
-    
+public class Clazz extends JavadocElement implements Persistent {
     private Long id;
     private Api api;
     private String packageName;
     private String className;
     private Clazz superClass;
     private List<Method> methods;
-    private String classUrl;
 
     public Clazz() {
     }
@@ -61,38 +65,65 @@ public class Clazz implements Persistent {
         return id;
     }
 
-    public void setId(Long classId) {
+    public void setId(final Long classId) {
         id = classId;
     }
 
-    public Clazz(Api apiName, String pkg, String name) {
+    public Clazz(final Api apiName, final String pkg, final String name) {
         api = apiName;
         packageName = pkg;
         className = name;
     }
 
-    public final void populate(ClassDoc doc, ClazzDao dao) {
-        if(doc != null && (methods == null || methods.isEmpty())) {
-            String pkg = doc.containingPackage().name();
-            packageName = pkg;
-            className = doc.name();
-            ClassDoc superClazz = doc.superclass();
-            if(superClazz != null) {
-                superClass = dao.getOrCreate(null, api, superClazz.containingPackage().name(), superClazz.name());
-            }
-            System.out.println("creating class " + this);
-            methods = new ArrayList<Method>(doc.methods().length + doc.constructors().length);
-            String path = pkg == null ? "" : pkg.replaceAll("\\.", "/") + "/";
-            classUrl = getApi().getBaseUrl() + "/" + path + className + ".html";
-            dao.save(this);
-            for(MethodDoc methodDoc : doc.methods()) {
-                methods.add(new Method(methodDoc, this));
-            }
-            for(ConstructorDoc conDoc : doc.constructors()) {
-                methods.add(new Method(conDoc, this));
-            }
-            Collections.sort(methods, new MethodComparator());
+    @SuppressWarnings({"unchecked"})
+    @Transactional
+    public final void populate(final ClazzDao dao) throws IOException, SAXException, JaxenException {
+        final Document document = getDocument(api.getBaseUrl() + "/" + packageName.replace('.', '/')
+            + "/" + getClassName() + ".html");
+        final List<HTMLElement> dts = (List<HTMLElement>) new DOMXPath("//DT/following-sibling::node()"
+            + "[text()='extends ']").evaluate(document);
+        if (!dts.isEmpty()) {
+            final HTMLElement element = dts.get(0);
+            final HTMLElement aNode = (HTMLElement) element.getChildNodes().item(1);
+            String pkg = aNode.getAttribute("title");
+            pkg = pkg.substring(pkg.indexOf(" in ") + 4);
+            superClass = dao.getClass(pkg, aNode.getTextContent())[0];
         }
+        final List<HTMLElement> result = (List<HTMLElement>) new DOMXPath("//HEAD/META[@name='keywords']")
+            .evaluate(document);
+        for (final HTMLElement element : result) {
+            String content = element.getAttribute("content");
+            if (content.endsWith("()")) {
+                content = content.substring(0, content.length() - 2);
+                final List<HTMLElement> methodList = (List<HTMLElement>) new DOMXPath(
+                    "//A[starts-with(@name, '" + content + "(')]").evaluate(document);
+                for (final HTMLElement htmlElement : methodList) {
+                    final NamedNodeMap attributes = htmlElement.getAttributes();
+                    final Method method = new Method(attributes.getNamedItem("name").getNodeValue(), this);
+                    dao.save(method);
+                    methods.add(method);
+                }
+            }
+        }
+        dao.save(this);
+    }
+
+    public static Document getDocument(final String specUrl) throws IOException, SAXException {
+        final URL url = new URL(specUrl);
+        final URLConnection connection = url.openConnection();
+        connection.setConnectTimeout(1000);
+        connection.setReadTimeout(1000);
+        final DOMParser parser = new DOMParser();
+        try {
+            parser.parse(new InputSource(url.openStream()));
+        } catch (SAXException e) {
+            System.out.println("specUrl = " + specUrl);
+            throw e;
+        } catch (IOException e) {
+            System.out.println("specUrl = " + specUrl);
+            throw e;
+        }
+        return parser.getDocument();
     }
 
     @ManyToOne
@@ -100,42 +131,25 @@ public class Clazz implements Persistent {
         return api;
     }
 
-    public void setApi(Api api) {
+    public void setApi(final Api api) {
         this.api = api;
     }
 
-    @Transient
-    private String getWildcardMethodUrl(String methodName) {
-        for(Method method : methods) {
-            if(method.getMethodName().equalsIgnoreCase(methodName)) {
-                return method.getMethodUrl();
-            }
-        }
-        return null;
-    }
-
-    @Column(length = 1000)
-    public String getClassUrl() {
-        return classUrl;
-    }
-
-    public void setClassUrl(String classUrl) {
-        this.classUrl = classUrl;
-    }
-
+    @Column(nullable = false)
     public String getPackageName() {
         return packageName;
     }
 
-    public void setPackageName(String name) {
+    public void setPackageName(final String name) {
         packageName = name;
     }
 
+    @Column(nullable = false)
     public String getClassName() {
         return className;
     }
 
-    public void setClassName(String name) {
+    public void setClassName(final String name) {
         className = name;
     }
 
@@ -144,27 +158,17 @@ public class Clazz implements Persistent {
         return superClass;
     }
 
-    public void setSuperClass(Clazz aClass) {
+    public void setSuperClass(final Clazz aClass) {
         superClass = aClass;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="clazz")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "clazz", fetch = FetchType.EAGER)
     public List<Method> getMethods() {
         return methods;
     }
 
-    public void setMethods(List<Method> list) {
+    public void setMethods(final List<Method> list) {
         methods = list;
-    }
-
-    private static class MethodComparator implements Comparator<Method> {
-        public int compare(Method o1, Method o2) {
-            int compare = o1.getMethodName().compareTo(o2.getMethodName());
-            if(compare == 0) {
-                compare = o1.getParamCount().compareTo(o2.getParamCount());
-            }
-            return compare;
-        }
     }
 
     @Override

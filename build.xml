@@ -43,14 +43,13 @@
             <path refid="project.class.path"/>
             <pathelement location="etc"/>
             <pathelement location="${build.test.dir}"/>
-            <!--<pathelement location="${ant.core.lib}"/>-->
             <pathelement location="build/war/WEB-INF/classes/"/>
         </path>
     </target>
 
     <target name="compile-src">
         <javac destDir="${build.src.dir}" srcDir="${src.dir}"
-               classpathref="project.class.path" debug="true">
+               classpathref="build.class.path" debug="true">
         </javac>
         <copy todir="${build.src.dir}">
             <fileset dir="${src.dir}" excludes="**/*.java"/>
@@ -212,18 +211,19 @@
             <dependency groupId="postgresql" artifactId="postgresql" version="8.3-603.jdbc4"/>
             <dependency groupId="hsqldb" artifactId="hsqldb" version="1.8.0.7"/>
             <dependency groupId="nekohtml" artifactid="nekohtml" version="1.9.6.2"/>
-        </artifact:dependencies>
+            <dependency groupId="jaxen" artifactId="jaxen" version="1.1.1"/>
+     </artifact:dependencies>
 
         <artifact:dependencies pathId="build.path">
             <remoteRepository refid="maven2.java.net.repository"/>
             <remoteRepository refid="java.net.repository"/>
 
-            <!--<dependency groupId="jaxen" artifactId="jaxen" version="1.1.1"/>-->
             <dependency groupId="org.easymock" artifactId="easymock" version="2.3"/>
             <dependency groupId="org.unitils" artifactId="unitils" version="2.0"/>
             <dependency groupId="org.unitils" artifactId="unitils" version="2.0" classifier="sources"/>
             <dependency groupId="org.mortbay.jetty" artifactId="jetty" version="6.1.9"/>
             <dependency groupId="org.mortbay.jetty" artifactId="jetty-util" version="6.1.9"/>
+            <dependency groupId="org.mortbay.jetty" artifactId="servlet-api-2.5" version="6.1.9"/>
             <dependency groupId="org.testng" artifactId="testng" version="5.8" classifier="jdk15"/>
             <dependency groupId="org.testng" artifactId="testng" version="5.8" classifier="sources"/>
 
@@ -232,6 +232,7 @@
             <dependency groupId="org.apache.wicket" artifactId="wicket" version="${wicket.version}"
                         classifier="sources"/>
             <dependency groupId="nekohtml" artifactid="nekohtml" version="1.9.6.2" classifier="sources"/>
+            <dependency groupId="nekohtml" artifactid="nekohtml" version="1.9.6.2" classifier="javadoc"/>
         </artifact:dependencies>
     </target>
 
@@ -241,5 +242,18 @@
         <mvnProject idea="javabot.iml">
             <path refid="build.class.path"/>
         </mvnProject>
+    </target>
+
+    <target name="process-javadoc" depends="war">
+        <java classname="javabot.javadoc.StructureDoclet">
+            <classpath>
+                <pathelement path="${sun.boot.class.path}"/>
+                <path refid="build.class.path"/>
+            </classpath>
+            <arg value="src.zip"/>
+            <arg value="JDK"/>
+            <arg value="http://java.sun.com/javase/6/docs/api/"/>
+            <arg value="java javax"/>
+        </java>
     </target>
 </project>

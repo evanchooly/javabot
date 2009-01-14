@@ -3,14 +3,12 @@ package javabot.dao;
 import java.util.List;
 
 import javabot.BotEvent;
-import javabot.Javabot;
 import javabot.Message;
 import javabot.operations.GetFactoidOperation;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
-
 //
 
 // Author: joed
@@ -31,7 +29,7 @@ public class SeeLoopTest extends BaseServiceTest {
     @BeforeMethod
     public void setUp() {
 
-        getFactoidOperation = new GetFactoidOperation(new Javabot());
+        getFactoidOperation = new GetFactoidOperation(getJavabot());
     }
 
 

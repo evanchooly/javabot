@@ -1,5 +1,6 @@
 package javabot.javadoc;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,14 +30,14 @@ public class Api implements Persistent {
     private Long id;
     private String name;
     private String baseUrl;
-    private List<Clazz> classes;
+    private List<Clazz> classes = new ArrayList<Clazz>();
 
     public Api() {
     }
 
-    public Api(String apiName, String url) {
+    public Api(final String apiName, final String url) {
         name = apiName;
-        baseUrl = url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
+        baseUrl = url.endsWith("/") ? url : url + "/";
     }
 
     @Id
@@ -45,7 +46,7 @@ public class Api implements Persistent {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -53,7 +54,7 @@ public class Api implements Persistent {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -62,7 +63,7 @@ public class Api implements Persistent {
         return baseUrl;
     }
 
-    public void setBaseUrl(String baseUrl) {
+    public void setBaseUrl(final String baseUrl) {
         this.baseUrl = baseUrl;
     }
 
@@ -71,7 +72,7 @@ public class Api implements Persistent {
         return classes;
     }
 
-    public void setClasses(List<Clazz> classes) {
+    public void setClasses(final List<Clazz> classes) {
         this.classes = classes;
     }
 }

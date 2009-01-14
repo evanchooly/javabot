@@ -35,7 +35,7 @@ public class Channel implements Serializable, Persistent {
         return id;
     }
 
-    public void setId(Long channelId) {
+    public void setId(final Long channelId) {
         id = channelId;
     }
 
@@ -43,7 +43,7 @@ public class Channel implements Serializable, Persistent {
         return updated;
     }
 
-    public void setUpdated(Date date) {
+    public void setUpdated(final Date date) {
         updated = date;
     }
 
@@ -51,15 +51,15 @@ public class Channel implements Serializable, Persistent {
         return key;
     }
 
-    public void setKey(String key) {
+    public void setKey(final String key) {
         this.key = key;
     }
 
     public Boolean getLogged() {
-        return logged;
+        return logged == null ? Boolean.FALSE : logged;
     }
 
-    public void setLogged(Boolean isLogged) {
+    public void setLogged(final Boolean isLogged) {
         logged = isLogged;
     }
 
@@ -68,7 +68,7 @@ public class Channel implements Serializable, Persistent {
         return config;
     }
 
-    public void setConfig(Config chanConfig) {
+    public void setConfig(final Config chanConfig) {
         config = chanConfig;
     }
 
@@ -76,7 +76,7 @@ public class Channel implements Serializable, Persistent {
         return name;
     }
 
-    public void setName(String chanName) {
+    public void setName(final String chanName) {
         name = chanName;
     }
 
@@ -90,7 +90,7 @@ public class Channel implements Serializable, Persistent {
             '}';
     }
 
-    public void join(Javabot bot) {
+    public void join(final Javabot bot) {
         if (getKey() == null) {
             bot.joinChannel(getName());
         } else {

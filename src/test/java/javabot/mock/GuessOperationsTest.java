@@ -6,7 +6,7 @@ import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Message;
-import javabot.Javabot;
+import javabot.dao.BaseServiceTest;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
 import javabot.operations.GuessOperation;
@@ -17,13 +17,12 @@ import static org.easymock.EasyMock.reset;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.unitils.UnitilsTestNG;
 
 /**
  * @author joed
  */
 @Test(groups = {"operations"})
-public class GuessOperationsTest extends UnitilsTestNG {
+public class GuessOperationsTest extends BaseServiceTest {
     private final static String CHANNEL = "#TEST";
     private final static String SENDER = "joed";
     private final static String LOGIN = "joed";
@@ -34,7 +33,7 @@ public class GuessOperationsTest extends UnitilsTestNG {
     @BeforeMethod
     public void setUp() {
         f_dao = createMock(FactoidDao.class);
-        guessOperation = new GuessOperation(new Javabot());
+        guessOperation = new GuessOperation(getJavabot());
     }
 
     public void testDaoCount() {

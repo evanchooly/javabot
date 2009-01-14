@@ -1,7 +1,10 @@
 package javabot.admin;
 
+import javabot.operations.AdminOperation;
+import javabot.operations.BaseOperationTest;
 import javabot.operations.BotOperation;
 import org.testng.annotations.Test;
+import org.jibble.pircbot.PircBot;
 
 /**
  * Created Dec 21, 2008
@@ -9,15 +12,15 @@ import org.testng.annotations.Test;
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
 @Test
-public class AdminOperationTest /*extends BaseOperationTest*/ {
-//    @Override
+public class AdminOperationTest extends BaseOperationTest {
+    @Override
     protected BotOperation createOperation() {
-//        return new AdminOperation(getJavabot());
-    return null;
+        return new AdminOperation(getJavabot());
     }
 
     public void addChannel() {
-//        getTestBot().joinChannel("##javabot");
-        System.out.println("oi!");
+        final PircBot bot = getTestBot();
+        bot.sendMessage(CHANNEL, "~hi");
+
     }
 }
