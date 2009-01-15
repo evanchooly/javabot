@@ -1,3 +1,5 @@
+.settings
+.springBeans
 .project
 .classpath
 db/apis.dump
