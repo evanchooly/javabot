@@ -61,9 +61,9 @@ public class AdminDaoHibernate extends AbstractDaoHibernate<Admin> implements Ad
 
         Config config = configDao.get();
         admin.setConfig(config);
+        save(admin);
         config.getAdmins().add(admin);
         configDao.save(config);
-        save(admin);
     }
 
     public ConfigDao getConfigDao() {
