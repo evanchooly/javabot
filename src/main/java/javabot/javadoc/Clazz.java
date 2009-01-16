@@ -117,7 +117,7 @@ public class Clazz extends JavadocElement implements Persistent {
     public final List<Clazz> populate(final ClazzDao dao, final Writer writer)
         throws IOException, SAXException, JaxenException {
         try {
-            writer.write("populating " + this);
+//            writer.write("populating " + this);
             final Document document = getDocument(getLongUrl());
             final List<HTMLElement> dts = (List<HTMLElement>) new DOMXPath("//DT/following-sibling::node()"
                 + "[text()='extends ']").evaluate(document);

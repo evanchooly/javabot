@@ -3,6 +3,10 @@ package javabot.javadoc;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javabot.dao.ClazzDao;
 import org.jaxen.dom.DOMXPath;
@@ -23,6 +27,8 @@ public class JavadocParser {
     private static final Logger log = LoggerFactory.getLogger(JavadocParser.class);
     @Autowired
     private ClazzDao dao;
+    private final BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
+    private final ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 30, 30000, TimeUnit.SECONDS, workQueue);
 
     @Transactional
     public void parse(final Api api, final List<String> packages, final Writer writer) {
@@ -38,10 +44,65 @@ public class JavadocParser {
             }
             final List<Clazz> classes = new ArrayList<Clazz>(dao.findAll(api.getName()));
             while(!classes.isEmpty()) {
-                classes.addAll(classes.remove(0).populate(dao, writer));
+                executor.submit(process(writer, classes.remove(0)));
+            }
+            while (!workQueue.isEmpty()) {
+                writer.write("Waiting on " + api.getName() + " work queue to drain.  " + workQueue.size() + " items left");
+                Thread.sleep(5000);
             }
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
+
+    private Runnable process(final Writer writer, final Clazz clazz) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (final Clazz clazz1 : clazz.populate(dao, writer)) {
+                        executor.submit(process(writer, clazz1));
+                    }
+                } catch (IrrelevantClassException e) {
+                    log.debug(e.getMessage(), e);
+                } catch (Exception e) {
+                    throw new RuntimeException(e.getMessage(), e);
+                }
+            }
+        };
+    }
+
 }
+
+/*
+public class JavadocParser {
+    private static final Logger log = LoggerFactory.getLogger(JavadocParser.class);
+    @Autowired
+    private ClazzDao dao;
+
+    @Transactional
+    public void parse(final Api api, final List<String> packages, final Writer writer) {
+        try {
+            final Document document = Clazz.getDocument(api.getBaseUrl() + "/allclasses-frame.html");
+            final List<HTMLElement> result = (List<HTMLElement>) new DOMXPath("//A[@target='classFrame']")
+                .evaluate(document);
+            for (final HTMLElement element : result) {
+                try {
+                    final Clazz clazz = new Clazz(api, element, packages);
+                    dao.save(clazz);
+                    executor.submit(queueClazz(writer, clazz));
+                } catch (IrrelevantClassException e) {
+                    log.debug(e.getMessage(), e);
+                }
+            }
+            while (!workQueue.isEmpty()) {
+                writer.write("Waiting on " + api + " work queue to drain.  " + workQueue.size() + " items left");
+                Thread.sleep(5000);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+}
+*/
