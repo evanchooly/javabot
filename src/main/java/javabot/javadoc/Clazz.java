@@ -1,6 +1,7 @@
 package javabot.javadoc;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -24,13 +25,16 @@ import com.sun.javadoc.ConstructorDoc;
 import com.sun.javadoc.MethodDoc;
 import javabot.dao.ClazzDao;
 import javabot.model.Persistent;
+import org.apache.html.dom.HTMLDocumentImpl;
 import org.cyberneko.html.parsers.DOMParser;
 import org.jaxen.JaxenException;
 import org.jaxen.dom.DOMXPath;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.html.HTMLElement;
+import org.w3c.dom.html.HTMLTableElement;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -58,9 +62,38 @@ public class Clazz extends JavadocElement implements Persistent {
     private String packageName;
     private String className;
     private Clazz superClass;
-    private List<Method> methods;
+    private List<Method> methods = new ArrayList<Method>();
 
     public Clazz() {
+    }
+
+    public Clazz(final Api classApi, final HTMLElement element, final List<String> packages) {
+        String value = element.getFirstChild().getNodeValue();
+        if (value == null) {
+            value = element.getFirstChild().getFirstChild().getNodeValue();
+        }
+        className = value;
+        String title = element.getAttribute("title");
+        title = title.substring(title.indexOf("in ") + 3);
+        packageName = title;
+        boolean valid = packages.isEmpty();
+        for (final String aPackage : packages) {
+            valid |= packageName.startsWith(aPackage);
+        }
+        if (!valid) {
+            throw new IrrelevantClassException(this + " is a class we don't care about");
+        }
+        setLongUrl(classApi.getBaseUrl() + sanitize(element));
+        api = classApi;
+//        classApi.getClasses().add(this);
+    }
+
+    private String sanitize(final HTMLElement element) {
+        String url = element.getAttribute("href");
+        while (url.startsWith("../")) {
+            url = url.substring(3);
+        }
+        return url;
     }
 
     @Id
@@ -81,35 +114,82 @@ public class Clazz extends JavadocElement implements Persistent {
 
     @SuppressWarnings({"unchecked"})
     @Transactional
-    public final void populate(final ClazzDao dao) throws IOException, SAXException, JaxenException {
-        final Document document = getDocument(api.getBaseUrl() + "/" + packageName.replace('.', '/')
-            + "/" + getClassName() + ".html");
-        final List<HTMLElement> dts = (List<HTMLElement>) new DOMXPath("//DT/following-sibling::node()"
-            + "[text()='extends ']").evaluate(document);
-        if (!dts.isEmpty()) {
-            final HTMLElement element = dts.get(0);
-            final HTMLElement aNode = (HTMLElement) element.getChildNodes().item(1);
-            String pkg = aNode.getAttribute("title");
-            pkg = pkg.substring(pkg.indexOf(" in ") + 4);
-            superClass = dao.getClass(pkg, aNode.getTextContent())[0];
-        }
-        final List<HTMLElement> result = (List<HTMLElement>) new DOMXPath("//HEAD/META[@name='keywords']")
-            .evaluate(document);
-        for (final HTMLElement element : result) {
-            String content = element.getAttribute("content");
-            if (content.endsWith("()")) {
-                content = content.substring(0, content.length() - 2);
-                final List<HTMLElement> methodList = (List<HTMLElement>) new DOMXPath(
-                    "//A[starts-with(@name, '" + content + "(')]").evaluate(document);
-                for (final HTMLElement htmlElement : methodList) {
-                    final NamedNodeMap attributes = htmlElement.getAttributes();
-                    final Method method = new Method(attributes.getNamedItem("name").getNodeValue(), this);
-                    dao.save(method);
-                    methods.add(method);
+    public final List<Clazz> populate(final ClazzDao dao, final Writer writer)
+        throws IOException, SAXException, JaxenException {
+        try {
+            writer.write("populating " + this);
+            final Document document = getDocument(getLongUrl());
+            final List<HTMLElement> dts = (List<HTMLElement>) new DOMXPath("//DT/following-sibling::node()"
+                + "[text()='extends ']").evaluate(document);
+            final List<Clazz> nested = new ArrayList<Clazz>();
+            if (!dts.isEmpty()) {
+                final HTMLElement element = dts.get(0);
+                final HTMLElement aNode = (HTMLElement) element.getChildNodes().item(1);
+                String pkg = aNode.getAttribute("title");
+                pkg = pkg.substring(pkg.indexOf(" in ") + 4);
+                final Clazz[] aClass = dao.getClass(pkg, aNode.getTextContent());
+                if (aClass.length == 0) {
+                    nested.add(this);
+                } else {
+                    superClass = aClass[0];
                 }
             }
+            if (nested.isEmpty()) {
+                final List<HTMLElement> result = (List<HTMLElement>) new DOMXPath("//HEAD/META[@name='keywords']")
+                    .evaluate(document);
+                final List<HTMLElement> nestedElements = (List<HTMLElement>) new DOMXPath(
+                    "//A[@name='nested_class_summary']")
+                    .evaluate(document);
+                if (!nestedElements.isEmpty()) {
+                    final HTMLTableElement table = (HTMLTableElement) nestedElements.get(0).getNextSibling()
+                        .getNextSibling();
+                    final HTMLDocumentImpl doc = new HTMLDocumentImpl();
+                    final HTMLElement element = (HTMLElement) table.cloneNode(true);
+                    doc.adoptNode(element);
+                    doc.setBody(element);
+                    final List<HTMLElement> list = (List<HTMLElement>) new DOMXPath("//TD/CODE/B/A")
+                        .evaluate(doc);
+                    for (final HTMLElement htmlElement : list) {
+                        if (!htmlElement.getAttribute("title").contains("type parameter")) {
+                            final Clazz clazz = new Clazz(getApi(), htmlElement, Collections.<String>emptyList());
+                            dao.save(clazz);
+                            nested.add(clazz);
+                        }
+                    }
+                }
+                for (final HTMLElement element : result) {
+                    String content = element.getAttribute("content");
+                    if (content.endsWith("()")) {
+                        content = content.substring(0, content.length() - 2);
+                        final List<HTMLElement> methodList = (List<HTMLElement>) new DOMXPath(
+                            "//A[starts-with(@name, '" + content + "(')]").evaluate(document);
+                        for (final HTMLElement htmlElement : methodList) {
+                            final NamedNodeMap attributes = htmlElement.getAttributes();
+                            final Method method = new Method(attributes.getNamedItem("name").getNodeValue(), this);
+                            dao.save(method);
+                            methods.add(method);
+                        }
+                    }
+                }
+                dao.save(this);
+            }
+            return nested;
+        } catch (IOException e) {
+            System.out.println("this = " + this);
+            throw e;
+        } catch (SAXException e) {
+            System.out.println("this = " + this);
+            throw e;
+        } catch (JaxenException e) {
+            System.out.println("this = " + this);
+            throw e;
+        } catch (DOMException e) {
+            System.out.println("this = " + this);
+            throw e;
+        } catch (RuntimeException e) {
+            System.out.println("this = " + this);
+            throw e;
         }
-        dao.save(this);
     }
 
     public static Document getDocument(final String specUrl) throws IOException, SAXException {

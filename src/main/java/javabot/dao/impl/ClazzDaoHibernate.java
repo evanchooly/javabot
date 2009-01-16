@@ -26,7 +26,7 @@ public class ClazzDaoHibernate extends AbstractDaoHibernate<Clazz> implements Cl
     @SuppressWarnings({"unchecked"})
     public List<Clazz> findAll(final String api) {
         final EntityManager em = getEntityManager();
-        return em.createQuery("select c from Clazz c where c.api.name=:api")
+        return em.createQuery("select c from Clazz c where c.api.name=:api order by c.packageName, c.className")
             .setParameter("api", api)
             .getResultList();
     }
