@@ -15,5 +15,6 @@
         <class>javabot.model.Logs</class>
         <class>javabot.model.Persistent</class>
         <class>javabot.model.Seen</class>
+        <class>javabot.model.Shun</class>
     </persistence-unit>
 </persistence>

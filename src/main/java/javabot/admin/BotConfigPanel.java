@@ -28,6 +28,7 @@ import javabot.operations.QuitOperation;
 import javabot.operations.Rot13Operation;
 import javabot.operations.SayOperation;
 import javabot.operations.SeenOperation;
+import javabot.operations.ShunOperation;
 import javabot.operations.SpecialCasesOperation;
 import javabot.operations.StatsOperation;
 import javabot.operations.TellOperation;
@@ -83,7 +84,8 @@ public class BotConfigPanel extends Panel {
         TimeOperation.class.getName(),
         AolBonicsOperation.class.getName(),
         JSROperation.class.getName(),
-        UnixCommandOperation.class.getName());
+        UnixCommandOperation.class.getName(),
+        ShunOperation.class.getName());
 
     static {
         Collections.sort(OPERATIONS);

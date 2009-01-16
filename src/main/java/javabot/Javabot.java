@@ -16,6 +16,7 @@ import javabot.dao.FactoidDao;
 import javabot.dao.KarmaDao;
 import javabot.dao.LogsDao;
 import javabot.dao.SeenDao;
+import javabot.dao.ShunDao;
 import javabot.model.Channel;
 import javabot.model.Config;
 import javabot.model.Logs;
@@ -61,6 +62,8 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     private KarmaDao karmaDao;
     @Autowired
     private ConfigDao configDao;
+    @Autowired
+    private ShunDao shunDao;
     private boolean disconnecting = false;
     private ApplicationContext context;
 
@@ -347,7 +350,11 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     }
 
     private boolean isValidSender(final String sender) {
-        return !ignores.contains(sender);
+        return !ignores.contains(sender) && !isShunnedSender (sender);
+    }
+
+    private boolean isShunnedSender (String sender) {
+        return shunDao.isShunned (sender);
     }
 
     public void addIgnore(final String sender) {

@@ -70,6 +70,8 @@
 
     <bean id="seenDao" class="javabot.dao.impl.SeenDaoHibernate"/>
 
+    <bean id="shunDao" class="javabot.dao.impl.ShunDaoHibernate"/>
+
     <bean id="logDao" class="javabot.dao.impl.LogsDaoHibernate"/>
 
     <bean id="channelDao" class="javabot.dao.impl.ChannelDaoHibernate"/>
