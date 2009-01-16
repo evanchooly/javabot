@@ -25,24 +25,24 @@ import org.xml.sax.SAXException;
  */
 @Test
 public class JavadocParserTest extends BaseTest {
+    public static final String API_NAME = "JDK";
+    //        final String urlString = new File("/Users/jlee/Desktop/javadoc/docs/api").toURI().toURL().toString();
+    public static final String API_URL_STRING = "http://java.sun.com/javase/6/docs/api";
+
     @Autowired
     private ApiDao dao;
     @Autowired
     private ClazzDao clazzDao;
-
     private final StringWriter writer = new StringWriter() {
         @Override
         public void write(final String str) {
             System.out.println(str);
         }
     };
-    private static final String NAME = "JDK";
-    //        final String urlString = new File("/Users/jlee/Desktop/javadoc/docs/api").toURI().toURL().toString();
-    private static final String URL_STRING = "http://java.sun.com/javase/6/docs/api";
 
     @Transactional
     public void parse() throws MalformedURLException {
-        final Api api = fetchApi(NAME, URL_STRING);
+        final Api api = fetchApi(API_NAME, API_URL_STRING);
         final JavadocParser parser = new JavadocParser();
         inject(parser);
         parser.parse(api, Arrays.asList("java", "javax"), writer);
@@ -60,7 +60,7 @@ public class JavadocParserTest extends BaseTest {
 
     @Transactional
     public void generics() throws JaxenException, IOException, SAXException {
-        final Api api = fetchApi("GenericJDK", URL_STRING);
+        final Api api = fetchApi("GenericJDK", API_URL_STRING);
         final Clazz clazz = new Clazz();
         clazz.setApi(api);
         clazz.setClassName("AbstractMap");

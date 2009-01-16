@@ -87,8 +87,12 @@ public class AdminOperation extends BotOperation implements ApplicationContextAw
         final String className = Command.class.getPackage().getName() + "." + name;
         final Class<Command> clazz = (Class<Command>) Class.forName(className);
         final Command command = clazz.newInstance();
-        context.getAutowireCapableBeanFactory().autowireBean(command);
+        inject(command);
         return command;
+    }
+
+    protected void inject(final Command command) {
+        context.getAutowireCapableBeanFactory().autowireBean(command);
     }
 
     @Override

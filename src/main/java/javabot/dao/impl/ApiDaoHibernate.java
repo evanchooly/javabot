@@ -18,7 +18,7 @@ public class ApiDaoHibernate extends AbstractDaoHibernate<Api> implements ApiDao
         super(Api.class);
     }
 
-    public Api find(String name) {
+    public Api find(final String name) {
         Api api = null;
         try {
             api = (Api)getEntityManager()
@@ -37,8 +37,8 @@ public class ApiDaoHibernate extends AbstractDaoHibernate<Api> implements ApiDao
             .getResultList();
     }
 
-    public void delete(String name) {
-        Api api = find(name);
+    public void delete(final String name) {
+        final Api api = find(name);
         if(api != null) {
             delete(api);
         }

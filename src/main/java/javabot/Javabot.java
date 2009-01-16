@@ -117,11 +117,13 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         }
     }
 
-    public void main(final String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException {
         if (log.isInfoEnabled()) {
             log.info("Starting Javabot");
         }
-        new Javabot(context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml"));
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+            "classpath:applicationContext.xml");
+        new Javabot(applicationContext);
     }
 
     @SuppressWarnings({"EmptyCatchBlock"})

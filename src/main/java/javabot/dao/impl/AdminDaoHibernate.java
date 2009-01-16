@@ -27,19 +27,19 @@ public class AdminDaoHibernate extends AbstractDaoHibernate<Admin> implements Ad
     }
 
     @Override
-    public boolean isAdmin(String user, String hostName) {
-        return getAdmin(user, hostName).getUserName() != null;
+    public boolean isAdmin(final String user, final String hostName) {
+        return findAll().isEmpty() || getAdmin(user, hostName) != null;
     }
 
     @Override
-    public Admin getAdmin(String userName) {
+    public Admin getAdmin(final String userName) {
         return (Admin)getEntityManager().createNamedQuery(AdminDao.AUTHENTICATE)
             .setParameter("username", userName)
             .getSingleResult();
     }
 
     @Override
-    public Admin getAdmin(String userName, String hostName) {
+    public Admin getAdmin(final String userName, final String hostName) {
         return (Admin)getEntityManager().createNamedQuery(AdminDao.FIND_WITH_HOST)
             .setParameter("username", userName)
             .setParameter("hostName", hostName)
@@ -47,19 +47,19 @@ public class AdminDaoHibernate extends AbstractDaoHibernate<Admin> implements Ad
     }
 
     @Override
-    public void setEntityManager(EntityManager manager) {
+    public void setEntityManager(final EntityManager manager) {
         super.setEntityManager(manager);
     }
 
     @Override
-    public void create(String newAdmin, String newPassword, String newHostName) {
-        Admin admin = new Admin();
+    public void create(final String newAdmin, final String newPassword, final String newHostName) {
+        final Admin admin = new Admin();
         admin.setUserName(newAdmin);
         admin.setPassword(newPassword);
         admin.setUpdated(new Date());
         admin.setHostName(newHostName);
 
-        Config config = configDao.get();
+        final Config config = configDao.get();
         admin.setConfig(config);
         save(admin);
         config.getAdmins().add(admin);

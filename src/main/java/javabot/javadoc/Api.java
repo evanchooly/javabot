@@ -23,7 +23,7 @@ import javabot.model.Persistent;
 @Entity
 @Table(name = "apis")
 @NamedQueries({
-    @NamedQuery(name = ApiDao.FIND_BY_NAME, query="select a from Api a where a.name=:name"),
+    @NamedQuery(name = ApiDao.FIND_BY_NAME, query="select a from Api a where upper(a.name)=upper(:name)"),
     @NamedQuery(name = ApiDao.LIST_NAMES, query="select a.name from Api a order by a.name")
 })
 public class Api implements Persistent {

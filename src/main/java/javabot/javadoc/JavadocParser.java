@@ -71,38 +71,4 @@ public class JavadocParser {
             }
         };
     }
-
 }
-
-/*
-public class JavadocParser {
-    private static final Logger log = LoggerFactory.getLogger(JavadocParser.class);
-    @Autowired
-    private ClazzDao dao;
-
-    @Transactional
-    public void parse(final Api api, final List<String> packages, final Writer writer) {
-        try {
-            final Document document = Clazz.getDocument(api.getBaseUrl() + "/allclasses-frame.html");
-            final List<HTMLElement> result = (List<HTMLElement>) new DOMXPath("//A[@target='classFrame']")
-                .evaluate(document);
-            for (final HTMLElement element : result) {
-                try {
-                    final Clazz clazz = new Clazz(api, element, packages);
-                    dao.save(clazz);
-                    executor.submit(queueClazz(writer, clazz));
-                } catch (IrrelevantClassException e) {
-                    log.debug(e.getMessage(), e);
-                }
-            }
-            while (!workQueue.isEmpty()) {
-                writer.write("Waiting on " + api + " work queue to drain.  " + workQueue.size() + " items left");
-                Thread.sleep(5000);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-
-}
-*/
