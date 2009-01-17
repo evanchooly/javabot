@@ -23,7 +23,7 @@ import org.xml.sax.SAXException;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@Test
+@Test(enabled=false)
 public class JavadocParserTest extends BaseTest {
     public static final String API_NAME = "JDK";
     //        final String urlString = new File("/Users/jlee/Desktop/javadoc/docs/api").toURI().toURL().toString();

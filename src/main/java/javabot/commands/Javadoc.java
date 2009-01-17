@@ -27,7 +27,7 @@ public class Javadoc implements Command {
     @Override
     @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
     public List<Message> execute(final Javabot bot, final BotEvent event, final List<String> args) {
-        List<Message> list = new ArrayList<Message>();
+        final List<Message> list = new ArrayList<Message>();
         if (args.size() < 2) {
             list.add(new Message(event.getChannel(), event, "usage: javadoc <name> <url> [<packages>]"));
             list.add(new Message(event.getChannel(), event,

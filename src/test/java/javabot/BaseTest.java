@@ -17,7 +17,7 @@ public class BaseTest {
     protected static final String HOSTNAME = "localhost";
     public static final String OKAY = "Okay, " + SENDER + ".";
     public static final String ALREADY_HAVE_FACTOID = "I already have a factoid with that name, " + SENDER;
-    private Javabot bot;
+    private static Javabot bot;
     private PircBot testBot;
     private ApplicationContext context;
 
