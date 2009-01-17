@@ -69,6 +69,7 @@ public class AddFactoidOperationTest extends BaseOperationTest {
         testOperation(message, ALREADY_HAVE_FACTOID, errorMessage);
     }
 
+    @Test(enabled = false)
     public void blankValue() {
         final String response = "Invalid factoid value";
         final String errorMessage = "Should not have added the factoid";

@@ -62,6 +62,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
             "http://java.sun.com/docs/books/tutorial/uiswing/components/spinner.html"), ERROR_MESSAGE);
     }
 
+    @Test(enabled = false)
     public void guessFactoid() {
         testOperation("bre", "I guess the factoid 'label line breaks' might be appropriate:", ERROR_MESSAGE);
     }
