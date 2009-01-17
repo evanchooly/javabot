@@ -19,7 +19,7 @@ import org.testng.annotations.Test;
 /**
  * @author joed
  */
-@Test(groups = {"operations"})
+@Test(groups = {"operations"}, enabled = false)
 public class GuessOperationTest extends BaseOperationTest {
     private final static String CHANNEL = "##javabot";
     private final static String SENDER = "joed";
