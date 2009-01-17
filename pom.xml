@@ -200,6 +200,17 @@
         </configuration>
       </plugin>
 
+      <!-- Run me with 'mvn exec:java'. -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        
+        <configuration>
+          <mainClass>javabot.Javabot</mainClass>
+          <classpathScope>test</classpathScope>
+        </configuration>
+      </plugin>
+
       <!-- Remove or comment out this plugin element to re-enable tests.
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
