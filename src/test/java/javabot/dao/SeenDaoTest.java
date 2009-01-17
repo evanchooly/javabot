@@ -1,9 +1,8 @@
 package javabot.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
-
 //
 
 // Author: joed
@@ -11,7 +10,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 // Date  : Apr 15, 2007
 public class SeenDaoTest extends BaseServiceTest {
 
-    @SpringBeanByType
+    @Autowired
     private SeenDao seenDao;
 
     @Test

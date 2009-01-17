@@ -21,8 +21,8 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
     }
 
     @SuppressWarnings("unchecked")
-    public List<Factoid> find(QueryParam qp) {
-        StringBuilder query = new StringBuilder("from Factoid f");
+    public List<Factoid> find(final QueryParam qp) {
+        final StringBuilder query = new StringBuilder("from Factoid f");
         if (qp.hasSort()) {
             query.append(" order by ")
                     .append(qp.getSort())
@@ -38,7 +38,7 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         return (List<Factoid>) getEntityManager().createNamedQuery(ALL).getResultList();
     }
 
-    public void save(Factoid factoid) {
+    public void save(final Factoid factoid) {
         factoid.setUpdated(new Date());
         getEntityManager().flush();
         super.save(factoid);
@@ -46,12 +46,12 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
                 .logChange(factoid.getUserName() + " changed '" + factoid.getName() + "' to '" + factoid.getValue() + "'");
     }
 
-    public boolean hasFactoid(String key) {
+    public boolean hasFactoid(final String key) {
         return getFactoid(key) != null;
     }
 
-    public void addFactoid(String sender, String key, String value) {
-        Factoid factoid = new Factoid();
+    public void addFactoid(final String sender, final String key, final String value) {
+        final Factoid factoid = new Factoid();
         factoid.setId(factoid.getId());
         factoid.setName(key);
         factoid.setValue(value);
@@ -62,13 +62,13 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
 
     }
 
-    public void delete(String sender, String key) {
-        Factoid factoid = getFactoid(key);
+    public void delete(final String sender, final String key) {
+        final Factoid factoid = getFactoid(key);
         delete(factoid.getId());
         changeDao.logChange(sender + " removed '" + key + "'");
     }
 
-    public Factoid getFactoid(String name) {
+    public Factoid getFactoid(final String name) {
         Factoid factoid = null;
         try {
             factoid = (Factoid) getEntityManager().createNamedQuery(FactoidDao.BY_NAME)
@@ -84,17 +84,17 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
 
     }
 
-    public Long factoidCountFiltered(Factoid filter) {
+    public Long factoidCountFiltered(final Factoid filter) {
         return (Long) buildFindQuery(null, filter, true).getSingleResult();
     }
 
     @SuppressWarnings({"unchecked"})
-    public List<Factoid> getFactoidsFiltered(QueryParam qp, Factoid filter) {
+    public List<Factoid> getFactoidsFiltered(final QueryParam qp, final Factoid filter) {
         return buildFindQuery(qp, filter, false).getResultList();
     }
 
-    private Query buildFindQuery(QueryParam qp, Factoid filter, boolean count) {
-        StringBuilder hql = new StringBuilder();
+    private Query buildFindQuery(final QueryParam qp, final Factoid filter, final boolean count) {
+        final StringBuilder hql = new StringBuilder();
         if (count) {
             hql.append("select count(*) ");
         }
@@ -112,7 +112,7 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
             hql.append("order by upper(target.").append(qp.getSort()).append(
                     ") ").append(qp.isSortAsc() ? " asc" : " desc");
         }
-        Query query = getEntityManager().createQuery(hql.toString());
+        final Query query = getEntityManager().createQuery(hql.toString());
         if (filter.getName() != null) {
             query.setParameter("name", "%" + filter.getName().toUpperCase() + "%");
         }
@@ -132,7 +132,7 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         return changeDao;
     }
 
-    public void setChangeDao(ChangeDao dao) {
+    public void setChangeDao(final ChangeDao dao) {
         changeDao = dao;
     }
 }

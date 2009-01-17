@@ -5,15 +5,15 @@ import java.util.Date;
 import javabot.dao.ChangeDao;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 @Test(groups = {"operations"})
 public class KarmaChangeOperationTest extends BaseOperationTest {
-    @SpringBeanByType
+    @Autowired
     private KarmaDao karmaDao;
-    @SpringBeanByType
+    @Autowired
     private ChangeDao changeDao;
 
     public void updateKarma() {

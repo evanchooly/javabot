@@ -17,6 +17,12 @@ public abstract class BaseOperationTest extends BaseTest /*extends UnitilsTestNG
     private FactoidDao factoidDao;
     @Autowired
     private ChangeDao changeDao;
+    private final ForgetFactoidOperation forgetFactoidOperation;
+
+    public BaseOperationTest() {
+        forgetFactoidOperation = new ForgetFactoidOperation(getJavabot());
+        inject(forgetFactoidOperation);
+    }
 
     protected void testOperation(final String message, final String response, final String errorMessage) {
         testOperation(message, response, errorMessage, getOperation());
@@ -72,6 +78,6 @@ public abstract class BaseOperationTest extends BaseTest /*extends UnitilsTestNG
     protected void forgetFactoid(final String name) {
         testOperation("forget " + name, "I forgot about " + name + ", " + SENDER + ".",
             "I never knew about " + name + " anyway, " + SENDER
-                + ".", new ForgetFactoidOperation(getJavabot()));
+                + ".", forgetFactoidOperation);
     }
 }

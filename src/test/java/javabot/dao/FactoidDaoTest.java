@@ -1,16 +1,16 @@
 package javabot.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 public class FactoidDaoTest extends BaseServiceTest {
-    @SpringBeanByType
+    @Autowired
     private FactoidDao factoidDao;
 
     @Test(groups = {"operations"})
     public void testInsertfactoid() {
-        factoidDao.addFactoid("joed2", "test2", "#test");
+        factoidDao.addFactoid("joed2", "test2", "##javabot");
         Assert.assertTrue(factoidDao.hasFactoid("test2"));
         factoidDao.delete("joed2", "test2");
         //Assert.assertFalse(factoidDao.hasFactoid("test2"));

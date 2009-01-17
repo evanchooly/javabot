@@ -11,7 +11,7 @@ import javabot.Javabot;
  * @author ricky_clarkson
  */
 public class SayOperation extends BotOperation {
-    public SayOperation(Javabot javabot) {
+    public SayOperation(final Javabot javabot) {
         super(javabot);
     }
 
@@ -19,10 +19,10 @@ public class SayOperation extends BotOperation {
      * @see BotOperation#handleMessage(BotEvent)
      */
     @Override
-    public List<Message> handleMessage(BotEvent event) {
-        List<Message> messages = new ArrayList<Message>();
+    public List<Message> handleMessage(final BotEvent event) {
+        final List<Message> messages = new ArrayList<Message>();
         String message = event.getMessage();
-        String channel = event.getChannel();
+        final String channel = event.getChannel();
         if(!message.startsWith("say ")) {
             return messages;
         }

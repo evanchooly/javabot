@@ -5,16 +5,16 @@ import java.io.IOException;
 import javabot.BotEvent;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 @Test(groups = {"operations"})
 public class ForgetFactoidOperationTest extends BaseOperationTest {
-    @SpringBeanByType
+    @Autowired
     private FactoidDao factoidDao;
 
-    @SpringBeanByType
+    @Autowired
     private ChangeDao changeDao;
 
     public void forgetFactoid() {
@@ -34,7 +34,7 @@ public class ForgetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void channelMessage() throws IOException {
-        BotEvent event = new BotEvent("#test", SENDER, "", "localhost", "pong is");
+        final BotEvent event = new BotEvent("##javabot", SENDER, "", "localhost", "pong is");
         Assert.assertEquals(getOperation().handleChannelMessage(event).size(), 0, "Should be an empty list");
     }
 }

@@ -15,8 +15,4 @@ public class JCPJSFLocatorImplTest {
         String title = locator.findInformation(315);
         System.out.println("title = " + title);
     }
-
-    public static void main(String[] args) {
-        new JCPJSFLocatorImplTest().jsr315();
-    }
 }

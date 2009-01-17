@@ -20,7 +20,7 @@ import javabot.dao.LogsDao;
 @Entity
 @Table(name = "logs")
 @NamedQueries({
-    @NamedQuery(name= LogsDao.TODAY, query = "from Logs s WHERE s.channel=:channel AND s.updated between :today and"
+    @NamedQuery(name= LogsDao.TODAY, query = "select s from Logs s WHERE s.channel=:channel AND s.updated between :today and"
         + " :tomorrow order by updated"),
     @NamedQuery(name=LogsDao.LOGGED_CHANNELS, query="select distinct s.channel from Logs s where s.channel like '#%'")
 })
@@ -44,7 +44,7 @@ public class Logs implements Serializable, Persistent {
         return id;
     }
 
-    public void setId(Long logsId) {
+    public void setId(final Long logsId) {
         id = logsId;
     }
 
@@ -52,7 +52,7 @@ public class Logs implements Serializable, Persistent {
         return nick;
     }
 
-    public void setNick(String user) {
+    public void setNick(final String user) {
         nick = user;
     }
 
@@ -60,7 +60,7 @@ public class Logs implements Serializable, Persistent {
         return channel;
     }
 
-    public void setChannel(String chanName) {
+    public void setChannel(final String chanName) {
         channel = chanName;
     }
 
@@ -69,7 +69,7 @@ public class Logs implements Serializable, Persistent {
         return message;
     }
 
-    public void setMessage(String logMessage) {
+    public void setMessage(final String logMessage) {
         message = logMessage;
     }
 
@@ -78,7 +78,7 @@ public class Logs implements Serializable, Persistent {
         return updated;
     }
 
-    public void setUpdated(Date date) {
+    public void setUpdated(final Date date) {
         updated = date;
     }
 
@@ -86,7 +86,7 @@ public class Logs implements Serializable, Persistent {
         return type;
     }
 
-    public void setType(Type value) {
+    public void setType(final Type value) {
         type = value;
     }
 

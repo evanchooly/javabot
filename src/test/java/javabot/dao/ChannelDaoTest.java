@@ -3,12 +3,12 @@ package javabot.dao;
 import java.util.List;
 
 import javabot.model.Channel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 public class ChannelDaoTest extends BaseServiceTest {
-    @SpringBeanByType
+    @Autowired
     private ChannelDao channelDao;
 
     @Test

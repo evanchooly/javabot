@@ -2,13 +2,13 @@ package javabot.operations;
 
 import java.util.List;
 
-import javabot.dao.ApiDao;
-import javabot.dao.ClazzDao;
 import javabot.BotEvent;
 import javabot.Message;
-import org.testng.annotations.Test;
+import javabot.dao.ApiDao;
+import javabot.dao.ClazzDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
-import org.unitils.spring.annotation.SpringBeanByType;
+import org.testng.annotations.Test;
 
 /**
  * Created Aug 9, 2007
@@ -17,9 +17,9 @@ import org.unitils.spring.annotation.SpringBeanByType;
  */
 @Test
 public class JavadocOperationTest extends BaseOperationTest {
-    @SpringBeanByType
+    @Autowired
     private ApiDao apiDao;
-    @SpringBeanByType
+    @Autowired
     private ClazzDao clazzDao;
 
     public void string() {

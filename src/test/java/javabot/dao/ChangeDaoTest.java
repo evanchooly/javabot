@@ -1,16 +1,15 @@
 package javabot.dao;
 
 import javabot.model.Change;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
-
 // Author: joed
 
 // Date  : Apr 15, 2007
 public class ChangeDaoTest extends BaseServiceTest {
 
-    @SpringBeanByType
+    @Autowired
     private ChangeDao changeDao;
 
     @Test

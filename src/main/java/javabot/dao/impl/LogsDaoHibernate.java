@@ -14,26 +14,25 @@ public class LogsDaoHibernate extends AbstractDaoHibernate<Logs> implements Logs
     }
 
     @SuppressWarnings({"unchecked"})
-    public List<Logs> dailyLog(String channel, Date date) {
-        Calendar cal = Calendar.getInstance();
+    public List<Logs> dailyLog(final String channel, final Date date) {
+        final Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.set(Calendar.HOUR, 0);
         cal.clear(Calendar.MINUTE);
         cal.clear(Calendar.SECOND);
         cal.clear(Calendar.MILLISECOND);
-        Date today = cal.getTime();
+        final Date today = cal.getTime();
         cal.add(Calendar.DATE, 1);
-        Date tomorrow = cal.getTime();
-        List list = getEntityManager().createNamedQuery(LogsDao.TODAY)
+        final Date tomorrow = cal.getTime();
+        return getEntityManager().createNamedQuery(LogsDao.TODAY)
                 .setParameter("channel", channel)
                 .setParameter("today", today)
                 .setParameter("tomorrow", tomorrow)
                 .getResultList();
-        return list;
     }
 
-    public void logMessage(Logs.Type type, String nick, String channel, String message) {
-        Logs logMessage = new Logs();
+    public void logMessage(final Logs.Type type, final String nick, final String channel, final String message) {
+        final Logs logMessage = new Logs();
         logMessage.setType(type);
         logMessage.setNick(nick);
         logMessage.setChannel(channel.toLowerCase());
@@ -42,8 +41,8 @@ public class LogsDaoHibernate extends AbstractDaoHibernate<Logs> implements Logs
         save(logMessage);
     }
 
-    public Logs getMessage(String nick, String channel) {
-        String query = "select s from Logs s where s.nick = :nick AND s.channel = :channel";
+    public Logs getMessage(final String nick, final String channel) {
+        final String query = "select s from Logs s where s.nick = :nick AND s.channel = :channel";
         return (Logs) getEntityManager().createQuery(query)
                 .setParameter("nick", nick)
                 .setParameter("channel", channel.toLowerCase())

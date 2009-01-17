@@ -4,33 +4,33 @@ import java.util.Date;
 import java.util.List;
 
 import javabot.model.Logs;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 public class LogDaoTest extends BaseServiceTest {
-    @SpringBeanByType
+    @Autowired
     private LogsDao logsDao;
 
     @Test
     public void addLogMessage() {
-        String nick = System.currentTimeMillis() + "test";
-        logsDao.logMessage(Logs.Type.MESSAGE, nick, "#test", "test");
-        Logs log = logsDao.getMessage(nick, "#test");
+        final String nick = System.currentTimeMillis() + "test";
+        logsDao.logMessage(Logs.Type.MESSAGE, nick, "##javabot", "test");
+        final Logs log = logsDao.getMessage(nick, "##javabot");
         Assert.assertEquals(log.getMessage(), "test");
     }
 
-    @Test
+    @Test(dependsOnMethods = {"addLogMessage"})
     public void findChannels() {
-        String nick = System.currentTimeMillis() + "test";
-        logsDao.logMessage(Logs.Type.MESSAGE, nick, "#test", "test");
-        List channels = logsDao.loggedChannels();
-        Assert.assertEquals("#test", channels.get(0));
+        final String nick = System.currentTimeMillis() + "test";
+        logsDao.logMessage(Logs.Type.MESSAGE, nick, "##javabot", "test");
+        final List channels = logsDao.loggedChannels();
+        Assert.assertEquals(channels.get(0), "##javabot");
     }
 
-    @Test
+    @Test(dependsOnMethods = {"addLogMessage"})
     public void getDailyLog() {
-        List<Logs> logdata = logsDao.dailyLog("#test", new Date());
+        final List<Logs> logdata = logsDao.dailyLog("##javabot", new Date());
         Assert.assertFalse(logdata.isEmpty(), "Should have log data");
     }
 }

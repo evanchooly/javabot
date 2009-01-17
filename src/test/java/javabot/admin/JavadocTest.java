@@ -12,7 +12,7 @@ import javadoc.JavadocParserTest;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@Test
+@Test(enabled=false)
 public class JavadocTest extends AdminOperationTest {
     public void parseJDK() {
         BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "admin javadoc "

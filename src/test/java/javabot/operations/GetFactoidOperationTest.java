@@ -7,18 +7,17 @@ import javabot.Action;
 import javabot.BotEvent;
 import javabot.Message;
 import javabot.dao.FactoidDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 @Test
 public class GetFactoidOperationTest extends BaseOperationTest {
-    private static final String PBV_VALUE = "Java only supports pass by value, not pass by reference (references"
-        + " to objects are passed by value). See http://tinyurl.com/ynr5d3, http://tinyurl.com/ywlv6d (especially"
-        + " http://tinyurl.com/yvppac), and http://tinyurl.com/4wgdh (search for \"Passing Reference Data Type "
-        + "Arguments\")";
+    private static final String PBV_VALUE = "Java only supports pass by value, *NOT* pass by reference. (References"
+        + " to objects are passed by value). For more information please see the following link:"
+        + " http://javachannel.net/wiki/pmwiki.php/FAQ/PassingVariables";
     private static final String ERROR_MESSAGE = "Should have found the factoid";
-    @SpringBeanByType
+    @Autowired
     private FactoidDao factoidDao;
 
     @Override
@@ -27,7 +26,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void straightGets() throws IOException {
-        testOperation("api", getFoundMessage("api", "http://java.sun.com/javase/6/docs/api/"), ERROR_MESSAGE);
+        testOperation("api", getFoundMessage("api", "http://java.sun.com/javase/current/docs/api/index.html"), ERROR_MESSAGE);
     }
 
     public void replyGets() {
@@ -35,7 +34,10 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void seeGets() {
-        testOperation("pebcak", getFoundMessage("pebkac", "Problem Exists Between Keyboard And Chair"),
+        testOperation("pebcak", getFoundMessage("pebcak",
+            "where the (P)roblem (E)xists (B)etween (C)hair (A)nd (K)eyboard. These sorts of problems"
+                + " infuriate employees of companies, but is a contractor's dream.  This is because it is like writing"
+                + " an open check to hourly based people."),
             ERROR_MESSAGE);
     }
 
@@ -44,7 +46,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void parameterReplacement() {
-        testOperation("bomb cheeser", "drops a humongous exploding turd on cheeser", ERROR_MESSAGE);
+        testOperation("bomb cheeser", "<randyjackson>cheeser, you're the bomb, dog!</randyjackson>", ERROR_MESSAGE);
     }
 
     public void whoReplacement() {
@@ -69,7 +71,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void badRandom() {
-        GetFactoidOperation operation = (GetFactoidOperation) getOperation();
+        final GetFactoidOperation operation = (GetFactoidOperation) getOperation();
         String message = "(1|2";
         Assert.assertEquals(operation.processRandomList(message), message, "Should just return message");
         message = "(1)";
@@ -78,15 +80,15 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void action() {
-        BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "hug " + SENDER);
-        List<Message> results = getOperation().handleMessage(event);
-        Message result = results.get(0);
+        final BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "hug " + SENDER);
+        final List<Message> results = getOperation().handleMessage(event);
+        final Message result = results.get(0);
         Assert.assertTrue(result instanceof Action, "Should be an action.");
     }
 
     @Test
     public void channelMessage() throws IOException {
-        BotEvent event = new BotEvent("#test", SENDER, "", "localhost", "pong is");
+        final BotEvent event = new BotEvent("##javabot", SENDER, "", "localhost", "pong is");
         Assert.assertEquals(getOperation().handleChannelMessage(event).size(), 0, "Should be an empty list");
     }
 

@@ -4,7 +4,8 @@ import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Message;
-import javabot.dao.BaseServiceTest;
+import javabot.operations.BaseOperationTest;
+import javabot.operations.BotOperation;
 import javabot.operations.NickometerOperation;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -14,24 +15,26 @@ import org.testng.annotations.Test;
  */
 
 @Test(groups = {"operations"})
-public class NickometerOperationsTest extends BaseServiceTest {
+public class NickometerOperationsTest extends BaseOperationTest {
 
-    private static final String CHANNEL = "#TEST";
+    private static final String CHANNEL = "##javabot";
     private static final String SENDER = "joed";
     private static final String LOGIN = "joed";
     private static final String HOSTNAME = "localhost";
 
-    private NickometerOperation nickOperation = new NickometerOperation(getJavabot());
+    public BotOperation createOperation() {
+        return new NickometerOperation(getJavabot());
+    }
 
     public void testNick() {
-        BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "nickometer MAGNIFICENT");
-        List<Message> results = nickOperation.handleMessage(event);
+        final BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "nickometer MAGNIFICENT");
+        final List<Message> results = getOperation().handleMessage(event);
         Assert.assertEquals(results.get(0).getMessage(), "The nick MAGNIFICENT is 95% lame.");
     }
 
     public void testNickCh33s3r() {
-        BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "nickometer ch33s3r");
-        List<Message> results = nickOperation.handleMessage(event);
+        final BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "nickometer ch33s3r");
+        final List<Message> results = getOperation().handleMessage(event);
         Assert.assertEquals(results.get(0).getMessage(), "The nick ch33s3r is 65% lame.");
     }
 }

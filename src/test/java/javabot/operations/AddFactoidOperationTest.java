@@ -1,28 +1,30 @@
 package javabot.operations;
 
 import java.io.IOException;
+import java.util.List;
 
 import javabot.BotEvent;
+import javabot.Message;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
 
-@Test(groups = {"operations"}, enabled=false)
+@Test(groups = {"operations"})
 public class AddFactoidOperationTest extends BaseOperationTest {
 
-    @SpringBeanByType
+    @Autowired
     private FactoidDao factoidDao;
 
-    @SpringBeanByType
+    @Autowired
     private ChangeDao changeDao;
 
     public AddFactoidOperationTest() {
     }
 
-    public AddFactoidOperationTest(String name) {
+    public AddFactoidOperationTest(final String name) {
         this();
     }
 
@@ -52,7 +54,7 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     }
 
     public void factoidAdd() {
-        String errorMessage = "Should have added the factoid";
+        final String errorMessage = "Should have added the factoid";
         testOperation("test pong is pong", OKAY, errorMessage);
         testOperation("ping $1 is <action>sends some radar to $1, " + "awaits a response then forgets how long it took", OKAY, errorMessage);
         testOperation("what? is a question", OKAY, errorMessage);
@@ -61,16 +63,20 @@ public class AddFactoidOperationTest extends BaseOperationTest {
 
     @Test(dependsOnMethods = {"factoidAdd"})
     public void duplicateAdd() throws IOException {
-        String errorMessage = "Should not have added the factoid";
-        String message = "test pong is pong";
+        final String errorMessage = "Should not have added the factoid";
+        final String message = "test pong is pong";
         testOperation(message, OKAY, errorMessage);
         testOperation(message, ALREADY_HAVE_FACTOID, errorMessage);
     }
 
     public void blankValue() {
-        String response = "Invalid factoid value";
-        String errorMessage = "Should not have added the factoid";
-        testOperation("pong is", response, errorMessage);
+        final String response = "Invalid factoid value";
+        final String errorMessage = "Should not have added the factoid";
+        final BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "pong is");
+        final List<Message> results = getOperation().handleMessage(event);
+        System.out.println("results = " + results);
+        Assert.assertTrue(!results.isEmpty());
+        Assert.assertEquals(results.get(0).getMessage(), response);//, errorMessage);
     }
 
     public void addLog() {
@@ -80,16 +86,17 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     }
 
     public void channelMessage() throws IOException {
-        BotEvent event = new BotEvent("#test", SENDER, "", "localhost", "pong is");
+        final BotEvent event = new BotEvent("##javabot", SENDER, "", "localhost", "pong is");
         Assert.assertEquals(getOperation().handleChannelMessage(event).size(), 0, "Should be an empty list");
     }
 
     public void parensFactoids() {
-        String factoid = "should be the full (/hi there) factoid";
+        final String factoid = "should be the full (/hi there) factoid";
         testOperation("asdf is <reply>" + factoid, OKAY, "Should have added the factoid.");
 
-        GetFactoidOperation operation = new GetFactoidOperation(getJavabot());
-        String errorMessage = "Should have found the factoid";
+        final GetFactoidOperation operation = new GetFactoidOperation(getJavabot());
+        inject(operation);
+        final String errorMessage = "Should have found the factoid";
         testOperation("asdf", factoid, errorMessage, operation);
     }
 

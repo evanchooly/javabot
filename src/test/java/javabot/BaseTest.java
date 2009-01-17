@@ -18,8 +18,8 @@ public class BaseTest {
     public static final String OKAY = "Okay, " + SENDER + ".";
     public static final String ALREADY_HAVE_FACTOID = "I already have a factoid with that name, " + SENDER;
     private static Javabot bot;
-    private PircBot testBot;
-    private ApplicationContext context;
+    private static PircBot testBot;
+    private final ApplicationContext context;
 
     public BaseTest() {
         context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
@@ -28,12 +28,10 @@ public class BaseTest {
     }
 
     protected final Javabot createBot() {
-        if (bot != null) {
-            bot.disconnect();
-            bot.dispose();
+        if (bot == null) {
+            bot = new Javabot(context);
+            bot.joinChannel("##javabot");
         }
-        bot = new Javabot(context);
-        bot.joinChannel("##javabot");
         return bot;
     }
 
@@ -45,25 +43,28 @@ public class BaseTest {
     }
 
     public PircBot getTestBot() {
-        if (testBot == null) {
-            testBot = new PircBot() {
-                {
-                    setName("javabot" + System.currentTimeMillis());
-                }
+        synchronized (context) {
+            if (testBot == null) {
+                testBot = new PircBot() {
+                    {
+                        setName("javabot" + System.currentTimeMillis());
+                    }
 
-                @Override
-                protected void onMessage(final String s, final String s1, final String s2, final String s3, final String s4) {
-                    super.onMessage(s, s1, s2, s3, s4);
+                    @Override
+                    protected void onMessage(final String s, final String s1, final String s2, final String s3,
+                        final String s4) {
+                        super.onMessage(s, s1, s2, s3, s4);
+                    }
+                };
+                try {
+                    testBot.connect("irc.freenode.net");
+                    testBot.joinChannel(CHANNEL);
+                } catch (Exception e) {
+                    Assert.fail(e.getMessage());
                 }
-            };
-            try {
-                testBot.connect("irc.freenode.net");
-                testBot.joinChannel(CHANNEL);
-            } catch (Exception e) {
-                Assert.fail(e.getMessage());
             }
+            return testBot;
         }
-        return testBot;
     }
 
     protected final void inject(final Object object) {

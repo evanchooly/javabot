@@ -35,15 +35,17 @@ public class AdminDaoHibernate extends AbstractDaoHibernate<Admin> implements Ad
     public Admin getAdmin(final String userName) {
         return (Admin)getEntityManager().createNamedQuery(AdminDao.AUTHENTICATE)
             .setParameter("username", userName)
-            .getSingleResult();
+            .getResultList();
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Admin getAdmin(final String userName, final String hostName) {
-        return (Admin)getEntityManager().createNamedQuery(AdminDao.FIND_WITH_HOST)
+        List<Admin> list = getEntityManager().createNamedQuery(AdminDao.FIND_WITH_HOST)
             .setParameter("username", userName)
             .setParameter("hostName", hostName)
-            .getSingleResult();
+            .getResultList();
+        return list.isEmpty() ? null : list.get(0);
     }
 
     @Override
