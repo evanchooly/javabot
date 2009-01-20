@@ -5,9 +5,11 @@
 db/apis.dump
 db/classes.dump
 db/methods.dump
+db/javabot.hsqldb.*
 test.iml
 webapp.iml
 javabot.iml
 javabot.ipr
 javabot.iws
 target
+src/main/resources/locations-override.properties
