@@ -13,8 +13,10 @@
             <list>
                 <value>classpath:locations.properties</value>
                 <value>classpath:locations-override.properties</value>
+                <value>file:javabot.properties</value>
             </list>
         </property>
+        <property name="ignoreResourceNotFound" value="true"/>
     </bean>
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">

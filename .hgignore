@@ -20,3 +20,5 @@ db/methods.dump
 db/pgimport.sh
 db/schema.ddl
 db/seen.dump
+db/javabot.hsqldb*
+src/main/resources/locations-override.properties
