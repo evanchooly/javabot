@@ -15,31 +15,24 @@ import org.slf4j.LoggerFactory;
  */
 public class TellOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(TellOperation.class);
-    private static final int MAX_TELL_MEMORY = 100;
-    private static final int THROTTLE_TIME = 10 * 1000; // 10 secs.
-    private final List<TellInfo> lastTells = new ArrayList<TellInfo>(MAX_TELL_MEMORY);
+    private static final Throttler<TellInfo> throttler = 
+	new Throttler<TellInfo> (100, 10 * 1000);
 
     public TellOperation(Javabot bot) {
         super(bot);
     }
 
-    private static final class TellInfo {
-        private final long when;
+    private static final class TellInfo implements ThrottleItem<TellInfo>{
         private final String nick;
         private final String msg;
 
         public TellInfo(String nick, String msg) {
             this.nick = nick;
             this.msg = msg;
-            when = System.currentTimeMillis();
         }
 
-        public long getWhen() {
-            return when;
-        }
-
-        public boolean match(String nick, String msg) {
-            return this.nick.equals(nick) && this.msg.equals(msg);
+        public boolean matches(TellInfo ti) {
+            return nick.equals(ti.nick) && msg.equals(ti.msg);
         }
     }
 
@@ -89,7 +82,7 @@ public class TellOperation extends BotOperation {
         String thing = tellSubject.getSubject();
         if (nick.equals(getBot().getNick())) {
             messages.add(new Message(channel, event, "I don't want to talk to myself"));
-        } else if (alreadyTold(nick, thing)) {
+        } else if (throttler.isThrottled (new TellInfo(nick, thing))) {
             if (log.isDebugEnabled()) {
                 log.debug("skipping tell of " + thing + " to " + nick + ", already told " + nick + " about " + thing);
             }
@@ -103,7 +96,7 @@ public class TellOperation extends BotOperation {
             messages.add(new Message(channel, event,"I'm afraid I can't let you do that, Dave."));
         } else {
             List<Message> responses = getBot().getResponses(nick, nick, login, hostname, thing);
-            addTold(nick, thing);
+	    throttler.addThrottleItem (new TellInfo(nick, thing));
             if (isPrivateMessage) {
                 messages.add(new Message(nick, event,sender + " wants to tell you the following:"));
                 messages.addAll(responses);
@@ -157,29 +150,5 @@ public class TellOperation extends BotOperation {
 
     private boolean isTellCommand(String message) {
         return message.startsWith("tell ") || message.startsWith("~");
-    }
-
-    private boolean alreadyTold(String nick, String msg) {
-        long now = System.currentTimeMillis();
-        if (log.isDebugEnabled()) {
-            log.debug("alreadyTold: " + nick + " " + msg);
-        }
-        for (TellInfo ti : lastTells) {
-            if (log.isDebugEnabled()) {
-                log.debug(ti.nick + " " + ti.msg);
-            }
-            if (now - ti.getWhen() < THROTTLE_TIME && ti.match(nick, msg)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void addTold(String nick, String msg) {
-        TellInfo ti = new TellInfo(nick, msg);
-        lastTells.add(ti);
-        while (lastTells.size() > MAX_TELL_MEMORY) {
-            lastTells.remove(0);
-        }
     }
 }
