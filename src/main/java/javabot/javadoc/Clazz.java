@@ -20,9 +20,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.ConstructorDoc;
-import com.sun.javadoc.MethodDoc;
 import javabot.dao.ClazzDao;
 import javabot.model.Persistent;
 import org.apache.html.dom.HTMLDocumentImpl;
@@ -258,34 +255,6 @@ public class Clazz extends JavadocElement implements Persistent {
     @Override
     public String toString() {
         return packageName + "." + className;
-    }
-
-    public final void populate(final ClassDoc doc, final ClazzDao dao) {
-        if (doc != null && (methods == null || methods.isEmpty())) {
-            final String pkg = doc.containingPackage().name();
-            packageName = pkg;
-            className = doc.name();
-            final ClassDoc superClazz = doc.superclass();
-            if (superClazz != null) {
-                if (!superClazz.isPackagePrivate()) {
-                    superClass = dao.getOrCreate(null, api, superClazz.containingPackage().name(), superClazz.name());
-                } else {
-                    System.out.println("superClazz = " + superClazz);
-                }
-            }
-            System.out.println("creating class " + this);
-            methods = new ArrayList<Method>(doc.methods().length + doc.constructors().length);
-            final String path = pkg == null ? "" : pkg.replaceAll("\\.", "/") + "/";
-            setLongUrl(getApi().getBaseUrl() + "/" + path + className + ".html");
-            dao.save(this);
-            for (final MethodDoc methodDoc : doc.methods()) {
-                methods.add(new Method(methodDoc, this));
-            }
-            for (final ConstructorDoc conDoc : doc.constructors()) {
-                methods.add(new Method(conDoc, this));
-            }
-            Collections.sort(methods, new MethodComparator());
-        }
     }
 
     private static class MethodComparator implements Comparator<Method> {

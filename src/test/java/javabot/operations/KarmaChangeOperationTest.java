@@ -19,12 +19,12 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
     public void updateKarma() {
         Karma karma = karmaDao.find("testjavabot");
         int value = karma != null ? karma.getValue() : 0;
-        testOperation("testjavabot++", "testjavabot has a karma level of " + ++value + ", " + SENDER, "");
-        testOperation("testjavabot++", "testjavabot has a karma level of " + ++value + ", " + SENDER, "");
-        testOperation("testjavabot--", "testjavabot has a karma level of " + --value + ", " + SENDER, "");
-        testOperation("testjavabot--", "testjavabot has a karma level of " + --value + ", " + SENDER, "");
-        testOperation("testjavabot--", "testjavabot has a karma level of " + --value + ", " + SENDER, "");
-        testOperation("testjavabot++", "testjavabot has a karma level of " + ++value + ", " + SENDER, "");
+        testOperation("testjavabot++", "testjavabot has a karma level of " + (value+1) + ", " + SENDER, "");
+        testOperation("testjavabot++", "Rest those fingers, Tex", "");
+        testOperation("testjavabot--", "Rest those fingers, Tex", "");
+        testOperation("testjavabot--", "Rest those fingers, Tex", "");
+        testOperation("testjavabot--", "Rest those fingers, Tex", "");
+        testOperation("testjavabot++", "Rest those fingers, Tex", "");
     }
 
     public void logNew() {

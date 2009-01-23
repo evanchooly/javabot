@@ -8,6 +8,5 @@ public class Home extends AuthenticatedWebPage {
         add(new FeedbackPanel("feedback"));
         add(new AdminConfigPanel("admins"));
         add(new BotConfigPanel("bot"));
-        add(new JavadocPanel("javadoc"));
     }
 }

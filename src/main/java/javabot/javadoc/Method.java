@@ -8,8 +8,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.sun.javadoc.ExecutableMemberDoc;
-import com.sun.javadoc.Parameter;
 import javabot.model.Persistent;
 
 @Entity
@@ -46,29 +44,6 @@ public class Method extends JavadocElement implements Persistent {
         longSignatureStripped = longSignatureTypes.replaceAll(" ", "");
         shortSignatureStripped = shortSignatureTypes.replaceAll(" ", "");
         setLongUrl( clazz.getLongUrl() + "#" + signature.replaceAll(" ", "%20"));
-    }
-
-    @SuppressWarnings({"StringConcatenationInsideStringBufferAppend", "StringContatenationInLoop"})
-    public Method(final ExecutableMemberDoc doc, final Clazz parent) {
-        clazz = parent;
-        methodName = doc.name();
-        final Parameter[] parameters = doc.parameters();
-        final StringBuilder longTypes = new StringBuilder();
-        final StringBuilder shortTypes = new StringBuilder();
-        for (final Parameter parameter : parameters) {
-            if (paramCount != 0) {
-                longTypes.append(", ");
-                shortTypes.append(", ");
-            }
-            longTypes.append(parameter.type().qualifiedTypeName() + parameter.type().dimension());
-            shortTypes.append(parameter.type().typeName() + parameter.type().dimension());
-            paramCount++;
-        }
-        longSignatureTypes = longTypes.toString();
-        shortSignatureTypes = shortTypes.toString();
-        longSignatureStripped = longSignatureTypes.replaceAll(" ", "");
-        shortSignatureStripped = shortSignatureTypes.replaceAll(" ", "");
-        setLongUrl(clazz.getLongUrl() + "#" + (doc.name() + "(" + longSignatureTypes + ")").replaceAll(" ", "%20"));
     }
 
     @Id
