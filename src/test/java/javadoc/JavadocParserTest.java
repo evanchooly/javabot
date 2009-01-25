@@ -1,7 +1,7 @@
 package javadoc;
 
-import java.io.StringWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
@@ -12,10 +12,10 @@ import javabot.dao.ClazzDao;
 import javabot.javadoc.Api;
 import javabot.javadoc.Clazz;
 import javabot.javadoc.JavadocParser;
+import org.jaxen.JaxenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.Test;
-import org.jaxen.JaxenException;
 import org.xml.sax.SAXException;
 
 /**
@@ -23,12 +23,12 @@ import org.xml.sax.SAXException;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@Test(enabled=false)
+@Test(groups = {"javadoc"})
 public class JavadocParserTest extends BaseTest {
     public static final String API_NAME = "JDK";
-    //        final String urlString = new File("/Users/jlee/Desktop/javadoc/docs/api").toURI().toURL().toString();
     public static final String API_URL_STRING = "http://java.sun.com/javase/6/docs/api";
-
+//    public static final String API_NAME = "JSF";
+//    public static final String API_URL_STRING = "http://java.sun.com/javaee/javaserverfaces/1.2_MR1/docs/api";
     @Autowired
     private ApiDao dao;
     @Autowired
@@ -42,10 +42,12 @@ public class JavadocParserTest extends BaseTest {
 
     @Transactional
     public void parse() throws MalformedURLException {
-        final Api api = fetchApi(API_NAME, API_URL_STRING);
-        final JavadocParser parser = new JavadocParser();
-        inject(parser);
-        parser.parse(api, Arrays.asList("java", "javax"), writer);
+        if (dao.find(JavadocParserTest.API_NAME) == null) {
+            final Api api = fetchApi(API_NAME, API_URL_STRING);
+            final JavadocParser parser = new JavadocParser();
+            inject(parser);
+            parser.parse(api, Arrays.asList("java", "javax"), writer);
+        }
     }
 
     private Api fetchApi(final String name, final String urlString) {
@@ -58,7 +60,7 @@ public class JavadocParserTest extends BaseTest {
         return api;
     }
 
-    @Transactional
+    @Test(dependsOnMethods = {"parse"})
     public void generics() throws JaxenException, IOException, SAXException {
         final Api api = fetchApi("GenericJDK", API_URL_STRING);
         final Clazz clazz = new Clazz();

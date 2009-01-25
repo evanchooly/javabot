@@ -1,6 +1,6 @@
 package javabot.dao.impl;
 
-import javabot.dao.AbstractDaoHibernate;
+import javabot.dao.AbstractDaoImpl;
 import javabot.dao.LogsDao;
 import javabot.model.Logs;
 
@@ -8,8 +8,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class LogsDaoHibernate extends AbstractDaoHibernate<Logs> implements LogsDao {
-    public LogsDaoHibernate() {
+public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
+    public LogsDaoImpl() {
         super(Logs.class);
     }
 

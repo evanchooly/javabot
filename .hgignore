@@ -7,6 +7,7 @@ webapp.iml
 javabot.iml
 javabot.ipr
 javabot.iws
+javabot.properties
 target
 test-output
 db/apis.dump
@@ -22,3 +23,4 @@ db/schema.ddl
 db/seen.dump
 db/javabot.hsqldb*
 src/main/resources/locations-override.properties
+src/test/resources/locations-overrides.properties

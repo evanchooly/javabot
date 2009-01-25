@@ -3,7 +3,7 @@ package javabot.dao.impl;
 import java.util.List;
 import javax.persistence.NoResultException;
 
-import javabot.dao.AbstractDaoHibernate;
+import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ApiDao;
 import javabot.javadoc.Api;
 
@@ -13,8 +13,8 @@ import javabot.javadoc.Api;
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
 @SuppressWarnings({"unchecked"})
-public class ApiDaoHibernate extends AbstractDaoHibernate<Api> implements ApiDao {
-    protected ApiDaoHibernate() {
+public class ApiDaoImpl extends AbstractDaoImpl<Api> implements ApiDao {
+    protected ApiDaoImpl() {
         super(Api.class);
     }
 

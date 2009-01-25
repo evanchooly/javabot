@@ -4,20 +4,26 @@ import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Message;
-import org.testng.annotations.Test;
+import javabot.dao.ApiDao;
 import javadoc.JavadocParserTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 /**
  * Created Oct 26, 2008
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@Test(enabled=false)
+@Test
 public class JavadocTest extends AdminOperationTest {
+    @Autowired
+    private ApiDao dao;
+
     public void parseJDK() {
-        BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "admin javadoc "
-            + JavadocParserTest.API_NAME + " " + JavadocParserTest.API_URL_STRING + " java javax" );
-        List<Message> list = getOperation().handleMessage(event);
-        System.out.println("list = " + list);
+        final BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "admin javadoc "
+            + JavadocParserTest.API_NAME + " " + JavadocParserTest.API_URL_STRING);
+        final List<Message> list = getOperation().handleMessage(event);
+        Assert.assertNotNull(dao.find(JavadocParserTest.API_NAME));
     }
 }

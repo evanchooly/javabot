@@ -9,13 +9,13 @@ import javabot.Message;
 import javabot.dao.FactoidDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 @Test
 public class GetFactoidOperationTest extends BaseOperationTest {
-    private static final String PBV_VALUE = "Java only supports pass by value, *NOT* pass by reference. (References"
-        + " to objects are passed by value). For more information please see the following link:"
-        + " http://javachannel.net/wiki/pmwiki.php/FAQ/PassingVariables";
+    private static final String REPLY_VALUE = "I'm a reply!";
     private static final String ERROR_MESSAGE = "Should have found the factoid";
     @Autowired
     private FactoidDao factoidDao;
@@ -25,50 +25,72 @@ public class GetFactoidOperationTest extends BaseOperationTest {
         return new GetFactoidOperation(getJavabot());
     }
 
+    @BeforeClass
+    public void createGets() {
+        deleteFactoids();
+        factoidDao.addFactoid(SENDER, "api", "http://java.sun.com/javase/current/docs/api/index.html");
+        factoidDao.addFactoid(SENDER, "replyTest", "<reply>I'm a reply!");
+        factoidDao.addFactoid(SENDER, "seeTest", "<see>replyTest");
+        factoidDao.addFactoid(SENDER, "noReply", "I'm a reply!");
+        factoidDao.addFactoid(SENDER, "replace $1", "<reply>I replaced you " + SENDER);
+        factoidDao.addFactoid(SENDER, "hey", "<reply>Hello, " + SENDER);
+        factoidDao.addFactoid(SENDER, "coin", "<reply>(heads|tails)");
+        factoidDao.addFactoid(SENDER, "hug $1", "<action> hugs $1");
+    }
+
+    @AfterClass
+    public void deleteFactoids() {
+        delete("api");
+        delete("replyTest");
+        delete("seeTest");
+        delete("noReply");
+        delete("replace $1");
+        delete("hey");
+        delete("coin");
+        delete("hug $1");
+    }
+
+    private void delete(final String key) {
+        while (factoidDao.hasFactoid(key)) {
+            factoidDao.delete(SENDER, key);
+        }
+    }
+
     public void straightGets() throws IOException {
-        testOperation("api", getFoundMessage("api", "http://java.sun.com/javase/current/docs/api/index.html"), ERROR_MESSAGE);
+        testOperation("api", getFoundMessage("api", "http://java.sun.com/javase/current/docs/api/index.html"));
     }
 
     public void replyGets() {
-        testOperation("pass by value", PBV_VALUE, ERROR_MESSAGE);
+        testOperation("replyTest", REPLY_VALUE);
     }
 
     public void seeGets() {
-        testOperation("pebcak", getFoundMessage("pebcak",
-            "where the (P)roblem (E)xists (B)etween (C)hair (A)nd (K)eyboard. These sorts of problems"
-                + " infuriate employees of companies, but is a contractor's dream.  This is because it is like writing"
-                + " an open check to hourly based people."),
-            ERROR_MESSAGE);
+        testOperation("seeTest", REPLY_VALUE);
     }
 
     public void seeReplyGets() {
-        testOperation("pbv", PBV_VALUE, ERROR_MESSAGE);
+        testOperation("seeTest", REPLY_VALUE);
     }
 
     public void parameterReplacement() {
-        testOperation("bomb cheeser", "<randyjackson>cheeser, you're the bomb, dog!</randyjackson>", ERROR_MESSAGE);
+        testOperation("replace " + SENDER, "I replaced you " + SENDER);
     }
 
     public void whoReplacement() {
-        testOperation("hey", "Hello, " + SENDER, ERROR_MESSAGE);
+        testOperation("hey", "Hello, " + SENDER);
     }
 
     public void randomList() {
         testOperation("coin", new String[]{"heads", "tails"}, ERROR_MESSAGE);
     }
 
-    public void questionFactoid() {
-        testOperation("how to use spinners?", getFoundMessage("how to use spinners",
-            "http://java.sun.com/docs/books/tutorial/uiswing/components/spinner.html"), ERROR_MESSAGE);
-    }
-
     @Test(enabled = false)
     public void guessFactoid() {
-        testOperation("bre", "I guess the factoid 'label line breaks' might be appropriate:", ERROR_MESSAGE);
+        testOperation("bre", "I guess the factoid 'label line breaks' might be appropriate:");
     }
 
     public void noGuess() {
-        testOperation("apiz", SENDER + ", I have no idea what apiz is.", ERROR_MESSAGE);
+        testOperation("apiz", SENDER + ", I have no idea what apiz is.");
     }
 
     public void badRandom() {

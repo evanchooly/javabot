@@ -20,21 +20,21 @@ public class AddAdmin implements Command {
     private AdminDao dao;
 
     @Override
-    public List<Message> execute(Javabot bot, BotEvent event, List<String> args) {
-        List<Message> messages = new ArrayList<Message>();
-        String userName = args.get(0);
-        User user = findUser(bot, event, userName);
+    public List<Message> execute(final Javabot bot, final BotEvent event, final List<String> args) {
+        final List<Message> messages = new ArrayList<Message>();
+        final String userName = args.get(0);
+        final User user = findUser(bot, event, userName);
         if (user == null) {
             messages.add(new Message(event.getChannel(), event, "That user is not on this channel: " + userName));
         } else {
             if (args.size() != 2) {
                 messages.add(new Message(event.getChannel(), event, "Usage: addAdmin <user> <host>"));
             } else {
-                String hostName = args.get(1);
+                final String hostName = args.get(1);
                 if (dao.getAdmin(user.getNick(), hostName) != null) {
                     messages.add(new Message(event.getChannel(), event, user.getNick() + " is already a bot admin"));
                 } else {
-                    dao.create(user.getNick(), null, hostName);
+                    dao.create(user.getNick(), hostName);
                     messages
                         .add(new Message(event.getChannel(), event, user.getNick() + " has been added as a bot admin"));
                 }
@@ -43,8 +43,8 @@ public class AddAdmin implements Command {
         return messages;
     }
 
-    private User findUser(Javabot bot, BotEvent event, String name) {
-        User[] users = bot.getUsers(event.getChannel());
+    private User findUser(final Javabot bot, final BotEvent event, final String name) {
+        final User[] users = bot.getUsers(event.getChannel());
         User user = null;
         for (int index = 0; user == null && index < users.length; index++) {
             if (users[index].getNick().equals(name)) {

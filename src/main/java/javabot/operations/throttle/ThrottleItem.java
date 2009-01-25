@@ -1,4 +1,4 @@
-package javabot.operations;
+package javabot.operations.throttle;
 
 public interface ThrottleItem<T extends ThrottleItem> {
     /** Check if this item matches the other item 

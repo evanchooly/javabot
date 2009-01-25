@@ -8,11 +8,11 @@ import javabot.model.Persistent;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class AbstractDaoHibernate<T> implements BaseDao<T> {
+public class AbstractDaoImpl<T> implements BaseDao<T> {
     private final Class entityClass;
     private EntityManager entityManager;
 
-    protected AbstractDaoHibernate(final Class dataClass) {
+    protected AbstractDaoImpl(final Class dataClass) {
         entityClass = dataClass;
     }
 

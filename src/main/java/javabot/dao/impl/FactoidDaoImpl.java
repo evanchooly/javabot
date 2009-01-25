@@ -2,21 +2,21 @@ package javabot.dao.impl;
 
 import java.util.Date;
 import java.util.List;
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import javabot.dao.AbstractDaoHibernate;
+import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Factoid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
-public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implements FactoidDao {
+public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidDao {
     @Autowired
     private ChangeDao changeDao;
 
-    public FactoidDaoHibernate() {
+    public FactoidDaoImpl() {
         super(Factoid.class);
     }
 
@@ -25,12 +25,12 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         final StringBuilder query = new StringBuilder("from Factoid f");
         if (qp.hasSort()) {
             query.append(" order by ")
-                    .append(qp.getSort())
-                    .append(qp.isSortAsc() ? " asc" : " desc");
+                .append(qp.getSort())
+                .append(qp.isSortAsc() ? " asc" : " desc");
         }
         return getEntityManager().createQuery(query.toString())
-                .setFirstResult(qp.getFirst())
-                .setMaxResults(qp.getCount()).getResultList();
+            .setFirstResult(qp.getFirst())
+            .setMaxResults(qp.getCount()).getResultList();
     }
 
     @SuppressWarnings({"unchecked"})
@@ -42,14 +42,15 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         factoid.setUpdated(new Date());
         getEntityManager().flush();
         super.save(factoid);
-        changeDao
-                .logChange(factoid.getUserName() + " changed '" + factoid.getName() + "' to '" + factoid.getValue() + "'");
+        changeDao.logChange(factoid.getUserName() + " changed '" + factoid.getName()
+            + "' to '" + factoid.getValue() + "'");
     }
 
     public boolean hasFactoid(final String key) {
         return getFactoid(key) != null;
     }
 
+    @Transactional
     public void addFactoid(final String sender, final String key, final String value) {
         final Factoid factoid = new Factoid();
         factoid.setId(factoid.getId());
@@ -64,19 +65,18 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
 
     public void delete(final String sender, final String key) {
         final Factoid factoid = getFactoid(key);
-        delete(factoid.getId());
-        changeDao.logChange(sender + " removed '" + key + "'");
+        if (factoid != null) {
+            delete(factoid.getId());
+            changeDao.logChange(sender + " removed '" + key + "'");
+        }
     }
 
+    /** @noinspection unchecked*/
     public Factoid getFactoid(final String name) {
-        Factoid factoid = null;
-        try {
-            factoid = (Factoid) getEntityManager().createNamedQuery(FactoidDao.BY_NAME)
-                    .setParameter("name", name)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-        }
-        return factoid;
+            final List<Factoid> list = getEntityManager().createNamedQuery(FactoidDao.BY_NAME)
+                .setParameter("name", name)
+                .getResultList();
+        return list.isEmpty() ? null : list.get(0);
     }
 
     public Long count() {
@@ -110,7 +110,7 @@ public class FactoidDaoHibernate extends AbstractDaoHibernate<Factoid> implement
         }
         if (!count && qp != null && qp.hasSort()) {
             hql.append("order by upper(target.").append(qp.getSort()).append(
-                    ") ").append(qp.isSortAsc() ? " asc" : " desc");
+                ") ").append(qp.isSortAsc() ? " asc" : " desc");
         }
         final Query query = getEntityManager().createQuery(hql.toString());
         if (filter.getName() != null) {

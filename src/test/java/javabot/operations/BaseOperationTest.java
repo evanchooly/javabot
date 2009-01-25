@@ -24,16 +24,15 @@ public abstract class BaseOperationTest extends BaseTest /*extends UnitilsTestNG
         inject(forgetFactoidOperation);
     }
 
-    protected void testOperation(final String message, final String response, final String errorMessage) {
-        testOperation(message, response, errorMessage, getOperation());
+    protected void testOperation(final String message, final String response) {
+        testOperation(message, response, getOperation());
     }
 
-    protected void testOperation(final String message, final String response, final String errorMessage,
-        final BotOperation operation) {
+    protected void testOperation(final String message, final String response, final BotOperation operation) {
         final BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, message);
         final List<Message> results = operation.handleMessage(event);
         Assert.assertTrue(!results.isEmpty());
-        Assert.assertEquals(results.get(0).getMessage(), response, errorMessage);
+        Assert.assertEquals(results.get(0).getMessage(), response);
     }
 
     protected void testOperation(final String message, final String[] responses, final String errorMessage) {
@@ -48,7 +47,7 @@ public abstract class BaseOperationTest extends BaseTest /*extends UnitilsTestNG
         boolean success = false;
         for (final String response : responses) {
             try {
-                Assert.assertEquals(response, result.getMessage(), errorMessage);
+                Assert.assertEquals(response, result.getMessage());
                 success = true;
             } catch (AssertionError ae) {
                 // try next
@@ -77,7 +76,6 @@ public abstract class BaseOperationTest extends BaseTest /*extends UnitilsTestNG
 
     protected void forgetFactoid(final String name) {
         testOperation("forget " + name, "I forgot about " + name + ", " + SENDER + ".",
-            "I never knew about " + name + " anyway, " + SENDER
-                + ".", forgetFactoidOperation);
+            forgetFactoidOperation);
     }
 }

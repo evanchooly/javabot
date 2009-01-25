@@ -21,11 +21,11 @@ public class ForgetFactoidOperationTest extends BaseOperationTest {
         if (!factoidDao.hasFactoid("afky")) {
             factoidDao.addFactoid(SENDER, "afky", "test");
         }
-        testOperation("forget afky", "I forgot about afky, " + SENDER + ".", "Should have forgotten factoid");
+        testOperation("forget afky", "I forgot about afky, " + SENDER + ".");
     }
 
     public void nonexistantFactoid() {
-        testOperation("forget asdfghjkl", "I never knew about asdfghjkl anyway, " + SENDER + ".", "Should not have known about factoid");
+        testOperation("forget asdfghjkl", "I never knew about asdfghjkl anyway, " + SENDER + ".");
     }
 
     @Override

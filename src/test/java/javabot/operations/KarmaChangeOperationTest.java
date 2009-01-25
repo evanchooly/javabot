@@ -19,18 +19,18 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
     public void updateKarma() {
         Karma karma = karmaDao.find("testjavabot");
         int value = karma != null ? karma.getValue() : 0;
-        testOperation("testjavabot++", "testjavabot has a karma level of " + (value+1) + ", " + SENDER, "");
-        testOperation("testjavabot++", "Rest those fingers, Tex", "");
-        testOperation("testjavabot--", "Rest those fingers, Tex", "");
-        testOperation("testjavabot--", "Rest those fingers, Tex", "");
-        testOperation("testjavabot--", "Rest those fingers, Tex", "");
-        testOperation("testjavabot++", "Rest those fingers, Tex", "");
+        testOperation("testjavabot++", "testjavabot has a karma level of " + (value+1) + ", " + SENDER);
+        testOperation("testjavabot++", "Rest those fingers, Tex");
+        testOperation("testjavabot--", "Rest those fingers, Tex");
+        testOperation("testjavabot--", "Rest those fingers, Tex");
+        testOperation("testjavabot--", "Rest those fingers, Tex");
+        testOperation("testjavabot++", "Rest those fingers, Tex");
     }
 
     public void logNew() {
         String target = new Date().getTime() + "";
         int karma = getKarma(target) + 1;
-        testOperation(target + "++", target + " has a karma level of " + karma + ", " + SENDER, "");
+        testOperation(target + "++", target + " has a karma level of " + karma + ", " + SENDER);
         String message = SENDER + " changed '" + target + "' to '" + karma + "'";
         Assert.assertTrue(changeDao.findLog(message));
         karmaDao.delete(karmaDao.find(target).getId());
@@ -39,7 +39,7 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
     public void logChanged() {
         String target = "javabot";
         int karma = getKarma(target) + 1;
-        testOperation(target + "++", target + " has a karma level of " + karma + ", " + SENDER, "");
+        testOperation(target + "++", target + " has a karma level of " + karma + ", " + SENDER);
     }
 
     public void changeOwnKarma() {

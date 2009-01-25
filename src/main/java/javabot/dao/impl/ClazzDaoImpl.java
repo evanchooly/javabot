@@ -5,7 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import javabot.dao.AbstractDaoHibernate;
+import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ClazzDao;
 import javabot.javadoc.Clazz;
 import javabot.javadoc.Method;
@@ -15,8 +15,8 @@ import javabot.javadoc.Method;
  *
  * @author <a href="mailto:javabot@cheeseronline.org">cheeser</a>
  */
-public class ClazzDaoHibernate extends AbstractDaoHibernate<Clazz> implements ClazzDao {
-    protected ClazzDaoHibernate() {
+public class ClazzDaoImpl extends AbstractDaoImpl<Clazz> implements ClazzDao {
+    protected ClazzDaoImpl() {
         super(Clazz.class);
     }
 

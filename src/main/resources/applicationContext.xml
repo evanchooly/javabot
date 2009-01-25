@@ -60,25 +60,25 @@
         </property>
     </bean>
 
-    <bean id="apiDao" class="javabot.dao.impl.ApiDaoHibernate"/>
+    <bean id="apiDao" class="javabot.dao.impl.ApiDaoImpl"/>
 
-    <bean id="configDao" class="javabot.dao.impl.ConfigHibernateDao"/>
+    <bean id="configDao" class="javabot.dao.impl.ConfigDaoImpl"/>
 
-    <bean id="factoidDao" class="javabot.dao.impl.FactoidDaoHibernate"/>
+    <bean id="factoidDao" class="javabot.dao.impl.FactoidDaoImpl"/>
 
-    <bean id="changeDao" class="javabot.dao.impl.ChangeDaoHibernate"/>
+    <bean id="changeDao" class="javabot.dao.impl.ChangeDaoImpl"/>
 
-    <bean id="clazzDao" class="javabot.dao.impl.ClazzDaoHibernate"/>
+    <bean id="clazzDao" class="javabot.dao.impl.ClazzDaoImpl"/>
 
-    <bean id="seenDao" class="javabot.dao.impl.SeenDaoHibernate"/>
+    <bean id="seenDao" class="javabot.dao.impl.SeenDaoImpl"/>
 
-    <bean id="shunDao" class="javabot.dao.impl.ShunDaoHibernate"/>
+    <bean id="shunDao" class="javabot.dao.impl.ShunDaoImpl"/>
 
-    <bean id="logDao" class="javabot.dao.impl.LogsDaoHibernate"/>
+    <bean id="logDao" class="javabot.dao.impl.LogsDaoImpl"/>
 
-    <bean id="channelDao" class="javabot.dao.impl.ChannelDaoHibernate"/>
+    <bean id="channelDao" class="javabot.dao.impl.ChannelDaoImpl"/>
 
-    <bean id="karmaDao" class="javabot.dao.impl.KarmaDaoHibernate"/>
+    <bean id="karmaDao" class="javabot.dao.impl.KarmaDaoImpl"/>
 
-    <bean id="adminDao" class="javabot.dao.impl.AdminDaoHibernate"/>
+    <bean id="adminDao" class="javabot.dao.impl.AdminDaoImpl"/>
 </beans>

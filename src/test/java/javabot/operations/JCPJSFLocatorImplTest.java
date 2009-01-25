@@ -1,6 +1,7 @@
 package javabot.operations;
 
 import javabot.operations.locator.impl.JCPJSRLocatorImpl;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
@@ -11,8 +12,8 @@ import org.testng.annotations.Test;
 @Test
 public class JCPJSFLocatorImplTest {
     public void jsr315() {
-        JCPJSRLocatorImpl locator = new JCPJSRLocatorImpl();
-        String title = locator.findInformation(315);
-        System.out.println("title = " + title);
+        final JCPJSRLocatorImpl locator = new JCPJSRLocatorImpl();
+        Assert.assertEquals(locator.findInformation(315),
+            "'JSR 315: JavaTM Servlet 3.0 Specification' can be found at http://www.jcp.org/en/jsr/detail?id=315");
     }
 }

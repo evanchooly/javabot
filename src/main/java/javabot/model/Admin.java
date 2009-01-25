@@ -16,7 +16,6 @@ import javabot.dao.AdminDao;
 @Entity
 @Table(name = "admin")
 @NamedQueries({
-    @NamedQuery(name = AdminDao.AUTHENTICATE, query = "select a from Admin a where a.userName = :username"),
     @NamedQuery(name = AdminDao.FIND_WITH_HOST, query = "select a from Admin a where a.userName = :username "
         + "and a.hostName = :hostName"),
     @NamedQuery(name = AdminDao.FIND_ALL, query = "select a from Admin a order by a.userName")
@@ -25,9 +24,7 @@ public class Admin implements Serializable, Persistent {
     private Long id;
     private String userName;
     private String hostName;
-    private String password;
     private Date updated;
-    private Config config;
 
     @Override
     @Id
@@ -57,14 +54,6 @@ public class Admin implements Serializable, Persistent {
         this.hostName = hostName;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String pwd) {
-        password = pwd;
-    }
-
     public Date getUpdated() {
         return updated;
     }
@@ -73,12 +62,4 @@ public class Admin implements Serializable, Persistent {
         updated = date;
     }
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    public Config getConfig() {
-        return config;
-    }
-
-    public void setConfig(Config chanConfig) {
-        config = chanConfig;
-    }
 }

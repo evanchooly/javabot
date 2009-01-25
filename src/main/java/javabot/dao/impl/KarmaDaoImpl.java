@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.NoResultException;
 
-import javabot.dao.AbstractDaoHibernate;
+import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ChangeDao;
 import javabot.dao.KarmaDao;
 import javabot.dao.util.QueryParam;
@@ -13,13 +13,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class KarmaDaoHibernate extends AbstractDaoHibernate<Karma> implements KarmaDao {
-    private static final Logger log = LoggerFactory.getLogger(KarmaDaoHibernate.class);
+public class KarmaDaoImpl extends AbstractDaoImpl<Karma> implements KarmaDao {
+    private static final Logger log = LoggerFactory.getLogger(KarmaDaoImpl.class);
 
     @Autowired
     private ChangeDao changeDao;
 
-    public KarmaDaoHibernate() {
+    public KarmaDaoImpl() {
         super(Karma.class);
 
     }

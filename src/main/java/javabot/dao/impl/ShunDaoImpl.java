@@ -2,7 +2,7 @@ package javabot.dao.impl;
 
 import java.util.Date;
 
-import javabot.dao.AbstractDaoHibernate;
+import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ShunDao;
 import javabot.model.Shun;
 
@@ -11,11 +11,11 @@ import javax.persistence.NoResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ShunDaoHibernate extends AbstractDaoHibernate<Shun> implements
+public class ShunDaoImpl extends AbstractDaoImpl<Shun> implements
     ShunDao {
-    private static final Logger log = LoggerFactory.getLogger(ShunDaoHibernate.class);
+    private static final Logger log = LoggerFactory.getLogger(ShunDaoImpl.class);
 
-  public ShunDaoHibernate () {
+  public ShunDaoImpl() {
     super (Shun.class);
   }
 

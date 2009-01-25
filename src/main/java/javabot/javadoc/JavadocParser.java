@@ -37,7 +37,9 @@ public class JavadocParser {
             for (final HTMLElement element : (List<HTMLElement>) new DOMXPath("//A[@target='classFrame']")
                 .evaluate(document)) {
                 try {
-                    dao.save(new Clazz(api, element, packages));
+                    final Clazz clazz = new Clazz(api, element, packages);
+                    writer.write("Found class: " + clazz);
+                    dao.save(clazz);
                 } catch (IrrelevantClassException e) {
                     log.debug(e.getMessage(), e);
                 }

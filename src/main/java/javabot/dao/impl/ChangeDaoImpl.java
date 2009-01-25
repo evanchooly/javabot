@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.Query;
 
-import javabot.dao.AbstractDaoHibernate;
+import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ChangeDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Change;
@@ -13,8 +13,8 @@ import javabot.model.Change;
 // Date: Apr 11, 2007
 // Time: 2:41:22 PM
 
-public class ChangeDaoHibernate extends AbstractDaoHibernate<Change> implements ChangeDao {
-    public ChangeDaoHibernate() {
+public class ChangeDaoImpl extends AbstractDaoImpl<Change> implements ChangeDao {
+    public ChangeDaoImpl() {
         super(Change.class);
     }
 

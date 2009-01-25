@@ -1,5 +1,6 @@
 package javabot.operations;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javabot.BotEvent;
@@ -15,7 +16,7 @@ import org.testng.annotations.Test;
  *
  * @author <a href="mailto:javabot@cheeseronline.org">cheeser</a>
  */
-@Test
+@Test(dependsOnGroups = {"javadoc"})
 public class JavadocOperationTest extends BaseOperationTest {
     @Autowired
     private ApiDao apiDao;
@@ -39,9 +40,17 @@ public class JavadocOperationTest extends BaseOperationTest {
     }
 
     public void methods() {
-        testOperation("javadoc String.split(*)", "http://is.gd/eOPq (JDK), http://is.gd/eOPr (JDK)", "Should have found method");
-        testOperation("javadoc String.split(String)", "http://is.gd/eOPq (JDK)", "Should have found method");
-        testOperation("javadoc String.split(java.lang.String)", "http://is.gd/eOPq (JDK)", "Should have found method");
+        testOperation("javadoc String.split(String)", "http://is.gd/eOPq (JDK)");
+        testOperation("javadoc String.split(java.lang.String)", "http://is.gd/eOPq (JDK)");
+
+        final BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "javadoc String.split(*)");
+        final Message message = getOperation().handleMessage(event).get(0);
+        final String string = message.getMessage();
+        final String[] results = string.split(",");
+        Assert.assertEquals(results.length, 2);
+        final List<String> responses = Arrays.asList("http://is.gd/eOPq (JDK)", "http://is.gd/eOPr (JDK)");
+        Assert.assertTrue(responses.contains(results[0].trim()));
+        Assert.assertTrue(responses.contains(results[1].trim()));
 
     }
 

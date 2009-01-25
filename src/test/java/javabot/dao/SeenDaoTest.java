@@ -1,8 +1,6 @@
 package javabot.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 //
 
 // Author: joed
@@ -12,12 +10,5 @@ public class SeenDaoTest extends BaseServiceTest {
 
     @Autowired
     private SeenDao seenDao;
-
-    @Test
-    public void addSeen() {
-        String nick = System.currentTimeMillis() + "test";
-        seenDao.logSeen(nick, "channel", "message");
-        Assert.assertTrue(seenDao.isSeen(nick, "channel"));
-    }
 
 }

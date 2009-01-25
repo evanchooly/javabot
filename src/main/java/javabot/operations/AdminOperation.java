@@ -22,6 +22,36 @@ import org.springframework.context.ApplicationContextAware;
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
 public class AdminOperation extends BotOperation implements ApplicationContextAware {
+    public static final List<String> OPERATIONS = Arrays.asList(
+        //AddFactoidOperation.class.getName(),
+        AdminOperation.class.getName(),
+        AolBonicsOperation.class.getName(),
+        DaysToChristmasOperation.class.getName(),
+        DaysUntilOperation.class.getName(),
+        DictOperation.class.getName(),
+        ForgetFactoidOperation.class.getName(),
+        GoogleOperation.class.getName(),
+        IgnoreOperation.class.getName(),
+        InfoOperation.class.getName(),
+        JavadocOperation.class.getName(),
+        JSROperation.class.getName(),
+        KarmaChangeOperation.class.getName(),
+        KarmaReadOperation.class.getName(),
+        LeaveOperation.class.getName(),
+        LiteralOperation.class.getName(),
+        Magic8BallOperation.class.getName(),
+        NickometerOperation.class.getName(),
+        QuitOperation.class.getName(),
+        Rot13Operation.class.getName(),
+        SayOperation.class.getName(),
+        SeenOperation.class.getName(),
+        SpecialCasesOperation.class.getName(),
+        StatsOperation.class.getName(),
+        TellOperation.class.getName(),
+        TimeOperation.class.getName(),
+        ShunOperation.class.getName(),
+        UnixCommandOperation.class.getName()
+    );
     private static final String ADMIN_PREFIX = "admin ";
     @Autowired
     private ApplicationContext context;

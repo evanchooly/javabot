@@ -2,17 +2,17 @@ package javabot.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import javabot.Javabot;
 import javabot.dao.ChannelDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @Table(name = "channel")
@@ -22,12 +22,12 @@ import javabot.dao.ChannelDao;
     @NamedQuery(name= ChannelDao.CONFIGURED_CHANNELS, query= "select distinct s.name from Channel s")
 })
 public class Channel implements Serializable, Persistent {
+    private static final Logger log = LoggerFactory.getLogger(Channel.class);
     private Long id;
     private String name;
     private String key;
     private Date updated;
     private Boolean logged = true;
-    private Config config;
 
     @Id
     @GeneratedValue
@@ -63,15 +63,6 @@ public class Channel implements Serializable, Persistent {
         logged = isLogged;
     }
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    public Config getConfig() {
-        return config;
-    }
-
-    public void setConfig(final Config chanConfig) {
-        config = chanConfig;
-    }
-
     public String getName() {
         return name;
     }
@@ -91,6 +82,7 @@ public class Channel implements Serializable, Persistent {
     }
 
     public void join(final Javabot bot) {
+        log.debug("Joining " + getName());
         if (getKey() == null) {
             bot.joinChannel(getName());
         } else {

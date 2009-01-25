@@ -6,6 +6,8 @@ import java.util.List;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
+import javabot.operations.throttle.Throttler;
+import javabot.operations.throttle.ThrottleItem;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;
 import org.slf4j.Logger;
@@ -17,7 +19,7 @@ public class KarmaChangeOperation extends BotOperation {
     @Autowired
     private KarmaDao dao;
     private static final Logger log = LoggerFactory.getLogger(KarmaChangeOperation.class);
-    private static final Throttler<KarmaInfo> throttler = new Throttler<KarmaInfo> (100, 20 * 1000);
+    private static final Throttler<KarmaInfo> throttler = new Throttler<KarmaInfo>(100, 20 * 1000);
 
     public KarmaChangeOperation(Javabot bot) {
         super(bot);

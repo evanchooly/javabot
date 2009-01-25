@@ -55,18 +55,18 @@ public class AddFactoidOperationTest extends BaseOperationTest {
 
     public void factoidAdd() {
         final String errorMessage = "Should have added the factoid";
-        testOperation("test pong is pong", OKAY, errorMessage);
-        testOperation("ping $1 is <action>sends some radar to $1, " + "awaits a response then forgets how long it took", OKAY, errorMessage);
-        testOperation("what? is a question", OKAY, errorMessage);
-        testOperation("what up? is <see>what?", OKAY, errorMessage);
+        testOperation("test pong is pong", OKAY);
+        testOperation("ping $1 is <action>sends some radar to $1, " + "awaits a response then forgets how long it took", OKAY);
+        testOperation("what? is a question", OKAY);
+        testOperation("what up? is <see>what?", OKAY);
     }
 
     @Test(dependsOnMethods = {"factoidAdd"})
     public void duplicateAdd() throws IOException {
         final String errorMessage = "Should not have added the factoid";
         final String message = "test pong is pong";
-        testOperation(message, OKAY, errorMessage);
-        testOperation(message, ALREADY_HAVE_FACTOID, errorMessage);
+        testOperation(message, OKAY);
+        testOperation(message, ALREADY_HAVE_FACTOID);
     }
 
     @Test(enabled = false)
@@ -81,7 +81,7 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     }
 
     public void addLog() {
-        testOperation("12345 is 12345", OKAY, "Should have added the factoid.");
+        testOperation("12345 is 12345", OKAY);
         Assert.assertTrue(changeDao.findLog(SENDER + " added '" + 12345 + "' with a value of '" + 12345 + "'"));
         forgetFactoid("12345");
     }
@@ -93,12 +93,12 @@ public class AddFactoidOperationTest extends BaseOperationTest {
 
     public void parensFactoids() {
         final String factoid = "should be the full (/hi there) factoid";
-        testOperation("asdf is <reply>" + factoid, OKAY, "Should have added the factoid.");
+        testOperation("asdf is <reply>" + factoid, OKAY);
 
         final GetFactoidOperation operation = new GetFactoidOperation(getJavabot());
         inject(operation);
         final String errorMessage = "Should have found the factoid";
-        testOperation("asdf", factoid, errorMessage, operation);
+        testOperation("asdf", factoid, operation);
     }
 
     @Override

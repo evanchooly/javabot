@@ -16,18 +16,18 @@ public class SeenOperation extends BotOperation {
     @Autowired
     private SeenDao dao;
 
-    public SeenOperation(Javabot javabot) {
+    public SeenOperation(final Javabot javabot) {
         super(javabot);
     }
 
     @Override
-    public List<Message> handleMessage(BotEvent event) {
-        List<Message> messages = new ArrayList<Message>();
-        String message = event.getMessage().toLowerCase();
-        String channel = event.getChannel();
-        String sender = event.getSender();
+    public List<Message> handleMessage(final BotEvent event) {
+        final List<Message> messages = new ArrayList<Message>();
+        final String message = event.getMessage().toLowerCase();
+        final String channel = event.getChannel();
+        final String sender = event.getSender();
         if (message.startsWith("seen ")) {
-            String key = message.substring("seen ".length());
+            final String key = message.substring("seen ".length());
             if (dao.isSeen(key, channel)) {
                 messages.add(new Message(channel, event,
                     sender + ", At " + DateFormat.getInstance().format(dao.getSeen(key, channel).getUpdated()) + " "

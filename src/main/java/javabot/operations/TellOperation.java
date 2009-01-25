@@ -6,6 +6,8 @@ import java.util.List;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
+import javabot.operations.throttle.Throttler;
+import javabot.operations.throttle.ThrottleItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,14 +17,14 @@ import org.slf4j.LoggerFactory;
  */
 public class TellOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(TellOperation.class);
-    private static final Throttler<TellInfo> throttler = 
+    private static final Throttler<TellInfo> throttler =
 	new Throttler<TellInfo> (100, 10 * 1000);
 
     public TellOperation(Javabot bot) {
         super(bot);
     }
 
-    private static final class TellInfo implements ThrottleItem<TellInfo>{
+    private static final class TellInfo implements ThrottleItem<TellInfo> {
         private final String nick;
         private final String msg;
 

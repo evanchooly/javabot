@@ -6,29 +6,16 @@ import java.util.List;
 import java.util.Map;
 import javax.persistence.PersistenceException;
 
-import javabot.dao.AbstractDaoHibernate;
+import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ChannelDao;
-import javabot.dao.ConfigDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
-import javabot.model.Config;
-import javabot.model.Persistent;
-import org.springframework.beans.factory.annotation.Autowired;
 
-public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implements ChannelDao {
-    @Autowired
-    private ConfigDao configDao;
+public class ChannelDaoImpl extends AbstractDaoImpl<Channel> implements ChannelDao {
     private final Map<String, Boolean> logCache = new HashMap<String, Boolean>();
 
-    public ChannelDaoHibernate() {
+    public ChannelDaoImpl() {
         super(Channel.class);
-    }
-
-    @Override
-    public void delete(final Persistent persistedObject) {
-        final Channel channel = (Channel) getEntityManager().merge(persistedObject);
-        channel.setConfig(null);
-        super.delete(channel);
     }
 
     @Override
@@ -99,10 +86,7 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
         channel.setName(name);
         channel.setLogged(logged == null ? Boolean.TRUE : logged);
         channel.setKey(key);
-        final Config config = configDao.get();
-        channel.setConfig(config);
         save(channel);
-        configDao.save(config);
         return channel;
     }
 
@@ -110,13 +94,5 @@ public class ChannelDaoHibernate extends AbstractDaoHibernate<Channel> implement
     public void save(final Channel channel) {
         channel.setUpdated(new Date());
         merge(channel);
-    }
-
-    public ConfigDao getConfigDao() {
-        return configDao;
-    }
-
-    public void setConfigDao(final ConfigDao dao) {
-        configDao = dao;
     }
 }

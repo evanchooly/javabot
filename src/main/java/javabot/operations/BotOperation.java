@@ -8,9 +8,9 @@ import javabot.Javabot;
 import javabot.Message;
 
 public abstract class BotOperation {
-    private Javabot bot;
+    private final Javabot bot;
 
-    public BotOperation(Javabot javabot) {
+    public BotOperation(final Javabot javabot) {
         bot = javabot;
     }
 
@@ -24,11 +24,11 @@ public abstract class BotOperation {
      * @param event
      * @return
      */
-    public List<Message> handleMessage(BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         return Collections.emptyList();
     }
 
-    public List<Message> handleChannelMessage(BotEvent event) {
+    public List<Message> handleChannelMessage(final BotEvent event) {
         return Collections.emptyList();
     }
 }

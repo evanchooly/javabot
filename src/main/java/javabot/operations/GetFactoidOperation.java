@@ -31,10 +31,10 @@ public class GetFactoidOperation extends BotOperation {
         return messages;
     }
 
-    private void getFactoid(final String toFind, final String sender, final List<Message> messages, final String channel, final BotEvent event,
-                            final Set<String> backtrack) {
+    private void getFactoid(final String toFind, final String sender, final List<Message> messages,
+        final String channel, final BotEvent event, final Set<String> backtrack) {
         String message = toFind;
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug(sender + " : " + message);
         }
         if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
@@ -48,37 +48,36 @@ public class GetFactoidOperation extends BotOperation {
         }
         final Factoid factoid = factoidDao.getFactoid(message.toLowerCase());
         if (factoid != null) {
-            message = factoid.getValue();
-            message = message.replaceAll("\\$who", sender);
-            message = message.replaceAll("\\$1", dollarOne);
-            message = processRandomList(message);
-            if (message.startsWith("<see>")) {
-                if (!backtrack.contains(message)) {
-                    backtrack.add(message);
-                    getFactoid(message.substring("<see>".length()).trim(), sender, messages, channel, event, backtrack);
-                } else {
-                    messages.add(new Message(channel, event,
-                        "Reference loop detected for factoid '" + message + "'."));
-                }
-            } else if (message.startsWith("<reply>")) {
-                messages.add(new Message(channel, event, message.substring("<reply>".length())));
-            } else if (message.startsWith("<action>")) {
-                messages.add(new Action(channel, event, message.substring("<action>".length())));
-            } else {
-                messages.add(new Message(channel, event, sender + ", " + key + " is " + message));
-            }
-        } else {
-            final GuessOperation operation = (GuessOperation) getBot().getOperation(GuessOperation.class.getName());
-            final List<Message> guessed = operation.handleMessage(new BotEvent(event.getChannel(),
-                    event.getSender(), event.getLogin(), event.getHostname(), "guess " + message));
-            final Message guessedMessage = guessed.get(0);
-            if (!"No appropriate factoid found.".equals(guessedMessage.getMessage())) {
-                messages.addAll(guessed);
-            }
+            message = processFactoid(sender, messages, channel, event, backtrack, dollarOne, key, factoid);
         }
         if (messages.isEmpty()) {
             messages.add(new Message(channel, event, sender + ", I have no idea what " + message + " is."));
         }
+    }
+
+    private String processFactoid(final String sender, final List<Message> messages, final String channel,
+        final BotEvent event, final Set<String> backtrack, final String dollarOne, final String key,
+        final Factoid factoid) {
+        String message;
+        message = factoid.getValue();
+        message = message.replaceAll("\\$who", sender);
+        message = message.replaceAll("\\$1", dollarOne);
+        message = processRandomList(message);
+        if (message.startsWith("<see>")) {
+            if (!backtrack.contains(message)) {
+                backtrack.add(message);
+                getFactoid(message.substring("<see>".length()).trim(), sender, messages, channel, event, backtrack);
+            } else {
+                messages.add(new Message(channel, event, "Reference loop detected for factoid '" + message + "'."));
+            }
+        } else if (message.startsWith("<reply>")) {
+            messages.add(new Message(channel, event, message.substring("<reply>".length())));
+        } else if (message.startsWith("<action>")) {
+            messages.add(new Action(channel, event, message.substring("<action>".length())));
+        } else {
+            messages.add(new Message(channel, event, sender + ", " + key + " is " + message));
+        }
+        return message;
     }
 
     protected String processRandomList(final String message) {
@@ -91,7 +90,8 @@ public class GetFactoidOperation extends BotOperation {
             final String[] choices = choice.split("\\|");
             if (choices.length > 1) {
                 final int chosen = (int) (Math.random() * choices.length);
-                result = result.substring(0, index) + choices[chosen] + result.substring(index2 + 1);
+                result = String .format("%s%s%s", result.substring(0, index), choices[chosen],
+                    result.substring(index2 + 1));
             }
             index = result.indexOf("(", index + 1);
             index2 = result.indexOf(")", index + 1);

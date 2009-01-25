@@ -1,4 +1,4 @@
-package javabot.operations;
+package javabot.operations.throttle;
 
 import java.util.ArrayList;
 import java.util.List;

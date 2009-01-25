@@ -4,14 +4,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import javax.persistence.FetchType;
 
 import javabot.dao.ConfigDao;
 import org.hibernate.annotations.CollectionOfElements;
@@ -31,13 +30,11 @@ public class Config implements Serializable, Persistent {
     private String server = "irc.freenode.org";
     private Integer port = 6667;
     private String prefixes = "~";
-    private String nick = "test-javabot-" + System.currentTimeMillis();
+    private String nick;
     private String password;
     private Long version;
 
     private List<String> operations = new ArrayList<String>();
-//    private List<Channel> channels = new ArrayList<Channel>();
-    private List<Admin> admins = new ArrayList<Admin>();
 
     @Id
     @GeneratedValue
@@ -47,24 +44,6 @@ public class Config implements Serializable, Persistent {
 
     public void setId(final Long configId) {
         id = configId;
-    }
-
-//    @OneToMany(mappedBy = "config")
-//    public List<Channel> getChannels() {
-//        return channels;
-//    }
-//
-//    public void setChannels(List<Channel> list) {
-//        channels = list;
-//    }
-
-    @OneToMany(mappedBy = "config")
-    public List<Admin> getAdmins() {
-        return admins;
-    }
-
-    public void setAdmins(final List<Admin> list) {
-        admins = list;
     }
 
     public String getNick() {
@@ -124,5 +103,18 @@ public class Config implements Serializable, Persistent {
 
     public void setVersion(final Long value) {
         version = value;
+    }
+
+    @Override
+    public String toString() {
+        return "Config{" +
+            "server='" + server + '\'' +
+            ", port=" + port +
+            ", prefixes='" + prefixes + '\'' +
+            ", nick='" + nick + '\'' +
+            ", password='" + password + '\'' +
+            ", version=" + version +
+            ", operations=" + operations +
+            '}';
     }
 }

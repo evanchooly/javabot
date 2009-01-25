@@ -5,9 +5,6 @@ import javabot.model.Seen;
 public interface SeenDao extends BaseDao<Seen> {
     String BY_NAME_AND_CHANNEL = "Seen.byNameAndChannel";
 
-    @Deprecated
-    void logSeen(String nick, String channel, String message);
-
     Seen getSeen(String nick, String channel);
 
     boolean isSeen(String nick, String channel);
