@@ -14,7 +14,6 @@ import javabot.dao.ConfigDao;
 import javabot.dao.FactoidDao;
 import javabot.dao.KarmaDao;
 import javabot.dao.LogsDao;
-import javabot.dao.SeenDao;
 import javabot.dao.ShunDao;
 import javabot.model.Channel;
 import javabot.model.Config;
@@ -49,8 +48,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     private FactoidDao factoidDao;
     @Autowired
     private ChangeDao changeDao;
-    @Autowired
-    private SeenDao seenDao;
     @Autowired
     private LogsDao logsDao;
     @Autowired
@@ -178,12 +175,8 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     @Override
     public void onMessage(final String channel, final String sender, final String login, final String hostname,
         final String message) {
+        final Channel chan = channelDao.get(channel);
         try {
-            seenDao.logSeen(sender, channel, "said: " + message);
-            final Channel chan = channelDao.get(channel);
-            if (chan != null && chan.getLogged()) {
-                logsDao.logMessage(Logs.Type.MESSAGE, sender, channel, message);
-            }
             if (log.isDebugEnabled()) {
                 log.debug("onMessage " + message + " Sender " + sender);
             }
@@ -204,6 +197,10 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
+        } finally {
+            if (chan != null && chan.getLogged()) {
+                logsDao.logMessage(Logs.Type.MESSAGE, sender, channel, message);
+            }
         }
     }
 
@@ -313,7 +310,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     @Override
     public void onJoin(final String channel, final String sender, final String login, final String hostname) {
-        seenDao.logSeen(sender, channel, ":" + hostname + " joined the channel");
         if (channelDao.get(channel).getLogged()) {
             logsDao.logMessage(Logs.Type.JOIN, sender, channel, ":" + hostname + " joined the channel");
         }
@@ -321,8 +317,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     @Override
     public void onQuit(final String channel, final String sender, final String login, final String hostname) {
-        //Not logged to a true channel
-        //seenDao.logSeen(sender, channel, "quit");
         if (channelDao.get(channel).getLogged()) {
             logsDao.logMessage(Logs.Type.QUIT, sender, channel, "quit");
         }
@@ -330,7 +324,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     @Override
     public void onPart(final String channel, final String sender, final String login, final String hostname) {
-        seenDao.logSeen(sender, channel, "parted the channel");
         if (channelDao.get(channel).getLogged()) {
             logsDao.logMessage(Logs.Type.PART, sender, channel, "parted the channel");
         }
@@ -343,7 +336,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         if (log.isDebugEnabled()) {
             log.debug("Sender " + sender + " Message " + action);
         }
-        seenDao.logSeen(sender, target, "did a /me " + action);
         if (channelDao.get(target).getLogged()) {
             logsDao.logMessage(Logs.Type.ACTION, sender, target, action);
         }
@@ -353,8 +345,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     public void onKick(final String channel, final String kickerNick, final String kickerLogin,
         final String kickerHostname,
         final String recipientNick, final String reason) {
-        seenDao.logSeen(recipientNick, channel, kickerNick + " kicked " + recipientNick
-            + " with this reasoning: " + reason);
         if (channelDao.get(channel).getLogged()) {
             logsDao.logMessage(Logs.Type.KICK, kickerNick, channel, " kicked " + recipientNick + " (" + reason + ")");
         }
@@ -375,7 +365,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         return !ignores.contains(sender) && !isShunnedSender(sender);
     }
 
-    private boolean isShunnedSender(String sender) {
+    private boolean isShunnedSender(final String sender) {
         return shunDao.isShunned(sender);
     }
 
@@ -415,7 +405,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         }
         final BotEvent event = message.getEvent();
         final String sender = getNick();
-        seenDao.logSeen(sender, message.getDestination(), message.logEntry());
         final String channel = event.getChannel();
         if (!channel.equals(sender)) {
             if (channelDao.isLogged(channel)) {

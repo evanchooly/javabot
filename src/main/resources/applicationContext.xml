@@ -70,8 +70,6 @@
 
     <bean id="clazzDao" class="javabot.dao.impl.ClazzDaoImpl"/>
 
-    <bean id="seenDao" class="javabot.dao.impl.SeenDaoImpl"/>
-
     <bean id="shunDao" class="javabot.dao.impl.ShunDaoImpl"/>
 
     <bean id="logDao" class="javabot.dao.impl.LogsDaoImpl"/>

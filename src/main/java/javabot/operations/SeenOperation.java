@@ -7,14 +7,14 @@ import java.util.List;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
-import javabot.dao.SeenDao;
+import javabot.dao.LogsDao;
 import org.springframework.beans.factory.annotation.Autowired;
 // Author : joed
 // Date  : Apr 8, 2007
 
 public class SeenOperation extends BotOperation {
     @Autowired
-    private SeenDao dao;
+    private LogsDao dao;
 
     public SeenOperation(final Javabot javabot) {
         super(javabot);
@@ -30,8 +30,9 @@ public class SeenOperation extends BotOperation {
             final String key = message.substring("seen ".length());
             if (dao.isSeen(key, channel)) {
                 messages.add(new Message(channel, event,
-                    sender + ", At " + DateFormat.getInstance().format(dao.getSeen(key, channel).getUpdated()) + " "
-                        + key + " " + dao.getSeen(key, channel).getMessage()));
+                    String.format("%s, %s was last seen at %s with the following entry: %s", sender, key,
+                        DateFormat.getInstance().format(dao.getSeen(key, channel).getUpdated()),
+                        dao.getSeen(key, channel).getMessage())));
                 return messages;
             }
             messages.add(new Message(channel, event, sender + ", I have no information about \"" + key + "\""));

@@ -1,29 +1,23 @@
 package javabot.dao.impl;
 
 import java.util.Date;
+import javax.persistence.NoResultException;
 
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ShunDao;
 import javabot.model.Shun;
 
-import javax.persistence.NoResultException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class ShunDaoImpl extends AbstractDaoImpl<Shun> implements
-    ShunDao {
-    private static final Logger log = LoggerFactory.getLogger(ShunDaoImpl.class);
+public class ShunDaoImpl extends AbstractDaoImpl<Shun> implements ShunDao {
 
   public ShunDaoImpl() {
     super (Shun.class);
   }
 
-  public boolean isShunned (String nick) {
+  public boolean isShunned (final String nick) {
     return getShun (nick) != null;
   }
 
-  public Shun getShun (String nick) {
+  public Shun getShun (final String nick) {
     try {
       expireShuns ();
 
@@ -40,15 +34,14 @@ public class ShunDaoImpl extends AbstractDaoImpl<Shun> implements
         .setParameter ("now", new Date ()).executeUpdate ();
   }
 
-  public void addShun (String nick, Date until) {
-    Shun seen = getShun (nick);
-    if (seen == null) {
-      seen = new Shun ();
-      seen.setNick (nick);
-      seen.setExpiry (until);
+  public void addShun (final String nick, final Date until) {
+    Shun shun = getShun (nick);
+    if (shun == null) {
+      shun = new Shun ();
+      shun.setNick (nick);
+      shun.setExpiry (until);
 
-      save (seen);
+      save (shun);
     }
   }
-
 }

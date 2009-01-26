@@ -21,6 +21,5 @@ public class AdminOperationTest extends BaseOperationTest {
     public void addChannel() {
         final PircBot bot = getTestBot();
         bot.sendMessage(CHANNEL, "~hi");
-
     }
 }

@@ -1,12 +1,14 @@
 package javabot.dao.impl;
 
-import javabot.dao.AbstractDaoImpl;
-import javabot.dao.LogsDao;
-import javabot.model.Logs;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.NoResultException;
+
+import javabot.dao.AbstractDaoImpl;
+import javabot.dao.LogsDao;
+import javabot.model.Logs;
+import javabot.Seen;
 
 public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
     public LogsDaoImpl() {
@@ -49,6 +51,25 @@ public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
                 .getSingleResult();
     }
 
+    @Override
+    public boolean isSeen(final String nick, final String channel) {
+        return getSeen(nick, channel) != null;
+    }
+
+    @Override
+    public Seen getSeen(final String nick, final String channel) {
+        Seen seen = null;
+        try {
+            seen = (Seen) getEntityManager().createNamedQuery(LogsDao.SEEN)
+                .setParameter("nick", nick)
+                .setParameter("channel", channel)
+                .setMaxResults(1)
+                .getSingleResult();
+        } catch (NoResultException e) {
+            // hasn't been seen yet.
+        }
+        return seen;
+    }
     @SuppressWarnings({"unchecked"})
     public List<String> loggedChannels() {
         return getEntityManager().createNamedQuery(LogsDao.LOGGED_CHANNELS).getResultList();

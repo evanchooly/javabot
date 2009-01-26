@@ -17,8 +17,8 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
     private ChangeDao changeDao;
 
     public void updateKarma() {
-        Karma karma = karmaDao.find("testjavabot");
-        int value = karma != null ? karma.getValue() : 0;
+        final Karma karma = karmaDao.find("testjavabot");
+        final int value = karma != null ? karma.getValue() : 0;
         testOperation("testjavabot++", "testjavabot has a karma level of " + (value+1) + ", " + SENDER);
         testOperation("testjavabot++", "Rest those fingers, Tex");
         testOperation("testjavabot--", "Rest those fingers, Tex");
@@ -28,31 +28,31 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
     }
 
     public void logNew() {
-        String target = new Date().getTime() + "";
-        int karma = getKarma(target) + 1;
+        final String target = new Date().getTime() + "";
+        final int karma = getKarma(target) + 1;
         testOperation(target + "++", target + " has a karma level of " + karma + ", " + SENDER);
-        String message = SENDER + " changed '" + target + "' to '" + karma + "'";
+        final String message = SENDER + " changed '" + target + "' to '" + karma + "'";
         Assert.assertTrue(changeDao.findLog(message));
         karmaDao.delete(karmaDao.find(target).getId());
     }
 
     public void logChanged() {
-        String target = "javabot";
-        int karma = getKarma(target) + 1;
+        final String target = "javabot";
+        final int karma = getKarma(target) + 1;
         testOperation(target + "++", target + " has a karma level of " + karma + ", " + SENDER);
     }
 
     public void changeOwnKarma() {
-        int karma = getKarma(SENDER);
+        final int karma = getKarma(SENDER);
         testOperation(SENDER + "++",
             new String[]{"Changing one's own karma is not permitted.", "You now have a karma level of " + (karma - 1)},
             "");
-        int karma2 = getKarma(SENDER);
+        final int karma2 = getKarma(SENDER);
         Assert.assertTrue(karma2 == karma - 1, "Should have lost one karma point.");
     }
 
-    private int getKarma(String target) {
-        Karma karma = karmaDao.find(target);
+    private int getKarma(final String target) {
+        final Karma karma = karmaDao.find(target);
         return karma != null ? karma.getValue() : 0;
     }
 

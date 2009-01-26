@@ -56,8 +56,6 @@
 
     <bean id="clazzDao" class="javabot.dao.impl.ClazzDaoImpl"/>
 
-    <bean id="seenDao" class="javabot.dao.impl.SeenDaoImpl"/>
-
     <bean id="logDao" class="javabot.dao.impl.LogsDaoImpl"/>
 
     <bean id="channelDao" class="javabot.dao.impl.ChannelDaoImpl"/>
