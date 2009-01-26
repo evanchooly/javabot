@@ -1,6 +1,7 @@
 package javabot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,8 +21,34 @@ import javabot.model.Config;
 import javabot.model.Logs;
 import javabot.operations.AddFactoidOperation;
 import javabot.operations.AdminOperation;
+import javabot.operations.AolBonicsOperation;
 import javabot.operations.BotOperation;
+import javabot.operations.DaysToChristmasOperation;
+import javabot.operations.DaysUntilOperation;
+import javabot.operations.DictOperation;
+import javabot.operations.ForgetFactoidOperation;
 import javabot.operations.GetFactoidOperation;
+import javabot.operations.GoogleOperation;
+import javabot.operations.IgnoreOperation;
+import javabot.operations.InfoOperation;
+import javabot.operations.JSROperation;
+import javabot.operations.JavadocOperation;
+import javabot.operations.KarmaChangeOperation;
+import javabot.operations.KarmaReadOperation;
+import javabot.operations.LeaveOperation;
+import javabot.operations.LiteralOperation;
+import javabot.operations.Magic8BallOperation;
+import javabot.operations.NickometerOperation;
+import javabot.operations.QuitOperation;
+import javabot.operations.Rot13Operation;
+import javabot.operations.SayOperation;
+import javabot.operations.SeenOperation;
+import javabot.operations.ShunOperation;
+import javabot.operations.SpecialCasesOperation;
+import javabot.operations.StatsOperation;
+import javabot.operations.TellOperation;
+import javabot.operations.TimeOperation;
+import javabot.operations.UnixCommandOperation;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 import org.slf4j.Logger;
@@ -38,6 +65,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     public static final ArrayList<String> STANDARD_OPERATIONS;
     private final Map<String, String> channelPreviousMessages = new HashMap<String, String>();
     private final Map<String, BotOperation> operations = new LinkedHashMap<String, BotOperation>();
+    private final Map<String, BotOperation> standardOperations = new LinkedHashMap<String, BotOperation>();
     private String host;
     private int port;
     private String[] startStrings;
@@ -64,12 +92,41 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     private ShunDao shunDao;
     private boolean disconnecting = false;
     private ApplicationContext context;
+    public static final List<String> OPERATIONS = Arrays.asList(
+        BotOperation.getName(AdminOperation.class),
+        BotOperation.getName(AolBonicsOperation.class),
+        BotOperation.getName(DaysToChristmasOperation.class),
+        BotOperation.getName(DaysUntilOperation.class),
+        BotOperation.getName(DictOperation.class),
+        BotOperation.getName(ForgetFactoidOperation.class),
+        BotOperation.getName(GoogleOperation.class),
+        BotOperation.getName(IgnoreOperation.class),
+        BotOperation.getName(InfoOperation.class),
+        BotOperation.getName(JavadocOperation.class),
+        BotOperation.getName(JSROperation.class),
+        BotOperation.getName(KarmaChangeOperation.class),
+        BotOperation.getName(KarmaReadOperation.class),
+        BotOperation.getName(LeaveOperation.class),
+        BotOperation.getName(LiteralOperation.class),
+        BotOperation.getName(Magic8BallOperation.class),
+        BotOperation.getName(NickometerOperation.class),
+        BotOperation.getName(QuitOperation.class),
+        BotOperation.getName(Rot13Operation.class),
+        BotOperation.getName(SayOperation.class),
+        BotOperation.getName(SeenOperation.class),
+        BotOperation.getName(SpecialCasesOperation.class),
+        BotOperation.getName(StatsOperation.class),
+        BotOperation.getName(TellOperation.class),
+        BotOperation.getName(TimeOperation.class),
+        BotOperation.getName(ShunOperation.class),
+        BotOperation.getName(UnixCommandOperation.class)
+    );
 
     static {
         STANDARD_OPERATIONS = new ArrayList<String>();
-        STANDARD_OPERATIONS.add(AdminOperation.class.getName());
-        STANDARD_OPERATIONS.add(AddFactoidOperation.class.getName());
-        STANDARD_OPERATIONS.add(GetFactoidOperation.class.getName());
+        STANDARD_OPERATIONS.add(BotOperation.getName(AdminOperation.class));
+        STANDARD_OPERATIONS.add(BotOperation.getName(AddFactoidOperation.class));
+        STANDARD_OPERATIONS.add(BotOperation.getName(GetFactoidOperation.class));
     }
 
     public Javabot(final ApplicationContext applicationContext) {
@@ -103,33 +160,58 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     @SuppressWarnings({"unchecked"})
     private void loadOperationInfo(final Config config) {
         final List<String> operationNodes = config.getOperations();
-        try {
-            for (final String operationNode : operationNodes) {
-                if (!STANDARD_OPERATIONS.contains(operationNode)) {
-                    final Class<BotOperation> operationClass;
-                    try {
-                        operationClass = (Class<BotOperation>) Class.forName(operationNode);
-                        add(operationClass.getConstructor(getClass()).newInstance(this));
-                    } catch (ClassNotFoundException e) {
-                        log.error(e.getMessage(), e);
-                    }
-                }
+        for (final String operation : operationNodes) {
+            if (!STANDARD_OPERATIONS.contains(operation)) {
+                addOperation(operation, operations);
             }
-            for (final String operation : STANDARD_OPERATIONS) {
-                final Class<BotOperation> operationClass = (Class<BotOperation>) Class.forName(operation);
-                add(operationClass.getConstructor(getClass()).newInstance(this));
-            }
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
         }
+        for (final String operation : STANDARD_OPERATIONS) {
+            addOperation(operation, standardOperations);
+        }
+
     }
 
-    private void add(final BotOperation operation) {
-        context.getAutowireCapableBeanFactory().autowireBean(operation);
-        operations.put(operation.getClass().getName(), operation);
-        if (log.isDebugEnabled()) {
-            log.debug(operation.getClass().getCanonicalName());
+    @SuppressWarnings({"unchecked"})
+    public boolean addOperation(final String name) {
+        return addOperation(name, operations);
+    }
+    
+    @SuppressWarnings({"unchecked"})
+    public boolean addOperation(final String name, final Map<String, BotOperation> operations) {
+        boolean added = false;
+        try {
+            final Class<BotOperation> clazz = (Class<BotOperation>) Class.forName(
+                String.format("%s.%sOperation", BotOperation.class.getPackage().getName(), name));
+            if (!operations.containsKey(name)) {
+                final BotOperation operation = clazz.getConstructor(getClass()).newInstance(this);
+                context.getAutowireCapableBeanFactory().autowireBean(operation);
+                operations.put(name, operation);
+                added = true;
+                if (log.isDebugEnabled()) {
+                    log.debug(operation.getClass().getCanonicalName());
+                }
+            }
+        } catch (Exception e) {
+            processReflectionException(e);
         }
+        return added;
+    }
+
+    public boolean remove(final Class<BotOperation> clazz) {
+        return removeOperation(BotOperation.getName(clazz));
+    }
+
+    public boolean removeOperation(final String name) {
+        return operations.remove(name) != null;
+    }
+
+    public List<String> listActiveOperations() {
+        return new ArrayList<String>(operations.keySet());
+    }
+
+    private void processReflectionException(final Exception e) {
+        log.error(e.getMessage(), e);
+        throw new RuntimeException(e.getMessage());
     }
 
     public static void main(final String[] args) {
@@ -209,9 +291,11 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         if (log.isDebugEnabled()) {
             log.debug("getResponses " + message);
         }
-        for (final BotOperation operation : operations.values()) {
-            final List<Message> messages = operation
-                .handleMessage(new BotEvent(channel, sender, login, hostname, message));
+        final List<BotOperation> list = new ArrayList<BotOperation>(operations.values());
+        list.addAll(standardOperations.values());
+        for (final BotOperation operation : list) {
+            final List<Message> messages = operation.handleMessage(
+                new BotEvent(channel, sender, login, hostname, message));
             if (!messages.isEmpty()) {
                 return messages;
             }
@@ -220,14 +304,13 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     }
 
     public List<Message> getChannelResponses(final String channel, final String sender, final String login,
-        final String hostname,
-        final String message) {
+        final String hostname, final String message) {
         if (log.isDebugEnabled()) {
             log.debug("getChannelResponses " + message);
         }
         for (final BotOperation operation : operations.values()) {
-            final List<Message> messages = operation
-                .handleChannelMessage(new BotEvent(channel, sender, login, hostname, message));
+            final List<Message> messages = operation.handleChannelMessage(
+                new BotEvent(channel, sender, login, hostname, message));
             if (!messages.isEmpty()) {
                 return messages;
             }

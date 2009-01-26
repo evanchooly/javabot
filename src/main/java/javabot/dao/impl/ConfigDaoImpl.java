@@ -7,13 +7,13 @@ import java.util.Properties;
 import javax.persistence.NoResultException;
 
 import javabot.ApplicationException;
+import javabot.Javabot;
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.AdminDao;
 import javabot.dao.ChannelDao;
 import javabot.dao.ConfigDao;
 import javabot.model.Channel;
 import javabot.model.Config;
-import javabot.operations.AdminOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class ConfigDaoImpl extends AbstractDaoImpl<Config> implements ConfigDao 
             final Channel channel = new Channel();
             channel.setName("##" + config.getNick());
             channelDao.save(channel);
-            config.setOperations(AdminOperation.OPERATIONS);
+            config.setOperations(Javabot.OPERATIONS);
             adminDao.create(getProperty("javabot.admin.nick", true), getProperty("javabot.admin.hostmask", true));
             save(config);
             props = null;

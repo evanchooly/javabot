@@ -31,4 +31,8 @@ public abstract class BotOperation {
     public List<Message> handleChannelMessage(final BotEvent event) {
         return Collections.emptyList();
     }
+
+    public static String getName(final Class clazz) {
+        return clazz.getSimpleName().replaceAll("Operation", "");
+    }
 }
