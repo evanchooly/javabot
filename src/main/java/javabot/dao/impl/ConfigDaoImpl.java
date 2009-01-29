@@ -1,12 +1,5 @@
 package javabot.dao.impl;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import javax.persistence.NoResultException;
-
-import javabot.ApplicationException;
 import javabot.Javabot;
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.AdminDao;
@@ -15,6 +8,9 @@ import javabot.dao.ConfigDao;
 import javabot.model.Admin;
 import javabot.model.Channel;
 import javabot.model.Config;
+
+import javax.persistence.NoResultException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +26,6 @@ public class ConfigDaoImpl extends AbstractDaoImpl<Config> implements ConfigDao 
     private ChannelDao channelDao;
     @Autowired
     private AdminDao adminDao;
-    private Properties props;
     @Autowired
     private Config defaults;
     @Autowired
@@ -55,45 +50,5 @@ public class ConfigDaoImpl extends AbstractDaoImpl<Config> implements ConfigDao 
             props = null;
         }
         return config;
-    }
-
-    private String getProperty(final String key, final boolean required) {
-        return getProperty(key, null, required);
-    }
-
-    private String getProperty(final String key, final String defaultValue, final boolean required) {
-        loadProperties();
-        final String value = props.getProperty(key, defaultValue);
-        if (required && value == null) {
-            throw new ApplicationException("No configuration found and missing property " + key);
-        }
-        return value;
-    }
-
-    private void loadProperties() {
-        if (props == null) {
-            props = new Properties();
-            try {
-                InputStream inStream = null;
-                try {
-                    inStream = new FileInputStream("javabot.properties");
-                    if (inStream != null) {
-                        props.load(inStream);
-                        inStream.close();
-                    }
-                    inStream = getClass().getResourceAsStream("/locations-override.properties");
-                    if (inStream != null) {
-                        props.load(inStream);
-                    }
-                } finally {
-                    if (inStream != null) {
-                        inStream.close();
-                    }
-                }
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-                throw new RuntimeException(e.getMessage());
-            }
-        }
     }
 }
