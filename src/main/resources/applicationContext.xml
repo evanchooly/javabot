@@ -63,6 +63,17 @@
     <bean id="apiDao" class="javabot.dao.impl.ApiDaoImpl"/>
 
     <bean id="configDao" class="javabot.dao.impl.ConfigDaoImpl"/>
+    <bean id="defaultConfig" class="javabot.model.Config">
+      <property name="nick" value="${javabot.nick}" />
+      <property name="password" value="${javabot.password}" />
+      <property name="server" value="${javabot.server}" />
+      <property name="prefixes" value="${javabot.nick}" />
+      <property name="port" value="${javabot.port}" />
+    </bean>
+    <bean id="defaultAdmin" class="javabot.model.Admin">
+      <property name="userName" value="${javabot.admin.nick}" />
+      <property name="hostName" value="${javabot.admin.hostmask}" />
+    </bean>
 
     <bean id="factoidDao" class="javabot.dao.impl.FactoidDaoImpl"/>
 

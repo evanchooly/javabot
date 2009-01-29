@@ -12,6 +12,7 @@ import javabot.dao.AbstractDaoImpl;
 import javabot.dao.AdminDao;
 import javabot.dao.ChannelDao;
 import javabot.dao.ConfigDao;
+import javabot.model.Admin;
 import javabot.model.Channel;
 import javabot.model.Config;
 import org.slf4j.Logger;
@@ -30,6 +31,10 @@ public class ConfigDaoImpl extends AbstractDaoImpl<Config> implements ConfigDao 
     @Autowired
     private AdminDao adminDao;
     private Properties props;
+    @Autowired
+    private Config defaults;
+    @Autowired
+    private Admin defaultAdmin;
 
     protected ConfigDaoImpl() {
         super(Config.class);
@@ -40,20 +45,12 @@ public class ConfigDaoImpl extends AbstractDaoImpl<Config> implements ConfigDao 
         try {
             config = (Config) getEntityManager().createNamedQuery(ConfigDao.GET_CONFIG).getSingleResult();
         } catch (NoResultException e) {
-            config = new Config();
-            config.setNick(getProperty("javabot.nick", true));
-            config.setPassword(getProperty("javabot.password", true));
-            config.setServer(getProperty("javabot.server", "irc.freenode.net", true));
-            config.setPrefixes(config.getNick());
-            final String port = getProperty("javabot.port", false);
-            if (port != null) {
-                config.setPort(Integer.parseInt(port));
-            }
+            config = defaults;
             final Channel channel = new Channel();
             channel.setName("##" + config.getNick());
             channelDao.save(channel);
             config.setOperations(Javabot.OPERATIONS);
-            adminDao.create(getProperty("javabot.admin.nick", true), getProperty("javabot.admin.hostmask", true));
+            adminDao.create(defaultAdmin.getUserName(), defaultAdmin.getHostName());
             save(config);
             props = null;
         }
