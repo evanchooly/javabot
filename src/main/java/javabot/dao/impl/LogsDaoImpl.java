@@ -43,14 +43,6 @@ public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
         save(logMessage);
     }
 
-    public Logs getMessage(final String nick, final String channel) {
-        final String query = "select s from Logs s where s.nick = :nick AND s.channel = :channel";
-        return (Logs) getEntityManager().createQuery(query)
-                .setParameter("nick", nick)
-                .setParameter("channel", channel.toLowerCase())
-                .getSingleResult();
-    }
-
     @Override
     public boolean isSeen(final String nick, final String channel) {
         return getSeen(nick, channel) != null;

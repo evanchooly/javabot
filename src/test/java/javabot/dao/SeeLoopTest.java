@@ -1,46 +1,33 @@
 package javabot.dao;
 
-import java.util.List;
-
-import javabot.BotEvent;
-import javabot.Message;
 import javabot.operations.BaseOperationTest;
 import javabot.operations.BotOperation;
 import javabot.operations.GetFactoidOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.testng.Assert;
 import org.testng.annotations.Test;
-//
-// Author: joed
 
-// Date  : Apr 15, 2007
+@Test(groups = {"operations"})
 public class SeeLoopTest extends BaseOperationTest {
-    private final static String CHANNEL = "##javabot";
-    private final static String SENDER = "joed";
-    private final static String LOGIN = "joed";
-    private final static String HOSTNAME = "localhost";
     @Autowired
     private FactoidDao factoidDao;
-    private final GetFactoidOperation operation;
-
-    public SeeLoopTest() {
-        operation = new GetFactoidOperation(getJavabot());
-        inject(operation);
-    }
 
     public BotOperation createOperation() {
         return new GetFactoidOperation(getJavabot());
     }
 
-    @Test(groups = {"operations"})
+    private void serial() {
+        createCircularSee();
+        createCircularSee2();
+        createNormalSee();
+        followReferencesCorrectly();
+    }
+
     public void createCircularSee() {
         deleteSees();
-        factoidDao.addFactoid("test", "see1", "<see>see2");
-        factoidDao.addFactoid("test", "see2", "<see>see3");
-        factoidDao.addFactoid("test", "see3", "<see>see3");
-        final BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "see1");
-        final List<Message> results = operation.handleMessage(event);
-        Assert.assertEquals("Reference loop detected for factoid '<see>see3'.", results.get(0).getMessage());
+        testMessage("see1 is <see>see2", ok);
+        testMessage("see2 is <see>see3", ok);
+        testMessage("see3 is <see>see3", ok);
+        testMessage("see1", "Reference loop detected for factoid '<see>see3'.");
         deleteSees();
     }
 
@@ -50,39 +37,30 @@ public class SeeLoopTest extends BaseOperationTest {
         factoidDao.delete("test", "see3");
     }
 
-    @Test(groups = {"operations"})
     public void createCircularSee2() {
         deleteSees();
-        factoidDao.addFactoid("test", "see1", "<see>see2");
-        factoidDao.addFactoid("test", "see2", "<see>see3");
-        factoidDao.addFactoid("test", "see3", "<see>see1");
-        final BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "see1");
-        final List<Message> results = operation.handleMessage(event);
-        Assert.assertEquals("Reference loop detected for factoid '<see>see2'.", results.get(0).getMessage());
+        testMessage("see1 is <see>see2", ok);
+        testMessage("see2 is <see>see3", ok);
+        testMessage("see3 is <see>see1", ok);
+        testMessage("see1", "Reference loop detected for factoid '<see>see2'.");
         deleteSees();
     }
 
-    @Test(groups = {"operations"})
     public void followReferencesCorrectly() {
         deleteSees();
-        factoidDao.addFactoid("test", "see1", "Bzzt $who");
-        factoidDao.addFactoid("test", "see2", "<see>see1");
-        factoidDao.addFactoid("test", "see3", "<see>see2");
-        final BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "see3");
-        final List<Message> results = operation.handleMessage(event);
-        Assert.assertEquals("joed, see1 is Bzzt joed", results.get(0).getMessage());
+        testMessage("see1 is Bzzt $who", ok);
+        testMessage("see2 is <see>see1", ok);
+        testMessage("see3 is <see>see2", ok);
+        testMessage("see3", String.format("%s, see1 is Bzzt %s", getTestBot().getNick(), getTestBot().getNick()));
         deleteSees();
     }
 
-    @Test(groups = {"operations"})
     public void createNormalSee() {
         deleteSees();
-        factoidDao.addFactoid("test", "see1", "<see>see2");
-        factoidDao.addFactoid("test", "see2", "<see>see3");
-        factoidDao.addFactoid("test", "see3", "w00t");
-        final BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "see1");
-        final List<Message> results = operation.handleMessage(event);
-        Assert.assertEquals("joed, see3 is w00t", results.get(0).getMessage());
+        testMessage("see1 is <see>see2", ok);
+        testMessage("see2 is <see>see3", ok);
+        testMessage("see3 is w00t", ok);
+        testMessage("see1", getTestBot().getNick() + ", see3 is w00t");
         deleteSees();
     }
 }

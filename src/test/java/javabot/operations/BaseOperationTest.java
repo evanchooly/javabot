@@ -3,79 +3,76 @@ package javabot.operations;
 import java.util.List;
 
 import javabot.BaseTest;
-import javabot.BotEvent;
-import javabot.Message;
-import javabot.dao.ChangeDao;
-import javabot.dao.FactoidDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.unitils.spring.annotation.SpringApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SpringApplicationContext("classpath:test-application-config.xml")
 public abstract class BaseOperationTest extends BaseTest /*extends UnitilsTestNG*/ {
-    @Autowired
-    private FactoidDao factoidDao;
-    @Autowired
-    private ChangeDao changeDao;
-    private final ForgetFactoidOperation forgetFactoidOperation;
-
-    public BaseOperationTest() {
-        forgetFactoidOperation = new ForgetFactoidOperation(getJavabot());
-        inject(forgetFactoidOperation);
+    private static final Logger log = LoggerFactory.getLogger(BaseOperationTest.class);
+    
+    protected void testMessageList(final String message, final List<String> responses) {
+        final TestBot bot = getTestBot();
+        bot.sendMessage(getJavabotChannel(), String.format("%s %s", getJavabot().getNick(), message));
+        waitForResponses(bot, 1);
+        final String response = bot.getOldestResponse().getMessage();
+        Assert.assertTrue(responses.contains(response));
     }
 
-    protected void testOperation(final String message, final String response) {
-        testOperation(message, response, getOperation());
+    protected void testMessage(final String message, final String... responses) {
+        final TestBot bot = getTestBot();
+        bot.sendMessage(getJavabotChannel(), String.format("%s %s", getJavabot().getNick(), message));
+        validateResponses(bot, responses);
     }
 
-    protected void testOperation(final String message, final String response, final BotOperation operation) {
-        final BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, message);
-        final List<Message> results = operation.handleMessage(event);
-        Assert.assertTrue(!results.isEmpty());
-        Assert.assertEquals(results.get(0).getMessage(), response);
-    }
-
-    protected void testOperation(final String message, final String[] responses, final String errorMessage) {
-        testOperation(message, responses, errorMessage, getOperation());
-    }
-
-    protected void testOperation(final String message, final String[] responses, final String errorMessage,
-        final BotOperation operation) {
-        final BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, message);
-        final List<Message> results = operation.handleMessage(event);
-        final Message result = results.get(0);
-        boolean success = false;
+    private void validateResponses(final TestBot bot, final String... responses) {
+        final int length = responses == null ? 0 : responses.length;
+        waitForResponses(bot, length);
         for (final String response : responses) {
+            Assert.assertEquals(bot.getOldestResponse().getMessage(), response);
+        }
+    }
+
+    protected void waitForResponses(final TestBot bot, final int length) {
+        int count = 100;
+        while(length != 0 && count != 0 && bot.getResponseCount() != length) {
             try {
-                Assert.assertEquals(response, result.getMessage());
-                success = true;
-            } catch (AssertionError ae) {
-                // try next
+                Thread.sleep(500);
+                count--;
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e.getMessage());
             }
         }
-        if (!success) {
-            Assert.fail(errorMessage);
+        Assert.assertEquals(bot.getResponseCount(), length);
+    }
+
+    protected void waitForResponse(final String response) {
+        final long now = System.currentTimeMillis();
+        while (!response.equals(getTestBot().getOldestMessage()) && System.currentTimeMillis() - now < 300000) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                log.error(e.getMessage(), e);
+            }
         }
     }
 
-    protected final BotOperation getOperation() {
-        final BotOperation operation = createOperation();
-        inject(operation);
-        return operation;
+    protected void testChannelMessage(final String message, final String... responses) {
+        final TestBot bot = getTestBot();
+        bot.sendMessage(getJavabotChannel(), message);
+        validateResponses(bot, responses);
     }
 
-    protected abstract BotOperation createOperation();
-
     public String getForgetMessage(final String factoid) {
-        return "I forgot about " + factoid + ", " + SENDER + ".";
+        return String.format("I forgot about %s, %s.", factoid, getTestBot().getNick());
     }
 
     protected String getFoundMessage(final String factoid, final String value) {
-        return SENDER + ", " + factoid + " is " + value;
+        return String.format("%s, %s is %s", getTestBot().getNick(), factoid, value);
     }
 
     protected void forgetFactoid(final String name) {
-        testOperation("forget " + name, "I forgot about " + name + ", " + SENDER + ".",
-            forgetFactoidOperation);
+        testMessage(String.format("forget %s", name), getForgetMessage(name));
     }
 }

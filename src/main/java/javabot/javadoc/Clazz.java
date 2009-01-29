@@ -1,12 +1,10 @@
 package javabot.javadoc;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,8 +24,9 @@ import org.apache.html.dom.HTMLDocumentImpl;
 import org.cyberneko.html.parsers.DOMParser;
 import org.jaxen.JaxenException;
 import org.jaxen.dom.DOMXPath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.html.HTMLElement;
@@ -54,6 +53,8 @@ import org.xml.sax.SAXException;
         + " or upper(m.longSignatureStripped)=:params)")
 })
 public class Clazz extends JavadocElement implements Persistent {
+    private static final Logger log = LoggerFactory.getLogger(Clazz.class);
+
     private Long id;
     private Api api;
     private String packageName;
@@ -111,8 +112,7 @@ public class Clazz extends JavadocElement implements Persistent {
 
     @SuppressWarnings({"unchecked"})
     @Transactional
-    public final List<Clazz> populate(final ClazzDao dao, final Writer writer)
-        throws IOException, SAXException, JaxenException {
+    public final List<Clazz> populate(final ClazzDao dao) {
         try {
 //            writer.write("populating " + this);
             final Document document = getDocument(getLongUrl());
@@ -159,7 +159,7 @@ public class Clazz extends JavadocElement implements Persistent {
                     if (content.endsWith("()")) {
                         content = content.substring(0, content.length() - 2);
                         final List<HTMLElement> methodList = (List<HTMLElement>) new DOMXPath(
-                            "//A[starts-with(@name, '" + content + "(')]").evaluate(document);
+                            String.format("//A[starts-with(@name, '%s(')]", content)).evaluate(document);
                         for (final HTMLElement htmlElement : methodList) {
                             final NamedNodeMap attributes = htmlElement.getAttributes();
                             final Method method = new Method(attributes.getNamedItem("name").getNodeValue(), this);
@@ -171,21 +171,15 @@ public class Clazz extends JavadocElement implements Persistent {
                 dao.save(this);
             }
             return nested;
-        } catch (IOException e) {
-            System.out.println("this = " + this);
-            throw e;
-        } catch (SAXException e) {
-            System.out.println("this = " + this);
-            throw e;
         } catch (JaxenException e) {
-            System.out.println("this = " + this);
-            throw e;
-        } catch (DOMException e) {
-            System.out.println("this = " + this);
-            throw e;
-        } catch (RuntimeException e) {
-            System.out.println("this = " + this);
-            throw e;
+            log.debug(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage());
+        } catch (SAXException e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -255,15 +249,5 @@ public class Clazz extends JavadocElement implements Persistent {
     @Override
     public String toString() {
         return packageName + "." + className;
-    }
-
-    private static class MethodComparator implements Comparator<Method> {
-        public int compare(final Method o1, final Method o2) {
-            int compare = o1.getMethodName().compareTo(o2.getMethodName());
-            if (compare == 0) {
-                compare = o1.getParamCount().compareTo(o2.getParamCount());
-            }
-            return compare;
-        }
     }
 }

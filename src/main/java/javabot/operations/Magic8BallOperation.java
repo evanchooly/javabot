@@ -1,15 +1,9 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javabot.BotEvent;
-import javabot.Message;
 import javabot.Javabot;
+import javabot.Message;
 
-/**
- * @author ricky_clarkson
- */
 public class Magic8BallOperation extends BotOperation {
     String[] responses = {
         "Yes",
@@ -36,22 +30,19 @@ public class Magic8BallOperation extends BotOperation {
         "I'm getting something about JFK, but I don't think it's relevant"
     };
 
-    public Magic8BallOperation(Javabot javabot) {
+    public Magic8BallOperation(final Javabot javabot) {
         super(javabot);
     }
 
-    /**
-     * @see BotOperation#handleMessage(BotEvent)
-     */
     @Override
-    public List<Message> handleMessage(BotEvent event) {
-        List<Message> messages = new ArrayList<Message>();
-        String message = event.getMessage().toLowerCase();
-        String channel = event.getChannel();
-        if(message.startsWith("should i ") || message.startsWith("magic8")) {
-            int responseNumber = (int)(Math.random() * responses.length);
-            messages.add(new Message(channel, event, responses[responseNumber]));
+    public boolean handleMessage(final BotEvent event) {
+        final String message = event.getMessage().toLowerCase();
+        final String channel = event.getChannel();
+        boolean handled = false;
+        if (message.startsWith("should i ") || message.startsWith("magic8 ")) {
+            getBot().postMessage(new Message(channel, event, responses[((int) (Math.random() * responses.length))]));
+            handled = true;
         }
-        return messages;
+        return handled;
     }
 }

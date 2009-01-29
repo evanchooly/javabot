@@ -1,68 +1,64 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javabot.BotEvent;
-import javabot.Message;
 import javabot.Javabot;
+import javabot.Message;
 
-/**
- * @author littlezoper
- */
 public class DaysUntilOperation extends BotOperation {
-    public DaysUntilOperation(Javabot javabot) {
+    public DaysUntilOperation(final Javabot javabot) {
         super(javabot);
     }
 
-    /**
-     * @see BotOperation#handleMessage(BotEvent)
-     */
     @Override
-    public List<Message> handleMessage(BotEvent event) {
-        List<Message> messages = new ArrayList<Message>();
+    public boolean handleMessage(final BotEvent event) {
         String message = event.getMessage().toLowerCase();
-        String sender = event.getSender();
-        if (!message.startsWith("days until ")) {
-            return messages;
-        }
-        message = message.substring("days until ".length());
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat();
-        Date d = null;
-        String formats[] = {
-            "yyyy/MM/dd", "MMM d, ''yy", "d MMM yyyy",
-            "MMM d, yyyy", "MMM d, ''yy"
-        };
-        int i = 0;
-        while (i < formats.length && d == null) {
-            sdf.applyPattern(formats[i]);
-            try {
-                d = sdf.parse(message);
-            } catch (ParseException e) {
-                // I think we just want to ignore this...
+        boolean handled = false;
+        if (message.startsWith("days until ")) {
+            final String sender = event.getSender();
+            message = message.substring("days until ".length());
+            final Calendar calendar = Calendar.getInstance();
+            final SimpleDateFormat sdf = new SimpleDateFormat();
+            Date d = null;
+            final String[] formats = {
+                "yyyy/MM/dd", "MMM d, ''yy", "d MMM yyyy",
+                "MMM d, yyyy", "MMM d, ''yy"
+            };
+            int i = 0;
+            while (i < formats.length && d == null) {
+                sdf.applyPattern(formats[i]);
+                try {
+                    d = sdf.parse(message);
+                    calcTime(event, message, sender, calendar, d);
+                } catch (ParseException e) {
+                    // I think we just want to ignore this...
+                }
+                i++;
             }
-            i++;
+            if (d == null) {
+                getBot().postMessage(new Message(event.getChannel(), event,
+                    sender + ":  you might want to consider putting the date in a proper format..."));
+            }
+            handled = true;
         }
-        if (d == null) {
-            messages.add(new Message(event.getChannel(), event,
-                sender + ":  you might want to consider putting the date in a proper format..."));
-            return messages;
-        }
+        return handled;
+    }
+
+    private void calcTime(final BotEvent event, final String message, final String sender, final Calendar calendar,
+        final Date d) {
         calendar.setTime(d);
-        Calendar today = Calendar.getInstance();
+        final Calendar today = Calendar.getInstance();
         today.set(Calendar.HOUR_OF_DAY, 0);
         today.set(Calendar.MINUTE, 0);
         today.set(Calendar.SECOND, 0);
         today.set(Calendar.MILLISECOND, 0);
         long millis = calendar.getTimeInMillis() - today.getTimeInMillis();
-        double days = millis /= 86400000;
-        messages.add(new Message(event.getChannel(), event,
+        final double days = millis /= 86400000;
+        getBot().postMessage(new Message(event.getChannel(), event,
             sender + ":  there are " + (int) days + " days until " + message + "."));
-        return messages;
     }
 }

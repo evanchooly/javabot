@@ -1,13 +1,10 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
-import javabot.operations.throttle.Throttler;
 import javabot.operations.throttle.ThrottleItem;
+import javabot.operations.throttle.Throttler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,9 +15,9 @@ import org.slf4j.LoggerFactory;
 public class TellOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(TellOperation.class);
     private static final Throttler<TellInfo> throttler =
-	new Throttler<TellInfo> (100, 10 * 1000);
+        new Throttler<TellInfo>(100, 10 * 1000);
 
-    public TellOperation(Javabot bot) {
+    public TellOperation(final Javabot bot) {
         super(bot);
     }
 
@@ -28,12 +25,12 @@ public class TellOperation extends BotOperation {
         private final String nick;
         private final String msg;
 
-        public TellInfo(String nick, String msg) {
+        public TellInfo(final String nick, final String msg) {
             this.nick = nick;
             this.msg = msg;
         }
 
-        public boolean matches(TellInfo ti) {
+        public boolean matches(final TellInfo ti) {
             return nick.equals(ti.nick) && msg.equals(ti.msg);
         }
     }
@@ -42,7 +39,7 @@ public class TellOperation extends BotOperation {
         private final String target;
         private final String subject;
 
-        public TellSubject(String target, String subject) {
+        public TellSubject(final String target, final String subject) {
             this.target = target;
             this.subject = subject;
         }
@@ -56,101 +53,84 @@ public class TellOperation extends BotOperation {
         }
     }
 
-    /**
-     * @see BotOperation#handleMessage(BotEvent)
-     */
     @Override
-    public List<Message> handleMessage(BotEvent event) {
-        List<Message> messages = new ArrayList<Message>();
-        String message = event.getMessage();
-        String channel = event.getChannel();
-        String login = event.getLogin();
-        String hostname = event.getHostname();
-        String sender = event.getSender();
-        boolean isPrivateMessage = sender.equals(channel);
-        if (!isTellCommand(message)) {
-            return messages;
-        }
-        TellSubject tellSubject = parseTellSubject(message);
-        if (tellSubject == null) {
-            messages.add(new Message(channel, event, "The syntax is: tell nick about factoid - you missed out the 'about', "
-                + sender));
-            return messages;
-        }
-        String nick = tellSubject.getTarget();
-        if ("me".equals(nick)) {
-            nick = sender;
-        }
-        String thing = tellSubject.getSubject();
-        if (nick.equals(getBot().getNick())) {
-            messages.add(new Message(channel, event, "I don't want to talk to myself"));
-        } else if (throttler.isThrottled (new TellInfo(nick, thing))) {
-            if (log.isDebugEnabled()) {
-                log.debug("skipping tell of " + thing + " to " + nick + ", already told " + nick + " about " + thing);
-            }
-            messages.add(new Message(channel, event,sender + ", Slow down, Speedy Gonzalez!"));
-        } else if (!getBot().userIsOnChannel(nick, channel)) {
-            messages.add(new Message(channel, event,"The user " + nick + " is not on " + channel));
-        } else if (isPrivateMessage && !getBot().isOnSameChannelAs(nick)) {
-            messages.add(new Message(sender, event,"I will not send a message to someone who is not on any"
-                + " of my channels."));
-        } else if (thing.endsWith("++") || thing.endsWith("--")) {
-            messages.add(new Message(channel, event,"I'm afraid I can't let you do that, Dave."));
-        } else {
-            List<Message> responses = getBot().getResponses(nick, nick, login, hostname, thing);
-	    throttler.addThrottleItem (new TellInfo(nick, thing));
-            if (isPrivateMessage) {
-                messages.add(new Message(nick, event,sender + " wants to tell you the following:"));
-                messages.addAll(responses);
-                messages.add(new Message(sender, event,"I told " + nick + " about " + thing + "."));
+    public boolean handleMessage(final BotEvent event) {
+        final String message = event.getMessage();
+        final String channel = event.getChannel();
+        final String login = event.getLogin();
+        final String hostname = event.getHostname();
+        final String sender = event.getSender();
+        final boolean isPrivateMessage = sender.equals(channel);
+        boolean handled = false;
+        if (isTellCommand(message)) {
+            final TellSubject tellSubject = parseTellSubject(message);
+            if (tellSubject == null) {
+                getBot().postMessage(new Message(channel, event,
+                    String.format("The syntax is: tell nick about factoid - you missed out the 'about', %s", sender)));
+                handled = true;
             } else {
-                if (log.isDebugEnabled()) {
-                    log.debug(sender + " is telling " + nick + " about " + thing);
+                String nick = tellSubject.getTarget();
+                if ("me".equals(nick)) {
+                    nick = sender;
                 }
-                for (Message response : responses) {
-                    messages.add(prependNickToReply(channel, event, nick,
-                        response));
+                final String thing = tellSubject.getSubject();
+                handled = true;
+                if (nick.equals(getBot().getNick())) {
+                    getBot().postMessage(new Message(channel, event, "I don't want to talk to myself"));
+                } else if (throttler.isThrottled(new TellInfo(nick, thing))) {
+                    if (log.isDebugEnabled()) {
+                        log.debug(
+                            "skipping tell of " + thing + " to " + nick + ", already told " + nick + " about " + thing);
+                    }
+                    getBot().postMessage(new Message(channel, event, sender + ", Slow down, Speedy Gonzalez!"));
+                } else if (!getBot().userIsOnChannel(nick, channel)) {
+                    getBot().postMessage(new Message(channel, event, "The user " + nick + " is not on " + channel));
+                } else if (isPrivateMessage && !getBot().isOnSameChannelAs(nick)) {
+                    getBot()
+                        .postMessage(new Message(sender, event, "I will not send a message to someone who is not on any"
+                            + " of my channels."));
+                } else if (thing.endsWith("++") || thing.endsWith("--")) {
+                    getBot().postMessage(new Message(channel, event, "I'm afraid I can't let you do that, Dave."));
+                } else {
+                    handled = getBot().getResponses(channel, nick, login, hostname, thing);
+                    throttler.addThrottleItem(new TellInfo(nick, thing));
                 }
             }
         }
-        return messages;
+        return handled;
     }
 
-    private Message prependNickToReply(String channel, BotEvent event, String nick, Message response) {
-        return new Message(channel, event, response.formatResponse(getBot(), nick));
-    }
-
-    private TellSubject parseTellSubject(String message) {
+    private TellSubject parseTellSubject(final String message) {
         if (message.startsWith("tell ")) {
             return parseLonghand(message);
         }
         return parseShorthand(message);
     }
 
-    private TellSubject parseLonghand(String message) {
-        String body = message.substring("tell ".length());
-        String nick = body.substring(0, body.indexOf(" "));
-        int about = body.indexOf("about ");
+    private TellSubject parseLonghand(final String message) {
+        final String body = message.substring("tell ".length());
+        final String nick = body.substring(0, body.indexOf(" "));
+        final int about = body.indexOf("about ");
         if (about < 0) {
             return null;
         }
-        String thing = body.substring(about + "about ".length());
+        final String thing = body.substring(about + "about ".length());
         return new TellSubject(nick, thing);
     }
 
-    private TellSubject parseShorthand(String message) {
+    private TellSubject parseShorthand(final String message) {
         String target = message;//.substring(0, space);
-        for (String start : getBot().getStartStrings()) {
+        for (final String start : getBot().getStartStrings()) {
             if (target.startsWith(start)) {
                 target = target.substring(start.length()).trim();
             }
         }
-        int space = target.indexOf(' ');
+        final int space = target.indexOf(' ');
         return space < 0 ? null
             : new TellSubject(target.substring(0, space).trim(), target.substring(space + 1).trim());
     }
 
-    private boolean isTellCommand(String message) {
+    private boolean isTellCommand(final String message) {
         return message.startsWith("tell ") || message.startsWith("~");
     }
 }

@@ -12,14 +12,14 @@ import org.slf4j.LoggerFactory;
 public class QuitOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(QuitOperation.class);
 
-    public QuitOperation(Javabot javabot) {
+    public QuitOperation(final Javabot javabot) {
         super(javabot);
     }
 
     @Override
-    public List<Message> handleMessage(BotEvent event) {
-        List<Message> messages = new ArrayList<Message>();
-        String message = event.getMessage();
+    public boolean handleMessage(final BotEvent event) {
+        final List<Message> messages = new ArrayList<Message>();
+        final String message = event.getMessage();
         if(message.toLowerCase().startsWith("quit ")) {
             if(message.substring("quit ".length()).equals(getBot().getNickPassword())) {
                 if(log.isDebugEnabled()) {
@@ -28,6 +28,6 @@ public class QuitOperation extends BotOperation {
                 System.exit(0);
             }
         }
-        return messages;
+        return false;
     }
 }

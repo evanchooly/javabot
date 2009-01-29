@@ -1,15 +1,12 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
-import javabot.operations.throttle.Throttler;
-import javabot.operations.throttle.ThrottleItem;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;
+import javabot.operations.throttle.ThrottleItem;
+import javabot.operations.throttle.Throttler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +18,7 @@ public class KarmaChangeOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(KarmaChangeOperation.class);
     private static final Throttler<KarmaInfo> throttler = new Throttler<KarmaInfo>(100, 20 * 1000);
 
-    public KarmaChangeOperation(Javabot bot) {
+    public KarmaChangeOperation(final Javabot bot) {
         super(bot);
     }
 
@@ -29,42 +26,41 @@ public class KarmaChangeOperation extends BotOperation {
         private final String nick;
         private final String target;
 
-        public KarmaInfo(String nick, String target) {
+        public KarmaInfo(final String nick, final String target) {
             this.nick = nick;
             this.target = target;
         }
 
-        public boolean matches(KarmaInfo ki) {
+        public boolean matches(final KarmaInfo ki) {
             return nick.equals(ki.nick) && target.equals(ki.target);
         }
     }
 
     @Override
     @Transactional
-    public List<Message> handleMessage(BotEvent event) {
-        List<Message> messages = new ArrayList<Message>();
+    public boolean handleMessage(final BotEvent event) {
         String message = event.getMessage();
-        String sender = event.getSender();
-        String channel = event.getChannel();
-        String nick = message.substring(0, message.length() - 2).trim().toLowerCase();
+        final String sender = event.getSender();
+        final String channel = event.getChannel();
+        final String nick = message.substring(0, message.length() - 2).trim().toLowerCase();
+        boolean handled = false;
         if (message.contains(" ") || "".equals(nick)) {
-            return messages;
-        }
-        if (!channel.startsWith("#") && (message.endsWith("++") || message.endsWith("--"))) {
-            messages.add(new Message(channel, event, "Sorry, karma changes are not allowed in private messages."));
-            return messages;
-        }
-        if (message.endsWith("++") || message.endsWith("--")) {
-            if (throttler.isThrottled (new KarmaInfo(sender, nick))) {
+            handled = false;
+        } else if (!channel.startsWith("#") && (message.endsWith("++") || message.endsWith("--"))) {
+            getBot()
+                .postMessage(new Message(channel, event, "Sorry, karma changes are not allowed in private messages."));
+            handled = true;
+        } else if (message.endsWith("++") || message.endsWith("--")) {
+            if (throttler.isThrottled(new KarmaInfo(sender, nick))) {
                 if (log.isDebugEnabled()) {
                     log.debug("skipping karma change by " + nick + "for " + nick);
                 }
-                messages.add(new Message(channel, event, "Rest those fingers, Tex"));
-                return messages;
+                getBot().postMessage(new Message(channel, event, "Rest those fingers, Tex"));
+                return true;
             }
-	    throttler.addThrottleItem (new KarmaInfo(sender, nick));
+            throttler.addThrottleItem(new KarmaInfo(sender, nick));
             if (nick.equals(sender.toLowerCase())) {
-                messages.add(new Message(channel, event, "Changing one's own karma is not permitted."));
+                getBot().postMessage(new Message(channel, event, "Changing one's own karma is not permitted."));
                 message = "--";
             }
             Karma karma = dao.find(nick);
@@ -79,11 +75,11 @@ public class KarmaChangeOperation extends BotOperation {
             }
             karma.setUserName(sender);
             dao.save(karma);
-            KarmaReadOperation karmaRead = (KarmaReadOperation) getBot()
-                .getOperation(KarmaReadOperation.class.getName());
-            messages.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(),
-                event.getLogin(), event.getHostname(), "karma " + nick)));
+            final KarmaReadOperation karmaRead = (KarmaReadOperation) getBot()
+                .getOperation(BotOperation.getName(KarmaReadOperation.class));
+            handled = karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(),
+                event.getLogin(), event.getHostname(), "karma " + nick));
         }
-        return messages;
+        return handled;
     }
 }

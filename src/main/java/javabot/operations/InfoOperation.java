@@ -1,45 +1,45 @@
 package javabot.operations;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import javabot.BotEvent;
-import javabot.Message;
 import javabot.Javabot;
+import javabot.Message;
+import javabot.model.Factoid;
 import javabot.dao.FactoidDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Simple operation to pull who added the factoid and
- * when it was added
- * @author Robert O'Connor <robby DOT oconnor AT gmail.com>
- * @author ricky_clarkson - original code (mostly pulled from LiteralOperation
+ * Simple operation to pull who added the factoid and when it was added
  */
 public class InfoOperation extends BotOperation {
     @Autowired
     private FactoidDao dao;
 
-    public InfoOperation(Javabot bot) {
+    public InfoOperation(final Javabot bot) {
         super(bot);
     }
 
     @Override
-    public List<Message> handleMessage(BotEvent event) {
-        List<Message> messages = new ArrayList<Message>();
-        String message = event.getMessage().toLowerCase();
-        String channel = event.getChannel();
+    public boolean handleMessage(final BotEvent event) {
+        final String message = event.getMessage().toLowerCase();
+        final String channel = event.getChannel();
+        boolean handled = false;
         if (message.startsWith("info ")) {
-            String key = message.substring("info ".length());
-            if (dao.hasFactoid(key)) {
-                SimpleDateFormat sdfDate = new SimpleDateFormat("MM-dd-yyyy' at 'K:mm a, z");
-                messages.add(new Message(channel, event, key+ " was added by: "+ dao.getFactoid(key).getUserName()
-                        +" on "+sdfDate.format(dao.getFactoid(key).getUpdated())+
-                        " and has a literal value of: "+ dao.getFactoid(key).getValue()));
-                return messages;
+            final String key = message.substring("info ".length());
+            final Factoid factoid = dao.getFactoid(key);
+            if (factoid != null) {
+                getBot().postMessage(new Message(channel, event,
+                    String.format("%s was added by: %s on %s and has a literal value of: %s", key,
+                        factoid.getUserName(), formatDate(factoid), factoid.getValue())));
             }
-            messages.add(new Message(channel, event, "I have no factoid called \"" + key + "\""));
+            getBot().postMessage(new Message(channel, event, "I have no factoid called \"" + key + "\""));
+            handled = true;
         }
-        return messages;
+        return handled;
+    }
+
+    private String formatDate(final Factoid factoid) {
+        return new SimpleDateFormat("MM-dd-yyyy' at 'K:mm a, z").format(factoid.getUpdated());
     }
 }

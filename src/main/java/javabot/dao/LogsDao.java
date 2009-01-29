@@ -13,8 +13,6 @@ public interface LogsDao extends BaseDao<Logs> {
 
     void logMessage(Logs.Type type, String nick, String channel, String message);
 
-    Logs getMessage(String nick, String channel);
-
     List<String> loggedChannels();
 
     List<Logs> dailyLog(String channel, Date date);

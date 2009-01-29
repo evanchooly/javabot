@@ -2,39 +2,31 @@ package javabot.operations;
 
 import java.io.IOException;
 
-import javabot.BotEvent;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Test(groups = {"operations"})
 public class ForgetFactoidOperationTest extends BaseOperationTest {
     @Autowired
     private FactoidDao factoidDao;
-
     @Autowired
     private ChangeDao changeDao;
 
     public void forgetFactoid() {
         if (!factoidDao.hasFactoid("afky")) {
-            factoidDao.addFactoid(SENDER, "afky", "test");
+            factoidDao.addFactoid(getTestBot().getNick(), "afky", "test");
         }
-        testOperation("forget afky", "I forgot about afky, " + SENDER + ".");
+        testMessage("forget afky", "I forgot about afky, " + getTestBot().getNick() + ".");
     }
 
     public void nonexistantFactoid() {
-        testOperation("forget asdfghjkl", "I never knew about asdfghjkl anyway, " + SENDER + ".");
-    }
-
-    @Override
-    protected BotOperation createOperation() {
-        return new ForgetFactoidOperation(getJavabot());
+        testMessage("forget asdfghjkl",
+            String.format("I never knew about asdfghjkl anyway, %s.", getTestBot().getNick()));
     }
 
     public void channelMessage() throws IOException {
-        final BotEvent event = new BotEvent("##javabot", SENDER, "", "localhost", "pong is");
-        Assert.assertEquals(getOperation().handleChannelMessage(event).size(), 0, "Should be an empty list");
+        testChannelMessage("pong is");
     }
 }

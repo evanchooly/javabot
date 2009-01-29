@@ -15,8 +15,7 @@ import javabot.BotEvent;
  */
 public class EnableOperation extends OperationsCommand {
     @Override
-    public List<Message> execute(final Javabot bot, final BotEvent event, final List<String> args) {
-        final List<Message> messages = new ArrayList<Message>();
+    public void execute(final Javabot bot, final BotEvent event, final List<String> args) {
         if (args.isEmpty()) {
             bot.postMessage(new Message(event.getChannel(), event, "usage: enableOperation <name>"));
             bot.postMessage(new Message(event.getChannel(), event,
@@ -31,6 +30,5 @@ public class EnableOperation extends OperationsCommand {
                     + " or it's not a valid name.  see listOperations for details."));
             }
         }
-        return Collections.<Message>emptyList();
     }
 }

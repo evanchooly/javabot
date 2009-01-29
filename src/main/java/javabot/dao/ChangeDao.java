@@ -21,4 +21,7 @@ public interface ChangeDao extends BaseDao<Change> {
     Long count(Change filter);
 
     Change find(Long id);
+
+    @SuppressWarnings({"unchecked"})
+    List<Change> get(Change filter);
 }

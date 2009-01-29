@@ -14,8 +14,7 @@ import javabot.Message;
  */
 public class DisableOperation extends OperationsCommand {
     @Override
-    public List<Message> execute(final Javabot bot, final BotEvent event, final List<String> args) {
-        final List<Message> messages = new ArrayList<Message>();
+    public void execute(final Javabot bot, final BotEvent event, final List<String> args) {
         if (args.isEmpty()) {
             bot.postMessage(new Message(event.getChannel(), event, "usage: disableOperation <name>"));
             bot.postMessage(new Message(event.getChannel(), event,
@@ -30,6 +29,5 @@ public class DisableOperation extends OperationsCommand {
                     + " or it's not a valid name.  see listOperations for details."));
             }
         }
-        return messages;
     }
 }

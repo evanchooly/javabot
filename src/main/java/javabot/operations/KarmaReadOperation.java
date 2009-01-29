@@ -1,11 +1,8 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javabot.BotEvent;
-import javabot.Message;
 import javabot.Javabot;
+import javabot.Message;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,37 +11,32 @@ public class KarmaReadOperation extends BotOperation {
     @Autowired
     private KarmaDao karmaDao;
 
-    public KarmaReadOperation(Javabot javabot) {
+    public KarmaReadOperation(final Javabot javabot) {
         super(javabot);
     }
 
     @Override
-    public List<Message> handleMessage(BotEvent event) {
-        List<Message> messages = new ArrayList<Message>();
-        String message = event.getMessage();
-        String channel = event.getChannel();
-        String sender = event.getSender();
-        if(!message.startsWith("karma ")) {
-            return messages;
-        }
-        String nick = message.substring("karma ".length());
-        nick = nick.toLowerCase();
-        if(nick.contains(" ")) {
-            messages.add(new Message(channel, event, "I've never Seen a nick with a space " + "in, " + sender));
-            return messages;
-        }
-        Karma karma = karmaDao.find(nick);
-        if(karma != null) {
-            if(nick.equals(sender)) {
-                messages.add(new Message(channel, event,
-                    sender + ", you have a karma level of " + karma.getValue() + "."));
+    public boolean handleMessage(final BotEvent event) {
+        final String message = event.getMessage();
+        final String channel = event.getChannel();
+        final String sender = event.getSender();
+        boolean handled = false;
+        if (message.startsWith("karma ")) {
+            final String nick = message.substring("karma ".length()).toLowerCase();
+            final Karma karma = karmaDao.find(nick);
+            if (karma != null) {
+                if (nick.equals(sender)) {
+                    getBot().postMessage(new Message(channel, event,
+                        sender + ", you have a karma level of " + karma.getValue()));
+                } else {
+                    getBot().postMessage(new Message(channel, event,
+                        nick + " has a karma level of " + karma.getValue() + ", " + sender));
+                }
             } else {
-                messages.add(new Message(channel, event,
-                    nick + " has a karma level of " + karma.getValue() + ", " + sender));
+                getBot().postMessage(new Message(channel, event, nick + " has no karma, " + sender));
             }
-        } else {
-            messages.add(new Message(channel, event, nick + " has no karma, " + sender));
+            handled = true;
         }
-        return messages;
+        return handled;
     }
 }

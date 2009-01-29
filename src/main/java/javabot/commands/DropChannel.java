@@ -20,23 +20,21 @@ public class DropChannel implements Command {
     private ChannelDao dao;
 
     @Override
-    public List<Message> execute(Javabot bot, BotEvent event, List<String> args) {
-        List<Message> messages = new ArrayList<Message>();
+    public void execute(final Javabot bot, final BotEvent event, final List<String> args) {
         if (args.isEmpty()) {
-            messages.add(new Message(event.getChannel(), event, "usage: dropChannel <channel>"));
+            bot.postMessage(new Message(event.getChannel(), event, "usage: dropChannel <channel>"));
         } else {
-            String channelName = args.remove(0);
-            Channel channel = dao.get(channelName);
+            final String channelName = args.remove(0);
+            final Channel channel = dao.get(channelName);
             if (channel != null) {
                 dao.delete(channel);
-                messages
-                    .add(new Message(channelName, event, "I was asked to leave this channel by " + event.getSender()));
+                bot.postMessage(new Message(channelName, event, "I was asked to leave this channel by "
+                    + event.getSender()));
                 bot.partChannel(channel.getName());
             } else {
-                messages.add(new Message(event.getChannel(), event, "I'm not in " + channelName
+                bot.postMessage(new Message(event.getChannel(), event, "I'm not in " + channelName
                     + ", " + event.getSender()));
             }
         }
-        return messages;
     }
 }

@@ -12,16 +12,13 @@ import javabot.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * User: joed
- */
 public class AolBonicsOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(AolBonicsOperation.class);
     private final Set<String> phrases = new TreeSet<String>();
     private final List<String> insults = new ArrayList<String>();
     private final Random random;
 
-    public AolBonicsOperation(Javabot bot) {
+    public AolBonicsOperation(final Javabot bot) {
         super(bot);
         phrases.add("u");
         phrases.add("omg");
@@ -40,38 +37,36 @@ public class AolBonicsOperation extends BotOperation {
         // Slightly questionable....
         // phrases.add("lol");
         phrases.add("ftw");
-
+        
         insults.add("dumbass");
         insults.add("genius");
         insults.add("Einstein");
         insults.add("pal");
         insults.add("nimrod");
         insults.add("dork");
-
         random = new Random();
     }
 
-        @Override
-    public List<Message> handleChannelMessage(BotEvent event) {
-        List<Message> messages = new ArrayList<Message>();
-        String message = event.getMessage();
-        String channel = event.getChannel();
-        String[] split = message.split(" ");
-        if(log.isDebugEnabled()) {
+    @Override
+    public boolean handleChannelMessage(final BotEvent event) {
+        final String message = event.getMessage();
+        final String channel = event.getChannel();
+        final String[] split = message.split(" ");
+        boolean handled = false;
+        if (log.isDebugEnabled()) {
             log.debug("AolBonicsOperation: " + message);
         }
-        Boolean notDone = true;
-        for (String bad : split) {
-            if (phrases.contains(bad.toLowerCase().replaceAll("!|\\.|\\?|,", "")) && notDone) {
-                notDone = false;
-                messages.add(new Message(channel, event, event.getSender() + ": Please skip the aolbonics, " + getInsult()));
+        for (final String bad : split) {
+            if (phrases.contains(bad.toLowerCase().replaceAll("!|\\.|\\?|,", "")) && !handled) {
+                handled = true;
+                getBot().postMessage( new Message(channel, event,
+                    String.format("%s: Please skip the aolbonics, %s", event.getSender(), getInsult())));
             }
         }
-        return messages;
+        return handled;
     }
 
     private String getInsult() {
         return insults.get(random.nextInt(insults.size()));
     }
-
 }

@@ -1,33 +1,22 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javabot.BotEvent;
-import javabot.Message;
 import javabot.Javabot;
+import javabot.Message;
 
-/**
- * @author ricky_clarkson
- */
 public class SayOperation extends BotOperation {
     public SayOperation(final Javabot javabot) {
         super(javabot);
     }
 
-    /**
-     * @see BotOperation#handleMessage(BotEvent)
-     */
     @Override
-    public List<Message> handleMessage(final BotEvent event) {
-        final List<Message> messages = new ArrayList<Message>();
+    public boolean handleMessage(final BotEvent event) {
         String message = event.getMessage();
-        final String channel = event.getChannel();
-        if(!message.startsWith("say ")) {
-            return messages;
+        if (message.startsWith("say ")) {
+            message = message.substring("say ".length());
+            getBot().postMessage(new Message(event.getChannel(), event, message));
+            return true;
         }
-        message = message.substring("say ".length());
-        messages.add(new Message(channel, event, message));
-        return messages;
+        return false;
     }
 }

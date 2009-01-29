@@ -1,29 +1,34 @@
 package javabot.admin;
 
-import java.util.List;
-
-import javabot.BotEvent;
-import javabot.Message;
 import javabot.dao.ApiDao;
+import javabot.dao.ClazzDao;
+import javabot.javadoc.Api;
 import javadoc.JavadocParserTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
-/**
- * Created Oct 26, 2008
- *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
- */
 @Test
 public class JavadocTest extends AdminOperationTest {
+    private static final Logger log = LoggerFactory.getLogger(JavadocTest.class);
     @Autowired
     private ApiDao dao;
+    @Autowired
+    private ClazzDao clazzDao;
 
     public void parseJDK() {
-        final BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "admin javadoc "
-            + JavadocParserTest.API_NAME + " " + JavadocParserTest.API_URL_STRING);
-        final List<Message> list = getOperation().handleMessage(event);
-        Assert.assertNotNull(dao.find(JavadocParserTest.API_NAME));
+        final Api api = dao.find(JavadocParserTest.API_NAME);
+        if (api == null) {
+            final String message = "admin addApi " + JavadocParserTest.API_NAME + " "
+                + JavadocParserTest.API_URL_STRING + " java javax";
+            testMessage(message, "adding javadoc for " + JavadocParserTest.API_NAME);
+            waitForResponse("done adding javadoc for " + JavadocParserTest.API_NAME);
+        } else {
+            testMessage("admin dropApi " + JavadocParserTest.API_NAME,
+                "removing old " + JavadocParserTest.API_NAME + " javadoc");
+            waitForResponse(
+                "done removing old " + JavadocParserTest.API_NAME + " javadoc");
+        }
     }
 }

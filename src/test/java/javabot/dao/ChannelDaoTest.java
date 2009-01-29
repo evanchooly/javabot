@@ -13,8 +13,8 @@ public class ChannelDaoTest extends BaseServiceTest {
 
     @Test
     public void addChannel() {
-        String testing = System.currentTimeMillis() + "test";
-        Channel channel = new Channel();
+        final String testing = getTestBot().getNick();
+        final Channel channel = new Channel();
         channel.setName(testing);
         channel.setLogged(true);
         channelDao.save(channel);
@@ -23,14 +23,14 @@ public class ChannelDaoTest extends BaseServiceTest {
 
     @Test
     public void getChannels() {
-        List channels = channelDao.getChannels();
+        final List channels = channelDao.getChannels();
         Assert.assertTrue(!channels.isEmpty());
 
     }
 
     @Test
     public void currentChannels() {
-        List channels = channelDao.configuredChannels();
+        final List channels = channelDao.configuredChannels();
         Assert.assertTrue(!channels.isEmpty());
     }
 }

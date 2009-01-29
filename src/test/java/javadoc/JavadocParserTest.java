@@ -69,9 +69,9 @@ public class JavadocParserTest extends BaseTest {
         clazz.setPackageName("java.util");
         clazz.setLongUrl("http://java.sun.com/javase/6/docs/api/java/util/AbstractMap.html");
         clazzDao.save(clazz);
-        final List<Clazz> list = clazz.populate(clazzDao, writer);
+        final List<Clazz> list = clazz.populate(clazzDao);
         for (final Clazz clazz1 : list) {
-            clazz1.populate(clazzDao, writer);
+            clazz1.populate(clazzDao);
         }
     }
 }

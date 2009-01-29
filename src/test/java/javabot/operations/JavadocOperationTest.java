@@ -3,8 +3,6 @@ package javabot.operations;
 import java.util.Arrays;
 import java.util.List;
 
-import javabot.BotEvent;
-import javabot.Message;
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,37 +23,22 @@ public class JavadocOperationTest extends BaseOperationTest {
 
     public void string() {
         final String response = "http://is.gd/6UoM (JDK)";
-        final String errorMessage = "Should have found class";
-        final BotOperation operation = getOperation();
 
-        BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "javadoc String");
-        List<Message> results = operation.handleMessage(event);
-        Assert.assertTrue(!results.isEmpty());
-        Assert.assertEquals(results.get(0).getMessage(), response, errorMessage);
-
-        event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "javadoc java.lang.String");
-        results = operation.handleMessage(event);
-        Assert.assertTrue(!results.isEmpty());
-        Assert.assertEquals(results.get(0).getMessage(), response, errorMessage);
+        testMessage("javadoc String", response);
+        testMessage("javadoc java.lang.String", response);
     }
 
     public void methods() {
-        testOperation("javadoc String.split(String)", "http://is.gd/eOPq (JDK)");
-        testOperation("javadoc String.split(java.lang.String)", "http://is.gd/eOPq (JDK)");
+        testMessage("javadoc String.split(String)", "http://is.gd/eOPq (JDK)");
+        testMessage("javadoc String.split(java.lang.String)", "http://is.gd/eOPq (JDK)");
 
-        final BotEvent event = new BotEvent(CHANNEL, SENDER, LOGIN, HOSTNAME, "javadoc String.split(*)");
-        final Message message = getOperation().handleMessage(event).get(0);
-        final String string = message.getMessage();
-        final String[] results = string.split(",");
-        Assert.assertEquals(results.length, 2);
+        final TestBot bot = getTestBot();
+        bot.sendMessage(getJavabotChannel(), String.format("%s %s", getJavabot().getNick(), "javadoc String.split(*)"));
+        waitForResponses(bot, 1);
         final List<String> responses = Arrays.asList("http://is.gd/eOPq (JDK)", "http://is.gd/eOPr (JDK)");
-        Assert.assertTrue(responses.contains(results[0].trim()));
-        Assert.assertTrue(responses.contains(results[1].trim()));
-
-    }
-
-    @Override
-    protected BotOperation createOperation() {
-        return new JavadocOperation(getJavabot());
+        final String response = bot.getOldestResponse().getMessage();
+        Assert.assertTrue(response.contains(responses.get(0)));
+        Assert.assertTrue(response.contains(responses.get(1)));
+        Assert.assertTrue(response.split(",").length == 2, "Should only find 2 matches");
     }
 }

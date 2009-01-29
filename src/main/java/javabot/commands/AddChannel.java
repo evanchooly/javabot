@@ -21,12 +21,11 @@ public class AddChannel implements Command {
     private static final String LOGGED = "logged";
 
     @Override
-    public List<Message> execute(final Javabot bot, final BotEvent event, final List<String> args) {
-        final List<Message> messages = new ArrayList<Message>();
+    public void execute(final Javabot bot, final BotEvent event, final List<String> args) {
         if (args.isEmpty()) {
-            messages.add(new Message(event.getChannel(), event, "usage: addChannel <channel> ("
-                + LOGGED + ") (password)"));
-            messages.add(new Message(event.getChannel(), event,
+            bot.postMessage(new Message(event.getChannel(), event,
+                String.format("usage: addChannel <channel> (%s) (password)", LOGGED)));
+            bot.postMessage(new Message(event.getChannel(), event,
                 "usage: the password and 'logged' are optional and can appear in any order"));
         } else {
             final String channelName = args.remove(0);
@@ -48,11 +47,10 @@ public class AddChannel implements Command {
                 channel.setLogged(logged);
                 dao.save(channel);
             }
-            messages.add(new Message(event.getChannel(), event, "Now joining " + channelName +
+            bot.postMessage(new Message(event.getChannel(), event, "Now joining " + channelName +
                 (logged ? " and logging it" : "")));
             channel.join(bot);
-            messages.add(new Message(channelName, event, "I was asked to join this channel by " + event.getSender()));
+            bot.postMessage(new Message(channelName, event, "I was asked to join this channel by " + event.getSender()));
         }
-        return messages;
     }
 }

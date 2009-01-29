@@ -1,11 +1,7 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javabot.BotEvent;
 import javabot.Javabot;
-import javabot.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,22 +11,19 @@ import org.slf4j.LoggerFactory;
 public class SpecialCasesOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(SpecialCasesOperation.class);
 
-    public SpecialCasesOperation(Javabot javabot) {
+    public SpecialCasesOperation(final Javabot javabot) {
         super(javabot);
     }
 
-    /**
-     * @see BotOperation#handleMessage(BotEvent)
-     */
     @Override
-    public List<Message> handleMessage(BotEvent event) {
-        List<Message> messages = new ArrayList<Message>();
+    public boolean handleMessage(final BotEvent event) {
         String message = event.getMessage();
+        boolean handled = false;
         if(log.isDebugEnabled()) {
             log.debug("SpecialCasesOperation: " + message);
         }
 
-        String lowerMessage = message.toLowerCase();
+        final String lowerMessage = message.toLowerCase();
         if (lowerMessage.startsWith("no")) {
             message = message.substring("no".length());
 
@@ -48,14 +41,9 @@ public class SpecialCasesOperation extends BotOperation {
             if(log.isDebugEnabled()) {
                 log.debug("SpecialCasesOperation: Key " + key);
             }
-            getBot().getResponses(event.getChannel(), event.getSender(),
-                    event.getLogin(), event.getHostname(), "forget " + key
-            );
-            messages.addAll(getBot().getResponses(event.getChannel(),
-                    event.getSender(), event.getLogin(), event.getHostname(),
-                    message));
-            return messages;
+            handled = getBot().getResponses(event.getChannel(), event.getSender(),
+                event.getLogin(), event.getHostname(), "forget " + key);
         }
-        return messages;
+        return handled;
     }
 }

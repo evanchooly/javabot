@@ -1,5 +1,7 @@
 package javabot.dao.impl;
 
+import javax.persistence.NoResultException;
+
 import javabot.Javabot;
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.AdminDao;
@@ -8,9 +10,6 @@ import javabot.dao.ConfigDao;
 import javabot.model.Admin;
 import javabot.model.Channel;
 import javabot.model.Config;
-
-import javax.persistence.NoResultException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

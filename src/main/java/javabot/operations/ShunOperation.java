@@ -1,7 +1,6 @@
 package javabot.operations;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -27,29 +26,22 @@ public class ShunOperation extends BotOperation {
         super(javabot);
     }
 
-    public List<Message> handleChannelMessage(final BotEvent event) {
-        return Collections.emptyList();
-    }
-
-    public List<Message> handleMessage(final BotEvent event) {
-        return handleMessageForDestination(event, event.getChannel());
+    public boolean handleMessage(final BotEvent event) {
+        final List<Message> messages = new ArrayList<Message>();
+        final String message = event.getMessage();
+        final String[] parts = message.split(" ");
+        if (parts.length == 2 && "shun".equals(parts[0])) {
+            getBot().postMessage(new Message(event.getChannel(), event, getShunnedMessage(parts[1])));
+            return true;
+        }
+        return false;
     }
 
     private Date calculateShunExpiry() {
         return new Date(System.currentTimeMillis() + SHUN_DURATION);
     }
 
-    private List<Message> handleMessageForDestination(final BotEvent event, final String destination) {
-        final List<Message> messages = new ArrayList<Message>();
-        final String message = event.getMessage();
-        final String[] parts = message.split(" ");
-        if (parts.length == 2 && "shun".equals(parts[0])) {
-            messages.add(new Message(destination, event, shun(parts[1])));
-        }
-        return messages;
-    }
-
-    private String shun(final String victim) {
+    private String getShunnedMessage(final String victim) {
         if (shunDao.isShunned(victim)) {
             return String.format("%s is already shunned.", victim);
         }

@@ -8,29 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@Test
 public class LogDaoTest extends BaseServiceTest {
     @Autowired
     private LogsDao logsDao;
 
-    @Test
-    public void addLogMessage() {
-        final String nick = System.currentTimeMillis() + "test";
-        logsDao.logMessage(Logs.Type.MESSAGE, nick, "##javabot", "test");
-        final Logs log = logsDao.getMessage(nick, "##javabot");
-        Assert.assertEquals(log.getMessage(), "test");
-    }
-
-    @Test(dependsOnMethods = {"addLogMessage"})
     public void findChannels() {
-        final String nick = System.currentTimeMillis() + "test";
-        logsDao.logMessage(Logs.Type.MESSAGE, nick, "##javabot", "test");
+        final String nick = getTestBot().getNick();
+        logsDao.logMessage(Logs.Type.MESSAGE, nick, getJavabotChannel(), "test");
         final List channels = logsDao.loggedChannels();
-        Assert.assertEquals(channels.get(0), "##javabot");
+        Assert.assertEquals(channels.get(0), getJavabotChannel());
     }
 
-    @Test(dependsOnMethods = {"addLogMessage"})
     public void getDailyLog() {
-        final List<Logs> logdata = logsDao.dailyLog("##javabot", new Date());
+        final List<Logs> logdata = logsDao.dailyLog(getJavabotChannel(), new Date());
         Assert.assertFalse(logdata.isEmpty(), "Should have log data");
     }
 }

@@ -31,10 +31,10 @@ public class AdminOperation extends BotOperation {
     }
 
     @Override
-    public List<Message> handleMessage(final BotEvent event) {
-        final List<Message> messages = new ArrayList<Message>();
+    public boolean handleMessage(final BotEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
+        boolean handled = false;
         if (message.startsWith(ADMIN_PREFIX)) {
             if(isAdmin(event)) {
                 final String[] params = message.substring(ADMIN_PREFIX.length()).trim().split(" ");
@@ -42,31 +42,33 @@ public class AdminOperation extends BotOperation {
                 if (!args.isEmpty()) {
                     try {
                         final Command command = getCommand(args);
+                        handled = true;
                         args.remove(0);
-                        messages.addAll(command.execute(getBot(), event, args));
+                        command.execute(getBot(), event, args);
                     } catch (ClassNotFoundException e) {
-                        messages.add(new Message(channel, event, params[0] + " command not found"));
-                        privMessageStackTrace(event, messages, e);
+                        getBot().postMessage(new Message(channel, event, params[0] + " command not found"));
+                        privMessageStackTrace(event, e);
                     } catch (Exception e) {
-                        privMessageStackTrace(event, messages, e);
-                        messages.add(new Message(channel, event, "Could not execute command: " + params[0]
+                        privMessageStackTrace(event, e);
+                        getBot().postMessage(new Message(channel, event, "Could not execute command: " + params[0]
                             + ", " + e.getMessage()));
                     }
                 }
             } else {
-                messages.add(new Message(channel, event, event.getSender() + ", you're not an admin"));
+                getBot().postMessage(new Message(channel, event, event.getSender() + ", you're not an admin"));
+                handled = true;
             }
         }
-        return messages;
+        return handled;
     }
 
-    private void privMessageStackTrace(final BotEvent event, final List<Message> messages, final Exception e) {
+    private void privMessageStackTrace(final BotEvent event, final Exception e) {
         final StringWriter writer = new StringWriter();
         final PrintWriter w = new PrintWriter(writer);
         try {
             e.printStackTrace(w);
             for(final String line : writer.toString().split("\\n")) {
-                messages.add(new Message(event.getSender(), event, line));
+                getBot().postMessage(new Message(event.getSender(), event, line));
             }
         } finally {
             w.close();

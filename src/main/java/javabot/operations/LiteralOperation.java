@@ -1,11 +1,9 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
+import javabot.model.Factoid;
 import javabot.dao.FactoidDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,7 +14,7 @@ public class LiteralOperation extends BotOperation {
     @Autowired
     private FactoidDao dao;
 
-    public LiteralOperation(Javabot bot) {
+    public LiteralOperation(final Javabot bot) {
         super(bot);
     }
 
@@ -24,18 +22,20 @@ public class LiteralOperation extends BotOperation {
      * @see BotOperation#handleMessage(BotEvent)
      */
     @Override
-    public List<Message> handleMessage(BotEvent event) {
-        List<Message> messages = new ArrayList<Message>();
-        String message = event.getMessage().toLowerCase();
-        String channel = event.getChannel();
+    public boolean handleMessage(final BotEvent event) {
+        final String message = event.getMessage().toLowerCase();
+        final String channel = event.getChannel();
+        boolean handled = false;
         if (message.startsWith("literal ")) {
-            String key = message.substring("literal ".length());
-            if (dao.hasFactoid(key)) {
-                messages.add(new Message(channel, event, dao.getFactoid(key).getValue()));
-                return messages;
+            final String key = message.substring("literal ".length());
+            final Factoid factoid = dao.getFactoid(key);
+            if (factoid != null) {
+                getBot().postMessage(new Message(channel, event, factoid.getValue()));
+            } else {
+                getBot().postMessage(new Message(channel, event, "I have no factoid called \"" + key + "\""));
             }
-            messages.add(new Message(channel, event, "I have no factoid called \"" + key + "\""));
+            handled = true;
         }
-        return messages;
+        return handled;
     }
 }

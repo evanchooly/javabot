@@ -1,11 +1,8 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javabot.BotEvent;
-import javabot.Message;
 import javabot.Javabot;
+import javabot.Message;
 import javabot.dao.FactoidDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,7 +10,7 @@ public class StatsOperation extends BotOperation {
     @Autowired
     private FactoidDao factoidDao;
 
-    public StatsOperation(Javabot javabot) {
+    public StatsOperation(final Javabot javabot) {
         super(javabot);
     }
 
@@ -21,17 +18,18 @@ public class StatsOperation extends BotOperation {
     private int numberOfMessages = 0;
 
     @Override
-    public List<Message> handleMessage(BotEvent event) {
+    public boolean handleMessage(final BotEvent event) {
         numberOfMessages++;
-        List<Message> messages = new ArrayList<Message>();
-        String message = event.getMessage();
-        if (message.toLowerCase().startsWith("stats")) {
-            long uptime = System.currentTimeMillis() - startTime;
-            long days = uptime / 86400000;
-            messages.add(
+        final String message = event.getMessage();
+        boolean handled = false;
+        if ("stats".equalsIgnoreCase(message)) {
+            final long uptime = System.currentTimeMillis() - startTime;
+            final long days = uptime / 86400000;
+            getBot().postMessage(
                 new Message(event.getChannel(), event, "I have been up for " + days + " days, have served "
                     + numberOfMessages + " messages, and have " + factoidDao.count() + " factoids."));
+            handled = true;
         }
-        return messages;
+        return handled;
     }
 }

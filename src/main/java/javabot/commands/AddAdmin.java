@@ -1,14 +1,13 @@
 package javabot.commands;
 
 import java.util.List;
-import java.util.ArrayList;
 
-import javabot.dao.AdminDao;
-import javabot.Message;
-import javabot.Javabot;
 import javabot.BotEvent;
-import org.springframework.beans.factory.annotation.Autowired;
+import javabot.Javabot;
+import javabot.Message;
+import javabot.dao.AdminDao;
 import org.jibble.pircbot.User;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created Dec 17, 2008
@@ -20,27 +19,24 @@ public class AddAdmin implements Command {
     private AdminDao dao;
 
     @Override
-    public List<Message> execute(final Javabot bot, final BotEvent event, final List<String> args) {
-        final List<Message> messages = new ArrayList<Message>();
+    public void execute(final Javabot bot, final BotEvent event, final List<String> args) {
         final String userName = args.get(0);
         final User user = findUser(bot, event, userName);
         if (user == null) {
-            messages.add(new Message(event.getChannel(), event, "That user is not on this channel: " + userName));
+            bot.postMessage(new Message(event.getChannel(), event, "That user is not on this channel: " + userName));
         } else {
             if (args.size() != 2) {
-                messages.add(new Message(event.getChannel(), event, "Usage: addAdmin <user> <host>"));
+                bot.postMessage(new Message(event.getChannel(), event, "Usage: addAdmin <user> <host>"));
             } else {
                 final String hostName = args.get(1);
                 if (dao.getAdmin(user.getNick(), hostName) != null) {
-                    messages.add(new Message(event.getChannel(), event, user.getNick() + " is already a bot admin"));
+                    bot.postMessage(new Message(event.getChannel(), event, user.getNick() + " is already a bot admin"));
                 } else {
                     dao.create(user.getNick(), hostName);
-                    messages
-                        .add(new Message(event.getChannel(), event, user.getNick() + " has been added as a bot admin"));
+                    bot.postMessage(new Message(event.getChannel(), event, user.getNick() + " has been added as a bot admin"));
                 }
             }
         }
-        return messages;
     }
 
     private User findUser(final Javabot bot, final BotEvent event, final String name) {

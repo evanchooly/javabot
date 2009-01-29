@@ -1,14 +1,12 @@
 package javabot.operations;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.io.UnsupportedEncodingException;
 
+import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
-import javabot.BotEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,27 +17,27 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class UrlOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(UrlOperation.class);
-    
-    public UrlOperation(Javabot javabot) {
+
+    public UrlOperation(final Javabot javabot) {
         super(javabot);
     }
 
     @Override
-    public final List<Message> handleMessage(BotEvent event) {
-        List<Message> messages = new ArrayList<Message>();
+    public final boolean handleMessage(final BotEvent event) {
         String message = event.getMessage();
-        String channel = event.getChannel();
-        if (!message.startsWith(getTrigger())) {
-            return messages;
+        final String channel = event.getChannel();
+        boolean handled = false;
+        if (message.startsWith(getTrigger())) {
+            message = message.substring(getTrigger().length());
+            try {
+                getBot().postMessage(new Message(channel, event,
+                    getBaseUrl() + URLEncoder.encode(message, Charset.defaultCharset().displayName())));
+                handled = true;
+            } catch (UnsupportedEncodingException e) {
+                log.error(e.getMessage(), e);
+            }
         }
-        message = message.substring(getTrigger().length());
-        try {
-            messages.add(new Message(channel, event,
-                getBaseUrl() + URLEncoder.encode(message, Charset.defaultCharset().displayName())));
-        } catch (UnsupportedEncodingException e) {
-            log.error(e.getMessage(), e);
-        }
-        return messages;
+        return handled;
     }
 
     protected abstract String getBaseUrl();

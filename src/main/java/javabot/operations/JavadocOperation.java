@@ -24,16 +24,13 @@ public class JavadocOperation extends BotOperation {
         super(bot);
     }
 
-    /**
-     * @see BotOperation#handleMessage(BotEvent)
-     */
     @Override
     @Transactional
-    public List<Message> handleMessage(final BotEvent event) {
-        final List<Message> messages = new ArrayList<Message>();
+    public boolean handleMessage(final BotEvent event) {
         final String message = event.getMessage();
+        boolean handled = false;
         if(message.toLowerCase().startsWith("javadoc ")) {
-            String[] urls;
+            final List<String> urls = new ArrayList<String>();
             final String key = message.substring("javadoc ".length()).trim();
             if(key.startsWith("-list") || "".equals(key)) {
                 final List<String> names = apiDao.listNames();
@@ -41,55 +38,49 @@ public class JavadocOperation extends BotOperation {
                 for(final String name : names) {
                     builder.append(name).append(" ");
                 }
-                messages.add(new Message(event.getChannel(), event, event.getSender()
+                getBot().postMessage(new Message(event.getChannel(), event, event.getSender()
                     + ", I know of the following APIs: " + builder));
             } else {
                 final int openIndex = key.indexOf('(');
                 if(openIndex == -1) {
-                    final Clazz[] classes = dao.getClass(key);
-                    urls = new String[classes.length];
-                    int index = 0;
-                    for(final Clazz clazz : classes) {
-                        urls[index++] = clazz.getDisplayUrl(clazz.getApi().getName(), dao);
+                    for(final Clazz clazz : dao.getClass(key)) {
+                        urls.add(clazz.getDisplayUrl(clazz.getApi().getName(), dao));
                     }
                 } else {
                     final int finalIndex = key.lastIndexOf('.', openIndex);
                     final int closeIndex = key.indexOf(')');
-                    if(closeIndex == -1 || finalIndex == -1) {
-                        urls = new String[0];
-                    }
+                    
                     final String className = key.substring(0, finalIndex);
                     final String methodName = key.substring(finalIndex + 1, openIndex);
                     final String signatureTypes = key.substring(openIndex + 1, closeIndex);
                     final List<Method> list = dao.getMethods(className, methodName, signatureTypes);
-                    urls = new String[list.size()];
-                    int index = 0;
                     for(final Method method : list) {
-                        urls[index++] = method.getDisplayUrl(method.getClazz().getApi().getName(), dao);
+                        urls.add(method.getDisplayUrl(method.getClazz().getApi().getName(), dao));
                     }
                 }
-                if(urls.length != 0) {
+                if(!urls.isEmpty()) {
                     final StringBuilder urlMessage = new StringBuilder();
-                    for(int index = 0;  index < urls.length; index++) {
+                    for(int index = 0;  index < urls.size(); index++) {
                         urlMessage.append(index != 0 ? ", " : "")
-                            .append(urls[index]);
+                            .append(urls.get(index));
                     }
-                    if(urls.length > RESULT_LIMIT) {
-                        messages.add(new Message(event.getChannel(), event, event.getSender() + ", too many results found."
-                            + "  Please see your private messages for results"));
-                        messages.add(new Message(event.getSender(), event,
-                            event.getSender() + ", please see " + urlMessage));
+                    if(urls.size() > RESULT_LIMIT) {
+                        getBot().postMessage(new Message(event.getChannel(), event,
+                            String.format("%s, too many results found.  Please see your private messages for results",
+                                event.getSender())));
+                        getBot().postMessage(new Message(event.getSender(), event,
+                            String.format("%s, please see %s", event.getSender(), urlMessage)));
                     } else {
-                        messages.add(new Message(event.getChannel(), event, urlMessage.toString()));
+                        getBot().postMessage(new Message(event.getChannel(), event, urlMessage.toString()));
                     }
                 }
-                if(messages.isEmpty()) {
-                    messages
-                        .add(new Message(event.getChannel(), event,
+                if(urls.isEmpty()) {
+                    getBot().postMessage(new Message(event.getChannel(), event,
                             "I don't know of any documentation for " + key));
                 }
             }
+            handled = true;
         }
-        return messages;
+        return handled;
     }
 }

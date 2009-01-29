@@ -9,46 +9,47 @@ import javabot.dao.ChangeDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Change;
 
-// User: joed
-// Date: Apr 11, 2007
-// Time: 2:41:22 PM
-
 public class ChangeDaoImpl extends AbstractDaoImpl<Change> implements ChangeDao {
     public ChangeDaoImpl() {
         super(Change.class);
     }
 
     @SuppressWarnings("unchecked")
-    public List<Change> getChanges(QueryParam qp, Change filter) {
+    public List<Change> getChanges(final QueryParam qp, final Change filter) {
         return buildFindQuery(qp, filter, false).getResultList();
     }
 
-    public void logChange(String message) {
-        Change change = new Change();
+    public void logChange(final String message) {
+        final Change change = new Change();
         change.setMessage(message);
         change.setChangeDate(new Date());
         save(change);
     }
 
-    public void logAdd(String sender, String key, String value) {
+    public void logAdd(final String sender, final String key, final String value) {
         logChange(sender + " added '" + key + "' with a value of '" + value + "'");
     }
 
-    public boolean findLog(String message) {
-        String query = "select c from Change c where c.message = :message";
-        List change = getEntityManager().createQuery(query)
+    public boolean findLog(final String message) {
+        final String query = "select c from Change c where c.message = :message";
+        final List change = getEntityManager().createQuery(query)
                 .setParameter("message", message)
                 .getResultList();
         return change != null && !change.isEmpty();
     }
 
-    public Long count(Change filter) {
+    public Long count(final Change filter) {
         return (Long) buildFindQuery(null, filter, true).getSingleResult();
     }
 
+    @SuppressWarnings({"unchecked"})
+    public List<Change> get(final Change filter) {
+        return (List<Change>)buildFindQuery(null, filter, false).getResultList();
+    }
+
     // TODO clean this up
-    private Query buildFindQuery(QueryParam qp, Change filter, boolean count) {
-        StringBuilder hql = new StringBuilder();
+    private Query buildFindQuery(final QueryParam qp, final Change filter, final boolean count) {
+        final StringBuilder hql = new StringBuilder();
         if (count) {
             hql.append("select count(*) ");
         }
@@ -67,7 +68,7 @@ public class ChangeDaoImpl extends AbstractDaoImpl<Change> implements ChangeDao 
                 ") ").append(qp.isSortAsc() ? " asc" : " desc");
         }
 
-        Query query = getEntityManager().createQuery(hql.toString());
+        final Query query = getEntityManager().createQuery(hql.toString());
         if (filter.getId() != null) {
             query.setParameter("id", "%" + filter.getId() + "%");
         }
