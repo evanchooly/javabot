@@ -47,7 +47,6 @@ public class ConfigDaoImpl extends AbstractDaoImpl<Config> implements ConfigDao 
             config.setOperations(Javabot.OPERATIONS);
             adminDao.create(defaultAdmin.getUserName(), defaultAdmin.getHostName());
             save(config);
-            props = null;
         }
         return config;
     }
