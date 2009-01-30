@@ -10,7 +10,7 @@
 
     <groupId>javabot</groupId>
     <artifactId>core</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <name>javabot core</name>
 

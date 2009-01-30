@@ -28,3 +28,9 @@ core/.settings
 core/.springBeans
 core/.project
 core/.classpath
+web/target
+web/src/main/resources/locations-override.properties
+web/.settings
+web/.springBeans
+web/.project
+web/.classpath
