@@ -2,10 +2,14 @@ package javabot.admin;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Arrays;
+import java.util.List;
 
+import javabot.Javabot;
 import javabot.commands.Command;
 import javabot.operations.AdminOperation;
 import javabot.operations.BaseOperationTest;
+import javabot.operations.BotOperation;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -17,19 +21,30 @@ import org.testng.annotations.Test;
 @Test
 public class AdminOperationTest extends BaseOperationTest {
     public void commandList() {
-        final File dir = new File("core/src/main/java/" + Command.class.getPackage().getName().replace(".", "/"));
+        doScan(Command.class, AdminOperation.COMMANDS, Arrays.asList("Command.java", "OperationsCommand.java"),
+            ".java");
+    }
+
+    public void operationsList() {
+        doScan(BotOperation.class, Javabot.OPERATIONS,
+            Arrays.asList("AdminOperation.java", "AddFactoidOperation.java", "BotOperation.java",
+                "GetFactoidOperation.java", "UrlOperation.java"), "Operation.java");
+    }
+
+    private void doScan(final Class baseClass, final List<String> list, final List<String> excluded,
+        final String endTest) {
+        final File dir = new File("core/src/main/java/" + baseClass.getPackage().getName().replace(".", "/"));
         final File[] names = dir.listFiles(new FileFilter() {
             @Override
             public boolean accept(final File file) {
                 final String name = file.getName();
-                return name.endsWith(".java")
-                    && !"Command.java".equals(name)
-                    && !"OperationsCommand.java".equals(name);
+                return name.endsWith(endTest)
+                    && !excluded.contains(name);
             }
         });
         for (final File name : names) {
-            final String command = name.getName().replace(".java", "");
-            Assert.assertTrue(AdminOperation.COMMANDS.contains(command), "Should have found " + command);
+            final String command = name.getName().replace(endTest, "");
+            Assert.assertTrue(list.contains(command), "Should have found " + command);
         }
     }
 }

@@ -96,7 +96,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     private ShunDao shunDao;
     private ApplicationContext context;
     public static final List<String> OPERATIONS = Arrays.asList(
-        BotOperation.getName(AdminOperation.class),
         BotOperation.getName(AolBonicsOperation.class),
         BotOperation.getName(DaysToChristmasOperation.class),
         BotOperation.getName(DaysUntilOperation.class),
