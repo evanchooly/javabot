@@ -1,0 +1,44 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>javabot</groupId>
+    <artifactId>javabot</artifactId>
+    <version>${javabot.version}</version>
+    <packaging>pom</packaging>
+
+    <name>javabot</name>
+
+    <modules>
+        <module>core</module>
+    </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>jboss</id>
+            <url>http://repository.jboss.com/maven2/</url>
+        </repository>
+        <repository>
+            <id>antwerkz</id>
+            <url>http://antwerkz.com/</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <javabot.version>3.0-SNAPSHOT</javabot.version>
+    </properties>
+</project>
