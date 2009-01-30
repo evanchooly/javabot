@@ -6,12 +6,9 @@ import javax.persistence.PersistenceContext;
 import javabot.dao.util.EntityNotFoundException;
 import javabot.model.Persistent;
 import org.springframework.transaction.annotation.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Transactional
 public class AbstractDaoImpl<T> implements BaseDao<T> {
-    private static final Logger log = LoggerFactory.getLogger(AbstractDaoImpl.class);
     private final Class entityClass;
     private EntityManager entityManager;
 
@@ -57,7 +54,6 @@ public class AbstractDaoImpl<T> implements BaseDao<T> {
 
     @Transactional
     public void delete(final Persistent persistedObject) {
-        log.debug("deleting = " + persistedObject);
         getEntityManager().remove(getEntityManager().merge(persistedObject));
     }
 

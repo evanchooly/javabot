@@ -1,5 +1,7 @@
 package javabot.operations;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,8 +11,6 @@ import javabot.Javabot;
 import javabot.Message;
 import javabot.commands.Command;
 import javabot.dao.AdminDao;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
@@ -20,8 +20,6 @@ import org.springframework.context.ApplicationContext;
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
 public class AdminOperation extends BotOperation {
-    private static final Logger log = LoggerFactory.getLogger(AdminOperation.class);
-
     private static final String ADMIN_PREFIX = "admin ";
     @Autowired
     private ApplicationContext context;
@@ -65,17 +63,16 @@ public class AdminOperation extends BotOperation {
     }
 
     private void privMessageStackTrace(final BotEvent event, final Exception e) {
-        log.debug(e.getMessage(), e);
-//        final StringWriter writer = new StringWriter();
-//        final PrintWriter w = new PrintWriter(writer);
-//        try {
-//            e.printStackTrace(w);
-//            for(final String line : writer.toString().split("\\n")) {
-//                getBot().postMessage(new Message(event.getSender(), event, line));
-//            }
-//        } finally {
-//            w.close();
-//        }
+        final StringWriter writer = new StringWriter();
+        final PrintWriter w = new PrintWriter(writer);
+        try {
+            e.printStackTrace(w);
+            for(final String line : writer.toString().split("\\n")) {
+                getBot().postMessage(new Message(event.getSender(), event, line));
+            }
+        } finally {
+            w.close();
+        }
     }
 
     private boolean isAdmin(final BotEvent event) {
