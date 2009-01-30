@@ -4,14 +4,11 @@ import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
 import javabot.javadoc.Api;
 import javadoc.JavadocParserTest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 @Test
 public class JavadocTest extends AdminOperationTest {
-    private static final Logger log = LoggerFactory.getLogger(JavadocTest.class);
     @Autowired
     private ApiDao dao;
     @Autowired
@@ -22,8 +19,13 @@ public class JavadocTest extends AdminOperationTest {
         if (api == null) {
             final String message = "admin addApi " + JavadocParserTest.API_NAME + " "
                 + JavadocParserTest.API_URL_STRING + " java javax";
-            testMessage(message, "adding javadoc for " + JavadocParserTest.API_NAME);
+            testMessage(message);
             waitForResponse("done adding javadoc for " + JavadocParserTest.API_NAME);
+//        } else {
+//            testMessage("admin dropApi " + JavadocParserTest.API_NAME,
+//                "removing old " + JavadocParserTest.API_NAME + " javadoc");
+//            waitForResponse(
+//                "done removing old " + JavadocParserTest.API_NAME + " javadoc");
         }
     }
 }

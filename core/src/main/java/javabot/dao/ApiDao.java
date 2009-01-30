@@ -15,7 +15,7 @@ public interface ApiDao extends BaseDao<Api> {
 
     Api find(String name);
 
-    void delete(String name);
+    void delete(final Api api);
 
     List<String> listNames();
 }

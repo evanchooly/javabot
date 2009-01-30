@@ -44,7 +44,7 @@ public class JavadocParser {
                     log.debug(String.format("Found class: %s", clazz));
                     dao.save(clazz);
                 } catch (IrrelevantClassException e) {
-                    log.debug(e.getMessage(), e);
+                    log.debug(e.getMessage());
                 }
             }
             final List<Clazz> classes = new ArrayList<Clazz>(dao.findAll(api.getName()));

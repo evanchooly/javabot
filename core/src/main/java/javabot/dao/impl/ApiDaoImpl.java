@@ -1,11 +1,15 @@
 package javabot.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.NoResultException;
 
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ApiDao;
 import javabot.javadoc.Api;
+import javabot.javadoc.Clazz;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created Oct 29, 2008
@@ -14,6 +18,7 @@ import javabot.javadoc.Api;
  */
 @SuppressWarnings({"unchecked"})
 public class ApiDaoImpl extends AbstractDaoImpl<Api> implements ApiDao {
+    private static final Logger log = LoggerFactory.getLogger(ApiDaoImpl.class);
     protected ApiDaoImpl() {
         super(Api.class);
     }
@@ -37,10 +42,24 @@ public class ApiDaoImpl extends AbstractDaoImpl<Api> implements ApiDao {
             .getResultList();
     }
 
-    public void delete(final String name) {
-        final Api api = find(name);
+    public void delete(final Api api) {
         if(api != null) {
-            delete(api);
+            final Api old = find(api.getName());
+            final List<Clazz> classes = old.getClasses();
+            for(int passes = 0; passes < 5 && !classes.isEmpty(); passes++) {
+                final List<Clazz> skipped = new ArrayList<Clazz>();
+                while(!classes.isEmpty()) {
+                    final Clazz aClass = classes.remove(classes.size()-1);
+                    try {
+                        delete(aClass);
+                    } catch (Exception e) {
+                        log.debug("rescheduling" + aClass + " : " + e.getMessage());
+                        skipped.add(aClass);
+                    }
+                }
+                classes.addAll(skipped);
+            }
+            super.delete(old);
         }
     }
 }
