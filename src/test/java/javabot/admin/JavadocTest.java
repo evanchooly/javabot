@@ -24,11 +24,6 @@ public class JavadocTest extends AdminOperationTest {
                 + JavadocParserTest.API_URL_STRING + " java javax";
             testMessage(message, "adding javadoc for " + JavadocParserTest.API_NAME);
             waitForResponse("done adding javadoc for " + JavadocParserTest.API_NAME);
-        } else {
-            testMessage("admin dropApi " + JavadocParserTest.API_NAME,
-                "removing old " + JavadocParserTest.API_NAME + " javadoc");
-            waitForResponse(
-                "done removing old " + JavadocParserTest.API_NAME + " javadoc");
         }
     }
 }
