@@ -9,12 +9,18 @@
     </parent>
 
     <groupId>javabot</groupId>
-    <artifactId>core</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>web</artifactId>
+    <packaging>war</packaging>
 
-    <name>javabot core</name>
+    <name>javabot web frontend</name>
 
     <dependencies>
+        <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>core</artifactId>
+            <version>${javabot.version}</version>
+        </dependency>
+      
         <dependency>
             <groupId>pircbot</groupId>
             <artifactId>pircbot</artifactId>
@@ -190,19 +196,9 @@
 
     <build>
         <plugins>
-            <!-- Run me with 'mvn exec:exec'. -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.1</version>
-
-                <configuration>
-                    <mainClass>javabot.Javabot</mainClass>
-                    <classpathScope>test</classpathScope>
-                    <arguments>
-                        <argument>-Xmx512m</argument>
-                    </arguments>
-                </configuration>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
             </plugin>
 
            <plugin>

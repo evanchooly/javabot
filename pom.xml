@@ -4,7 +4,7 @@
 
     <groupId>javabot</groupId>
     <artifactId>javabot</artifactId>
-    <version>${javabot.version}</version>
+    <version>3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>javabot</name>
@@ -38,8 +38,8 @@
             <url>http://antwerkz.com/</url>
         </repository>
     </repositories>
-
+    
     <properties>
-        <javabot.version>3.0-SNAPSHOT</javabot.version>
+        <javabot.version>${version}</javabot.version>
     </properties>
 </project>
