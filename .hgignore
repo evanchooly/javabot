@@ -22,5 +22,9 @@ db/pgimport.sh
 db/schema.ddl
 db/seen.dump
 db/javabot.hsqldb*
-src/main/resources/locations-override.properties
-src/test/resources/locations-overrides.properties
+core/target
+core/src/main/resources/locations-override.properties
+core/.settings
+core/.springBeans
+core/.project
+core/.classpath
