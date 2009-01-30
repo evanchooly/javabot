@@ -3,12 +3,13 @@ package javabot.admin;
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
 import javabot.javadoc.Api;
+import javabot.operations.BaseOperationTest;
 import javadoc.JavadocParserTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 @Test
-public class JavadocTest extends AdminOperationTest {
+public class JavadocTest extends BaseOperationTest {
     @Autowired
     private ApiDao dao;
     @Autowired
