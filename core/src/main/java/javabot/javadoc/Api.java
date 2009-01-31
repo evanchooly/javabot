@@ -67,7 +67,7 @@ public class Api implements Persistent {
         this.baseUrl = baseUrl;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "api")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "api")
     public List<Clazz> getClasses() {
         return classes;
     }

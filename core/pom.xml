@@ -48,9 +48,9 @@
 
         <!-- Database drivers -->
         <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.2.1</version>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -157,7 +157,7 @@
 
     <build>
         <plugins>
-            <!-- Run me with 'mvn exec:exec'. -->
+            <!-- Run me with 'mvn exec:java'. -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -168,6 +168,7 @@
                     <classpathScope>test</classpathScope>
                     <arguments>
                         <argument>-Xmx512m</argument>
+                        <argument>-agentpath:/tmp/NBProfiler2685.link/deployed/jdk16/mac/libprofilerinterface.jnilib=/tmp/NBProfiler2685.link,5140</argument>
                     </arguments>
                 </configuration>
             </plugin>

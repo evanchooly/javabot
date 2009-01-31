@@ -75,10 +75,10 @@ public abstract class JavadocElement implements Persistent {
 
     @Transient
     @Transactional
-    public String getDisplayUrl(final String api, final BaseDao dao) {
+    public String getDisplayUrl(final String hint, final BaseDao dao) {
         String url = getShortUrl();
         if(url == null) {
-            setShortUrl(buildShortUrl(getLongUrl()) + " (" + api +")");
+            setShortUrl(buildShortUrl(getLongUrl()) + " (" + hint +")");
             url = getShortUrl();
             dao.save(this);
         }

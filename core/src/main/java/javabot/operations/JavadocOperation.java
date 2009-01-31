@@ -44,7 +44,7 @@ public class JavadocOperation extends BotOperation {
                 final int openIndex = key.indexOf('(');
                 if(openIndex == -1) {
                     for(final Clazz clazz : dao.getClass(key)) {
-                        urls.add(clazz.getDisplayUrl(clazz.getApi().getName(), dao));
+                        urls.add(clazz.getDisplayUrl(clazz.toString(), dao));
                     }
                 } else {
                     final int finalIndex = key.lastIndexOf('.', openIndex);

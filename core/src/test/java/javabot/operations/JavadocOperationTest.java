@@ -22,7 +22,7 @@ public class JavadocOperationTest extends BaseOperationTest {
     private ClazzDao clazzDao;
 
     public void string() {
-        final String response = "http://is.gd/6UoM (JDK)";
+        final String response = "http://is.gd/6UoM (java.lang.String)";
 
         testMessage("javadoc String", response);
         testMessage("javadoc java.lang.String", response);

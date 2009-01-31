@@ -36,6 +36,7 @@ public class JavadocParser {
     @Transactional
     public void parse(final Api api, final List<String> packages, final Writer writer) {
         try {
+            executor.prestartAllCoreThreads();
             final Document document = Clazz.getDocument(String.format("%s/allclasses-frame.html", api.getBaseUrl()));
             for (final HTMLElement element : (List<HTMLElement>) new DOMXPath("//A[@target='classFrame']")
                 .evaluate(document)) {
@@ -48,19 +49,19 @@ public class JavadocParser {
                 }
             }
             final List<Clazz> classes = new ArrayList<Clazz>(dao.findAll(api.getName()));
-            while(!classes.isEmpty()) {
-                executor.submit(process(classes.remove(0)));
+            while (!classes.isEmpty()) {
+                workQueue.add(process(classes.remove(0)));
             }
-            while (!workQueue.isEmpty()) {
+                    while (!workQueue.isEmpty()) {
                 writer.write(
                     String.format("Waiting on %s work queue to drain.  %d items left", api.getName(), workQueue.size()));
-                Thread.sleep(5000);
+                            Thread.sleep(5000);
             }
-        } catch (IOException e) {
-            log.debug(e.getMessage(), e);
+                        } catch (IOException e) {
+                            log.debug(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
-        } catch (InterruptedException e) {
-            log.error(e.getMessage(), e);
+                        } catch (InterruptedException e) {
+                            log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
         } catch (JaxenException e) {
             log.error(e.getMessage(), e);
@@ -77,7 +78,7 @@ public class JavadocParser {
             public void run() {
                 try {
                     for (final Clazz clazz1 : clazz.populate(dao)) {
-                        executor.submit(process(clazz1));
+                        workQueue.add(process(clazz1));
                     }
                 } catch (IrrelevantClassException e) {
                     log.debug(e.getMessage());

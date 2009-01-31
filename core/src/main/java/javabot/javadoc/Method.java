@@ -121,4 +121,9 @@ public class Method extends JavadocElement implements Persistent {
     public void setParamCount(final Integer count) {
         paramCount = count;
     }
+
+    @Override
+    public String toString() {
+        return clazz + "." + getShortSignature();
+    }
 }
