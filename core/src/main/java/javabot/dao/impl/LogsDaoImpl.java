@@ -40,7 +40,6 @@ public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
     }
 
     public void logMessage(final Logs.Type type, final String nick, final String channel, final String message) {
-
         final Logs logMessage = new Logs();
         logMessage.setType(type);
         logMessage.setNick(nick);
