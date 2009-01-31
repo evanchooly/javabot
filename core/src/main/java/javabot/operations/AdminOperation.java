@@ -7,7 +7,17 @@ import java.util.List;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
-import javabot.commands.*;
+import javabot.commands.AddAdmin;
+import javabot.commands.AddApi;
+import javabot.commands.AddChannel;
+import javabot.commands.Command;
+import javabot.commands.Config;
+import javabot.commands.DisableOperation;
+import javabot.commands.DropApi;
+import javabot.commands.DropChannel;
+import javabot.commands.EnableOperation;
+import javabot.commands.ListChannels;
+import javabot.commands.ListOperations;
 import javabot.dao.AdminDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +35,7 @@ public class AdminOperation extends BotOperation {
         AddAdmin.class.getSimpleName(),
         AddApi.class.getSimpleName(),
         AddChannel.class.getSimpleName(),
+        Config.class.getSimpleName(),
         DisableOperation.class.getSimpleName(),
         DropApi.class.getSimpleName(),
         DropChannel.class.getSimpleName(),

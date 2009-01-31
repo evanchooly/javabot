@@ -23,8 +23,8 @@ import org.hibernate.annotations.CollectionOfElements;
 @Entity
 @Table(name = "configuration")
 @NamedQueries({
-@NamedQuery(name = ConfigDao.GET_CONFIG, query = "select c from Config c")
-        })
+    @NamedQuery(name = ConfigDao.GET_CONFIG, query = "select c from Config c")
+})
 public class Config implements Serializable, Persistent {
     private Long id;
     private String server = "irc.freenode.org";
@@ -32,8 +32,6 @@ public class Config implements Serializable, Persistent {
     private String prefixes = "~";
     private String nick;
     private String password;
-    private Long version;
-
     private List<String> operations = new ArrayList<String>();
 
     @Id
@@ -96,15 +94,6 @@ public class Config implements Serializable, Persistent {
         server = ircServer;
     }
 
-    @Version
-    public Long getVersion() {
-        return version;
-    }
-
-    public void setVersion(final Long value) {
-        version = value;
-    }
-
     @Override
     public String toString() {
         return "Config{" +
@@ -112,9 +101,7 @@ public class Config implements Serializable, Persistent {
             ", port=" + port +
             ", prefixes='" + prefixes + '\'' +
             ", nick='" + nick + '\'' +
-            ", password='" + password + '\'' +
-            ", version=" + version +
-            ", operations=" + operations +
+            ", password='#######'" +
             '}';
     }
 }

@@ -1,17 +1,17 @@
 package javabot;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.lang.reflect.Constructor;
 
 import javabot.dao.ApiDao;
 import javabot.dao.ChangeDao;
@@ -63,7 +63,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.transaction.annotation.Transactional;
 
 public class Javabot extends PircBot implements ApplicationContextAware {
     private static final Logger log = LoggerFactory.getLogger(Javabot.class);
@@ -135,7 +134,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         context = applicationContext;
         context.getAutowireCapableBeanFactory().autowireBean(this);
         setVersion("Javabot 3.0-snapshot");
-        loadConfig();
+        final Config config = configDao.get();
         executors = Executors.newCachedThreadPool(new JavabotThreadFactory());
         final Thread hook = new Thread(new Runnable() {
             @Override
@@ -145,6 +144,8 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         });
         hook.setDaemon(false);
         Runtime.getRuntime().addShutdownHook(hook);
+        loadOperationInfo(config);
+        loadConfig(config);
         connect();
     }
 
@@ -159,10 +160,8 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         }
     }
 
-    @Transactional
-    private void loadConfig() {
+    public final void loadConfig(final Config config) {
         try {
-            final Config config = configDao.get();
             log.debug("Running with configuration: " + config);
             host = config.getServer();
             port = config.getPort();
@@ -171,7 +170,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
             setNickPassword(config.getPassword());
             authWait = 3000;
             startStrings = config.getPrefixes().split(" ");
-            loadOperationInfo(config);
         } catch (Exception e) {
             log.debug(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
@@ -255,8 +253,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     @SuppressWarnings({"StringContatenationInLoop"})
     public final void connect() {
-        boolean connected = false;
-        while (!connected) {
+        while (!isConnected()) {
             try {
                 connect(host, port);
                 sendRawLine("PRIVMSG NickServ :identify " + getNickPassword());
@@ -269,7 +266,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
                         }
                     }).start();
                 }
-                connected = true;
             } catch (Exception exception) {
                 disconnect();
                 log.error(exception.getMessage(), exception);
