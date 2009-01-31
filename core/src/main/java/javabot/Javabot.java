@@ -133,7 +133,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     public Javabot(final ApplicationContext applicationContext) {
         context = applicationContext;
         context.getAutowireCapableBeanFactory().autowireBean(this);
-        setVersion("Javabot 3.0-snapshot");
+        setVersion("Javabot 3.0");
         final Config config = configDao.get();
         executors = Executors.newCachedThreadPool(new JavabotThreadFactory());
         final Thread hook = new Thread(new Runnable() {
