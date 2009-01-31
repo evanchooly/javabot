@@ -10,11 +10,6 @@ import javabot.Message;
 import javabot.dao.ConfigDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * Created Jan 30, 2009
- *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
- */
 public class Config implements Command {
     @Autowired
     private ConfigDao dao;

@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import javabot.dao.ConfigDao;
 import org.hibernate.annotations.CollectionOfElements;
@@ -29,6 +28,7 @@ public class Config implements Serializable, Persistent {
     private Long id;
     private String server = "irc.freenode.org";
     private Integer port = 6667;
+    private Integer historyLength = 6;
     private String prefixes = "~";
     private String nick;
     private String password;
@@ -94,6 +94,14 @@ public class Config implements Serializable, Persistent {
         server = ircServer;
     }
 
+    public Integer getHistoryLength() {
+        return historyLength;
+    }
+
+    public void setHistoryLength(final Integer historyLength) {
+        this.historyLength = historyLength;
+    }
+
     @Override
     public String toString() {
         return "Config{" +
@@ -102,6 +110,7 @@ public class Config implements Serializable, Persistent {
             ", prefixes='" + prefixes + '\'' +
             ", nick='" + nick + '\'' +
             ", password='#######'" +
+            ", historyLength=" + historyLength +
             '}';
     }
 }
