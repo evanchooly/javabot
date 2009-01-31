@@ -168,7 +168,6 @@
                     <classpathScope>test</classpathScope>
                     <arguments>
                         <argument>-Xmx512m</argument>
-                        <argument>-agentpath:/tmp/NBProfiler2685.link/deployed/jdk16/mac/libprofilerinterface.jnilib=/tmp/NBProfiler2685.link,5140</argument>
                     </arguments>
                 </configuration>
             </plugin>
