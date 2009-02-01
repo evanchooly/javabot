@@ -58,7 +58,7 @@ public class Method extends JavadocElement implements Persistent {
 
     @Transient
     public String getShortSignature() {
-        return methodName + "(" + shortSignatureTypes + ")";
+        return methodName + "(" + shortSignatureStripped + ")";
     }
 
     public String getMethodName() {

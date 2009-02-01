@@ -78,7 +78,7 @@ public abstract class JavadocElement implements Persistent {
     public String getDisplayUrl(final String hint, final BaseDao dao) {
         String url = getShortUrl();
         if(url == null) {
-            setShortUrl(buildShortUrl(getLongUrl()) + " (" + hint +")");
+            setShortUrl(buildShortUrl(getLongUrl()) + " [" + hint +"]");
             url = getShortUrl();
             dao.save(this);
         }

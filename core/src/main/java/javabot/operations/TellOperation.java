@@ -64,10 +64,10 @@ public class TellOperation extends BotOperation {
         boolean handled = false;
         if (isTellCommand(message)) {
             final TellSubject tellSubject = parseTellSubject(message);
+            handled = true;
             if (tellSubject == null) {
                 getBot().postMessage(new Message(channel, event,
                     String.format("The syntax is: tell nick about factoid - you missed out the 'about', %s", sender)));
-                handled = true;
             } else {
                 String nick = tellSubject.getTarget();
                 if ("me".equals(nick)) {

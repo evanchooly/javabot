@@ -29,9 +29,10 @@ public class SeenOperation extends BotOperation {
                     String.format("%s, %s was last seen at %s with the following entry: %s", sender, key,
                         DateFormat.getInstance().format(dao.getSeen(key, channel).getUpdated()),
                         dao.getSeen(key, channel).getMessage())));
+            } else {
+                getBot().postMessage(new Message(channel, event,
+                    String.format("%s, I have no information about \"%s\"", sender, key)));
             }
-            getBot().postMessage(new Message(channel, event,
-                String.format("%s, I have no information about \"%s\"", sender, key)));
             handled = true;
         }
         return handled;
