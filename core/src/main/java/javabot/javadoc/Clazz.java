@@ -54,7 +54,6 @@ import org.xml.sax.SAXException;
 })
 public class Clazz extends JavadocElement implements Persistent {
     private static final Logger log = LoggerFactory.getLogger(Clazz.class);
-
     private Long id;
     private Api api;
     private String packageName;
@@ -66,14 +65,10 @@ public class Clazz extends JavadocElement implements Persistent {
     }
 
     public Clazz(final Api classApi, final HTMLElement element, final List<String> packages) {
-        String value = element.getFirstChild().getNodeValue();
-        if (value == null) {
-            value = element.getFirstChild().getFirstChild().getNodeValue();
-        }
-        className = value;
-        String title = element.getAttribute("title");
-        title = title.substring(title.indexOf("in ") + 3);
-        packageName = title;
+        final String href = element.getAttribute("href").replace(".html", "").replace("/", ".");
+        final int last = href.lastIndexOf(".");
+        className = href.substring(last + 1);
+        packageName = href.substring(0, last);
         boolean valid = packages.isEmpty();
         for (final String aPackage : packages) {
             valid |= packageName.startsWith(aPackage);
@@ -122,54 +117,56 @@ public class Clazz extends JavadocElement implements Persistent {
             if (!dts.isEmpty()) {
                 final HTMLElement element = dts.get(0);
                 final HTMLElement aNode = (HTMLElement) element.getChildNodes().item(1);
-                String pkg = aNode.getAttribute("title");
-                pkg = pkg.substring(pkg.indexOf(" in ") + 4);
-                final Clazz[] aClass = dao.getClass(pkg, aNode.getTextContent());
+                String pkg = aNode.getAttribute("href").replace(".html", "").replace("../", "").replace("/", ".");
+                final int last = pkg.lastIndexOf(".");
+                final String clazzName = pkg.substring(last+1);
+                pkg = pkg.substring(0, last);
+                final Clazz[] aClass = dao.getClass(pkg, clazzName);
                 if (aClass.length == 0) {
                     nested.add(this);
                 } else {
                     superClass = aClass[0];
-            }
+                }
             }
             if (nested.isEmpty()) {
-        final List<HTMLElement> result = (List<HTMLElement>) new DOMXPath("//HEAD/META[@name='keywords']")
-            .evaluate(document);
-        final List<HTMLElement> nestedElements = (List<HTMLElement>) new DOMXPath(
-            "//A[@name='nested_class_summary']")
-            .evaluate(document);
-        if (!nestedElements.isEmpty()) {
-            final HTMLTableElement table = (HTMLTableElement) nestedElements.get(0).getNextSibling()
-                .getNextSibling();
-            final HTMLDocumentImpl doc = new HTMLDocumentImpl();
-            final HTMLElement element = (HTMLElement) table.cloneNode(true);
-            doc.adoptNode(element);
-            doc.setBody(element);
-            final List<HTMLElement> list = (List<HTMLElement>) new DOMXPath("//TD/CODE/B/A")
-                .evaluate(doc);
-            for (final HTMLElement htmlElement : list) {
-                if (!htmlElement.getAttribute("title").contains("type parameter")) {
-                    final Clazz clazz = new Clazz(getApi(), htmlElement, Collections.<String>emptyList());
-                    dao.save(clazz);
-                    nested.add(clazz);
+                final List<HTMLElement> result = (List<HTMLElement>) new DOMXPath("//HEAD/META[@name='keywords']")
+                    .evaluate(document);
+                final List<HTMLElement> nestedElements = (List<HTMLElement>) new DOMXPath(
+                    "//A[@name='nested_class_summary']")
+                    .evaluate(document);
+                if (!nestedElements.isEmpty()) {
+                    final HTMLTableElement table = (HTMLTableElement) nestedElements.get(0).getNextSibling()
+                        .getNextSibling();
+                    final HTMLDocumentImpl doc = new HTMLDocumentImpl();
+                    final HTMLElement element = (HTMLElement) table.cloneNode(true);
+                    doc.adoptNode(element);
+                    doc.setBody(element);
+                    final List<HTMLElement> list = (List<HTMLElement>) new DOMXPath("//TD/CODE/B/A")
+                        .evaluate(doc);
+                    for (final HTMLElement htmlElement : list) {
+                        if (!htmlElement.getAttribute("title").contains("type parameter")) {
+                            final Clazz clazz = new Clazz(getApi(), htmlElement, Collections.<String>emptyList());
+                            dao.save(clazz);
+                            nested.add(clazz);
+                        }
+                    }
                 }
-            }
-        }
-        for (final HTMLElement element : result) {
-            String content = element.getAttribute("content");
-            if (content.endsWith("()")) {
-                content = content.substring(0, content.length() - 2);
-                final List<HTMLElement> methodList = (List<HTMLElement>) new DOMXPath(
+                for (final HTMLElement element : result) {
+                    String content = element.getAttribute("content");
+                    if (content.endsWith("()")) {
+                        content = content.substring(0, content.length() - 2);
+                        final List<HTMLElement> methodList = (List<HTMLElement>) new DOMXPath(
                             String.format("//A[starts-with(@name, '%s(')]", content)).evaluate(document);
-                for (final HTMLElement htmlElement : methodList) {
-                    final NamedNodeMap attributes = htmlElement.getAttributes();
-                    final Method method = new Method(attributes.getNamedItem("name").getNodeValue(), this);
-                    dao.save(method);
-                    methods.add(method);
+                        for (final HTMLElement htmlElement : methodList) {
+                            final NamedNodeMap attributes = htmlElement.getAttributes();
+                            final Method method = new Method(attributes.getNamedItem("name").getNodeValue(), this);
+                            dao.save(method);
+                            methods.add(method);
+                        }
+                    }
                 }
+                dao.save(this);
             }
-        }
-        dao.save(this);
-    }
             return nested;
         } catch (JaxenException e) {
             log.debug(e.getMessage(), e);

@@ -1,22 +1,18 @@
 package javadoc;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
 
 import javabot.BaseTest;
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
 import javabot.javadoc.Api;
-import javabot.javadoc.Clazz;
 import javabot.javadoc.JavadocParser;
-import org.jaxen.JaxenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.Test;
-import org.xml.sax.SAXException;
 
 /**
  * Created Jan 9, 2009
@@ -50,6 +46,12 @@ public class JavadocParserTest extends BaseTest {
         }
     }
 
+    public void servlets() {
+        final Api api = fetchApi("Servlet", "http://java.sun.com/products/servlet/2.3/javadoc/");
+        final JavadocParser parser = new JavadocParser();
+        inject(parser);
+        parser.parse(api, Collections.<String>emptyList(), writer);
+    }
     private Api fetchApi(final String name, final String urlString) {
         Api api = dao.find(name);
         if (api != null) {
