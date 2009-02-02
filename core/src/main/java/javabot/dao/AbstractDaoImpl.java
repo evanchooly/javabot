@@ -57,7 +57,6 @@ public class AbstractDaoImpl<T> implements BaseDao<T> {
 
     @Transactional
     public void delete(final Persistent persistedObject) {
-        log.debug("deleting = " + persistedObject);
         getEntityManager().remove(getEntityManager().merge(persistedObject));
     }
 

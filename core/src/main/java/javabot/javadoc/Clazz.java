@@ -17,6 +17,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.PreRemove;
 
 import javabot.dao.ClazzDao;
 import javabot.model.Persistent;
@@ -65,7 +66,7 @@ public class Clazz extends JavadocElement implements Persistent {
     }
 
     public Clazz(final Api classApi, final HTMLElement element, final List<String> packages) {
-        final String href = element.getAttribute("href").replace(".html", "").replace("/", ".");
+        final String href = element.getAttribute("href").replace(".html", "").replace("../", "").replace("/", ".");
         final int last = href.lastIndexOf(".");
         className = href.substring(last + 1);
         packageName = href.substring(0, last);

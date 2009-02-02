@@ -1,13 +1,11 @@
 package javabot.dao.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.NoResultException;
 
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ApiDao;
 import javabot.javadoc.Api;
-import javabot.javadoc.Clazz;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,26 +38,5 @@ public class ApiDaoImpl extends AbstractDaoImpl<Api> implements ApiDao {
         return (List<String>)getEntityManager()
             .createNamedQuery(ApiDao.LIST_NAMES)
             .getResultList();
-    }
-
-    public void delete(final Api api) {
-        if(api != null) {
-            final Api old = find(api.getName());
-            final List<Clazz> classes = old.getClasses();
-            for(int passes = 0; passes < 5 && !classes.isEmpty(); passes++) {
-                final List<Clazz> skipped = new ArrayList<Clazz>();
-                while(!classes.isEmpty()) {
-                    final Clazz aClass = classes.remove(classes.size()-1);
-                    try {
-                        delete(aClass);
-                    } catch (Exception e) {
-                        log.debug("rescheduling" + aClass + " : " + e.getMessage());
-                        skipped.add(aClass);
-                    }
-                }
-                classes.addAll(skipped);
-            }
-            super.delete(old);
-        }
     }
 }

@@ -52,16 +52,16 @@ public class JavadocParser {
             while (!classes.isEmpty()) {
                 workQueue.add(process(classes.remove(0)));
             }
-                    while (!workQueue.isEmpty()) {
-                writer.write(
-                    String.format("Waiting on %s work queue to drain.  %d items left", api.getName(), workQueue.size()));
-                            Thread.sleep(5000);
+            while (!workQueue.isEmpty()) {
+                writer.write(String.format("Waiting on %s work queue to drain.  %d items left", api.getName(),
+                    workQueue.size()));
+                Thread.sleep(5000);
             }
-                        } catch (IOException e) {
-                            log.debug(e.getMessage(), e);
+        } catch (IOException e) {
+            log.debug(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
-                        } catch (InterruptedException e) {
-                            log.error(e.getMessage(), e);
+        } catch (InterruptedException e) {
+            log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
         } catch (JaxenException e) {
             log.error(e.getMessage(), e);
@@ -86,6 +86,11 @@ public class JavadocParser {
                     log.debug(e.getMessage(), e);
                     throw new RuntimeException(e.getMessage(), e);
                 }
+            }
+
+            @Override
+            public String toString() {
+                return clazz.toString();
             }
         };
     }
