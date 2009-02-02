@@ -59,7 +59,7 @@ public class JavadocOperation extends BotOperation {
                 }
 //"cheeser, please see http://is.gd/hX7B [java.util.Arrays.equals(long[],long[])], http://is.gd/hX7D [java.util.Arrays.equals(double[],double[])], http://is.gd/hX7E [java.util.Arrays.equals(short[],short[])], http://is.gd/hX7F [java.util.Arrays.equals(char[],char[])], http://is.gd/hX7H [java.util.Arrays.equals(boolean[],boolean[])], http://is.gd/hX7J [java.util.Arrays.equals(Object[],Object[])], http://is.gd/hX7C [java.util.Arrays.equals(int[]"
                 if (!urls.isEmpty()) {
-                    StringBuilder urlMessage = new StringBuilder(event.getSender() + ", please see ");
+                    StringBuilder urlMessage = new StringBuilder(event.getSender() + ": ");
                     String destination = event.getChannel();
                     if (urls.size() > RESULT_LIMIT) {
                         getBot().postMessage(new Message(event.getChannel(), event,
@@ -76,8 +76,8 @@ public class JavadocOperation extends BotOperation {
                             urlMessage = new StringBuilder();
                         }
                     }
-                }
-                if (urls.isEmpty()) {
+                    getBot().postMessage(new Message(destination, event, urlMessage.toString()));
+                } else if (urls.isEmpty()) {
                     getBot().postMessage(new Message(event.getChannel(), event,
                         "I don't know of any documentation for " + key));
                 }

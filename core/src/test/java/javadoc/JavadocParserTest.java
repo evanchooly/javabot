@@ -60,18 +60,4 @@ public class JavadocParserTest extends BaseTest {
         return api;
     }
 
-    @Test(dependsOnMethods = {"parse"})
-    public void generics() throws JaxenException, IOException, SAXException {
-        final Api api = fetchApi("GenericJDK", API_URL_STRING);
-        final Clazz clazz = new Clazz();
-        clazz.setApi(api);
-        clazz.setClassName("AbstractMap");
-        clazz.setPackageName("java.util");
-        clazz.setLongUrl("http://java.sun.com/javase/6/docs/api/java/util/AbstractMap.html");
-        clazzDao.save(clazz);
-        final List<Clazz> list = clazz.populate(clazzDao);
-        for (final Clazz clazz1 : list) {
-            clazz1.populate(clazzDao);
-        }
-    }
 }

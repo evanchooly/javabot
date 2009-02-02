@@ -33,7 +33,10 @@ public class AdminOperationTest extends BaseOperationTest {
 
     private void doScan(final Class baseClass, final List<String> list, final List<String> excluded,
         final String endTest) {
-        final File dir = new File("core/src/main/java/" + baseClass.getPackage().getName().replace(".", "/"));
+        File dir = new File("core/src/main/java/" + baseClass.getPackage().getName().replace(".", "/"));
+        if(!dir.exists()) {
+            dir = new File("src/main/java/" + baseClass.getPackage().getName().replace(".", "/"));
+        }
         final File[] names = dir.listFiles(new FileFilter() {
             @Override
             public boolean accept(final File file) {
