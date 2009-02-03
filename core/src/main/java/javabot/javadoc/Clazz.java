@@ -134,7 +134,9 @@ public class Clazz extends JavadocElement implements Persistent {
                     if (aClass.length == 0) {
                         nested.add(this);
                     } else {
-                        superClass = aClass[0];
+                        if (api.equals(aClass[0].getApi())) {
+                            superClass = aClass[0];
+                        }
                     }
                 }
             }

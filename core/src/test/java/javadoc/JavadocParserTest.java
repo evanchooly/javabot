@@ -50,15 +50,7 @@ public class JavadocParserTest extends BaseTest {
         parser.parse(api, Collections.<String>emptyList(), writer);
     }
 
-    @Test(enabled = false)
-    public void jsf() {
-        final Api api = fetchApi("JSF", "http://java.sun.com/javaee/javaserverfaces/1.2_MR1/docs/api");
-        final JavadocParser parser = new JavadocParser();
-        inject(parser);
-        parser.parse(api, Collections.<String>emptyList(), writer);
-    }
-
-    @Test(enabled = false)
+    @Test(dependsOnMethods = "jdk")
     public void wicket() {
         final Api api = fetchApi("Wicket", "http://wicket.apache.org/docs/wicket-1.3.2/wicket/apidocs/");
         final JavadocParser parser = new JavadocParser();
