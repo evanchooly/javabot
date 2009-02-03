@@ -11,9 +11,9 @@ import javabot.javadoc.Api;
  */
 public interface ApiDao extends BaseDao<Api> {
     String FIND_BY_NAME = "Api.findByName";
-    String LIST_NAMES = "Api.listNames";
+    String FIND_ALL = "Api.findAll";
 
     Api find(String name);
 
-    List<String> listNames();
+    List<Api> findAll();
 }

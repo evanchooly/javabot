@@ -34,9 +34,9 @@ public class ApiDaoImpl extends AbstractDaoImpl<Api> implements ApiDao {
         return api;
     }
 
-    public List<String> listNames() {
-        return (List<String>)getEntityManager()
-            .createNamedQuery(ApiDao.LIST_NAMES)
+    public List<Api> findAll() {
+        return (List<Api>)getEntityManager()
+            .createNamedQuery(ApiDao.FIND_ALL)
             .getResultList();
     }
 }

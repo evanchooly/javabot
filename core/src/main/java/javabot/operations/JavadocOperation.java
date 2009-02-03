@@ -8,6 +8,7 @@ import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
+import javabot.javadoc.Api;
 import javabot.javadoc.Clazz;
 import javabot.javadoc.Method;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +34,15 @@ public class JavadocOperation extends BotOperation {
             final List<String> urls = new ArrayList<String>();
             final String key = message.substring("javadoc ".length()).trim();
             if (key.startsWith("-list") || "".equals(key)) {
-                final List<String> names = apiDao.listNames();
                 final StringBuilder builder = new StringBuilder();
-                for (final String name : names) {
-                    builder.append(name).append(" ");
+                for (final Api api : apiDao.findAll()) {
+                    if(builder.length() != 0) {
+                        builder.append(", ");
+                    }
+                    builder.append(api.getName())
+                        .append(" ( ")
+                        .append(api.getBaseUrl())
+                        .append(" ) ");
                 }
                 getBot().postMessage(new Message(event.getChannel(), event, event.getSender()
                     + ", I know of the following APIs: " + builder));

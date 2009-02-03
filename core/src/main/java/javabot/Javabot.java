@@ -277,17 +277,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     @Override
     public void onMessage(final String channel, final String sender, final String login, final String hostname,
         final String message) {
-/*
-        final Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!done[0]) {
-                    sleep(500);
-                }
-            }
-        });
-        thread.setDaemon(true);
-*/
+
         executors.execute(new Runnable() {
             @Override
             public void run() {
