@@ -1,13 +1,16 @@
 package javabot.dao.impl;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Query;
 
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ChangeDao;
+import javabot.dao.ConfigDao;
 import javabot.dao.FactoidDao;
 import javabot.dao.util.QueryParam;
+import javabot.model.Config;
 import javabot.model.Factoid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidDao {
     @Autowired
     private ChangeDao changeDao;
+    @Autowired
+    private ConfigDao dao;
 
     public FactoidDaoImpl() {
         super(Factoid.class);
@@ -71,11 +76,13 @@ public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidD
         }
     }
 
-    /** @noinspection unchecked*/
+    /**
+     * @noinspection unchecked
+     */
     public Factoid getFactoid(final String name) {
-            final List<Factoid> list = getEntityManager().createNamedQuery(FactoidDao.BY_NAME)
-                .setParameter("name", name)
-                .getResultList();
+        final List<Factoid> list = getEntityManager().createNamedQuery(FactoidDao.BY_NAME)
+            .setParameter("name", name)
+            .getResultList();
         return list.isEmpty() ? null : list.get(0);
     }
 
@@ -128,11 +135,18 @@ public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidD
         return query;
     }
 
-    public ChangeDao get() {
-        return changeDao;
-    }
-
-    public void setChangeDao(final ChangeDao dao) {
-        changeDao = dao;
+    public void pruneFactoids() {
+        final Calendar cal = Calendar.getInstance();
+        final Config config = dao.get();
+        final Integer length = config.getHistoryLength();
+        if (length != null && length != 0) {
+            cal.clear(Calendar.MILLISECOND);
+            cal.clear(Calendar.SECOND);
+            cal.clear(Calendar.HOUR);
+            cal.add(Calendar.MONTH, length * -1);
+            getEntityManager().createQuery("delete from Factoid f where f.lastUsed < :date and f.lastUsed is not null")
+                .setParameter("date", cal.getTime())
+                .executeUpdate();
+        }
     }
 }

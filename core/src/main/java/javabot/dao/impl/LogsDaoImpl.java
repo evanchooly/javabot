@@ -46,14 +46,6 @@ public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
         logMessage.setChannel(channel.toLowerCase());
         logMessage.setMessage(message);
         logMessage.setUpdated(new Date());
-        log(logMessage);
-    }
-
-    public void log(final Logs logMessage) {
-        final Calendar cal = Calendar.getInstance();
-        if (cal.get(Calendar.HOUR) == 0) {
-            pruneHistory();
-        }
         save(logMessage);
     }
 

@@ -90,4 +90,37 @@
     <bean id="karmaDao" class="javabot.dao.impl.KarmaDaoImpl"/>
 
     <bean id="adminDao" class="javabot.dao.impl.AdminDaoImpl"/>
+
+    <bean id="factoidTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+                <property name="targetObject" ref="factoidDao"/>
+                <property name="targetMethod" value="pruneFactoids"/>
+                <property name="concurrent" value="false"/>
+            </bean>
+        </property>
+        <!-- run every morning at 1 AM -->
+        <property name="cronExpression" value="* * * * * ?"/>
+    </bean>
+
+    <bean id="logTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <bean class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+                <property name="targetObject" ref="logDao"/>
+                <property name="targetMethod" value="pruneHistory"/>
+                <property name="concurrent" value="false"/>
+            </bean>
+        </property>
+        <!-- run every morning at 1 AM -->
+        <property name="cronExpression" value="0 0 1 * * ?"/>
+    </bean>
+
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="factoidTrigger"/>
+                <ref bean="logTrigger"/>
+            </list>
+        </property>
+    </bean>
 </beans>

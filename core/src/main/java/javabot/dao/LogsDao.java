@@ -21,7 +21,5 @@ public interface LogsDao extends BaseDao<Logs> {
 
     boolean isSeen(String nick, String channel);
 
-    void log(Logs logMessage);
-
     void pruneHistory();
 }

@@ -31,4 +31,5 @@ public interface FactoidDao extends BaseDao<Factoid> {
 
     Long factoidCountFiltered(Factoid filter);
 
+    void pruneFactoids();
 }

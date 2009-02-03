@@ -48,7 +48,7 @@ public class LogDaoTest extends BaseServiceTest {
             message.setMessage("test message " + cal.getTimeInMillis());
             message.setUpdated(cal.getTime());
             cal.add(Calendar.DAY_OF_YEAR, 1);
-            logsDao.log(message);
+            logsDao.save(message);
         }
         today.add(Calendar.MONTH, -1);
         today.add(Calendar.DAY_OF_YEAR, -1);
