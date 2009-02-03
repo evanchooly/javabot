@@ -296,6 +296,90 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         });
     }
 
+    @Override
+    public void onPrivateMessage(final String sender, final String login, final String hostname, final String message) {
+        if (isOnSameChannelAs(sender)) {
+            //The bot always replies with a privmessage...
+            if (log.isDebugEnabled()) {
+                log.debug("PRIVMSG Sender:" + sender + " Login" + login);
+            }
+            executors.execute(new Runnable() {
+                @Override
+                public void run() {
+                    logsDao.logMessage(Logs.Type.MESSAGE, sender, sender, message);
+                    getResponses(sender, sender, login, hostname, message);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onJoin(final String channel, final String sender, final String login, final String hostname) {
+        if (channelDao.get(channel).getLogged()) {
+            logsDao.logMessage(Logs.Type.JOIN, sender, channel, ":" + hostname + " joined the channel");
+        }
+    }
+
+    @Override
+    public void onQuit(final String channel, final String sender, final String login, final String hostname) {
+        if (channelDao.get(channel).getLogged()) {
+            logsDao.logMessage(Logs.Type.QUIT, sender, channel, "quit");
+        }
+    }
+
+    @Override
+    public void onInvite(final String targetNick, final String sourceNick, final String sourceLogin,
+        final String sourceHostname,
+        final String channel) {
+        if (log.isDebugEnabled()) {
+            log.debug("Invited to " + channel + " by " + sourceNick);
+        }
+        if (!channel.equals(channelDao.get(channel).getName())) {
+            return;
+        }
+        joinChannel(channel);
+    }
+
+    @Override
+    public void onDisconnect() {
+        if (!executors.isShutdown()) {
+            connect();
+        }
+    }
+
+    @Override
+    public void onPart(final String channel, final String sender, final String login, final String hostname) {
+        if (channelDao.get(channel).getLogged()) {
+            logsDao.logMessage(Logs.Type.PART, sender, channel, "parted the channel");
+        }
+
+    }
+
+    @Override
+    public void onAction(final String sender, final String login, final String hostname, final String target,
+        final String action) {
+        if (log.isDebugEnabled()) {
+            log.debug("Sender " + sender + " Message " + action);
+        }
+        if (channelDao.get(target).getLogged()) {
+            logsDao.logMessage(Logs.Type.ACTION, sender, target, action);
+        }
+    }
+
+    @Override
+    public void onKick(final String channel, final String kickerNick, final String kickerLogin,
+        final String kickerHostname,
+        final String recipientNick, final String reason) {
+        if (channelDao.get(channel).getLogged()) {
+            logsDao.logMessage(Logs.Type.KICK, kickerNick, channel, " kicked " + recipientNick + " (" + reason + ")");
+        }
+    }
+
+    @Override
+    public void onOp(final String channel, final String sourceNick, final String sourceLogin,
+        final String sourceHostname, final String recipient) {
+    }
+
     private void processMessage(final String channel, final String message, final String sender, final String login,
         final String hostname) {
         final Channel chan = channelDao.get(channel);
@@ -362,26 +446,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         return handled;
     }
 
-    @Override
-    public void onInvite(final String targetNick, final String sourceNick, final String sourceLogin,
-        final String sourceHostname,
-        final String channel) {
-        if (log.isDebugEnabled()) {
-            log.debug("Invited to " + channel + " by " + sourceNick);
-        }
-        if (!channel.equals(channelDao.get(channel).getName())) {
-            return;
-        }
-        joinChannel(channel);
-    }
-
-    @Override
-    public void onDisconnect() {
-        if (!executors.isShutdown()) {
-            connect();
-        }
-    }
-
     public boolean isOnSameChannelAs(final String nick) {
         for (final String channel : getChannels()) {
             if (userIsOnChannel(nick, channel)) {
@@ -398,63 +462,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
             }
         }
         return false;
-    }
-
-    @Override
-    public void onPrivateMessage(final String sender, final String login, final String hostname, final String message) {
-        if (isOnSameChannelAs(sender)) {
-            //The bot always replies with a privmessage...
-            if (log.isDebugEnabled()) {
-                log.debug("PRIVMSG Sender:" + sender + " Login" + login);
-            }
-            logsDao.logMessage(Logs.Type.MESSAGE, sender, sender, message);
-            getResponses(sender, sender, login, hostname, message);
-        }
-    }
-
-    @Override
-    public void onJoin(final String channel, final String sender, final String login, final String hostname) {
-        if (channelDao.get(channel).getLogged()) {
-            logsDao.logMessage(Logs.Type.JOIN, sender, channel, ":" + hostname + " joined the channel");
-        }
-    }
-
-    @Override
-    public void onQuit(final String channel, final String sender, final String login, final String hostname) {
-        if (channelDao.get(channel).getLogged()) {
-            logsDao.logMessage(Logs.Type.QUIT, sender, channel, "quit");
-        }
-    }
-
-    @Override
-    public void onPart(final String channel, final String sender, final String login, final String hostname) {
-        if (channelDao.get(channel).getLogged()) {
-            logsDao.logMessage(Logs.Type.PART, sender, channel, "parted the channel");
-        }
-
-    }
-
-    @Override
-    public void onAction(final String sender, final String login, final String hostname, final String target,
-        final String action) {
-        if (log.isDebugEnabled()) {
-            log.debug("Sender " + sender + " Message " + action);
-        }
-        if (channelDao.get(target).getLogged()) {
-            logsDao.logMessage(Logs.Type.ACTION, sender, target, action);
-        }
-    }
-
-    @Override
-    public void onKick(final String channel, final String kickerNick, final String kickerLogin,
-        final String kickerHostname,
-        final String recipientNick, final String reason) {
-        if (channelDao.get(channel).getLogged()) {
-            logsDao.logMessage(Logs.Type.KICK, kickerNick, channel, " kicked " + recipientNick + " (" + reason + ")");
-        }
-    }
-
-    public void onOp() {
     }
 
     public void setNickPassword(final String value) {

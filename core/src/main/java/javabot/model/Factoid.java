@@ -28,6 +28,7 @@ public class Factoid implements Serializable, Persistent {
     private String value;
     private String userName;
     private Date updated;
+    private Date lastUsed;
 
     @Id
     @GeneratedValue
@@ -35,7 +36,7 @@ public class Factoid implements Serializable, Persistent {
         return id;
     }
 
-    public void setId(Long factoidId) {
+    public void setId(final Long factoidId) {
         id = factoidId;
     }
 
@@ -43,8 +44,8 @@ public class Factoid implements Serializable, Persistent {
         return name;
     }
 
-    public void setName(String factoidName) {
-        name = factoidName;
+    public void setName(final String name) {
+        this.name = name;
     }
 
     @Column(length = 2000)
@@ -52,8 +53,8 @@ public class Factoid implements Serializable, Persistent {
         return value;
     }
 
-    public void setValue(String factoidValue) {
-        value = factoidValue;
+    public void setValue(final String value) {
+        this.value = value;
     }
 
     @Column(length = 100)
@@ -61,8 +62,8 @@ public class Factoid implements Serializable, Persistent {
         return userName;
     }
 
-    public void setUserName(String user) {
-        userName = user;
+    public void setUserName(final String creator) {
+        userName = creator;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -70,7 +71,16 @@ public class Factoid implements Serializable, Persistent {
         return updated;
     }
 
-    public void setUpdated(Date date) {
+    public void setUpdated(final Date date) {
         updated = date;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getLastUsed() {
+        return lastUsed;
+    }
+
+    public void setLastUsed(final Date used) {
+        lastUsed = used;
     }
 }

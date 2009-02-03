@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import javabot.dao.FactoidDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -48,6 +49,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
 
     public void straightGets() throws IOException {
         testMessage("api", getFoundMessage("api", "http://java.sun.com/javase/current/docs/api/index.html"));
+        Assert.assertNotNull(factoidDao.getFactoid("api").getLastUsed());
     }
 
     public void replyGets() {
