@@ -118,15 +118,24 @@ public class Clazz extends JavadocElement implements Persistent {
             if (!dts.isEmpty()) {
                 final HTMLElement element = dts.get(0);
                 final HTMLElement aNode = (HTMLElement) element.getChildNodes().item(1);
-                String pkg = aNode.getAttribute("href").replace(".html", "").replace("../", "").replace("/", ".");
-                final int last = pkg.lastIndexOf(".");
-                final String clazzName = pkg.substring(last+1);
-                pkg = pkg.substring(0, last);
-                final Clazz[] aClass = dao.getClass(pkg, clazzName);
-                if (aClass.length == 0) {
-                    nested.add(this);
-                } else {
-                    superClass = aClass[0];
+                String pkg = aNode.getAttribute("href")
+                    .replace(api.getBaseUrl(), "")
+                    .replace(".html", "")
+                    .replace("../", "")
+                    .replace("/", ".");
+                if (!pkg.startsWith("http")) {
+                    while (!Character.isLetter(pkg.charAt(0))) {
+                        pkg = pkg.substring(1);
+                    }
+                    final int last = pkg.lastIndexOf(".");
+                    final String clazzName = pkg.substring(last + 1);
+                    pkg = pkg.substring(0, last);
+                    final Clazz[] aClass = dao.getClass(pkg, clazzName);
+                    if (aClass.length == 0) {
+                        nested.add(this);
+                    } else {
+                        superClass = aClass[0];
+                    }
                 }
             }
             if (nested.isEmpty()) {

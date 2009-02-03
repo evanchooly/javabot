@@ -33,7 +33,7 @@ public class JavadocParserTest extends BaseTest {
         }
     };
 
-    public void parse() throws MalformedURLException {
+    public void jdk() throws MalformedURLException {
         if (dao.find(JavadocParserTest.API_NAME) == null) {
             final Api api = fetchApi(API_NAME, API_URL_STRING);
             final JavadocParser parser = new JavadocParser();
@@ -42,9 +42,9 @@ public class JavadocParserTest extends BaseTest {
         }
     }
 
-    @Test(enabled = false)
-    public void servlets() {
-        final Api api = fetchApi("Servlet", "http://java.sun.com/products/servlet/2.3/javadoc/");
+    @Test(dependsOnMethods = "jdk")
+    public void jee() {
+        final Api api = fetchApi("JEE", "http://java.sun.com/javaee/5/docs/api/");
         final JavadocParser parser = new JavadocParser();
         inject(parser);
         parser.parse(api, Collections.<String>emptyList(), writer);
