@@ -4,6 +4,7 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import javabot.BaseTest;
 import javabot.dao.ApiDao;
@@ -34,28 +35,26 @@ public class JavadocParserTest extends BaseTest {
     };
 
     public void jdk() throws MalformedURLException {
-        if (dao.find(JavadocParserTest.API_NAME) == null) {
-            final Api api = fetchApi(API_NAME, API_URL_STRING);
-            final JavadocParser parser = new JavadocParser();
-            inject(parser);
-            parser.parse(api, Arrays.asList("java", "javax"), writer);
-        }
+        parse(JavadocParserTest.API_NAME, API_URL_STRING, Arrays.asList("java", "javax"));
     }
 
     @Test(dependsOnMethods = "jdk")
     public void jee() {
-        final Api api = fetchApi("JEE", "http://java.sun.com/javaee/5/docs/api/");
-        final JavadocParser parser = new JavadocParser();
-        inject(parser);
-        parser.parse(api, Collections.<String>emptyList(), writer);
+        parse("JEE", "http://java.sun.com/javaee/5/docs/api/", Collections.<String>emptyList());
     }
 
     @Test(dependsOnMethods = "jdk")
     public void wicket() {
-        final Api api = fetchApi("Wicket", "http://wicket.apache.org/docs/wicket-1.3.2/wicket/apidocs/");
-        final JavadocParser parser = new JavadocParser();
-        inject(parser);
-        parser.parse(api, Collections.<String>emptyList(), writer);
+        parse("Wicket", "http://wicket.apache.org/docs/wicket-1.3.2/wicket/apidocs/", Collections.<String>emptyList());
+    }
+
+    private void parse(final String apiName, final String url, final List<String> packages) {
+        if (dao.find(apiName) == null) {
+            final Api api = fetchApi(apiName, url);
+            final JavadocParser parser = new JavadocParser();
+            inject(parser);
+            parser.parse(api, packages, writer);
+        }
     }
 
     private Api fetchApi(final String name, final String urlString) {

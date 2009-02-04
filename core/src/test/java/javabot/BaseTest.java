@@ -98,6 +98,12 @@ public class BaseTest {
             responses.add(new Response(channel, sender, login, hostname, message));
         }
 
+        @Override
+        protected void onPrivateMessage(final String sender, final String login, final String hostname,
+            final String message) {
+            onMessage(sender, sender, login, hostname, message);
+        }
+
         public int getResponseCount() {
             return responses.size();
         }

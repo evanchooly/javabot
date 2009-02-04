@@ -19,7 +19,7 @@ public class JavadocOperation extends BotOperation {
     private ApiDao apiDao;
     @Autowired
     private ClazzDao dao;
-    private static final int RESULT_LIMIT = 8;
+    private static final int RESULT_LIMIT = 5;
 
     public JavadocOperation(final Javabot bot) {
         super(bot);
@@ -37,7 +37,7 @@ public class JavadocOperation extends BotOperation {
                 final StringBuilder builder = new StringBuilder();
                 for (final Api api : apiDao.findAll()) {
                     if(builder.length() != 0) {
-                        builder.append(", ");
+                        builder.append("; ");
                     }
                     builder.append(api.getName())
                         .append(" ( ")
@@ -63,7 +63,7 @@ public class JavadocOperation extends BotOperation {
                         urls.add(method.getDisplayUrl(method.toString(), dao));
                     }
                 }
-//"cheeser, please see http://is.gd/hX7B [java.util.Arrays.equals(long[],long[])], http://is.gd/hX7D [java.util.Arrays.equals(double[],double[])], http://is.gd/hX7E [java.util.Arrays.equals(short[],short[])], http://is.gd/hX7F [java.util.Arrays.equals(char[],char[])], http://is.gd/hX7H [java.util.Arrays.equals(boolean[],boolean[])], http://is.gd/hX7J [java.util.Arrays.equals(Object[],Object[])], http://is.gd/hX7C [java.util.Arrays.equals(int[]"
+
                 if (!urls.isEmpty()) {
                     StringBuilder urlMessage = new StringBuilder(event.getSender() + ": ");
                     String destination = event.getChannel();
@@ -75,7 +75,7 @@ public class JavadocOperation extends BotOperation {
                     }
                     for (int index = 0; index < urls.size(); index++) {
                         if ((urlMessage + urls.get(index)).length() < 400) {
-                            urlMessage.append(index != 0 && urlMessage.length() > 0 ? ", " : "")
+                            urlMessage.append(index != 0 && urlMessage.length() > 0 ? "; " : "")
                                 .append(urls.get(index));
                         } else {
                             getBot().postMessage(new Message(destination, event, urlMessage.toString()));

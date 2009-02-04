@@ -41,17 +41,17 @@ import org.xml.sax.SAXException;
     @NamedQuery(name = ClazzDao.DELETE_ALL, query = "delete from Clazz c where c.api=:api"),
     @NamedQuery(name = ClazzDao.DELETE_ALL_METHODS, query = "delete from Method m where m.clazz.api=:api"),
     @NamedQuery(name = ClazzDao.GET_BY_NAME, query = "select c from Clazz c where "
-        + "upper(c.className)=:name"),
+        + " upper(c.className)=:name"),
     @NamedQuery(name = ClazzDao.GET_BY_API_PACKAGE_AND_NAME, query = "select c from Clazz c where "
-        + "c.packageName=:package and c.api=:api and c.className=:name"),
+        + " c.packageName=:package and c.api=:api and c.className=:name"),
     @NamedQuery(name = ClazzDao.GET_BY_PACKAGE_AND_NAME, query = "select c from Clazz c where "
-        + "upper(c.packageName)=upper(:package) and upper(c.className)=upper(:name)"),
+        + " upper(c.packageName)=upper(:package) and upper(c.className)=upper(:name)"),
     @NamedQuery(name = ClazzDao.GET_METHOD_NO_SIG, query = "select m from Method m where "
-        + "m.clazz.id=:classId and upper(m.methodName)=:name"),
+        + "m.clazz.id=:classId and upper(m.methodName)=:name order by m.shortSignatureStripped"),
     @NamedQuery(name = ClazzDao.GET_METHOD, query = "select m from Clazz c join c.methods m where "
         + "m.clazz.id=:classId and upper(m.methodName)=:name and (upper(m.shortSignatureTypes)=:params"
         + " or upper(m.shortSignatureStripped)=:params or upper(m.longSignatureTypes)=:params"
-        + " or upper(m.longSignatureStripped)=:params)")
+        + " or upper(m.longSignatureStripped)=:params) order by m.shortSignatureStripped")
 })
 public class Clazz extends JavadocElement implements Persistent {
     private static final Logger log = LoggerFactory.getLogger(Clazz.class);

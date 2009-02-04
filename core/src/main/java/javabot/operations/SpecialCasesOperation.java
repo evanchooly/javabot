@@ -18,7 +18,6 @@ public class SpecialCasesOperation extends BotOperation {
     @Override
     public boolean handleMessage(final BotEvent event) {
         String message = event.getMessage();
-        boolean handled = false;
         if(log.isDebugEnabled()) {
             log.debug("SpecialCasesOperation: " + message);
         }
@@ -41,9 +40,9 @@ public class SpecialCasesOperation extends BotOperation {
             if(log.isDebugEnabled()) {
                 log.debug("SpecialCasesOperation: Key " + key);
             }
-            handled = getBot().getResponses(event.getChannel(), event.getSender(),
+            getBot().getResponses(event.getChannel(), event.getSender(),
                 event.getLogin(), event.getHostname(), "forget " + key);
         }
-        return handled;
+        return false;
     }
 }
