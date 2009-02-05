@@ -9,9 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javabot.dao.ApiDao;
 import javabot.dao.ChangeDao;
@@ -135,7 +133,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         context.getAutowireCapableBeanFactory().autowireBean(this);
         setVersion("Javabot 3.0.1");
         final Config config = configDao.get();
-        executors = Executors.newCachedThreadPool(new JavabotThreadFactory());
+        executors = Executors.newCachedThreadPool(new JavabotThreadFactory(true));
         final Thread hook = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -277,7 +275,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     @Override
     public void onMessage(final String channel, final String sender, final String login, final String hostname,
         final String message) {
-
         executors.execute(new Runnable() {
             @Override
             public void run() {
@@ -319,15 +316,13 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     @Override
     public void onInvite(final String targetNick, final String sourceNick, final String sourceLogin,
-        final String sourceHostname,
-        final String channel) {
+        final String sourceHostname, final String channel) {
         if (log.isDebugEnabled()) {
             log.debug("Invited to " + channel + " by " + sourceNick);
         }
-        if (!channel.equals(channelDao.get(channel).getName())) {
-            return;
+        if (channel.equals(channelDao.get(channel).getName())) {
+            joinChannel(channel);
         }
-        joinChannel(channel);
     }
 
     @Override
@@ -342,7 +337,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         if (channelDao.get(channel).getLogged()) {
             logsDao.logMessage(Logs.Type.PART, sender, channel, "parted the channel");
         }
-
     }
 
     @Override
@@ -363,11 +357,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         if (channelDao.get(channel).getLogged()) {
             logsDao.logMessage(Logs.Type.KICK, kickerNick, channel, " kicked " + recipientNick + " (" + reason + ")");
         }
-    }
-
-    @Override
-    public void onOp(final String channel, final String sourceNick, final String sourceLogin,
-        final String sourceHostname, final String recipient) {
     }
 
     private void processMessage(final String channel, final String message, final String sender, final String login,
@@ -517,19 +506,4 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
         context = applicationContext;
     }
-
-    private static class JavabotThreadFactory implements ThreadFactory {
-        private final AtomicInteger threadNumber = new AtomicInteger(1);
-        private final String namePrefix = "javabot-thread-";
-
-        public Thread newThread(final Runnable runnable) {
-            final Thread t = new Thread(runnable, namePrefix + threadNumber.getAndIncrement());
-            t.setDaemon(false);
-            if (t.getPriority() != Thread.NORM_PRIORITY) {
-                t.setPriority(Thread.NORM_PRIORITY);
-            }
-            return t;
-        }
-    }
-
 }

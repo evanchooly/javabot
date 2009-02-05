@@ -20,7 +20,7 @@ public class Method extends JavadocElement implements Persistent {
     private String shortSignatureTypes;
     private String longSignatureStripped;
     private String shortSignatureStripped;
-    private Integer paramCount = 0;
+    private Integer paramCount;
 
     public Method() {
     }
@@ -29,7 +29,8 @@ public class Method extends JavadocElement implements Persistent {
     public Method(final String signature, final Clazz parent) {
         clazz = parent;
         final int leftParen = signature.indexOf("(");
-        final String[] params = signature.substring(leftParen + 1, signature.length() - 1).split(",");
+        final String paramString = signature.substring(leftParen + 1, signature.length() - 1);
+        final String[] params = paramString.isEmpty() ? new String[0] : paramString.split(",");
         methodName = signature.substring(0, leftParen);
         final StringBuilder shortTypes = new StringBuilder();
         for(final String parameter : params) {
@@ -39,7 +40,7 @@ public class Method extends JavadocElement implements Persistent {
             shortTypes.append(parameter.substring(parameter.lastIndexOf(".") + 1));
         }
         paramCount = params.length;
-        longSignatureTypes = signature.substring(leftParen + 1, signature.length() - 1);
+        longSignatureTypes = paramString;
         shortSignatureTypes = shortTypes.toString();
         longSignatureStripped = longSignatureTypes.replaceAll(" ", "");
         shortSignatureStripped = shortSignatureTypes.replaceAll(" ", "");

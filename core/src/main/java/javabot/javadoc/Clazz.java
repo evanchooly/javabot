@@ -1,6 +1,7 @@
 package javabot.javadoc;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.PreRemove;
 
 import javabot.dao.ClazzDao;
 import javabot.model.Persistent;
@@ -109,12 +109,12 @@ public class Clazz extends JavadocElement implements Persistent {
     @SuppressWarnings({"unchecked"})
     @Transactional
     public final List<Clazz> populate(final ClazzDao dao) {
+        final List<Clazz> nested = new ArrayList<Clazz>();
         try {
 //            writer.write("populating " + this);
             final Document document = getDocument(getLongUrl());
             final List<HTMLElement> dts = (List<HTMLElement>) new DOMXPath("//DT/following-sibling::node()"
                 + "[text()='extends ']").evaluate(document);
-            final List<Clazz> nested = new ArrayList<Clazz>();
             if (!dts.isEmpty()) {
                 final HTMLElement element = dts.get(0);
                 final HTMLElement aNode = (HTMLElement) element.getChildNodes().item(1);
@@ -169,27 +169,29 @@ public class Clazz extends JavadocElement implements Persistent {
                         content = content.substring(0, content.length() - 2);
                         final List<HTMLElement> methodList = (List<HTMLElement>) new DOMXPath(
                             String.format("//A[starts-with(@name, '%s(')]", content)).evaluate(document);
+                        final List<Method> overloads = new ArrayList<Method>();
                         for (final HTMLElement htmlElement : methodList) {
                             final NamedNodeMap attributes = htmlElement.getAttributes();
                             final Method method = new Method(attributes.getNamedItem("name").getNodeValue(), this);
                             dao.save(method);
-                            methods.add(method);
+                            overloads.add(method);
                         }
+                        methods.addAll(overloads);
                     }
                 }
                 dao.save(this);
             }
-            return nested;
         } catch (JaxenException e) {
             log.debug(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            throw new RuntimeException(e.getMessage());
+            nested.add(this);
         } catch (SAXException e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
         }
+        return nested;
     }
 
     public static Document getDocument(final String specUrl) throws IOException, SAXException {
@@ -198,14 +200,23 @@ public class Clazz extends JavadocElement implements Persistent {
         connection.setConnectTimeout(1000);
         connection.setReadTimeout(1000);
         final DOMParser parser = new DOMParser();
+        InputStream inputStream = null;
         try {
-            parser.parse(new InputSource(url.openStream()));
+            inputStream = connection.getInputStream();
+            final InputSource inputSource = new InputSource(inputStream);
+            parser.parse(inputSource);
         } catch (SAXException e) {
+            log.debug(e.getMessage(), e);
             System.out.println("specUrl = " + specUrl);
             throw e;
         } catch (IOException e) {
+            log.debug(e.getMessage(), e);
             System.out.println("specUrl = " + specUrl);
             throw e;
+        } finally {
+            if(inputStream != null) {
+                inputStream.close();
+            }
         }
         return parser.getDocument();
     }

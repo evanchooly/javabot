@@ -51,7 +51,7 @@ public class JavadocOperationTest extends BaseOperationTest {
         final TestBot bot = getTestBot();
         bot.sendMessage(getJavabotChannel(),
             String.format("%s %s", getJavabot().getNick(), "javadoc Cipher.doFinal(*)"));
-        waitForResponses(bot, 1);
+        waitForResponses(bot, 2);
         final List<String> responses = Arrays.asList(
             "http://is.gd/igel [javax.crypto.Cipher.doFinal()]",
             "http://is.gd/igep [javax.crypto.Cipher.doFinal(ByteBuffer,ByteBuffer)]",
@@ -59,19 +59,17 @@ public class JavadocOperationTest extends BaseOperationTest {
             "http://is.gd/igem [javax.crypto.Cipher.doFinal(byte[],int)]",
             "http://is.gd/igeq [javax.crypto.Cipher.doFinal(byte[],int,int)]",
             "http://is.gd/igeo [javax.crypto.Cipher.doFinal(byte[],int,int,byte[])]",
-            "http://is.gd/iger [javax.crypto.Cipher.doFinal(byte[],int,int,byte[],int)]"
+            "http://is.gd/igee [javax.crypto.Cipher.doFinal(byte[],int,int,byte[],int)]"
         );
         String response = bot.getOldestResponse().getMessage();
-        Thread.sleep(5000);
         Assert.assertEquals(response, getTestBot().getNick() + ", too many results found.  Please see your"
             + " private messages for results");
-        System.out.println("response = " + response);
+        Thread.sleep(5000);
         final StringBuilder hits = new StringBuilder();
         while ((response = bot.getOldestMessage()) != null) {
             hits.append(" " + response);
         }
-        final List<String> strings = Arrays.asList(hits.substring((getTestBot().getNick() + ": ").length()).split(";"));
-        System.out.println("strings = " + strings);
+        final List<String> strings = Arrays.asList(hits.substring((getTestBot().getNick() + ": ").length()).trim().split("; "));
         Assert.assertEquals(strings.size(), responses.size());
     }
 
@@ -81,7 +79,6 @@ public class JavadocOperationTest extends BaseOperationTest {
         waitForResponses(bot, 1);
         final String oldest = bot.getOldestResponse().getMessage();
         final String response = oldest.substring((getTestBot().getNick() + ": ").length());
-        System.out.println("response = " + response);
         Assert.assertTrue(response.contains(target));
     }
 }

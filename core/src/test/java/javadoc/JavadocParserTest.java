@@ -48,6 +48,12 @@ public class JavadocParserTest extends BaseTest {
         parse("Wicket", "http://wicket.apache.org/docs/wicket-1.3.2/wicket/apidocs/", Collections.<String>emptyList());
     }
 
+//    public void cipherDoFinal() {
+//        final Clazz[] cipher = clazzDao.getClass("javax.crypto", "Cipher");
+//        cipher[0].populate(clazzDao);
+//        parse("Wicket", "http://wicket.apache.org/docs/wicket-1.3.2/wicket/apidocs/", Collections.<String>emptyList());
+//    }
+
     private void parse(final String apiName, final String url, final List<String> packages) {
         if (dao.find(apiName) == null) {
             final Api api = fetchApi(apiName, url);

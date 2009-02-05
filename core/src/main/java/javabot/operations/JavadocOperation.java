@@ -74,13 +74,12 @@ public class JavadocOperation extends BotOperation {
                         destination = event.getSender();
                     }
                     for (int index = 0; index < urls.size(); index++) {
-                        if ((urlMessage + urls.get(index)).length() < 400) {
-                            urlMessage.append(index != 0 && urlMessage.length() > 0 ? "; " : "")
-                                .append(urls.get(index));
-                        } else {
+                        if ((urlMessage + urls.get(index)).length() > 400) {
                             getBot().postMessage(new Message(destination, event, urlMessage.toString()));
                             urlMessage = new StringBuilder();
                         }
+                        urlMessage.append(index != 0 ? "; " : "")
+                            .append(urls.get(index));
                     }
                     getBot().postMessage(new Message(destination, event, urlMessage.toString()));
                 } else if (urls.isEmpty()) {

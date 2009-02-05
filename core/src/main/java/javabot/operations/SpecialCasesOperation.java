@@ -5,9 +5,6 @@ import javabot.Javabot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author ricky_clarkson
- */
 public class SpecialCasesOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(SpecialCasesOperation.class);
 

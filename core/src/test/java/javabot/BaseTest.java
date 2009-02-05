@@ -10,13 +10,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * Created Jan 9, 2009
- *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
- */
 public class BaseTest {
+    private static final Logger log = LoggerFactory.getLogger(BaseTest.class);
     @Autowired
     private AdminDao dao;
 
@@ -69,6 +67,7 @@ public class BaseTest {
                     testBot.connect("irc.freenode.net");
                     testBot.joinChannel(getJavabotChannel());
                 } catch (Exception e) {
+                    log.debug(e.getMessage(), e);
                     Assert.fail(e.getMessage());
                 }
             }

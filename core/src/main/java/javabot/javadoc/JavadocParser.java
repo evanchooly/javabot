@@ -9,9 +9,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javabot.JavabotThreadFactory;
 import javabot.dao.ClazzDao;
-import org.jaxen.dom.DOMXPath;
 import org.jaxen.JaxenException;
+import org.jaxen.dom.DOMXPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,8 @@ public class JavadocParser {
     @Autowired
     private ClazzDao dao;
     private final BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
-    private final ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 30, 30000, TimeUnit.SECONDS, workQueue);
+    private final ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 30, 30000, TimeUnit.SECONDS, workQueue,
+        new JavabotThreadFactory(false));
 
     @Transactional
     public void parse(final Api api, final List<String> packages, final Writer writer) {
