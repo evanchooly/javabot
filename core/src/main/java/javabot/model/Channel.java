@@ -17,9 +17,9 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Table(name = "channel")
 @NamedQueries({
-    @NamedQuery(name=ChannelDao.ALL, query= "select c from Channel c order by c.name"),
-    @NamedQuery(name=ChannelDao.BY_NAME, query= "select c from Channel c where c.name = :channel"),
-    @NamedQuery(name= ChannelDao.CONFIGURED_CHANNELS, query= "select distinct s.name from Channel s")
+    @NamedQuery(name = ChannelDao.ALL, query = "select c from Channel c order by c.name"),
+    @NamedQuery(name = ChannelDao.BY_NAME, query = "select c from Channel c where c.name = :channel"),
+    @NamedQuery(name = ChannelDao.CONFIGURED_CHANNELS, query = "select distinct s.name from Channel s")
 })
 public class Channel implements Serializable, Persistent {
     private static final Logger log = LoggerFactory.getLogger(Channel.class);
@@ -82,11 +82,13 @@ public class Channel implements Serializable, Persistent {
     }
 
     public void join(final Javabot bot) {
-        log.debug("Joining " + getName());
-        if (getKey() == null) {
-            bot.joinChannel(getName());
-        } else {
-            bot.joinChannel(getName(), getKey());
+        if (getName().startsWith("#")) {
+            log.debug("Joining " + getName());
+            if (getKey() == null) {
+                bot.joinChannel(getName());
+            } else {
+                bot.joinChannel(getName(), getKey());
+            }
         }
     }
 }

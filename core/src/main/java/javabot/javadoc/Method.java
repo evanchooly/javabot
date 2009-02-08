@@ -33,18 +33,20 @@ public class Method extends JavadocElement implements Persistent {
         final String[] params = paramString.isEmpty() ? new String[0] : paramString.split(",");
         methodName = signature.substring(0, leftParen);
         final StringBuilder shortTypes = new StringBuilder();
-        for(final String parameter : params) {
-            if(shortTypes.length() != 0) {
+        for (final String parameter : params) {
+            if (shortTypes.length() != 0) {
                 shortTypes.append(", ");
             }
-            shortTypes.append(parameter.substring(parameter.lastIndexOf(".") + 1));
+            final String[] bits = parameter.split("\\.");
+            final String shortType = bits[bits.length - 1] + (parameter.endsWith("...") ? "..." : "");
+            shortTypes.append(shortType);
         }
         paramCount = params.length;
         longSignatureTypes = paramString;
         shortSignatureTypes = shortTypes.toString();
         longSignatureStripped = longSignatureTypes.replaceAll(" ", "");
         shortSignatureStripped = shortSignatureTypes.replaceAll(" ", "");
-        setLongUrl( clazz.getLongUrl() + "#" + signature.replaceAll(" ", "%20"));
+        setLongUrl(clazz.getLongUrl() + "#" + signature.replaceAll(" ", "%20"));
     }
 
     @Id

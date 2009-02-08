@@ -205,9 +205,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
                 context.getAutowireCapableBeanFactory().autowireBean(operation);
                 operations.put(name, operation);
                 added = true;
-                if (log.isDebugEnabled()) {
-                    log.debug(operation.getClass().getCanonicalName());
-                }
             }
         } catch (ClassNotFoundException e) {
             log.debug("Operation not found: " + name);

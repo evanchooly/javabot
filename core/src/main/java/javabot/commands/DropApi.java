@@ -31,16 +31,21 @@ public class DropApi implements Command {
             final String name = args.remove(0);
             final Api api = dao.find(name);
             if (api != null) {
-                bot.postMessage(new Message(destination, event, String.format(
-                    "removing old %s javadoc", name)));
-                dao.delete(api);
-                bot.postMessage(new Message(destination, event, String.format(
-                    "done removing old %s javadoc", name)));
+                drop(bot, event, destination, api, dao);
             } else {
                 bot.postMessage(new Message(destination, event, String.format(
                     "I don't have javadoc for %s anyway, %s", name, event.getSender())));
 
             }
         }
+    }
+
+    public static void drop(final Javabot bot, final BotEvent event, final String destination, final Api api,
+        final ApiDao apiDao) {
+        bot.postMessage(new Message(destination, event, String.format(
+            "removing old %s javadoc", api.getName())));
+        apiDao.delete(api);
+        bot.postMessage(new Message(destination, event, String.format(
+            "done removing old %s javadoc", api.getName())));
     }
 }

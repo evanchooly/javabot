@@ -2,20 +2,19 @@ package javabot.operations;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * Created Aug 9, 2007
- *
- * @author <a href="mailto:javabot@cheeseronline.org">cheeser</a>
- */
 @Test(dependsOnGroups = {"javadoc"})
 public class JavadocOperationTest extends BaseOperationTest {
+    private static final Logger log = LoggerFactory.getLogger(JavadocOperationTest.class);
     @Autowired
     private ApiDao apiDao;
     @Autowired
@@ -44,6 +43,19 @@ public class JavadocOperationTest extends BaseOperationTest {
         final List<String> strings = Arrays
             .asList(response.substring((getTestBot().getNick() + ": ").length()).split(";"));
         Assert.assertEquals(strings.size(), 2);
+    }
+
+    public void format() {
+        final TestBot bot = getTestBot();
+        bot.sendMessage(getJavabotChannel(),
+            String.format("%s %s", getJavabot().getNick(), "javadoc java.lang.String.format(*)"));
+        waitForResponses(bot, 1);
+        final String[] response = bot.getOldestResponse().getMessage().split(";");
+        StringTokenizer tz = new StringTokenizer(response[0], "[]");
+        tz.nextToken();
+        final String method = tz.nextToken();
+        final boolean comma = method.substring(method.indexOf("(")+1, method.length()).endsWith(",");
+        log.debug("res = " + response);
     }
 
     @SuppressWarnings({"StringContatenationInLoop"})

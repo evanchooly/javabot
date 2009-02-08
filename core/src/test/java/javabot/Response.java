@@ -40,4 +40,15 @@ public class Response {
     public String getSender() {
         return sender;
     }
+
+    @Override
+    public String toString() {
+        return "Response{" +
+            "channel='" + channel + '\'' +
+            ", sender='" + sender + '\'' +
+            ", login='" + login + '\'' +
+            ", hostname='" + hostname + '\'' +
+            ", message='" + message + '\'' +
+            '}';
+    }
 }

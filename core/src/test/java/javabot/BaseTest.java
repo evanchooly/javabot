@@ -13,11 +13,11 @@ import org.testng.annotations.AfterSuite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings({"StaticNonFinalField"})
 public class BaseTest {
     private static final Logger log = LoggerFactory.getLogger(BaseTest.class);
     @Autowired
     private AdminDao dao;
-
     public final String ok;
     private static Javabot bot;
     private static TestBot testBot;
@@ -25,29 +25,22 @@ public class BaseTest {
 
     public BaseTest() {
         context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
+        inject(this);
         createBot();
         ok = "Okay, " + getTestBot().getNick().substring(0, 16) + ".";
-        inject(this);
     }
 
     protected final Javabot createBot() {
         if (bot == null) {
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-                    bot = new Javabot(context) {
-                        @Override
-                        public void onJoin(final String channel, final String sender, final String login,
-                            final String hostname) {
-                            dao.create(sender, hostname);
-                            super.onJoin(channel, sender, login, hostname);
-                        }
-                    };
-//                }
-//            }).start();
-//        }
-//        while(bot == null) {
-//            Thread.yield();
+            bot = new Javabot(context) {
+                @Override
+                public void onJoin(final String channel, final String sender, final String login,
+                    final String hostname) {
+                    dao.create(sender, hostname);
+                    super.onJoin(channel, sender, login, hostname);
+                }
+            };
+            inject(bot);
         }
         return bot;
     }
@@ -88,7 +81,7 @@ public class BaseTest {
 
         public TestBot() {
             final String s = "javabot" + System.currentTimeMillis();
-            setName(s.substring(0,16));
+            setName(s.substring(0, 16));
         }
 
         @Override
@@ -100,13 +93,14 @@ public class BaseTest {
         @Override
         protected void onPrivateMessage(final String sender, final String login, final String hostname,
             final String message) {
+            log.debug(new Response(sender, sender, login, hostname, message).toString());
             onMessage(sender, sender, login, hostname, message);
         }
 
         public int getResponseCount() {
             return responses.size();
         }
-        
+
         public Response getOldestResponse() {
             return responses.isEmpty() ? null : responses.remove(0);
         }

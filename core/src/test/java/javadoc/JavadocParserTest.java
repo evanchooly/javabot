@@ -43,16 +43,22 @@ public class JavadocParserTest extends BaseTest {
         parse("JEE", "http://java.sun.com/javaee/5/docs/api/", Collections.<String>emptyList());
     }
 
+    public void servlet() {
+        final Api api = fetchApi("Servlet", "http://java.sun.com/products/servlet/2.3/javadoc/");
+        final JavadocParser parser = new JavadocParser();
+        inject(parser);
+        parser.parse(api, Collections.<String>emptyList(), writer);
+    }
+
+    @Test(dependsOnMethods = "servlet")
+    public void reprocess() {
+        servlet();
+    }
+
     @Test(dependsOnMethods = "jdk")
     public void wicket() {
         parse("Wicket", "http://wicket.apache.org/docs/wicket-1.3.2/wicket/apidocs/", Collections.<String>emptyList());
     }
-
-//    public void cipherDoFinal() {
-//        final Clazz[] cipher = clazzDao.getClass("javax.crypto", "Cipher");
-//        cipher[0].populate(clazzDao);
-//        parse("Wicket", "http://wicket.apache.org/docs/wicket-1.3.2/wicket/apidocs/", Collections.<String>emptyList());
-//    }
 
     private void parse(final String apiName, final String url, final List<String> packages) {
         if (dao.find(apiName) == null) {
