@@ -18,7 +18,6 @@ public class QuitOperation extends BotOperation {
 
     @Override
     public boolean handleMessage(final BotEvent event) {
-        final List<Message> messages = new ArrayList<Message>();
         final String message = event.getMessage();
         if(message.toLowerCase().startsWith("quit ")) {
             if(message.substring("quit ".length()).equals(getBot().getNickPassword())) {

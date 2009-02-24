@@ -47,7 +47,6 @@ import javabot.operations.QuitOperation;
 import javabot.operations.SayOperation;
 import javabot.operations.SeenOperation;
 import javabot.operations.ShunOperation;
-import javabot.operations.SpecialCasesOperation;
 import javabot.operations.StatsOperation;
 import javabot.operations.TellOperation;
 import javabot.operations.TimeOperation;
@@ -97,7 +96,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         BotOperation.getName(DaysToChristmasOperation.class),
         BotOperation.getName(DaysUntilOperation.class),
         BotOperation.getName(DictOperation.class),
-        BotOperation.getName(ForgetFactoidOperation.class),
         BotOperation.getName(GoogleOperation.class),
         BotOperation.getName(IgnoreOperation.class),
         BotOperation.getName(InfoOperation.class),
@@ -112,7 +110,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         BotOperation.getName(QuitOperation.class),
         BotOperation.getName(SayOperation.class),
         BotOperation.getName(SeenOperation.class),
-        BotOperation.getName(SpecialCasesOperation.class),
         BotOperation.getName(StatsOperation.class),
         BotOperation.getName(TellOperation.class),
         BotOperation.getName(TimeOperation.class),
@@ -125,6 +122,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         STANDARD_OPERATIONS = new ArrayList<String>();
         STANDARD_OPERATIONS.add(BotOperation.getName(AdminOperation.class));
         STANDARD_OPERATIONS.add(BotOperation.getName(AddFactoidOperation.class));
+        STANDARD_OPERATIONS.add(BotOperation.getName(ForgetFactoidOperation.class));
         STANDARD_OPERATIONS.add(BotOperation.getName(GetFactoidOperation.class));
     }
 
@@ -496,7 +494,8 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     }
 
     public BotOperation getOperation(final String name) {
-        return operations.get(name);
+        final BotOperation operation = operations.get(name);
+        return operation == null ? standardOperations.get(name) : operation;
     }
 
     @Override

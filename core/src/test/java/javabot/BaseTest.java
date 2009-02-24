@@ -27,7 +27,7 @@ public class BaseTest {
         context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
         inject(this);
         createBot();
-        ok = "Okay, " + getTestBot().getNick().substring(0, 16) + ".";
+        ok = "OK, " + getTestBot().getNick().substring(0, 16) + ".";
     }
 
     protected final Javabot createBot() {

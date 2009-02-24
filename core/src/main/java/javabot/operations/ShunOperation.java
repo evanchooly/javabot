@@ -1,14 +1,12 @@
 package javabot.operations;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.ShunDao;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Causes the bot to disregard bot triggers for a few minutes. Useful to de-fang abusive users without ejecting the bot
@@ -27,7 +25,6 @@ public class ShunOperation extends BotOperation {
     }
 
     public boolean handleMessage(final BotEvent event) {
-        final List<Message> messages = new ArrayList<Message>();
         final String message = event.getMessage();
         final String[] parts = message.split(" ");
         if (parts.length == 2 && "shun".equals(parts[0])) {

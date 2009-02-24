@@ -15,6 +15,7 @@ public class AddFactoidOperation extends BotOperation {
     private FactoidDao factoidDao;
     @Autowired
     private ChangeDao changeDao;
+    private static final String NO = "no, ";
 
     public AddFactoidOperation(final Javabot bot) {
         super(bot);
@@ -25,6 +26,31 @@ public class AddFactoidOperation extends BotOperation {
         final String message = event.getMessage();
         final String channel = event.getChannel();
         final String sender = event.getSender();
+        return addFactoid(event, replaceFactoid(event, event.getMessage()), channel, sender);
+
+    }
+
+    private String replaceFactoid(final BotEvent event, final String message) {
+        if (log.isDebugEnabled()) {
+            log.debug("AddFactoidOperation: " + message);
+        }
+        if (message.toLowerCase().startsWith(NO)) {
+            final String actual = message.substring(NO.length()).replaceAll("^\\s+", "");
+            if (log.isDebugEnabled()) {
+                log.debug("AddFactoidOperation: " + message);
+            }
+            String key = actual.substring(0, actual.indexOf(" is "));
+            key = key.replaceAll("^\\s+", "");
+            if (log.isDebugEnabled()) {
+                log.debug("AddFactoidOperation: Key " + key);
+            }
+            factoidDao.delete(event.getSender(), key);
+            return actual;
+        }
+        return message;
+    }
+
+    private boolean addFactoid(final BotEvent event, final String message, final String channel, final String sender) {
         boolean handled = false;
         if (message.toLowerCase().contains(" is ")) {
             String key = message.substring(0, message.indexOf(" is "));
@@ -53,12 +79,11 @@ public class AddFactoidOperation extends BotOperation {
                     value = value.toLowerCase();
                 }
                 factoidDao.addFactoid(sender, key, value);
-                getBot().postMessage(new Message(channel, event, "Okay, " + sender + "."));
+                getBot().postMessage(new Message(channel, event, "OK, " + sender + "."));
             }
             handled = true;
         }
         return handled;
-
     }
 
     public ChangeDao getChangeDao() {

@@ -27,15 +27,19 @@ public class ForgetFactoidOperation extends BotOperation {
                 message = message.substring(0, message.length() - 1);
             }
             final String key = message.toLowerCase();
-            if (factoidDao.hasFactoid(key)) {
-                getBot().postMessage(new Message(channel, event, String.format("I forgot about %s, %s.", key, sender)));
-                factoidDao.delete(sender, key);
-            } else {
-                getBot().postMessage(new Message(channel, event,
-                    String.format("I never knew about %s anyway, %s.", key, sender)));
-            }
+            forget(event, channel, sender, key);
             handled = true;
         }
         return handled;
+    }
+
+    protected void forget(final BotEvent event, final String channel, final String sender, final String key) {
+        if (factoidDao.hasFactoid(key)) {
+            getBot().postMessage(new Message(channel, event, String.format("I forgot about %s, %s.", key, sender)));
+            factoidDao.delete(sender, key);
+        } else {
+            getBot().postMessage(new Message(channel, event,
+                String.format("I never knew about %s anyway, %s.", key, sender)));
+        }
     }
 }

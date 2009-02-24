@@ -27,12 +27,11 @@ public class GetFactoidOperation extends BotOperation {
 
     @Override
     public boolean handleMessage(final BotEvent event) {
-        final List<Message> messages = new ArrayList<Message>();
-        getFactoid(event.getMessage(), event.getSender(), messages, event.getChannel(), event, new HashSet<String>());
+        getFactoid(event.getMessage(), event.getSender(), event.getChannel(), event, new HashSet<String>());
         return true;
     }
 
-    private void getFactoid(final String toFind, final String sender, final List<Message> messages,
+    private void getFactoid(final String toFind, final String sender,
         final String channel, final BotEvent event, final Set<String> backtrack) {
         String message = toFind;
         if (log.isDebugEnabled()) {
@@ -49,13 +48,13 @@ public class GetFactoidOperation extends BotOperation {
         }
         final Factoid factoid = factoidDao.getFactoid(message.toLowerCase());
         if (factoid != null) {
-            processFactoid(sender, messages, channel, event, backtrack, dollarOne, key, factoid);
+            processFactoid(sender, channel, event, backtrack, dollarOne, key, factoid);
         } else {
             getBot().postMessage(new Message(channel, event, sender + ", I have no idea what " + message + " is."));
         }
     }
 
-    private void processFactoid(final String sender, final List<Message> messages, final String channel,
+    private void processFactoid(final String sender, final String channel,
         final BotEvent event, final Set<String> backtrack, final String dollarOne, final String key,
         final Factoid factoid) {
         String message;
@@ -68,7 +67,7 @@ public class GetFactoidOperation extends BotOperation {
         if (message.startsWith("<see>")) {
             if (!backtrack.contains(message)) {
                 backtrack.add(message);
-                getFactoid(message.substring("<see>".length()).trim(), sender, messages, channel, event, backtrack);
+                getFactoid(message.substring("<see>".length()).trim(), sender, channel, event, backtrack);
             } else {
                 getBot().postMessage(new Message(channel, event, "Reference loop detected for factoid '" + message + "'."));
             }

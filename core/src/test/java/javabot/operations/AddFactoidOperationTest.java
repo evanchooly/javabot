@@ -25,14 +25,24 @@ public class AddFactoidOperationTest extends BaseOperationTest {
         factoidDao.delete(getTestBot().getNick(), "test pong");
         factoidDao.delete(getTestBot().getNick(), "asdf");
         factoidDao.delete(getTestBot().getNick(), "12345");
+        factoidDao.delete(getTestBot().getNick(), "replace");
     }
 
     public void factoidAdd() {
         testMessage("test pong is pong", ok);
-        testMessage("ping $1 is <action>sends some radar to $1, " + "awaits a response then forgets how long it took",
+        testMessage("ping $1 is <action>sends some radar to $1, awaits a response then forgets how long it took",
             ok);
         testMessage("what? is a question", ok);
         testMessage("what up? is <see>what?", ok);
+    }
+
+    public void replace() {
+        testMessage("replace is first entry", ok);
+        final TestBot bot = getTestBot();
+        bot.sendMessage(getJavabotChannel(), getJavabot().getNick() + " no, replace is <reply>second entry");
+        waitForResponses(bot, 1);
+        Assert.assertEquals(bot.getOldestResponse().getMessage(), "OK, " + bot.getNick() + ".");
+        testMessage("replace", "second entry");
     }
 
     @Test(dependsOnMethods = {"factoidAdd"})
