@@ -1,7 +1,9 @@
 package javabot.operations;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,11 +29,12 @@ public class GetFactoidOperation extends BotOperation {
 
     @Override
     public boolean handleMessage(final BotEvent event) {
-        getFactoid(event.getMessage(), event.getSender(), event.getChannel(), event, new HashSet<String>());
+        final List<Message> messages = new ArrayList<Message>();
+        getFactoid(event.getMessage(), event.getSender(), messages, event.getChannel(), event, new HashSet<String>());
         return true;
     }
 
-    private void getFactoid(final String toFind, final String sender,
+    private void getFactoid(final String toFind, final String sender, final List<Message> messages,
         final String channel, final BotEvent event, final Set<String> backtrack) {
         String message = toFind;
         if (log.isDebugEnabled()) {
@@ -41,40 +44,81 @@ public class GetFactoidOperation extends BotOperation {
             message = message.substring(0, message.length() - 1);
         }
         final String firstWord = message.replaceAll(" .+", "");
-        final String dollarOne = message.replaceFirst("[^ ]+ ", "");
+        String params = message.replaceFirst("[^ ]+ ", "");
+        String dollarOne = null;
         final String key = message;
-        if (!factoidDao.hasFactoid(message.toLowerCase()) && factoidDao.hasFactoid(firstWord.toLowerCase() + " $1")) {
+        Factoid factoid = factoidDao.getFactoid(message.toLowerCase());
+        if (factoid == null) {
             message = firstWord + " $1";
+            factoid = factoidDao.getFactoid(message.toLowerCase());
+            dollarOne = params;
         }
-        final Factoid factoid = factoidDao.getFactoid(message.toLowerCase());
+        if (factoid == null) {
+            message = firstWord + " $+";
+            factoid = factoidDao.getFactoid(message);
+            dollarOne = urlencode(params);
+        }
+        if (factoid == null) {
+            message = firstWord + " $^";
+            factoid = factoidDao.getFactoid(message);
+            dollarOne = urlencode(camelcase(params));
+        }
         if (factoid != null) {
-            processFactoid(sender, channel, event, backtrack, dollarOne, key, factoid);
+            processFactoid(sender, messages, channel, event, backtrack, dollarOne, key, factoid);
         } else {
-            getBot().postMessage(new Message(channel, event, sender + ", I have no idea what " + message + " is."));
+            getBot().postMessage(new Message(channel, event, sender + ", I have no idea what " + toFind + " is."));
         }
     }
 
-    private void processFactoid(final String sender, final String channel,
-        final BotEvent event, final Set<String> backtrack, final String dollarOne, final String key,
+    private static String urlencode(String in) {
+        try {
+            return URLEncoder.encode(in, Charset.defaultCharset().displayName());
+        } catch (UnsupportedEncodingException e) {
+            log.error(e.getMessage(), e);
+            return in;
+        }
+    }
+
+    private static String camelcase(String in) {
+        StringBuilder sb = new StringBuilder(in.replaceAll("\\s", " "));
+        if (in.length() != 0) {
+            int idx = sb.indexOf(" ");
+            sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
+            while (idx > -1) {
+                sb.deleteCharAt(idx);
+                if (idx < sb.length()) {
+                    sb.setCharAt(idx, Character.toUpperCase(sb.charAt(idx)));
+                }
+                idx = sb.indexOf(" ");
+            }
+        }
+        return sb.toString();
+    }
+
+    private void processFactoid(final String sender, final List<Message> messages, final String channel,
+        final BotEvent event, final Set<String> backtrack, final String replacedValue, final String key,
         final Factoid factoid) {
         String message;
-        factoid.setLastUsed(new Date());
-        factoidDao.save(factoid);
         message = factoid.getValue();
         message = message.replaceAll("\\$who", sender);
-        message = message.replaceAll("\\$1", dollarOne);
+        if (replacedValue != null) {
+            message = message.replaceAll("\\$1", replacedValue);
+            message = message.replaceAll("\\$\\+", replacedValue);
+            message = message.replaceAll("\\$\\^", replacedValue);
+        }
         message = processRandomList(message);
         if (message.startsWith("<see>")) {
             if (!backtrack.contains(message)) {
                 backtrack.add(message);
-                getFactoid(message.substring("<see>".length()).trim(), sender, channel, event, backtrack);
+                getFactoid(message.substring("<see>".length()).trim(), sender, messages, channel, event, backtrack);
             } else {
-                getBot().postMessage(new Message(channel, event, "Reference loop detected for factoid '" + message + "'."));
+                getBot()
+                    .postMessage(new Message(channel, event, "Reference loop detected for factoid '" + message + "'."));
             }
         } else if (message.startsWith("<reply>")) {
             getBot().postMessage(new Message(channel, event, message.substring("<reply>".length())));
         } else if (message.startsWith("<action>")) {
-            getBot().postMessage(new Action(channel, event, message.substring("<action>".length())));
+            getBot().postAction(new Action(channel, event, message.substring("<action>".length())));
         } else {
             getBot().postMessage(new Message(channel, event, sender + ", " + key + " is " + message));
         }
@@ -90,7 +134,7 @@ public class GetFactoidOperation extends BotOperation {
             final String[] choices = choice.split("\\|");
             if (choices.length > 1) {
                 final int chosen = (int) (Math.random() * choices.length);
-                result = String .format("%s%s%s", result.substring(0, index), choices[chosen],
+                result = String.format("%s%s%s", result.substring(0, index), choices[chosen],
                     result.substring(index2 + 1));
             }
             index = result.indexOf("(", index + 1);

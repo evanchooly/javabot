@@ -24,6 +24,8 @@ public class GetFactoidOperationTest extends BaseOperationTest {
         factoidDao.addFactoid(getTestBot().getNick(), "seeTest", "<see>replyTest");
         factoidDao.addFactoid(getTestBot().getNick(), "noReply", "I'm a reply!");
         factoidDao.addFactoid(getTestBot().getNick(), "replace $1", "<reply>I replaced you $1");
+        factoidDao.addFactoid(getTestBot().getNick(), "camel $^", "<reply>$^");
+        factoidDao.addFactoid(getTestBot().getNick(), "url $+", "<reply>$+");
         factoidDao.addFactoid(getTestBot().getNick(), "hey", "<reply>Hello, $who");
         factoidDao.addFactoid(getTestBot().getNick(), "coin", "<reply>(heads|tails)");
         factoidDao.addFactoid(getTestBot().getNick(), "hug $1", "<action> hugs $1");
@@ -36,6 +38,8 @@ public class GetFactoidOperationTest extends BaseOperationTest {
         delete("seeTest");
         delete("noReply");
         delete("replace $1");
+        delete("url $+");
+        delete("camel $C");
         delete("hey");
         delete("coin");
         delete("hug $1");
@@ -66,6 +70,8 @@ public class GetFactoidOperationTest extends BaseOperationTest {
 
     public void parameterReplacement() {
         testMessage("replace " + getTestBot().getNick(), "I replaced you " + getTestBot().getNick());
+        testMessage("url what up doc", "what+up+doc");
+        testMessage("camel i should be camel case", "IShouldBeCamelCase");
     }
 
     public void whoReplacement() {
