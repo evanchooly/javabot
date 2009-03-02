@@ -36,10 +36,10 @@ public abstract class BaseOperationTest extends BaseTest /*extends UnitilsTestNG
     }
 
     protected void waitForResponses(final TestBot bot, final int length) {
-        int count = 100;
+        int count = 10;
         while(length != 0 && count != 0 && bot.getResponseCount() != length) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
                 count--;
             } catch (InterruptedException e) {
                 throw new RuntimeException(e.getMessage());

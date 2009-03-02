@@ -26,23 +26,28 @@ public class ShunOperation extends BotOperation {
 
     public boolean handleMessage(final BotEvent event) {
         final String message = event.getMessage();
-        final String[] parts = message.split(" ");
-        if (parts.length == 2 && "shun".equals(parts[0])) {
-            getBot().postMessage(new Message(event.getChannel(), event, getShunnedMessage(parts[1])));
+        if (message.startsWith("shun ")) {
+            final String[] parts = message.substring(5).split(" ");
+            if (parts.length == 0) {
+                getBot().postMessage(new Message(event.getChannel(), event, "Usage:  shun <user> [<seconds>]"));
+            } else {
+                getBot().postMessage(new Message(event.getChannel(), event, getShunnedMessage(parts)));
+            }
             return true;
         }
         return false;
     }
 
-    private Date calculateShunExpiry() {
-        return new Date(System.currentTimeMillis() + SHUN_DURATION);
+    private Date calculateShunExpiry(final long duration) {
+        return new Date(System.currentTimeMillis() + duration);
     }
 
-    private String getShunnedMessage(final String victim) {
+    private String getShunnedMessage(final String[] parts) {
+        String victim = parts[0];
         if (shunDao.isShunned(victim)) {
             return String.format("%s is already shunned.", victim);
         }
-        final Date until = calculateShunExpiry();
+        final Date until = calculateShunExpiry(parts.length == 1 ? SHUN_DURATION : Integer.parseInt(parts[1]) * 1000);
         shunDao.addShun(victim, until);
         return String.format("%s is shunned until %2$tY/%2$tm/%2$td %2$tH:%2$tM:%2$tS.", victim, until);
     }
