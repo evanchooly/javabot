@@ -25,6 +25,12 @@ public class Method extends JavadocElement implements Persistent {
     public Method() {
     }
 
+    @Override
+    @Transient
+    public String getApiName() {
+        return getClazz().getApi().getName();
+    }
+
     @SuppressWarnings({"StringConcatenationInsideStringBufferAppend", "StringContatenationInLoop"})
     public Method(final String signature, final Clazz parent) {
         clazz = parent;

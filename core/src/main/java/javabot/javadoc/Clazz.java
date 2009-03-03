@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,10 +17,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import javabot.dao.ClazzDao;
 import javabot.model.Persistent;
-import org.apache.html.dom.HTMLDocumentImpl;
 import org.cyberneko.html.parsers.DOMParser;
 import org.jaxen.JaxenException;
 import org.jaxen.dom.DOMXPath;
@@ -31,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.html.HTMLElement;
-import org.w3c.dom.html.HTMLTableElement;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -67,9 +65,9 @@ public class Clazz extends JavadocElement implements Persistent {
 
     public Clazz(final Api classApi, final HTMLElement element, final List<String> packages) {
         final String href = element.getAttribute("href").replace(".html", "").replace("../", "").replace("/", ".");
-        final int last = href.lastIndexOf(".");
-        className = href.substring(last + 1);
-        packageName = href.substring(0, last);
+        String[] values = calculateNameAndPackage(href);
+        packageName = values[0];
+        className = values[1];
         boolean valid = packages.isEmpty();
         for (final String aPackage : packages) {
             valid |= packageName.startsWith(aPackage);
@@ -80,6 +78,16 @@ public class Clazz extends JavadocElement implements Persistent {
         setLongUrl(classApi.getBaseUrl() + sanitize(element));
         api = classApi;
 //        classApi.getClasses().add(this);
+    }
+
+    private String[] calculateNameAndPackage(final String href) {
+        String clsName = href;
+        while (Character.isLowerCase(clsName.charAt(0))) {
+            clsName = clsName.substring(clsName.indexOf(".") + 1);
+        }
+        String pkgName = href.substring(0, href.indexOf(clsName) - 1);
+
+        return new String[] {pkgName, clsName};
     }
 
     private String sanitize(final HTMLElement element) {
@@ -111,7 +119,7 @@ public class Clazz extends JavadocElement implements Persistent {
     public final List<Clazz> populate(final ClazzDao dao) {
         final List<Clazz> nested = new ArrayList<Clazz>();
         try {
-//            writer.write("populating " + this);
+//            log.debug("populating " + this);
             final Document document = getDocument(getLongUrl());
             final List<HTMLElement> dts = (List<HTMLElement>) new DOMXPath("//DT/following-sibling::node()"
                 + "[text()='extends ']").evaluate(document);
@@ -127,10 +135,8 @@ public class Clazz extends JavadocElement implements Persistent {
                     while (!Character.isLetter(pkg.charAt(0))) {
                         pkg = pkg.substring(1);
                     }
-                    final int last = pkg.lastIndexOf(".");
-                    final String clazzName = pkg.substring(last + 1);
-                    pkg = pkg.substring(0, last);
-                    final Clazz[] aClass = dao.getClass(pkg, clazzName);
+                    final String[] values = calculateNameAndPackage(pkg);
+                    final Clazz[] aClass = dao.getClass(values[0], values[1]);
                     if (aClass.length == 0) {
                         nested.add(this);
                     } else {
@@ -143,6 +149,7 @@ public class Clazz extends JavadocElement implements Persistent {
             if (nested.isEmpty()) {
                 final List<HTMLElement> result = (List<HTMLElement>) new DOMXPath("//HEAD/META[@name='keywords']")
                     .evaluate(document);
+/*
                 final List<HTMLElement> nestedElements = (List<HTMLElement>) new DOMXPath(
                     "//A[@name='nested_class_summary']")
                     .evaluate(document);
@@ -163,6 +170,7 @@ public class Clazz extends JavadocElement implements Persistent {
                         }
                     }
                 }
+*/
                 for (final HTMLElement element : result) {
                     String content = element.getAttribute("content");
                     if (content.endsWith("()")) {
@@ -181,15 +189,18 @@ public class Clazz extends JavadocElement implements Persistent {
                 }
                 dao.save(this);
             }
+        } catch (RuntimeException e) {
+            log.debug(e.getMessage(), e);
         } catch (JaxenException e) {
             log.debug(e.getMessage(), e);
-            throw new RuntimeException(e.getMessage(), e);
+//            throw new RuntimeException(e.getMessage(), e);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             nested.add(this);
+            log.error("Rescheduling " + className);
         } catch (SAXException e) {
             log.error(e.getMessage(), e);
-            throw new RuntimeException(e.getMessage());
+//            throw new RuntimeException(e.getMessage());
         }
         return nested;
     }
@@ -207,14 +218,14 @@ public class Clazz extends JavadocElement implements Persistent {
             parser.parse(inputSource);
         } catch (SAXException e) {
             log.debug(e.getMessage(), e);
-            System.out.println("specUrl = " + specUrl);
+            log.debug("specUrl = " + specUrl);
             throw e;
         } catch (IOException e) {
             log.debug(e.getMessage(), e);
-            System.out.println("specUrl = " + specUrl);
+            log.debug("specUrl = " + specUrl);
             throw e;
         } finally {
-            if(inputStream != null) {
+            if (inputStream != null) {
                 inputStream.close();
             }
         }
@@ -228,6 +239,12 @@ public class Clazz extends JavadocElement implements Persistent {
 
     public void setApi(final Api api) {
         this.api = api;
+    }
+
+    @Override
+    @Transient
+    public String getApiName() {
+        return getApi().getName();
     }
 
     @Column(nullable = false)

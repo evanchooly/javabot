@@ -85,6 +85,13 @@ public class BaseTest {
         }
 
         @Override
+        protected void onAction(final String sender, final String login, final String hostname, final String target,
+            final String action) {
+            responses.add(new Response(target, sender, login, hostname, action));
+
+        }
+
+        @Override
         public void onMessage(final String channel, final String sender, final String login,
             final String hostname, final String message) {
             responses.add(new Response(channel, sender, login, hostname, message));

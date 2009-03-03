@@ -129,7 +129,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     public Javabot(final ApplicationContext applicationContext) {
         context = applicationContext;
         context.getAutowireCapableBeanFactory().autowireBean(this);
-        setVersion("Javabot 3.0.2");
+        setVersion("Javabot 3.0.3");
         final Config config = configDao.get();
         executors = Executors.newCachedThreadPool(new JavabotThreadFactory(true));
         final Thread hook = new Thread(new Runnable() {
@@ -359,7 +359,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         final Channel chan = channelDao.get(channel);
         try {
             if (log.isDebugEnabled()) {
-                log.debug("onMessage " + message + " Sender " + sender);
+                log.debug("processMessage: " + message + ", Sender " + sender);
             }
             if (isValidSender(sender)) {
                 boolean handled = false;

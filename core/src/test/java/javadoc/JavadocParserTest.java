@@ -10,6 +10,7 @@ import javabot.BaseTest;
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
 import javabot.javadoc.Api;
+import javabot.javadoc.Clazz;
 import javabot.javadoc.JavadocParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
@@ -60,6 +61,15 @@ public class JavadocParserTest extends BaseTest {
         parse("Wicket", "http://wicket.apache.org/docs/wicket-1.3.2/wicket/apidocs/", Collections.<String>emptyList());
     }
 
+    @Test(dependsOnMethods = "jdk")
+    public void targetted() {
+        final Api api = dao.find("JDK");
+        Clazz clazz  = new Clazz(api, "java.text", "DateFormat.Field");
+        clazz.setLongUrl("http://java.sun.com/javase/6/docs/api/java/text/DateFormat.Field.html");
+        clazzDao.save(clazz);
+        clazz.populate(clazzDao);
+    }
+    
     private void parse(final String apiName, final String url, final List<String> packages) {
         if (dao.find(apiName) == null) {
             final Api api = fetchApi(apiName, url);

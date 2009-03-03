@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,12 +31,12 @@ public class GetFactoidOperation extends BotOperation {
     @Override
     public boolean handleMessage(final BotEvent event) {
         final List<Message> messages = new ArrayList<Message>();
-        getFactoid(event.getMessage(), event.getSender(), messages, event.getChannel(), event, new HashSet<String>());
+        getFactoid(event.getMessage(), event.getSender(), event.getChannel(), event, new HashSet<String>());
         return true;
     }
 
-    private void getFactoid(final String toFind, final String sender, final List<Message> messages,
-        final String channel, final BotEvent event, final Set<String> backtrack) {
+    private void getFactoid(final String toFind, final String sender, final String channel, final BotEvent event,
+        final Set<String> backtrack) {
         String message = toFind;
         if (log.isDebugEnabled()) {
             log.debug(sender + " : " + message);
@@ -64,7 +65,7 @@ public class GetFactoidOperation extends BotOperation {
             dollarOne = urlencode(camelcase(params));
         }
         if (factoid != null) {
-            processFactoid(sender, messages, channel, event, backtrack, dollarOne, key, factoid);
+            processFactoid(sender, channel, event, backtrack, dollarOne, key, factoid);
         } else {
             getBot().postMessage(new Message(channel, event, sender + ", I have no idea what " + toFind + " is."));
         }
@@ -95,9 +96,8 @@ public class GetFactoidOperation extends BotOperation {
         return sb.toString();
     }
 
-    private void processFactoid(final String sender, final List<Message> messages, final String channel,
-        final BotEvent event, final Set<String> backtrack, final String replacedValue, final String key,
-        final Factoid factoid) {
+    private void processFactoid(final String sender, final String channel, final BotEvent event,
+        final Set<String> backtrack, final String replacedValue, final String key, final Factoid factoid) {
         String message;
         message = factoid.getValue();
         message = message.replaceAll("\\$who", sender);
@@ -110,7 +110,7 @@ public class GetFactoidOperation extends BotOperation {
         if (message.startsWith("<see>")) {
             if (!backtrack.contains(message)) {
                 backtrack.add(message);
-                getFactoid(message.substring("<see>".length()).trim(), sender, messages, channel, event, backtrack);
+                getFactoid(message.substring("<see>".length()).trim(), sender, channel, event, backtrack);
             } else {
                 getBot()
                     .postMessage(new Message(channel, event, "Reference loop detected for factoid '" + message + "'."));
@@ -122,6 +122,8 @@ public class GetFactoidOperation extends BotOperation {
         } else {
             getBot().postMessage(new Message(channel, event, sender + ", " + key + " is " + message));
         }
+        factoid.setLastUsed(new Date());
+        factoidDao.save(factoid);
     }
 
     protected String processRandomList(final String message) {

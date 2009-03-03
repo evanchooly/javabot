@@ -21,22 +21,22 @@ public class JavadocOperationTest extends BaseOperationTest {
     private ClazzDao clazzDao;
 
     public void string() {
-        final String response = "http://is.gd/6UoM [java.lang.String]";
+        final String response = "http://is.gd/6UoM [JDK: java.lang.String]";
         testList("javadoc String", response);
         testMessage("javadoc java.lang.String", getTestBot().getNick() + ": " + response);
     }
 
     public void methods() {
         testMessage("javadoc String.split(String)",
-            getTestBot().getNick() + ": http://is.gd/eOPq [java.lang.String.split(String)]");
+            getTestBot().getNick() + ": http://is.gd/eOPq [JDK: java.lang.String.split(String)]");
         testMessage("javadoc String.split(java.lang.String)",
-            getTestBot().getNick() + ": http://is.gd/eOPq [java.lang.String.split(String)]");
+            getTestBot().getNick() + ": http://is.gd/eOPq [JDK: java.lang.String.split(String)]");
         final TestBot bot = getTestBot();
         bot.sendMessage(getJavabotChannel(), String.format("%s %s", getJavabot().getNick(), "javadoc String.split(*)"));
         waitForResponses(bot, 1);
         final List<String> responses = Arrays.asList(
-            "http://is.gd/eOPq [java.lang.String.split(String)]",
-            "http://is.gd/eOPr [java.lang.String.split(String,int)]");
+            "http://is.gd/eOPq [JDK: java.lang.String.split(String)]",
+            "http://is.gd/lwAt [JDK: java.lang.String.split(String,int)]");
         final String response = bot.getOldestResponse().getMessage();
         Assert.assertTrue(response.contains(responses.get(0)));
         Assert.assertTrue(response.contains(responses.get(1)));
@@ -55,7 +55,6 @@ public class JavadocOperationTest extends BaseOperationTest {
         tz.nextToken();
         final String method = tz.nextToken();
         final boolean comma = method.substring(method.indexOf("(")+1, method.length()).endsWith(",");
-        log.debug("res = " + response);
     }
 
     @SuppressWarnings({"StringContatenationInLoop"})
@@ -65,13 +64,13 @@ public class JavadocOperationTest extends BaseOperationTest {
             String.format("%s %s", getJavabot().getNick(), "javadoc Cipher.doFinal(*)"));
         waitForResponses(bot, 2);
         final List<String> responses = Arrays.asList(
-            "http://is.gd/igel [javax.crypto.Cipher.doFinal()]",
-            "http://is.gd/igep [javax.crypto.Cipher.doFinal(ByteBuffer,ByteBuffer)]",
-            "http://is.gd/igen [javax.crypto.Cipher.doFinal(byte[])]",
-            "http://is.gd/igem [javax.crypto.Cipher.doFinal(byte[],int)]",
-            "http://is.gd/igeq [javax.crypto.Cipher.doFinal(byte[],int,int)]",
-            "http://is.gd/igeo [javax.crypto.Cipher.doFinal(byte[],int,int,byte[])]",
-            "http://is.gd/igee [javax.crypto.Cipher.doFinal(byte[],int,int,byte[],int)]"
+            "http://is.gd/igel [JDK: javax.crypto.Cipher.doFinal()]",
+            "http://is.gd/igep [JDK: javax.crypto.Cipher.doFinal(ByteBuffer,ByteBuffer)]",
+            "http://is.gd/igen [JDK: javax.crypto.Cipher.doFinal(byte[])]",
+            "http://is.gd/igem [JDK: javax.crypto.Cipher.doFinal(byte[],int)]",
+            "http://is.gd/igeq [JDK: javax.crypto.Cipher.doFinal(byte[],int,int)]",
+            "http://is.gd/igeo [JDK: javax.crypto.Cipher.doFinal(byte[],int,int,byte[])]",
+            "http://is.gd/igee [JDK: javax.crypto.Cipher.doFinal(byte[],int,int,byte[],int)]"
         );
         String response = bot.getOldestResponse().getMessage();
         Assert.assertEquals(response, getTestBot().getNick() + ", too many results found.  Please see your"

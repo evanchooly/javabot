@@ -4,7 +4,7 @@
 
     <groupId>javabot</groupId>
     <artifactId>javabot</artifactId>
-    <version>3.0.2</version>
+    <version>3.0.3</version>
     <packaging>pom</packaging>
 
     <name>javabot</name>

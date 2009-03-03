@@ -28,7 +28,7 @@ public class AdminOperationTest extends BaseOperationTest {
     public void operationsList() {
         doScan(BotOperation.class, Javabot.OPERATIONS,
             Arrays.asList("AdminOperation.java", "AddFactoidOperation.java", "BotOperation.java",
-                "GetFactoidOperation.java", "UrlOperation.java"), "Operation.java");
+                "GetFactoidOperation.java", "ForgetFactoidOperation.java", "UrlOperation.java"), "Operation.java");
     }
 
     private void doScan(final Class baseClass, final List<String> list, final List<String> excluded,

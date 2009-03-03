@@ -82,11 +82,11 @@ public class JavadocParser {
                     for (final Clazz clazz1 : clazz.populate(dao)) {
                         workQueue.add(process(clazz1));
                     }
-                } catch (IrrelevantClassException e) {
-                    log.debug(e.getMessage());
+//                } catch (IrrelevantClassException e) {
+//                    log.debug(e.getMessage());
                 } catch (RuntimeException e) {
                     log.debug(e.getMessage(), e);
-                    throw new RuntimeException(e.getMessage(), e);
+//                    throw new RuntimeException(e.getMessage(), e);
                 }
             }
 

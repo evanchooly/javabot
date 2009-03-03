@@ -28,6 +28,9 @@ public abstract class JavadocElement implements Persistent {
     private String shortUrl;
     private String longUrl;
 
+    @Transient
+    public abstract String getApiName();
+
     private String buildShortUrl(final String url) {
         final StringBuilder buff = new StringBuilder();
         try {
@@ -78,7 +81,7 @@ public abstract class JavadocElement implements Persistent {
     public String getDisplayUrl(final String hint, final BaseDao dao) {
         String url = getShortUrl();
         if(url == null) {
-            setShortUrl(buildShortUrl(getLongUrl()) + " [" + hint +"]");
+            setShortUrl(buildShortUrl(getLongUrl()) + " [" + getApiName() + ": " + hint +"]");
             url = getShortUrl();
             dao.save(this);
         }

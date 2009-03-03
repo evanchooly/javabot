@@ -17,7 +17,6 @@ public abstract class BaseOperationTest extends BaseTest /*extends UnitilsTestNG
         bot.sendMessage(getJavabotChannel(), String.format("%s %s", getJavabot().getNick(), message));
         waitForResponses(bot, 1);
         final String response = bot.getOldestResponse().getMessage();
-        System.out.println("response = " + response);
         Assert.assertTrue(responses.contains(response));
     }
 
