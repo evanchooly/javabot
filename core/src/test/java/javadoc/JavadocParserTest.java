@@ -24,6 +24,7 @@ import org.testng.annotations.Test;
 public class JavadocParserTest extends BaseTest {
     public static final String API_NAME = "JDK";
     public static final String API_URL_STRING = "http://java.sun.com/javase/6/docs/api";
+    public static final String PACKAGES = "java javax";
     @Autowired
     private ApiDao dao;
     @Autowired
@@ -36,7 +37,7 @@ public class JavadocParserTest extends BaseTest {
     };
 
     public void jdk() throws MalformedURLException {
-        parse(JavadocParserTest.API_NAME, API_URL_STRING, Arrays.asList("java", "javax"));
+        parse(JavadocParserTest.API_NAME, API_URL_STRING, Arrays.asList(PACKAGES.split(" ")));
     }
 
     @Test(dependsOnMethods = "jdk")

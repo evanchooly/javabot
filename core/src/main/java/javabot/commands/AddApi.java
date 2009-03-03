@@ -39,7 +39,7 @@ public class AddApi implements Command {
                         + " optional.  if not given all packages found will be documented"));
             }
         }
-        if (args.size() == 2 || existing) {
+        if (args.size() >= 2 || existing) {
             final String name = args.remove(0);
             Api api = dao.find(name);
             if (existing && api != null) {
