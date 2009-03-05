@@ -45,6 +45,16 @@ public class JavadocOperationTest extends BaseOperationTest {
         Assert.assertEquals(strings.size(), 2);
     }
 
+    public void nestedClasses() {
+        final TestBot bot = getTestBot();
+        bot.sendMessage(getJavabotChannel(),
+            String.format("%s %s", getJavabot().getNick(), "javadoc Map.Entry"));
+        waitForResponses(bot, 1);
+        final String response = bot.getOldestResponse().getMessage();
+        Assert.assertEquals(response, getTestBot().getNick() + ": http://is.gd/jLP8 [JDK: java.util.Map.Entry]");
+
+    }
+    
     public void format() {
         final TestBot bot = getTestBot();
         bot.sendMessage(getJavabotChannel(),

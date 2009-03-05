@@ -80,14 +80,13 @@ public class Clazz extends JavadocElement implements Persistent {
 //        classApi.getClasses().add(this);
     }
 
-    private String[] calculateNameAndPackage(final String href) {
+    public static String[] calculateNameAndPackage(final String href) {
         String clsName = href;
         while (Character.isLowerCase(clsName.charAt(0))) {
             clsName = clsName.substring(clsName.indexOf(".") + 1);
         }
-        String pkgName = href.substring(0, href.indexOf(clsName) - 1);
-
-        return new String[] {pkgName, clsName};
+        String pkgName = href.equals(clsName) ? null : href.substring(0, href.indexOf(clsName) - 1);
+        return new String[]{pkgName, clsName};
     }
 
     private String sanitize(final HTMLElement element) {

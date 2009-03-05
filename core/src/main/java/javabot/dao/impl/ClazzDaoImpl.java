@@ -40,15 +40,16 @@ public class ClazzDaoImpl extends AbstractDaoImpl<Clazz> implements ClazzDao {
     @SuppressWarnings({"unchecked"})
     public Clazz[] getClass(final String name) {
         final Query query;
-        if (!name.contains(".")) {
+        final String[] strings = Clazz.calculateNameAndPackage(name);
+        final String pkgName = strings[0];
+        final String className = strings[1].toUpperCase();
+        if (pkgName == null) {
             query = getEntityManager().createNamedQuery(ClazzDao.GET_BY_NAME);
-            query.setParameter("name", name.toUpperCase());
+            query.setParameter("name", className);
         } else {
-            final String className = name.substring(name.lastIndexOf(".") + 1).toUpperCase();
-            final String pkgName = name.substring(0, name.lastIndexOf(".")).toUpperCase();
             query = getEntityManager().createNamedQuery(ClazzDao.GET_BY_PACKAGE_AND_NAME);
             query.setParameter("name", className);
-            query.setParameter("package", pkgName);
+            query.setParameter("package", pkgName.toUpperCase());
         }
         final List list = query.getResultList();
         return (Clazz[]) list.toArray(new Clazz[list.size()]);
