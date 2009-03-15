@@ -70,7 +70,7 @@ public class JavadocParserTest extends BaseTest {
         clazzDao.save(clazz);
         clazz.populate(clazzDao);
     }
-    
+
     private void parse(final String apiName, final String url, final List<String> packages) {
         if (dao.find(apiName) == null) {
             final Api api = fetchApi(apiName, url);

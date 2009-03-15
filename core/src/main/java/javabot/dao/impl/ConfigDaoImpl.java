@@ -1,7 +1,5 @@
 package javabot.dao.impl;
 
-import javax.persistence.NoResultException;
-
 import javabot.Javabot;
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.AdminDao;
@@ -35,18 +33,18 @@ public class ConfigDaoImpl extends AbstractDaoImpl<Config> implements ConfigDao 
     }
 
     public Config get() {
-        Config config;
-        try {
-            config = (Config) getEntityManager().createNamedQuery(ConfigDao.GET_CONFIG).getSingleResult();
-        } catch (NoResultException e) {
-            config = defaults;
-            final Channel channel = new Channel();
-            channel.setName("##" + config.getNick());
-            channelDao.save(channel);
-            config.setOperations(Javabot.OPERATIONS);
-            adminDao.create(defaultAdmin.getUserName(), defaultAdmin.getHostName());
-            save(config);
-        }
+        return (Config) getEntityManager().createNamedQuery(ConfigDao.GET_CONFIG).getSingleResult();
+    }
+
+    public Config create() {
+        final Config config;
+        config = defaults;
+        final Channel channel = new Channel();
+        channel.setName("##" + config.getNick());
+        channelDao.save(channel);
+        config.setOperations(Javabot.OPERATIONS);
+        adminDao.create(defaultAdmin.getUserName(), defaultAdmin.getHostName());
+        save(config);
         return config;
     }
 }

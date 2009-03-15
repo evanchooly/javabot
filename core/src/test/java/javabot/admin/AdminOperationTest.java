@@ -6,18 +6,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import javabot.Javabot;
-import javabot.javadoc.Api;
 import javabot.commands.Command;
 import javabot.dao.ApiDao;
 import javabot.operations.AdminOperation;
 import javabot.operations.BaseOperationTest;
 import javabot.operations.BotOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import javadoc.JavadocParserTest;
 
 /**
  * Created Dec 21, 2008
@@ -35,7 +33,7 @@ public class AdminOperationTest extends BaseOperationTest {
         doScan(Command.class, AdminOperation.COMMANDS, Arrays.asList("Command.java", "OperationsCommand.java"),
             ".java");
     }
-
+/*
     public void addApi() {
         final Api api = dao.find(JavadocParserTest.API_NAME);
         if(api != null) {
@@ -54,7 +52,7 @@ public class AdminOperationTest extends BaseOperationTest {
             }
         }
     }
-    
+    */
     public void operationsList() {
         doScan(BotOperation.class, Javabot.OPERATIONS,
             Arrays.asList("AdminOperation.java", "AddFactoidOperation.java", "BotOperation.java",

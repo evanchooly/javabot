@@ -36,7 +36,7 @@ public class JavadocOperationTest extends BaseOperationTest {
         waitForResponses(bot, 1);
         final List<String> responses = Arrays.asList(
             "http://is.gd/eOPq [JDK: java.lang.String.split(String)]",
-            "http://is.gd/lwAt [JDK: java.lang.String.split(String,int)]");
+            "http://is.gd/eOPr [JDK: java.lang.String.split(String,int)]");
         final String response = bot.getOldestResponse().getMessage();
         Assert.assertTrue(response.contains(responses.get(0)));
         Assert.assertTrue(response.contains(responses.get(1)));

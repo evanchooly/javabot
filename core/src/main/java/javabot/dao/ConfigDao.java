@@ -11,4 +11,6 @@ public interface ConfigDao extends BaseDao<Config> {
     String GET_CONFIG = "Config.get";
 
     Config get();
+
+    Config create();
 }
