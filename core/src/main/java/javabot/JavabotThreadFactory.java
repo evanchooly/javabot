@@ -5,11 +5,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class JavabotThreadFactory implements ThreadFactory {
     private final AtomicInteger threadNumber = new AtomicInteger(1);
-    private final String namePrefix = "javabot-thread-";
+    private final String namePrefix;
     private final boolean createDaemonThreads;
 
-    public JavabotThreadFactory(final boolean daemon) {
+    public JavabotThreadFactory(final boolean daemon, final String name) {
         createDaemonThreads = daemon;
+        namePrefix = name;
     }
 
     public Thread newThread(final Runnable runnable) {

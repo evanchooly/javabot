@@ -8,7 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import javax.persistence.NoResultException;
 
@@ -137,7 +138,8 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         } catch (NoResultException e) {
             config = configDao.create();
         }
-        executors = Executors.newCachedThreadPool(new JavabotThreadFactory(true));
+        executors = new ThreadPoolExecutor(15, 40, 10L, TimeUnit.SECONDS,
+            new SynchronousQueue<Runnable>(),new JavabotThreadFactory(true, "javabot-handler-thread-"));
         final Thread hook = new Thread(new Runnable() {
             @Override
             public void run() {

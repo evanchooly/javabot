@@ -32,8 +32,9 @@ public class JavadocParser {
     @Autowired
     private ClazzDao dao;
     private final BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
+    private final BlockingQueue<Runnable> reworkQueue = new LinkedBlockingQueue<Runnable>();
     private final ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 30, 30000, TimeUnit.SECONDS, workQueue,
-        new JavabotThreadFactory(false));
+        new JavabotThreadFactory(false, "javadoc-thread-"));
 
     @Transactional
     public void parse(final Api api, final List<String> packages, final Writer writer) {
@@ -59,6 +60,7 @@ public class JavadocParser {
                     workQueue.size()));
                 Thread.sleep(5000);
             }
+            executor.shutdown();
         } catch (IOException e) {
             log.debug(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);

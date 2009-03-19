@@ -32,7 +32,7 @@ public abstract class JavadocElement implements Persistent {
     public abstract String getApiName();
 
     private String buildShortUrl(final String url) {
-        final StringBuilder buff = new StringBuilder();
+        StringBuilder buff = null;
         try {
             BufferedReader reader = null;
             InputStreamReader isr = null;
@@ -41,6 +41,7 @@ public abstract class JavadocElement implements Persistent {
                     API_URL + URLEncoder.encode(url, "UTF-8")).openConnection();
                 connection.setRequestMethod("GET");
                 connection.setInstanceFollowRedirects(true);
+                connection.setConnectTimeout(7500);
                 connection.connect();
                 final int code = connection.getResponseCode();
                 if (code != HttpURLConnection.HTTP_OK) {
@@ -49,6 +50,7 @@ public abstract class JavadocElement implements Persistent {
                 isr = new InputStreamReader(connection.getInputStream());
                 reader = new BufferedReader(isr);
                 String ret;
+                buff = new StringBuilder();
                 while ((ret = reader.readLine()) != null) {
                     buff.append(ret);
                 }
@@ -64,7 +66,7 @@ public abstract class JavadocElement implements Persistent {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-        return buff.toString();
+        return buff == null ? null : buff.toString();
     }
 
     @Column(length = 1000)
