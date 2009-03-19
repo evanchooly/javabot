@@ -315,6 +315,8 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         final Channel chan = channelDao.get(channel);
         if (chan != null && chan.getLogged()) {
             logsDao.logMessage(Logs.Type.QUIT, sender, channel, "quit");
+        } else if(chan == null) {
+            log.debug("not logging " + channel);
         }
     }
 
