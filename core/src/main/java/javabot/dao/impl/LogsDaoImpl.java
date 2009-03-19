@@ -3,6 +3,7 @@ package javabot.dao.impl;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.text.SimpleDateFormat;
 import javax.persistence.NoResultException;
 
 import javabot.Seen;
@@ -12,8 +13,11 @@ import javabot.dao.LogsDao;
 import javabot.model.Logs;
 import javabot.model.Config;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
+    private static final Logger log = LoggerFactory.getLogger(LogsDaoImpl.class);
     @Autowired
     private ConfigDao dao;
 
@@ -58,9 +62,11 @@ public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
             cal.clear(Calendar.SECOND);
             cal.clear(Calendar.HOUR);
             cal.add(Calendar.MONTH, length * -1);
+            log.debug("pruning history older than " + new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").format(cal.getTime()));
             getEntityManager().createQuery("delete from Logs l where l.updated < :date")
                 .setParameter("date", cal.getTime())
                 .executeUpdate();
+            log.debug("done pruning history older than " + new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").format(cal.getTime()));
         }
     }
 
