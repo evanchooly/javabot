@@ -82,7 +82,7 @@ public class Clazz extends JavadocElement implements Persistent {
 
     public static String[] calculateNameAndPackage(final String href) {
         String clsName = href;
-        while (Character.isLowerCase(clsName.charAt(0))) {
+        while (clsName.contains(".") && Character.isLowerCase(clsName.charAt(0))) {
             clsName = clsName.substring(clsName.indexOf(".") + 1);
         }
         String pkgName = href.equals(clsName) ? null : href.substring(0, href.indexOf(clsName) - 1);

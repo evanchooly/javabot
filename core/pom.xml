@@ -169,6 +169,72 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>javabot.Javabot</mainClass>
+                            <classpathPrefix>${m2.local.repo}</classpathPrefix>
+                            <classpathLayoutType>repository</classpathLayoutType>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>1.0.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-files</goal>
+                        </goals>
+                        <configuration>
+                            <copyActions>
+
+                                <copy-files>
+
+                                    <files>
+
+                                        <file>target/*.ear</file>
+
+                                    </files>
+
+                                    <targetDirectory>
+
+                                        ${basedir}/../${deploy.path}/${jboss.deploy.path}
+
+                                    </targetDirectory>
+
+                                </copy-files>
+
+                                <copy-files>
+
+                                    <files>
+
+                                        <file>target/*.ear</file>
+
+                                    </files>
+
+                                    <targetDirectory>
+
+                                        ${jboss.home}/${jboss.deploy.path}
+
+                                    </targetDirectory>
+
+                                </copy-files>
+                            </copyActions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Run me with 'mvn exec:java'. -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
