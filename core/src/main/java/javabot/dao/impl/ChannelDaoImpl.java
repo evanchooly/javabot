@@ -10,8 +10,11 @@ import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ChannelDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ChannelDaoImpl extends AbstractDaoImpl<Channel> implements ChannelDao {
+    private static final Logger log = LoggerFactory.getLogger(ChannelDaoImpl.class);
     private final Map<String, Boolean> logCache = new HashMap<String, Boolean>();
 
     public ChannelDaoImpl() {
@@ -41,40 +44,41 @@ public class ChannelDaoImpl extends AbstractDaoImpl<Channel> implements ChannelD
         final StringBuilder query = new StringBuilder("from Channel c");
         if (qp.hasSort()) {
             query.append(" order by ")
-                    .append(qp.getSort())
-                    .append(qp.isSortAsc() ? " asc" : " desc");
+                .append(qp.getSort())
+                .append(qp.isSortAsc() ? " asc" : " desc");
         }
         return getEntityManager().createQuery(query.toString())
-                .setFirstResult(qp.getFirst())
-                .setMaxResults(qp.getCount()).getResultList();
+            .setFirstResult(qp.getFirst())
+            .setMaxResults(qp.getCount()).getResultList();
     }
 
     @Override
     public boolean isLogged(final String channel) {
         Boolean logged = logCache.get(channel);
-        if(logged == null) {
+        if (logged == null) {
             final Channel chan = get(channel);
-            if(chan != null) {
+            if (chan != null) {
                 logged = chan.getLogged();
                 logCache.put(channel, logged);
             } else {
                 logged = Boolean.FALSE;
             }
         }
-
         return logged;
     }
 
     @Override
     public Channel get(final String name) {
         Channel channel = null;
-        try {
-            channel = (Channel) getEntityManager().createNamedQuery(ChannelDao.BY_NAME)
-                .setParameter("channel", name)
-                .getSingleResult();
-            return channel;
-        } catch (PersistenceException e) {
-            // ignore
+        if (name.startsWith("#")) {
+            try {
+                channel = (Channel) getEntityManager().createNamedQuery(ChannelDao.BY_NAME)
+                    .setParameter("channel", name)
+                    .getSingleResult();
+                return channel;
+            } catch (PersistenceException e) {
+                log.debug(e.getMessage(), e);
+            }
         }
         return channel;
 

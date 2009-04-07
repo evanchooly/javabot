@@ -139,7 +139,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
             config = configDao.create();
         }
         executors = new ThreadPoolExecutor(15, 40, 10L, TimeUnit.SECONDS,
-            new SynchronousQueue<Runnable>(),new JavabotThreadFactory(true, "javabot-handler-thread-"));
+            new SynchronousQueue<Runnable>(), new JavabotThreadFactory(true, "javabot-handler-thread-"));
         final Thread hook = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -259,13 +259,21 @@ public class Javabot extends PircBot implements ApplicationContextAware {
                 connect(host, port);
                 sendRawLine("PRIVMSG NickServ :identify " + getNickPassword());
                 sleep(authWait);
-                for (final Channel channel : channelDao.getChannels()) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            channel.join(Javabot.this);
-                        }
-                    }).start();
+                final List<Channel> channelList = channelDao.getChannels();
+                if (channelList.isEmpty()) {
+                    Channel chan = new Channel();
+                    chan.setName("##" + getNick());
+                    changeDao.save(chan);
+                    chan.join(this);
+                } else {
+                    for (final Channel channel : channelList) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                channel.join(Javabot.this);
+                            }
+                        }).start();
+                    }
                 }
             } catch (Exception exception) {
                 disconnect();
@@ -315,7 +323,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         final Channel chan = channelDao.get(channel);
         if (chan != null && chan.getLogged()) {
             logsDao.logMessage(Logs.Type.QUIT, sender, channel, "quit");
-        } else if(chan == null) {
+        } else if (chan == null) {
             log.debug("not logging " + channel);
         }
     }
@@ -369,8 +377,8 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         final String hostname) {
         final Channel chan = channelDao.get(channel);
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("processMessage: " + message + ", Sender " + sender);
+            if (chan != null && chan.getLogged()) {
+                logsDao.logMessage(Logs.Type.MESSAGE, sender, channel, message);
             }
             if (isValidSender(sender)) {
                 boolean handled = false;
@@ -391,10 +399,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
-        } finally {
-            if (chan != null && chan.getLogged()) {
-                logsDao.logMessage(Logs.Type.MESSAGE, sender, channel, message);
-            }
         }
     }
 

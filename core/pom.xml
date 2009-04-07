@@ -169,6 +169,7 @@
 
     <build>
         <plugins>
+		  <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -235,6 +236,7 @@
                 </executions>
             </plugin>
 
+				-->
             <!-- Run me with 'mvn exec:java'. -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

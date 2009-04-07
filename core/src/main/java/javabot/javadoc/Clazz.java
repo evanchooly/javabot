@@ -77,7 +77,6 @@ public class Clazz extends JavadocElement implements Persistent {
         }
         setLongUrl(classApi.getBaseUrl() + sanitize(element));
         api = classApi;
-//        classApi.getClasses().add(this);
     }
 
     public static String[] calculateNameAndPackage(final String href) {
