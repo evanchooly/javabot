@@ -73,7 +73,7 @@ public class ChannelDaoImpl extends AbstractDaoImpl<Channel> implements ChannelD
         if (name.startsWith("#")) {
             try {
                 channel = (Channel) getEntityManager().createNamedQuery(ChannelDao.BY_NAME)
-                    .setParameter("channel", name)
+                    .setParameter("channel", name.toLowerCase())
                     .getSingleResult();
                 return channel;
             } catch (PersistenceException e) {

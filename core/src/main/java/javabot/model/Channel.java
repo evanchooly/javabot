@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 @Table(name = "channel")
 @NamedQueries({
     @NamedQuery(name = ChannelDao.ALL, query = "select c from Channel c order by c.name"),
-    @NamedQuery(name = ChannelDao.BY_NAME, query = "select c from Channel c where c.name = :channel"),
+    @NamedQuery(name = ChannelDao.BY_NAME, query = "select c from Channel c where lower(c.name) = :channel"),
     @NamedQuery(name = ChannelDao.CONFIGURED_CHANNELS, query = "select distinct s.name from Channel s")
 })
 public class Channel implements Serializable, Persistent {
