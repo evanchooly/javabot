@@ -23,7 +23,7 @@ public class LogDaoTest extends BaseServiceTest {
         final String nick = getTestBot().getNick();
         logsDao.logMessage(Logs.Type.MESSAGE, nick, getJavabotChannel(), "test");
         final List channels = logsDao.loggedChannels();
-        Assert.assertEquals(channels.get(0), getJavabotChannel());
+        Assert.assertTrue(channels.contains(getJavabotChannel()));
     }
 
     public void getDailyLog() {

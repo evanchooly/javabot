@@ -46,7 +46,7 @@
     </filter-mapping>
 
     <filter>
-        <filter-name>fn-javabot</filter-name>
+        <filter-name>javabot</filter-name>
         <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
         <init-param>
             <param-name>applicationClassName</param-name>
@@ -55,7 +55,7 @@
     </filter>
 
     <filter-mapping>
-        <filter-name>fn-javabot</filter-name>
+        <filter-name>javabot</filter-name>
         <url-pattern>/javabot/*</url-pattern>
     </filter-mapping>
 </web-app>

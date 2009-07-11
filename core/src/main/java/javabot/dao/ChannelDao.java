@@ -4,12 +4,14 @@ import java.util.List;
 
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
+import javabot.Activity;
 
 @SuppressWarnings({"ConstantNamingConvention"})
 public interface ChannelDao extends BaseDao<Channel> {
     String BY_NAME = "Channel.byName";
     String ALL = "Channel.all";
     String CONFIGURED_CHANNELS = "Channel.configure";
+    String STATISTICS = "Channel.stats";
 
     List<Channel> getChannels();
 
@@ -24,4 +26,6 @@ public interface ChannelDao extends BaseDao<Channel> {
     void save(Channel channel);
 
     boolean isLogged(String channel);
+
+    List<Activity> getStatistics();
 }

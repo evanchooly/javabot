@@ -168,6 +168,7 @@
     </dependencies>
 
     <build>
+        <defaultGoal>package</defaultGoal>
         <plugins>
 		  <!--
             <plugin>

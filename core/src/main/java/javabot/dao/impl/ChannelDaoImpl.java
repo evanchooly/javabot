@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import javax.persistence.PersistenceException;
 
+import javabot.Activity;
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ChannelDao;
 import javabot.dao.util.QueryParam;
@@ -82,6 +83,12 @@ public class ChannelDaoImpl extends AbstractDaoImpl<Channel> implements ChannelD
         }
         return channel;
 
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public List<Activity> getStatistics() {
+        return (List<Activity>) getEntityManager().createNamedQuery(ChannelDao.STATISTICS)
+            .getResultList();
     }
 
     @Override

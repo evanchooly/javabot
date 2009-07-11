@@ -1,6 +1,9 @@
 package javabot.wicket.core;
 
+import javabot.wicket.pages.Activity;
+import javabot.wicket.pages.Factoids;
 import javabot.wicket.pages.Index;
+import javabot.wicket.pages.Karma;
 import org.apache.wicket.Request;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
@@ -19,6 +22,9 @@ public class JavabotApplication extends WebApplication {
         // getRequestCycleSettings().setBufferResponse(false);
         // getMarkupSettings().setStripWicketTags(true);
         mountBookmarkablePage("/home", Index.class);
+        mountBookmarkablePage("/karma", Karma.class);
+        mountBookmarkablePage("/stats", Activity.class);
+        mountBookmarkablePage("/factoids", Factoids.class);
     }
 
     @Override

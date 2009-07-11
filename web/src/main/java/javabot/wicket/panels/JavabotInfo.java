@@ -1,5 +1,6 @@
 package javabot.wicket.panels;
 
+import javabot.wicket.pages.Activity;
 import javabot.wicket.pages.ChangeLogs;
 import javabot.wicket.pages.Factoids;
 import javabot.wicket.pages.Karma;
@@ -16,11 +17,15 @@ public class JavabotInfo extends Panel {
 
     public JavabotInfo(String id) {
         super(id);
-        add(new ExternalLink("homepage", "http://sourceforge.net/projects/fn-javabot", "HomePage"));
+        add(new ExternalLink("homepage", "http://kenai.com/projects/javabot", "HomePage"));
                             
         Link factoid = new BookmarkablePageLink("factoid_link", Factoids.class);
         factoid.add(new Label("factoid", "Factoids: "));
         add(factoid);
+
+        Link stats = new BookmarkablePageLink("activity_link", Activity.class);
+        stats.add(new Label("stats", "Statistics"));
+        add(stats);
 
         Link karma = new BookmarkablePageLink("karma_link", Karma.class);
         karma.add(new Label("karma", "Karma ranking"));

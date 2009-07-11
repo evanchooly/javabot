@@ -61,7 +61,7 @@ public class ChangeDaoImpl extends AbstractDaoImpl<Change> implements ChangeDao 
             hql.append("and upper(target.message) like :message ");
         }
         if (filter.getChangeDate() != null) {
-            hql.append("and upper(target.changeDate) like :date ");
+            hql.append("and target.changeDate like :date ");
         }
         if (!count && qp != null && qp.hasSort()) {
             hql.append("order by upper(target.").append(qp.getSort()).append(
