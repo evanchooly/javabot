@@ -137,6 +137,7 @@
     </dependencies>
 
     <build>
+        <defaultGoal>package</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
