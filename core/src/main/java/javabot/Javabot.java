@@ -263,6 +263,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
                 if (channelList.isEmpty()) {
                     Channel chan = new Channel();
                     chan.setName("##" + getNick());
+                    System.out.println("No channels found.  Initializing to " + chan.getName());
                     changeDao.save(chan);
                     chan.join(this);
                 } else {

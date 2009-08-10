@@ -26,5 +26,6 @@ web-grails/.classpath
 web-grails/.project
 web-grails/.settings/org.codehaus.groovy.eclipse.preferences.prefs
 web-grails/ivysettings.xml
+web-grails/test/reports
 web/src/main/resources/locations-override.properties
 web/target

@@ -1,6 +1,6 @@
 import grails.test.*
 
-class LogsControllerTests extends ControllerUnitTestCase {
+class ChannelTests extends GrailsUnitTestCase {
     protected void setUp() {
         super.setUp()
     }

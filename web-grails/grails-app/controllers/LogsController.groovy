@@ -1,4 +1,0 @@
-class LogsController {
-
-    def index = { }
-}
