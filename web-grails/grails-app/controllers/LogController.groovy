@@ -5,8 +5,19 @@ class LogController {
   static allowedMethods = [/*delete:'POST', save:'POST', update:'POST'*/]
 
   def list = {
-    params.max = Math.min(params.max ? params.max.toInteger() : 10, 100)
-    [logInstanceList: Log.list(params), logInstanceTotal: Log.count()]
+    if (params.date == null) {
+      params.date = new Date().format("yyyy-MM-dd")
+    }
+    def logDay = Date.parse("yyyy-MM-dd", params.date)
+    def c = Log.createCriteria()
+    def results = c {
+      eq("channel", params.name)
+      and {
+        between("updated", logDay, logDay.next())
+      }
+      order("updated", "asc")
+    }
+    [logInstanceList: results.list, logInstanceTotal: Log.count()]
   }
 
   def show = {

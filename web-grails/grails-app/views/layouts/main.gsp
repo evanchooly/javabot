@@ -19,11 +19,12 @@
       </div>
 
       <div id="left_side">
-        <span id="ChannelBox"><h3>Channels</h3>
+        <span id="ChannelBox"><h3>Channels (${Channel.count()})</h3>
           <div class="boxWrapper">
             <ul class="plain" id="logged_channels">
               <g:each var="chan" in="${Channel.list()}">
-                <li><g:link controller="logController">${chan.name}</g:link></li>
+                <g:set var="name" value="${chan.name}"/>
+                <li><g:link controller="log" params="[channel:name]">${name}</g:link></li>
               </g:each>
             </ul>
           </div></span>
@@ -35,8 +36,8 @@
 
           <div id="boxWrapper">
             <ul class="plain">
-              <li><a id="homepage" href="#">[link text here]</a></li>
-              <li><a id="factoid_link"><span id="factoid">[factoid]</span></a><span id="factoid_count">[count]</span></li>
+              <li><g:link url="/">Home Page</g:link></li>
+              <li><a id="factoid_link">Factoids</a>: ${Factoid.count()}</li>
               <li><a id="activity_link"><span id="stats">[stats]</span></a></li>
               <li><a id="karma_link"><span id="karma">[karma]</span></a></li>
               <li><a id="changes_link"><span id="changes">[changes]</span></a></li>
@@ -64,6 +65,5 @@
         </div>
       </div>
     </div>
-
   </body>
 </html>
