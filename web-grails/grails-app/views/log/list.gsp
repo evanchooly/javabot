@@ -5,59 +5,51 @@
     <title>Channel Logs for ${params.channel}</title>
   </head>
   <body>
-    <div class="body">
       <g:if test="${flash.message}">
         <div class="message">${flash.message}</div>
       </g:if>
       <table cellspacing="0" cellpadding="2" class="dataview" width="100%">
         <tr>
           <g:set var="date" value="${Date.parse('yyyy-MM-dd', params.date)}"/>
-          <g:set var="prevDay" value="${date.previous().format('yyyy-MM-dd')}"/>
-          <g:set var="nextDay" value="${date.next().format('yyyy-MM-dd')}"/>
+          <g:set var="prevDay" value="${params.prevLogDay.format('yyyy-MM-dd')}"/>
+          <g:set var="nextDay" value="${params.nextLogDay.format('yyyy-MM-dd')}"/>
           <td align="left">
-            <h3><g:link url="prevDay">${prevDay}</g:link></h3>
+            <h3><g:link action="list" params="[date:prevDay, channel:params.channel]">${prevDay}</g:link></h3>
           </td>
           <td>
-            <h3><span
-                    wicket:id="channel">${params.channel} ${params.date}</span>
+            <h3><span id="channel">${params.channel} ${params.date}</span>
             </h3>
           </td>
           <td align="right">
-            <h3><g:link url="nextDay">${nextDay}</g:link></h3>
-            </td>
+            <h3><g:link action="list" params="[date:nextDay, channel:params.channel]">${nextDay}</g:link></h3>
+          </td>
         </tr>
       </table>
-      <div class="list">
-        <table cellspacing="0" class="mytable" width="100%">
-          <thead>
-            <tr id="logHeader">
-              <th class="lef">Nick</th>
-              <th>Message</th>
-              <th>Date</th>
+      <table class="dataview">
+        <thead>
+          <tr id="logHeader">
+            <th class="lef">Nick</th>
+            <th>Message</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <g:each in="${logInstanceList}" status="i" var="logInstance">
+            <tr>
+              <g:if test="${logInstance.isAction() || logInstance.isServerMessage()}">
+                <td class="action" colspan="2">*** ${logInstance.nick} ${logInstance.message}</td>
+              </g:if>
+              <g:elseif test="${logInstance.isKick()}">
+                <td class="kick" colspan="2">*** ${logInstance.nick} ${logInstance.message}</td>
+              </g:elseif>
+              <g:else>
+                <td>&lt;${logInstance.nick}&gt;</td>
+                <td>${logInstance.message}</td>
+              </g:else>
+              <td>[${logInstance.updated.format("HH:mm:ss")}]</td>
             </tr>
-          </thead>
-          <tbody>
-            <g:each in="${logInstanceList}" status="i" var="logInstance">
-              <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-
-                <td><g:link action="show" id="${logInstance.id}">${fieldValue(bean: logInstance, field: 'id')}</g:link></td>
-
-                <td>${fieldValue(bean: logInstance, field: 'channel')}</td>
-
-                <td>${fieldValue(bean: logInstance, field: 'message')}</td>
-
-                <td>${fieldValue(bean: logInstance, field: 'nick')}</td>
-
-                <td>${fieldValue(bean: logInstance, field: 'updated')}</td>
-
-              </tr>
-            </g:each>
-          </tbody>
-        </table>
-      </div>
-      <div class="paginateButtons">
-        <g:paginate total="${logInstanceTotal}"/>
-      </div>
-    </div>
+          </g:each>
+        </tbody>
+      </table>
   </body>
 </html>

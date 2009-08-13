@@ -4,11 +4,26 @@ class Log {
   String channel;
   String message;
   Date updated;
-
-  enum Type {
-    JOIN, PART, QUIT, ACTION, KICK, BAN, MESSAGE
-  }
+  Type type;
 
   static constraints = {
+  }
+
+  static mapping = {
+    table 'logs'
+  }
+
+  static transients = [ "action", "kick", "serverMessage" ]
+
+  boolean isAction() {
+    message != null && Type.ACTION == type;
+  }
+
+  boolean isKick() {
+    message != null && Type.KICK == type;
+  }
+
+  boolean isServerMessage() {
+    message != null && Type.JOIN == type || Type.PART == type || Type.QUIT == type;
   }
 }

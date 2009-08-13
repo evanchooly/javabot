@@ -60,9 +60,7 @@
       </div>
 
       <div id="content">
-        <div class='featurebox_center'>
           <g:layoutBody/>
-        </div>
       </div>
     </div>
   </body>

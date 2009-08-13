@@ -8,16 +8,18 @@ class LogController {
     if (params.date == null) {
       params.date = new Date().format("yyyy-MM-dd")
     }
-    def logDay = Date.parse("yyyy-MM-dd", params.date)
+    params.logDay = Date.parse("yyyy-MM-dd", params.date)
+    params.prevLogDay = params.logDay.previous()
+    params.nextLogDay = params.logDay.next()
     def c = Log.createCriteria()
     def results = c {
-      eq("channel", params.name)
+      eq("channel", params.channel)
       and {
-        between("updated", logDay, logDay.next())
+        between("updated", params.logDay, params.nextLogDay)
       }
       order("updated", "asc")
     }
-    [logInstanceList: results.list, logInstanceTotal: Log.count()]
+    [logInstanceList: results]
   }
 
   def show = {
