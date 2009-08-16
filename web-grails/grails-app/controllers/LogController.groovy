@@ -16,7 +16,7 @@ class LogController {
     def results
     def Channel[] channel = Channel.findByName(params.channel)
     println("channel = ${channel}")
-    if (channel.size() != 0 && channel[0].logged) {
+    if (channel != null && channel.size() != 0 && channel[0].logged) {
       results = c {
         eq("channel", params.channel)
         and {
