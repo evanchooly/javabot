@@ -9,7 +9,13 @@ class ChannelController {
 
     def list = {
 //        params.max = Math.min( params.max ? params.max.toInteger() : 10,  100)
-        [ channelInstanceList: Channel.list( params ), channelInstanceTotal: Channel.count() ]
+      def c = Channel.createCriteria()
+      def results = c {
+        eq("logged", true)
+        order(name)
+      }
+§
+        [ channelInstanceList: results, channelInstanceTotal: results.size() ]
     }
 
     def show = {

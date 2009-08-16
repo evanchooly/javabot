@@ -19,15 +19,17 @@
       </div>
 
       <div id="left_side">
-        <span id="ChannelBox"><h3>Channels (${Channel.count()})</h3>
+        <g:set var="list" value="${Channel.listPublic()}"/>
+        <span id="ChannelBox"><h3>Channels (${list.total})</h3>
           <div class="boxWrapper">
             <ul class="plain" id="logged_channels">
-              <g:each var="chan" in="${Channel.list()}">
+              <g:each var="chan" in="${list.results}">
                 <g:set var="name" value="${chan.name}"/>
                 <li><g:link controller="log" params="[channel:name]">${name}</g:link></li>
               </g:each>
             </ul>
-          </div></span>
+          </div>
+        <!--</span>-->
       </div>
 
       <div id="right_side">
@@ -60,7 +62,7 @@
       </div>
 
       <div id="content">
-          <g:layoutBody/>
+        <g:layoutBody/>
       </div>
     </div>
   </body>

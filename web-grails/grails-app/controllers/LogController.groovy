@@ -5,6 +5,7 @@ class LogController {
   static allowedMethods = [/*delete:'POST', save:'POST', update:'POST'*/]
 
   def list = {
+    println("I'm in log controller! with ${params}")
     if (params.date == null) {
       params.date = new Date().format("yyyy-MM-dd")
     }
@@ -12,12 +13,19 @@ class LogController {
     params.prevLogDay = params.logDay.previous()
     params.nextLogDay = params.logDay.next()
     def c = Log.createCriteria()
-    def results = c {
-      eq("channel", params.channel)
-      and {
-        between("updated", params.logDay, params.nextLogDay)
+    def results
+    def Channel[] channel = Channel.findByName(params.channel)
+    println("channel = ${channel}")
+    if (channel.size() != 0 && channel[0].logged) {
+      results = c {
+        eq("channel", params.channel)
+        and {
+          between("updated", params.logDay, params.nextLogDay)
+        }
+        order("updated", "asc")
       }
-      order("updated", "asc")
+    } else {
+      results = []
     }
     [logInstanceList: results]
   }
