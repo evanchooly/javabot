@@ -14,7 +14,7 @@ class ChannelController {
         eq("logged", true)
         order(name)
       }
-§
+
         [ channelInstanceList: results, channelInstanceTotal: results.size() ]
     }
 
