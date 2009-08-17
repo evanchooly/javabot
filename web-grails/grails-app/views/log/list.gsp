@@ -17,7 +17,7 @@
             <h3><g:link action="list" params="[date:prevDay, channel:params.channel]">${prevDay}</g:link></h3>
           </td>
           <td>
-            <h3><span id="channel">${params.channel} ${params.date}</span>
+            <h3><span id="channel">${params.channel} ${params.date} (${logInstanceCount} entries)</span>
             </h3>
           </td>
           <td align="right">

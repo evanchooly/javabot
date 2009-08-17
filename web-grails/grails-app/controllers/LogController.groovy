@@ -20,7 +20,7 @@ class LogController {
     } else {
       results = []
     }
-    [logInstanceList: results]
+    [logInstanceList: results, logInstanceCount: results.size()]
   }
 
   def index  = { redirect(action: list, params: params) }
