@@ -4,6 +4,9 @@ class Factoid {
 
   static mapping = {
     table 'factoids'
+    columns {
+      userName column: 'username'
+    }
   }
 
   Long id;

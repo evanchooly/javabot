@@ -10,26 +10,23 @@ hibernate {
   cache.use_query_cache = true
   cache.provider_class = 'com.opensymphony.oscache.hibernate.OSCacheProvider'
 }
+
 // environment specific settings
 environments {
   development {
     dataSource {
-      dbCreate = "update" // one of 'create', 'create-drop','update'
       url = "jdbc:postgresql:javabot"
-//      logSql = true
+      logSql = true
     }
   }
   test {
     dataSource {
-      dbCreate = "update"
       url = "jdbc:postgresql:javabot"
     }
   }
   production {
     dataSource {
-      dbCreate = "update"
       url = "jdbc:postgresql:javabot"
-//      logSql = true
     }
   }
 }

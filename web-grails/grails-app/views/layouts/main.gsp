@@ -29,7 +29,7 @@
               </g:each>
             </ul>
           </div>
-        <!--</span>-->
+        </span>
       </div>
 
       <div id="right_side">
@@ -39,7 +39,8 @@
           <div id="boxWrapper">
             <ul class="plain">
               <li><g:link url="/">Home Page</g:link></li>
-              <li><a id="factoid_link">Factoids</a>: ${Factoid.count()}</li>
+              <li><g:link class="create" controller="factoid" action="list">Factoids</g:link>: ${Factoid.count()}</li>
+
               <li><a id="activity_link"><span id="stats">[stats]</span></a></li>
               <li><a id="karma_link"><span id="karma">[karma]</span></a></li>
               <li><a id="changes_link"><span id="changes">[changes]</span></a></li>
