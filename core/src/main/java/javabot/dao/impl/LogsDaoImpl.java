@@ -28,7 +28,7 @@ public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
     @SuppressWarnings({"unchecked"})
     public List<Logs> dailyLog(final String channel, final Date date) {
         final Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
+        cal.setTime(date == null ? new Date() : date);
         cal.set(Calendar.HOUR, 0);
         cal.clear(Calendar.MINUTE);
         cal.clear(Calendar.SECOND);
