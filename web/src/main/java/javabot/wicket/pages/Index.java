@@ -20,7 +20,7 @@ public class Index extends JavabotPage {
     public Index(final PageParameters parameters) {
         super(parameters);
         
-        add(new StyleSheetReference("stylesheet", getClass(), "css/style.css"));
+//        add(new StyleSheetReference("stylesheet", getClass(), "css/style.css"));
 
         String year = parameters.getString("0");
         String month = parameters.getString("1");
