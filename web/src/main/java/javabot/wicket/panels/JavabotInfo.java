@@ -25,6 +25,7 @@ public class JavabotInfo extends Panel {
 
         Link stats = new BookmarkablePageLink("activity_link", Activity.class);
         stats.add(new Label("stats", "Statistics"));
+        stats.setVisible(false);
         add(stats);
 
         Link karma = new BookmarkablePageLink("karma_link", Karma.class);
