@@ -35,7 +35,7 @@ grails.enable.native2ascii = true
 // set per-environment serverURL stem for creating absolute links
 environments {
   production {
-    grails.serverURL = "http://www.antwerkz.com/javabot/javabot-grails"
+    grails.serverURL = "http://www.antwerkz.com/javabot-grails"
   }
 }
 
