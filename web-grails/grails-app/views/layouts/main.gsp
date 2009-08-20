@@ -42,8 +42,8 @@
               <li><g:link class="create" controller="factoid" action="list">Factoids</g:link>: ${Factoid.count()}</li>
 
               <li><a id="activity_link"><span id="stats">[stats]</span></a></li>
-              <li><a id="karma_link"><span id="karma">[karma]</span></a></li>
-              <li><a id="changes_link"><span id="changes">[changes]</span></a></li>
+              <li><g:link class="create" controller="karma" action="list">Karma</g:link></li>
+              <li><g:link class="create" controller="change" action="list">Changes</g:link></li>
             </ul>
           </div>
         </span>
