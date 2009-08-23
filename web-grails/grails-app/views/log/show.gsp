@@ -13,7 +13,6 @@
             <span class="menuButton"><g:link class="create" action="create">New Log</g:link></span>
         </div>
         <div class="body">
-            <h1>Show Log</h1>
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>

@@ -13,7 +13,7 @@
     <div id="page_wrapper">
       <div id="header_wrapper">
         <div id="header">
-          <h1>Javabot</h1>
+          <h1>Javabot: <g:layoutTitle default="Home"/></h1>
         </div>
 
       </div>
@@ -40,8 +40,7 @@
             <ul class="plain">
               <li><g:link url="/">Home Page</g:link></li>
               <li><g:link class="create" controller="factoid" action="list">Factoids</g:link>: ${Factoid.count()}</li>
-
-              <li><a id="activity_link"><span id="stats">[stats]</span></a></li>
+              <li><g:link class="create" controller="statistics" action="list">Stats</g:link></li>
               <li><g:link class="create" controller="karma" action="list">Karma</g:link></li>
               <li><g:link class="create" controller="change" action="list">Changes</g:link></li>
             </ul>
@@ -52,12 +51,14 @@
           <h3>Credits</h3>
           <ul>
             <li>cheeser</li>
+            <li>ernimril</li>
+            <li>Fanook</li>
             <li>joed</li>
             <li>kinabalu</li>
             <li>lunk</li>
             <li>ojacobson</li>
+            <li>ricky_clarkson</li>
             <li>r0bby</li>
-            <li>ernimril</li>
           </ul>
         </span>
       </div>

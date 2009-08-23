@@ -9,7 +9,7 @@
         <version>3.0.4</version>
     </parent>
     <groupId>javabot</groupId>
-    <artifactId>web-grails</artifactId>
+    <artifactId>javabot-grails</artifactId>
     <version>3.0.4</version>
     <packaging>war</packaging>
     <build>

@@ -6,7 +6,6 @@
   </head>
   <body>
     <div class="body">
-      <h1>Factoids</h1>
       <g:if test="${flash.message}">
         <div class="message">${flash.message}</div>
       </g:if>

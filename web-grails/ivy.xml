@@ -1,5 +1,5 @@
 <ivy-module version="2.0">
-    <info organisation="org.example" module="web-grails"/>
+    <info organisation="org.example" module="javabot-grails"/>
     <configurations defaultconfmapping="build->default;compile->compile(*),master(*);test,runtime->runtime(*),master(*)">
         <conf name="build"/>
         <conf name="compile"/>
