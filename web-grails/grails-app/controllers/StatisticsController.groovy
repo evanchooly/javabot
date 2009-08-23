@@ -8,22 +8,11 @@ class StatisticsController {
   def dataSource;
 
   def list = {Statistics stats ->
-    println("\n\n\n\n\n\n\n\n")
     def sql = new Sql(dataSource)
     def channels = sql.rows("select name from channel where logged is true").collect { it.name }
     if (!stats.table) {
       stats.table = channels.size > 0 ? channels[0].toString() : null
     }
-    println(stats.table)
-/*
-    println("\n\n\n\n\n\n\n\nchannels = ${channels}")
-    def clause = channels.inject("", {str, item -> str + (str.length() != 0 ? ", " : "") + "'${item}'"})
-    println("clause = ${clause}")
-    def query = "select count(*) from logs where channel in (${clause})"
-    println ("query = ${query}")
-    def count = sql.rows(query).count
-    println("count = ${count}")
-*/
     def start = null
     def end = null
     if (stats.table) {

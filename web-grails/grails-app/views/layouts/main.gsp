@@ -40,7 +40,7 @@
             <ul class="plain">
               <li><g:link url="/">Home Page</g:link></li>
               <li><g:link class="create" controller="factoid" action="list">Factoids</g:link>: ${Factoid.count()}</li>
-              <li><g:link class="create" controller="statistics" action="list">Stats</g:link></li>
+              %{--<li><g:link class="create" controller="statistics" action="list">Stats</g:link></li>--}%
               <li><g:link class="create" controller="karma" action="list">Karma</g:link></li>
               <li><g:link class="create" controller="change" action="list">Changes</g:link></li>
             </ul>
