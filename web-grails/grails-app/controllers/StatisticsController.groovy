@@ -3,6 +3,8 @@ import groovy.sql.Sql
 import java.math.RoundingMode
 
 class StatisticsController {
+  static transactional = false
+  
   def index = { redirect(action: list, params: params) }
 
   def dataSource;

@@ -1,4 +1,6 @@
 class KarmaController {
+  static transactional = false
+
   def list = {
     params.max = Math.min(params.max ? params.max.toInteger() : 100, 100)
     params.offset = params.offset ? params.offset.toInteger() : 0

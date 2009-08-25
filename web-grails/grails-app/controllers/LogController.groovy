@@ -1,4 +1,6 @@
 class LogController {
+  static transactional = false
+
   def list = {
     if (params.date == null) {
       params.date = new Date().format("yyyy-MM-dd")
@@ -23,11 +25,11 @@ class LogController {
     [logInstanceList: results, logInstanceCount: results.size()]
   }
 
-  def index  = { redirect(action: list, params: params) }
-  def show   = { redirect(action: list, params: params) }
+  def index = { redirect(action: list, params: params) }
+  def show = { redirect(action: list, params: params) }
   def delete = { redirect(action: list, params: params) }
-  def edit   = { redirect(action: list, params: params) }
+  def edit = { redirect(action: list, params: params) }
   def update = { redirect(action: list, params: params) }
   def create = { redirect(action: list, params: params) }
-  def save   = { redirect(action: list, params: params) }
+  def save = { redirect(action: list, params: params) }
 }
