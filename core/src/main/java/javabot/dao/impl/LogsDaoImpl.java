@@ -28,7 +28,9 @@ public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
     @SuppressWarnings({"unchecked"})
     public List<Logs> dailyLog(final String channel, final Date date) {
         final Calendar cal = Calendar.getInstance();
-        cal.setTime(date == null ? new Date() : date);
+        if (date != null) {
+            cal.setTime(date);
+        }
         cal.set(Calendar.HOUR, 0);
         cal.clear(Calendar.MINUTE);
         cal.clear(Calendar.SECOND);
@@ -62,11 +64,13 @@ public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
             cal.clear(Calendar.SECOND);
             cal.clear(Calendar.HOUR);
             cal.add(Calendar.MONTH, length * -1);
-            log.debug("pruning history older than " + new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").format(cal.getTime()));
+            log.debug(
+                "pruning history older than " + new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").format(cal.getTime()));
             getEntityManager().createQuery("delete from Logs l where l.updated < :date")
                 .setParameter("date", cal.getTime())
                 .executeUpdate();
-            log.debug("done pruning history older than " + new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").format(cal.getTime()));
+            log.debug(
+                "done pruning history older than " + new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").format(cal.getTime()));
         }
     }
 

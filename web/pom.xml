@@ -12,7 +12,7 @@
     <artifactId>web</artifactId>
     <packaging>war</packaging>
 
-    <name>javabot web frontend</name>
+    <name>javabot wicket frontend</name>
 
     <dependencies>
         <dependency>
