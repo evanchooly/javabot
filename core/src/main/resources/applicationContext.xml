@@ -100,7 +100,7 @@
             </bean>
         </property>
         <!-- run every morning at 1 AM -->
-        <property name="cronExpression" value="* * * * * ?"/>
+        <property name="cronExpression" value="0 0 1 * * ?"/>
     </bean>
 
     <bean id="logTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
