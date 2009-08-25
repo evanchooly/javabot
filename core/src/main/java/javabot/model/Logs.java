@@ -22,7 +22,6 @@ import javabot.dao.LogsDao;
 @NamedQueries({
     @NamedQuery(name= LogsDao.TODAY, query = "select s from Logs s WHERE s.channel=:channel AND (s.updated between :today and"
         + " :tomorrow) order by s.updated"),
-    @NamedQuery(name=LogsDao.LOGGED_CHANNELS, query="select distinct s.channel from Logs s where s.channel like '#%'"),
     @NamedQuery(name=LogsDao.COUNT_LOGGED, query="select count(s) from Logs s where s.channel like '#%'"),
     @NamedQuery(name = LogsDao.SEEN, query = "select new javabot.Seen(l.nick, l.message, l.channel, l.updated) from Logs l where"
         + " l.nick = :nick AND l.channel = :channel order by l.updated desc")

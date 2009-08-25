@@ -9,6 +9,7 @@ import javax.persistence.PersistenceException;
 import javabot.Activity;
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ChannelDao;
+import javabot.dao.LogsDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
 import org.slf4j.Logger;
@@ -89,6 +90,11 @@ public class ChannelDaoImpl extends AbstractDaoImpl<Channel> implements ChannelD
     public List<Activity> getStatistics() {
         return (List<Activity>) getEntityManager().createNamedQuery(ChannelDao.STATISTICS)
             .getResultList();
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public List<String> loggedChannels() {
+        return getEntityManager().createNamedQuery(ChannelDao.LOGGED_CHANNELS).getResultList();
     }
 
     @Override

@@ -12,6 +12,7 @@ public interface ChannelDao extends BaseDao<Channel> {
     String ALL = "Channel.all";
     String CONFIGURED_CHANNELS = "Channel.configure";
     String STATISTICS = "Channel.stats";
+    String LOGGED_CHANNELS = "Channel.loggedChannels";
 
     List<Channel> getChannels();
 
@@ -28,4 +29,6 @@ public interface ChannelDao extends BaseDao<Channel> {
     boolean isLogged(String channel);
 
     List<Activity> getStatistics();
+
+    List<String> loggedChannels();
 }

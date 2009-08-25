@@ -8,13 +8,10 @@ import javabot.Seen;
 
 public interface LogsDao extends BaseDao<Logs> {
     String TODAY = "Logs.today";
-    String LOGGED_CHANNELS = "Logs.loggedChannels";
     String COUNT_LOGGED = "Logs.countLogged";
     String SEEN = "Logs.seen";
 
     void logMessage(Logs.Type type, String nick, String channel, String message);
-
-    List<String> loggedChannels();
 
     List<Logs> dailyLog(String channel, Date date);
 

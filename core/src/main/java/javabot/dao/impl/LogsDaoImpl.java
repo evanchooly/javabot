@@ -93,10 +93,4 @@ public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
         }
         return seen;
     }
-
-    @SuppressWarnings({"unchecked"})
-    public List<String> loggedChannels() {
-        return getEntityManager().createNamedQuery(LogsDao.LOGGED_CHANNELS).getResultList();
-    }
-
 }

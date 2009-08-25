@@ -2,7 +2,6 @@ package javabot.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -10,7 +9,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import javabot.Activity;
 import javabot.Javabot;
 import javabot.dao.ChannelDao;
 import org.slf4j.Logger;
@@ -20,6 +18,7 @@ import org.slf4j.LoggerFactory;
 @Table(name = "channel")
 @NamedQueries({
     @NamedQuery(name = ChannelDao.ALL, query = "select c from Channel c order by c.name"),
+    @NamedQuery(name = ChannelDao.LOGGED_CHANNELS, query = "select c.name from Channel c where c.logged is true order by c.name"),
     @NamedQuery(name = ChannelDao.BY_NAME, query = "select c from Channel c where lower(c.name) = :channel"),
     @NamedQuery(name = ChannelDao.CONFIGURED_CHANNELS, query = "select distinct s.name from Channel s"),
     @NamedQuery(name = ChannelDao.STATISTICS, query = "select new javabot.Activity(l.channel, count(l), max(l.updated),"

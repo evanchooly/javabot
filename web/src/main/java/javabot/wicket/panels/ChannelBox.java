@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javabot.dao.LogsDao;
+import javabot.dao.ChannelDao;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -23,18 +23,17 @@ import javabot.wicket.pages.Index;
 public class ChannelBox extends Panel {
 
     @SpringBean
-    private LogsDao l_dao;
+    private ChannelDao dao;
 
     public ChannelBox(String id) {
         super(id);
 
-        List<String> channels = l_dao.loggedChannels();
+        List<String> channels = dao.loggedChannels();
 
         RepeatingView repeating = new RepeatingView("logged_channels");
         add(repeating);
 
-        if (channels.size() > 0) {
-
+        if (!channels.isEmpty()) {
             for (String channel : channels) {
                 WebMarkupContainer item = new WebMarkupContainer(repeating.newChildId());
                 repeating.add(item);
@@ -43,7 +42,6 @@ public class ChannelBox extends Panel {
                 item.add(link);
 
             }
-
         } else {
             WebMarkupContainer item = new WebMarkupContainer(repeating.newChildId());
             repeating.add(item);
