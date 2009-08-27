@@ -3,6 +3,7 @@ package javabot.dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import javabot.model.Factoid;
 
 public class FactoidDaoTest extends BaseServiceTest {
     @Autowired
@@ -26,4 +27,13 @@ public class FactoidDaoTest extends BaseServiceTest {
         Assert.assertNotSame(count, count2, "Not the same");
         factoidDao.delete("cheeser", key);
     }
+
+    @Test
+    public void testLastUsed() {
+        final Factoid factoid = factoidDao.addFactoid("cheeser", "testing last used", "'sup?");
+        Assert.assertNotNull(factoid.getLastUsed(), "Should have recorded a date");
+        final Factoid factoid1 = factoidDao.getFactoid("testing last used");
+        Assert.assertNotSame(factoid.getLastUsed(), factoid1.getLastUsed(), "Should have a new lastUsed value");
+    }
+
 }

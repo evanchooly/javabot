@@ -13,7 +13,7 @@ public interface FactoidDao extends BaseDao<Factoid> {
 
     boolean hasFactoid(String key);
 
-    void addFactoid(String sender, String key, String value);
+    Factoid addFactoid(String sender, String key, String value);
 
     void delete(String sender, String key);
 

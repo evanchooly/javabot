@@ -28,14 +28,14 @@ public class JavadocOperationTest extends BaseOperationTest {
 
     public void methods() {
         testMessage("javadoc String.split(String)",
-            getTestBot().getNick() + ": http://is.gd/eOPq [JDK: java.lang.String.split(String)]");
+            getTestBot().getNick() + ": http://is.gd/2ABgG [JDK: java.lang.String.split(String)]");
         testMessage("javadoc String.split(java.lang.String)",
             getTestBot().getNick() + ": http://is.gd/eOPq [JDK: java.lang.String.split(String)]");
         final TestBot bot = getTestBot();
         bot.sendMessage(getJavabotChannel(), String.format("%s %s", getJavabot().getNick(), "javadoc String.split(*)"));
         waitForResponses(bot, 1);
         final List<String> responses = Arrays.asList(
-            "http://is.gd/eOPq [JDK: java.lang.String.split(String)]",
+            "http://is.gd/2ABgG [JDK: java.lang.String.split(String)]",
             "http://is.gd/eOPr [JDK: java.lang.String.split(String,int)]");
         final String response = bot.getOldestResponse().getMessage();
         Assert.assertTrue(response.contains(responses.get(0)));
@@ -51,7 +51,7 @@ public class JavadocOperationTest extends BaseOperationTest {
             String.format("%s %s", getJavabot().getNick(), "javadoc Map.Entry"));
         waitForResponses(bot, 1);
         final String response = bot.getOldestResponse().getMessage();
-        Assert.assertEquals(response, getTestBot().getNick() + ": http://is.gd/jLP8 [JDK: java.util.Map.Entry]");
+        Assert.assertEquals(response, getTestBot().getNick() + ": http://is.gd/2ABgy [JDK: java.util.Map.Entry]");
 
     }
     

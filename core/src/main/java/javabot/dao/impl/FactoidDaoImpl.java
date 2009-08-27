@@ -44,7 +44,7 @@ public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidD
     }
 
     public void save(final Factoid factoid) {
-        factoid.setUpdated(new Date());
+        factoid.setLastUsed(new Date());
         getEntityManager().flush();
         super.save(factoid);
         changeDao.logChange(factoid.getUserName() + " changed '" + factoid.getName()
@@ -56,16 +56,18 @@ public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidD
     }
 
     @Transactional
-    public void addFactoid(final String sender, final String key, final String value) {
+    public Factoid addFactoid(final String sender, final String key, final String value) {
         final Factoid factoid = new Factoid();
         factoid.setId(factoid.getId());
         factoid.setName(key);
         factoid.setValue(value);
         factoid.setUserName(sender);
         factoid.setUpdated(new Date());
+        factoid.setLastUsed(new Date());
         save(factoid);
         changeDao.logAdd(sender, key, value);
 
+        return factoid;
     }
 
     public void delete(final String sender, final String key) {
@@ -83,12 +85,17 @@ public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidD
         final List<Factoid> list = getEntityManager().createNamedQuery(FactoidDao.BY_NAME)
             .setParameter("name", name)
             .getResultList();
-        return list.isEmpty() ? null : list.get(0);
+        Factoid factoid = null;
+        if(! list.isEmpty()) {
+            factoid = list.get(0);
+            factoid.setLastUsed(new Date());
+            save(factoid);
+        }
+        return factoid;
     }
 
     public Long count() {
         return (Long) getEntityManager().createNamedQuery(FactoidDao.COUNT).getSingleResult();
-
     }
 
     public Long factoidCountFiltered(final Factoid filter) {
