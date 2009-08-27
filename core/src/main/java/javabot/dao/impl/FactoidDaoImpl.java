@@ -14,8 +14,12 @@ import javabot.model.Config;
 import javabot.model.Factoid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidDao {
+    private static final Logger log = LoggerFactory.getLogger(FactoidDaoImpl.class);
+    
     @Autowired
     private ChangeDao changeDao;
     @Autowired
@@ -143,6 +147,7 @@ public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidD
     }
 
     public void pruneFactoids() {
+        log.debug("FactoidDaoImpl.pruneFactoids");
         final Calendar cal = Calendar.getInstance();
         final Config config = dao.get();
         final Integer length = config.getHistoryLength();
