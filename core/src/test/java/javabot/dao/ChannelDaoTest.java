@@ -2,8 +2,8 @@ package javabot.dao;
 
 import java.util.List;
 
-import javabot.model.Channel;
 import javabot.Activity;
+import javabot.model.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -11,6 +11,12 @@ import org.testng.annotations.Test;
 public class ChannelDaoTest extends BaseServiceTest {
     @Autowired
     private ChannelDao channelDao;
+
+    @Test
+    public void findChannels() {
+        final List channels = channelDao.loggedChannels();
+        Assert.assertTrue(channels.contains(getJavabotChannel()));
+    }
 
     @Test
     public void addChannel() {

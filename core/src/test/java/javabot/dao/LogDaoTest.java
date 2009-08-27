@@ -19,13 +19,6 @@ public class LogDaoTest extends BaseServiceTest {
     @Autowired
     private ConfigDao dao;
 
-    public void findChannels() {
-        final String nick = getTestBot().getNick();
-        logsDao.logMessage(Logs.Type.MESSAGE, nick, getJavabotChannel(), "test");
-        final List channels = logsDao.loggedChannels();
-        Assert.assertTrue(channels.contains(getJavabotChannel()));
-    }
-
     public void getDailyLog() {
         final List<Logs> logdata = logsDao.dailyLog(getJavabotChannel(), new Date());
         Assert.assertFalse(logdata.isEmpty(), "Should have log data");
