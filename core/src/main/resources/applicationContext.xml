@@ -99,7 +99,7 @@
                 <property name="concurrent" value="false"/>
             </bean>
         </property>
-        <property name="cronExpression" value="0 0 1 * * ?"/>
+        <property name="cronExpression" value="0 0 2 * * ?"/>
     </bean>
     <bean id="logTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail">
