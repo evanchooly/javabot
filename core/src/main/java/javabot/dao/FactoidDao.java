@@ -4,6 +4,7 @@ import java.util.List;
 
 import javabot.dao.util.QueryParam;
 import javabot.model.Factoid;
+import org.springframework.transaction.annotation.Transactional;
 
 @SuppressWarnings({"ConstantNamingConvention"})
 public interface FactoidDao extends BaseDao<Factoid> {
@@ -31,5 +32,6 @@ public interface FactoidDao extends BaseDao<Factoid> {
 
     Long factoidCountFiltered(Factoid filter);
 
+    @Transactional
     void pruneFactoids();
 }

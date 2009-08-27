@@ -5,6 +5,7 @@ import java.util.List;
 
 import javabot.model.Logs;
 import javabot.Seen;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface LogsDao extends BaseDao<Logs> {
     String TODAY = "Logs.today";
@@ -19,5 +20,6 @@ public interface LogsDao extends BaseDao<Logs> {
 
     boolean isSeen(String nick, String channel);
 
+    @Transactional
     void pruneHistory();
 }
