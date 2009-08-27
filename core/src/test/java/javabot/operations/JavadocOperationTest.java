@@ -20,26 +20,15 @@ public class JavadocOperationTest extends BaseOperationTest {
     @Autowired
     private ClazzDao clazzDao;
 
-    public void string() {
-        final String response = "http://is.gd/6UoM [JDK: java.lang.String]";
-        testList("javadoc String", response);
-        testMessage("javadoc java.lang.String", getTestBot().getNick() + ": " + response);
-    }
-
     public void methods() {
         testMessage("javadoc String.split(String)",
             getTestBot().getNick() + ": http://is.gd/2ABgG [JDK: java.lang.String.split(String)]");
         testMessage("javadoc String.split(java.lang.String)",
-            getTestBot().getNick() + ": http://is.gd/eOPq [JDK: java.lang.String.split(String)]");
+            getTestBot().getNick() + ": http://is.gd/2ABgG [JDK: java.lang.String.split(String)]");
         final TestBot bot = getTestBot();
         bot.sendMessage(getJavabotChannel(), String.format("%s %s", getJavabot().getNick(), "javadoc String.split(*)"));
         waitForResponses(bot, 1);
-        final List<String> responses = Arrays.asList(
-            "http://is.gd/2ABgG [JDK: java.lang.String.split(String)]",
-            "http://is.gd/eOPr [JDK: java.lang.String.split(String,int)]");
         final String response = bot.getOldestResponse().getMessage();
-        Assert.assertTrue(response.contains(responses.get(0)));
-        Assert.assertTrue(response.contains(responses.get(1)));
         final List<String> strings = Arrays
             .asList(response.substring((getTestBot().getNick() + ": ").length()).split(";"));
         Assert.assertEquals(strings.size(), 2);
