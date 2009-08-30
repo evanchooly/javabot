@@ -113,7 +113,6 @@
         <property name="cronExpression" value="0 0 1 * * ?"/>
     </bean>
 
-<!--
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
@@ -122,5 +121,4 @@
             </list>
         </property>
     </bean>
--->
 </beans>
