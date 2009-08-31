@@ -15,7 +15,6 @@ public class AddFactoidOperation extends BotOperation {
     private FactoidDao factoidDao;
     @Autowired
     private ChangeDao changeDao;
-    private static final String NO = "no, ";
 
     public AddFactoidOperation(final Javabot bot) {
         super(bot);
@@ -23,19 +22,25 @@ public class AddFactoidOperation extends BotOperation {
 
     @Override
     public boolean handleMessage(final BotEvent event) {
-        final String message = event.getMessage();
+        String message = event.getMessage();
         final String channel = event.getChannel();
         final String sender = event.getSender();
-        return addFactoid(event, replaceFactoid(event, event.getMessage()), channel, sender);
-
+        if(message.startsWith("no")) {
+            message = removeFactoid(event, event.getMessage());
+        }
+        return addFactoid(event, message, channel, sender);
     }
 
-    private String replaceFactoid(final BotEvent event, final String message) {
+    private String removeFactoid(final BotEvent event, final String message) {
         if (log.isDebugEnabled()) {
             log.debug("AddFactoidOperation: " + message);
         }
-        if (message.toLowerCase().startsWith(NO)) {
-            final String actual = message.substring(NO.length()).replaceAll("^\\s+", "");
+        if (message.toLowerCase().startsWith("no")) {
+            String actual = message.substring(2);
+            if(actual.startsWith(",")) {
+                actual = actual.substring(1);
+            }
+            actual = actual.trim();
             if (log.isDebugEnabled()) {
                 log.debug("AddFactoidOperation: " + message);
             }

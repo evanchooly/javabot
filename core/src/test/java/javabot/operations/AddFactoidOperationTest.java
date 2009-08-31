@@ -43,6 +43,10 @@ public class AddFactoidOperationTest extends BaseOperationTest {
         waitForResponses(bot, 1);
         Assert.assertEquals(bot.getOldestResponse().getMessage(), "OK, " + bot.getNick() + ".");
         testMessage("replace", "second entry");
+        forgetFactoid("replace");
+        bot.sendMessage(getJavabotChannel(), getJavabot().getNick() + " no, replace is <reply>second entry");
+        waitForResponses(bot, 1);
+        Assert.assertEquals(bot.getOldestResponse().getMessage(), "OK, " + bot.getNick() + ".");
     }
 
     @Test(dependsOnMethods = {"factoidAdd"})
