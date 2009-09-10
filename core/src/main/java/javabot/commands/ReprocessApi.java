@@ -39,7 +39,7 @@ public class ReprocessApi extends BaseCommand {
             parser.parse(api, new StringWriter() {
                 @Override
                 public void write(final String line) {
-                    bot.postMessage(new Message(event.getChannel(), event, line));
+                    bot.postMessage(new Message(event.getSender(), event, line));
                 }
             });
             bot.postMessage(new Message(destination, event, "done reprocessing javadoc for " + name));

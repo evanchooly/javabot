@@ -23,8 +23,6 @@ public class AddApi extends BaseCommand {
     String name;
     @Param
     String url;
-    @Param
-    String version;
     @Param(required = false)
     String packages;
 
@@ -39,7 +37,7 @@ public class AddApi extends BaseCommand {
         parser.parse(api, new StringWriter() {
             @Override
             public void write(final String line) {
-                bot.postMessage(new Message(event.getChannel(), event, line));
+                bot.postMessage(new Message(event.getSender(), event, line));
             }
         });
         bot.postMessage(new Message(destination, event, "done adding javadoc for " + name));
