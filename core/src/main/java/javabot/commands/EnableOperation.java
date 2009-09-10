@@ -14,21 +14,17 @@ import javabot.BotEvent;
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
 public class EnableOperation extends OperationsCommand {
+    @Param
+    String name;
+
     @Override
-    public void execute(final Javabot bot, final BotEvent event, final List<String> args) {
-        if (args.isEmpty()) {
-            bot.postMessage(new Message(event.getChannel(), event, "usage: enableOperation <name>"));
-            bot.postMessage(new Message(event.getChannel(), event,
-                "usage: use admin listOperations to see list of options"));
+    public void execute(final Javabot bot, final BotEvent event) {
+        if (bot.addOperation(name)) {
+            bot.postMessage(new Message(event.getChannel(), event, name + " successfully enabled."));
+            listCurrent(bot, event);
         } else {
-            final String name = args.get(0);
-            if(bot.addOperation(name)) {
-                bot.postMessage(new Message(event.getChannel(), event, name + " successfully enabled."));
-                listCurrent(bot, event);
-            } else {
-                bot.postMessage(new Message(event.getChannel(), event, name + " not enabled.  Either it is already running"
-                    + " or it's not a valid name.  see listOperations for details."));
-            }
+            bot.postMessage(new Message(event.getChannel(), event, name + " not enabled.  Either it is already running"
+                + " or it's not a valid name.  see listOperations for details."));
         }
     }
 }

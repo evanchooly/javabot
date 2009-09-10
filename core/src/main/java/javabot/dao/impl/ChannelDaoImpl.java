@@ -9,9 +9,9 @@ import javax.persistence.PersistenceException;
 import javabot.Activity;
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ChannelDao;
-import javabot.dao.LogsDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +102,7 @@ public class ChannelDaoImpl extends AbstractDaoImpl<Channel> implements ChannelD
         final Channel channel = new Channel();
         channel.setName(name);
         channel.setLogged(logged == null ? Boolean.TRUE : logged);
-        channel.setKey(key);
+        channel.setKey(!StringUtils.isEmpty(key) ? key : null);
         save(channel);
         return channel;
     }

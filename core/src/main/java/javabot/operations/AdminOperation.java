@@ -24,11 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.MissingOptionException;
 
 /**
@@ -99,37 +94,23 @@ public class AdminOperation extends BotOperation {
             final Command command = getCommand(args);
             args.remove(0);
             try {
-                if (command instanceof BaseCommand) {
-                    ((BaseCommand) command).parse(args);
-                    ((BaseCommand) command).execute(getBot(), event);
-                } else {
-                    command.execute(getBot(), event, args);
-                }
+                command.parse(args);
+                command.execute(getBot(), event);
             } catch (MissingOptionException moe) {
                 getBot().postMessage(new Message(channel, event, ((BaseCommand) command).getUsage()));
             }
         } catch (ClassNotFoundException e) {
             getBot().postMessage(new Message(channel, event, params[0] + " command not found"));
-            privMessageStackTrace(event, e);
+            privMessageStackTrace(e);
         } catch (Exception e) {
-            privMessageStackTrace(event, e);
+            privMessageStackTrace(e);
             getBot().postMessage(new Message(channel, event, "Could not execute command: " + params[0]
                 + ", " + e.getMessage()));
         }
     }
 
-    private void privMessageStackTrace(final BotEvent event, final Exception e) {
+    private void privMessageStackTrace(final Exception e) {
         log.debug(e.getMessage(), e);
-//        final StringWriter writer = new StringWriter();
-//        final PrintWriter w = new PrintWriter(writer);
-//        try {
-//            e.printStackTrace(w);
-//            for(final String line : writer.toString().split("\\n")) {
-//                getBot().postMessage(new Message(event.getSender(), event, line));
-//            }
-//        } finally {
-//            w.close();
-//        }
     }
 
     private boolean isAdmin(final BotEvent event) {

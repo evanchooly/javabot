@@ -1,13 +1,10 @@
 package javabot.commands;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
-import javabot.model.Channel;
 import javabot.dao.ChannelDao;
+import javabot.model.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -15,26 +12,23 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-public class DropChannel implements Command {
+public class DropChannel extends BaseCommand {
     @Autowired
     private ChannelDao dao;
+    @Param
+    String channel;
 
     @Override
-    public void execute(final Javabot bot, final BotEvent event, final List<String> args) {
-        if (args.isEmpty()) {
-            bot.postMessage(new Message(event.getChannel(), event, "usage: dropChannel <channel>"));
+    public void execute(final Javabot bot, final BotEvent event) {
+        final Channel chan = dao.get(this.channel);
+        if (chan != null) {
+            dao.delete(chan);
+            bot.postMessage(new Message(this.channel, event, "I was asked to leave this channel by "
+                + event.getSender()));
+            bot.partChannel(chan.getName());
         } else {
-            final String channelName = args.remove(0);
-            final Channel channel = dao.get(channelName);
-            if (channel != null) {
-                dao.delete(channel);
-                bot.postMessage(new Message(channelName, event, "I was asked to leave this channel by "
-                    + event.getSender()));
-                bot.partChannel(channel.getName());
-            } else {
-                bot.postMessage(new Message(event.getChannel(), event, "I'm not in " + channelName
-                    + ", " + event.getSender()));
-            }
+            bot.postMessage(new Message(event.getChannel(), event, "I'm not in " + this.channel
+                + ", " + event.getSender()));
         }
     }
 }

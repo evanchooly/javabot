@@ -1,7 +1,5 @@
 package javabot.commands;
 
-import java.util.List;
-
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -14,27 +12,26 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-public class AddAdmin implements Command {
+public class AddAdmin extends BaseCommand {
     @Autowired
     private AdminDao dao;
+    @Param
+    String userName;
+    @Param
+    String hostName;
 
     @Override
-    public void execute(final Javabot bot, final BotEvent event, final List<String> args) {
-        final String userName = args.get(0);
+    public void execute(final Javabot bot, final BotEvent event) {
         final User user = findUser(bot, event, userName);
         if (user == null) {
             bot.postMessage(new Message(event.getChannel(), event, "That user is not on this channel: " + userName));
         } else {
-            if (args.size() != 2) {
-                bot.postMessage(new Message(event.getChannel(), event, "Usage: addAdmin <user> <host>"));
+            if (dao.getAdmin(user.getNick(), hostName) != null) {
+                bot.postMessage(new Message(event.getChannel(), event, user.getNick() + " is already a bot admin"));
             } else {
-                final String hostName = args.get(1);
-                if (dao.getAdmin(user.getNick(), hostName) != null) {
-                    bot.postMessage(new Message(event.getChannel(), event, user.getNick() + " is already a bot admin"));
-                } else {
-                    dao.create(user.getNick(), hostName);
-                    bot.postMessage(new Message(event.getChannel(), event, user.getNick() + " has been added as a bot admin"));
-                }
+                dao.create(user.getNick(), hostName);
+                bot.postMessage(
+                    new Message(event.getChannel(), event, user.getNick() + " has been added as a bot admin"));
             }
         }
     }

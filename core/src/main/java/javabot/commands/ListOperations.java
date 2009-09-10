@@ -7,6 +7,7 @@ import javabot.Javabot;
 import javabot.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Created Jan 26, 2009
@@ -17,9 +18,9 @@ public class ListOperations extends OperationsCommand implements Command {
     private static final Logger log = LoggerFactory.getLogger(ListOperations.class);
 
     @Override
-    public void execute(final Javabot bot, final BotEvent event, final List<String> args) {
+    public void execute(final Javabot bot, final BotEvent event) {
         bot.postMessage(new Message(event.getChannel(), event, "I know of the following operations:"));
-        bot.postMessage(new Message(event.getChannel(), event, stringify(Javabot.OPERATIONS)));
+        bot.postMessage(new Message(event.getChannel(), event, StringUtils.join(Javabot.OPERATIONS, ", ")));
         listCurrent(bot, event);
         bot.postMessage(new Message(event.getChannel(), event, "use admin enableOperation or disableOperation to turn"
             + " operations on or off"));

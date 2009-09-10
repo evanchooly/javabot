@@ -13,6 +13,7 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.slf4j.Logger;
@@ -22,12 +23,6 @@ public abstract class BaseCommand implements Command {
     private static final Logger log = LoggerFactory.getLogger(BaseCommand.class);
     @Autowired
     ApplicationContext context;
-
-    @Override
-    public void execute(Javabot bot, BotEvent event, List<String> args) {
-        bot.postMessage(new Message(event.getChannel(), event,
-            "execute(Javabot bot, BotEvent event, List<String> args) not implemented for " + getCommandName()));
-    }
 
     public abstract void execute(Javabot bot, BotEvent event);
 
@@ -59,7 +54,14 @@ public abstract class BaseCommand implements Command {
             final Param annotation = field.getAnnotation(Param.class);
             if (annotation != null) {
                 final String name = "".equals(annotation.name()) ? field.getName() : annotation.name();
-                Option option = new Option(name, true, null);
+                final String value = !StringUtils.isEmpty(annotation.defaultValue()) ? annotation.defaultValue() : null;
+                Option option = new Option(name, true, null) {
+                    @Override
+                    public String getValue() {
+                        final String optValue = super.getValue();
+                        return optValue == null ? value : optValue;
+                    }
+                };
                 option.setRequired(annotation.required());
                 options.addOption(option);
             }
