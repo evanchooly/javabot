@@ -28,9 +28,6 @@ public class NickometerOperation extends BotOperation {
         final String message = event.getMessage();
         final String[] messageParts = message.split(" ");
         boolean handled = false;
-        if (log.isDebugEnabled()) {
-            log.debug("Nickometer :" + message);
-        }
         final List<String> words2 = new ArrayList<String>();
         for (final String word1 : messageParts) {
             if (!("".equals(word1) || " ".equals(word1))) {

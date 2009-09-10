@@ -2,9 +2,6 @@ package javadoc;
 
 import java.io.StringWriter;
 import java.net.MalformedURLException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import javabot.BaseTest;
 import javabot.dao.ApiDao;
@@ -22,9 +19,9 @@ import org.testng.annotations.Test;
  */
 @Test(groups = {"javadoc"})
 public class JavadocParserTest extends BaseTest {
-    public static final String API_NAME = "JDK";
-    public static final String API_URL_STRING = "http://java.sun.com/javase/6/docs/api";
-    public static final String PACKAGES = "java javax";
+    public static final String API_NAME = "Servlet";
+    public static final String API_URL_STRING = "http://java.sun.com/products/servlet/2.3/javadoc/";
+    public static final String PACKAGES = "";
     @Autowired
     private ApiDao dao;
     @Autowired
@@ -37,19 +34,19 @@ public class JavadocParserTest extends BaseTest {
     };
 
     public void jdk() throws MalformedURLException {
-        parse(JavadocParserTest.API_NAME, API_URL_STRING, Arrays.asList(PACKAGES.split(" ")));
+        parse(JavadocParserTest.API_NAME, API_URL_STRING);
     }
 
     @Test(dependsOnMethods = "jdk")
     public void jee() {
-        parse("JEE", "http://java.sun.com/javaee/5/docs/api/", Collections.<String>emptyList());
+        parse("JEE", "http://java.sun.com/javaee/5/docs/api/");
     }
 
     public void servlet() {
         final Api api = fetchApi("Servlet", "http://java.sun.com/products/servlet/2.3/javadoc/");
         final JavadocParser parser = new JavadocParser();
         inject(parser);
-        parser.parse(api, Collections.<String>emptyList(), writer);
+        parser.parse(api, writer);
     }
 
     @Test(dependsOnMethods = "servlet")
@@ -59,7 +56,7 @@ public class JavadocParserTest extends BaseTest {
 
     @Test(dependsOnMethods = "jdk")
     public void wicket() {
-        parse("Wicket", "http://wicket.apache.org/docs/wicket-1.3.2/wicket/apidocs/", Collections.<String>emptyList());
+        parse("Wicket", "http://wicket.apache.org/docs/wicket-1.3.2/wicket/apidocs/");
     }
 
     @Test(dependsOnMethods = "jdk")
@@ -71,12 +68,12 @@ public class JavadocParserTest extends BaseTest {
         clazz.populate(clazzDao);
     }
 
-    private void parse(final String apiName, final String url, final List<String> packages) {
+    private void parse(final String apiName, final String url) {
         if (dao.find(apiName) == null) {
             final Api api = fetchApi(apiName, url);
             final JavadocParser parser = new JavadocParser();
             inject(parser);
-            parser.parse(api, packages, writer);
+            parser.parse(api, writer);
         }
     }
 
@@ -85,7 +82,7 @@ public class JavadocParserTest extends BaseTest {
         if (api != null) {
             dao.delete(api);
         }
-        api = new Api(name, urlString);
+        api = new Api(name, urlString, null);
         dao.save(api);
         return api;
     }

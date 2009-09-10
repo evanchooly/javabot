@@ -6,11 +6,11 @@
     <parent>
         <artifactId>javabot</artifactId>
         <groupId>javabot</groupId>
-        <version>3.0.4</version>
+        <version>3.0.5</version>
     </parent>
     <groupId>javabot</groupId>
     <artifactId>javabot-grails</artifactId>
-    <version>3.0.4</version>
+    <version>3.0.5</version>
     <packaging>war</packaging>
     <build>
         <pluginManagement/>

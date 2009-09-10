@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -32,18 +34,19 @@ public class JavadocParser {
     @Autowired
     private ClazzDao dao;
     private final BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
-    private final BlockingQueue<Runnable> reworkQueue = new LinkedBlockingQueue<Runnable>();
     private final ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 30, 30000, TimeUnit.SECONDS, workQueue,
         new JavabotThreadFactory(false, "javadoc-thread-"));
 
     @Transactional
-    public void parse(final Api api, final List<String> packages, final Writer writer) {
+    public void parse(final Api api, final Writer writer) {
         try {
             executor.prestartAllCoreThreads();
             final Document document = Clazz.getDocument(String.format("%s/allclasses-frame.html", api.getBaseUrl()));
             for (final HTMLElement element : (List<HTMLElement>) new DOMXPath("//A[@target='classFrame']")
                 .evaluate(document)) {
                 try {
+                    final List<String> packages = api.getPackages() == null ? Collections.<String>emptyList()
+                        : Arrays.asList(api.getPackages());
                     final Clazz clazz = new Clazz(api, element, packages);
                     log.debug(String.format("Found class: %s", clazz));
                     dao.save(clazz);

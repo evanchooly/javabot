@@ -15,18 +15,29 @@ public class JavadocTest extends BaseOperationTest {
     @Autowired
     private ClazzDao clazzDao;
 
-    public void parseJDK() {
+    @Test
+    public void reprocessNonExistentApi() {
         final Api api = dao.find(JavadocParserTest.API_NAME);
-        if (api == null) {
-            final String message = "admin addApi " + JavadocParserTest.API_NAME + " "
-                + JavadocParserTest.API_URL_STRING + " java javax";
-            testMessage(message);
-            waitForResponse("done adding javadoc for " + JavadocParserTest.API_NAME);
-//        } else {
-//            testMessage("admin dropApi " + JavadocParserTest.API_NAME,
-//                "removing old " + JavadocParserTest.API_NAME + " javadoc");
-//            waitForResponse(
-//                "done removing old " + JavadocParserTest.API_NAME + " javadoc");
+        if (api != null) {
+            dao.delete(api);
         }
+        final String message = "admin reprocessApi --name=" + JavadocParserTest.API_NAME;
+        testMessage(message);
+        waitForResponse("I don't know anything about " + JavadocParserTest.API_NAME);
+    }
+
+    @Test(dependsOnMethods = "reprocessNonExistentApi")
+    public void processApi() {
+        final String message = "admin addApi --name=" + JavadocParserTest.API_NAME + " --url="
+            + JavadocParserTest.API_URL_STRING + " --version=2.3";
+        testMessage(message);
+        waitForResponse("done adding javadoc for " + JavadocParserTest.API_NAME);
+    }
+
+    @Test(dependsOnMethods = "processApi")
+    public void dropApi() {
+        final String message = "admin dropApi --name=" + JavadocParserTest.API_NAME;
+        testMessage(message);
+        waitForResponse("done removing javadoc for " + JavadocParserTest.API_NAME);
     }
 }

@@ -18,11 +18,18 @@ import javabot.commands.DropChannel;
 import javabot.commands.EnableOperation;
 import javabot.commands.ListChannels;
 import javabot.commands.ListOperations;
+import javabot.commands.BaseCommand;
 import javabot.dao.AdminDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.MissingOptionException;
 
 /**
  * Created Dec 17, 2008
@@ -60,14 +67,14 @@ public class AdminOperation extends BotOperation {
         boolean handled = false;
         if (message.startsWith(ADMIN_PREFIX)) {
             handled = true;
-            if(isAdmin(event)) {
+            if (isAdmin(event)) {
                 final String[] params = message.substring(ADMIN_PREFIX.length()).trim().split(" ");
                 final List<String> args = new ArrayList<String>(Arrays.asList(params));
                 if (!args.isEmpty()) {
-                    if("-list".equals(args.get(0))) {
+                    if ("-list".equals(args.get(0))) {
                         final StringBuilder builder = new StringBuilder();
                         for (final String command : COMMANDS) {
-                            if(builder.length() != 0) {
+                            if (builder.length() != 0) {
                                 builder.append(", ");
                             }
                             builder
@@ -91,7 +98,16 @@ public class AdminOperation extends BotOperation {
         try {
             final Command command = getCommand(args);
             args.remove(0);
-            command.execute(getBot(), event, args);
+            try {
+                if (command instanceof BaseCommand) {
+                    ((BaseCommand) command).parse(args);
+                    ((BaseCommand) command).execute(getBot(), event);
+                } else {
+                    command.execute(getBot(), event, args);
+                }
+            } catch (MissingOptionException moe) {
+                getBot().postMessage(new Message(channel, event, ((BaseCommand) command).getUsage()));
+            }
         } catch (ClassNotFoundException e) {
             getBot().postMessage(new Message(channel, event, params[0] + " command not found"));
             privMessageStackTrace(event, e);
