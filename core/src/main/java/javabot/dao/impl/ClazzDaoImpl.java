@@ -40,7 +40,7 @@ public class ClazzDaoImpl extends AbstractDaoImpl<Clazz> implements ClazzDao {
     @SuppressWarnings({"unchecked"})
     public Clazz[] getClass(final String name) {
         final Query query;
-        final String[] strings = Clazz.calculateNameAndPackage(name);
+        final String[] strings = calculateNameAndPackage(name);
         final String pkgName = strings[0];
         final String className = strings[1].toUpperCase();
         if (pkgName == null) {
@@ -87,5 +87,14 @@ public class ClazzDaoImpl extends AbstractDaoImpl<Clazz> implements ClazzDao {
                 .setParameter("params", signatureTypes.toUpperCase());
         }
         return query.getResultList();
+    }
+
+    private String[] calculateNameAndPackage(final String href) {
+        String clsName = href;
+        while (clsName.contains(".") && Character.isLowerCase(clsName.charAt(0))) {
+            clsName = clsName.substring(clsName.indexOf(".") + 1);
+        }
+        String pkgName = href.equals(clsName) ? null : href.substring(0, href.indexOf(clsName) - 1);
+        return new String[]{pkgName, clsName};
     }
 }

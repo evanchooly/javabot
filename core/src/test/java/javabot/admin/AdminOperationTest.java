@@ -30,7 +30,7 @@ public class AdminOperationTest extends BaseOperationTest {
     private ApiDao dao;
 
     public void commandList() {
-        doScan(Command.class, AdminOperation.COMMANDS, Arrays.asList("Command.java", "OperationsCommand.java"),
+        doScan(Command.class, AdminOperation.COMMANDS, Arrays.asList("Command.java", "BaseCommand.java", "OperationsCommand.java", "Param.java"),
             ".java");
     }
 /*

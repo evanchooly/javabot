@@ -56,7 +56,7 @@ public class KarmaDaoImpl extends AbstractDaoImpl<Karma> implements KarmaDao {
         Karma karma = null;
         try {
             karma = (Karma)getEntityManager().createNamedQuery(KarmaDao.BY_NAME)
-                .setParameter("name", name)
+                .setParameter("name", name.toLowerCase())
                 .getSingleResult();
         } catch(NoResultException e) {
         }

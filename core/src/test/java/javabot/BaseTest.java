@@ -2,6 +2,9 @@ package javabot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+import java.io.InputStream;
+import java.io.IOException;
 
 import javabot.dao.AdminDao;
 import org.jibble.pircbot.PircBot;
@@ -27,7 +30,8 @@ public class BaseTest {
         context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
         inject(this);
         createBot();
-        ok = "OK, " + getTestBot().getNick().substring(0, 16) + ".";
+        final String nick = getTestBot().getNick();
+        ok = "OK, " + nick.substring(0, Math.min(nick.length(), 16)) + ".";
     }
 
     protected final Javabot createBot() {
@@ -80,8 +84,15 @@ public class BaseTest {
         private final List<Response> responses = new ArrayList<Response>();
 
         public TestBot() {
-            final String s = "javabot" + System.currentTimeMillis();
-            setName(s.substring(0, 16));
+            final InputStream asStream = getClass().getResourceAsStream("/locations-override.properties");
+            Properties props = new Properties();
+            try {
+                props.load(asStream);
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+                throw new RuntimeException(e.getMessage());
+            }
+            setName(props.getProperty("javabot.nick"));
         }
 
         @Override

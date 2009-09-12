@@ -27,6 +27,7 @@ public abstract class JavadocElement implements Persistent {
     private static final String API_URL = "http://is.gd/api.php?longurl=";
     private String shortUrl;
     private String longUrl;
+    private String directUrl;
 
     @Transient
     public abstract String getApiName();
@@ -76,6 +77,15 @@ public abstract class JavadocElement implements Persistent {
 
     public void setLongUrl(final String longUrl) {
         this.longUrl = longUrl;
+    }
+
+    @Column(length = 1000)
+    public String getDirectUrl() {
+        return directUrl;
+    }
+
+    public void setDirectUrl(final String directUrl) {
+        this.directUrl = directUrl;
     }
 
     @Transient

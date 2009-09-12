@@ -31,15 +31,17 @@ public class Api implements Persistent {
     private String name;
     private String baseUrl;
     private String packages;
+    private String zipLocations;
     private List<Clazz> classes = new ArrayList<Clazz>();
 
     public Api() {
     }
 
-    public Api(final String apiName, final String url, String pkgs) {
+    public Api(final String apiName, final String url, String pkgs, String zip) {
         name = apiName;
         baseUrl = url.endsWith("/") ? url : url + "/";
         packages = pkgs;
+        zipLocations = zip;
     }
 
     @Id
@@ -84,5 +86,13 @@ public class Api implements Persistent {
 
     public void setPackages(final String packages) {
         this.packages = packages;
+    }
+
+    public String getZipLocations() {
+        return zipLocations;
+    }
+
+    public void setZipLocations(final String zipLocations) {
+        this.zipLocations = zipLocations;
     }
 }

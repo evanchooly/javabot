@@ -23,21 +23,23 @@ public class AddApi extends BaseCommand {
     String name;
     @Param
     String url;
-    @Param(required = false)
+    @Param
+    String zip;
+    @Param
     String packages;
 
     @Override
     @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
     public void execute(final Javabot bot, final BotEvent event) {
         final String destination = event.getChannel();
-        Api api = new Api(name, url, packages);
+        Api api = new Api(name, url, packages, zip);
         dao.save(api);
         final JavadocParser parser = new JavadocParser();
         context.getAutowireCapableBeanFactory().autowireBean(parser);
         parser.parse(api, new StringWriter() {
             @Override
             public void write(final String line) {
-                bot.postMessage(new Message(event.getSender(), event, line));
+                bot.postMessage(new Message(event.getChannel(), event, line));
             }
         });
         bot.postMessage(new Message(destination, event, "done adding javadoc for " + name));

@@ -22,7 +22,7 @@ public class ChannelDaoTest extends BaseServiceTest {
     public void addChannel() {
         final String testing = getTestBot().getNick();
         final Channel channel = new Channel();
-        final String name = "##" + testing;
+        final String name = "##" + System.currentTimeMillis();
         channel.setName(name);
         channel.setLogged(true);
         channelDao.save(channel);

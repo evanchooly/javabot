@@ -16,9 +16,11 @@ import javabot.commands.DisableOperation;
 import javabot.commands.DropApi;
 import javabot.commands.DropChannel;
 import javabot.commands.EnableOperation;
+import javabot.commands.InfoApi;
 import javabot.commands.ListChannels;
 import javabot.commands.ListOperations;
 import javabot.commands.BaseCommand;
+import javabot.commands.ReprocessApi;
 import javabot.dao.AdminDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,9 +44,11 @@ public class AdminOperation extends BotOperation {
         DropApi.class.getSimpleName(),
         DropChannel.class.getSimpleName(),
         EnableOperation.class.getSimpleName(),
+        InfoApi.class.getSimpleName(),
         ListChannels.class.getSimpleName(),
-        ListOperations.class.getSimpleName()
-    );
+        ListOperations.class.getSimpleName(),
+        ReprocessApi.class.getSimpleName()
+        );
     private static final String ADMIN_PREFIX = "admin ";
     @Autowired
     private ApplicationContext context;

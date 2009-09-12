@@ -32,7 +32,7 @@ public class ReprocessApi extends BaseCommand {
             bot.postMessage(new Message(destination, event, "I don't know anything about " + name));
         } else {
             drop(bot, event, destination, api, dao);
-            api = new Api(name, api.getBaseUrl(), packages == null ? api.getPackages() : packages);
+            api = new Api(name, api.getBaseUrl(), packages == null ? api.getPackages() : packages, api.getZipLocations());
             dao.save(api);
             final JavadocParser parser = new JavadocParser();
             context.getAutowireCapableBeanFactory().autowireBean(parser);

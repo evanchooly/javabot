@@ -1,9 +1,5 @@
 package javabot.javadoc;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -21,17 +17,8 @@ import javax.persistence.Transient;
 
 import javabot.dao.ClazzDao;
 import javabot.model.Persistent;
-import org.cyberneko.html.parsers.DOMParser;
-import org.jaxen.JaxenException;
-import org.jaxen.dom.DOMXPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.html.HTMLElement;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 @Entity
 @Table(name = "classes")
@@ -63,39 +50,6 @@ public class Clazz extends JavadocElement implements Persistent {
     public Clazz() {
     }
 
-    public Clazz(final Api classApi, final HTMLElement element, final List<String> packages) {
-        final String href = element.getAttribute("href").replace(".html", "").replace("../", "").replace("/", ".");
-        String[] values = calculateNameAndPackage(href);
-        packageName = values[0];
-        className = values[1];
-        boolean valid = packages.isEmpty();
-        for (final String aPackage : packages) {
-            valid |= packageName.startsWith(aPackage);
-        }
-        if (!valid) {
-            throw new IrrelevantClassException(this + " is a class we don't care about");
-        }
-        setLongUrl(classApi.getBaseUrl() + sanitize(element));
-        api = classApi;
-    }
-
-    public static String[] calculateNameAndPackage(final String href) {
-        String clsName = href;
-        while (clsName.contains(".") && Character.isLowerCase(clsName.charAt(0))) {
-            clsName = clsName.substring(clsName.indexOf(".") + 1);
-        }
-        String pkgName = href.equals(clsName) ? null : href.substring(0, href.indexOf(clsName) - 1);
-        return new String[]{pkgName, clsName};
-    }
-
-    private String sanitize(final HTMLElement element) {
-        String url = element.getAttribute("href");
-        while (url.startsWith("../")) {
-            url = url.substring(3);
-        }
-        return url;
-    }
-
     @Id
     @GeneratedValue
     public Long getId() {
@@ -110,124 +64,8 @@ public class Clazz extends JavadocElement implements Persistent {
         api = apiName;
         packageName = pkg;
         className = name;
-    }
-
-    @SuppressWarnings({"unchecked"})
-    @Transactional
-    public final List<Clazz> populate(final ClazzDao dao) {
-        final List<Clazz> nested = new ArrayList<Clazz>();
-        try {
-//            log.debug("populating " + this);
-            final Document document = getDocument(getLongUrl());
-            final List<HTMLElement> dts = (List<HTMLElement>) new DOMXPath("//DT/following-sibling::node()"
-                + "[text()='extends ']").evaluate(document);
-            if (!dts.isEmpty()) {
-                final HTMLElement element = dts.get(0);
-                final HTMLElement aNode = (HTMLElement) element.getChildNodes().item(1);
-                String pkg = aNode.getAttribute("href")
-                    .replace(api.getBaseUrl(), "")
-                    .replace(".html", "")
-                    .replace("../", "")
-                    .replace("/", ".");
-                if (!pkg.startsWith("http")) {
-                    while (!Character.isLetter(pkg.charAt(0))) {
-                        pkg = pkg.substring(1);
-                    }
-                    final String[] values = calculateNameAndPackage(pkg);
-                    final Clazz[] aClass = dao.getClass(values[0], values[1]);
-                    if (aClass.length == 0) {
-                        nested.add(this);
-                    } else {
-                        if (api.equals(aClass[0].getApi())) {
-                            superClass = aClass[0];
-                        }
-                    }
-                }
-            }
-            if (nested.isEmpty()) {
-                final List<HTMLElement> result = (List<HTMLElement>) new DOMXPath("//HEAD/META[@name='keywords']")
-                    .evaluate(document);
-/*
-                final List<HTMLElement> nestedElements = (List<HTMLElement>) new DOMXPath(
-                    "//A[@name='nested_class_summary']")
-                    .evaluate(document);
-                if (!nestedElements.isEmpty()) {
-                    final HTMLTableElement table = (HTMLTableElement) nestedElements.get(0).getNextSibling()
-                        .getNextSibling();
-                    final HTMLDocumentImpl doc = new HTMLDocumentImpl();
-                    final HTMLElement element = (HTMLElement) table.cloneNode(true);
-                    doc.adoptNode(element);
-                    doc.setBody(element);
-                    final List<HTMLElement> list = (List<HTMLElement>) new DOMXPath("//TD/CODE/B/A")
-                        .evaluate(doc);
-                    for (final HTMLElement htmlElement : list) {
-                        if (!htmlElement.getAttribute("title").contains("type parameter")) {
-                            final Clazz clazz = new Clazz(getApi(), htmlElement, Collections.<String>emptyList());
-                            dao.save(clazz);
-                            nested.add(clazz);
-                        }
-                    }
-                }
-*/
-                for (final HTMLElement element : result) {
-                    String content = element.getAttribute("content");
-                    if (content.endsWith("()")) {
-                        content = content.substring(0, content.length() - 2);
-                        final List<HTMLElement> methodList = (List<HTMLElement>) new DOMXPath(
-                            String.format("//A[starts-with(@name, '%s(')]", content)).evaluate(document);
-                        final List<Method> overloads = new ArrayList<Method>();
-                        for (final HTMLElement htmlElement : methodList) {
-                            final NamedNodeMap attributes = htmlElement.getAttributes();
-                            final Method method = new Method(attributes.getNamedItem("name").getNodeValue(), this);
-                            dao.save(method);
-                            overloads.add(method);
-                        }
-                        methods.addAll(overloads);
-                    }
-                }
-                dao.save(this);
-            }
-        } catch (RuntimeException e) {
-            log.debug(e.getMessage(), e);
-        } catch (JaxenException e) {
-            log.debug(e.getMessage(), e);
-//            throw new RuntimeException(e.getMessage(), e);
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-            nested.add(this);
-            log.error("Rescheduling " + className);
-        } catch (SAXException e) {
-            log.error(e.getMessage(), e);
-//            throw new RuntimeException(e.getMessage());
-        }
-        return nested;
-    }
-
-    public static Document getDocument(final String specUrl) throws IOException, SAXException {
-        final URL url = new URL(specUrl);
-        final URLConnection connection = url.openConnection();
-        connection.setConnectTimeout(1000);
-        connection.setReadTimeout(1000);
-        final DOMParser parser = new DOMParser();
-        InputStream inputStream = null;
-        try {
-            inputStream = connection.getInputStream();
-            final InputSource inputSource = new InputSource(inputStream);
-            parser.parse(inputSource);
-        } catch (SAXException e) {
-            log.debug(e.getMessage(), e);
-            log.debug("specUrl = " + specUrl);
-            throw e;
-        } catch (IOException e) {
-            log.debug(e.getMessage(), e);
-            log.debug("specUrl = " + specUrl);
-            throw e;
-        } finally {
-            if (inputStream != null) {
-                inputStream.close();
-            }
-        }
-        return parser.getDocument();
+        setDirectUrl(apiName.getBaseUrl() + "/" + pkg.replace('.', '/') + "/" + name + ".html");
+        setLongUrl(apiName.getBaseUrl() + "index.html?" + pkg.replace('.', '/') + "/" + name + ".html");
     }
 
     @ManyToOne

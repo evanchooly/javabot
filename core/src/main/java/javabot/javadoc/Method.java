@@ -1,5 +1,6 @@
 package javabot.javadoc;
 
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,34 +26,25 @@ public class Method extends JavadocElement implements Persistent {
     public Method() {
     }
 
+    public Method(final String name, final Clazz parent, final int count, final String longArgs, final String longArgsStripped,
+        final String shortArgs, final String shortArgsStripped) {
+        
+        methodName = name;
+        clazz = parent;
+        paramCount = count;
+        longSignatureTypes = longArgs;
+        longSignatureStripped = longArgsStripped;
+        shortSignatureTypes = shortArgs;
+        shortSignatureStripped = shortArgsStripped;
+        final String url = clazz.getDirectUrl() + "#" + methodName + "(" + longArgs + ")";
+        setLongUrl(url);
+        setDirectUrl(url);
+    }
+
     @Override
     @Transient
     public String getApiName() {
         return getClazz().getApi().getName();
-    }
-
-    @SuppressWarnings({"StringConcatenationInsideStringBufferAppend", "StringContatenationInLoop"})
-    public Method(final String signature, final Clazz parent) {
-        clazz = parent;
-        final int leftParen = signature.indexOf("(");
-        final String paramString = signature.substring(leftParen + 1, signature.length() - 1);
-        final String[] params = paramString.isEmpty() ? new String[0] : paramString.split(",");
-        methodName = signature.substring(0, leftParen);
-        final StringBuilder shortTypes = new StringBuilder();
-        for (final String parameter : params) {
-            if (shortTypes.length() != 0) {
-                shortTypes.append(", ");
-            }
-            final String[] bits = parameter.split("\\.");
-            final String shortType = bits[bits.length - 1] + (parameter.endsWith("...") ? "..." : "");
-            shortTypes.append(shortType);
-        }
-        paramCount = params.length;
-        longSignatureTypes = paramString;
-        shortSignatureTypes = shortTypes.toString();
-        longSignatureStripped = longSignatureTypes.replaceAll(" ", "");
-        shortSignatureStripped = shortSignatureTypes.replaceAll(" ", "");
-        setLongUrl(clazz.getLongUrl() + "#" + signature.replaceAll(" ", "%20"));
     }
 
     @Id

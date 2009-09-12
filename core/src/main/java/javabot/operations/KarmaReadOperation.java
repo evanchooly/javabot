@@ -25,7 +25,7 @@ public class KarmaReadOperation extends BotOperation {
             final String nick = message.substring("karma ".length()).toLowerCase();
             final Karma karma = karmaDao.find(nick);
             if (karma != null) {
-                if (nick.equals(sender)) {
+                if (nick.equalsIgnoreCase(sender)) {
                     getBot().postMessage(new Message(channel, event,
                         sender + ", you have a karma level of " + karma.getValue()));
                 } else {
