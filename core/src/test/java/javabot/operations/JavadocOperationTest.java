@@ -44,7 +44,7 @@ public class JavadocOperationTest extends BaseOperationTest {
         scanForResponse("javadoc Map.Entry", "[JDK: java.util.Map.Entry]");
     }
 
-    public void format() {2
+    public void format() {
         final TestBot bot = getTestBot();
         bot.sendMessage(getJavabotChannel(),
             String.format("%s %s", getJavabot().getNick(), "javadoc String.format(*)"));
