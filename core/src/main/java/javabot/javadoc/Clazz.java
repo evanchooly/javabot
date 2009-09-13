@@ -64,7 +64,7 @@ public class Clazz extends JavadocElement implements Persistent {
         api = apiName;
         packageName = pkg;
         className = name;
-        setDirectUrl(apiName.getBaseUrl() + "/" + pkg.replace('.', '/') + "/" + name + ".html");
+        setDirectUrl(apiName.getBaseUrl() + pkg.replace('.', '/') + "/" + name + ".html");
         setLongUrl(apiName.getBaseUrl() + "index.html?" + pkg.replace('.', '/') + "/" + name + ".html");
     }
 
