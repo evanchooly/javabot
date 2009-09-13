@@ -33,19 +33,15 @@ public class Method extends JavadocElement implements Persistent {
         methodName = name;
         clazz = parent;
         paramCount = count;
-        longSignatureTypes = filter(longArgs);
-        longSignatureStripped = filter(longArgsStripped);
-        shortSignatureTypes = filter(shortArgs);
-        shortSignatureStripped = filter(shortArgsStripped);
+        longSignatureTypes = longArgs;
+        longSignatureStripped = longArgsStripped;
+        shortSignatureTypes = shortArgs;
+        shortSignatureStripped = shortArgsStripped;
         final String url = clazz.getDirectUrl() + "#" + methodName + "(" + longArgs + ")";
         setLongUrl(url);
         setDirectUrl(url);
     }
 
-    private String filter(String value) {
-        return StringUtils.isEmpty(value) ? null : value;
-    }
-    
     @Override
     @Transient
     public String getApiName() {
