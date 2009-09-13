@@ -84,6 +84,11 @@ public class JavadocOperationTest extends BaseOperationTest {
         Assert.assertEquals(strings.size(), responses.size());
     }
 
+    public void fields() {
+        scanForResponse("javadoc Integer.MAX_VALUE", "[JDK: java.lang.Integer.MAX_VALUE:int]");
+        scanForResponse("javadoc System.in", "[JDK: java.lang.System.in:java.io.InputStream]");
+    }
+    
     protected void testList(final String message, final String target) {
         final TestBot bot = getTestBot();
         bot.sendMessage(getJavabotChannel(), String.format("%s %s", getJavabot().getNick(), message));

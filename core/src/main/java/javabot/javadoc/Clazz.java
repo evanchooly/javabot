@@ -46,6 +46,7 @@ public class Clazz extends JavadocElement implements Persistent {
     private String className;
     private Clazz superClass;
     private List<Method> methods = new ArrayList<Method>();
+    private List<Field> fields = new ArrayList<Field>();
 
     public Clazz() {
     }
@@ -110,13 +111,22 @@ public class Clazz extends JavadocElement implements Persistent {
         superClass = aClass;
     }
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "clazz", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "clazz")
     public List<Method> getMethods() {
         return methods;
     }
 
     public void setMethods(final List<Method> list) {
         methods = list;
+    }
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "clazz")
+    public List<Field> getFields() {
+        return fields;
+    }
+
+    public void setFields(final List<Field> list) {
+        fields = list;
     }
 
     @Override

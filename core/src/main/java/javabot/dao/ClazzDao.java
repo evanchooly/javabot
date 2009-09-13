@@ -4,6 +4,7 @@ import java.util.List;
 
 import javabot.javadoc.Clazz;
 import javabot.javadoc.Method;
+import javabot.javadoc.Field;
 
 /**
  * Created Jul 27, 2007
@@ -18,6 +19,8 @@ public interface ClazzDao extends BaseDao<Clazz> {
     String GET_BY_PACKAGE_AND_NAME = "ClazzDao.getByPackageAndName";
     String GET_METHOD_NO_SIG = "ClazzDao.getMethodNoSig";
     String GET_METHOD = "ClazzDao.getMethod";
+    String GET_FIELD_WITH_CLS_AND_PKG = "ClazzDao.getFieldWithClassAndPackage";
+    String GET_FIELD_WITH_CLS = "ClazzDao.getFieldWithClass";
 
     List<Clazz> findAll(String api);
 
@@ -28,4 +31,6 @@ public interface ClazzDao extends BaseDao<Clazz> {
     Clazz[] getClass(String pkg, String name);
 
     List<Method> getMethods(String className, String methodName, String signatureTypes);
+
+    List<Field> getField(String className, String fieldName);
 }

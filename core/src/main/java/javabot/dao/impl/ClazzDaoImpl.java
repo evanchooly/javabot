@@ -9,6 +9,7 @@ import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ClazzDao;
 import javabot.javadoc.Clazz;
 import javabot.javadoc.Method;
+import javabot.javadoc.Field;
 
 /**
  * Created Jul 27, 2007
@@ -62,6 +63,25 @@ public class ClazzDaoImpl extends AbstractDaoImpl<Clazz> implements ClazzDao {
         query.setParameter("package", pkg);
         final List list = query.getResultList();
         return (Clazz[]) list.toArray(new Clazz[list.size()]);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public List<Field> getField(final String className, final String fieldName) {
+        final String[] strings = calculateNameAndPackage(className);
+        final String pkgName = strings[0];
+        final String clsName = strings[1].toUpperCase();
+        Query query;
+        if (pkgName == null) {
+            query = getEntityManager().createNamedQuery(ClazzDao.GET_FIELD_WITH_CLS);
+            query.setParameter("className", clsName);
+            query.setParameter("fieldName", fieldName.toUpperCase());
+        } else {
+            query = getEntityManager().createNamedQuery(ClazzDao.GET_FIELD_WITH_CLS_AND_PKG);
+            query.setParameter("className", clsName);
+            query.setParameter("packageName", pkgName.toUpperCase());
+            query.setParameter("fieldName", fieldName.toUpperCase());
+        }
+        return (List<Field>) query.getResultList();
     }
 
     @SuppressWarnings({"unchecked"})

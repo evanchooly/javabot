@@ -11,6 +11,7 @@ import javabot.dao.ClazzDao;
 import javabot.javadoc.Api;
 import javabot.javadoc.Clazz;
 import javabot.javadoc.Method;
+import javabot.javadoc.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,36 +35,14 @@ public class JavadocOperation extends BotOperation {
             final List<String> urls = new ArrayList<String>();
             final String key = message.substring("javadoc ".length()).trim();
             if (key.startsWith("-list") || "".equals(key)) {
-                final StringBuilder builder = new StringBuilder();
-                for (final Api api : apiDao.findAll()) {
-                    if(builder.length() != 0) {
-                        builder.append("; ");
-                    }
-                    builder.append(api.getName())
-                        .append(" ( ")
-                        .append(api.getBaseUrl())
-                        .append(" ) ");
-                }
-                getBot().postMessage(new Message(event.getChannel(), event, event.getSender()
-                    + ", I know of the following APIs: " + builder));
+                displayApiList(event);
             } else {
                 final int openIndex = key.indexOf('(');
                 if (openIndex == -1) {
-                    for (final Clazz clazz : dao.getClass(key)) {
-                        urls.add(clazz.getDisplayUrl(clazz.toString(), dao));
-                    }
+                    parseFieldOrClassRequest(urls, key);
                 } else {
-                    final int finalIndex = key.lastIndexOf('.', openIndex);
-                    final int closeIndex = key.indexOf(')');
-                    final String className = key.substring(0, finalIndex);
-                    final String methodName = key.substring(finalIndex + 1, openIndex);
-                    final String signatureTypes = key.substring(openIndex + 1, closeIndex);
-                    final List<Method> list = dao.getMethods(className, methodName, signatureTypes);
-                    for (final Method method : list) {
-                        urls.add(method.getDisplayUrl(method.toString(), dao));
-                    }
+                    parseMethodRequest(urls, key, openIndex);
                 }
-
                 if (!urls.isEmpty()) {
                     StringBuilder urlMessage = new StringBuilder(event.getSender() + ": ");
                     String destination = event.getChannel();
@@ -90,5 +69,58 @@ public class JavadocOperation extends BotOperation {
             handled = true;
         }
         return handled;
+    }
+
+    private void parseFieldOrClassRequest(final List<String> urls, final String key) {
+        final int finalIndex = key.lastIndexOf('.');
+        if (finalIndex == -1) {
+            findClasses(urls, key);
+        } else {
+            final String className = key.substring(0, finalIndex);
+            final String fieldName = key.substring(finalIndex + 1);
+            if (Character.isUpperCase(fieldName.charAt(0)) && !fieldName.toUpperCase().equals(fieldName)) {
+                findClasses(urls, key);
+            } else {
+                final List<Field> list = dao.getField(className, fieldName);
+                for (Field field : list) {
+                    urls.add(field.getDisplayUrl(field.toString(), dao));
+                }
+            }
+        }
+    }
+
+    private void findClasses(final List<String> urls, final String key) {
+        for (final Clazz clazz : dao.getClass(key)) {
+            urls.add(clazz.getDisplayUrl(clazz.toString(), dao));
+        }
+    }
+
+    private void parseMethodRequest(final List<String> urls, final String key, final int openIndex) {
+        final int finalIndex = key.lastIndexOf('.', openIndex);
+        final int closeIndex = key.indexOf(')');
+        if (closeIndex != -1) {
+            final String className = key.substring(0, finalIndex);
+            final String methodName = key.substring(finalIndex + 1, openIndex);
+            final String signatureTypes = key.substring(openIndex + 1, closeIndex);
+            final List<Method> list = dao.getMethods(className, methodName, signatureTypes);
+            for (final Method method : list) {
+                urls.add(method.getDisplayUrl(method.toString(), dao));
+            }
+        }
+    }
+
+    private void displayApiList(final BotEvent event) {
+        final StringBuilder builder = new StringBuilder();
+        for (final Api api : apiDao.findAll()) {
+            if (builder.length() != 0) {
+                builder.append("; ");
+            }
+            builder.append(api.getName())
+                .append(" ( ")
+                .append(api.getBaseUrl())
+                .append(" ) ");
+        }
+        getBot().postMessage(new Message(event.getChannel(), event, event.getSender()
+            + ", I know of the following APIs: " + builder));
     }
 }
