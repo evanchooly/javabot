@@ -21,39 +21,39 @@ public class JavadocOperationTest extends BaseOperationTest {
     private ClazzDao clazzDao;
 
     public void methods() {
-        testMessage("javadoc String.split(String)",
-            getTestBot().getNick() + ": http://is.gd/3aGAs [JDK: java.lang.String.split(String)]");
-        testMessage("javadoc String.split(java.lang.String)",
-            getTestBot().getNick() + ": http://is.gd/3aGAs [JDK: java.lang.String.split(String)]");
+        scanForResponse("javadoc String.split(String)", "[JDK: java.lang.String.split(String)]");
+        scanForResponse("javadoc String.split(java.lang.String)", "[JDK: java.lang.String.split(String)]");
         final TestBot bot = getTestBot();
         bot.sendMessage(getJavabotChannel(), String.format("%s %s", getJavabot().getNick(), "javadoc String.split(*)"));
         waitForResponses(bot, 1);
         final String response = bot.getOldestResponse().getMessage();
-        final List<String> strings = Arrays
-            .asList(response.substring((getTestBot().getNick() + ": ").length()).split(";"));
+        final List<String> strings = Arrays.asList(response.substring((bot.getNick() + ": ").length()).split(";"));
         Assert.assertEquals(strings.size(), 2);
     }
 
-    public void nestedClasses() {
+    private void scanForResponse(final String message, final String target) {
         final TestBot bot = getTestBot();
-        bot.sendMessage(getJavabotChannel(),
-            String.format("%s %s", getJavabot().getNick(), "javadoc Map.Entry"));
+        bot.sendMessage(getJavabotChannel(), String.format("%s %s", getJavabot().getNick(), message));
         waitForResponses(bot, 1);
         final String response = bot.getOldestResponse().getMessage();
-        Assert.assertEquals(response, getTestBot().getNick() + ": http://is.gd/3aMwV [JDK: java.util.Map.Entry]");
-
+        Assert.assertTrue(response.contains(target),
+            String.format("Should have found '%s' in '%s' in response to '%s'", target, response, message));
     }
-    
+
+    public void nestedClasses() {
+        scanForResponse("javadoc Map.Entry", "[JDK: java.util.Map.Entry]");
+    }
+
     public void format() {
         final TestBot bot = getTestBot();
         bot.sendMessage(getJavabotChannel(),
-            String.format("%s %s", getJavabot().getNick(), "javadoc java.lang.String.format(*)"));
+            String.format("%s %s", getJavabot().getNick(), "javadoc String.format(*)"));
         waitForResponses(bot, 1);
         final String[] response = bot.getOldestResponse().getMessage().split(";");
         StringTokenizer tz = new StringTokenizer(response[0], "[]");
         tz.nextToken();
         final String method = tz.nextToken();
-        final boolean comma = method.substring(method.indexOf("(")+1, method.length()).endsWith(",");
+        final boolean comma = method.substring(method.indexOf("(") + 1, method.length()).endsWith(",");
     }
 
     @SuppressWarnings({"StringContatenationInLoop"})
@@ -79,7 +79,8 @@ public class JavadocOperationTest extends BaseOperationTest {
         while ((response = bot.getOldestMessage()) != null) {
             hits.append(" " + response);
         }
-        final List<String> strings = Arrays.asList(hits.substring((getTestBot().getNick() + ": ").length()).trim().split("; "));
+        final List<String> strings = Arrays
+            .asList(hits.substring((getTestBot().getNick() + ": ").length()).trim().split("; "));
         Assert.assertEquals(strings.size(), responses.size());
     }
 

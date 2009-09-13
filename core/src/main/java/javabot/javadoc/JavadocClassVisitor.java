@@ -1,5 +1,8 @@
 package javabot.javadoc;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import javabot.dao.ClazzDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +18,18 @@ public class JavadocClassVisitor extends EmptyVisitor {
     private ClazzDao dao;
     private Clazz clazz;
     private JavadocParser parser;
+    private static final Map<Character, String> PRIMITIVES = new HashMap<Character, String>();
+
+    static {
+        PRIMITIVES.put('B', "byte");
+        PRIMITIVES.put('C', "char");
+        PRIMITIVES.put('D', "double");
+        PRIMITIVES.put('F', "float");
+        PRIMITIVES.put('I', "int");
+        PRIMITIVES.put('J', "long");
+        PRIMITIVES.put('S', "short");
+        PRIMITIVES.put('Z', "boolean");
+    }
 
     public JavadocClassVisitor(final JavadocParser javadocParser, final ClazzDao clazzDao) {
         parser = javadocParser;
@@ -29,7 +44,7 @@ public class JavadocClassVisitor extends EmptyVisitor {
             if (parser.acceptPackage(pkg) && isPublic(access)) {
                 final String className = name.substring(name.lastIndexOf("/") + 1).replace('$', '.');
                 clazz = parser.getOrCreate(parser.getApi(), pkg, className);
-                if(superName != null) {
+                if (superName != null) {
                     String superPkg = getPackage(superName);
                     String parentName = superName.substring(superName.lastIndexOf("/") + 1);
                     final Clazz parent = parser.getOrQueue(parser.getApi(), superPkg, parentName, clazz);
@@ -63,23 +78,59 @@ public class JavadocClassVisitor extends EmptyVisitor {
     public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature,
         final String[] exceptions) {
         if (clazz != null && isPublic(access)) {
-            String[] params = desc.substring(1, desc.lastIndexOf(")")).split(";");
+            String params = desc.substring(1, desc.lastIndexOf(")"));
             StringBuilder longTypes = new StringBuilder();
             StringBuilder longStripped = new StringBuilder();
             StringBuilder shortTypes = new StringBuilder();
             StringBuilder shortStripped = new StringBuilder();
-            for (String param : params) {
-                String arg = convertToClassName(param);
-                String shortName = calculateNameAndPackage(arg)[1];
-                append(longTypes, arg, ", ");
-                append(longStripped, arg, ",");
-                append(shortTypes, shortName, ",");
-                append(shortStripped, shortName, ",");
-            }
-            dao.save(new Method(name, clazz, params.length, longTypes.toString(), longStripped.toString(),
-                shortTypes.toString(), shortStripped.toString()));
+            int count = processParam(name, desc, signature, longTypes, longStripped, shortTypes, shortStripped, params);
+            dao.save(new Method("<init>".equals(name) ? clazz.getClassName() : name, clazz, count,
+                longTypes.toString(), longStripped.toString(), shortTypes.toString(), shortStripped.toString()));
         }
         return null;
+    }
+
+    private int processParam(final String name, final String desc, final String signature,
+        final StringBuilder longTypes, final StringBuilder longStripped, final StringBuilder shortTypes,
+        final StringBuilder shortStripped, final String param) {
+        String arg = param;
+        int count = 0;
+        while (!arg.isEmpty()) {
+            StringBuilder type = new StringBuilder("");
+            while (arg.startsWith("[")) {
+                type.append("[]");
+                arg = arg.substring(1);
+            }
+            String base;
+            if(arg.startsWith("L")) {
+                final int index = arg.indexOf(";");
+                base = convertToClassName(arg.substring(1, index));
+                arg = arg.substring(index + 1);
+            } else {
+                base = PRIMITIVES.get(arg.charAt(0));
+                arg = arg.substring(1);
+            }
+            if (base == null) {
+                log.debug("clazz = " + clazz);
+                log.debug("name = " + name);
+                log.debug("desc = " + desc);
+                log.debug("signature = " + signature);
+                throw new RuntimeException("I don't know what " + arg + " is");
+            }
+            update(longTypes, longStripped, shortTypes, shortStripped, type.insert(0, base).toString());
+            count++;
+        }
+
+        return count;
+    }
+
+    private void update(final StringBuilder longTypes, final StringBuilder longStripped, final StringBuilder shortTypes,
+        final StringBuilder shortStripped, final String arg) {
+        String shortName = calculateNameAndPackage(arg)[1];
+        append(longTypes, arg, ", ");
+        append(longStripped, arg, ",");
+        append(shortTypes, shortName, ",");
+        append(shortStripped, shortName, ",");
     }
 
     private void append(final StringBuilder builder, final String arg, final String delim) {
@@ -102,6 +153,9 @@ public class JavadocClassVisitor extends EmptyVisitor {
         String name = param;
         if (name.startsWith("L")) {
             name = name.substring(1);
+        }
+        if (name.startsWith("[L")) {
+            name = name.substring(2);
         }
         name = name.replace('/', '.');
         return name;
