@@ -378,9 +378,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         final String hostname) {
         final Channel chan = channelDao.get(channel);
         try {
-            if (chan != null && chan.getLogged()) {
-                logsDao.logMessage(Logs.Type.MESSAGE, sender, channel, message);
-            }
+            logsDao.logMessage(Logs.Type.MESSAGE, sender, channel, message);
             if (isValidSender(sender)) {
                 boolean handled = false;
                 for (final String startString : startStrings) {
