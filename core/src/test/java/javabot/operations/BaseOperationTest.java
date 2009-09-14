@@ -75,4 +75,13 @@ public abstract class BaseOperationTest extends BaseTest /*extends UnitilsTestNG
     protected void forgetFactoid(final String name) {
         testMessage(String.format("forget %s", name), getForgetMessage(name));
     }
+
+    protected void scanForResponse(final String message, final String target) {
+        final TestBot bot = getTestBot();
+        bot.sendMessage(getJavabotChannel(), String.format("%s %s", getJavabot().getNick(), message));
+        waitForResponses(bot, 1);
+        final String response = bot.getOldestResponse().getMessage();
+        Assert.assertTrue(response.contains(target),
+            String.format("Should have found '%s' in '%s' in response to '%s'", target, response, message));
+    }
 }

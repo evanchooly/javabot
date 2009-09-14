@@ -44,6 +44,7 @@ public class BaseTest {
                     super.onJoin(channel, sender, login, hostname);
                 }
             };
+            bot.setStartStrings(new String[] {"~", bot.getNick()});
             inject(bot);
         }
         return bot;

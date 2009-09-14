@@ -485,6 +485,10 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         return startStrings;
     }
 
+    public void setStartStrings(final String[] startStrings) {
+        this.startStrings = startStrings;
+    }
+
     public void postMessage(final Message message) {
         sendMessage(message.getDestination(), message.getMessage());
         logMessage(message);
