@@ -21,6 +21,8 @@ import javax.persistence.Table;
 import javabot.dao.ApiDao;
 import javabot.model.Persistent;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created Oct 29, 2008
@@ -34,13 +36,14 @@ import org.apache.commons.lang.StringUtils;
     @NamedQuery(name = ApiDao.FIND_ALL, query="select a from Api a order by a.name")
 })
 public class Api implements Persistent {
+    private static final Logger log = LoggerFactory.getLogger(Api.class);
     private Long id;
     private String name;
     private String baseUrl;
     private String packages;
     private String zipLocations;
     private List<Clazz> classes = new ArrayList<Clazz>();
-    private static final List<String> JDK_JARS = Arrays.asList("classes.jar", "jce.jar", "jsse.jar");
+    private static final List<String> JDK_JARS = Arrays.asList("classes.jar", "rt.jar", "jce.jar", "jsse.jar");
 
     public Api() {
     }
@@ -109,8 +112,15 @@ public class Api implements Persistent {
 
     private String findJDKJars() {
         Set<String> jars = new TreeSet<String>();
-        for (String path : System.getProperty("java.class.path").split(File.pathSeparator)) {
+	String paths = System.getProperty("sun.boot.class.path");
+	if(paths == null) {
+	    paths = System.getProperty("java.class.path");
+	}
+        for (String path : paths.split(File.pathSeparator)) {
+	log.debug("path = " + path);
+
             File file = new File(path);
+	    log.debug("file = " + file);
             if(JDK_JARS.contains(file.getName())) {
                 try {
                     jars.add(file.getCanonicalFile().toURI().toURL().toString());
