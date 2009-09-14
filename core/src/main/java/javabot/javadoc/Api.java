@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Table(name = "apis")
 @NamedQueries({
-    @NamedQuery(name = ApiDao.FIND_BY_NAME, query="select a from Api a where upper(a.name)=upper(:name)"),
-    @NamedQuery(name = ApiDao.FIND_ALL, query="select a from Api a order by a.name")
+    @NamedQuery(name = ApiDao.FIND_BY_NAME, query = "select a from Api a where upper(a.name)=upper(:name)"),
+    @NamedQuery(name = ApiDao.FIND_ALL, query = "select a from Api a order by a.name")
 })
 public class Api implements Persistent {
     private static final Logger log = LoggerFactory.getLogger(Api.class);
@@ -76,7 +76,7 @@ public class Api implements Persistent {
         this.name = name;
     }
 
-    @Column(length=1000)
+    @Column(length = 1000)
     public String getBaseUrl() {
         return baseUrl;
     }
@@ -112,16 +112,13 @@ public class Api implements Persistent {
 
     private String findJDKJars() {
         Set<String> jars = new TreeSet<String>();
-	String paths = System.getProperty("sun.boot.class.path");
-	if(paths == null) {
-	    paths = System.getProperty("java.class.path");
-	}
+        String paths = System.getProperty("sun.boot.class.path");
+        if (paths == null) {
+            paths = System.getProperty("java.class.path");
+        }
         for (String path : paths.split(File.pathSeparator)) {
-	log.debug("path = " + path);
-
             File file = new File(path);
-	    log.debug("file = " + file);
-            if(JDK_JARS.contains(file.getName())) {
+            if (JDK_JARS.contains(file.getName())) {
                 try {
                     jars.add(file.getCanonicalFile().toURI().toURL().toString());
                 } catch (MalformedURLException e) {
