@@ -2,6 +2,12 @@ package javabot.javadoc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +20,7 @@ import javax.persistence.Table;
 
 import javabot.dao.ApiDao;
 import javabot.model.Persistent;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Created Oct 29, 2008
@@ -33,6 +40,7 @@ public class Api implements Persistent {
     private String packages;
     private String zipLocations;
     private List<Clazz> classes = new ArrayList<Clazz>();
+    private static final List<String> JDK_JARS = Arrays.asList("classes.jar", "jce.jar", "jsse.jar");
 
     public Api() {
     }
@@ -42,6 +50,9 @@ public class Api implements Persistent {
         baseUrl = url.endsWith("/") ? url : url + "/";
         packages = pkgs;
         zipLocations = zip;
+        if ("JDK".equals(name)) {
+            zipLocations = findJDKJars();
+        }
     }
 
     @Id
@@ -94,5 +105,22 @@ public class Api implements Persistent {
 
     public void setZipLocations(final String zipLocations) {
         this.zipLocations = zipLocations;
+    }
+
+    private String findJDKJars() {
+        Set<String> jars = new TreeSet<String>();
+        for (String path : System.getProperty("java.class.path").split(File.pathSeparator)) {
+            File file = new File(path);
+            if(JDK_JARS.contains(file.getName())) {
+                try {
+                    jars.add(file.getCanonicalFile().toURI().toURL().toString());
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e.getMessage());
+                } catch (IOException e) {
+                    throw new RuntimeException(e.getMessage());
+                }
+            }
+        }
+        return StringUtils.join(jars, ",");
     }
 }

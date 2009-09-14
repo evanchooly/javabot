@@ -70,7 +70,6 @@ public class JavadocClassVisitor extends EmptyVisitor {
     public FieldVisitor visitField(final int access, final String name, final String desc, final String signature,
         final Object value) {
         if (clazz != null && isPublic(access)) {
-            System.out.println("JavadocClassVisitor.visitField");
             StringBuilder longTypes = new StringBuilder();
             processParam(name, desc, signature, longTypes, new StringBuilder(), new StringBuilder(), new StringBuilder(), desc);
             final String type = longTypes.toString();
