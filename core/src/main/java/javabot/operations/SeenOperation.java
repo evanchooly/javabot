@@ -18,11 +18,11 @@ public class SeenOperation extends BotOperation {
 
     @Override
     public boolean handleMessage(final BotEvent event) {
-        final String message = event.getMessage().toLowerCase();
+        final String message = event.getMessage();
         final String channel = event.getChannel();
         final String sender = event.getSender();
         boolean handled = false;
-        if (message.startsWith("seen ")) {
+        if ("seen ".equals(message.substring(0, 5))) {
             final String key = message.substring("seen ".length());
             if (dao.isSeen(key, channel)) {
                 getBot().postMessage(new Message(channel, event,
