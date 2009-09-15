@@ -22,7 +22,7 @@ public class SeenOperation extends BotOperation {
         final String channel = event.getChannel();
         final String sender = event.getSender();
         boolean handled = false;
-        if ("seen ".equals(message.substring(0, 5))) {
+        if ("seen ".equalsIgnoreCase(message.substring(0, Math.min(message.length(), 5)))) {
             final String key = message.substring("seen ".length());
             if (dao.isSeen(key, channel)) {
                 getBot().postMessage(new Message(channel, event,
