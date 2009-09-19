@@ -48,7 +48,6 @@ public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidD
     }
 
     public void save(final Factoid factoid) {
-        factoid.setLastUsed(new Date());
         getEntityManager().flush();
         super.save(factoid);
         changeDao.logChange(factoid.getUserName() + " changed '" + factoid.getName()
@@ -56,7 +55,10 @@ public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidD
     }
 
     public boolean hasFactoid(final String key) {
-        return getFactoid(key) != null;
+        final List<Factoid> list = getEntityManager().createNamedQuery(FactoidDao.BY_NAME)
+            .setParameter("name", key)
+            .getResultList();
+        return !list.isEmpty();
     }
 
     @Transactional
@@ -93,7 +95,7 @@ public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidD
         if(! list.isEmpty()) {
             factoid = list.get(0);
             factoid.setLastUsed(new Date());
-            save(factoid);
+            super.save(factoid);
         }
         return factoid;
     }

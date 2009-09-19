@@ -122,8 +122,6 @@ public class GetFactoidOperation extends BotOperation {
         } else {
             getBot().postMessage(new Message(channel, event, sender + ", " + key + " is " + message));
         }
-        factoid.setLastUsed(new Date());
-        factoidDao.save(factoid);
     }
 
     protected String processRandomList(final String message) {
