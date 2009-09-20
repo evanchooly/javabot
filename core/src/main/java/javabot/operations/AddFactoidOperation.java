@@ -25,7 +25,7 @@ public class AddFactoidOperation extends BotOperation {
         String message = event.getMessage();
         final String channel = event.getChannel();
         final String sender = event.getSender();
-        if(message.startsWith("no")) {
+        if (message.startsWith("no")) {
             message = removeFactoid(event, event.getMessage());
         }
         return addFactoid(event, message, channel, sender);
@@ -37,20 +37,23 @@ public class AddFactoidOperation extends BotOperation {
         }
         if (message.toLowerCase().startsWith("no")) {
             String actual = message.substring(2);
-            if(actual.startsWith(",")) {
+            if (actual.startsWith(",")) {
                 actual = actual.substring(1);
             }
             actual = actual.trim();
             if (log.isDebugEnabled()) {
                 log.debug("AddFactoidOperation: " + message);
             }
-            String key = actual.substring(0, actual.indexOf(" is "));
-            key = key.replaceAll("^\\s+", "");
-            if (log.isDebugEnabled()) {
-                log.debug("AddFactoidOperation: Key " + key);
+            final int is = actual.indexOf(" is ");
+            if (is != -1) {
+                String key = actual.substring(0, is);
+                key = key.replaceAll("^\\s+", "");
+                if (log.isDebugEnabled()) {
+                    log.debug("AddFactoidOperation: Key " + key);
+                }
+                factoidDao.delete(event.getSender(), key);
+                return actual;
             }
-            factoidDao.delete(event.getSender(), key);
-            return actual;
         }
         return message;
     }
