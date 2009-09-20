@@ -11,7 +11,7 @@ class StatisticsController {
 
   def list = {Statistics stats ->
     def sql = new Sql(dataSource)
-    def channels = sql.rows("select name from channel where logged is true").collect { it.name }
+    def channels = sql.rows("select name from channel where logged is true order by name").collect { it.name }
     if (!stats.table) {
       stats.table = channels.size > 0 ? channels[0].toString() : null
     }
