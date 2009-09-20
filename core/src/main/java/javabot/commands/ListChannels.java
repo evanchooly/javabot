@@ -1,6 +1,7 @@
 package javabot.commands;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import javabot.BotEvent;
 import javabot.Javabot;
@@ -9,6 +10,7 @@ import javabot.dao.ChannelDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Created Dec 17, 2008
@@ -24,9 +26,10 @@ public class ListChannels extends BaseCommand {
         final List<Channel> channels = dao.find(new QueryParam(0, Integer.MAX_VALUE));
         bot.postMessage(new Message(event.getChannel(), event, event.getSender() + ", I'll list the channels in a"
             + " private message for you"));
+        List<String> chans = new ArrayList<String>();
         for (final Channel channel : channels) {
-            bot.postMessage(new Message(event.getSender(), event,
-                String.format("%s%s", channel.getName(), channel.getLogged() ? "(logged)" : "")));
+            chans.add(String.format("%s %s", channel.getName(), channel.getLogged() ? "(logged)" : ""));
         }
+        bot.postMessage(new Message(event.getSender(), event, StringUtils.join(chans, ", ")));
     }
 }
