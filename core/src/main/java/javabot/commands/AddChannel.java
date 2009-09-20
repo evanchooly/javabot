@@ -24,17 +24,21 @@ public class AddChannel extends BaseCommand {
 
     @Override
     public void execute(final Javabot bot, final BotEvent event) {
-        Channel chan = dao.get(channel);
-        final Boolean isLogged = Boolean.valueOf(logged);
-        if (channel == null) {
-            chan = dao.create(channel, isLogged, password);
+        if (channel.startsWith("#")) {
+            Channel chan = dao.get(channel);
+            final Boolean isLogged = Boolean.valueOf(logged);
+            if (chan == null) {
+                chan = dao.create(channel, isLogged, password);
+            } else {
+                chan.setLogged(isLogged);
+                dao.save(chan);
+            }
+            bot.postMessage(new Message(event.getChannel(), event, "Now joining " + channel +
+                (isLogged ? " and logging it" : "")));
+            chan.join(bot);
+            bot.postMessage(new Message(channel, event, "I was asked to join this channel by " + event.getSender()));
         } else {
-            chan.setLogged(isLogged);
-            dao.save(chan);
+            bot.postMessage(new Message(event.getChannel(), event, "Channel names must start with #, " + event.getSender()));
         }
-        bot.postMessage(new Message(event.getChannel(), event, "Now joining " + channel +
-            (isLogged ? " and logging it" : "")));
-        chan.join(bot);
-        bot.postMessage(new Message(channel, event, "I was asked to join this channel by " + event.getSender()));
     }
 }

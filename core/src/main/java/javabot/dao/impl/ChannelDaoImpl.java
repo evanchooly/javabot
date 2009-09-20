@@ -72,16 +72,14 @@ public class ChannelDaoImpl extends AbstractDaoImpl<Channel> implements ChannelD
     @Override
     public Channel get(final String name) {
         Channel channel = null;
-        if (name.startsWith("#")) {
-            try {
-                final List list = getEntityManager().createNamedQuery(ChannelDao.BY_NAME)
-                    .setParameter("channel", name.toLowerCase())
-                    .getResultList();
-                channel = list.isEmpty() ? null : (Channel) list.get(0);
-                return channel;
-            } catch (PersistenceException e) {
-                log.debug(e.getMessage(), e);
-            }
+        try {
+            final List list = getEntityManager().createNamedQuery(ChannelDao.BY_NAME)
+                .setParameter("channel", name.toLowerCase())
+                .getResultList();
+            channel = list.isEmpty() ? null : (Channel) list.get(0);
+            return channel;
+        } catch (PersistenceException e) {
+            log.debug(e.getMessage(), e);
         }
         return channel;
 
