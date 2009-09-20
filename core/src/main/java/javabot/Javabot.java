@@ -349,7 +349,8 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     @Override
     public void onPart(final String channel, final String sender, final String login, final String hostname) {
-        if (channelDao.get(channel).getLogged()) {
+        final Channel chan = channelDao.get(channel);
+        if (chan != null && chan.getLogged()) {
             logsDao.logMessage(Logs.Type.PART, sender, channel, "parted the channel");
         }
     }
