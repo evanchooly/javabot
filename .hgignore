@@ -21,11 +21,15 @@ db/methods.sql
 db/schema.ddl
 deleteApi.sql
 idea-files/DynaTable.iml
+idea-files/DynaTable.iml
 idea-files/core.iml
+idea-files/fan-sql.iml
+idea-files/fancore.iml
 idea-files/javabot.iml
 idea-files/javabot.ipr
 idea-files/javabot.iws
 idea-files/web-grails.iml
+idea-files/web-rails.iml
 idea-files/web.iml
 javabot.properties
 method.sql
