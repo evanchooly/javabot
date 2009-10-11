@@ -3,16 +3,14 @@ package javabot.operations;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javabot.Action;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
+import javabot.operations.throttle.Throttler;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
 import org.slf4j.Logger;
@@ -21,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class GetFactoidOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(GetFactoidOperation.class);
+    private static final Throttler<TellInfo> throttler = new Throttler<TellInfo>(100, 10 * 1000);
     @Autowired
     private FactoidDao factoidDao;
 
@@ -30,12 +29,13 @@ public class GetFactoidOperation extends BotOperation {
 
     @Override
     public boolean handleMessage(final BotEvent event) {
-        final List<Message> messages = new ArrayList<Message>();
-        getFactoid(event.getMessage(), event.getSender(), event.getChannel(), event, new HashSet<String>());
+        if (!tell(event)) {
+            getFactoid(null, event.getMessage(), event.getSender(), event.getChannel(), event, new HashSet<String>());
+        }
         return true;
     }
 
-    private void getFactoid(final String toFind, final String sender, final String channel, final BotEvent event,
+    private void getFactoid(final TellSubject subject, final String toFind, final String sender, final String channel, final BotEvent event,
         final Set<String> backtrack) {
         String message = toFind;
         if (log.isDebugEnabled()) {
@@ -44,28 +44,25 @@ public class GetFactoidOperation extends BotOperation {
         if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
             message = message.substring(0, message.length() - 1);
         }
-        final String firstWord = message.replaceAll(" .+", "");
-        String params = message.replaceFirst("[^ ]+ ", "");
-        String dollarOne = null;
+        final String firstWord = message.split(" ")[0];
+        String params = message.substring(firstWord.length()).trim();
+        String replaced = null;
         final String key = message;
         Factoid factoid = factoidDao.getFactoid(message.toLowerCase());
         if (factoid == null) {
-            message = firstWord + " $1";
-            factoid = factoidDao.getFactoid(message.toLowerCase());
-            dollarOne = params;
+            factoid = factoidDao.getFactoid(firstWord + " $1");
+            replaced = params;
         }
         if (factoid == null) {
-            message = firstWord + " $+";
-            factoid = factoidDao.getFactoid(message);
-            dollarOne = urlencode(params);
+            factoid = factoidDao.getFactoid(firstWord + " $+");
+            replaced = urlencode(params);
         }
         if (factoid == null) {
-            message = firstWord + " $^";
-            factoid = factoidDao.getFactoid(message);
-            dollarOne = urlencode(camelcase(params));
+            factoid = factoidDao.getFactoid(firstWord + " $^");
+            replaced = urlencode(camelcase(params));
         }
         if (factoid != null) {
-            processFactoid(sender, channel, event, backtrack, dollarOne, key, factoid);
+            sendFactoid(subject, sender, channel, event, backtrack, replaced, key, factoid);
         } else {
             getBot().postMessage(new Message(channel, event, sender + ", I have no idea what " + toFind + " is."));
         }
@@ -96,24 +93,16 @@ public class GetFactoidOperation extends BotOperation {
         return sb.toString();
     }
 
-    private void processFactoid(final String sender, final String channel, final BotEvent event,
+    private void sendFactoid(final TellSubject subject, final String sender, final String channel, final BotEvent event,
         final Set<String> backtrack, final String replacedValue, final String key, final Factoid factoid) {
-        String message;
-        message = factoid.getValue();
-        message = message.replaceAll("\\$who", sender);
-        if (replacedValue != null) {
-            message = message.replaceAll("\\$1", replacedValue);
-            message = message.replaceAll("\\$\\+", replacedValue);
-            message = message.replaceAll("\\$\\^", replacedValue);
-        }
-        message = processRandomList(message);
+        String message = factoid.evaluate(subject, sender, replacedValue);
         if (message.startsWith("<see>")) {
-            if (!backtrack.contains(message)) {
-                backtrack.add(message);
-                getFactoid(message.substring("<see>".length()).trim(), sender, channel, event, backtrack);
-            } else {
+            if (backtrack.contains(message)) {
                 getBot()
                     .postMessage(new Message(channel, event, "Reference loop detected for factoid '" + message + "'."));
+            } else {
+                backtrack.add(message);
+                getFactoid(subject, message.substring("<see>".length()).trim(), sender, channel, event, backtrack);
             }
         } else if (message.startsWith("<reply>")) {
             getBot().postMessage(new Message(channel, event, message.substring("<reply>".length())));
@@ -124,22 +113,86 @@ public class GetFactoidOperation extends BotOperation {
         }
     }
 
-    protected String processRandomList(final String message) {
-        String result = message;
-        int index = -1;
-        index = result.indexOf("(", index + 1);
-        int index2 = result.indexOf(")", index + 1);
-        while (index < result.length() && index != -1 && index2 != -1) {
-            final String choice = result.substring(index + 1, index2);
-            final String[] choices = choice.split("\\|");
-            if (choices.length > 1) {
-                final int chosen = (int) (Math.random() * choices.length);
-                result = String.format("%s%s%s", result.substring(0, index), choices[chosen],
-                    result.substring(index2 + 1));
+    private boolean tell(final BotEvent event) {
+        final String message = event.getMessage();
+        final String channel = event.getChannel();
+        final String login = event.getLogin();
+        final String hostname = event.getHostname();
+        final String sender = event.getSender();
+        final boolean isPrivateMessage = sender.equals(channel);
+        boolean handled = false;
+        if (isTellCommand(message)) {
+            final TellSubject tellSubject = parseTellSubject(message);
+            handled = true;
+            if (tellSubject == null) {
+                getBot().postMessage(new Message(channel, event,
+                    String.format("The syntax is: tell nick about factoid - you missed out the 'about', %s", sender)));
+            } else {
+                String nick = tellSubject.getTarget();
+                if ("me".equals(nick)) {
+                    nick = sender;
+                }
+                final String thing = tellSubject.getSubject();
+                handled = true;
+                if (nick.equals(getBot().getNick())) {
+                    getBot().postMessage(new Message(channel, event, "I don't want to talk to myself"));
+                } else {
+                    final TellInfo info = new TellInfo(nick, thing);
+                    if (throttler.isThrottled(info)) {
+                        if (log.isDebugEnabled()) {
+                            log.debug(String.format("I already told %s about %s.", nick, thing));
+                        }
+                        getBot().postMessage(new Message(channel, event, sender + ", Slow down, Speedy Gonzalez!"));
+                    } else if (!getBot().userIsOnChannel(nick, channel)) {
+                        getBot().postMessage(new Message(channel, event, "The user " + nick + " is not on " + channel));
+                    } else if (isPrivateMessage && !getBot().isOnSameChannelAs(nick)) {
+                        getBot()
+                            .postMessage(new Message(sender, event, "I will not send a message to someone who is not on any"
+                                + " of my channels."));
+                    } else if (thing.endsWith("++") || thing.endsWith("--")) {
+                        getBot().postMessage(new Message(channel, event, "I'm afraid I can't let you do that, Dave."));
+                    } else {
+                        getFactoid(tellSubject, thing, login, channel, event, new HashSet<String>());
+                        throttler.addThrottleItem(info);
+                    }
+                }
             }
-            index = result.indexOf("(", index + 1);
-            index2 = result.indexOf(")", index + 1);
         }
-        return result;
+        return handled;
+
+    }
+
+    private TellSubject parseTellSubject(final String message) {
+        if (message.startsWith("tell ")) {
+            return parseLonghand(message);
+        }
+        return parseShorthand(message);
+    }
+
+    private TellSubject parseLonghand(final String message) {
+        final String body = message.substring("tell ".length());
+        final String nick = body.substring(0, body.indexOf(" "));
+        final int about = body.indexOf("about ");
+        if (about < 0) {
+            return null;
+        }
+        final String thing = body.substring(about + "about ".length());
+        return new TellSubject(nick, thing);
+    }
+
+    private TellSubject parseShorthand(final String message) {
+        String target = message;//.substring(0, space);
+        for (final String start : getBot().getStartStrings()) {
+            if (target.startsWith(start)) {
+                target = target.substring(start.length()).trim();
+            }
+        }
+        final int space = target.indexOf(' ');
+        return space < 0 ? null
+            : new TellSubject(target.substring(0, space).trim(), target.substring(space + 1).trim());
+    }
+
+    private boolean isTellCommand(final String message) {
+        return message.startsWith("tell ") || message.startsWith("~");
     }
 }

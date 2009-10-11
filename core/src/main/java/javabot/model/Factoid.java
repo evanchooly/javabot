@@ -13,6 +13,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import javabot.dao.FactoidDao;
+import javabot.operations.TellSubject;
 
 @Entity
 @Table(name = "factoids")
@@ -83,4 +84,40 @@ public class Factoid implements Serializable, Persistent {
     public void setLastUsed(final Date used) {
         lastUsed = used;
     }
+
+    public String evaluate(final TellSubject subject, final String sender, final String replacedValue) {
+        String message = getValue();
+        String target = subject == null ? sender : subject.getTarget();
+        if(!message.contains("$who") && subject != null) {
+            message = new StringBuilder(message).insert(message.indexOf(">") + 1, "$who, ").toString();
+        }
+        message = message.replaceAll("\\$who", target);
+        if (replacedValue != null) {
+            message = message.replaceAll("\\$1", replacedValue);
+            message = message.replaceAll("\\$\\+", replacedValue);
+            message = message.replaceAll("\\$\\^", replacedValue);
+        }
+        message = processRandomList(message);
+        return message;
+    }
+
+    protected String processRandomList(final String message) {
+        String result = message;
+        int index = -1;
+        index = result.indexOf("(", index + 1);
+        int index2 = result.indexOf(")", index + 1);
+        while (index < result.length() && index != -1 && index2 != -1) {
+            final String choice = result.substring(index + 1, index2);
+            final String[] choices = choice.split("\\|");
+            if (choices.length > 1) {
+                final int chosen = (int) (Math.random() * choices.length);
+                result = String.format("%s%s%s", result.substring(0, index), choices[chosen],
+                    result.substring(index2 + 1));
+            }
+            index = result.indexOf("(", index + 1);
+            index2 = result.indexOf(")", index + 1);
+        }
+        return result;
+    }
+
 }

@@ -99,4 +99,19 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     public void channelMessage() throws IOException {
         testChannelMessage("pong is");
     }
+
+    @Test
+    public void tell() {
+        testMessage("tell Javabot-Testing about hey", "Hello, Javabot-Testing");
+        testMessage("tell Javabot-Testing about camel I am a test", "Javabot-Testing, IAmATest");
+        testMessage("tell Javabot-Testing about url I am a test", "Javabot-Testing, I+am+a+test");
+
+        testMessage("~~ Javabot-Testing hey", "Hello, Javabot-Testing");
+        testMessage("~~ Javabot-Testing camel I am a test", "Javabot-Testing, IAmATest");
+        testMessage("~~ Javabot-Testing url I am a test", "Javabot-Testing, I+am+a+test");
+
+        testMessage("~~Javabot-Testing hey", "Hello, Javabot-Testing");
+        testMessage("~~Javabot-Testing camel I am a test", "Javabot-Testing, IAmATest");
+        testMessage("~~Javabot-Testing url I am a test", "Javabot-Testing, I+am+a+test");
+    }
 }

@@ -50,7 +50,6 @@ import javabot.operations.SayOperation;
 import javabot.operations.SeenOperation;
 import javabot.operations.ShunOperation;
 import javabot.operations.StatsOperation;
-import javabot.operations.TellOperation;
 import javabot.operations.TimeOperation;
 import javabot.operations.UnixCommandOperation;
 import org.jibble.pircbot.PircBot;
@@ -113,7 +112,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         BotOperation.getName(SayOperation.class),
         BotOperation.getName(SeenOperation.class),
         BotOperation.getName(StatsOperation.class),
-        BotOperation.getName(TellOperation.class),
         BotOperation.getName(TimeOperation.class),
         BotOperation.getName(ShunOperation.class),
         BotOperation.getName(UnixCommandOperation.class)
