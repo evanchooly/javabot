@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class GetFactoidOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(GetFactoidOperation.class);
-    private static final Throttler<TellInfo> throttler = new Throttler<TellInfo>(100, 10 * 1000);
+    private static final Throttler<TellInfo> throttler = new Throttler<TellInfo>(100, 5 * 1000);
     @Autowired
     private FactoidDao factoidDao;
 
@@ -46,51 +46,22 @@ public class GetFactoidOperation extends BotOperation {
         }
         final String firstWord = message.split(" ")[0];
         String params = message.substring(firstWord.length()).trim();
-        String replaced = null;
         final String key = message;
         Factoid factoid = factoidDao.getFactoid(message.toLowerCase());
         if (factoid == null) {
             factoid = factoidDao.getFactoid(firstWord + " $1");
-            replaced = params;
         }
         if (factoid == null) {
             factoid = factoidDao.getFactoid(firstWord + " $+");
-            replaced = urlencode(params);
         }
         if (factoid == null) {
             factoid = factoidDao.getFactoid(firstWord + " $^");
-            replaced = urlencode(camelcase(params));
         }
         if (factoid != null) {
-            sendFactoid(subject, sender, channel, event, backtrack, replaced, key, factoid);
+            sendFactoid(subject, sender, channel, event, backtrack, params, key, factoid);
         } else {
             getBot().postMessage(new Message(channel, event, sender + ", I have no idea what " + toFind + " is."));
         }
-    }
-
-    private static String urlencode(String in) {
-        try {
-            return URLEncoder.encode(in, Charset.defaultCharset().displayName());
-        } catch (UnsupportedEncodingException e) {
-            log.error(e.getMessage(), e);
-            return in;
-        }
-    }
-
-    private static String camelcase(String in) {
-        StringBuilder sb = new StringBuilder(in.replaceAll("\\s", " "));
-        if (in.length() != 0) {
-            int idx = sb.indexOf(" ");
-            sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
-            while (idx > -1) {
-                sb.deleteCharAt(idx);
-                if (idx < sb.length()) {
-                    sb.setCharAt(idx, Character.toUpperCase(sb.charAt(idx)));
-                }
-                idx = sb.indexOf(" ");
-            }
-        }
-        return sb.toString();
     }
 
     private void sendFactoid(final TellSubject subject, final String sender, final String channel, final BotEvent event,
@@ -98,8 +69,7 @@ public class GetFactoidOperation extends BotOperation {
         String message = factoid.evaluate(subject, sender, replacedValue);
         if (message.startsWith("<see>")) {
             if (backtrack.contains(message)) {
-                getBot()
-                    .postMessage(new Message(channel, event, "Reference loop detected for factoid '" + message + "'."));
+                getBot().postMessage(new Message(channel, event, "Loop detected for factoid '" + message + "'."));
             } else {
                 backtrack.add(message);
                 getFactoid(subject, message.substring("<see>".length()).trim(), sender, channel, event, backtrack);
@@ -109,7 +79,7 @@ public class GetFactoidOperation extends BotOperation {
         } else if (message.startsWith("<action>")) {
             getBot().postAction(new Action(channel, event, message.substring("<action>".length())));
         } else {
-            getBot().postMessage(new Message(channel, event, sender + ", " + key + " is " + message));
+            getBot().postMessage(new Message(channel, event, message));
         }
     }
 
@@ -159,7 +129,6 @@ public class GetFactoidOperation extends BotOperation {
             }
         }
         return handled;
-
     }
 
     private TellSubject parseTellSubject(final String message) {

@@ -1,7 +1,10 @@
 package javabot.model;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +17,8 @@ import javax.persistence.TemporalType;
 
 import javabot.dao.FactoidDao;
 import javabot.operations.TellSubject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @Table(name = "factoids")
@@ -24,6 +29,8 @@ import javabot.operations.TellSubject;
 
 })
 public class Factoid implements Serializable, Persistent {
+    private static final Logger log = LoggerFactory.getLogger(Factoid.class);
+
     private Long id;
     private String name;
     private String value;
@@ -88,17 +95,55 @@ public class Factoid implements Serializable, Persistent {
     public String evaluate(final TellSubject subject, final String sender, final String replacedValue) {
         String message = getValue();
         String target = subject == null ? sender : subject.getTarget();
-        if(!message.contains("$who") && subject != null) {
+        if(subject != null && !message.contains("$who") && message.startsWith("<")) {
             message = new StringBuilder(message).insert(message.indexOf(">") + 1, "$who, ").toString();
         }
         message = message.replaceAll("\\$who", target);
+        String replaced = replacedValue;
+        if (getName().endsWith( "$1")) {
+            replaced = replacedValue;
+        }
+        if (getName().endsWith(" $+")) {
+            replaced = urlencode(replacedValue);
+        }
+        if ( getName().endsWith(" $^")) {
+            replaced = urlencode(camelcase(replacedValue));
+        }
         if (replacedValue != null) {
-            message = message.replaceAll("\\$1", replacedValue);
-            message = message.replaceAll("\\$\\+", replacedValue);
-            message = message.replaceAll("\\$\\^", replacedValue);
+            message = message.replaceAll("\\$1", replaced);
+            message = message.replaceAll("\\$\\+", replaced);
+            message = message.replaceAll("\\$\\^", replaced);
         }
         message = processRandomList(message);
+        if(!message.startsWith("<")) {
+            message = (subject == null ? sender : subject.getTarget()) + ", " + getName() + " is " + message;
+        }
         return message;
+    }
+
+    private String urlencode(String in) {
+        try {
+            return URLEncoder.encode(in, Charset.defaultCharset().displayName());
+        } catch (UnsupportedEncodingException e) {
+            log.error(e.getMessage(), e);
+            return in;
+        }
+    }
+
+    private String camelcase(String in) {
+        StringBuilder sb = new StringBuilder(in.replaceAll("\\s", " "));
+        if (in.length() != 0) {
+            int idx = sb.indexOf(" ");
+            sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
+            while (idx > -1) {
+                sb.deleteCharAt(idx);
+                if (idx < sb.length()) {
+                    sb.setCharAt(idx, Character.toUpperCase(sb.charAt(idx)));
+                }
+                idx = sb.indexOf(" ");
+            }
+        }
+        return sb.toString();
     }
 
     protected String processRandomList(final String message) {

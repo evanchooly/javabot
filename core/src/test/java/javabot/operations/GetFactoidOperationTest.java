@@ -106,12 +106,27 @@ public class GetFactoidOperationTest extends BaseOperationTest {
         testMessage("tell Javabot-Testing about camel I am a test", "Javabot-Testing, IAmATest");
         testMessage("tell Javabot-Testing about url I am a test", "Javabot-Testing, I+am+a+test");
 
-        testMessage("~~ Javabot-Testing hey", "Hello, Javabot-Testing");
-        testMessage("~~ Javabot-Testing camel I am a test", "Javabot-Testing, IAmATest");
-        testMessage("~~ Javabot-Testing url I am a test", "Javabot-Testing, I+am+a+test");
+        sleep(6000);
+        sendTell("~~ Javabot-Testing api", "Javabot-Testing, api is http://java.sun.com/javase/current/docs/api/index.html");
+        sendTell("~~ Javabot-Testing camel I am a test 2", "Javabot-Testing, IAmATest2");
+        sendTell("~~ Javabot-Testing url I am a test 2", "Javabot-Testing, I+am+a+test+2");
 
-        testMessage("~~Javabot-Testing hey", "Hello, Javabot-Testing");
-        testMessage("~~Javabot-Testing camel I am a test", "Javabot-Testing, IAmATest");
-        testMessage("~~Javabot-Testing url I am a test", "Javabot-Testing, I+am+a+test");
+        sleep(6000);
+        sendTell("~~Javabot-Testing api", "Javabot-Testing, api is http://java.sun.com/javase/current/docs/api/index.html");
+        sendTell("~~Javabot-Testing camel I am a test 3", "Javabot-Testing, IAmATest3");
+        sendTell("~~Javabot-Testing url I am a test 3", "Javabot-Testing, I+am+a+test+3");
+    }
+
+    @SuppressWarnings({"EmptyCatchBlock"})
+    private void sleep(final int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException exception) {
+        }
+    }
+    private void sendTell(final String message, final String response) {
+        final TestBot bot = getTestBot();
+        bot.sendMessage(getJavabotChannel(), message);
+        validateResponses(bot, response);
     }
 }

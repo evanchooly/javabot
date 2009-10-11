@@ -26,7 +26,7 @@ public abstract class BaseOperationTest extends BaseTest /*extends UnitilsTestNG
         validateResponses(bot, responses);
     }
 
-    private void validateResponses(final TestBot bot, final String... responses) {
+    protected void validateResponses(final TestBot bot, final String... responses) {
         final int length = responses == null ? 0 : responses.length;
         waitForResponses(bot, length);
         for (final String response : responses) {

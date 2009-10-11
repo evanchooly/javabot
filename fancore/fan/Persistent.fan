@@ -1,12 +1,27 @@
 using sql
 
+@serializable
 mixin Persistent {
-    const static Log log := Log.get("persistent")
+    const static Log log := Log.get("javabot")
 
     private static const SqlService service := SqlService.make("jdbc:postgresql:javabot", "javabot", "javabot", PostgresqlDialect.make()).open
 
+    Persistent save() {
+        Str query := "insert into ${type.facet(@Table)} ${columns} values ${values}"
+        echo("save query = ${query}")
+        return this
+    }
+
     static Persistent[] findAll(Type t) {
         executeQuery(t, "select * from ${tableName(t)}")
+    }
+
+    Str columns() {
+        type.fields.join(",")
+    }
+
+    Str values() {
+        ""
     }
 
     static Obj executeQuery(Type t, Str query, [Str:Obj?] params := [:]) {
@@ -24,20 +39,20 @@ mixin Persistent {
                 statement.close
             }
         } catch(SqlErr err) {
-            echo("query = ${query}")
-            echo("params = ${params}")
-            echo(err)
-            throw Err.make("can't load ${t}")
+            log.debug("query = ${query}")
+            log.debug("params = ${params}")
+            log.debug(err.message, err)
+            throw Err.make("can't load ${t}: ${err.message}")
         }
         return list
     }
     
-    static Str tableName(Type t) {
+    private static Str tableName(Type t) {
         name := t.facets[@Table]
         return name == null ? t.name : name
     }
 
-    static Str colName(Field f) {
+    private static Str colName(Field f) {
         facet := f.facets[@Column]
         return facet is Bool ? f.name : facet
     }
@@ -55,7 +70,6 @@ mixin Persistent {
                 }
             }
         }
-        echo("done reading in ${this}")
     }
 
     Void loadCollection(Field f) {
@@ -65,12 +79,11 @@ mixin Persistent {
                 statement.queryEach(["id": this->id]) | Row row | {
                     f.get(this)->add(row[row.cols[0]])
                 }
-                echo("field type = ${f.of}")
             } finally {
                 statement.close
             }
         } catch(SqlErr err) {
-            log.error("can't set field ${f.of} on ${f.parent}:\n ${err}")
+            log.debug("can't set field ${f.of} on ${f.parent}:\n ${err}")
         }
     }
 
@@ -96,9 +109,6 @@ mixin Persistent {
         if(value == null) {
             return null
         }
-        Str[] date := value.split
-        Int month := Month.fromStr(date[1].localeLower).ordinal + 1
-        Str monthVal := (month < 10 ? "0" : "") + month
-        return DateTime.fromStr("${date[5]}-${monthVal}-${date[2]}T${date[3]}+00:00 UTC")
+        return DateTime.fromIso(value.replace(" ", "T") + "Z")
     }
 }

@@ -479,7 +479,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     }
 
     public String[] getStartStrings() {
-        return startStrings;
+        return new String[] { getNick(), "~" };
     }
 
     public void setStartStrings(final String[] startStrings) {
