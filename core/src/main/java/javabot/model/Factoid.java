@@ -95,7 +95,7 @@ public class Factoid implements Serializable, Persistent {
     public String evaluate(final TellSubject subject, final String sender, final String replacedValue) {
         String message = getValue();
         String target = subject == null ? sender : subject.getTarget();
-        if(subject != null && !message.contains("$who") && message.startsWith("<")) {
+        if(subject != null && !message.contains("$who") && message.startsWith("<reply>")) {
             message = new StringBuilder(message).insert(message.indexOf(">") + 1, "$who, ").toString();
         }
         message = message.replaceAll("\\$who", target);

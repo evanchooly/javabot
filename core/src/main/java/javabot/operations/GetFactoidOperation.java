@@ -119,7 +119,7 @@ public class GetFactoidOperation extends BotOperation {
                     } else if (thing.endsWith("++") || thing.endsWith("--")) {
                         getBot().postMessage(new Message(channel, event, "I'm afraid I can't let you do that, Dave."));
                     } else {
-                        getFactoid(tellSubject, thing, event.getLogin(), channel, event, new HashSet<String>());
+                        getFactoid(tellSubject, thing, event.getSender(), channel, event, new HashSet<String>());
                         throttler.addThrottleItem(info);
                     }
                 }
