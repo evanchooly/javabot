@@ -87,7 +87,6 @@ public class GetFactoidOperation extends BotOperation {
         final String message = event.getMessage();
         final String channel = event.getChannel();
         final String login = event.getLogin();
-        final String hostname = event.getHostname();
         final String sender = event.getSender();
         final boolean isPrivateMessage = sender.equals(channel);
         boolean handled = false;
