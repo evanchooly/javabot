@@ -86,9 +86,7 @@ public class GetFactoidOperation extends BotOperation {
     private boolean tell(final BotEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
-        final String login = event.getLogin();
         final String sender = event.getSender();
-        final boolean isPrivateMessage = sender.equals(channel);
         boolean handled = false;
         if (isTellCommand(message)) {
             final TellSubject tellSubject = parseTellSubject(message);
@@ -114,14 +112,14 @@ public class GetFactoidOperation extends BotOperation {
                         getBot().postMessage(new Message(channel, event, sender + ", Slow down, Speedy Gonzalez!"));
                     } else if (!getBot().userIsOnChannel(nick, channel)) {
                         getBot().postMessage(new Message(channel, event, "The user " + nick + " is not on " + channel));
-                    } else if (isPrivateMessage && !getBot().isOnSameChannelAs(nick)) {
+                    } else if (sender.equals(channel) && !getBot().isOnSameChannelAs(nick)) {
                         getBot()
                             .postMessage(new Message(sender, event, "I will not send a message to someone who is not on any"
                                 + " of my channels."));
                     } else if (thing.endsWith("++") || thing.endsWith("--")) {
                         getBot().postMessage(new Message(channel, event, "I'm afraid I can't let you do that, Dave."));
                     } else {
-                        getFactoid(tellSubject, thing, login, channel, event, new HashSet<String>());
+                        getFactoid(tellSubject, thing, event.getLogin(), channel, event, new HashSet<String>());
                         throttler.addThrottleItem(info);
                     }
                 }
