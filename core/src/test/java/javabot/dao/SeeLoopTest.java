@@ -27,7 +27,7 @@ public class SeeLoopTest extends BaseOperationTest {
         testMessage("see1 is <see>see2", ok);
         testMessage("see2 is <see>see3", ok);
         testMessage("see3 is <see>see3", ok);
-        testMessage("see1", "Reference loop detected for factoid '<see>see3'.");
+        testMessage("see1", "Loop detected for factoid '<see>see3'.");
         deleteSees();
     }
 
@@ -42,7 +42,7 @@ public class SeeLoopTest extends BaseOperationTest {
         testMessage("see1 is <see>see2", ok);
         testMessage("see2 is <see>see3", ok);
         testMessage("see3 is <see>see1", ok);
-        testMessage("see1", "Reference loop detected for factoid '<see>see2'.");
+        testMessage("see1", "Loop detected for factoid '<see>see2'.");
         deleteSees();
     }
 

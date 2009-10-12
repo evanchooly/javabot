@@ -1,8 +1,5 @@
 package javabot.operations;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class GetFactoidOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(GetFactoidOperation.class);
-    private static final Throttler<TellInfo> throttler = new Throttler<TellInfo>(100, 5 * 1000);
+    private static final Throttler<TellInfo> throttler = new Throttler<TellInfo>(100, Javabot.THROTTLE_TIME);
     @Autowired
     private FactoidDao factoidDao;
 

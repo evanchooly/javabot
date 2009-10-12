@@ -117,6 +117,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         BotOperation.getName(UnixCommandOperation.class)
     );
     private final ExecutorService executors;
+    public static final int THROTTLE_TIME = 5 * 1000;
 
     static {
         STANDARD_OPERATIONS = new ArrayList<String>();
@@ -383,7 +384,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
                     if (!handled && message.startsWith(startString)) {
                         String content = message.substring(startString.length()).trim();
                         while(content.charAt(0) == ':' || content.charAt(0) == ',') {
-                            content = content.substring(1);
+                            content = content.substring(1).trim();
                         }
                         handled = getResponses(channel, sender, login, hostname, content);
                     }

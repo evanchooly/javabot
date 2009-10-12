@@ -16,7 +16,7 @@ public class KarmaChangeOperation extends BotOperation {
     @Autowired
     private KarmaDao dao;
     private static final Logger log = LoggerFactory.getLogger(KarmaChangeOperation.class);
-    private static final Throttler<KarmaInfo> throttler = new Throttler<KarmaInfo>(100, 20 * 1000);
+    private static final Throttler<KarmaInfo> throttler = new Throttler<KarmaInfo>(100, Javabot.THROTTLE_TIME);
 
     public KarmaChangeOperation(final Javabot bot) {
         super(bot);
@@ -53,7 +53,7 @@ public class KarmaChangeOperation extends BotOperation {
         } else if (message.endsWith("++") || message.endsWith("--")) {
             if (throttler.isThrottled(new KarmaInfo(sender, nick))) {
                 if (log.isDebugEnabled()) {
-                    log.debug("skipping karma change by " + nick + "for " + nick);
+                    log.debug("skipping karma change by " + nick + " for " + nick);
                 }
                 getBot().postMessage(new Message(channel, event, "Rest those fingers, Tex"));
                 return true;
