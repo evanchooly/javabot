@@ -171,7 +171,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
             setLogin(config.getNick());
             setNickPassword(config.getPassword());
             authWait = 3000;
-            startStrings = config.getPrefixes().split(" ");
+            startStrings = new String[] { getName(), "~" };
         } catch (Exception e) {
             log.debug(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
@@ -375,15 +375,17 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     private void processMessage(final String channel, final String message, final String sender, final String login,
         final String hostname) {
-        final Channel chan = channelDao.get(channel);
         try {
             logsDao.logMessage(Logs.Type.MESSAGE, sender, channel, message);
             if (isValidSender(sender)) {
                 boolean handled = false;
                 for (final String startString : startStrings) {
                     if (!handled && message.startsWith(startString)) {
-                        handled = getResponses(channel, sender, login, hostname,
-                            message.substring(startString.length()).trim());
+                        String content = message.substring(startString.length()).trim();
+                        while(content.charAt(0) == ':' || content.charAt(0) == ',') {
+                            content = content.substring(1);
+                        }
+                        handled = getResponses(channel, sender, login, hostname, content);
                     }
                 }
                 if (!handled) {
@@ -402,9 +404,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     public boolean getResponses(final String channel, final String sender, final String login,
         final String hostname, final String message) {
-        if (log.isDebugEnabled()) {
-            log.debug("getResponses " + message);
-        }
         final Iterator<BotOperation> iterator = getOperations();
         boolean handled = false;
         final BotEvent event = new BotEvent(channel, sender, login, hostname, message);
@@ -422,9 +421,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     public boolean getChannelResponses(final String channel, final String sender, final String login,
         final String hostname, final String message) {
-        if (log.isDebugEnabled()) {
-            log.debug("getChannelResponses " + message);
-        }
         final Iterator<BotOperation> iterator = getOperations();
         boolean handled = false;
         while (!handled && iterator.hasNext()) {
@@ -497,9 +493,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     }
 
     protected final void logMessage(final Message message) {
-        if (log.isDebugEnabled()) {
-            log.debug("Message " + message.getMessage());
-        }
         final BotEvent event = message.getEvent();
         final String sender = getNick();
         final String channel = event.getChannel();

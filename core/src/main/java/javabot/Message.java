@@ -25,14 +25,6 @@ public class Message {
         return message;
     }
 
-    public String formatResponse(Javabot bot, String nick) {
-        return getMessage().startsWith(nick) ? getMessage() : MessageFormat.format("{0}, {1}", nick, getMessage());
-    }
-
-    public String logEntry() {
-        return "said: " + getMessage();
-    }
-
     public void send(Javabot bot) {
         bot.postMessage(this);
     }
