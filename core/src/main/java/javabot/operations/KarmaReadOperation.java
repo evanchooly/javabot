@@ -1,5 +1,8 @@
 package javabot.operations;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -16,27 +19,26 @@ public class KarmaReadOperation extends BotOperation {
     }
 
     @Override
-    public boolean handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
         final String sender = event.getSender();
-        boolean handled = false;
+        List<Message> response = new ArrayList<Message>();
         if (message.startsWith("karma ")) {
             final String nick = message.substring("karma ".length()).toLowerCase();
             final Karma karma = karmaDao.find(nick);
             if (karma != null) {
                 if (nick.equalsIgnoreCase(sender)) {
-                    getBot().postMessage(new Message(channel, event,
-                        sender + ", you have a karma level of " + karma.getValue()));
+                    response.add((new Message(channel, event,
+                        sender + ", you have a karma level of " + karma.getValue())));
                 } else {
-                    getBot().postMessage(new Message(channel, event,
-                        nick + " has a karma level of " + karma.getValue() + ", " + sender));
+                    response.add((new Message(channel, event,
+                        nick + " has a karma level of " + karma.getValue() + ", " + sender)));
                 }
             } else {
-                getBot().postMessage(new Message(channel, event, nick + " has no karma, " + sender));
+                response.add((new Message(channel, event, nick + " has no karma, " + sender)));
             }
-            handled = true;
         }
-        return handled;
+        return response;
     }
 }

@@ -22,14 +22,14 @@ public class ListChannels extends BaseCommand {
     private ChannelDao dao;
 
     @Override
-    public void execute(final Javabot bot, final BotEvent event) {
+    public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
         final List<Channel> channels = dao.find(new QueryParam(0, Integer.MAX_VALUE));
-        bot.postMessage(new Message(event.getChannel(), event, event.getSender() + ", I'll list the channels in a"
+        responses.add(new Message(event.getChannel(), event, event.getSender() + ", I'll list the channels in a"
             + " private message for you"));
         List<String> chans = new ArrayList<String>();
         for (final Channel channel : channels) {
             chans.add(String.format("%s %s", channel.getName(), channel.getLogged() ? "(logged)" : ""));
         }
-        bot.postMessage(new Message(event.getSender(), event, StringUtils.join(chans, ", ")));
+        responses.add(new Message(event.getSender(), event, StringUtils.join(chans, ", ")));
     }
 }

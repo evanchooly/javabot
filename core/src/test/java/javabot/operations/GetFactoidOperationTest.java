@@ -105,20 +105,23 @@ public class GetFactoidOperationTest extends BaseOperationTest {
         testMessage("tell Javabot-Testing about hey", "Hello, Javabot-Testing");
         testMessage("tell Javabot-Testing about camel I am a test", "Javabot-Testing, IAmATest");
         testMessage("tell Javabot-Testing about url I am a test", "Javabot-Testing, I+am+a+test");
+        testMessage("tell Javabot-Testing about javadoc String", "Javabot-Testing: http://is.gd/4ygdW [JDK: java.lang.String]");
 
         sleep(6000);
         sendTell("~~ Javabot-Testing seeTest", "Javabot-Testing, I'm a reply!");
-        sendTell("~~ Javabot-Testing bobblahblaw", "Javabot-Testing, I have no idea what bobblahblaw is.");
+        sendTell("~~ Javabot-Testing bobloblaw", "Javabot-Testing, I have no idea what bobloblaw is.");
         sendTell("~~ Javabot-Testing api", "Javabot-Testing, api is http://java.sun.com/javase/current/docs/api/index.html");
         sendTell("~~ Javabot-Testing camel I am a test 2", "Javabot-Testing, IAmATest2");
         sendTell("~~ Javabot-Testing url I am a test 2", "Javabot-Testing, I+am+a+test+2");
+        sendTell("~~ Javabot-Testing javadoc String", "Javabot-Testing: http://is.gd/4ygdW [JDK: java.lang.String]");
 
         sleep(6000);
         sendTell("~~Javabot-Testing seeTest", "Javabot-Testing, I'm a reply!");
-        sendTell("~~Javabot-Testing bobblahblaw", "Javabot-Testing, I have no idea what bobblahblaw is.");
+        sendTell("~~Javabot-Testing bobloblaw", "Javabot-Testing, I have no idea what bobloblaw is.");
         sendTell("~~Javabot-Testing api", "Javabot-Testing, api is http://java.sun.com/javase/current/docs/api/index.html");
         sendTell("~~Javabot-Testing camel I am a test 3", "Javabot-Testing, IAmATest3");
         sendTell("~~Javabot-Testing url I am a test 3", "Javabot-Testing, I+am+a+test+3");
+        sendTell("~~Javabot-Testing javadoc String", "Javabot-Testing: http://is.gd/4ygdW [JDK: java.lang.String]");
     }
 
     @SuppressWarnings({"EmptyCatchBlock"})

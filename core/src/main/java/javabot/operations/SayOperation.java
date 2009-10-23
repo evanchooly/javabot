@@ -1,5 +1,8 @@
 package javabot.operations;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -10,13 +13,12 @@ public class SayOperation extends BotOperation {
     }
 
     @Override
-    public boolean handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         String message = event.getMessage();
+        List<Message> responses = new ArrayList<Message>();
         if (message.startsWith("say ")) {
-            message = message.substring("say ".length());
-            getBot().postMessage(new Message(event.getChannel(), event, message));
-            return true;
+            responses.add(new Message(event.getChannel(), event, message.substring("say ".length())));
         }
-        return false;
+        return responses;
     }
 }

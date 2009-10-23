@@ -1,5 +1,7 @@
 package javabot.commands;
 
+import java.util.List;
+
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -21,16 +23,16 @@ public class AddAdmin extends BaseCommand {
     String hostName;
 
     @Override
-    public void execute(final Javabot bot, final BotEvent event) {
+    public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
         final User user = findUser(bot, event, userName);
         if (user == null) {
-            bot.postMessage(new Message(event.getChannel(), event, "That user is not on this channel: " + userName));
+            responses.add(new Message(event.getChannel(), event, "That user is not on this channel: " + userName));
         } else {
             if (dao.getAdmin(user.getNick(), hostName) != null) {
-                bot.postMessage(new Message(event.getChannel(), event, user.getNick() + " is already a bot admin"));
+                responses.add(new Message(event.getChannel(), event, user.getNick() + " is already a bot admin"));
             } else {
                 dao.create(user.getNick(), hostName);
-                bot.postMessage(
+                responses.add(
                     new Message(event.getChannel(), event, user.getNick() + " has been added as a bot admin"));
             }
         }

@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SpringApplicationContext("classpath:test-application-config.xml")
-public abstract class BaseOperationTest extends BaseTest /*extends UnitilsTestNG*/ {
+public abstract class BaseOperationTest extends BaseTest {
     private static final Logger log = LoggerFactory.getLogger(BaseOperationTest.class);
     
     protected void testMessageList(final String message, final List<String> responses) {

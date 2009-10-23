@@ -1,6 +1,5 @@
 package javabot.commands;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javabot.BotEvent;
@@ -17,12 +16,12 @@ public class DisableOperation extends OperationsCommand {
     String name;
 
     @Override
-    public void execute(final Javabot bot, final BotEvent event) {
+    public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
         if (bot.removeOperation(name)) {
-            bot.postMessage(new Message(event.getChannel(), event, name + " successfully disabled."));
-            listCurrent(bot, event);
+            responses.add(new Message(event.getChannel(), event, name + " successfully disabled."));
+            listCurrent(responses, bot, event);
         } else {
-            bot.postMessage(new Message(event.getChannel(), event, name + " not disabled.  Either it is not running"
+            responses.add(new Message(event.getChannel(), event, name + " not disabled.  Either it is not running"
                 + " or it's not a valid name.  see listOperations for details."));
         }
     }

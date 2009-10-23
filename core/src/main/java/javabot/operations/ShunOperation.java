@@ -1,6 +1,8 @@
 package javabot.operations;
 
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 
 import javabot.BotEvent;
 import javabot.Javabot;
@@ -24,18 +26,18 @@ public class ShunOperation extends BotOperation {
         super(javabot);
     }
 
-    public boolean handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         final String message = event.getMessage();
+        final List<Message> responses = new ArrayList<Message>();
         if (message.startsWith("shun ")) {
             final String[] parts = message.substring(5).split(" ");
             if (parts.length == 0) {
-                getBot().postMessage(new Message(event.getChannel(), event, "Usage:  shun <user> [<seconds>]"));
+                responses.add(new Message(event.getChannel(), event, "Usage:  shun <user> [<seconds>]"));
             } else {
-                getBot().postMessage(new Message(event.getChannel(), event, getShunnedMessage(parts)));
+                responses.add(new Message(event.getChannel(), event, getShunnedMessage(parts)));
             }
-            return true;
         }
-        return false;
+        return responses;
     }
 
     private Date calculateShunExpiry(final long duration) {

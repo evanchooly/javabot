@@ -1,8 +1,6 @@
 package javabot.commands;
 
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
 
 import javabot.Message;
 import javabot.Javabot;
@@ -18,12 +16,12 @@ public class EnableOperation extends OperationsCommand {
     String name;
 
     @Override
-    public void execute(final Javabot bot, final BotEvent event) {
+    public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
         if (bot.addOperation(name)) {
-            bot.postMessage(new Message(event.getChannel(), event, name + " successfully enabled."));
-            listCurrent(bot, event);
+            responses.add(new Message(event.getChannel(), event, name + " successfully enabled."));
+            listCurrent(responses, bot, event);
         } else {
-            bot.postMessage(new Message(event.getChannel(), event, name + " not enabled.  Either it is already running"
+            responses.add(new Message(event.getChannel(), event, name + " not enabled.  Either it is already running"
                 + " or it's not a valid name.  see listOperations for details."));
         }
     }

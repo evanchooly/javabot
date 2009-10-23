@@ -4,18 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javabot.BotEvent;
-import javabot.Message;
 import javabot.Javabot;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javabot.Message;
 
 /**
  * @author ricky_clarkson
  * @janitor joed
  */
 public class NickometerOperation extends BotOperation {
-    private static final Logger log = LoggerFactory.getLogger(NickometerOperation.class);
-
     public NickometerOperation(final Javabot javabot) {
         super(javabot);
     }
@@ -24,16 +20,16 @@ public class NickometerOperation extends BotOperation {
      * @see BotOperation#handleMessage(BotEvent)
      */
     @Override
-    public boolean handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         final String message = event.getMessage();
         final String[] messageParts = message.split(" ");
-        boolean handled = false;
         final List<String> words2 = new ArrayList<String>();
         for (final String word1 : messageParts) {
             if (!("".equals(word1) || " ".equals(word1))) {
                 words2.add(word1);
             }
         }
+        final List<Message> responses = new ArrayList<Message>();
         if (words2.size() > 1 && "nickometer".equals(words2.get(0))) {
             final String nick = words2.get(1);
             if (nick.length() != 0) {
@@ -49,10 +45,9 @@ public class NickometerOperation extends BotOperation {
                 double tempLameness = (double) lameness / nick.length();
                 tempLameness = Math.sqrt(tempLameness);
                 lameness = (int) (tempLameness * 100);
-                getBot().postMessage(new Message(event.getChannel(), event, "The nick " + nick + " is " + lameness + "% lame."));
-                handled = true;
+                responses.add(new Message(event.getChannel(), event, "The nick " + nick + " is " + lameness + "% lame."));
             }
         }
-        return handled;
+        return responses;
     }
 }

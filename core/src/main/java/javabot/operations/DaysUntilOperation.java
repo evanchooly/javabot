@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 
 import javabot.BotEvent;
 import javabot.Javabot;
@@ -15,9 +17,9 @@ public class DaysUntilOperation extends BotOperation {
     }
 
     @Override
-    public boolean handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         String message = event.getMessage().toLowerCase();
-        boolean handled = false;
+        List<Message> responses = new ArrayList<Message>();
         if (message.startsWith("days until ")) {
             final String sender = event.getSender();
             message = message.substring("days until ".length());
@@ -33,23 +35,22 @@ public class DaysUntilOperation extends BotOperation {
                 sdf.applyPattern(formats[i]);
                 try {
                     d = sdf.parse(message);
-                    calcTime(event, message, sender, calendar, d);
+                    calcTime(responses, event, message, sender, calendar, d);
                 } catch (ParseException e) {
                     // I think we just want to ignore this...
                 }
                 i++;
             }
             if (d == null) {
-                getBot().postMessage(new Message(event.getChannel(), event,
+                responses.add(new Message(event.getChannel(), event,
                     sender + ":  you might want to consider putting the date in a proper format..."));
             }
-            handled = true;
         }
-        return handled;
+        return responses;
     }
 
-    private void calcTime(final BotEvent event, final String message, final String sender, final Calendar calendar,
-        final Date d) {
+    private void calcTime(final List<Message> responses, final BotEvent event, final String message,
+        final String sender, final Calendar calendar, final Date d) {
         calendar.setTime(d);
         final Calendar today = Calendar.getInstance();
         today.set(Calendar.HOUR_OF_DAY, 0);
@@ -58,7 +59,7 @@ public class DaysUntilOperation extends BotOperation {
         today.set(Calendar.MILLISECOND, 0);
         long millis = calendar.getTimeInMillis() - today.getTimeInMillis();
         final double days = millis /= 86400000;
-        getBot().postMessage(new Message(event.getChannel(), event,
+        responses.add(new Message(event.getChannel(), event,
             sender + ":  there are " + (int) days + " days until " + message + "."));
     }
 }

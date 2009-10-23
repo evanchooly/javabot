@@ -48,22 +48,21 @@ public class AolBonicsOperation extends BotOperation {
     }
 
     @Override
-    public boolean handleChannelMessage(final BotEvent event) {
+    public List<Message> handleChannelMessage(final BotEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
         final String[] split = message.split(" ");
-        boolean handled = false;
         if (log.isDebugEnabled()) {
             log.debug("AolBonicsOperation: " + message);
         }
+        final List<Message> responses = new ArrayList<Message>();
         for (final String bad : split) {
-            if (phrases.contains(bad.toLowerCase().replaceAll("!|\\.|\\?|,", "")) && !handled) {
-                handled = true;
-                getBot().postMessage( new Message(channel, event,
+            if (phrases.contains(bad.toLowerCase().replaceAll("!|\\.|\\?|,", "")) && responses.isEmpty()) {
+                responses.add( new Message(channel, event,
                     String.format("%s: Please skip the aolbonics, %s", event.getSender(), getInsult())));
             }
         }
-        return handled;
+        return responses;
     }
 
     private String getInsult() {

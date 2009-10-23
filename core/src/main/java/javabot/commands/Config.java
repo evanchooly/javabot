@@ -2,6 +2,7 @@ package javabot.commands;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Javabot;
@@ -19,10 +20,10 @@ public class Config extends BaseCommand {
     String value;
 
     @Override
-    public void execute(final Javabot bot, final BotEvent event) {
+    public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
         final javabot.model.Config config = dao.get();
         if (StringUtils.isEmpty(property)) {
-            bot.postMessage(new Message(event.getSender(), event, config.toString()));
+            responses.add(new Message(event.getSender(), event, config.toString()));
         } else {
             try {
                 final String name = property.substring(0, 1).toUpperCase() + property.substring(1);
@@ -34,14 +35,14 @@ public class Config extends BaseCommand {
                     dao.save(config);
                     bot.loadConfig(config);
                 } catch (IllegalAccessException e) {
-                    bot.postMessage(new Message(event.getSender(), event, e.getMessage()));
+                    responses.add(new Message(event.getSender(), event, e.getMessage()));
                 } catch (InvocationTargetException e) {
-                    bot.postMessage(new Message(event.getSender(), event, e.getMessage()));
+                    responses.add(new Message(event.getSender(), event, e.getMessage()));
                 } catch (NumberFormatException e) {
-                    bot.postMessage(new Message(event.getSender(), event, e.getMessage()));
+                    responses.add(new Message(event.getSender(), event, e.getMessage()));
                 }
             } catch (NoSuchMethodException e) {
-                bot.postMessage(new Message(event.getSender(), event, "I don't know of a property named " + property));
+                responses.add(new Message(event.getSender(), event, "I don't know of a property named " + property));
             }
         }
     }

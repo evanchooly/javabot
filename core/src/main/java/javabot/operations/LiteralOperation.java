@@ -1,5 +1,8 @@
 package javabot.operations;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -22,20 +25,19 @@ public class LiteralOperation extends BotOperation {
      * @see BotOperation#handleMessage(BotEvent)
      */
     @Override
-    public boolean handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         final String message = event.getMessage().toLowerCase();
         final String channel = event.getChannel();
-        boolean handled = false;
+        final List<Message> responses = new ArrayList<Message>();
         if (message.startsWith("literal ")) {
             final String key = message.substring("literal ".length());
             final Factoid factoid = dao.getFactoid(key);
             if (factoid != null) {
-                getBot().postMessage(new Message(channel, event, factoid.getValue()));
+                responses.add(new Message(channel, event, factoid.getValue()));
             } else {
-                getBot().postMessage(new Message(channel, event, "I have no factoid called \"" + key + "\""));
+                responses.add(new Message(channel, event, "I have no factoid called \"" + key + "\""));
             }
-            handled = true;
         }
-        return handled;
+        return responses;
     }
 }

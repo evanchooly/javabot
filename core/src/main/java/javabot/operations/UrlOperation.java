@@ -3,6 +3,8 @@ package javabot.operations;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.List;
+import java.util.ArrayList;
 
 import javabot.BotEvent;
 import javabot.Javabot;
@@ -23,21 +25,20 @@ public abstract class UrlOperation extends BotOperation {
     }
 
     @Override
-    public final boolean handleMessage(final BotEvent event) {
+    public final List<Message> handleMessage(final BotEvent event) {
         String message = event.getMessage();
         final String channel = event.getChannel();
-        boolean handled = false;
+        final List<Message> responses = new ArrayList<Message>();
         if (message.startsWith(getTrigger())) {
             message = message.substring(getTrigger().length());
             try {
-                getBot().postMessage(new Message(channel, event,
+                responses.add(new Message(channel, event,
                     getBaseUrl() + URLEncoder.encode(message, Charset.defaultCharset().displayName())));
-                handled = true;
             } catch (UnsupportedEncodingException e) {
                 log.error(e.getMessage(), e);
             }
         }
-        return handled;
+        return responses;
     }
 
     protected abstract String getBaseUrl();

@@ -1,5 +1,8 @@
 package javabot.operations;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -15,30 +18,30 @@ public class ForgetFactoidOperation extends BotOperation {
     }
 
     @Override
-    public boolean handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         final String channel = event.getChannel();
         String message = event.getMessage();
         final String sender = event.getSender();
+        final List<Message> responses = new ArrayList<Message>();
 
-        boolean handled = false;
         if (message.startsWith("forget ")) {
             message = message.substring("forget ".length());
             if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
                 message = message.substring(0, message.length() - 1);
             }
             final String key = message.toLowerCase();
-            forget(event, channel, sender, key);
-            handled = true;
+            forget(responses, event, channel, sender, key);
         }
-        return handled;
+        return responses;
     }
 
-    protected void forget(final BotEvent event, final String channel, final String sender, final String key) {
+    protected void forget(final List<Message> responses, final BotEvent event, final String channel,
+        final String sender, final String key) {
         if (factoidDao.hasFactoid(key)) {
-            getBot().postMessage(new Message(channel, event, String.format("I forgot about %s, %s.", key, sender)));
+            responses.add(new Message(channel, event, String.format("I forgot about %s, %s.", key, sender)));
             factoidDao.delete(sender, key);
         } else {
-            getBot().postMessage(new Message(channel, event,
+            responses.add(new Message(channel, event,
                 String.format("I never knew about %s anyway, %s.", key, sender)));
         }
     }

@@ -1,5 +1,8 @@
 package javabot.operations;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -38,29 +41,25 @@ public class KarmaChangeOperation extends BotOperation {
 
     @Override
     @Transactional
-    public boolean handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         String message = event.getMessage();
         final String sender = event.getSender();
         final String channel = event.getChannel();
         final String nick = message.substring(0, message.length() - 2).trim().toLowerCase();
-        boolean handled = false;
+        List<Message> response = new ArrayList<Message>();
         if (message.contains(" ") || "".equals(nick)) {
-            handled = false;
         } else if (!channel.startsWith("#") && (message.endsWith("++") || message.endsWith("--"))) {
-            getBot()
-                .postMessage(new Message(channel, event, "Sorry, karma changes are not allowed in private messages."));
-            handled = true;
+            response.add(new Message(channel, event, "Sorry, karma changes are not allowed in private messages."));
         } else if (message.endsWith("++") || message.endsWith("--")) {
             if (throttler.isThrottled(new KarmaInfo(sender, nick))) {
                 if (log.isDebugEnabled()) {
                     log.debug("skipping karma change by " + nick + " for " + nick);
                 }
-                getBot().postMessage(new Message(channel, event, "Rest those fingers, Tex"));
-                return true;
+                response.add(new Message(channel, event, "Rest those fingers, Tex"));
             }
             throttler.addThrottleItem(new KarmaInfo(sender, nick));
             if (nick.equals(sender.toLowerCase())) {
-                getBot().postMessage(new Message(channel, event, "Changing one's own karma is not permitted."));
+                response.add(new Message(channel, event, "Changing one's own karma is not permitted."));
                 message = "--";
             }
             Karma karma = dao.find(nick);
@@ -77,9 +76,9 @@ public class KarmaChangeOperation extends BotOperation {
             dao.save(karma);
             final KarmaReadOperation karmaRead = (KarmaReadOperation) getBot()
                 .getOperation(BotOperation.getName(KarmaReadOperation.class));
-            handled = karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(),
-                event.getLogin(), event.getHostname(), "karma " + nick));
+            response.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(),
+                event.getLogin(), event.getHostname(), "karma " + nick)));
         }
-        return handled;
+        return response;
     }
 }

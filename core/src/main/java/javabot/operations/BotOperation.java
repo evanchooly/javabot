@@ -1,7 +1,11 @@
 package javabot.operations;
 
+import java.util.List;
+import java.util.Collections;
+
 import javabot.BotEvent;
 import javabot.Javabot;
+import javabot.Message;
 
 public abstract class BotOperation {
     private final Javabot bot;
@@ -22,12 +26,12 @@ public abstract class BotOperation {
      *
      * @return
      */
-    public boolean handleMessage(final BotEvent event) {
-        return false;
+    public List<Message> handleMessage(final BotEvent event) {
+        return Collections.emptyList();
     }
 
-    public boolean handleChannelMessage(final BotEvent event) {
-        return false;
+    public List<Message> handleChannelMessage(final BotEvent event) {
+        return Collections.emptyList();
     }
 
     public static String getName(final Class clazz) {

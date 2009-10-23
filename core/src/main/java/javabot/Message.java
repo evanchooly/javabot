@@ -1,7 +1,5 @@
 package javabot;
 
-import java.text.MessageFormat;
-
 public class Message {
     private final String destination;
     private final String message;
@@ -32,7 +30,8 @@ public class Message {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " {" +
-            "destination='" + destination + "'" +
+            "type='" + getClass().getSimpleName() + "'" +
+            ", destination='" + destination + "'" +
             ", message='" + message + "'" +
             ", event='" + event + "'" +
             "}";

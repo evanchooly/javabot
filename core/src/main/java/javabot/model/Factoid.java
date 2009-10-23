@@ -165,4 +165,17 @@ public class Factoid implements Serializable, Persistent {
         return result;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("Factoid");
+        sb.append("{id=").append(id);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", value='").append(value).append('\'');
+        sb.append(", userName='").append(userName).append('\'');
+        sb.append(", updated=").append(updated);
+        sb.append(", lastUsed=").append(lastUsed);
+        sb.append('}');
+        return sb.toString();
+    }
 }

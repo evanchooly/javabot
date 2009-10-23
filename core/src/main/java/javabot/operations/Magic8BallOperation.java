@@ -1,5 +1,8 @@
 package javabot.operations;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -35,14 +38,13 @@ public class Magic8BallOperation extends BotOperation {
     }
 
     @Override
-    public boolean handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         final String message = event.getMessage().toLowerCase();
         final String channel = event.getChannel();
-        boolean handled = false;
+        List<Message> messages = new ArrayList<Message>();
         if (message.startsWith("should i ") || message.startsWith("magic8 ")) {
-            getBot().postMessage(new Message(channel, event, responses[((int) (Math.random() * responses.length))]));
-            handled = true;
+            messages.add(new Message(channel, event, responses[((int) (Math.random() * responses.length))]));
         }
-        return handled;
+        return messages;
     }
 }

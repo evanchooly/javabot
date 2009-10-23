@@ -2,11 +2,14 @@ package javabot.operations;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javabot.Action;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
+import javabot.TellMessage;
 import javabot.operations.throttle.Throttler;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
@@ -25,15 +28,18 @@ public class GetFactoidOperation extends BotOperation {
     }
 
     @Override
-    public boolean handleMessage(final BotEvent event) {
-        if (!tell(event)) {
-            getFactoid(null, event.getMessage(), event.getSender(), event.getChannel(), event, new HashSet<String>());
+    public List<Message> handleMessage(final BotEvent event) {
+        List<Message> responses = tell(event);
+        if (responses.isEmpty()) {
+            responses = new ArrayList<Message>();
+            responses.add(getFactoid(null, event.getMessage(), event.getSender(), event.getChannel(), event,
+                new HashSet<String>()));
         }
-        return true;
+        return responses;
     }
 
-    private void getFactoid(final TellSubject subject, final String toFind, final String sender, final String channel, final BotEvent event,
-        final Set<String> backtrack) {
+    private Message getFactoid(final TellSubject subject, final String toFind, final String sender, final String channel,
+        final BotEvent event, final Set<String> backtrack) {
         String message = toFind;
         if (log.isDebugEnabled()) {
             log.debug(sender + " : " + message);
@@ -43,7 +49,6 @@ public class GetFactoidOperation extends BotOperation {
         }
         final String firstWord = message.split(" ")[0];
         String params = message.substring(firstWord.length()).trim();
-        final String key = message;
         Factoid factoid = factoidDao.getFactoid(message.toLowerCase());
         if (factoid == null) {
             factoid = factoidDao.getFactoid(firstWord + " $1");
@@ -54,42 +59,39 @@ public class GetFactoidOperation extends BotOperation {
         if (factoid == null) {
             factoid = factoidDao.getFactoid(firstWord + " $^");
         }
-        if (factoid != null) {
-            sendFactoid(subject, sender, channel, event, backtrack, params, key, factoid);
-        } else {
-            getBot().postMessage(new Message(channel, event, sender + ", I have no idea what " + toFind + " is."));
-        }
+        return factoid != null
+            ? getResponse(subject, sender, channel, event, backtrack, params, factoid)
+            : new Message(channel, event, sender + ", I have no idea what " + toFind + " is.");
     }
 
-    private void sendFactoid(final TellSubject subject, final String sender, final String channel, final BotEvent event,
-        final Set<String> backtrack, final String replacedValue, final String key, final Factoid factoid) {
+    private Message getResponse(final TellSubject subject, final String sender, final String channel,
+        final BotEvent event, final Set<String> backtrack, final String replacedValue, final Factoid factoid) {
         String message = factoid.evaluate(subject, sender, replacedValue);
         if (message.startsWith("<see>")) {
             if (backtrack.contains(message)) {
-                getBot().postMessage(new Message(channel, event, "Loop detected for factoid '" + message + "'."));
+                return new Message(channel, event, "Loop detected for factoid '" + message + "'.");
             } else {
                 backtrack.add(message);
-                getFactoid(subject, message.substring("<see>".length()).trim(), sender, channel, event, backtrack);
+                return getFactoid(subject, message.substring(5).trim(), sender, channel, event, backtrack);
             }
         } else if (message.startsWith("<reply>")) {
-            getBot().postMessage(new Message(channel, event, message.substring("<reply>".length())));
+            return new Message(channel, event, message.substring("<reply>".length()));
         } else if (message.startsWith("<action>")) {
-            getBot().postAction(new Action(channel, event, message.substring("<action>".length())));
+            return new Action(channel, event, message.substring("<action>".length()));
         } else {
-            getBot().postMessage(new Message(channel, event, message));
+            return new Message(channel, event, message);
         }
     }
 
-    private boolean tell(final BotEvent event) {
+    private List<Message> tell(final BotEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
         final String sender = event.getSender();
-        boolean handled = false;
+        List<Message> responses = new ArrayList<Message>();
         if (isTellCommand(message)) {
             final TellSubject tellSubject = parseTellSubject(message);
-            handled = true;
             if (tellSubject == null) {
-                getBot().postMessage(new Message(channel, event,
+                responses.add(new Message(channel, event,
                     String.format("The syntax is: tell nick about factoid - you missed out the 'about', %s", sender)));
             } else {
                 String nick = tellSubject.getTarget();
@@ -97,32 +99,34 @@ public class GetFactoidOperation extends BotOperation {
                     nick = sender;
                 }
                 final String thing = tellSubject.getSubject();
-                handled = true;
                 if (nick.equals(getBot().getNick())) {
-                    getBot().postMessage(new Message(channel, event, "I don't want to talk to myself"));
+                    responses.add(new Message(channel, event, "I don't want to talk to myself"));
                 } else {
                     final TellInfo info = new TellInfo(nick, thing);
                     if (throttler.isThrottled(info)) {
                         if (log.isDebugEnabled()) {
                             log.debug(String.format("I already told %s about %s.", nick, thing));
                         }
-                        getBot().postMessage(new Message(channel, event, sender + ", Slow down, Speedy Gonzalez!"));
+                        responses.add(new Message(channel, event, sender + ", Slow down, Speedy Gonzalez!"));
                     } else if (!getBot().userIsOnChannel(nick, channel)) {
-                        getBot().postMessage(new Message(channel, event, "The user " + nick + " is not on " + channel));
+                        responses.add(new Message(channel, event, "The user " + nick + " is not on " + channel));
                     } else if (sender.equals(channel) && !getBot().isOnSameChannelAs(nick)) {
-                        getBot()
-                            .postMessage(new Message(sender, event, "I will not send a message to someone who is not on any"
-                                + " of my channels."));
+                        responses.add(new Message(sender, event, "I will not send a message to someone who is not on any"
+                                    + " of my channels."));
                     } else if (thing.endsWith("++") || thing.endsWith("--")) {
-                        getBot().postMessage(new Message(channel, event, "I'm afraid I can't let you do that, Dave."));
+                        responses.add(new Message(channel, event, "I'm afraid I can't let you do that, Dave."));
                     } else {
-                        getFactoid(tellSubject, thing, event.getSender(), channel, event, new HashSet<String>());
+                        final List<Message> list = getBot()
+                            .getResponses(channel, sender, event.getLogin(), event.getHostname(), thing);
+                        for (Message msg : list) {
+                            responses.add(new TellMessage(nick, msg.getDestination(), msg.getEvent(), msg.getMessage()));
+                        }
                         throttler.addThrottleItem(info);
                     }
                 }
             }
         }
-        return handled;
+        return responses;
     }
 
     private TellSubject parseTellSubject(final String message) {

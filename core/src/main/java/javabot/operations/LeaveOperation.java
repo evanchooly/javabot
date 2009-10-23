@@ -1,5 +1,8 @@
 package javabot.operations;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -14,16 +17,16 @@ public class LeaveOperation extends BotOperation {
     }
 
     @Override
-    public boolean handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
         final String sender = event.getSender();
-        boolean handled = false;
+        final List<Message> responses = new ArrayList<Message>();
         if ("leave".equals(message.toLowerCase())) {
             if (channel.equals(sender)) {
-                getBot().postMessage(new Message(channel, event, "I cannot leave a private message, " + sender + "."));
+                responses.add(new Message(channel, event, "I cannot leave a private message, " + sender + "."));
             } else {
-                getBot().postMessage(new Message(channel, event, "I'll be back..."));
+                responses.add(new Message(channel, event, "I'll be back..."));
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -36,9 +39,8 @@ public class LeaveOperation extends BotOperation {
                         getBot().joinChannel(channel);
                     }
                 }).start();
-                handled = true;
             }
         }
-        return handled;
+        return responses;
     }
 }

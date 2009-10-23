@@ -1,6 +1,8 @@
 package javabot.operations;
 
 import java.text.DateFormat;
+import java.util.List;
+import java.util.ArrayList;
 
 import javabot.BotEvent;
 import javabot.Javabot;
@@ -17,24 +19,23 @@ public class SeenOperation extends BotOperation {
     }
 
     @Override
-    public boolean handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
         final String sender = event.getSender();
-        boolean handled = false;
+        final List<Message> responses = new ArrayList<Message>();
         if ("seen ".equalsIgnoreCase(message.substring(0, Math.min(message.length(), 5)))) {
             final String key = message.substring("seen ".length());
             if (dao.isSeen(key, channel)) {
-                getBot().postMessage(new Message(channel, event,
+                responses.add(new Message(channel, event,
                     String.format("%s, %s was last seen at %s with the following entry: %s", sender, key,
                         DateFormat.getInstance().format(dao.getSeen(key, channel).getUpdated()),
                         dao.getSeen(key, channel).getMessage())));
             } else {
-                getBot().postMessage(new Message(channel, event,
+                responses.add(new Message(channel, event,
                     String.format("%s, I have no information about \"%s\"", sender, key)));
             }
-            handled = true;
         }
-        return handled;
+        return responses;
     }
 }

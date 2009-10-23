@@ -1,5 +1,7 @@
 package javabot.commands;
 
+import java.util.List;
+
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -23,7 +25,7 @@ public class AddChannel extends BaseCommand {
     String password;
 
     @Override
-    public void execute(final Javabot bot, final BotEvent event) {
+    public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
         if (channel.startsWith("#")) {
             Channel chan = dao.get(channel);
             final Boolean isLogged = Boolean.valueOf(logged);
@@ -33,12 +35,12 @@ public class AddChannel extends BaseCommand {
                 chan.setLogged(isLogged);
                 dao.save(chan);
             }
-            bot.postMessage(new Message(event.getChannel(), event, "Now joining " + channel +
+            responses.add(new Message(event.getChannel(), event, "Now joining " + channel +
                 (isLogged ? " and logging it" : "")));
             chan.join(bot);
-            bot.postMessage(new Message(channel, event, "I was asked to join this channel by " + event.getSender()));
+            responses.add(new Message(channel, event, "I was asked to join this channel by " + event.getSender()));
         } else {
-            bot.postMessage(new Message(event.getChannel(), event, "Channel names must start with #, " + event.getSender()));
+            responses.add(new Message(event.getChannel(), event, "Channel names must start with #, " + event.getSender()));
         }
     }
 }

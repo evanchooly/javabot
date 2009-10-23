@@ -15,9 +15,9 @@ import javabot.Message;
  * @author ricky_clarkson
  */
 public class UnixCommandOperation extends BotOperation {
-    private final Set<String> _commands = new TreeSet<String>();
-    private final List<String> _insults = new ArrayList<String>();
-    private final Random _random;
+    private final Set<String> commands = new TreeSet<String>();
+    private final List<String> insults = new ArrayList<String>();
+    private final Random random;
 
     public UnixCommandOperation(final Javabot bot) {
         super(bot);
@@ -25,16 +25,16 @@ public class UnixCommandOperation extends BotOperation {
 //        addFiles("/bin");
 //        addFiles("/usr/sbin");
 //        addFiles("/sbin");
-        _commands.add("rm");
-        _commands.add("ls");
-        _commands.add("clear");
+        commands.add("rm");
+        commands.add("ls");
+        commands.add("clear");
         
-        _insults.add("dumbass");
-        _insults.add("genius");
-        _insults.add("Einstein");
-        _insults.add("pal");
+        insults.add("dumbass");
+        insults.add("genius");
+        insults.add("Einstein");
+        insults.add("pal");
         
-        _random = new Random();
+        random = new Random();
     }
 
     private void addFiles(final String path) {
@@ -43,27 +43,26 @@ public class UnixCommandOperation extends BotOperation {
             final File[] files = bin.listFiles();
             for (final File file : files) {
                 if (file.isFile()) {
-                    _commands.add(file.getName());
+                    commands.add(file.getName());
                 }
             }
         }
     }
 
     @Override
-    public boolean handleChannelMessage(final BotEvent event) {
+    public List<Message> handleChannelMessage(final BotEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
         final String[] split = message.split(" ");
-        boolean handled = true;
-        if (_commands.contains(split[0]) && split.length < 3) {
-            getBot().postMessage(new Message(channel, event,
+        List<Message> responses = new ArrayList<Message>();
+        if (commands.contains(split[0]) && split.length < 3) {
+            responses.add(new Message(channel, event,
                 String.format("%s: wrong window, %s", event.getSender(), getInsult())));
-            handled = true;
         }
-        return handled;
+        return responses;
     }
 
     private String getInsult() {
-        return _insults.get(_random.nextInt(_insults.size()));
+        return insults.get(random.nextInt(insults.size()));
     }
 }

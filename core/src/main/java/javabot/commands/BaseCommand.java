@@ -24,7 +24,7 @@ public abstract class BaseCommand implements Command {
     @Autowired
     ApplicationContext context;
 
-    public abstract void execute(Javabot bot, BotEvent event);
+    public abstract void execute(final List<Message> responses, Javabot bot, BotEvent event);
 
     public String getUsage() {
         Options options = getOptions();

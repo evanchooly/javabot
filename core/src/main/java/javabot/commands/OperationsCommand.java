@@ -1,5 +1,7 @@
 package javabot.commands;
 
+import java.util.List;
+
 import javabot.Javabot;
 import javabot.BotEvent;
 import javabot.Message;
@@ -11,8 +13,8 @@ import org.apache.commons.lang.StringUtils;
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
 public abstract class OperationsCommand extends BaseCommand {
-    protected void listCurrent(final Javabot bot, final BotEvent event) {
-        bot.postMessage(new Message(event.getChannel(), event, "I am currently running the following operations:"));
-        bot.postMessage(new Message(event.getChannel(), event, StringUtils.join(bot.listActiveOperations(), ", ")));
+    protected void listCurrent(final List<Message> responses, final Javabot bot, final BotEvent event) {
+        responses.add(new Message(event.getChannel(), event, "I am currently running the following operations:"));
+        responses.add(new Message(event.getChannel(), event, StringUtils.join(bot.listActiveOperations(), ", ")));
     }
 }

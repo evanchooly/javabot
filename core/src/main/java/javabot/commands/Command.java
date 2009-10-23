@@ -4,6 +4,7 @@ import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Javabot;
+import javabot.Message;
 import org.apache.commons.cli.ParseException;
 
 /**
@@ -12,7 +13,7 @@ import org.apache.commons.cli.ParseException;
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
 public interface Command {
-    void execute(Javabot bot, BotEvent event);
+    void execute(final List<Message> responses, Javabot bot, BotEvent event);
 
     void parse(List<String> args) throws ParseException;
 }

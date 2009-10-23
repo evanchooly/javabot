@@ -28,14 +28,14 @@ public class JavadocOperation extends BotOperation {
 
     @Override
     @Transactional
-    public boolean handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         final String message = event.getMessage();
-        boolean handled = false;
+        final List<Message> responses = new ArrayList<Message>();
         if (message.toLowerCase().startsWith("javadoc ")) {
             final List<String> urls = new ArrayList<String>();
             final String key = message.substring("javadoc ".length()).trim();
             if (key.startsWith("-list") || "".equals(key)) {
-                displayApiList(event);
+                displayApiList(event, responses);
             } else {
                 final int openIndex = key.indexOf('(');
                 if (openIndex == -1) {
@@ -47,28 +47,28 @@ public class JavadocOperation extends BotOperation {
                     StringBuilder urlMessage = new StringBuilder(event.getSender() + ": ");
                     String destination = event.getChannel();
                     if (urls.size() > RESULT_LIMIT) {
-                        getBot().postMessage(new Message(event.getChannel(), event,
+                        responses.add(new Message(event.getChannel(), event,
                             String.format("%s, too many results found.  Please see your private messages for results",
                                 event.getSender())));
                         destination = event.getSender();
                     }
                     for (int index = 0; index < urls.size(); index++) {
                         if ((urlMessage + urls.get(index)).length() > 400) {
-                            getBot().postMessage(new Message(destination, event, urlMessage.toString()));
+                            responses.add(new Message(destination, event, urlMessage.toString()));
                             urlMessage = new StringBuilder();
                         }
-                        urlMessage.append(index != 0 ? "; " : "")
+                        urlMessage
+                            .append(index == 0 ? "" : "; ")
                             .append(urls.get(index));
                     }
-                    getBot().postMessage(new Message(destination, event, urlMessage.toString()));
+                    responses.add(new Message(destination, event, urlMessage.toString()));
                 } else if (urls.isEmpty()) {
-                    getBot().postMessage(new Message(event.getChannel(), event,
+                    responses.add(new Message(event.getChannel(), event,
                         "I don't know of any documentation for " + key));
                 }
             }
-            handled = true;
         }
-        return handled;
+        return responses;
     }
 
     private void parseFieldOrClassRequest(final List<String> urls, final String key) {
@@ -109,7 +109,7 @@ public class JavadocOperation extends BotOperation {
         }
     }
 
-    private void displayApiList(final BotEvent event) {
+    private void displayApiList(final BotEvent event, final List<Message> responses) {
         final StringBuilder builder = new StringBuilder();
         for (final Api api : apiDao.findAll()) {
             if (builder.length() != 0) {
@@ -120,7 +120,7 @@ public class JavadocOperation extends BotOperation {
                 .append(api.getBaseUrl())
                 .append(" ) ");
         }
-        getBot().postMessage(new Message(event.getChannel(), event, event.getSender()
+        responses.add(new Message(event.getChannel(), event, event.getSender()
             + ", I know of the following APIs: " + builder));
     }
 }

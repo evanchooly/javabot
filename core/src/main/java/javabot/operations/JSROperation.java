@@ -1,5 +1,8 @@
 package javabot.operations;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -14,20 +17,19 @@ public class JSROperation extends BotOperation {
     }
 
     @Override
-    public boolean handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         final String message = event.getMessage().toLowerCase();
         final String channel = event.getChannel();
-        boolean handled = false;
+        List<Message> responses = new ArrayList<Message>();
         if (message.startsWith("jsr ")) {
             final String jsrString = message.substring("jsr ".length());
             try {
                 final int jsr = Integer.parseInt(jsrString);
-                getBot().postMessage(new Message(channel, event, locator.findInformation(jsr)));
+                responses.add(new Message(channel, event, locator.findInformation(jsr)));
             } catch (NumberFormatException nfe) {
-                getBot().postMessage(new Message(channel, event, jsrString + " is not a number."));
+                responses.add(new Message(channel, event, jsrString + " is not a number."));
             }
-            handled = true;
         }
-        return handled;
+        return responses;
     }
 }

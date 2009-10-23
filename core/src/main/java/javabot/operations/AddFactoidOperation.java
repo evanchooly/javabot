@@ -1,5 +1,8 @@
 package javabot.operations;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -21,7 +24,7 @@ public class AddFactoidOperation extends BotOperation {
     }
 
     @Override
-    public boolean handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         String message = event.getMessage();
         final String channel = event.getChannel();
         final String sender = event.getSender();
@@ -58,8 +61,8 @@ public class AddFactoidOperation extends BotOperation {
         return message;
     }
 
-    private boolean addFactoid(final BotEvent event, final String message, final String channel, final String sender) {
-        boolean handled = false;
+    private List<Message> addFactoid(final BotEvent event, final String message, final String channel, final String sender) {
+        List<Message> responses = new ArrayList<Message>();
         if (message.toLowerCase().contains(" is ")) {
             String key = message.substring(0, message.indexOf(" is "));
             key = key.toLowerCase();
@@ -76,22 +79,21 @@ public class AddFactoidOperation extends BotOperation {
                 log.debug("Key: " + key);
             }
             if (key.trim().length() == 0) {
-                getBot().postMessage(new Message(channel, event, "Invalid factoid name"));
+                responses.add(new Message(channel, event, "Invalid factoid name"));
             } else if (value == null || value.trim().length() == 0) {
-                getBot().postMessage(new Message(channel, event, "Invalid factoid value"));
+                responses.add(new Message(channel, event, "Invalid factoid value"));
             } else if (factoidDao.hasFactoid(key)) {
-                getBot().postMessage(
+                responses.add(
                     new Message(channel, event, String.format("I already have a factoid named %s, %s", key, sender)));
             } else {
                 if (value.startsWith("<see>")) {
                     value = value.toLowerCase();
                 }
                 factoidDao.addFactoid(sender, key, value);
-                getBot().postMessage(new Message(channel, event, "OK, " + sender + "."));
+                responses.add(new Message(channel, event, "OK, " + sender + "."));
             }
-            handled = true;
         }
-        return handled;
+        return responses;
     }
 
     public ChangeDao getChangeDao() {

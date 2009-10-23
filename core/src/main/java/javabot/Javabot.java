@@ -379,18 +379,21 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         try {
             logsDao.logMessage(Logs.Type.MESSAGE, sender, channel, message);
             if (isValidSender(sender)) {
-                boolean handled = false;
+                List<Message> responses = new ArrayList<Message>();
                 for (final String startString : startStrings) {
-                    if (!handled && message.startsWith(startString)) {
+                    if (responses != null && message.startsWith(startString)) {
                         String content = message.substring(startString.length()).trim();
                         while(content.charAt(0) == ':' || content.charAt(0) == ',') {
                             content = content.substring(1).trim();
                         }
-                        handled = getResponses(channel, sender, login, hostname, content);
+                        responses.addAll(getResponses(channel, sender, login, hostname, content));
                     }
                 }
-                if (!handled) {
-                    getChannelResponses(channel, sender, login, hostname, message);
+                if (responses.isEmpty()) {
+                    responses.addAll( getChannelResponses(channel, sender, login, hostname, message));
+                }
+                for (Message response : responses) {
+                    response.send(this);
                 }
             } else {
                 if (log.isInfoEnabled()) {
@@ -403,15 +406,16 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         }
     }
 
-    public boolean getResponses(final String channel, final String sender, final String login,
+    public List<Message> getResponses(final String channel, final String sender, final String login,
         final String hostname, final String message) {
         final Iterator<BotOperation> iterator = getOperations();
-        boolean handled = false;
+        List<Message> responses = new ArrayList<Message>();
         final BotEvent event = new BotEvent(channel, sender, login, hostname, message);
-        while (!handled && iterator.hasNext()) {
-            handled = iterator.next().handleMessage(event);
+        while (responses.isEmpty() && iterator.hasNext()) {
+            responses.addAll(iterator.next().handleMessage(event));
         }
-        return handled;
+//        System.out.println("responses = " + responses);
+        return responses;
     }
 
     private Iterator<BotOperation> getOperations() {
@@ -420,14 +424,14 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         return list.iterator();
     }
 
-    public boolean getChannelResponses(final String channel, final String sender, final String login,
+    public List<Message> getChannelResponses(final String channel, final String sender, final String login,
         final String hostname, final String message) {
         final Iterator<BotOperation> iterator = getOperations();
-        boolean handled = false;
-        while (!handled && iterator.hasNext()) {
-            handled = iterator.next().handleChannelMessage(new BotEvent(channel, sender, login, hostname, message));
+        List<Message> reponse = new ArrayList<Message>();
+        while (reponse == null && iterator.hasNext()) {
+            reponse.addAll(iterator.next().handleChannelMessage(new BotEvent(channel, sender, login, hostname, message)));
         }
-        return handled;
+        return reponse;
     }
 
     public boolean isOnSameChannelAs(final String nick) {
@@ -483,12 +487,12 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         this.startStrings = startStrings;
     }
 
-    public void postMessage(final Message message) {
+    void postMessage(final Message message) {
         sendMessage(message.getDestination(), message.getMessage());
         logMessage(message);
     }
 
-    public void postAction(final Message message) {
+    void postAction(final Message message) {
         sendAction(message.getDestination(), message.getMessage());
         logMessage(message);
     }

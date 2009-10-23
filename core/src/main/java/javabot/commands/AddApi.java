@@ -1,6 +1,7 @@
 package javabot.commands;
 
 import java.io.StringWriter;
+import java.util.List;
 
 import javabot.BotEvent;
 import javabot.Javabot;
@@ -30,7 +31,7 @@ public class AddApi extends BaseCommand {
 
     @Override
     @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
-    public void execute(final Javabot bot, final BotEvent event) {
+    public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
         final String destination = event.getChannel();
         Api api = new Api(name, url, packages, zip);
         dao.save(api);
@@ -39,9 +40,9 @@ public class AddApi extends BaseCommand {
         parser.parse(api, new StringWriter() {
             @Override
             public void write(final String line) {
-                bot.postMessage(new Message(event.getChannel(), event, line));
+                responses.add(new Message(event.getChannel(), event, line));
             }
         });
-        bot.postMessage(new Message(destination, event, "done adding javadoc for " + name));
+        responses.add(new Message(destination, event, "done adding javadoc for " + name));
     }
 }

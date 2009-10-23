@@ -1,7 +1,7 @@
 package javabot.operations;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 import javabot.BotEvent;
 import javabot.Message;
@@ -17,7 +17,7 @@ public class QuitOperation extends BotOperation {
     }
 
     @Override
-    public boolean handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         final String message = event.getMessage();
         if(message.toLowerCase().startsWith("quit ")) {
             if(message.substring("quit ".length()).equals(getBot().getNickPassword())) {
@@ -27,6 +27,6 @@ public class QuitOperation extends BotOperation {
                 System.exit(0);
             }
         }
-        return false;
+        return Collections.emptyList();
     }
 }

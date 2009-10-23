@@ -1,6 +1,8 @@
 package javabot.operations;
 
 import java.util.Calendar;
+import java.util.List;
+import java.util.ArrayList;
 
 import javabot.BotEvent;
 import javabot.Javabot;
@@ -12,13 +14,12 @@ public class TimeOperation extends BotOperation {
     }
 
     @Override
-    public boolean handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final BotEvent event) {
         final String message = event.getMessage();
-        boolean handled = false;
+        List<Message> responses = new ArrayList<Message>();
         if ("time".equals(message) || "date".equals(message)) {
-            getBot().postMessage(new Message(event.getChannel(), event, Calendar.getInstance().getTime().toString()));
-            handled = true;
+            responses.add(new Message(event.getChannel(), event, Calendar.getInstance().getTime().toString()));
         }
-        return handled;
+        return responses;
     }
 }

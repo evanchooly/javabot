@@ -18,11 +18,11 @@ public class ListOperations extends OperationsCommand implements Command {
     private static final Logger log = LoggerFactory.getLogger(ListOperations.class);
 
     @Override
-    public void execute(final Javabot bot, final BotEvent event) {
-        bot.postMessage(new Message(event.getChannel(), event, "I know of the following operations:"));
-        bot.postMessage(new Message(event.getChannel(), event, StringUtils.join(Javabot.OPERATIONS, ", ")));
-        listCurrent(bot, event);
-        bot.postMessage(new Message(event.getChannel(), event, "use admin enableOperation or disableOperation to turn"
+    public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
+        responses.add(new Message(event.getChannel(), event, "I know of the following operations:"));
+        responses.add(new Message(event.getChannel(), event, StringUtils.join(Javabot.OPERATIONS, ", ")));
+        listCurrent(responses, bot, event);
+        responses.add(new Message(event.getChannel(), event, "use admin enableOperation or disableOperation to turn"
             + " operations on or off"));
     }
 }
