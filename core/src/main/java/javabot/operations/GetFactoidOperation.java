@@ -117,7 +117,7 @@ public class GetFactoidOperation extends BotOperation {
                         responses.add(new Message(channel, event, "I'm afraid I can't let you do that, Dave."));
                     } else {
                         final List<Message> list = getBot()
-                            .getResponses(channel, sender, event.getLogin(), event.getHostname(), thing);
+                            .getResponses(channel, nick, event.getLogin(), event.getHostname(), thing);
                         for (Message msg : list) {
                             responses.add(new TellMessage(nick, msg.getDestination(), msg.getEvent(), msg.getMessage()));
                         }

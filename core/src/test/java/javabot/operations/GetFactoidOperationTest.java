@@ -1,6 +1,7 @@
 package javabot.operations;
 
 import java.io.IOException;
+import java.lang.String;
 import java.util.Arrays;
 
 import javabot.dao.FactoidDao;
@@ -21,6 +22,10 @@ public class GetFactoidOperationTest extends BaseOperationTest {
         deleteFactoids();
         factoidDao.addFactoid(getTestBot().getNick(), "api", "http://java.sun.com/javase/current/docs/api/index.html");
         factoidDao.addFactoid(getTestBot().getNick(), "replyTest", "<reply>I'm a reply!");
+        factoidDao.addFactoid(getTestBot().getNick(), "stupid", "<reply>$who, what you've just said is one of the most" 
+            + " insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you"
+            + " even close to anything that could be considered a rational thought. Everyone in this room is now"
+            + " dumber for having listened to it. I award you no points, and may God have mercy on your soul.");
         factoidDao.addFactoid(getTestBot().getNick(), "seeTest", "<see>replyTest");
         factoidDao.addFactoid(getTestBot().getNick(), "noReply", "I'm a reply!");
         factoidDao.addFactoid(getTestBot().getNick(), "replace $1", "<reply>I replaced you $1");
@@ -102,35 +107,41 @@ public class GetFactoidOperationTest extends BaseOperationTest {
 
     @Test
     public void tell() {
-        testMessage("tell Javabot-Testing about hey", "Hello, Javabot-Testing");
-        testMessage("tell Javabot-Testing about camel I am a test", "Javabot-Testing, IAmATest");
-        testMessage("tell Javabot-Testing about url I am a test", "Javabot-Testing, I+am+a+test");
-        testMessage("tell Javabot-Testing about javadoc String", "Javabot-Testing: http://is.gd/4ygdW [JDK: java.lang.String]");
+        final String nick = TARGET_TEST_BOT;
+        testMessage(String.format("tell %s about hey", nick), "Hello, " + nick);
+        testMessage(String.format("tell %s about camel I am a test", nick), nick + ", IAmATest");
+        testMessage(String.format("tell %s about url I am a test", nick), String.format("%s, I+am+a+test", nick));
+        testMessage(String.format("tell %s about javadoc String", nick), String.format("%s: http://is.gd/4ygdW [JDK: java.lang.String]", nick));
+        testMessage(String.format("tell %s about stupid", nick), String.format("%s, what you've just said is one of the most"
+            + " insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you"
+            + " even close to anything that could be considered a rational thought. Everyone in this room is now"
+            + " dumber for having listened to it. I award you no points, and may God have mercy on your soul.", nick));
 
         sleep(6000);
-        sendTell("~~ Javabot-Testing seeTest", "Javabot-Testing, I'm a reply!");
-        sendTell("~~ Javabot-Testing bobloblaw", "Javabot-Testing, I have no idea what bobloblaw is.");
-        sendTell("~~ Javabot-Testing api", "Javabot-Testing, api is http://java.sun.com/javase/current/docs/api/index.html");
-        sendTell("~~ Javabot-Testing camel I am a test 2", "Javabot-Testing, IAmATest2");
-        sendTell("~~ Javabot-Testing url I am a test 2", "Javabot-Testing, I+am+a+test+2");
-        sendTell("~~ Javabot-Testing javadoc String", "Javabot-Testing: http://is.gd/4ygdW [JDK: java.lang.String]");
+        sendTell(String.format("~~ %s seeTest", nick), String.format("%s, I'm a reply!", nick));
+        sendTell(String.format("~~ %s bobloblaw", nick), String.format("%s, I have no idea what bobloblaw is.", nick));
+        sendTell(String.format("~~ %s api", nick), String.format("%s, api is http://java.sun.com/javase/current/docs/api/index.html", nick));
+        sendTell(String.format("~~ %s camel I am a test 2", nick), String.format("%s, IAmATest2", nick));
+        sendTell(String.format("~~ %s url I am a test 2", nick), String.format("%s, I+am+a+test+2", nick));
+        sendTell(String.format("~~ %s javadoc String", nick), String.format("%s: http://is.gd/4ygdW [JDK: java.lang.String]", nick));
+        sendTell(String.format("~~ %s stupid", nick), String.format("%s, what you've just said is one of the most"
+            + " insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you"
+            + " even close to anything that could be considered a rational thought. Everyone in this room is now"
+            + " dumber for having listened to it. I award you no points, and may God have mercy on your soul.", nick));
 
         sleep(6000);
-        sendTell("~~Javabot-Testing seeTest", "Javabot-Testing, I'm a reply!");
-        sendTell("~~Javabot-Testing bobloblaw", "Javabot-Testing, I have no idea what bobloblaw is.");
-        sendTell("~~Javabot-Testing api", "Javabot-Testing, api is http://java.sun.com/javase/current/docs/api/index.html");
-        sendTell("~~Javabot-Testing camel I am a test 3", "Javabot-Testing, IAmATest3");
-        sendTell("~~Javabot-Testing url I am a test 3", "Javabot-Testing, I+am+a+test+3");
-        sendTell("~~Javabot-Testing javadoc String", "Javabot-Testing: http://is.gd/4ygdW [JDK: java.lang.String]");
+        sendTell(String.format("~~%s seeTest", nick), String.format("%s, I'm a reply!", nick));
+        sendTell(String.format("~~%s bobloblaw", nick), String.format("%s, I have no idea what bobloblaw is.", nick));
+        sendTell(String.format("~~%s api", nick), String.format("%s, api is http://java.sun.com/javase/current/docs/api/index.html", nick));
+        sendTell(String.format("~~%s camel I am a test 3", nick), String.format("%s, IAmATest3", nick));
+        sendTell(String.format("~~%s url I am a test 3", nick), String.format("%s, I+am+a+test+3", nick));
+        sendTell(String.format("~~%s javadoc String", nick), String.format("%s: http://is.gd/4ygdW [JDK: java.lang.String]", nick));
+        sendTell(String.format("~~%s stupid", nick), String.format("%s, what you've just said is one of the most"
+            + " insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you"
+            + " even close to anything that could be considered a rational thought. Everyone in this room is now"
+            + " dumber for having listened to it. I award you no points, and may God have mercy on your soul.", nick));
     }
 
-    @SuppressWarnings({"EmptyCatchBlock"})
-    private void sleep(final int milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException exception) {
-        }
-    }
     private void sendTell(final String message, final String response) {
         final TestBot bot = getTestBot();
         bot.sendMessage(getJavabotChannel(), message);

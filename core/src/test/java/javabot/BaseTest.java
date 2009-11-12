@@ -18,12 +18,14 @@ import org.slf4j.LoggerFactory;
 
 @SuppressWarnings({"StaticNonFinalField"})
 public class BaseTest {
+    public static final String TARGET_TEST_BOT = "jbtargetbot";
     private static final Logger log = LoggerFactory.getLogger(BaseTest.class);
     @Autowired
     private AdminDao dao;
     public final String ok;
     private static Javabot bot;
     private static TestBot testBot;
+    private static TestBot testTargetBot;
     private final ApplicationContext context;
 
     public BaseTest() {
@@ -32,6 +34,9 @@ public class BaseTest {
         createBot();
         final String nick = getTestBot().getNick();
         ok = "OK, " + nick.substring(0, Math.min(nick.length(), 16)) + ".";
+        getTestBot();
+        getTestTargetBot();
+        sleep(2000);
     }
 
     protected final Javabot createBot() {
@@ -60,7 +65,7 @@ public class BaseTest {
     public final TestBot getTestBot() {
         synchronized (context) {
             if (testBot == null) {
-                testBot = new TestBot();
+                testBot = new TestBot("jbunittestbot");
                 try {
                     testBot.connect("irc.freenode.net");
                     testBot.joinChannel(getJavabotChannel());
@@ -72,6 +77,21 @@ public class BaseTest {
             return testBot;
         }
     }
+    public final TestBot getTestTargetBot() {
+        synchronized (context) {
+            if (testTargetBot == null) {
+                testTargetBot = new TestBot(TARGET_TEST_BOT);
+                try {
+                    testTargetBot.connect("irc.freenode.net");
+                    testTargetBot.joinChannel(getJavabotChannel());
+                } catch (Exception e) {
+                    log.debug(e.getMessage(), e);
+                    Assert.fail(e.getMessage());
+                }
+            }
+            return testTargetBot;
+        }
+    }
 
     protected final void inject(final Object object) {
         context.getAutowireCapableBeanFactory().autowireBean(object);
@@ -81,19 +101,27 @@ public class BaseTest {
         return getJavabot().getChannels()[0];
     }
 
+    @SuppressWarnings({"EmptyCatchBlock"})
+    protected static void sleep(final int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException exception) {
+        }
+    }
+
     public static class TestBot extends PircBot {
         private final List<Response> responses = new ArrayList<Response>();
 
-        public TestBot() {
+        public TestBot(final String name) {
             final InputStream asStream = getClass().getResourceAsStream("/locations-override.properties");
-            Properties props = new Properties();
+            final Properties props = new Properties();
             try {
                 props.load(asStream);
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
                 throw new RuntimeException(e.getMessage());
             }
-            setName(props.getProperty("javabot.nick"));
+            setName(name);
         }
 
         @Override
