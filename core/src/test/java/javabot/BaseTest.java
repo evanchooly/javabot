@@ -109,6 +109,19 @@ public class BaseTest {
         }
     }
 
+    protected void waitForResponses(final TestBot bot, final int length) {
+        int count = 10;
+        while(length != 0 && count != 0 && bot.getResponseCount() != length) {
+            try {
+                Thread.sleep(1000);
+                count--;
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        }
+        Assert.assertEquals(bot.getResponseCount(), length);
+    }
+
     public static class TestBot extends PircBot {
         private final List<Response> responses = new ArrayList<Response>();
 

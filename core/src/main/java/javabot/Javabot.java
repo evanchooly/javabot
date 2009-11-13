@@ -172,7 +172,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
             setLogin(config.getNick());
             setNickPassword(config.getPassword());
             authWait = 3000;
-            startStrings = new String[] { getName(), "~" };
+            startStrings = new String[]{getName(), "~"};
         } catch (Exception e) {
             log.debug(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
@@ -305,7 +305,9 @@ public class Javabot extends PircBot implements ApplicationContextAware {
                 @Override
                 public void run() {
                     logsDao.logMessage(Logs.Type.MESSAGE, sender, sender, message);
-                    getResponses(sender, sender, login, hostname, message);
+                    for (final Message response : getResponses(sender, sender, login, hostname, message)) {
+                        response.send(Javabot.this);
+                    }
                 }
             });
         }
@@ -383,14 +385,14 @@ public class Javabot extends PircBot implements ApplicationContextAware {
                 for (final String startString : startStrings) {
                     if (responses != null && message.startsWith(startString)) {
                         String content = message.substring(startString.length()).trim();
-                        while(content.charAt(0) == ':' || content.charAt(0) == ',') {
+                        while (content.charAt(0) == ':' || content.charAt(0) == ',') {
                             content = content.substring(1).trim();
                         }
                         responses.addAll(getResponses(channel, sender, login, hostname, content));
                     }
                 }
                 if (responses.isEmpty()) {
-                    responses.addAll( getChannelResponses(channel, sender, login, hostname, message));
+                    responses.addAll(getChannelResponses(channel, sender, login, hostname, message));
                 }
                 for (Message response : responses) {
                     response.send(this);
@@ -429,7 +431,8 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         final Iterator<BotOperation> iterator = getOperations();
         List<Message> reponse = new ArrayList<Message>();
         while (reponse == null && iterator.hasNext()) {
-            reponse.addAll(iterator.next().handleChannelMessage(new BotEvent(channel, sender, login, hostname, message)));
+            reponse
+                .addAll(iterator.next().handleChannelMessage(new BotEvent(channel, sender, login, hostname, message)));
         }
         return reponse;
     }
@@ -444,6 +447,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     }
 
     public boolean userIsOnChannel(final String nick, final String channel) {
+
         for (final User user : getUsers(channel)) {
             if (user.getNick().toLowerCase().equals(nick.toLowerCase())) {
                 return true;
@@ -480,7 +484,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     }
 
     public String[] getStartStrings() {
-        return new String[] { getNick(), "~" };
+        return new String[]{getNick(), "~"};
     }
 
     public void setStartStrings(final String[] startStrings) {

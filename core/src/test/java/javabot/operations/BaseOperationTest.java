@@ -34,19 +34,6 @@ public abstract class BaseOperationTest extends BaseTest {
         }
     }
 
-    protected void waitForResponses(final TestBot bot, final int length) {
-        int count = 10;
-        while(length != 0 && count != 0 && bot.getResponseCount() != length) {
-            try {
-                Thread.sleep(1000);
-                count--;
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e.getMessage());
-            }
-        }
-        Assert.assertEquals(bot.getResponseCount(), length);
-    }
-
     protected void waitForResponse(final String response) {
         final long now = System.currentTimeMillis();
         while (!response.equals(getTestBot().getOldestMessage()) && System.currentTimeMillis() - now < 300000) {
