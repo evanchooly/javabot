@@ -16,6 +16,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.antwerkz.maven</groupId>
+            <artifactId>spi-apt</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>pircbot</groupId>
             <artifactId>pircbot</artifactId>
         </dependency>
@@ -105,7 +111,6 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <classifier>jdk15</classifier>
             <scope>test</scope>
         </dependency>
 
@@ -147,19 +152,25 @@
 
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-
                 <configuration>
-                    <!-- Remove or comment out this plugin element to re-enable tests.
-                       <skipTests>true</skipTests>
-                    -->
                     <argLine>-Xms256m -Xmx512m</argLine>
-<!--
-                    <suiteXmlFiles>
-                        <suiteXmlFile>testng.xml</suiteXmlFile>
-                    </suiteXmlFiles>
--->
-
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>apt-maven-plugin</artifactId>
+                <version>1.0-alpha-3</version>
+                <configuration>
+                    <factory>com.antwerkz.maven.SpiGenerator</factory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process</goal>
+                            <goal>test-process</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

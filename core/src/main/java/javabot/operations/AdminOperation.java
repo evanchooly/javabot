@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -33,6 +34,7 @@ import org.apache.commons.cli.MissingOptionException;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
+@SPI(BotOperation.class)
 public class AdminOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(AdminOperation.class);
     public static final List<String> COMMANDS = Arrays.asList(
@@ -55,8 +57,9 @@ public class AdminOperation extends BotOperation {
     @Autowired
     private AdminDao dao;
 
-    public AdminOperation(final Javabot javabot) {
-        super(javabot);
+    @Override
+    public boolean isStandardOperation() {
+        return true;
     }
 
     @Override

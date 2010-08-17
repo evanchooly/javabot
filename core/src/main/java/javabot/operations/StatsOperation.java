@@ -1,21 +1,18 @@
 package javabot.operations;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
-import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.FactoidDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@SPI(BotOperation.class)
 public class StatsOperation extends BotOperation {
     @Autowired
     private FactoidDao factoidDao;
-
-    public StatsOperation(final Javabot javabot) {
-        super(javabot);
-    }
 
     private static final long startTime = System.currentTimeMillis();
     private int numberOfMessages = 0;

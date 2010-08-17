@@ -3,6 +3,7 @@ package javabot.operations;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -11,9 +12,13 @@ import javabot.Message;
  * @author ricky_clarkson
  * @janitor joed
  */
+@SPI(BotOperation.class)
 public class NickometerOperation extends BotOperation {
+    public NickometerOperation() {
+    }
+
     public NickometerOperation(final Javabot javabot) {
-        super(javabot);
+        setBot(javabot);
     }
 
     /**
@@ -45,7 +50,8 @@ public class NickometerOperation extends BotOperation {
                 double tempLameness = (double) lameness / nick.length();
                 tempLameness = Math.sqrt(tempLameness);
                 lameness = (int) (tempLameness * 100);
-                responses.add(new Message(event.getChannel(), event, "The nick " + nick + " is " + lameness + "% lame."));
+                responses
+                    .add(new Message(event.getChannel(), event, "The nick " + nick + " is " + lameness + "% lame."));
             }
         }
         return responses;

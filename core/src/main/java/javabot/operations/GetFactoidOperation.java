@@ -1,30 +1,40 @@
 package javabot.operations;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.antwerkz.maven.SPI;
 import javabot.Action;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.TellMessage;
-import javabot.operations.throttle.Throttler;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
+import javabot.operations.throttle.Throttler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@SPI(BotOperation.class)
 public class GetFactoidOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(GetFactoidOperation.class);
     private static final Throttler<TellInfo> throttler = new Throttler<TellInfo>(100, Javabot.THROTTLE_TIME);
     @Autowired
     private FactoidDao factoidDao;
 
-    public GetFactoidOperation(final Javabot bot) {
-        super(bot);
+    public GetFactoidOperation() {
+    }
+
+    public GetFactoidOperation(final Javabot javabot) {
+        setBot(javabot);
+    }
+
+    @Override
+    public boolean isStandardOperation() {
+        return true;
     }
 
     @Override
@@ -38,7 +48,8 @@ public class GetFactoidOperation extends BotOperation {
         return responses;
     }
 
-    private Message getFactoid(final TellSubject subject, final String toFind, final String sender, final String channel,
+    private Message getFactoid(final TellSubject subject, final String toFind, final String sender,
+        final String channel,
         final BotEvent event, final Set<String> backtrack) {
         String message = toFind;
         if (log.isDebugEnabled()) {
@@ -48,7 +59,7 @@ public class GetFactoidOperation extends BotOperation {
             message = message.substring(0, message.length() - 1);
         }
         final String firstWord = message.split(" ")[0];
-        String params = message.substring(firstWord.length()).trim();
+        final String params = message.substring(firstWord.length()).trim();
         Factoid factoid = factoidDao.getFactoid(message.toLowerCase());
         if (factoid == null) {
             factoid = factoidDao.getFactoid(firstWord + " $1");
@@ -66,7 +77,7 @@ public class GetFactoidOperation extends BotOperation {
 
     private Message getResponse(final TellSubject subject, final String sender, final String channel,
         final BotEvent event, final Set<String> backtrack, final String replacedValue, final Factoid factoid) {
-        String message = factoid.evaluate(subject, sender, replacedValue);
+        final String message = factoid.evaluate(subject, sender, replacedValue);
         if (message.startsWith("<see>")) {
             if (backtrack.contains(message)) {
                 return new Message(channel, event, "Loop detected for factoid '" + message + "'.");
@@ -87,7 +98,7 @@ public class GetFactoidOperation extends BotOperation {
         final String message = event.getMessage();
         final String channel = event.getChannel();
         final String sender = event.getSender();
-        List<Message> responses = new ArrayList<Message>();
+        final List<Message> responses = new ArrayList<Message>();
         if (isTellCommand(message)) {
             final TellSubject tellSubject = parseTellSubject(message);
             if (tellSubject == null) {
@@ -111,15 +122,17 @@ public class GetFactoidOperation extends BotOperation {
                     } else if (!getBot().userIsOnChannel(nick, channel)) {
                         responses.add(new Message(channel, event, "The user " + nick + " is not on " + channel));
                     } else if (sender.equals(channel) && !getBot().isOnSameChannelAs(nick)) {
-                        responses.add(new Message(sender, event, "I will not send a message to someone who is not on any"
-                                    + " of my channels."));
+                        responses
+                            .add(new Message(sender, event, "I will not send a message to someone who is not on any"
+                                + " of my channels."));
                     } else if (thing.endsWith("++") || thing.endsWith("--")) {
                         responses.add(new Message(channel, event, "I'm afraid I can't let you do that, Dave."));
                     } else {
                         final List<Message> list = getBot()
                             .getResponses(channel, nick, event.getLogin(), event.getHostname(), thing);
-                        for (Message msg : list) {
-                            responses.add(new TellMessage(nick, msg.getDestination(), msg.getEvent(), msg.getMessage()));
+                        for (final Message msg : list) {
+                            responses
+                                .add(new TellMessage(nick, msg.getDestination(), msg.getEvent(), msg.getMessage()));
                         }
                         throttler.addThrottleItem(info);
                     }

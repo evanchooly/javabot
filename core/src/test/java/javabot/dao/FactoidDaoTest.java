@@ -19,11 +19,11 @@ public class FactoidDaoTest extends BaseServiceTest {
 
     @Test(groups = {"operations"})
     public void countFactoids() {
-        String key = "test factoid";
-        String value = "test value";
-        Long count = factoidDao.count();
+        final String key = "test factoid";
+        final String value = "test value";
+        final Long count = factoidDao.count();
         factoidDao.addFactoid("cheeser", key, value);
-        Long count2 = factoidDao.count();
+        final Long count2 = factoidDao.count();
         Assert.assertNotSame(count, count2, "Not the same");
         factoidDao.delete("cheeser", key);
     }

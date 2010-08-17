@@ -2,6 +2,7 @@ package javabot.commands;
 
 import java.util.List;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -11,6 +12,7 @@ import javabot.Message;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
+@SPI(Command.class)
 public class DisableOperation extends OperationsCommand {
     @Param
     String name;

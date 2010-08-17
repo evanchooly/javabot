@@ -1,12 +1,13 @@
 package javabot.operations;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
-import javabot.Javabot;
 import javabot.Message;
 
+@SPI(BotOperation.class)
 public class Magic8BallOperation extends BotOperation {
     String[] responses = {
         "Yes",
@@ -33,15 +34,11 @@ public class Magic8BallOperation extends BotOperation {
         "I'm getting something about JFK, but I don't think it's relevant"
     };
 
-    public Magic8BallOperation(final Javabot javabot) {
-        super(javabot);
-    }
-
     @Override
     public List<Message> handleMessage(final BotEvent event) {
         final String message = event.getMessage().toLowerCase();
         final String channel = event.getChannel();
-        List<Message> messages = new ArrayList<Message>();
+        final List<Message> messages = new ArrayList<Message>();
         if (message.startsWith("should i ") || message.startsWith("magic8 ")) {
             messages.add(new Message(channel, event, responses[((int) (Math.random() * responses.length))]));
         }

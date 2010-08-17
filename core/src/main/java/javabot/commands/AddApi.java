@@ -3,6 +3,7 @@ package javabot.commands;
 import java.io.StringWriter;
 import java.util.List;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
+@SPI(Command.class)
 public class AddApi extends BaseCommand {
     @Autowired
     private ApiDao dao;
@@ -33,7 +35,7 @@ public class AddApi extends BaseCommand {
     @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
     public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
         final String destination = event.getChannel();
-        Api api = new Api(name, url, packages, zip);
+        final Api api = new Api(name, url, packages, zip);
         dao.save(api);
         final JavadocParser parser = new JavadocParser();
         context.getAutowireCapableBeanFactory().autowireBean(parser);

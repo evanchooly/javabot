@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -14,19 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Simple operation to pull who added the factoid and when it was added
  */
+@SPI(BotOperation.class)
 public class InfoOperation extends BotOperation {
     @Autowired
     private FactoidDao dao;
-
-    public InfoOperation(final Javabot bot) {
-        super(bot);
-    }
 
     @Override
     public List<Message> handleMessage(final BotEvent event) {
         final String message = event.getMessage().toLowerCase();
         final String channel = event.getChannel();
-        List<Message> responses = new ArrayList<Message>();
+        final List<Message> responses = new ArrayList<Message>();
         if (message.startsWith("info ")) {
             final String key = message.substring("info ".length());
             final Factoid factoid = dao.getFactoid(key);

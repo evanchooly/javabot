@@ -6,20 +6,21 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SPI(BotOperation.class)
 public class AolBonicsOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(AolBonicsOperation.class);
     private final Set<String> phrases = new TreeSet<String>();
     private final List<String> insults = new ArrayList<String>();
     private final Random random;
 
-    public AolBonicsOperation(final Javabot bot) {
-        super(bot);
+    public AolBonicsOperation() {
         phrases.add("u");
         phrases.add("omg");
         phrases.add("plz");

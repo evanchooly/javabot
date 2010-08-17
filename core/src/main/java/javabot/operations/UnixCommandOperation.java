@@ -1,26 +1,25 @@
 package javabot.operations;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
-import javabot.Javabot;
 import javabot.Message;
 
 /**
  * @author ricky_clarkson
  */
+@SPI(BotOperation.class)
 public class UnixCommandOperation extends BotOperation {
     private final Set<String> commands = new TreeSet<String>();
     private final List<String> insults = new ArrayList<String>();
     private final Random random;
 
-    public UnixCommandOperation(final Javabot bot) {
-        super(bot);
+    public UnixCommandOperation() {
 //        addFiles("/usr/bin");
 //        addFiles("/bin");
 //        addFiles("/usr/sbin");
@@ -37,24 +36,12 @@ public class UnixCommandOperation extends BotOperation {
         random = new Random();
     }
 
-    private void addFiles(final String path) {
-        final File bin = new File(path);
-        if (bin.exists()) {
-            final File[] files = bin.listFiles();
-            for (final File file : files) {
-                if (file.isFile()) {
-                    commands.add(file.getName());
-                }
-            }
-        }
-    }
-
     @Override
     public List<Message> handleChannelMessage(final BotEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
         final String[] split = message.split(" ");
-        List<Message> responses = new ArrayList<Message>();
+        final List<Message> responses = new ArrayList<Message>();
         if (commands.contains(split[0]) && split.length < 3) {
             responses.add(new Message(channel, event,
                 String.format("%s: wrong window, %s", event.getSender(), getInsult())));

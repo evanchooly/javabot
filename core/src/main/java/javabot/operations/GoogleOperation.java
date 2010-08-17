@@ -1,12 +1,10 @@
 package javabot.operations;
 
+import com.antwerkz.maven.SPI;
 import javabot.Javabot;
 
+@SPI(BotOperation.class)
 public class GoogleOperation extends UrlOperation {
-    public GoogleOperation(Javabot javabot) {
-        super(javabot);
-    }
-
     @Override
     protected String getBaseUrl() {
         return "http://letmegooglethatforyou.com/?q=";

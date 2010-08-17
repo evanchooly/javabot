@@ -2,6 +2,7 @@ package javabot.commands;
 
 import java.util.List;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -15,6 +16,7 @@ import org.springframework.context.ApplicationContext;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
+@SPI(Command.class)
 public class InfoApi extends BaseCommand {
     @Autowired
     private ApiDao dao;

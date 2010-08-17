@@ -19,21 +19,29 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
     public void updateKarma() throws InterruptedException {
         final Karma karma = karmaDao.find("testjavabot");
         int value = karma != null ? karma.getValue() : 0;
+        final String nick = getTestBot().getNick();
+
         testMessage("testjavabot++",
-            String.format("testjavabot has a karma level of %d, %s", ++value, getTestBot().getNick()));
+            String.format("testjavabot has a karma level of %d, %s", ++value, nick));
+
         testMessage("testjavabot++", "Rest those fingers, Tex");
+
         testMessage("testjavabot--", "Rest those fingers, Tex");
+
         testMessage("testjavabot--", "Rest those fingers, Tex");
+
         testMessage("testjavabot--", "Rest those fingers, Tex");
+
         Thread.sleep(7000);
         testMessage("testjavabot++",
-            String.format("testjavabot has a karma level of %d, %s", ++value, getTestBot().getNick()));
+            String.format("testjavabot has a karma level of %d, %s", ++value, nick));
         Thread.sleep(7000);
         testMessage("testjavabot--",
-            String.format("testjavabot has a karma level of %d, %s", --value, getTestBot().getNick()));
+            String.format("testjavabot has a karma level of %d, %s", --value, nick));
         Thread.sleep(7000);
         getTestBot().sendMessage(getJavabotChannel(), String.format("%s: testjavabot--", getJavabot().getNick()));
-        validateResponses(getTestBot(), String.format("testjavabot has a karma level of %d, %s", --value, getTestBot().getNick()));
+        validateResponses(
+            getTestBot(), String.format("testjavabot has a karma level of %d, %s", --value, nick));
     }
 
     public void logNew() {

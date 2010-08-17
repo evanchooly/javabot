@@ -1,20 +1,23 @@
 package javabot.operations;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.FactoidDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@SPI(BotOperation.class)
 public class ForgetFactoidOperation extends BotOperation {
     @Autowired
     private FactoidDao factoidDao;
 
-    public ForgetFactoidOperation(final Javabot javabot) {
-        super(javabot);
+    @Override
+    public boolean isStandardOperation() {
+        return true;
     }
 
     @Override
@@ -23,7 +26,6 @@ public class ForgetFactoidOperation extends BotOperation {
         String message = event.getMessage();
         final String sender = event.getSender();
         final List<Message> responses = new ArrayList<Message>();
-
         if (message.startsWith("forget ")) {
             message = message.substring("forget ".length());
             if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {

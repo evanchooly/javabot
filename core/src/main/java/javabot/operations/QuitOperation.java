@@ -1,20 +1,17 @@
 package javabot.operations;
 
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
 import javabot.Message;
-import javabot.Javabot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SPI(BotOperation.class)
 public class QuitOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(QuitOperation.class);
-
-    public QuitOperation(final Javabot javabot) {
-        super(javabot);
-    }
 
     @Override
     public List<Message> handleMessage(final BotEvent event) {

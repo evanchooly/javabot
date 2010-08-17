@@ -1,12 +1,11 @@
 package javabot;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -25,33 +24,7 @@ import javabot.dao.ShunDao;
 import javabot.model.Channel;
 import javabot.model.Config;
 import javabot.model.Logs;
-import javabot.operations.AddFactoidOperation;
-import javabot.operations.AdminOperation;
-import javabot.operations.AolBonicsOperation;
 import javabot.operations.BotOperation;
-import javabot.operations.DaysToChristmasOperation;
-import javabot.operations.DaysUntilOperation;
-import javabot.operations.DictOperation;
-import javabot.operations.ForgetFactoidOperation;
-import javabot.operations.GetFactoidOperation;
-import javabot.operations.GoogleOperation;
-import javabot.operations.IgnoreOperation;
-import javabot.operations.InfoOperation;
-import javabot.operations.JSROperation;
-import javabot.operations.JavadocOperation;
-import javabot.operations.KarmaChangeOperation;
-import javabot.operations.KarmaReadOperation;
-import javabot.operations.LeaveOperation;
-import javabot.operations.LiteralOperation;
-import javabot.operations.Magic8BallOperation;
-import javabot.operations.NickometerOperation;
-import javabot.operations.QuitOperation;
-import javabot.operations.SayOperation;
-import javabot.operations.SeenOperation;
-import javabot.operations.ShunOperation;
-import javabot.operations.StatsOperation;
-import javabot.operations.TimeOperation;
-import javabot.operations.UnixCommandOperation;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 import org.slf4j.Logger;
@@ -64,9 +37,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Javabot extends PircBot implements ApplicationContextAware {
     private static final Logger log = LoggerFactory.getLogger(Javabot.class);
-    public static final ArrayList<String> STANDARD_OPERATIONS;
-    private final Map<String, BotOperation> operations = new LinkedHashMap<String, BotOperation>();
-    private final Map<String, BotOperation> standardOperations = new LinkedHashMap<String, BotOperation>();
+    private final Set<BotOperation> operations = new TreeSet<BotOperation>();
     private String host;
     private int port;
     private String[] startStrings;
@@ -80,7 +51,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     @Autowired
     private LogsDao logsDao;
     @Autowired
-    private ChannelDao channelDao;
+    ChannelDao channelDao;
     @Autowired
     private ApiDao apiDao;
     @Autowired
@@ -92,40 +63,8 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     @Autowired
     private ShunDao shunDao;
     private ApplicationContext context;
-    public static final List<String> OPERATIONS = Arrays.asList(
-        BotOperation.getName(AolBonicsOperation.class),
-        BotOperation.getName(DaysToChristmasOperation.class),
-        BotOperation.getName(DaysUntilOperation.class),
-        BotOperation.getName(DictOperation.class),
-        BotOperation.getName(GoogleOperation.class),
-        BotOperation.getName(IgnoreOperation.class),
-        BotOperation.getName(InfoOperation.class),
-        BotOperation.getName(JavadocOperation.class),
-        BotOperation.getName(JSROperation.class),
-        BotOperation.getName(KarmaChangeOperation.class),
-        BotOperation.getName(KarmaReadOperation.class),
-        BotOperation.getName(LeaveOperation.class),
-        BotOperation.getName(LiteralOperation.class),
-        BotOperation.getName(Magic8BallOperation.class),
-        BotOperation.getName(NickometerOperation.class),
-        BotOperation.getName(QuitOperation.class),
-        BotOperation.getName(SayOperation.class),
-        BotOperation.getName(SeenOperation.class),
-        BotOperation.getName(StatsOperation.class),
-        BotOperation.getName(TimeOperation.class),
-        BotOperation.getName(ShunOperation.class),
-        BotOperation.getName(UnixCommandOperation.class)
-    );
     private final ExecutorService executors;
     public static final int THROTTLE_TIME = 5 * 1000;
-
-    static {
-        STANDARD_OPERATIONS = new ArrayList<String>();
-        STANDARD_OPERATIONS.add(BotOperation.getName(AdminOperation.class));
-        STANDARD_OPERATIONS.add(BotOperation.getName(AddFactoidOperation.class));
-        STANDARD_OPERATIONS.add(BotOperation.getName(ForgetFactoidOperation.class));
-        STANDARD_OPERATIONS.add(BotOperation.getName(GetFactoidOperation.class));
-    }
 
     public Javabot(final ApplicationContext applicationContext) {
         context = applicationContext;
@@ -163,7 +102,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         }
     }
 
-    public final void loadConfig(final Config config) {
+    public void loadConfig(final Config config) {
         try {
             log.debug("Running with configuration: " + config);
             host = config.getServer();
@@ -181,59 +120,59 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     @SuppressWarnings({"unchecked"})
     private void loadOperationInfo(final Config config) {
-        final List<String> operationNodes = config.getOperations();
-        for (final String operation : operationNodes) {
-            if (!STANDARD_OPERATIONS.contains(operation)) {
-                addOperation(operation, operations);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (final String name : config.getOperations()) {
+                    try {
+                        addOperation(load(name));
+                    } catch (ClassNotFoundException e) {
+                        log.debug("Operation not found: " + name);
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
+                        throw new RuntimeException(e.getMessage());
+                    }
+                }
+                if (operations.isEmpty()) {
+                    for (final BotOperation operation : BotOperation.listKnownOperations()) {
+                        addOperation(operation);
+                    }
+                }
             }
-        }
-        for (final String operation : STANDARD_OPERATIONS) {
-            addOperation(operation, standardOperations);
-        }
+        }).start();
+    }
 
+    @SuppressWarnings({"unchecked"})
+    private BotOperation load(final String name)
+        throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        return ((Class<BotOperation>) Class.forName(name)).newInstance();
     }
 
     @SuppressWarnings({"unchecked"})
     public boolean addOperation(final String name) {
-        return addOperation(name, operations);
+        return false; //addOperation(name, operations);
     }
 
     @SuppressWarnings({"unchecked"})
-    public boolean addOperation(final String name, final Map<String, BotOperation> operations) {
-        boolean added = false;
-        try {
-            final Class<BotOperation> clazz = (Class<BotOperation>) Class.forName(
-                String.format("%s.%sOperation", BotOperation.class.getPackage().getName(), name));
-            if (!operations.containsKey(name)) {
-                final Constructor<BotOperation> ctor = clazz.getConstructor(Javabot.class);
-                final BotOperation operation = ctor.newInstance(this);
-                context.getAutowireCapableBeanFactory().autowireBean(operation);
-                operations.put(name, operation);
-                added = true;
-            }
-        } catch (ClassNotFoundException e) {
-            log.debug("Operation not found: " + name);
-        } catch (Exception e) {
-            processReflectionException(e);
+    public boolean addOperation(final BotOperation operation) {
+        final boolean added = operations.add(operation);
+        if (added) {
+            operation.setBot(this);
+            context.getAutowireCapableBeanFactory().autowireBean(operation);
         }
         return added;
     }
 
-    public boolean remove(final Class<BotOperation> clazz) {
-        return removeOperation(BotOperation.getName(clazz));
-    }
-
     public boolean removeOperation(final String name) {
-        return operations.remove(name) != null;
-    }
-
-    public List<String> listActiveOperations() {
-        return new ArrayList<String>(operations.keySet());
-    }
-
-    private void processReflectionException(final Exception e) {
-        log.error(e.getMessage(), e);
-        throw new RuntimeException(e.getMessage());
+        final Iterator<BotOperation> it = operations.iterator();
+        boolean removed = false;
+        while(it.hasNext() && !removed) {
+            if(it.next().getName().equals(name)) {
+                removed = true;
+                it.remove();
+            }
+        }
+        return removed;
     }
 
     public static void main(final String[] args) {
@@ -252,7 +191,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     }
 
     @SuppressWarnings({"StringContatenationInLoop"})
-    public final void connect() {
+    public void connect() {
         while (!isConnected()) {
             try {
                 connect(host, port);
@@ -260,10 +199,10 @@ public class Javabot extends PircBot implements ApplicationContextAware {
                 sleep(authWait);
                 final List<Channel> channelList = channelDao.getChannels();
                 if (channelList.isEmpty()) {
-                    Channel chan = new Channel();
+                    final Channel chan = new Channel();
                     chan.setName("##" + getNick());
                     System.out.println("No channels found.  Initializing to " + chan.getName());
-                    changeDao.save(chan);
+                    channelDao.save(chan);
                     chan.join(this);
                 } else {
                     for (final Channel channel : channelList) {
@@ -381,7 +320,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         try {
             logsDao.logMessage(Logs.Type.MESSAGE, sender, channel, message);
             if (isValidSender(sender)) {
-                List<Message> responses = new ArrayList<Message>();
+                final List<Message> responses = new ArrayList<Message>();
                 for (final String startString : startStrings) {
                     if (responses != null && message.startsWith(startString)) {
                         String content = message.substring(startString.length()).trim();
@@ -394,7 +333,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
                 if (responses.isEmpty()) {
                     responses.addAll(getChannelResponses(channel, sender, login, hostname, message));
                 }
-                for (Message response : responses) {
+                for (final Message response : responses) {
                     response.send(this);
                 }
             } else {
@@ -411,7 +350,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     public List<Message> getResponses(final String channel, final String sender, final String login,
         final String hostname, final String message) {
         final Iterator<BotOperation> iterator = getOperations();
-        List<Message> responses = new ArrayList<Message>();
+        final List<Message> responses = new ArrayList<Message>();
         final BotEvent event = new BotEvent(channel, sender, login, hostname, message);
         while (responses.isEmpty() && iterator.hasNext()) {
             responses.addAll(iterator.next().handleMessage(event));
@@ -420,16 +359,14 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         return responses;
     }
 
-    private Iterator<BotOperation> getOperations() {
-        final List<BotOperation> list = new ArrayList<BotOperation>(operations.values());
-        list.addAll(standardOperations.values());
-        return list.iterator();
+    public Iterator<BotOperation> getOperations() {
+        return operations.iterator();
     }
 
     public List<Message> getChannelResponses(final String channel, final String sender, final String login,
         final String hostname, final String message) {
         final Iterator<BotOperation> iterator = getOperations();
-        List<Message> reponse = new ArrayList<Message>();
+        final List<Message> reponse = new ArrayList<Message>();
         while (reponse == null && iterator.hasNext()) {
             reponse
                 .addAll(iterator.next().handleChannelMessage(new BotEvent(channel, sender, login, hostname, message)));
@@ -447,7 +384,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     }
 
     public boolean userIsOnChannel(final String nick, final String channel) {
-
         for (final User user : getUsers(channel)) {
             if (user.getNick().toLowerCase().equals(nick.toLowerCase())) {
                 return true;
@@ -484,11 +420,14 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     }
 
     public String[] getStartStrings() {
-        return new String[]{getNick(), "~"};
+        return startStrings;
     }
 
-    public void setStartStrings(final String[] startStrings) {
-        this.startStrings = startStrings;
+    public void setStartStrings(final String... startStrings) {
+        final List<String> start = new ArrayList<String>();
+        start.add(getNick());
+        start.addAll(Arrays.asList(startStrings));
+        this.startStrings = start.toArray(new String[start.size()]);
     }
 
     void postMessage(final Message message) {
@@ -512,13 +451,21 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         }
     }
 
-    public BotOperation getOperation(final String name) {
-        final BotOperation operation = operations.get(name);
-        return operation == null ? standardOperations.get(name) : operation;
+    public BotOperation getOperation(final Class<? extends BotOperation> clazz) {
+        final Iterator<BotOperation> iter = getOperations();
+        while(iter.hasNext()) {
+            final BotOperation operation = iter.next();
+            if(operation.getClass().equals(clazz)) {
+                return operation;
+            }
+        }
+
+        return null;
     }
 
     @Override
     public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
         context = applicationContext;
     }
+
 }

@@ -7,15 +7,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
 
+@SPI(BotOperation.class)
 public class DaysUntilOperation extends BotOperation {
-    public DaysUntilOperation(final Javabot javabot) {
-        super(javabot);
-    }
-
     @Override
     public List<Message> handleMessage(final BotEvent event) {
         String message = event.getMessage().toLowerCase();

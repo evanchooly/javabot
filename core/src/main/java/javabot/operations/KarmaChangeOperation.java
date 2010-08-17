@@ -1,8 +1,9 @@
 package javabot.operations;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -15,14 +16,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+@SPI(BotOperation.class)
 public class KarmaChangeOperation extends BotOperation {
     @Autowired
     private KarmaDao dao;
     private static final Logger log = LoggerFactory.getLogger(KarmaChangeOperation.class);
     private static final Throttler<KarmaInfo> throttler = new Throttler<KarmaInfo>(100, Javabot.THROTTLE_TIME);
+    private KarmaReadOperation karmaRead;
 
-    public KarmaChangeOperation(final Javabot bot) {
-        super(bot);
+    public KarmaChangeOperation() {
     }
 
     public static final class KarmaInfo implements ThrottleItem<KarmaInfo> {
@@ -42,11 +44,14 @@ public class KarmaChangeOperation extends BotOperation {
     @Override
     @Transactional
     public List<Message> handleMessage(final BotEvent event) {
+        if (karmaRead == null) {
+            karmaRead = (KarmaReadOperation) getBot().getOperation(KarmaReadOperation.class);
+        }
         String message = event.getMessage();
         final String sender = event.getSender();
         final String channel = event.getChannel();
         final String nick = message.substring(0, message.length() - 2).trim().toLowerCase();
-        List<Message> response = new ArrayList<Message>();
+        final List<Message> response = new ArrayList<Message>();
         if (message.contains(" ") || "".equals(nick)) {
         } else if (!channel.startsWith("#") && (message.endsWith("++") || message.endsWith("--"))) {
             response.add(new Message(channel, event, "Sorry, karma changes are not allowed in private messages."));
@@ -56,28 +61,27 @@ public class KarmaChangeOperation extends BotOperation {
                     log.debug("skipping karma change by " + nick + " for " + nick);
                 }
                 response.add(new Message(channel, event, "Rest those fingers, Tex"));
-            }
-            throttler.addThrottleItem(new KarmaInfo(sender, nick));
-            if (nick.equals(sender.toLowerCase())) {
-                response.add(new Message(channel, event, "Changing one's own karma is not permitted."));
-                message = "--";
-            }
-            Karma karma = dao.find(nick);
-            if (karma == null) {
-                karma = new Karma();
-                karma.setName(nick);
-            }
-            if (message.endsWith("++")) {
-                karma.setValue(karma.getValue() + 1);
             } else {
-                karma.setValue(karma.getValue() - 1);
+                throttler.addThrottleItem(new KarmaInfo(sender, nick));
+                if (nick.equals(sender.toLowerCase())) {
+                    response.add(new Message(channel, event, "Changing one's own karma is not permitted."));
+                    message = "--";
+                }
+                Karma karma = dao.find(nick);
+                if (karma == null) {
+                    karma = new Karma();
+                    karma.setName(nick);
+                }
+                if (message.endsWith("++")) {
+                    karma.setValue(karma.getValue() + 1);
+                } else {
+                    karma.setValue(karma.getValue() - 1);
+                }
+                karma.setUserName(sender);
+                dao.save(karma);
+                response.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(),
+                    event.getLogin(), event.getHostname(), "karma " + nick)));
             }
-            karma.setUserName(sender);
-            dao.save(karma);
-            final KarmaReadOperation karmaRead = (KarmaReadOperation) getBot()
-                .getOperation(BotOperation.getName(KarmaReadOperation.class));
-            response.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(),
-                event.getLogin(), event.getHostname(), "karma " + nick)));
         }
         return response;
     }

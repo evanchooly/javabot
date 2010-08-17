@@ -1,31 +1,32 @@
 package javabot;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.io.InputStream;
-import java.io.IOException;
 
 import javabot.dao.AdminDao;
+import javabot.model.Channel;
+import javabot.model.Config;
 import org.jibble.pircbot.PircBot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @SuppressWarnings({"StaticNonFinalField"})
 public class BaseTest {
-    public static final String TARGET_TEST_BOT = "jbtargetbot";
+    protected static final String TEST_BOT = "jbtestbot";
+    public static final String TEST_USER = "jbtestuser";
     private static final Logger log = LoggerFactory.getLogger(BaseTest.class);
     @Autowired
     private AdminDao dao;
     public final String ok;
     private static Javabot bot;
-    private static TestBot testBot;
-    private static TestBot testTargetBot;
+    private static TestBot user;
     private final ApplicationContext context;
 
     public BaseTest() {
@@ -34,8 +35,6 @@ public class BaseTest {
         createBot();
         final String nick = getTestBot().getNick();
         ok = "OK, " + nick.substring(0, Math.min(nick.length(), 16)) + ".";
-        getTestBot();
-        getTestTargetBot();
         sleep(2000);
     }
 
@@ -48,9 +47,42 @@ public class BaseTest {
                     dao.create(sender, hostname);
                     super.onJoin(channel, sender, login, hostname);
                 }
+
+                @Override
+                public String getNick() {
+                    return TEST_BOT;
+                }
+
+                public void loadConfig(final Config config) {
+                    try {
+                        log.debug("Running with configuration: " + config);
+                        setName(getNick());
+                        setLogin(getNick());
+                        setNickPassword(config.getPassword());
+                        setStartStrings("~");
+                    } catch (Exception e) {
+                        log.debug(e.getMessage(), e);
+                        throw new RuntimeException(e.getMessage(), e);
+                    }
+                }
+
+                @Override
+                public void connect() {
+                    try {
+                        connect("irc.freenode.net", 6667);
+                        Channel chan = channelDao.get(getJavabotChannel());
+                        if (chan == null) {
+                            chan = new Channel();
+                            chan.setName("##" + getNick());
+                            System.out.println("No channels found.  Initializing to " + chan.getName());
+                            channelDao.save(chan);
+                        }
+                        chan.join(this);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e.getMessage(), e);
+                    }
+                }
             };
-            bot.setStartStrings(new String[] {"~", bot.getNick()});
-            inject(bot);
         }
         return bot;
     }
@@ -64,32 +96,17 @@ public class BaseTest {
 
     public final TestBot getTestBot() {
         synchronized (context) {
-            if (testBot == null) {
-                testBot = new TestBot("jbunittestbot");
+            if (user == null) {
+                user = new TestBot(TEST_USER);
                 try {
-                    testBot.connect("irc.freenode.net");
-                    testBot.joinChannel(getJavabotChannel());
+                    user.connect("irc.freenode.net");
+                    user.joinChannel(getJavabotChannel());
                 } catch (Exception e) {
                     log.debug(e.getMessage(), e);
                     Assert.fail(e.getMessage());
                 }
             }
-            return testBot;
-        }
-    }
-    public final TestBot getTestTargetBot() {
-        synchronized (context) {
-            if (testTargetBot == null) {
-                testTargetBot = new TestBot(TARGET_TEST_BOT);
-                try {
-                    testTargetBot.connect("irc.freenode.net");
-                    testTargetBot.joinChannel(getJavabotChannel());
-                } catch (Exception e) {
-                    log.debug(e.getMessage(), e);
-                    Assert.fail(e.getMessage());
-                }
-            }
-            return testTargetBot;
+            return user;
         }
     }
 
@@ -98,7 +115,7 @@ public class BaseTest {
     }
 
     protected String getJavabotChannel() {
-        return getJavabot().getChannels()[0];
+        return "#jbunittest";
     }
 
     @SuppressWarnings({"EmptyCatchBlock"})
@@ -111,7 +128,7 @@ public class BaseTest {
 
     protected void waitForResponses(final TestBot bot, final int length) {
         int count = 10;
-        while(length != 0 && count != 0 && bot.getResponseCount() != length) {
+        while (length != 0 && count != 0 && bot.getResponseCount() != length) {
             try {
                 Thread.sleep(1000);
                 count--;
@@ -126,10 +143,9 @@ public class BaseTest {
         private final List<Response> responses = new ArrayList<Response>();
 
         public TestBot(final String name) {
-            final InputStream asStream = getClass().getResourceAsStream("/locations-override.properties");
             final Properties props = new Properties();
             try {
-                props.load(asStream);
+                props.load(getClass().getResourceAsStream("/locations-override.properties"));
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
                 throw new RuntimeException(e.getMessage());

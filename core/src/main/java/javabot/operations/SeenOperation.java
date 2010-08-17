@@ -1,22 +1,19 @@
 package javabot.operations;
 
 import java.text.DateFormat;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
-import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.LogsDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@SPI(BotOperation.class)
 public class SeenOperation extends BotOperation {
     @Autowired
     private LogsDao dao;
-
-    public SeenOperation(final Javabot javabot) {
-        super(javabot);
-    }
 
     @Override
     public List<Message> handleMessage(final BotEvent event) {

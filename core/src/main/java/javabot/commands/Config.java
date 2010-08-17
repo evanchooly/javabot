@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -11,6 +12,7 @@ import javabot.dao.ConfigDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.commons.lang.StringUtils;
 
+@SPI(Command.class)
 public class Config extends BaseCommand {
     @Autowired
     private ConfigDao dao;

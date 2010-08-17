@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Causes the bot to disregard bot triggers for a few minutes. Useful to de-fang abusive users without ejecting the bot
  * from a channel entirely.
  */
+@SPI(BotOperation.class)
 public class ShunOperation extends BotOperation {
     private static final long MILLISECOND = 1;
     private static final long SECOND = 1000 * MILLISECOND;
@@ -21,10 +23,6 @@ public class ShunOperation extends BotOperation {
     private static final long SHUN_DURATION = 5 * MINUTE;
     @Autowired
     private ShunDao shunDao;
-
-    public ShunOperation(final Javabot javabot) {
-        super(javabot);
-    }
 
     public List<Message> handleMessage(final BotEvent event) {
         final String message = event.getMessage();
@@ -45,7 +43,7 @@ public class ShunOperation extends BotOperation {
     }
 
     private String getShunnedMessage(final String[] parts) {
-        String victim = parts[0];
+        final String victim = parts[0];
         if (shunDao.isShunned(victim)) {
             return String.format("%s is already shunned.", victim);
         }

@@ -3,11 +3,11 @@ package javabot.operations;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
-import javabot.Javabot;
 import javabot.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +19,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class UrlOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(UrlOperation.class);
-
-    public UrlOperation(final Javabot javabot) {
-        super(javabot);
-    }
 
     @Override
     public final List<Message> handleMessage(final BotEvent event) {

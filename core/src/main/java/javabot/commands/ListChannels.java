@@ -3,6 +3,7 @@ package javabot.commands;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -17,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
+@SPI(Command.class)
 public class ListChannels extends BaseCommand {
     @Autowired
     private ChannelDao dao;
@@ -26,7 +28,7 @@ public class ListChannels extends BaseCommand {
         final List<Channel> channels = dao.find(new QueryParam(0, Integer.MAX_VALUE));
         responses.add(new Message(event.getChannel(), event, event.getSender() + ", I'll list the channels in a"
             + " private message for you"));
-        List<String> chans = new ArrayList<String>();
+        final List<String> chans = new ArrayList<String>();
         for (final Channel channel : channels) {
             chans.add(String.format("%s %s", channel.getName(), channel.getLogged() ? "(logged)" : ""));
         }

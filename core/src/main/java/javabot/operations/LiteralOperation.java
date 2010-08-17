@@ -1,25 +1,22 @@
 package javabot.operations;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
-import javabot.Javabot;
 import javabot.Message;
-import javabot.model.Factoid;
 import javabot.dao.FactoidDao;
+import javabot.model.Factoid;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author ricky_clarkson
  */
+@SPI(BotOperation.class)
 public class LiteralOperation extends BotOperation {
     @Autowired
     private FactoidDao dao;
-
-    public LiteralOperation(final Javabot bot) {
-        super(bot);
-    }
 
     /**
      * @see BotOperation#handleMessage(BotEvent)

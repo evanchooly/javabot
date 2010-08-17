@@ -9,7 +9,7 @@ import javabot.javadoc.Field;
 /**
  * Created Jul 27, 2007
  *
- * @author <a href="mailto:javabot@cheeseronline.org">cheeser</a>
+ * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
 public interface ClazzDao extends BaseDao<Clazz> {
     String DELETE_ALL = "ClazzDao.deleteAll";

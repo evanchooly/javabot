@@ -3,28 +3,25 @@ package javabot.operations;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
-import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
 import javabot.javadoc.Api;
 import javabot.javadoc.Clazz;
-import javabot.javadoc.Method;
 import javabot.javadoc.Field;
+import javabot.javadoc.Method;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+@SPI(BotOperation.class)
 public class JavadocOperation extends BotOperation {
     @Autowired
     private ApiDao apiDao;
     @Autowired
     private ClazzDao dao;
     private static final int RESULT_LIMIT = 5;
-
-    public JavadocOperation(final Javabot bot) {
-        super(bot);
-    }
 
     @Override
     @Transactional
@@ -82,7 +79,7 @@ public class JavadocOperation extends BotOperation {
                 findClasses(urls, key);
             } else {
                 final List<Field> list = dao.getField(className, fieldName);
-                for (Field field : list) {
+                for (final Field field : list) {
                     urls.add(field.getDisplayUrl(field.toString(), dao));
                 }
             }
