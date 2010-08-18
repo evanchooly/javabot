@@ -13,12 +13,6 @@ public class ChannelDaoTest extends BaseServiceTest {
     private ChannelDao channelDao;
 
     @Test
-    public void findChannels() {
-        final List channels = channelDao.loggedChannels();
-        Assert.assertTrue(channels.contains(getJavabotChannel()));
-    }
-
-    @Test
     public void addChannel() {
         final String testing = getTestBot().getNick();
         final Channel channel = new Channel();

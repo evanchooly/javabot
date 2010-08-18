@@ -78,6 +78,7 @@ public class BaseTest {
                             channelDao.save(chan);
                         }
                         chan.join(this);
+                        joinChannel(getJavabotChannel());
                     } catch (Exception e) {
                         throw new RuntimeException(e.getMessage(), e);
                     }
