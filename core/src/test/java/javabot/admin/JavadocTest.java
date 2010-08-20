@@ -1,13 +1,11 @@
 package javabot.admin;
 
 import java.io.File;
-import java.net.MalformedURLException;
 
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
 import javabot.javadoc.Api;
 import javabot.operations.BaseOperationTest;
-import javadoc.JavadocParserTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
@@ -27,26 +25,20 @@ public class JavadocTest extends BaseOperationTest {
         if (api != null) {
             dao.delete(api);
         }
-        final String message = "admin reprocessApi --name=" + API_NAME;
-        testMessage(message);
-        waitForResponse("I don't know anything about " + API_NAME);
+        testMessage("~admin reprocessApi --name=" + API_NAME, "I don't know anything about " + API_NAME);
     }
 
     @Test(dependsOnMethods = "reprocessNonExistentApi")
     public void processApi() {
-        final String message = "admin addApi "
+        scanForResponse("~admin addApi "
             + " --name=" + API_NAME
             + " --url=" + API_URL_STRING
             + " --zip=" + ZIP_LOCATION
-            + " --packages=javax";
-        testMessage(message);
-        waitForResponse("done adding javadoc for " + API_NAME);
+            + " --packages=javax", "done adding javadoc for " + API_NAME);
     }
 
     @Test(dependsOnMethods = "processApi")
     public void dropApi() {
-        final String message = "admin dropApi --name=" + API_NAME;
-        testMessage(message);
-        waitForResponse("done removing javadoc for " + API_NAME);
+        scanForResponse("~admin dropApi --name=" + API_NAME, "done removing javadoc for " + API_NAME);
     }
 }

@@ -21,33 +21,31 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
         int value = karma != null ? karma.getValue() : 0;
         final String nick = getTestBot().getNick();
 
-        testMessage("testjavabot++",
+        testMessage("~testjavabot++",
             String.format("testjavabot has a karma level of %d, %s", ++value, nick));
 
-        testMessage("testjavabot++", "Rest those fingers, Tex");
+        testMessage("~testjavabot++", "Rest those fingers, Tex");
 
-        testMessage("testjavabot--", "Rest those fingers, Tex");
+        testMessage("~testjavabot--", "Rest those fingers, Tex");
 
-        testMessage("testjavabot--", "Rest those fingers, Tex");
+        testMessage("~testjavabot--", "Rest those fingers, Tex");
 
-        testMessage("testjavabot--", "Rest those fingers, Tex");
+        testMessage("~testjavabot--", "Rest those fingers, Tex");
 
         Thread.sleep(7000);
-        testMessage("testjavabot++",
+        testMessage("~testjavabot++",
             String.format("testjavabot has a karma level of %d, %s", ++value, nick));
         Thread.sleep(7000);
-        testMessage("testjavabot--",
+        testMessage("~testjavabot--",
             String.format("testjavabot has a karma level of %d, %s", --value, nick));
         Thread.sleep(7000);
-        getTestBot().sendMessage(getJavabotChannel(), String.format("%s: testjavabot--", getJavabot().getNick()));
-        validateResponses(
-            getTestBot(), String.format("testjavabot has a karma level of %d, %s", --value, nick));
+        testMessage("~testjavabot--", String.format("testjavabot has a karma level of %d, %s", --value, nick));
     }
 
     public void logNew() {
         final String target = new Date().getTime() + "";
         final int karma = getKarma(target) + 1;
-        testMessage(target + "++", target + " has a karma level of " + karma + ", " + getTestBot().getNick());
+        testMessage("~" + target + "++", target + " has a karma level of " + karma + ", " + getTestBot().getNick());
         final String message = getTestBot().getNick() + " changed '" + target + "' to '" + karma + "'";
         Assert.assertTrue(changeDao.findLog(message));
         karmaDao.delete(karmaDao.find(target).getId());
@@ -56,12 +54,12 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
     public void logChanged() {
         final String target = "javabot";
         final int karma = getKarma(target) + 1;
-        testMessage(target + "++", target + " has a karma level of " + karma + ", " + getTestBot().getNick());
+        testMessage("~" + target + "++", target + " has a karma level of " + karma + ", " + getTestBot().getNick());
     }
 
     public void changeOwnKarma() {
         final int karma = getKarma(getTestBot().getNick());
-        testMessage(getTestBot().getNick() + "++",
+        testMessage("~" + getTestBot().getNick() + "++",
             "Changing one's own karma is not permitted.", getTestBot().getNick() + ", you have a karma level of " + (karma - 1));
         final int karma2 = getKarma(getTestBot().getNick());
         Assert.assertTrue(karma2 == karma - 1, "Should have lost one karma point.");

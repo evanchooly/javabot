@@ -72,6 +72,11 @@
                 <artifactId>pircbot</artifactId>
                 <version>1.4.6</version>
             </dependency>
+            <dependency>
+                <groupId>jerklib</groupId>
+                <artifactId>jerklib</artifactId>
+                <version>0.6</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.springframework</groupId>

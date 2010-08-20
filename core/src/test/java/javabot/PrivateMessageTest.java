@@ -3,7 +3,7 @@ package javabot;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test
+@Test(enabled = false)
 public class PrivateMessageTest extends BaseTest {
     public void sendMessage() {
         getTestBot().sendMessage(getJavabot().getNick(), "noReply");

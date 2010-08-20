@@ -25,7 +25,7 @@ public class JavadocParserTest extends BaseTest {
     public static final String API_NAME = "JDK";
     public static final String API_URL_STRING = "http://java.sun.com/javase/6/docs/api/";
     public static final String ZIP_LOCATION
-        = "file:/System/Library/Frameworks/JavaVM.framework/Classes/cla sses.jar,file:/System/Library/Frameworks/JavaVM.framew ork/Classes/jce.jar,file:/System/Library/Frameworks/JavaVM.framework/Clas ses/jsse.jar";
+        = "file:/System/Library/Frameworks/JavaVM.framework/Classes/classes.jar,file:/System/Library/Frameworks/JavaVM.framework/Classes/jce.jar,file:/System/Library/Frameworks/JavaVM.framework/Classes/jsse.jar";
     public static final String PACKAGES = "java,javax";
     @Autowired
     private ApiDao dao;
@@ -47,5 +47,4 @@ public class JavadocParserTest extends BaseTest {
             parser.parse(api, writer);
         }
     }
-
 }

@@ -48,7 +48,7 @@ public class Api implements Persistent {
     public Api() {
     }
 
-    public Api(final String apiName, final String url, String pkgs, String zip) {
+    public Api(final String apiName, final String url, final String pkgs, final String zip) {
         name = apiName;
         baseUrl = url.endsWith("/") ? url : url + "/";
         packages = pkgs;
@@ -111,13 +111,13 @@ public class Api implements Persistent {
     }
 
     private String findJDKJars() {
-        Set<String> jars = new TreeSet<String>();
+        final Set<String> jars = new TreeSet<String>();
         String paths = System.getProperty("sun.boot.class.path");
         if (paths == null) {
             paths = System.getProperty("java.class.path");
         }
-        for (String path : paths.split(File.pathSeparator)) {
-            File file = new File(path);
+        for (final String path : paths.split(File.pathSeparator)) {
+            final File file = new File(path);
             if (JDK_JARS.contains(file.getName())) {
                 try {
                     jars.add(file.getCanonicalFile().toURI().toURL().toString());

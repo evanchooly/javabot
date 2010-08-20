@@ -315,7 +315,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         }
     }
 
-    private void processMessage(final String channel, final String message, final String sender, final String login,
+    public void processMessage(final String channel, final String message, final String sender, final String login,
         final String hostname) {
         try {
             logsDao.logMessage(Logs.Type.MESSAGE, sender, channel, message);
@@ -366,12 +366,12 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     public List<Message> getChannelResponses(final String channel, final String sender, final String login,
         final String hostname, final String message) {
         final Iterator<BotOperation> iterator = getOperations();
-        final List<Message> reponse = new ArrayList<Message>();
-        while (reponse == null && iterator.hasNext()) {
-            reponse
+        final List<Message> responses = new ArrayList<Message>();
+        while (responses.isEmpty() && iterator.hasNext()) {
+            responses
                 .addAll(iterator.next().handleChannelMessage(new BotEvent(channel, sender, login, hostname, message)));
         }
-        return reponse;
+        return responses;
     }
 
     public boolean isOnSameChannelAs(final String nick) {

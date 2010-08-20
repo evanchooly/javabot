@@ -1,54 +1,55 @@
 package javabot.operations;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javabot.BaseTest;
+import javabot.Message;
 import org.testng.Assert;
 import org.unitils.spring.annotation.SpringApplicationContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @SpringApplicationContext("classpath:test-application-config.xml")
 public abstract class BaseOperationTest extends BaseTest {
-    private static final Logger log = LoggerFactory.getLogger(BaseOperationTest.class);
-    
-    protected void testMessageList(final String message, final List<String> responses) {
-        final TestBot bot = getTestBot();
-        bot.sendMessage(getJavabotChannel(), String.format("%s %s", getJavabot().getNick(), message));
-        waitForResponses(bot, 1);
-        final String response = bot.getOldestResponse().getMessage();
-        Assert.assertTrue(responses.contains(response));
+    protected void scanForResponse(final String message, final String target) {
+        final List<Message> list = sendMessage(message);
+        boolean found = false;
+        for (final Message response : list) {
+            found |= response.getMessage().contains(target);
+        }
+
+        Assert.assertTrue(found, String.format("Should find the response in the responses."
+            + "\n** expected: \n%s"
+            + "\n** got: \n%s", target, list));
     }
 
     protected void testMessage(final String message, final String... responses) {
-        final TestBot bot = getTestBot();
-        bot.sendMessage(getJavabotChannel(), String.format("%s %s", getJavabot().getNick(), message));
-        validateResponses(bot, responses);
-    }
+        final List<Message> list = sendMessage(message);
 
-    protected void validateResponses(final TestBot bot, final String... responses) {
-        final int length = responses == null ? 0 : responses.length;
-        waitForResponses(bot, length);
+        Assert.assertEquals(list.size(), responses.length, String.format("Should get expected response count back. "
+            + "\n** expected: \n%s"
+            + "\n** got: \n%s", Arrays.toString(responses), list));
         for (final String response : responses) {
-            Assert.assertEquals(bot.getOldestResponse().getMessage(), response);
+            Assert.assertEquals(list.remove(0).getMessage(), response);
         }
+        Assert.assertTrue(list.isEmpty(), "All responses should be matched.");
     }
 
-    protected void waitForResponse(final String response) {
-        final long now = System.currentTimeMillis();
-        while (!response.equals(getTestBot().getOldestMessage()) && System.currentTimeMillis() - now < 300000) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                log.error(e.getMessage(), e);
-            }
-        }
-    }
-
-    protected void testChannelMessage(final String message, final String... responses) {
+    private List<Message> sendMessage(final String message) {
         final TestBot bot = getTestBot();
-        bot.sendMessage(getJavabotChannel(), message);
-        validateResponses(bot, responses);
+        getJavabot().processMessage(getJavabotChannel(), message, bot.getNick(), bot.getNick(), "localhost");
+        return getJavabot().getMessages();
+    }
+
+    protected void testMessageList(final String message, final List<String> responses) {
+        final List<Message> list = sendMessage(message);
+        boolean found = false;
+        for (final Message response : list) {
+            found |= responses.contains(response.getMessage());
+        }
+
+        Assert.assertTrue(found, String.format("Should get one response from the list of possibilities"
+            + "\n** expected: \n%s"
+            + "\n** got: \n%s", responses, list));
     }
 
     public String getForgetMessage(final String factoid) {
@@ -60,15 +61,6 @@ public abstract class BaseOperationTest extends BaseTest {
     }
 
     protected void forgetFactoid(final String name) {
-        testMessage(String.format("forget %s", name), getForgetMessage(name));
-    }
-
-    protected void scanForResponse(final String message, final String target) {
-        final TestBot bot = getTestBot();
-        bot.sendMessage(getJavabotChannel(), String.format("%s %s", getJavabot().getNick(), message));
-        waitForResponses(bot, 1);
-        final String response = bot.getOldestResponse().getMessage();
-        Assert.assertTrue(response.contains(target),
-            String.format("Should have found '%s' in '%s' in response to '%s'", target, response, message));
+        testMessage(String.format("~forget %s", name), getForgetMessage(name));
     }
 }

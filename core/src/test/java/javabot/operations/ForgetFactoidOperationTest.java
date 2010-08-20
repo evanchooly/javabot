@@ -18,15 +18,11 @@ public class ForgetFactoidOperationTest extends BaseOperationTest {
         if (!factoidDao.hasFactoid("afky")) {
             factoidDao.addFactoid(getTestBot().getNick(), "afky", "test");
         }
-        testMessage("forget afky", "I forgot about afky, " + getTestBot().getNick() + ".");
+        testMessage("~forget afky", "I forgot about afky, " + getTestBot().getNick() + ".");
     }
 
     public void nonexistantFactoid() {
-        testMessage("forget asdfghjkl",
+        testMessage("~forget asdfghjkl",
             String.format("I never knew about asdfghjkl anyway, %s.", getTestBot().getNick()));
-    }
-
-    public void channelMessage() throws IOException {
-        testChannelMessage("pong is");
     }
 }

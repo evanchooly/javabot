@@ -25,7 +25,7 @@ public class BaseTest {
     @Autowired
     private AdminDao dao;
     public final String ok;
-    private static Javabot bot;
+    private static TestJavabot bot;
     private static TestBot user;
     private final ApplicationContext context;
 
@@ -40,55 +40,12 @@ public class BaseTest {
 
     protected final Javabot createBot() {
         if (bot == null) {
-            bot = new Javabot(context) {
-                @Override
-                public void onJoin(final String channel, final String sender, final String login,
-                    final String hostname) {
-                    dao.create(sender, hostname);
-                    super.onJoin(channel, sender, login, hostname);
-                }
-
-                @Override
-                public String getNick() {
-                    return TEST_BOT;
-                }
-
-                public void loadConfig(final Config config) {
-                    try {
-                        log.debug("Running with configuration: " + config);
-                        setName(getNick());
-                        setLogin(getNick());
-                        setNickPassword(config.getPassword());
-                        setStartStrings("~");
-                    } catch (Exception e) {
-                        log.debug(e.getMessage(), e);
-                        throw new RuntimeException(e.getMessage(), e);
-                    }
-                }
-
-                @Override
-                public void connect() {
-                    try {
-                        connect("irc.freenode.net", 6667);
-                        Channel chan = channelDao.get(getJavabotChannel());
-                        if (chan == null) {
-                            chan = new Channel();
-                            chan.setName("##" + getNick());
-                            System.out.println("No channels found.  Initializing to " + chan.getName());
-                            channelDao.save(chan);
-                        }
-                        chan.join(this);
-                        joinChannel(getJavabotChannel());
-                    } catch (Exception e) {
-                        throw new RuntimeException(e.getMessage(), e);
-                    }
-                }
-            };
+            bot = new TestJavabot(context);
         }
         return bot;
     }
 
-    public Javabot getJavabot() {
+    public TestJavabot getJavabot() {
         if (bot == null) {
             createBot();
         }
@@ -99,13 +56,6 @@ public class BaseTest {
         synchronized (context) {
             if (user == null) {
                 user = new TestBot(TEST_USER);
-                try {
-                    user.connect("irc.freenode.net");
-                    user.joinChannel(getJavabotChannel());
-                } catch (Exception e) {
-                    log.debug(e.getMessage(), e);
-                    Assert.fail(e.getMessage());
-                }
             }
             return user;
         }
@@ -154,6 +104,7 @@ public class BaseTest {
             setName(name);
         }
 
+
         @Override
         protected void onAction(final String sender, final String login, final String hostname, final String target,
             final String action) {
@@ -182,15 +133,82 @@ public class BaseTest {
             return responses.isEmpty() ? null : responses.remove(0);
         }
 
-        public String getOldestMessage() {
-            final Response response = getOldestResponse();
-            return response == null ? null : response.getMessage();
-        }
     }
 
     @AfterSuite
     public void shutdown() throws InterruptedException {
         Thread.sleep(3000);
         getJavabot().shutdown();
+    }
+
+    public class TestJavabot extends Javabot {
+        private final List<Message> messages = new ArrayList<Message>();
+
+        public TestJavabot(final ApplicationContext context) {
+            super(context);
+        }
+
+        public List<Message> getMessages() {
+            final List<Message> list = new ArrayList<Message>(messages);
+            messages.clear();
+            return list;
+        }
+
+        @Override
+        public void onJoin(final String channel, final String sender, final String login,
+            final String hostname) {
+            super.onJoin(channel, sender, login, hostname);
+        }
+
+        @Override
+        public String getNick() {
+            return TEST_BOT;
+        }
+
+        public void loadConfig(final Config config) {
+            try {
+                log.debug("Running with configuration: " + config);
+                setName(getNick());
+                setLogin(getNick());
+                setNickPassword(config.getPassword());
+                setStartStrings("~");
+                dao.create(getTestBot().getNick(), "localhost");
+                } catch (Exception e) {
+                log.debug(e.getMessage(), e);
+                throw new RuntimeException(e.getMessage(), e);
+            }
+        }
+
+        @Override
+        public void connect() {
+            try {
+                Channel chan = channelDao.get(getJavabotChannel());
+                if (chan == null) {
+                    chan = new Channel();
+                    chan.setName("##" + getNick());
+                    System.out.println("No channels found.  Initializing to " + chan.getName());
+                    channelDao.save(chan);
+                }
+                chan.join(this);
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage(), e);
+            }
+        }
+
+        @Override
+        void postAction(final Message message) {
+            postMessage(message);
+        }
+
+        @Override
+        void postMessage(final Message message) {
+            logMessage(message);
+            messages.add(message);
+        }
+
+        @Override
+        public boolean userIsOnChannel(final String nick, final String channel) {
+            return true;
+        }
     }
 }

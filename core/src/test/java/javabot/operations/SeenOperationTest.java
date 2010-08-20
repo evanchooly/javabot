@@ -11,30 +11,20 @@ public class SeenOperationTest extends BaseOperationTest {
         send("lowercase");
         send("UPPERCASE");
         changeNick(nick);
-        lookFor("MixedCase");
-        lookFor("lowercase");
-        lookFor("UPPERCASE");
     }
 
     private void lookFor(final Object nick) {
-        scanForResponse(String.format("seen %s", nick), String.format("%s was last seen at", nick));
+        scanForResponse(String.format("~seen %s", nick), String.format("%s was last seen at", nick));
     }
 
     private void send(final String nick) {
         changeNick(nick);
-        getTestBot().sendMessage(getJavabotChannel(), String.format("my nick is %s!", nick));
-        sleep();
+        final String message = String.format("arr!  my nick be %s now!", nick);
+        testMessage(message);
+        lookFor(nick);
     }
 
     private void changeNick(final String nick) {
         getTestBot().changeNick(nick);
-    }
-
-    private void sleep() {
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e.getMessage());
-        }
     }
 }
