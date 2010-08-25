@@ -1,5 +1,6 @@
 package javabot.operations;
 
+import javabot.BaseTest;
 import org.testng.annotations.Test;
 
 /**
@@ -10,7 +11,6 @@ import org.testng.annotations.Test;
 @Test
 public class ShunOperationTest extends BaseOperationTest {
     public void shunMe() throws InterruptedException {
-        final TestBot testBot = getTestBot();
-        scanForResponse("~shun " + testBot.getNick() + " 10", testBot.getNick() + " is shunned until");
+        scanForResponse("~shun " + BaseTest.TEST_USER + " 10", BaseTest.TEST_USER + " is shunned until");
     }
 }

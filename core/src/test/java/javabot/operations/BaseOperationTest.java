@@ -35,8 +35,7 @@ public abstract class BaseOperationTest extends BaseTest {
     }
 
     private List<Message> sendMessage(final String message) {
-        final TestBot bot = getTestBot();
-        getJavabot().processMessage(getJavabotChannel(), message, bot.getNick(), bot.getNick(), "localhost");
+        getJavabot().processMessage(getJavabotChannel(), message, BaseTest.TEST_USER, BaseTest.TEST_USER, "localhost");
         return getJavabot().getMessages();
     }
 
@@ -53,11 +52,11 @@ public abstract class BaseOperationTest extends BaseTest {
     }
 
     public String getForgetMessage(final String factoid) {
-        return String.format("I forgot about %s, %s.", factoid, getTestBot().getNick());
+        return String.format("I forgot about %s, %s.", factoid, BaseTest.TEST_USER);
     }
 
     protected String getFoundMessage(final String factoid, final String value) {
-        return String.format("%s, %s is %s", getTestBot().getNick(), factoid, value);
+        return String.format("%s, %s is %s", BaseTest.TEST_USER, factoid, value);
     }
 
     protected void forgetFactoid(final String name) {

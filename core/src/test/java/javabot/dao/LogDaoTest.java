@@ -1,10 +1,10 @@
 package javabot.dao;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javabot.BaseTest;
 import javabot.model.Config;
 import javabot.model.Logs;
 import javabot.model.Logs.Type;
@@ -32,11 +32,10 @@ public class LogDaoTest extends BaseServiceTest {
         config.setHistoryLength(null);
         dao.save(config);
         final Calendar today = Calendar.getInstance();
-        final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
         while(cal.getTimeInMillis() < today.getTimeInMillis()) {
             final Logs message = new Logs();
             message.setType(Type.MESSAGE);
-            message.setNick(getTestBot().getNick());
+            message.setNick(BaseTest.TEST_USER);
             message.setChannel(getJavabotChannel());
             message.setMessage("test message " + cal.getTimeInMillis());
             message.setUpdated(cal.getTime());

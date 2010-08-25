@@ -3,6 +3,7 @@ package javabot.operations;
 import java.io.IOException;
 import java.util.List;
 
+import javabot.BaseTest;
 import javabot.Message;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
@@ -20,14 +21,14 @@ public class AddFactoidOperationTest extends BaseOperationTest {
 
     @BeforeMethod
     public void setUp() {
-        factoidDao.delete(getTestBot().getNick(), "test");
-        factoidDao.delete(getTestBot().getNick(), "ping $1");
-        factoidDao.delete(getTestBot().getNick(), "what");
-        factoidDao.delete(getTestBot().getNick(), "what up");
-        factoidDao.delete(getTestBot().getNick(), "test pong");
-        factoidDao.delete(getTestBot().getNick(), "asdf");
-        factoidDao.delete(getTestBot().getNick(), "12345");
-        factoidDao.delete(getTestBot().getNick(), "replace");
+        factoidDao.delete(BaseTest.TEST_USER, "test");
+        factoidDao.delete(BaseTest.TEST_USER, "ping $1");
+        factoidDao.delete(BaseTest.TEST_USER, "what");
+        factoidDao.delete(BaseTest.TEST_USER, "what up");
+        factoidDao.delete(BaseTest.TEST_USER, "test pong");
+        factoidDao.delete(BaseTest.TEST_USER, "asdf");
+        factoidDao.delete(BaseTest.TEST_USER, "12345");
+        factoidDao.delete(BaseTest.TEST_USER, "replace");
     }
 
     public void factoidAdd() {
@@ -40,18 +41,17 @@ public class AddFactoidOperationTest extends BaseOperationTest {
 
     public void replace() {
         testMessage("~replace is first entry", ok);
-        final TestBot bot = getTestBot();
-        testMessage("~no, replace is <reply>second entry", "OK, " + bot.getNick() + ".");
+        testMessage("~no, replace is <reply>second entry", "OK, " + BaseTest.TEST_USER + ".");
         testMessage("~replace", "second entry");
         forgetFactoid("replace");
-        testMessage("~no, replace is <reply>second entry", "OK, " + bot.getNick() + ".");
+        testMessage("~no, replace is <reply>second entry", "OK, " + BaseTest.TEST_USER + ".");
     }
 
     @Test(dependsOnMethods = {"factoidAdd"})
     public void duplicateAdd() throws IOException {
         final String message = "~test pong is pong";
         testMessage(message, ok);
-        testMessage(message, String.format("I already have a factoid named %s, %s", "test pong", getTestBot().getNick()));
+        testMessage(message, String.format("I already have a factoid named %s, %s", "test pong", BaseTest.TEST_USER));
         forgetFactoid("test pong");
     }
 
@@ -63,7 +63,7 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     public void addLog() {
         testMessage("~12345 is 12345", ok);
         Assert.assertTrue(
-            changeDao.findLog(String.format("%s added '12345' with a value of '12345'", getTestBot().getNick())));
+            changeDao.findLog(String.format("%s added '12345' with a value of '12345'", BaseTest.TEST_USER)));
         forgetFactoid("12345");
     }
 

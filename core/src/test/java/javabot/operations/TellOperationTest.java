@@ -1,20 +1,24 @@
 package javabot.operations;
 
+import javabot.BaseTest;
+import javabot.dao.FactoidDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
-import org.testng.Assert;
 
-@Test(enabled = false)
+@Test
 public class TellOperationTest extends BaseOperationTest {
+    @Autowired
+    private FactoidDao dao;
 
     public void shortcut() {
-        final TestBot bot = getTestBot();
-        final String nick = getJavabot().getNick();
-        bot.sendMessage(getJavabotChannel(), String.format("%s shortcut is <reply>shortcut", nick));
-        waitForResponses(bot, 1);
-        bot.getOldestResponse();
-        bot.sendMessage(getJavabotChannel(), String.format("~~ %s shortcut", getTestBot().getNick()));
-        waitForResponses(bot, 1);
-        Assert.assertEquals(bot.getOldestResponse().getMessage(), String.format("%s, shortcut", nick));
-
+        dao.delete(getJavabot().getNick(), "shortcut");
+        try {
+            final String nick = getJavabot().getNick();
+            testMessage("~shortcut is <reply>shortcut", ok);
+            testMessage(String.format("~~ %s shortcut", BaseTest.TEST_USER),
+                String.format("%s, shortcut", BaseTest.TEST_USER));
+        } finally {
+            dao.delete(getJavabot().getNick(), "shortcut");
+        }
     }
 }

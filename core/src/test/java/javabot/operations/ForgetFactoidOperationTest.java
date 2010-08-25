@@ -1,7 +1,6 @@
 package javabot.operations;
 
-import java.io.IOException;
-
+import javabot.BaseTest;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +15,13 @@ public class ForgetFactoidOperationTest extends BaseOperationTest {
 
     public void forgetFactoid() {
         if (!factoidDao.hasFactoid("afky")) {
-            factoidDao.addFactoid(getTestBot().getNick(), "afky", "test");
+            factoidDao.addFactoid(BaseTest.TEST_USER, "afky", "test");
         }
-        testMessage("~forget afky", "I forgot about afky, " + getTestBot().getNick() + ".");
+        testMessage("~forget afky", "I forgot about afky, " + BaseTest.TEST_USER + ".");
     }
 
     public void nonexistantFactoid() {
         testMessage("~forget asdfghjkl",
-            String.format("I never knew about asdfghjkl anyway, %s.", getTestBot().getNick()));
+            String.format("I never knew about asdfghjkl anyway, %s.", BaseTest.TEST_USER));
     }
 }

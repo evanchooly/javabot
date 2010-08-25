@@ -1,9 +1,13 @@
 package javabot;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
@@ -66,10 +70,10 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     private final ExecutorService executors;
     public static final int THROTTLE_TIME = 5 * 1000;
 
-    public Javabot(final ApplicationContext applicationContext) {
+    public Javabot(final ApplicationContext applicationContext) throws IOException {
         context = applicationContext;
         context.getAutowireCapableBeanFactory().autowireBean(this);
-        setVersion("Javabot 3.0.5");
+        setVersion("Javabot " + loadVersion());
         Config config;
         try {
             config = configDao.get();
@@ -89,6 +93,28 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         loadOperationInfo(config);
         loadConfig(config);
         connect();
+    }
+
+    @SuppressWarnings({"IOResourceOpenedButNotSafelyClosed"})
+    private String loadVersion() throws IOException {
+        final Properties props = new Properties();
+        InputStream inStream = null;
+        try {
+            inStream = getClass().getResourceAsStream("/META-INF/maven/javabot/core/pom.properties");
+            if(inStream == null) {
+                inStream = new FileInputStream("target/maven-archiver/pom.properties");
+            }
+            props.load(inStream);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage());
+        } finally {
+            if(inStream != null) {
+                inStream.close();
+            }
+        }
+        return props.getProperty("version");
     }
 
     public void shutdown() {
@@ -175,7 +201,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         return removed;
     }
 
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws IOException {
         if (log.isInfoEnabled()) {
             log.info("Starting Javabot");
         }

@@ -33,7 +33,7 @@ public class BaseTest {
         context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
         inject(this);
         createBot();
-        final String nick = getTestBot().getNick();
+        final String nick = BaseTest.TEST_USER;
         ok = "OK, " + nick.substring(0, Math.min(nick.length(), 16)) + ".";
         sleep(2000);
     }
@@ -172,7 +172,7 @@ public class BaseTest {
                 setLogin(getNick());
                 setNickPassword(config.getPassword());
                 setStartStrings("~");
-                dao.create(getTestBot().getNick(), "localhost");
+                dao.create(BaseTest.TEST_USER, "localhost");
                 } catch (Exception e) {
                 log.debug(e.getMessage(), e);
                 throw new RuntimeException(e.getMessage(), e);

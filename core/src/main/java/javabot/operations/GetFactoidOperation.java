@@ -39,7 +39,6 @@ public class GetFactoidOperation extends BotOperation {
 
     @Override
     public List<Message> handleMessage(final BotEvent event) {
-        System.out.println("GetFactoidOperation.handleMessage: event = " + event);
         List<Message> responses = tell(event);
         if (responses.isEmpty()) {
             responses = new ArrayList<Message>();
@@ -52,7 +51,6 @@ public class GetFactoidOperation extends BotOperation {
     private Message getFactoid(final TellSubject subject, final String toFind, final String sender,
         final String channel,
         final BotEvent event, final Set<String> backtrack) {
-        System.out.println("GetFactoidOperation.getFactoid: toFind = " + toFind);
         String message = toFind;
         if (log.isDebugEnabled()) {
             log.debug(sender + " : " + message);

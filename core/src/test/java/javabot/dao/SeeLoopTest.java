@@ -1,5 +1,6 @@
 package javabot.dao;
 
+import javabot.BaseTest;
 import javabot.operations.BaseOperationTest;
 import javabot.operations.BotOperation;
 import javabot.operations.GetFactoidOperation;
@@ -51,7 +52,7 @@ public class SeeLoopTest extends BaseOperationTest {
         testMessage("~see1 is Bzzt $who", ok);
         testMessage("~see2 is <see>see1", ok);
         testMessage("~see3 is <see>see2", ok);
-        testMessage("~see3", String.format("%s, see1 is Bzzt %s", getTestBot().getNick(), getTestBot().getNick()));
+        testMessage("~see3", String.format("%s, see1 is Bzzt %s", BaseTest.TEST_USER, BaseTest.TEST_USER));
         deleteSees();
     }
 
@@ -60,7 +61,7 @@ public class SeeLoopTest extends BaseOperationTest {
         testMessage("~see1 is <see>see2", ok);
         testMessage("~see2 is <see>see3", ok);
         testMessage("~see3 is w00t", ok);
-        testMessage("~see1", getTestBot().getNick() + ", see3 is w00t");
+        testMessage("~see1", BaseTest.TEST_USER + ", see3 is w00t");
         deleteSees();
     }
 }

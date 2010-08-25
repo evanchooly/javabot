@@ -14,7 +14,6 @@ public class ChannelDaoTest extends BaseServiceTest {
 
     @Test
     public void addChannel() {
-        final String testing = getTestBot().getNick();
         final Channel channel = new Channel();
         final String name = "##" + System.currentTimeMillis();
         channel.setName(name);

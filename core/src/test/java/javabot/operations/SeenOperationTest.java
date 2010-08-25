@@ -1,16 +1,15 @@
 package javabot.operations;
 
+import javabot.BaseTest;
 import org.testng.annotations.Test;
 
 @Test
 public class SeenOperationTest extends BaseOperationTest {
     public void stringCase() {
-        final TestBot testBot = getTestBot();
-        String nick = testBot.getNick();
         send("MixedCase");
         send("lowercase");
         send("UPPERCASE");
-        changeNick(nick);
+        changeNick(BaseTest.TEST_USER);
     }
 
     private void lookFor(final Object nick) {

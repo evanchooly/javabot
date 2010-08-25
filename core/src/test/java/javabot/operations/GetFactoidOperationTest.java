@@ -1,9 +1,9 @@
 package javabot.operations;
 
 import java.io.IOException;
-import java.lang.String;
 import java.util.Arrays;
 
+import javabot.BaseTest;
 import javabot.dao.FactoidDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
@@ -20,20 +20,20 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     @BeforeClass
     public void createGets() {
         deleteFactoids();
-        factoidDao.addFactoid(getTestBot().getNick(), "api", "http://java.sun.com/javase/current/docs/api/index.html");
-        factoidDao.addFactoid(getTestBot().getNick(), "replyTest", "<reply>I'm a reply!");
-        factoidDao.addFactoid(getTestBot().getNick(), "stupid", "<reply>$who, what you've just said is one of the most"
+        factoidDao.addFactoid(BaseTest.TEST_USER, "api", "http://java.sun.com/javase/current/docs/api/index.html");
+        factoidDao.addFactoid(BaseTest.TEST_USER, "replyTest", "<reply>I'm a reply!");
+        factoidDao.addFactoid(BaseTest.TEST_USER, "stupid", "<reply>$who, what you've just said is one of the most"
             + " insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you"
             + " even close to anything that could be considered a rational thought. Everyone in this room is now"
             + " dumber for having listened to it. I award you no points, and may God have mercy on your soul.");
-        factoidDao.addFactoid(getTestBot().getNick(), "seeTest", "<see>replyTest");
-        factoidDao.addFactoid(getTestBot().getNick(), "noReply", "I'm a reply!");
-        factoidDao.addFactoid(getTestBot().getNick(), "replace $1", "<reply>I replaced you $1");
-        factoidDao.addFactoid(getTestBot().getNick(), "camel $^", "<reply>$^");
-        factoidDao.addFactoid(getTestBot().getNick(), "url $+", "<reply>$+");
-        factoidDao.addFactoid(getTestBot().getNick(), "hey", "<reply>Hello, $who");
-        factoidDao.addFactoid(getTestBot().getNick(), "coin", "<reply>(heads|tails)");
-        factoidDao.addFactoid(getTestBot().getNick(), "hug $1", "<action> hugs $1");
+        factoidDao.addFactoid(BaseTest.TEST_USER, "seeTest", "<see>replyTest");
+        factoidDao.addFactoid(BaseTest.TEST_USER, "noReply", "I'm a reply!");
+        factoidDao.addFactoid(BaseTest.TEST_USER, "replace $1", "<reply>I replaced you $1");
+        factoidDao.addFactoid(BaseTest.TEST_USER, "camel $^", "<reply>$^");
+        factoidDao.addFactoid(BaseTest.TEST_USER, "url $+", "<reply>$+");
+        factoidDao.addFactoid(BaseTest.TEST_USER, "hey", "<reply>Hello, $who");
+        factoidDao.addFactoid(BaseTest.TEST_USER, "coin", "<reply>(heads|tails)");
+        factoidDao.addFactoid(BaseTest.TEST_USER, "hug $1", "<action> hugs $1");
     }
 
     @AfterClass
@@ -52,7 +52,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
 
     private void delete(final String key) {
         while (factoidDao.hasFactoid(key)) {
-            factoidDao.delete(getTestBot().getNick(), key);
+            factoidDao.delete(BaseTest.TEST_USER, key);
         }
     }
 
@@ -74,13 +74,13 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void parameterReplacement() {
-        testMessage("~replace " + getTestBot().getNick(), "I replaced you " + getTestBot().getNick());
+        testMessage("~replace " + BaseTest.TEST_USER, "I replaced you " + BaseTest.TEST_USER);
         testMessage("~url what up doc", "what+up+doc");
         testMessage("~camel i should be camel case", "IShouldBeCamelCase");
     }
 
     public void whoReplacement() {
-        testMessage("~hey", "Hello, " + getTestBot().getNick());
+        testMessage("~hey", "Hello, " + BaseTest.TEST_USER);
     }
 
     public void randomList() {
@@ -93,11 +93,11 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void noGuess() {
-        testMessage("~apiz", getTestBot().getNick() + ", I have no idea what apiz is.");
+        testMessage("~apiz", BaseTest.TEST_USER + ", I have no idea what apiz is.");
     }
 
     public void action() {
-        testMessage("~hug " + getTestBot().getNick(), " hugs " + getTestBot().getNick());
+        testMessage("~hug " + BaseTest.TEST_USER, " hugs " + BaseTest.TEST_USER);
     }
 
     @Test
