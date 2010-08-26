@@ -101,7 +101,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         InputStream inStream = null;
         try {
             inStream = getClass().getResourceAsStream("/META-INF/maven/javabot/core/pom.properties");
-            if(inStream == null) {
+            if (inStream == null) {
                 inStream = new FileInputStream("target/maven-archiver/pom.properties");
             }
             props.load(inStream);
@@ -110,7 +110,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
         } finally {
-            if(inStream != null) {
+            if (inStream != null) {
                 inStream.close();
             }
         }
@@ -146,37 +146,47 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     @SuppressWarnings({"unchecked"})
     private void loadOperationInfo(final Config config) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (final String name : config.getOperations()) {
-                    try {
-                        addOperation(load(name));
-                    } catch (ClassNotFoundException e) {
-                        log.debug("Operation not found: " + name);
-                    } catch (Exception e) {
-                        log.error(e.getMessage(), e);
-                        throw new RuntimeException(e.getMessage());
-                    }
-                }
-                if (operations.isEmpty()) {
-                    for (final BotOperation operation : BotOperation.listKnownOperations()) {
-                        addOperation(operation);
-                    }
-                }
+        for (final String name : config.getOperations()) {
+            try {
+                addOperation(name);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                throw new RuntimeException(e.getMessage());
             }
-        }).start();
-    }
-
-    @SuppressWarnings({"unchecked"})
-    private BotOperation load(final String name)
-        throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        return ((Class<BotOperation>) Class.forName(name)).newInstance();
+        }
+        if (operations.isEmpty()) {
+            for (final BotOperation operation : BotOperation.listKnownOperations()) {
+                add(operation);
+            }
+        }
     }
 
     @SuppressWarnings({"unchecked"})
     public boolean addOperation(final String name) {
-        return false; //addOperation(name, operations);
+        boolean added = false;
+        final List<BotOperation> ops = BotOperation.listKnownOperations();
+        final Iterator<BotOperation> it = ops.iterator();
+        while(it.hasNext() && !added) {
+            final BotOperation operation = it.next();
+            if (operation.getName().equalsIgnoreCase(name)) {
+                added = add(operation);
+            }
+        }
+        if (!added) {
+            log.debug("Operation not found: " + name);
+        }
+        return added;
+    }
+
+    private boolean add(final BotOperation operation) {
+        final Config config = configDao.get();
+        final boolean added = config.getOperations().add(operation.getName());
+        configDao.save(config);
+        operation.setBot(this);
+        context.getAutowireCapableBeanFactory().autowireBean(operation);
+        operations.add(operation);
+
+        return true;
     }
 
     @SuppressWarnings({"unchecked"})
@@ -190,12 +200,16 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     }
 
     public boolean removeOperation(final String name) {
-        final Iterator<BotOperation> it = operations.iterator();
         boolean removed = false;
-        while(it.hasNext() && !removed) {
-            if(it.next().getName().equals(name)) {
+        final Iterator<BotOperation> it = operations.iterator();
+        while (it.hasNext() && !removed) {
+            final BotOperation operation = it.next();
+            if (operation.getName().equals(name) && !operation.isStandardOperation()) {
                 removed = true;
                 it.remove();
+                final Config config = configDao.get();
+                config.getOperations().remove(name);
+                configDao.save(config);
             }
         }
         return removed;
@@ -479,13 +493,12 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     public BotOperation getOperation(final Class<? extends BotOperation> clazz) {
         final Iterator<BotOperation> iter = getOperations();
-        while(iter.hasNext()) {
+        while (iter.hasNext()) {
             final BotOperation operation = iter.next();
-            if(operation.getClass().equals(clazz)) {
+            if (operation.getClass().equals(clazz)) {
                 return operation;
             }
         }
-
         return null;
     }
 

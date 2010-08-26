@@ -3,6 +3,8 @@ package javabot.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -32,7 +34,7 @@ public class Config implements Serializable, Persistent {
     private String prefixes = "~";
     private String nick;
     private String password;
-    private List<String> operations = new ArrayList<String>();
+    private Set<String> operations = new TreeSet<String>();
 
     @Id
     @GeneratedValue
@@ -54,11 +56,11 @@ public class Config implements Serializable, Persistent {
 
     @SuppressWarnings({"JpaModelErrorInspection"})
     @CollectionOfElements(fetch = FetchType.EAGER)
-    public List<String> getOperations() {
+    public Set<String> getOperations() {
         return operations;
     }
 
-    public void setOperations(final List<String> list) {
+    public void setOperations(final Set<String> list) {
         operations = list;
     }
 

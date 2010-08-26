@@ -1,7 +1,8 @@
 package javabot.dao.impl;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.AdminDao;
@@ -43,7 +44,7 @@ public class ConfigDaoImpl extends AbstractDaoImpl<Config> implements ConfigDao 
         channel.setName("##" + config.getNick());
         channelDao.save(channel);
         final List<BotOperation> it = BotOperation.listKnownOperations();
-        final List<String> list = new ArrayList<String>();
+        final Set<String> list = new TreeSet<String>();
         for (final BotOperation operation : it) {
             list.add(operation.getClass().getName());
         }

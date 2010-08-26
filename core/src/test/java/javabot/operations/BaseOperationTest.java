@@ -34,7 +34,7 @@ public abstract class BaseOperationTest extends BaseTest {
         Assert.assertTrue(list.isEmpty(), "All responses should be matched.");
     }
 
-    private List<Message> sendMessage(final String message) {
+    protected List<Message> sendMessage(final String message) {
         getJavabot().processMessage(getJavabotChannel(), message, BaseTest.TEST_USER, BaseTest.TEST_USER, "localhost");
         return getJavabot().getMessages();
     }

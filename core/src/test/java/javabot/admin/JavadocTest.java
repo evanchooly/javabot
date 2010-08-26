@@ -1,7 +1,5 @@
 package javabot.admin;
 
-import java.io.File;
-
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
 import javabot.javadoc.Api;

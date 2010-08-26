@@ -6,11 +6,11 @@ import java.util.List;
 
 import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
-import javabot.Javabot;
 import javabot.Message;
 import javabot.commands.AddAdmin;
 import javabot.commands.AddApi;
 import javabot.commands.AddChannel;
+import javabot.commands.BaseCommand;
 import javabot.commands.Command;
 import javabot.commands.Config;
 import javabot.commands.DisableOperation;
@@ -20,14 +20,13 @@ import javabot.commands.EnableOperation;
 import javabot.commands.InfoApi;
 import javabot.commands.ListChannels;
 import javabot.commands.ListOperations;
-import javabot.commands.BaseCommand;
 import javabot.commands.ReprocessApi;
 import javabot.dao.AdminDao;
+import org.apache.commons.cli.MissingOptionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.apache.commons.cli.MissingOptionException;
 
 /**
  * Created Dec 17, 2008
@@ -66,7 +65,7 @@ public class AdminOperation extends BotOperation {
     public List<Message> handleMessage(final BotEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
-        List<Message> responses = new ArrayList<Message>();
+        final List<Message> responses = new ArrayList<Message>();
         if (message.startsWith(ADMIN_PREFIX)) {
             if (isAdmin(event)) {
                 final String[] params = message.substring(ADMIN_PREFIX.length()).trim().split(" ");

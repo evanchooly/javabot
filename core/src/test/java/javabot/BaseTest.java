@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.testng.Assert;
 import org.testng.annotations.AfterSuite;
 
 @SuppressWarnings({"StaticNonFinalField"})
@@ -40,7 +39,12 @@ public class BaseTest {
 
     protected final Javabot createBot() {
         if (bot == null) {
-            bot = new TestJavabot(context);
+            try {
+                bot = new TestJavabot(context);
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+                throw new RuntimeException(e.getMessage(), e);
+            }
         }
         return bot;
     }
@@ -75,19 +79,6 @@ public class BaseTest {
             Thread.sleep(milliseconds);
         } catch (InterruptedException exception) {
         }
-    }
-
-    protected void waitForResponses(final TestBot bot, final int length) {
-        int count = 10;
-        while (length != 0 && count != 0 && bot.getResponseCount() != length) {
-            try {
-                Thread.sleep(1000);
-                count--;
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e.getMessage());
-            }
-        }
-        Assert.assertEquals(bot.getResponseCount(), length);
     }
 
     public static class TestBot extends PircBot {
@@ -125,14 +116,6 @@ public class BaseTest {
             onMessage(sender, sender, login, hostname, message);
         }
 
-        public int getResponseCount() {
-            return responses.size();
-        }
-
-        public Response getOldestResponse() {
-            return responses.isEmpty() ? null : responses.remove(0);
-        }
-
     }
 
     @AfterSuite
@@ -144,7 +127,7 @@ public class BaseTest {
     public class TestJavabot extends Javabot {
         private final List<Message> messages = new ArrayList<Message>();
 
-        public TestJavabot(final ApplicationContext context) {
+        public TestJavabot(final ApplicationContext context) throws IOException {
             super(context);
         }
 
