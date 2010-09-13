@@ -14,6 +14,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import com.antwerkz.maven.SPI;
 import javabot.dao.ShunDao;
 
 @Entity
@@ -22,6 +23,7 @@ import javabot.dao.ShunDao;
     @NamedQuery(name = ShunDao.BY_NAME, query = "select s from Shun s where s.nick = :nick"),
     @NamedQuery(name = ShunDao.CLEANUP, query = "delete from Shun s where s.expiry <= :now")
 })
+@SPI(Persistent.class)
 public class Shun implements Serializable, Persistent {
     private Long id;
     private String nick;

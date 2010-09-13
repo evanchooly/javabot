@@ -15,6 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import com.antwerkz.maven.SPI;
 import javabot.dao.LogsDao;
 
 @Entity
@@ -26,6 +27,7 @@ import javabot.dao.LogsDao;
     @NamedQuery(name = LogsDao.SEEN, query = "select new javabot.Seen(l.nick, l.message, l.channel, l.updated) from Logs l where"
         + " l.nick = :nick AND l.channel = :channel order by l.updated desc")
 })
+@SPI(Persistent.class)
 public class Logs implements Serializable, Persistent {
     private Long id;
     private String nick;

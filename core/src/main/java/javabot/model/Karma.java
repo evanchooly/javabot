@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.antwerkz.maven.SPI;
 import javabot.dao.KarmaDao;
 
 @Entity
@@ -21,6 +22,7 @@ import javabot.dao.KarmaDao;
     @NamedQuery(name= KarmaDao.COUNT, query= "select count(*) from Karma"),
     @NamedQuery(name= KarmaDao.BY_NAME, query="from Karma k where k.name = :name")
 })
+@SPI(Persistent.class)
 public class Karma implements Serializable, Persistent {
     private Long id;
     private String name;

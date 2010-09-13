@@ -11,8 +11,11 @@ import javax.persistence.Column;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.antwerkz.maven.SPI;
+
 @Entity
 @Table(name = "changes")
+@SPI(Persistent.class)
 public class Change implements Serializable, Persistent {
 
     private Long id;

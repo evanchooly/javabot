@@ -13,6 +13,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import com.antwerkz.maven.SPI;
 import javabot.dao.ConfigDao;
 import org.hibernate.annotations.CollectionOfElements;
 
@@ -26,6 +27,7 @@ import org.hibernate.annotations.CollectionOfElements;
 @NamedQueries({
     @NamedQuery(name = ConfigDao.GET_CONFIG, query = "select c from Config c")
 })
+@SPI(Persistent.class)
 public class Config implements Serializable, Persistent {
     private Long id;
     private String server = "irc.freenode.org";

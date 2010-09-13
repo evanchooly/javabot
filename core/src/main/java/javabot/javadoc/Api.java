@@ -18,6 +18,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.antwerkz.maven.SPI;
 import javabot.dao.ApiDao;
 import javabot.model.Persistent;
 import org.apache.commons.lang.StringUtils;
@@ -35,6 +36,7 @@ import org.slf4j.LoggerFactory;
     @NamedQuery(name = ApiDao.FIND_BY_NAME, query = "select a from Api a where upper(a.name)=upper(:name)"),
     @NamedQuery(name = ApiDao.FIND_ALL, query = "select a from Api a order by a.name")
 })
+@SPI(Persistent.class)
 public class Api implements Persistent {
     private static final Logger log = LoggerFactory.getLogger(Api.class);
     private Long id;

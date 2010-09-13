@@ -11,6 +11,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import com.antwerkz.maven.SPI;
 import javabot.dao.AdminDao;
 
 @Entity
@@ -20,6 +21,7 @@ import javabot.dao.AdminDao;
         + "and a.hostName = :hostName"),
     @NamedQuery(name = AdminDao.FIND_ALL, query = "select a from Admin a order by a.userName")
 })
+@SPI(Persistent.class)
 public class Admin implements Serializable, Persistent {
     private Long id;
     private String userName;

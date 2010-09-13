@@ -9,11 +9,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.antwerkz.maven.SPI;
 import javabot.model.Persistent;
 import org.apache.commons.lang.StringUtils;
 
 @Entity
 @Table(name = "methods")
+@SPI(Persistent.class)
 public class Method extends JavadocElement implements Persistent {
     private Clazz clazz;
     private String methodName;

@@ -7,10 +7,11 @@
         <artifactId>javabot</artifactId>
         <groupId>javabot</groupId>
         <version>3.0.5</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
+    <name>javabot grails front end</name>
     <groupId>javabot</groupId>
     <artifactId>javabot-grails</artifactId>
-    <version>3.0.5</version>
     <packaging>war</packaging>
     <build>
         <pluginManagement/>
@@ -57,7 +58,7 @@
                 <dependency>
                     <groupId>com.sun</groupId>
                     <artifactId>tools</artifactId>
-                    <version>${java.version}</version>
+                    <version>1.6</version>
                     <scope>system</scope>
                     <systemPath>${java.home}/../lib/tools.jar</systemPath>
                 </dependency>

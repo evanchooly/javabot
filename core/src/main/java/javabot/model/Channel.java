@@ -9,6 +9,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import com.antwerkz.maven.SPI;
 import javabot.Javabot;
 import javabot.dao.ChannelDao;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory;
         + " min(l.updated), (select count(e) from Logs e)) from Logs l "
         + "where l.channel like '#%' group by l.channel order by count(l) desc")
 })
+@SPI(Persistent.class)
 public class Channel implements Serializable, Persistent {
     private static final Logger log = LoggerFactory.getLogger(Channel.class);
     private Long id;

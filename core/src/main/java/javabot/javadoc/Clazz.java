@@ -15,8 +15,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.antwerkz.maven.SPI;
 import javabot.dao.ClazzDao;
 import javabot.model.Persistent;
+import org.hibernate.annotations.Index;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +40,7 @@ import org.slf4j.LoggerFactory;
         + " or upper(m.shortSignatureStripped)=:params or upper(m.longSignatureTypes)=:params"
         + " or upper(m.longSignatureStripped)=:params) order by m.shortSignatureStripped")
 })
+@SPI(Persistent.class)
 public class Clazz extends JavadocElement implements Persistent {
     private static final Logger log = LoggerFactory.getLogger(Clazz.class);
     private Long id;
@@ -94,6 +97,7 @@ public class Clazz extends JavadocElement implements Persistent {
     }
 
     @Column(nullable = false)
+    @Index(name = "ClazzName")
     public String getClassName() {
         return className;
     }

@@ -9,7 +9,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import com.antwerkz.maven.SPI;
 import javabot.dao.ClazzDao;
+import javabot.model.Persistent;
 
 @Entity
 @Table(name = "fields")
@@ -20,6 +22,7 @@ import javabot.dao.ClazzDao;
     @NamedQuery(name = ClazzDao.GET_FIELD_WITH_CLS, query = "select f from Field f join f.clazz c where "
         + " upper(c.className)=:className and upper(f.name)=:fieldName order by c.packageName, c.className, f.name")
 })
+@SPI(Persistent.class)
 public class Field extends JavadocElement {
     private Long id;
     private Clazz clazz;

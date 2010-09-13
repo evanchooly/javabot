@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
@@ -25,6 +26,7 @@ import javabot.dao.FactoidDao;
 import javabot.dao.KarmaDao;
 import javabot.dao.LogsDao;
 import javabot.dao.ShunDao;
+import javabot.database.UpgradeScript;
 import javabot.model.Channel;
 import javabot.model.Config;
 import javabot.model.Logs;
@@ -70,9 +72,10 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     private final ExecutorService executors;
     public static final int THROTTLE_TIME = 5 * 1000;
 
+    @SuppressWarnings({"OverriddenMethodCallDuringObjectConstruction", "OverridableMethodCallDuringObjectConstruction"})
     public Javabot(final ApplicationContext applicationContext) throws IOException {
         context = applicationContext;
-        context.getAutowireCapableBeanFactory().autowireBean(this);
+        inject(this);
         setVersion("Javabot " + loadVersion());
         Config config;
         try {
@@ -92,7 +95,20 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         Runtime.getRuntime().addShutdownHook(hook);
         loadOperationInfo(config);
         loadConfig(config);
+        applyUpgradeScripts();
         connect();
+    }
+
+    public void inject(final Object object) {
+        context.getAutowireCapableBeanFactory().autowireBean(object);
+    }
+
+    private void applyUpgradeScripts() {
+        final ServiceLoader<UpgradeScript> loader = ServiceLoader.load(UpgradeScript.class);
+        for (final UpgradeScript script : loader) {
+            script.execute(this);
+        }
+
     }
 
     @SuppressWarnings({"IOResourceOpenedButNotSafelyClosed"})

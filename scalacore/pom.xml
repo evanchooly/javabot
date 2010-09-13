@@ -6,6 +6,7 @@
         <groupId>javabot</groupId>
         <artifactId>javabot</artifactId>
         <version>3.0.5</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>javabot</groupId>
@@ -23,7 +24,9 @@
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
+            <version>2.7.7</version>
         </dependency>
+        
         <dependency>
             <groupId>com.twitter</groupId>
             <artifactId>querulous</artifactId>

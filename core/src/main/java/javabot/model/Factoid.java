@@ -15,8 +15,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.antwerkz.maven.SPI;
 import javabot.dao.FactoidDao;
 import javabot.operations.TellSubject;
+import org.hibernate.annotations.Index;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +30,7 @@ import org.slf4j.LoggerFactory;
     @NamedQuery(name= FactoidDao.BY_NAME, query= "select m from Factoid m where lower(m.name) = :name")
 
 })
+@SPI(Persistent.class)
 public class Factoid implements Serializable, Persistent {
     private static final Logger log = LoggerFactory.getLogger(Factoid.class);
 
@@ -48,6 +51,7 @@ public class Factoid implements Serializable, Persistent {
         id = factoidId;
     }
 
+    @Index(name = "names")
     public String getName() {
         return name;
     }
