@@ -151,9 +151,6 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
-                    <compilerArguments>
-                        <processor>com.antwerkz.maven.SPIProcessor</processor>
-                    </compilerArguments>
                 </configuration>
             </plugin>
             <!--
