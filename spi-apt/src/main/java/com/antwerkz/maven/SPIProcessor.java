@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
+import javax.annotation.processing.FilerException;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -35,11 +36,10 @@ public class SPIProcessor extends BaseProcessor {
 
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
+        impls.clear();
         final boolean b = super.process(annotations, roundEnv);
         try {
-            for (final Entry<String, Set<String>> entry : impls.entrySet()) {
-                write(entry);
-            }
+            saveServiceMetadata();
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -68,17 +68,18 @@ public class SPIProcessor extends BaseProcessor {
         set.add(qualifiedName);
     }
 
-    private void write(final Entry<String, Set<String>> entry) throws IOException {
+    private void saveServiceMetadata() throws IOException {
         final Filer filer = processingEnv.getFiler();
-        final FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/" + entry.getKey());
-
-        final PrintWriter writer = new PrintWriter(file.openWriter());
-        try {
-            for (final String impl : entry.getValue()) {
-                writer.println(impl);
+        for (final Entry<String, Set<String>> entry : impls.entrySet()) {
+            final FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/" + entry.getKey());
+            final PrintWriter writer = new PrintWriter(file.openWriter());
+            try {
+                for (final String impl : entry.getValue()) {
+                    writer.println(impl);
+                }
+            } finally {
+                writer.close();
             }
-        } finally {
-            writer.close();
         }
     }
 }
