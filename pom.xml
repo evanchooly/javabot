@@ -12,6 +12,7 @@
 
     <modules>
         <module>spi-apt</module>
+        <module>apt-tools</module>
         <module>core</module>
         <module>web</module>
         <module>web-grails</module>
