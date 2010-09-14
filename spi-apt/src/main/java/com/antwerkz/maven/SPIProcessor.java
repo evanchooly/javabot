@@ -1,5 +1,6 @@
 package com.antwerkz.maven;
 
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Filer;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -22,6 +24,8 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.tools.FileObject;
+import javax.tools.StandardLocation;
 
 @SupportedAnnotationTypes("com.antwerkz.maven.SPI")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -64,19 +68,16 @@ public class SPIProcessor extends AbstractProcessor {
     }
 
     private void write(final Entry<String, Set<String>> entry) throws IOException {
-        final File file = new File("target/classes/META-INF/services/" + entry.getKey());
-        file.getParentFile().mkdirs();
-        final PrintWriter writer = new PrintWriter(
-            new FileOutputStream(file));
+        Filer filer = processingEnv.getFiler();
+        final FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/" + entry.getKey());
+        
+        final PrintWriter writer = new PrintWriter(file.openWriter());
         try {
             for (final String impl : entry.getValue()) {
                 writer.println(impl);
             }
         } finally {
-            if (writer != null) {
-                writer.flush();
-                writer.close();
-            }
+            writer.close();
         }
     }
 
