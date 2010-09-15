@@ -17,6 +17,7 @@ import javax.persistence.Transient;
 
 import com.antwerkz.maven.SPI;
 import javabot.dao.LogsDao;
+import org.hibernate.annotations.Index;
 
 @Entity
 @Table(name = "logs")
@@ -78,6 +79,7 @@ public class Logs implements Serializable, Persistent {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Index(name = "Logs", columnNames = {"channel", "updated", "nick"})
     public Date getUpdated() {
         return updated;
     }
