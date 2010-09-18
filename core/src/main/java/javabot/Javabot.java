@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -382,54 +383,11 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         try {
             logsDao.logMessage(Logs.Type.MESSAGE, sender, channel, message);
             if (isValidSender(sender)) {
-                final List<Message> responses = new ArrayList<Message>();
-                for (final String startString : startStrings) {
-                    if (message.startsWith(startString)) {
-                        final String content = extractContent(message,
-                                startString);
-                        responses.addAll(getResponses(channel,
-                                sender,
-                                login,
-                                hostname,
-                                content));
-                    }
-
-                    if (responses.isEmpty()) {
-                        // Find embedded phrases of the form '(~foo bar () baz)'
-                        final String embeddedStartString = "(" + startString;
-                        for (int i = message.indexOf(embeddedStartString); i != -1; i = message
-                                .indexOf(embeddedStartString, i + 1)) {
-                            // Number of (s seen. End of segment when it goes to
-                            // zero.
-                            int depth = 1;
-                            int l = i + embeddedStartString.length();
-                            for (; l < message.length() && depth > 0; ++l) {
-                                switch (message.charAt(l)) {
-                                    case '(':
-                                        ++depth;
-                                        break;
-                                    case ')':
-                                        --depth;
-                                        break;
-                                }
-                            }
-                            if (depth == 0) {
-                                // l is the index of the ) at the end of the
-                                // embedded hit.
-                                final String embeddedMessage = message
-                                        .substring(i, l);
-                                final String content = extractContent(embeddedMessage,
-                                        startString);
-
-                                responses.addAll(getResponses(channel,
-                                        sender,
-                                        login,
-                                        hostname,
-                                        embeddedMessage));
-                            }
-                        }
-                    }
-                }
+                final List<Message> responses = responses(channel,
+                        message,
+                        sender,
+                        login,
+                        hostname);
                 if (responses.isEmpty()) {
                     responses.addAll(getChannelResponses(channel, sender, login, hostname, message));
                 }
@@ -445,6 +403,89 @@ public class Javabot extends PircBot implements ApplicationContextAware {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    private List<Message> responses(final String channel,
+            final String message,
+            final String sender,
+            final String login,
+            final String hostname) {
+        final List<Message> responses = new ArrayList<Message>();
+        for (final String startString : startStrings) {
+            if (message.startsWith(startString)) {
+                responses.addAll(handleFullLineTrigger(channel,
+                        message,
+                        sender,
+                        login,
+                        hostname,
+                        startString));
+            }
+
+            if (responses.isEmpty())
+                responses.addAll(handleEmbeddedTriggers(channel,
+                        message,
+                        sender,
+                        login,
+                        hostname,
+                        startString));
+        }
+        return responses;
+    }
+
+    private List<Message> handleEmbeddedTriggers(final String channel,
+            final String message,
+            final String sender,
+            final String login,
+            final String hostname,
+            final String startString) {
+        // Find embedded phrases of the form '(~foo bar () baz)'
+        final String embeddedStartString = "(" + startString;
+        for (int startIndex = message.indexOf(embeddedStartString); startIndex != -1; startIndex = message
+                .indexOf(embeddedStartString, startIndex + 1)) {
+            // Number of unbalanced (s seen. End of embedded segment if it goes to zero.
+            int parensLevel = 1;
+            int endIndex = startIndex + embeddedStartString.length();
+            for (; endIndex < message.length() && parensLevel > 0; ++endIndex) {
+                switch (message.charAt(endIndex)) {
+                    case '(':
+                        ++parensLevel;
+                        break;
+                    case ')':
+                        --parensLevel;
+                        break;
+                }
+            }
+            if (parensLevel == 0) {
+                // l is the index of the ) at the end of the
+                // embedded hit.
+                final String embeddedMessage = message.substring(startIndex, endIndex);
+                final String content = extractContent(embeddedMessage,
+                        startString);
+
+                return getResponses(channel,
+                        sender,
+                        login,
+                        hostname,
+                        content);
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    private List<Message> handleFullLineTrigger(final String channel,
+            final String message,
+            final String sender,
+            final String login,
+            final String hostname,
+            final String startString) {
+        final String content = extractContent(message,
+                startString);
+        List<Message> lineResponses = getResponses(channel,
+                sender,
+                login,
+                hostname,
+                content);
+        return lineResponses;
     }
 
     public List<Message> getResponses(final String channel, final String sender, final String login,
