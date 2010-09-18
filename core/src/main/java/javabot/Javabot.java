@@ -385,11 +385,50 @@ public class Javabot extends PircBot implements ApplicationContextAware {
                 final List<Message> responses = new ArrayList<Message>();
                 for (final String startString : startStrings) {
                     if (message.startsWith(startString)) {
-                        String content = message.substring(startString.length()).trim();
-                        while (content.charAt(0) == ':' || content.charAt(0) == ',') {
-                            content = content.substring(1).trim();
+                        final String content = extractContent(message,
+                                startString);
+                        responses.addAll(getResponses(channel,
+                                sender,
+                                login,
+                                hostname,
+                                content));
+                    }
+
+                    if (responses.isEmpty()) {
+                        // Find embedded phrases of the form '(' startString [ws
+                        // arg]* ')'
+                        final String embeddedStartString = "(" + startString;
+                        for (int i = message.indexOf(embeddedStartString); i != -1; i = message
+                                .indexOf(embeddedStartString, i + 1)) {
+                            // Number of (s seen. End of segment when it goes to
+                            // zero.
+                            int depth = 1;
+                            int l = i + embeddedStartString.length();
+                            for (; l < message.length() && depth > 0; ++l) {
+                                switch (message.charAt(l)) {
+                                    case '(':
+                                        ++depth;
+                                        break;
+                                    case ')':
+                                        --depth;
+                                        break;
+                                }
+                            }
+                            if (depth == 0) {
+                                // l is the index of the ) at the end of the
+                                // embedded hit.
+                                final String embeddedMessage = message
+                                        .substring(i, l);
+                                final String content = extractContent(embeddedMessage,
+                                        startString);
+
+                                responses.addAll(getResponses(channel,
+                                        sender,
+                                        login,
+                                        hostname,
+                                        embeddedMessage));
+                            }
                         }
-                        responses.addAll(getResponses(channel, sender, login, hostname, content));
                     }
                 }
                 if (responses.isEmpty()) {
@@ -527,6 +566,14 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     @Override
     public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
         context = applicationContext;
+    }
+
+    private String extractContent(final String message, final String startString) {
+        String content = message.substring(startString.length()).trim();
+        while (content.charAt(0) == ':' || content.charAt(0) == ',') {
+            content = content.substring(1).trim();
+        }
+        return content;
     }
 
 }
