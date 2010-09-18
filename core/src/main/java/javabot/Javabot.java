@@ -384,7 +384,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
             if (isValidSender(sender)) {
                 final List<Message> responses = new ArrayList<Message>();
                 for (final String startString : startStrings) {
-                    if (responses != null && message.startsWith(startString)) {
+                    if (message.startsWith(startString)) {
                         String content = message.substring(startString.length()).trim();
                         while (content.charAt(0) == ':' || content.charAt(0) == ',') {
                             content = content.substring(1).trim();
