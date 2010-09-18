@@ -395,8 +395,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
                     }
 
                     if (responses.isEmpty()) {
-                        // Find embedded phrases of the form '(' startString [ws
-                        // arg]* ')'
+                        // Find embedded phrases of the form '(~foo bar () baz)'
                         final String embeddedStartString = "(" + startString;
                         for (int i = message.indexOf(embeddedStartString); i != -1; i = message
                                 .indexOf(embeddedStartString, i + 1)) {
