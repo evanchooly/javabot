@@ -42,6 +42,8 @@ public class SPIProcessor extends BaseProcessor {
             saveServiceMetadata();
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage(), e);
+        } finally {
+            impls.clear();
         }
 
         return b;

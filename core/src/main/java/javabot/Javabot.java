@@ -1,5 +1,6 @@
 package javabot;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -118,9 +119,14 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         try {
             inStream = getClass().getResourceAsStream("/META-INF/maven/javabot/core/pom.properties");
             if (inStream == null) {
-                inStream = new FileInputStream("target/maven-archiver/pom.properties");
+                final File file = new File("target/maven-archiver/pom.properties");
+                if(file.exists()) {
+                    inStream = new FileInputStream(file);
+                }
             }
-            props.load(inStream);
+            if(inStream != null) {
+                props.load(inStream);
+            }
         } catch (Throwable e) {
             e.printStackTrace();
             log.error(e.getMessage(), e);

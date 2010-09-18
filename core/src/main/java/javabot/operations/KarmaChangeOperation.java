@@ -50,7 +50,13 @@ public class KarmaChangeOperation extends BotOperation {
         String message = event.getMessage();
         final String sender = event.getSender();
         final String channel = event.getChannel();
-        final String nick = message.substring(0, message.length() - 2).trim().toLowerCase();
+        final String nick;
+        try {
+            nick = message.substring(0, message.length() - 2).trim().toLowerCase();
+        } catch (StringIndexOutOfBoundsException e) {
+            System.out.println("KarmaChangeOperation.handleMessage: message = " + message);
+            throw e;
+        }
         final List<Message> response = new ArrayList<Message>();
         if (message.contains(" ") || "".equals(nick)) {
         } else if (!channel.startsWith("#") && (message.endsWith("++") || message.endsWith("--"))) {

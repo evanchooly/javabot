@@ -31,5 +31,9 @@
             <groupId>com.antwerkz.maven</groupId>
             <artifactId>spi-apt</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+        </dependency>
     </dependencies>
 </project>

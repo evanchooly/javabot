@@ -1,12 +1,13 @@
 package javabot.database;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 
@@ -18,16 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class BaseIndexes implements UpgradeScript {
     @Autowired
     private DataSource dataSource;
-    private Map<String, String> indexes = new LinkedHashMap<String, String>();
-
-    public BaseIndexes() {
-//        indexes.put("Logs", "CREATE INDEX \"Logs\" ON logs USING btree (channel, updated, nick);");
-//        indexes.put("names", "CREATE INDEX \"names\" ON factoids USING btree (name);");
-    }
 
     @Override
     public int id() {
-        return 0;
+        return Integer.MAX_VALUE;
     }
 
     @Override
@@ -35,30 +30,43 @@ public class BaseIndexes implements UpgradeScript {
         try {
             bot.inject(this);
             final Connection connection = dataSource.getConnection();
+            final Statement statement = connection.createStatement();
             try {
-                ResultSet resultSet = connection.getMetaData().getTables(null, null, null, new String[]{"TABLE"});
-                final List<String> tables = new ArrayList<String>();
-                while(resultSet.next()) {
-                    tables.add(resultSet.getString("TABLE_NAME"));
-                }
-                for (final String table : tables) {
-                    resultSet = connection.getMetaData().getIndexInfo(null, null, table, false, false);
-                    while(resultSet.next()) {
-                        final String name = resultSet.getString("INDEX_NAME");
-                        indexes.remove(name);
+                final ResultSet resultSet = connection.getMetaData().getTables(null, null, null, new String[]{"TABLE"});
+                while (resultSet.next()) {
+                    final String table = resultSet.getString("TABLE_NAME");
+                    final Map<String, String> indexes = loadIndexes(table);
+                    if (!indexes.isEmpty()) {
+                        final ResultSet indexRS = connection.getMetaData().getIndexInfo(null, null, table, false, false);
+                        while (indexRS.next()) {
+                            indexes.remove(indexRS.getString("INDEX_NAME"));
+                        }
+                        for (final String sql : indexes.values()) {
+                            statement.execute(sql);
+                        }
                     }
                 }
-                final Statement statement = connection.createStatement();
-                for (String s : indexes.values()) {
-                    statement.execute(s);
-                }
-                System.out.println("hi");
             } finally {
+                statement.close();
                 connection.close();
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    private Map<String, String> loadIndexes(final String table) throws IOException {
+        final InputStream stream = getClass().getResourceAsStream("/postgresql/" + table + ".indexes");
+        final HashMap<String, String> map = new HashMap<String, String>();
+        if (stream != null) {
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            while(reader.ready()) {
+                final String[] entry = reader.readLine().split(":");
+                map.put(entry[0], entry[1]);
+            }
+            stream.close();
+        }
+        return map;
     }
 
 }
