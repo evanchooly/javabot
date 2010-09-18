@@ -61,6 +61,10 @@ public class GetFactoidOperationTest extends BaseOperationTest {
         Assert.assertNotNull(factoidDao.getFactoid("api").getLastUsed());
     }
 
+    public void embeddedGets() {
+        testMessage("mumble curse (~api)", getFoundMessage("api", "http://java.sun.com/javase/current/docs/api/index.html"));
+    }
+
     public void replyGets() {
         testMessage("~replyTest", REPLY_VALUE);
     }
