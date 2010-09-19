@@ -464,6 +464,8 @@ public class Javabot extends PircBot implements ApplicationContextAware {
                 final String content = extractContent(embeddedMessage,
                         startString);
 
+                // To make the bot respond to multiple triggers on the same
+                // line, replace the return with an accumulator.
                 return getResponses(channel, sender, login, hostname, content);
             }
         }
