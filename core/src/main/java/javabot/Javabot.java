@@ -42,6 +42,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import ca.grimoire.maven.ArtifactDescription;
+import ca.grimoire.maven.NoArtifactException;
+
 public class Javabot extends PircBot implements ApplicationContextAware {
     private static final Logger log = LoggerFactory.getLogger(Javabot.class);
     private final Set<BotOperation> operations = new TreeSet<BotOperation>();
@@ -112,31 +115,13 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     }
 
-    @SuppressWarnings({"IOResourceOpenedButNotSafelyClosed"})
-    private String loadVersion() throws IOException {
-        final Properties props = new Properties();
-        InputStream inStream = null;
+    private String loadVersion() {
         try {
-            inStream = getClass().getResourceAsStream("/META-INF/maven/javabot/core/pom.properties");
-            if (inStream == null) {
-                final File file = new File("target/maven-archiver/pom.properties");
-                if(file.exists()) {
-                    inStream = new FileInputStream(file);
-                }
-            }
-            if(inStream != null) {
-                props.load(inStream);
-            }
-        } catch (Throwable e) {
-            e.printStackTrace();
-            log.error(e.getMessage(), e);
-            throw new RuntimeException(e.getMessage());
-        } finally {
-            if (inStream != null) {
-                inStream.close();
-            }
+            final ArtifactDescription javabot = ArtifactDescription.locate("javabot", "core");
+            return javabot.getVersion();
+        } catch (NoArtifactException nae) {
+            return "UNKNOWN";
         }
-        return props.getProperty("version");
     }
 
     public void shutdown() {
