@@ -442,31 +442,29 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         final String embeddedStartString = "(" + startString;
         for (int startIndex = message.indexOf(embeddedStartString); startIndex != -1; startIndex = message
                 .indexOf(embeddedStartString, startIndex + 1)) {
-            // Number of unbalanced (s seen. End of embedded segment if it goes to zero.
+            // Number of unbalanced (s seen. End of embedded segment if it goes
+            // to zero.
             int parensLevel = 1;
             int endIndex = startIndex + embeddedStartString.length();
             for (; endIndex < message.length() && parensLevel > 0; ++endIndex) {
                 switch (message.charAt(endIndex)) {
-                    case '(':
-                        ++parensLevel;
-                        break;
                     case ')':
                         --parensLevel;
+                        break;
+                    case '(':
+                        ++parensLevel;
                         break;
                 }
             }
             if (parensLevel == 0) {
-                // l is the index of the ) at the end of the
-                // embedded hit.
-                final String embeddedMessage = message.substring(startIndex, endIndex);
+                // endIndex is the index of the character after the ) at the end
+                // of the embedded hit. startIndex is exactly on the (. Remove both.
+                final String embeddedMessage = message.substring(startIndex
+                        + 1, endIndex - 1);
                 final String content = extractContent(embeddedMessage,
                         startString);
 
-                return getResponses(channel,
-                        sender,
-                        login,
-                        hostname,
-                        content);
+                return getResponses(channel, sender, login, hostname, content);
             }
         }
         return Collections.emptyList();
