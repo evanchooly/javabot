@@ -77,7 +77,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     public static final int THROTTLE_TIME = 5 * 1000;
 
     @SuppressWarnings({"OverriddenMethodCallDuringObjectConstruction", "OverridableMethodCallDuringObjectConstruction"})
-    public Javabot(final ApplicationContext applicationContext) throws IOException {
+    public Javabot(final ApplicationContext applicationContext) {
         context = applicationContext;
         inject(this);
         setVersion("Javabot " + loadVersion());
