@@ -28,15 +28,14 @@
         </dependency>
         
         <dependency>
-            <groupId>com.twitter</groupId>
-            <artifactId>querulous</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <classifier>jdk15</classifier>
+        </dependency>
+        
+        <dependency>
+            <groupId>ca.grimoire.maven</groupId>
+            <artifactId>maven-utils</artifactId>
         </dependency>
     </dependencies>
 
