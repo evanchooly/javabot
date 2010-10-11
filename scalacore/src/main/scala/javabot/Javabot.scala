@@ -15,8 +15,7 @@ class Javabot extends PircBot {
   
   def loadVersion: String = {
       try {
-          val desc: ArtifactDescription = ArtifactDescription.locate("javabot", "core");
-          return desc.getVersion();
+          return ArtifactDescription.locate("javabot", "core").getVersion();
       } catch {
           case nae: NoArtifactException => "UNKNOWN";
       }
