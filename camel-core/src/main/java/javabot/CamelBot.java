@@ -16,10 +16,6 @@ public class CamelBot extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        final CamelContext camel = new DefaultCamelContext();
-        final IrcEndpoint endpoint = (IrcEndpoint) camel.getEndpoint(url);
-        final Exchange pm = endpoint
-            .createOnPrivmsgExchange(nick, new IRCUser(nick, nick, "irc.freenode.net"), "what's this?");
         final ProcessorDefinition defn = from(url)
             .process(new Processor() {
                 public void process(Exchange exchange) {

@@ -23,7 +23,26 @@
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-spring</artifactId>
-            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javabot</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <classifier>jdk15</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.unitils</groupId>
+            <artifactId>unitils</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

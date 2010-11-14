@@ -7,7 +7,6 @@ import java.util.Properties;
 
 import javabot.dao.AdminDao;
 import javabot.model.Channel;
-import javabot.model.Config;
 import org.jibble.pircbot.PircBot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,12 +38,7 @@ public class BaseTest {
 
     protected final Javabot createBot() {
         if (bot == null) {
-            try {
-                bot = new TestJavabot(context);
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-                throw new RuntimeException(e.getMessage(), e);
-            }
+            bot = new TestJavabot(context);
         }
         return bot;
     }
@@ -127,7 +121,7 @@ public class BaseTest {
     public class TestJavabot extends Javabot {
         private final List<Message> messages = new ArrayList<Message>();
 
-        public TestJavabot(final ApplicationContext context) throws IOException {
+        public TestJavabot(final ApplicationContext context) {
             super(context);
         }
 
@@ -148,7 +142,8 @@ public class BaseTest {
             return TEST_BOT;
         }
 
-        public void loadConfig(final Config config) {
+        @Override
+        public void loadConfig() {
             try {
                 log.debug("Running with configuration: " + config);
                 setName(getNick());
@@ -156,7 +151,7 @@ public class BaseTest {
                 setNickPassword(config.getPassword());
                 setStartStrings("~");
                 dao.create(BaseTest.TEST_USER, "localhost");
-                } catch (Exception e) {
+            } catch (Exception e) {
                 log.debug(e.getMessage(), e);
                 throw new RuntimeException(e.getMessage(), e);
             }

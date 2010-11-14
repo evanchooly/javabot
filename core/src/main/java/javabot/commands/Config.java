@@ -35,7 +35,7 @@ public class Config extends BaseCommand {
                 try {
                     set.invoke(config, type.equals(String.class) ? value.trim() : Integer.parseInt(value));
                     dao.save(config);
-                    bot.loadConfig(config);
+                    bot.loadConfig();
                 } catch (IllegalAccessException e) {
                     responses.add(new Message(event.getSender(), event, e.getMessage()));
                 } catch (InvocationTargetException e) {

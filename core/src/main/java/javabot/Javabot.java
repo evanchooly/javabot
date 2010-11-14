@@ -1,6 +1,5 @@
 package javabot;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -16,13 +15,8 @@ import javax.persistence.NoResultException;
 
 import ca.grimoire.maven.ArtifactDescription;
 import ca.grimoire.maven.NoArtifactException;
-import javabot.dao.ApiDao;
-import javabot.dao.ChangeDao;
 import javabot.dao.ChannelDao;
-import javabot.dao.ClazzDao;
 import javabot.dao.ConfigDao;
-import javabot.dao.FactoidDao;
-import javabot.dao.KarmaDao;
 import javabot.dao.LogsDao;
 import javabot.dao.ShunDao;
 import javabot.database.UpgradeScript;
@@ -49,20 +43,20 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     private int authWait;
     private String password;
     private final List<String> ignores = new ArrayList<String>();
-    @Autowired
-    private FactoidDao factoidDao;
-    @Autowired
-    private ChangeDao changeDao;
+//    @Autowired
+//    private FactoidDao factoidDao;
+//    @Autowired
+//    private ChangeDao changeDao;
     @Autowired
     private LogsDao logsDao;
     @Autowired
     ChannelDao channelDao;
-    @Autowired
-    private ApiDao apiDao;
-    @Autowired
-    private ClazzDao clazzDao;
-    @Autowired
-    private KarmaDao karmaDao;
+//    @Autowired
+//    private ApiDao apiDao;
+//    @Autowired
+//    private ClazzDao clazzDao;
+//    @Autowired
+//    private KarmaDao karmaDao;
     @Autowired
     private ConfigDao configDao;
     @Autowired
@@ -70,13 +64,13 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     private ApplicationContext context;
     private final ExecutorService executors;
     public static final int THROTTLE_TIME = 5 * 1000;
+    Config config;
 
     @SuppressWarnings({"OverriddenMethodCallDuringObjectConstruction", "OverridableMethodCallDuringObjectConstruction"})
     public Javabot(final ApplicationContext applicationContext) {
         context = applicationContext;
         inject(this);
         setVersion("Javabot " + loadVersion());
-        Config config;
         try {
             config = configDao.get();
         } catch (NoResultException e) {
@@ -93,7 +87,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         hook.setDaemon(false);
         Runtime.getRuntime().addShutdownHook(hook);
         loadOperationInfo(config);
-        loadConfig(config);
+        loadConfig();
         applyUpgradeScripts();
         connect();
     }
@@ -130,7 +124,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         }
     }
 
-    public void loadConfig(final Config config) {
+    public void loadConfig() {
         try {
             log.debug("Running with configuration: " + config);
             host = config.getServer();
@@ -181,8 +175,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     }
 
     private boolean add(final BotOperation operation) {
-        final Config config = configDao.get();
-        final boolean added = config.getOperations().add(operation.getName());
+        config.getOperations().add(operation.getName());
         configDao.save(config);
         operation.setBot(this);
         context.getAutowireCapableBeanFactory().autowireBean(operation);
@@ -209,7 +202,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
             if (operation.getName().equals(name) && !operation.isStandardOperation()) {
                 removed = true;
                 it.remove();
-                final Config config = configDao.get();
                 config.getOperations().remove(name);
                 configDao.save(config);
             }
@@ -217,7 +209,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         return removed;
     }
 
-    public static void main(final String[] args) throws IOException {
+    public static void main(final String[] args) {
         if (log.isInfoEnabled()) {
             log.info("Starting Javabot");
         }
