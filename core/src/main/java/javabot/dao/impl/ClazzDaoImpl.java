@@ -10,12 +10,14 @@ import javabot.dao.ClazzDao;
 import javabot.javadoc.Clazz;
 import javabot.javadoc.Method;
 import javabot.javadoc.Field;
+import org.springframework.stereotype.Component;
 
 /**
  * Created Jul 27, 2007
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
+@Component
 public class ClazzDaoImpl extends AbstractDaoImpl<Clazz> implements ClazzDao {
     protected ClazzDaoImpl() {
         super(Clazz.class);

@@ -6,7 +6,9 @@ import javax.persistence.NoResultException;
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ShunDao;
 import javabot.model.Shun;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ShunDaoImpl extends AbstractDaoImpl<Shun> implements ShunDao {
 
   public ShunDaoImpl() {

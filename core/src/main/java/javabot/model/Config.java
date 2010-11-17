@@ -1,8 +1,6 @@
 package javabot.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.persistence.Entity;
@@ -17,11 +15,6 @@ import com.antwerkz.maven.SPI;
 import javabot.dao.ConfigDao;
 import org.hibernate.annotations.CollectionOfElements;
 
-/**
- * Created Jun 17, 2007
- *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
- */
 @Entity
 @Table(name = "configuration")
 @NamedQueries({
@@ -33,9 +26,10 @@ public class Config implements Serializable, Persistent {
     private String server = "irc.freenode.org";
     private Integer port = 6667;
     private Integer historyLength = 6;
-    private String prefixes = "~";
+    private String trigger = "~";
     private String nick;
     private String password;
+    private Integer schemaVersion;
     private Set<String> operations = new TreeSet<String>();
 
     @Id
@@ -82,12 +76,12 @@ public class Config implements Serializable, Persistent {
         port = portNum;
     }
 
-    public String getPrefixes() {
-        return prefixes;
+    public String getTrigger() {
+        return trigger;
     }
 
-    public void setPrefixes(final String nicks) {
-        prefixes = nicks;
+    public void setTrigger(final String nicks) {
+        trigger = nicks;
     }
 
     public String getServer() {
@@ -106,15 +100,28 @@ public class Config implements Serializable, Persistent {
         this.historyLength = historyLength;
     }
 
+    public Integer getSchemaVersion() {
+        return schemaVersion == null ? 0 : schemaVersion;
+    }
+
+    public void setSchemaVersion(final Integer schemaVersion) {
+        this.schemaVersion = schemaVersion;
+    }
+
     @Override
     public String toString() {
-        return "Config{" +
-            "server='" + server + '\'' +
-            ", port=" + port +
-            ", prefixes='" + prefixes + '\'' +
-            ", nick='" + nick + '\'' +
-            ", password='#######'" +
-            ", historyLength=" + historyLength +
-            '}';
+        final StringBuilder sb = new StringBuilder();
+        sb.append("Config");
+        sb.append("{historyLength=").append(historyLength);
+        sb.append(", id=").append(id);
+        sb.append(", server='").append(server).append('\'');
+        sb.append(", port=").append(port);
+        sb.append(", trigger='").append(trigger).append('\'');
+        sb.append(", nick='").append(nick).append('\'');
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", schemaVersion=").append(schemaVersion);
+        sb.append(", operations=").append(operations);
+        sb.append('}');
+        return sb.toString();
     }
 }

@@ -106,7 +106,6 @@ public class GetFactoidOperationTest extends BaseOperationTest {
         testMessage(String.format("~tell %s about hey", nick), "Hello, " + nick);
         testMessage(String.format("~tell %s about camel I am a test", nick), nick + ", IAmATest");
         testMessage(String.format("~tell %s about url I am a test", nick), String.format("%s, I+am+a+test", nick));
-        testMessage(String.format("~tell %s about javadoc String", nick), String.format("%s: http://is.gd/ekPI3 [JDK: java.lang.String]", nick));
         testMessage(String.format("~tell %s about stupid", nick), String.format("%s, what you've just said is one of the most"
             + " insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you"
             + " even close to anything that could be considered a rational thought. Everyone in this room is now"

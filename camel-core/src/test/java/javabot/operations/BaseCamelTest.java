@@ -7,7 +7,7 @@ import javabot.Message;
 import org.testng.Assert;
 import org.unitils.spring.annotation.SpringApplicationContext;
 
-@SpringApplicationContext("classpath:test-application-config.xml")
+@SpringApplicationContext("classpath:applicationContext.xml")
 public abstract class BaseCamelTest /*extends BaseTest*/ {
     protected void scanForResponse(final String message, final String target) {
         final List<Message> list = sendMessage(message);

@@ -8,26 +8,22 @@ import javabot.dao.AbstractDaoImpl;
 import javabot.dao.AdminDao;
 import javabot.dao.ChannelDao;
 import javabot.dao.ConfigDao;
-import javabot.model.Admin;
-import javabot.model.Channel;
 import javabot.model.Config;
 import javabot.operations.BotOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Created Jun 21, 2007
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
+@Component
 public class ConfigDaoImpl extends AbstractDaoImpl<Config> implements ConfigDao {
     @Autowired
     private ChannelDao channelDao;
     @Autowired
     private AdminDao adminDao;
-    @Autowired
-    private Config defaults;
-    @Autowired
-    private Admin defaultAdmin;
 
     protected ConfigDaoImpl() {
         super(Config.class);
@@ -38,19 +34,30 @@ public class ConfigDaoImpl extends AbstractDaoImpl<Config> implements ConfigDao 
     }
 
     public Config create() {
-        final Config config;
-        config = defaults;
-        final Channel channel = new Channel();
-        channel.setName("##" + config.getNick());
-        channelDao.save(channel);
+        final Config config = new Config();
+
+        config.setNick(System.getProperty("javabot.nick", "javabot"));
+        config.setPassword(System.getProperty("javabot.password")); // optional
+        config.setServer(System.getProperty("javabot.server", "irc.freenode.org"));
+        config.setTrigger("~");
+        config.setPort(Integer.parseInt(System.getProperty("javabot.port", "6667")));
+
         final List<BotOperation> it = BotOperation.listKnownOperations();
         final Set<String> list = new TreeSet<String>();
         for (final BotOperation operation : it) {
             list.add(operation.getClass().getName());
         }
         config.setOperations(list);
-        adminDao.create(defaultAdmin.getUserName(), defaultAdmin.getHostName());
+        adminDao.create(getProperty("javabot.admin.nick"), getProperty("javabot.admin.hostmask"));
         save(config);
         return config;
+    }
+
+    private String getProperty(String name) {
+        final String value = System.getProperty(name);
+        if(value == null) {
+            throw new RuntimeException("Missing default configuration property: " + name);
+        }
+        return value;
     }
 }

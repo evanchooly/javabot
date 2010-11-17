@@ -7,7 +7,9 @@ import javax.persistence.EntityManager;
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.AdminDao;
 import javabot.model.Admin;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AdminDaoImpl extends AbstractDaoImpl<Admin> implements AdminDao {
     public AdminDaoImpl() {
         super(Admin.class);

@@ -1,18 +1,5 @@
 package javabot;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import javax.persistence.NoResultException;
-
 import ca.grimoire.maven.ArtifactDescription;
 import ca.grimoire.maven.NoArtifactException;
 import javabot.dao.ChannelDao;
@@ -34,6 +21,20 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import javax.persistence.NoResultException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 public class Javabot extends PircBot implements ApplicationContextAware {
     private static final Logger log = LoggerFactory.getLogger(Javabot.class);
     private final Set<BotOperation> operations = new TreeSet<BotOperation>();
@@ -43,20 +44,10 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     private int authWait;
     private String password;
     private final List<String> ignores = new ArrayList<String>();
-//    @Autowired
-//    private FactoidDao factoidDao;
-//    @Autowired
-//    private ChangeDao changeDao;
     @Autowired
     private LogsDao logsDao;
     @Autowired
     ChannelDao channelDao;
-//    @Autowired
-//    private ApiDao apiDao;
-//    @Autowired
-//    private ClazzDao clazzDao;
-//    @Autowired
-//    private KarmaDao karmaDao;
     @Autowired
     private ConfigDao configDao;
     @Autowired
@@ -97,12 +88,11 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     }
 
     private void applyUpgradeScripts() {
-        final ServiceLoader<UpgradeScript> loader = ServiceLoader.load(UpgradeScript.class);
-        for (final UpgradeScript script : loader) {
+        for (final UpgradeScript script : UpgradeScript.loadScripts()) {
             script.execute(this);
         }
-
     }
+
 
     private String loadVersion() {
         try {
@@ -142,19 +132,26 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     @SuppressWarnings({"unchecked"})
     private void loadOperationInfo(final Config config) {
+        final Map<String, BotOperation> map = new HashMap<String, BotOperation>();
+        for (final BotOperation op : BotOperation.listKnownOperations()) {
+            map.put(op.getClass().getName(), op);
+        }
         for (final String name : config.getOperations()) {
             try {
-                addOperation(name);
+                if (map.get(name) != null) {
+                    add(map.get(name));
+                }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 throw new RuntimeException(e.getMessage());
             }
         }
         if (operations.isEmpty()) {
-            for (final BotOperation operation : BotOperation.listKnownOperations()) {
+            for (final BotOperation operation : map.values()) {
                 add(operation);
             }
         }
+        configDao.save(config);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -162,7 +159,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         boolean added = false;
         final List<BotOperation> ops = BotOperation.listKnownOperations();
         final Iterator<BotOperation> it = ops.iterator();
-        while(it.hasNext() && !added) {
+        while (it.hasNext() && !added) {
             final BotOperation operation = it.next();
             if (operation.getName().equalsIgnoreCase(name)) {
                 added = add(operation);
@@ -175,23 +172,11 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     }
 
     private boolean add(final BotOperation operation) {
-        config.getOperations().add(operation.getName());
-        configDao.save(config);
+        config.getOperations().add(operation.getClass().getName());
         operation.setBot(this);
         context.getAutowireCapableBeanFactory().autowireBean(operation);
         operations.add(operation);
-
         return true;
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public boolean addOperation(final BotOperation operation) {
-        final boolean added = operations.add(operation);
-        if (added) {
-            operation.setBot(this);
-            context.getAutowireCapableBeanFactory().autowireBean(operation);
-        }
-        return added;
     }
 
     public boolean removeOperation(final String name) {
@@ -270,7 +255,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     @Override
     public void onPrivateMessage(final String sender, final String login, final String hostname, final String message) {
         if (isOnSameChannelAs(sender)) {
-            //The bot always replies with a privmessage...
+            //The bot always replies with a private message ...
             if (log.isDebugEnabled()) {
                 log.debug("PRIVMSG Sender:" + sender + " Login" + login);
             }
@@ -389,7 +374,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         while (responses.isEmpty() && iterator.hasNext()) {
             responses.addAll(iterator.next().handleMessage(event));
         }
-//        System.out.println("responses = " + responses);
         return responses;
     }
 

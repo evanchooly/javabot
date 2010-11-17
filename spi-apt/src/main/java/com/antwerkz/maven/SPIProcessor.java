@@ -74,7 +74,7 @@ public class SPIProcessor extends BaseProcessor {
         final Filer filer = processingEnv.getFiler();
         final FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/" + entry.getKey());
 
-        final PrintWriter writer = new PrintWriter(file.openWriter());
+        final PrintWriter writer = new PrintWriter(file.openWriter(), true);
         try {
             for (final String impl : entry.getValue()) {
                 writer.println(impl);

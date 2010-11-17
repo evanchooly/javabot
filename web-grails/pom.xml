@@ -14,6 +14,7 @@
     <artifactId>javabot-grails</artifactId>
     <packaging>war</packaging>
     <build>
+        <defaultGoal>package</defaultGoal>
         <pluginManagement/>
         <plugins>
             <plugin>

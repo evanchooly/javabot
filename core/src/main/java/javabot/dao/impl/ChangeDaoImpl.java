@@ -8,7 +8,9 @@ import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ChangeDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Change;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ChangeDaoImpl extends AbstractDaoImpl<Change> implements ChangeDao {
     public ChangeDaoImpl() {
         super(Change.class);

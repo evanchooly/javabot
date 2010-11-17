@@ -8,6 +8,7 @@ import javabot.dao.ApiDao;
 import javabot.javadoc.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * Created Oct 29, 2008
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
 @SuppressWarnings({"unchecked"})
+@Component
 public class ApiDaoImpl extends AbstractDaoImpl<Api> implements ApiDao {
     private static final Logger log = LoggerFactory.getLogger(ApiDaoImpl.class);
     protected ApiDaoImpl() {

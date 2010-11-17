@@ -13,10 +13,13 @@ import javabot.dao.util.QueryParam;
 import javabot.model.Config;
 import javabot.model.Factoid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component
 public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidDao {
     private static final Logger log = LoggerFactory.getLogger(FactoidDaoImpl.class);
     
@@ -148,6 +151,7 @@ public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidD
         return query;
     }
 
+    @Scheduled(cron = "0 0 2 * * ?")
     public void pruneFactoids() {
         log.debug("FactoidDaoImpl.pruneFactoids");
         final Calendar cal = Calendar.getInstance();

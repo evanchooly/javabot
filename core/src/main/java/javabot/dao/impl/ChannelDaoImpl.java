@@ -14,7 +14,9 @@ import javabot.model.Channel;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ChannelDaoImpl extends AbstractDaoImpl<Channel> implements ChannelDao {
     private static final Logger log = LoggerFactory.getLogger(ChannelDaoImpl.class);
     private final Map<String, Boolean> logCache = new HashMap<String, Boolean>();

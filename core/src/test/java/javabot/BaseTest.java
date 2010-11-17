@@ -81,7 +81,7 @@ public class BaseTest {
         public TestBot(final String name) {
             final Properties props = new Properties();
             try {
-                props.load(getClass().getResourceAsStream("/locations-override.properties"));
+                props.load(getClass().getResourceAsStream("/spring-context-override.properties"));
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
                 throw new RuntimeException(e.getMessage());

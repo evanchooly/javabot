@@ -1,21 +1,24 @@
 package javabot.dao.impl;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.text.SimpleDateFormat;
-import javax.persistence.NoResultException;
-
 import javabot.Seen;
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ConfigDao;
 import javabot.dao.LogsDao;
-import javabot.model.Logs;
 import javabot.model.Config;
-import org.springframework.beans.factory.annotation.Autowired;
+import javabot.model.Logs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
+import javax.persistence.NoResultException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+@Component
 public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
     private static final Logger log = LoggerFactory.getLogger(LogsDaoImpl.class);
     @Autowired
@@ -55,6 +58,7 @@ public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
         save(logMessage);
     }
 
+    @Scheduled(cron = "0 0 1 * * ?")
     public void pruneHistory() {
         final Calendar cal = Calendar.getInstance();
         final Config config = dao.get();
