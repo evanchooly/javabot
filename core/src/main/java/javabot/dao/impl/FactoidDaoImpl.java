@@ -92,7 +92,7 @@ public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidD
      */
     public Factoid getFactoid(final String name) {
         final List<Factoid> list = getEntityManager().createNamedQuery(FactoidDao.BY_NAME)
-            .setParameter("name", name)
+            .setParameter("name", name.toLowerCase())
             .getResultList();
         Factoid factoid = null;
         if(! list.isEmpty()) {

@@ -42,7 +42,7 @@ public class ConfigDaoImpl extends AbstractDaoImpl<Config> implements ConfigDao 
         config.setTrigger("~");
         config.setPort(Integer.parseInt(System.getProperty("javabot.port", "6667")));
 
-        final List<BotOperation> it = BotOperation.listKnownOperations();
+        final List<BotOperation> it = BotOperation.list();
         final Set<String> list = new TreeSet<String>();
         for (final BotOperation operation : it) {
             list.add(operation.getClass().getName());

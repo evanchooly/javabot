@@ -40,6 +40,7 @@ public class Factoid implements Serializable, Persistent {
     private String userName;
     private Date updated;
     private Date lastUsed;
+    private Boolean locked;
 
     @Id
     @GeneratedValue
@@ -94,6 +95,14 @@ public class Factoid implements Serializable, Persistent {
 
     public void setLastUsed(final Date used) {
         lastUsed = used;
+    }
+
+    public Boolean getLocked() {
+        return locked;
+    }
+
+    public void setLocked(Boolean locked) {
+        this.locked = locked;
     }
 
     public String evaluate(final TellSubject subject, final String sender, final String replacedValue) {
@@ -179,6 +188,7 @@ public class Factoid implements Serializable, Persistent {
         sb.append(", userName='").append(userName).append('\'');
         sb.append(", updated=").append(updated);
         sb.append(", lastUsed=").append(lastUsed);
+        sb.append(", locked=").append(locked);
         sb.append('}');
         return sb.toString();
     }

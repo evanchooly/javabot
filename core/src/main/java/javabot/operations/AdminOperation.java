@@ -3,6 +3,7 @@ package javabot.operations;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ServiceLoader;
 
 import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
@@ -36,20 +37,6 @@ import org.springframework.context.ApplicationContext;
 @SPI(BotOperation.class)
 public class AdminOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(AdminOperation.class);
-    public static final List<String> COMMANDS = Arrays.asList(
-        AddAdmin.class.getSimpleName(),
-        AddApi.class.getSimpleName(),
-        AddChannel.class.getSimpleName(),
-        Config.class.getSimpleName(),
-        DisableOperation.class.getSimpleName(),
-        DropApi.class.getSimpleName(),
-        DropChannel.class.getSimpleName(),
-        EnableOperation.class.getSimpleName(),
-        InfoApi.class.getSimpleName(),
-        ListChannels.class.getSimpleName(),
-        ListOperations.class.getSimpleName(),
-        ReprocessApi.class.getSimpleName()
-        );
     private static final String ADMIN_PREFIX = "admin ";
     @Autowired
     private ApplicationContext context;
@@ -73,13 +60,14 @@ public class AdminOperation extends BotOperation {
                 if (!args.isEmpty()) {
                     if ("-list".equals(args.get(0))) {
                         final StringBuilder builder = new StringBuilder();
-                        for (final String command : COMMANDS) {
+                        for (final Command command : listCommands()) {
                             if (builder.length() != 0) {
                                 builder.append(", ");
                             }
+                            final String name = command.getClass().getSimpleName();
                             builder
-                                .append(command.substring(0, 1).toLowerCase())
-                                .append(command.substring(1));
+                                .append(name.substring(0, 1).toLowerCase())
+                                .append(name.substring(1));
                         }
                         responses.add(new Message(channel, event, event.getSender() + ", I know of the following"
                             + " commands: " + builder));
@@ -101,6 +89,7 @@ public class AdminOperation extends BotOperation {
             args.remove(0);
             try {
                 command.parse(args);
+                event.setMessage(event.getMessage().substring("admin ".length()));
                 command.execute(responses, getBot(), event);
             } catch (MissingOptionException moe) {
                 responses.add(new Message(channel, event, ((BaseCommand) command).getUsage()));
@@ -138,4 +127,14 @@ public class AdminOperation extends BotOperation {
     protected void inject(final Command command) {
         context.getAutowireCapableBeanFactory().autowireBean(command);
     }
+
+    public static List<Command> listCommands() {
+        final ServiceLoader<Command> loader = ServiceLoader.load(Command.class);
+        final List<Command> list = new ArrayList<Command>();
+        for (final Command operation : loader) {
+            list.add(operation);
+        }
+        return list;
+    }
+    
 }

@@ -120,7 +120,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
         testMessage(String.format("~~ %s api", nick),
             String.format("%s, api is http://java.sun.com/javase/current/docs/api/index.html", nick));
 
-        testMessage(String.format("~~ %s camel I am a test 2", nick), String.format("%s, IAmATest2", nick));
+        validate("camel I am a test 2", "IAmATest2");
 
         testMessage(String.format("~~ %s url I am a test 2", nick), String.format("%s, I+am+a+test+2", nick));
 
@@ -132,6 +132,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
             + " dumber for having listened to it. I award you no points, and may God have mercy on your soul.", nick));
 
         sleep(6000);
+
         testMessage(String.format("~~%s seeTest", nick), String.format("%s, I'm a reply!", nick));
 
         testMessage(String.format("~~%s bobloblaw", nick), String.format("%s, I have no idea what bobloblaw is.", nick));
@@ -145,9 +146,13 @@ public class GetFactoidOperationTest extends BaseOperationTest {
 
         scanForResponse(String.format("~~%s javadoc String", nick), "[JDK: java.lang.String]");
 
-        testMessage(String.format("~~%s stupid", nick), String.format("%s, what you've just said is one of the most"
-            + " insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you"
-            + " even close to anything that could be considered a rational thought. Everyone in this room is now"
-            + " dumber for having listened to it. I award you no points, and may God have mercy on your soul.", nick));
+        validate("stupid", "what you've just said is one of the most insanely idiotic things I have ever heard. At no" +
+                " point in your rambling, incoherent response were you even close to anything that could be considered" +
+                " a rational thought. Everyone in this room is now dumber for having listened to it. I award you no" +
+                " points, and may God have mercy on your soul.");
+    }
+
+    private void validate(final String factoid, final String response) {
+        testMessage(String.format("~~ %s " + factoid, TEST_USER), String.format("%s, " + response, TEST_USER));
     }
 }

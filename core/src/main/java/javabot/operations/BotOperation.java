@@ -64,7 +64,7 @@ public abstract class BotOperation implements Comparable<BotOperation> {
         return getName();
     }
 
-    public static List<BotOperation> listKnownOperations() {
+    public static List<BotOperation> list() {
         final ServiceLoader<BotOperation> loader = ServiceLoader.load(BotOperation.class);
         final List<BotOperation> list = new ArrayList<BotOperation>();
         for (final BotOperation operation : loader) {

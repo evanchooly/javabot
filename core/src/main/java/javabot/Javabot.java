@@ -133,17 +133,21 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     @SuppressWarnings({"unchecked"})
     private void loadOperationInfo(final Config config) {
         final Map<String, BotOperation> map = new HashMap<String, BotOperation>();
-        for (final BotOperation op : BotOperation.listKnownOperations()) {
+        for (final BotOperation op : BotOperation.list()) {
             map.put(op.getClass().getName(), op);
         }
         for (final String name : config.getOperations()) {
             try {
                 if (map.get(name) != null) {
                     add(map.get(name));
+                } else {
+                    final Config c = configDao.get();
+                    c.getOperations().remove(name);
+                    configDao.save(c);
                 }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                throw new RuntimeException(e.getMessage());
+                throw new RuntimeException(e.getMessage(), e);
             }
         }
         if (operations.isEmpty()) {
@@ -157,7 +161,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     @SuppressWarnings({"unchecked"})
     public boolean addOperation(final String name) {
         boolean added = false;
-        final List<BotOperation> ops = BotOperation.listKnownOperations();
+        final List<BotOperation> ops = BotOperation.list();
         final Iterator<BotOperation> it = ops.iterator();
         while (it.hasNext() && !added) {
             final BotOperation operation = it.next();
@@ -176,6 +180,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         operation.setBot(this);
         context.getAutowireCapableBeanFactory().autowireBean(operation);
         operations.add(operation);
+        configDao.save(config);
         return true;
     }
 
@@ -187,7 +192,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
             if (operation.getName().equals(name) && !operation.isStandardOperation()) {
                 removed = true;
                 it.remove();
-                config.getOperations().remove(name);
+                config.getOperations().remove(operation.getClass().getName());
                 configDao.save(config);
             }
         }

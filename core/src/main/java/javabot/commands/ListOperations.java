@@ -24,7 +24,7 @@ public class ListOperations extends OperationsCommand implements Command {
     public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
         responses.add(new Message(event.getChannel(), event, "I know of the following operations:"));
         responses.add(new Message(event.getChannel(), event,
-            StringUtils.join(BotOperation.listKnownOperations().iterator(), ",")));
+            StringUtils.join(BotOperation.list().iterator(), ",")));
 
         listCurrent(responses, bot, event);
         responses.add(new Message(event.getChannel(), event, "use admin enableOperation or disableOperation to turn"

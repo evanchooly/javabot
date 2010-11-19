@@ -50,7 +50,7 @@ public class Config implements Serializable, Persistent {
         nick = botName;
     }
 
-    @SuppressWarnings({"JpaModelErrorInspection"})
+    @SuppressWarnings({"JpaModelErrorInspection", "JpaAttributeTypeInspection"})
     @CollectionOfElements(fetch = FetchType.EAGER)
     public Set<String> getOperations() {
         return operations;

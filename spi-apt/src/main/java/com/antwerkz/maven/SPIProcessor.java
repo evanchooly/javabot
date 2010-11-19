@@ -1,17 +1,6 @@
 package com.antwerkz.maven;
 
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -22,11 +11,19 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 @SupportedAnnotationTypes("com.antwerkz.maven.SPI")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
@@ -45,7 +42,6 @@ public class SPIProcessor extends BaseProcessor {
         } finally {
             impls.clear();
         }
-
         return b;
     }
 
@@ -72,15 +68,36 @@ public class SPIProcessor extends BaseProcessor {
 
     private void write(final Entry<String, Set<String>> entry) throws IOException {
         final Filer filer = processingEnv.getFiler();
-        final FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/" + entry.getKey());
-
+        final Set<String> current = readCurrentEntries(entry, filer);
+        FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/" + entry.getKey());
+        System.out.println("file = " + file.getName());
         final PrintWriter writer = new PrintWriter(file.openWriter(), true);
         try {
-            for (final String impl : entry.getValue()) {
+            for (final String impl : current) {
                 writer.println(impl);
             }
         } finally {
             writer.close();
         }
+    }
+
+    private Set<String> readCurrentEntries(Entry<String, Set<String>> entry, Filer filer) throws IOException {
+        final FileObject file = filer.getResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/" + entry.getKey());
+        System.out.println("file = " + file.getName());
+        final InputStream stream = file.openInputStream();
+        final Set<String> current = new TreeSet<String>();
+        if (stream != null) {
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            try {
+                String spi;
+                while ((spi = reader.readLine()) != null) {
+                    current.add(spi);
+                }
+                current.addAll(entry.getValue());
+            } finally {
+                reader.close();
+            }
+        }
+        return current;
     }
 }
