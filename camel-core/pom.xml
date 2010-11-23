@@ -13,7 +13,7 @@
     <artifactId>camel-core</artifactId>
     <packaging>jar</packaging>
 
-    <name>javabot camel based core</name>
+    <name>camel core</name>
 
     <dependencies>
         <dependency>

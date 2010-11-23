@@ -14,6 +14,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -70,7 +71,6 @@ public class SPIProcessor extends BaseProcessor {
         final Filer filer = processingEnv.getFiler();
         final Set<String> current = readCurrentEntries(entry, filer);
         FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/" + entry.getKey());
-        System.out.println("file = " + file.getName());
         final PrintWriter writer = new PrintWriter(file.openWriter(), true);
         try {
             for (final String impl : current) {
@@ -83,20 +83,23 @@ public class SPIProcessor extends BaseProcessor {
 
     private Set<String> readCurrentEntries(Entry<String, Set<String>> entry, Filer filer) throws IOException {
         final FileObject file = filer.getResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/" + entry.getKey());
-        System.out.println("file = " + file.getName());
-        final InputStream stream = file.openInputStream();
-        final Set<String> current = new TreeSet<String>();
-        if (stream != null) {
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-            try {
-                String spi;
-                while ((spi = reader.readLine()) != null) {
-                    current.add(spi);
+        final Set<String> current = new TreeSet<String>(entry.getValue());
+        try {
+            final InputStream stream = file.openInputStream();
+            if (stream != null) {
+                final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+                try {
+                    String spi;
+                    while ((spi = reader.readLine()) != null) {
+                        current.add(spi);
+                    }
+                    current.addAll(entry.getValue());
+                } finally {
+                    reader.close();
                 }
-                current.addAll(entry.getValue());
-            } finally {
-                reader.close();
             }
+        } catch (FileNotFoundException e) {
+            // Noting to update
         }
         return current;
     }
