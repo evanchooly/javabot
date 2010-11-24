@@ -30,8 +30,8 @@ public class InfoOperation extends BotOperation {
             final Factoid factoid = dao.getFactoid(key);
             if (factoid != null) {
                 responses.add(new Message(channel, event,
-                    String.format("%s was added by: %s on %s and has a literal value of: %s", key,
-                        factoid.getUserName(), formatDate(factoid), factoid.getValue())));
+                    String.format("%s%s was added by: %s on %s and has a literal value of: %s", key,
+                        factoid.getUserName(), factoid.getLocked() ? "*" : "", formatDate(factoid), factoid.getValue())));
             } else {
                 responses.add(new Message(channel, event, "I have no factoid called \"" + key + "\""));
             }
