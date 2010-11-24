@@ -1,14 +1,14 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.antwerkz.maven.SPI;
 import javabot.BotEvent;
-import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.FactoidDao;
+import javabot.model.Factoid;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SPI(BotOperation.class)
 public class ForgetFactoidOperation extends BotOperation {
@@ -38,13 +38,19 @@ public class ForgetFactoidOperation extends BotOperation {
     }
 
     protected void forget(final List<Message> responses, final BotEvent event, final String channel,
-        final String sender, final String key) {
-        if (factoidDao.hasFactoid(key)) {
-            responses.add(new Message(channel, event, String.format("I forgot about %s, %s.", key, sender)));
-            factoidDao.delete(sender, key);
+                          final String sender, final String key) {
+        final Factoid factoid = factoidDao.getFactoid(key);
+        if (factoid != null) {
+            if (!factoid.getLocked() || isAdminUser(event)) {
+                responses.add(new Message(channel, event, String.format("I forgot about %s, %s.", key, sender)));
+                factoidDao.delete(sender, key);
+            } else {
+                responses.add(new Message(channel, event, String.format("Only admins can delete locked factoids, %s.",
+                        sender)));
+            }
         } else {
             responses.add(new Message(channel, event,
-                String.format("I never knew about %s anyway, %s.", key, sender)));
+                    String.format("I never knew about %s anyway, %s.", key, sender)));
         }
     }
 }

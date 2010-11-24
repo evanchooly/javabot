@@ -21,7 +21,7 @@ public class ListOperations extends OperationsCommand implements Command {
     private static final Logger log = LoggerFactory.getLogger(ListOperations.class);
 
     @Override
-    public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
+    public void execute(List<String> args, final List<Message> responses, final Javabot bot, final BotEvent event) {
         responses.add(new Message(event.getChannel(), event, "I know of the following operations:"));
         responses.add(new Message(event.getChannel(), event,
             StringUtils.join(BotOperation.list().iterator(), ",")));

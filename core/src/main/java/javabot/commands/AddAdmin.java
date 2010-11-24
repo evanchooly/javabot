@@ -25,7 +25,7 @@ public class AddAdmin extends BaseCommand {
     String hostName;
 
     @Override
-    public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
+    public void execute(List<String> args, final List<Message> responses, final Javabot bot, final BotEvent event) {
         final User user = findUser(bot, event, userName);
         if (user == null) {
             responses.add(new Message(event.getChannel(), event, "That user is not on this channel: " + userName));

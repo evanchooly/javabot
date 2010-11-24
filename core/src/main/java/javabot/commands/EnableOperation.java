@@ -18,7 +18,7 @@ public class EnableOperation extends OperationsCommand {
     String name;
 
     @Override
-    public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
+    public void execute(List<String> args, final List<Message> responses, final Javabot bot, final BotEvent event) {
         if (bot.addOperation(name)) {
             responses.add(new Message(event.getChannel(), event, name + " successfully enabled."));
             listCurrent(responses, bot, event);

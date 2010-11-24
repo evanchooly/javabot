@@ -1,10 +1,8 @@
 package javabot.commands;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ServiceLoader;
 
 import javabot.BotEvent;
 import javabot.Javabot;
@@ -26,7 +24,12 @@ public abstract class BaseCommand implements Command {
     @Autowired
     ApplicationContext context;
 
-    public abstract void execute(final List<Message> responses, Javabot bot, BotEvent event);
+    @Override
+    public boolean canHandle(String event) {
+        return false;
+    }
+
+    public abstract void execute(List<String> args, final List<Message> responses, Javabot bot, BotEvent event);
 
     public String getUsage() {
         final Options options = getOptions();
@@ -64,22 +67,33 @@ public abstract class BaseCommand implements Command {
                         return optValue == null ? value : optValue;
                     }
                 };
-                option.setRequired(annotation.required());
+                option.setRequired(annotation.required() && !annotation.primary());
                 options.addOption(option);
             }
         }
         return options;
     }
 
-    public void parse(final List<String> args) throws ParseException {
+    public final void parse(final List<String> args) throws ParseException {
         final Options options = getOptions();
         final CommandLineParser parser = new GnuParser();
         final CommandLine line = parser.parse(options, args.toArray(new String[args.size()]));
-        final Iterator iterator = line.iterator();
         try {
+            final Iterator iterator = line.iterator();
             while (iterator.hasNext()) {
                 final Option option = (Option) iterator.next();
-                getClass().getDeclaredField(option.getOpt()).set(this, option.getValue());
+                final Field field = getClass().getDeclaredField(option.getOpt());
+                field.set(this, option.getValue());
+            }
+            final List argList = line.getArgList();
+            if(argList.size() == 2) {
+                Field field = getPrimaryParam();
+                if(field == null) {
+                    throw new ParseException("Required option missing from " + getCommandName());
+                }
+                field.set(this, argList.get(1));
+            } else if(argList.size() > 2) {
+                throw new ParseException("Too many options given to " + getCommandName());
             }
         } catch (NoSuchFieldException e) {
             log.error(e.getMessage(), e);
@@ -90,18 +104,20 @@ public abstract class BaseCommand implements Command {
         }
     }
 
+    private Field getPrimaryParam() {
+        for (final Field field : getClass().getDeclaredFields()) {
+            final Param annotation = field.getAnnotation(Param.class);
+            if (annotation != null && annotation.primary()) {
+                return field;
+            }
+        }
+        return null;
+    }
+
     public String getCommandName() {
         String name = getClass().getSimpleName();
         name = name.substring(0, 1).toLowerCase() + name.substring(1);
         return name;
     }
 
-    public static List<Command> listKnownCommands() {
-        final ServiceLoader<Command> loader = ServiceLoader.load(Command.class);
-        final List<Command> list = new ArrayList<Command>();
-        for (final Command command : loader) {
-            list.add(command);
-        }
-        return list;
-    }
 }

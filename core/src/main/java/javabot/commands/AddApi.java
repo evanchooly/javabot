@@ -33,7 +33,7 @@ public class AddApi extends BaseCommand {
 
     @Override
     @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
-    public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
+    public void execute(List<String> args, final List<Message> responses, final Javabot bot, final BotEvent event) {
         final String destination = event.getChannel();
         final Api api = new Api(name, url, packages, zip);
         dao.save(api);

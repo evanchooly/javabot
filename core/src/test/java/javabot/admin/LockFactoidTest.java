@@ -7,12 +7,22 @@ import org.testng.annotations.Test;
 public class LockFactoidTest extends BaseOperationTest {
     public void lock() {
         try {
+            final String lockme = "lockme";
+            sendMessage("~forget " + lockme);
             testMessage("~lockme is i should be locked", "OK, " + TEST_USER + ".");
-            testMessage("~admin lockFactoid lockme", "lockme locked.");
+            testMessage("~admin lock " + lockme, lockme + " locked.");
+            testMessageAs("bob", String.format("~forget %s", lockme), "Only admins can delete locked factoids, bob.");
+            testMessage("~admin unlock " + lockme, lockme + " unlocked.");
+            testMessageAs("bob", String.format("~forget %s", lockme), getForgetMessage("bob", lockme));
+
+            testMessage("~lockme is i should be locked", "OK, " + TEST_USER + ".");
+            testMessage("~admin lock " + lockme, lockme + " locked.");
+            testMessage(String.format("~forget %s", lockme), getForgetMessage(lockme));
+
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
-            testMessage("~forget lockme", "I forgot about lockme, " + TEST_USER + ".");
+            sendMessage("~forget lockme");
         }
     }
 }

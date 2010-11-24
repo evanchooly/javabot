@@ -13,7 +13,9 @@ import org.apache.commons.cli.ParseException;
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
 public interface Command {
-    void execute(final List<Message> responses, Javabot bot, BotEvent event);
+    boolean canHandle(String event);
+    
+    void execute(List<String> args, final List<Message> responses, Javabot bot, BotEvent event);
 
     void parse(List<String> args) throws ParseException;
 }

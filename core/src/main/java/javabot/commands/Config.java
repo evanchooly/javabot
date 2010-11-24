@@ -22,7 +22,7 @@ public class Config extends BaseCommand {
     String value;
 
     @Override
-    public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
+    public void execute(List<String> args, final List<Message> responses, final Javabot bot, final BotEvent event) {
         final javabot.model.Config config = dao.get();
         if (StringUtils.isEmpty(property)) {
             responses.add(new Message(event.getSender(), event, config.toString()));

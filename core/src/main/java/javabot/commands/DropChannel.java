@@ -23,7 +23,7 @@ public class DropChannel extends BaseCommand {
     String channel;
 
     @Override
-    public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
+    public void execute(List<String> args, final List<Message> responses, final Javabot bot, final BotEvent event) {
         final Channel chan = dao.get(channel);
         if (chan != null) {
             dao.delete(chan);

@@ -27,7 +27,7 @@ public class InfoApi extends BaseCommand {
 
     @Override
     @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
-    public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
+    public void execute(List<String> args, final List<Message> responses, final Javabot bot, final BotEvent event) {
         final String destination = event.getChannel();
         final Api api = dao.find(name);
         if (api != null) {

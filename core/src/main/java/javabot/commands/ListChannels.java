@@ -24,7 +24,7 @@ public class ListChannels extends BaseCommand {
     private ChannelDao dao;
 
     @Override
-    public void execute(final List<Message> responses, final Javabot bot, final BotEvent event) {
+    public void execute(List<String> args, final List<Message> responses, final Javabot bot, final BotEvent event) {
         final List<Channel> channels = dao.find(new QueryParam(0, Integer.MAX_VALUE));
         responses.add(new Message(event.getChannel(), event, event.getSender() + ", I'll list the channels in a"
             + " private message for you"));

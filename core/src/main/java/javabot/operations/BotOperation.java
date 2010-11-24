@@ -8,9 +8,13 @@ import java.util.ServiceLoader;
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
+import javabot.dao.AdminDao;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class BotOperation implements Comparable<BotOperation> {
     private Javabot bot;
+    @Autowired
+    private AdminDao dao;
 
     public Javabot getBot() {
         return bot;
@@ -71,5 +75,9 @@ public abstract class BotOperation implements Comparable<BotOperation> {
             list.add(operation);
         }
         return list;
+    }
+
+    protected boolean isAdminUser(final BotEvent event) {
+        return dao.isAdmin(event.getSender(), event.getHostname());
     }
 }

@@ -23,11 +23,17 @@ public abstract class BaseOperationTest extends BaseTest {
     }
 
     protected void testMessage(final String message, final String... responses) {
-        final List<Message> list = sendMessage(message);
+        compareResults(sendMessage(message), responses);
+    }
 
+    protected void testMessageAs(final String user, final String message, final String... responses) {
+        compareResults(sendMessage(user, message), responses);
+    }
+
+    private void compareResults(List<Message> list, String[] responses) {
         Assert.assertEquals(list.size(), responses.length, String.format("Should get expected response count back. "
-            + "\n** expected: \n%s"
-            + "\n** got: \n%s", Arrays.toString(responses), list));
+                + "\n** expected: \n%s"
+                + "\n** got: \n%s", Arrays.toString(responses), list));
         for (final String response : responses) {
             Assert.assertEquals(list.remove(0).getMessage(), response);
         }
@@ -35,7 +41,12 @@ public abstract class BaseOperationTest extends BaseTest {
     }
 
     protected List<Message> sendMessage(final String message) {
-        getJavabot().processMessage(getJavabotChannel(), message, BaseTest.TEST_USER, BaseTest.TEST_USER, "localhost");
+        final String testUser = BaseTest.TEST_USER;
+        return sendMessage(testUser, message);
+    }
+
+    private List<Message> sendMessage(String testUser, String message) {
+        getJavabot().processMessage(getJavabotChannel(), message, testUser, testUser, "localhost");
         return getJavabot().getMessages();
     }
 
@@ -52,7 +63,11 @@ public abstract class BaseOperationTest extends BaseTest {
     }
 
     public String getForgetMessage(final String factoid) {
-        return String.format("I forgot about %s, %s.", factoid, BaseTest.TEST_USER);
+        return getForgetMessage(BaseTest.TEST_USER, factoid);
+    }
+
+    public String getForgetMessage(String testUser, String factoid) {
+        return String.format("I forgot about %s, %s.", factoid, testUser);
     }
 
     protected String getFoundMessage(final String factoid, final String value) {

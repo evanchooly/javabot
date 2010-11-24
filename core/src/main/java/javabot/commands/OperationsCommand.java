@@ -13,7 +13,6 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@SPI(Command.class)
 public abstract class OperationsCommand extends BaseCommand {
     protected void listCurrent(final List<Message> responses, final Javabot bot, final BotEvent event) {
         responses.add(new Message(event.getChannel(), event, "I am currently running the following operations:"));

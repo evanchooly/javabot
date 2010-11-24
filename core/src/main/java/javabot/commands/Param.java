@@ -12,5 +12,7 @@ public @interface Param {
 
     boolean required() default true;
 
+    boolean primary() default false;
+
     String defaultValue() default "";
 }
