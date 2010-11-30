@@ -44,9 +44,11 @@ public class AdminOperationTest extends BaseOperationTest {
 
     @Test(dependsOnMethods = {"disableOperations"})
     public void enableOperations() {
-        for (final String name : sendMessage("~admin listOperations").get(1).getMessage().split(",")) {
-            sendMessage("~admin enableOperation --name=" + name.trim());
-            Assert.assertTrue(findOperation(name), "Looking for " + name);
+        final String message = sendMessage("~admin listOperations").get(1).getMessage();
+        for (final String name : message.split(",")) {
+            final String opName = name.trim().split(" ")[0];
+            sendMessage("~admin enableOperation --name=" + opName);
+            Assert.assertTrue(findOperation(opName), "Looking for " + opName);
         }
     }
 }

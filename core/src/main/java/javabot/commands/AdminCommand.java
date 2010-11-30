@@ -1,12 +1,9 @@
 package javabot.commands;
 
-import java.lang.reflect.Field;
-import java.util.Iterator;
-import java.util.List;
-
 import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
+import javabot.operations.BotOperation;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -19,17 +16,54 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-public abstract class BaseCommand implements Command {
-    private static final Logger log = LoggerFactory.getLogger(BaseCommand.class);
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+public abstract class AdminCommand extends BotOperation {
+    private static final Logger log = LoggerFactory.getLogger(AdminCommand.class);
     @Autowired
     ApplicationContext context;
+    protected List<String> args;
 
     @Override
-    public boolean canHandle(String event) {
-        return false;
+    public final List<Message> handleMessage(final BotEvent event) {
+        String message = event.getMessage();
+        final String channel = event.getChannel();
+        final List<Message> responses = new ArrayList<Message>();
+        if (message.toLowerCase().startsWith("admin ")) {
+            if (isAdminUser(event)) {
+                message = message.substring(6);
+                if (canHandle(message)) {
+                    try {
+                        parse(Arrays.asList(message.split(" ")));
+                        responses.addAll(execute(getBot(), event));
+                    } catch (ParseException e) {
+                        log.error(e.getMessage(), e);
+                        responses.add(new Message(channel, event, "An error occurred processing this request."));
+                    }
+                }
+            } else {
+                responses.add(new Message(channel, event, event.getSender() + ", you're not an admin"));
+            }
+        }
+        return responses;
     }
 
-    public abstract void execute(List<String> args, final List<Message> responses, Javabot bot, BotEvent event);
+    public boolean canHandle(String message) {
+        String name = getClass().getSimpleName();
+        name = name.substring(0, 1).toLowerCase() + name.substring(1);
+        try {
+            return message.equalsIgnoreCase(name);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public abstract List<Message> execute(Javabot bot, BotEvent event);
 
     public String getUsage() {
         final Options options = getOptions();
@@ -74,10 +108,12 @@ public abstract class BaseCommand implements Command {
         return options;
     }
 
-    public final void parse(final List<String> args) throws ParseException {
+    public final void parse(final List<String> params) throws ParseException {
         final Options options = getOptions();
         final CommandLineParser parser = new GnuParser();
-        final CommandLine line = parser.parse(options, args.toArray(new String[args.size()]));
+        final CommandLine line = parser.parse(options, params.toArray(new String[params.size()]));
+        //noinspection unchecked
+        args = line.getArgList();
         try {
             final Iterator iterator = line.iterator();
             while (iterator.hasNext()) {
@@ -85,14 +121,16 @@ public abstract class BaseCommand implements Command {
                 final Field field = getClass().getDeclaredField(option.getOpt());
                 field.set(this, option.getValue());
             }
-            final List argList = line.getArgList();
-            if(argList.size() == 2) {
+            if ("admin".equals(args.get(0))) {
+                args.remove(0);
+            }
+            if (args.size() == 2) {
                 Field field = getPrimaryParam();
-                if(field == null) {
+                if (field == null) {
                     throw new ParseException("Required option missing from " + getCommandName());
                 }
-                field.set(this, argList.get(1));
-            } else if(argList.size() > 2) {
+                field.set(this, args.get(1));
+            } else if (args.size() > 2) {
                 throw new ParseException("Too many options given to " + getCommandName());
             }
         } catch (NoSuchFieldException e) {
@@ -120,4 +158,13 @@ public abstract class BaseCommand implements Command {
         return name;
     }
 
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s [admin]", getName());
+    }
 }
