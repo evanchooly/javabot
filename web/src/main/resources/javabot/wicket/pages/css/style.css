@@ -15,22 +15,22 @@ body {
 }
 
 a:link {
-    COLOR: #0000FF;
+    color: #0000FF;
     text-decoration: none;
 }
 
 a:visited {
-    COLOR: #0000FF;
+    color: #0000FF;
     text-decoration: none;
 }
 
 a:active {
-    COLOR: #0000FF;
+    color: #0000FF;
     text-decoration: none;
 }
 
 a:hover {
-    COLOR: #FF0000;
+    color: #FF0000;
     text-decoration: underline;
 }
 
@@ -48,20 +48,20 @@ ul {
 }
 
 #header_wrapper {
-    background: #4E7DD1 url( '../img/menu_bg.gif' ) bottom left repeat-x;
-    margin: 0px;
-    padding: 0px;
+    background: #4E7DD1 url('../images/menu_bg.gif') bottom left repeat-x;
+    margin: 0;
+    padding: 0;
 }
 
 #header {
     height: 60px;
     padding: 15px;
-    background: url( '../img/header_bg.gif' ) top right no-repeat;
-    margin: 0px;
+    background: url('../images/header_bg.gif') top right no-repeat;
+    margin: 0;
 }
 
 #header h1 {
-    margin: 0px;
+    margin: 0;
     font-family: verdana, arial, sans-serif;
     font-size: 28px;
     color: #ffffff;
@@ -69,7 +69,7 @@ ul {
 }
 
 #header h2 {
-    margin: 0px;
+    margin: 0;
     font-family: verdana, arial, sans-serif;
     font-size: 14px;
     color: #B1C6EB;
@@ -80,21 +80,18 @@ ul {
     margin-top: 10px;
     float: left;
     width: 160px;
-    background: #F1F6FE url( '../img/side_bg.gif' ) bottom left repeat-x;
+    background: #F1F6FE url('../images/side_bg.gif') bottom left repeat-x;
 }
 
 #right_side {
     margin-top: 10px;
     float: right;
     width: 160px;
-    background: #F1F6FE url( '../img/side_bg.gif' ) bottom left repeat-x;
+    background: #F1F6FE url('../images/side_bg.gif') bottom left repeat-x;
 }
 
 #content {
-    margin-top: 20px;
-    margin-bottom: 0px;
-    margin-left: 180px;
-    margin-right: 180px;
+    margin: 20px 180px 0;
 }
 
 #footer {
@@ -110,29 +107,27 @@ ul {
 }
 
 #footer A:link {
-    COLOR: #FFFFFF;
+    color: #FFFFFF;
     text-decoration: none;
 }
 
 #footer A:visited {
-    COLOR: #FFFFFF;
+    color: #FFFFFF;
     text-decoration: none;
 }
 
 #footer A:active {
-    COLOR: #FFFFFF;
+    color: #FFFFFF;
     text-decoration: none;
 }
 
 #footer A:hover {
-    COLOR: #FFFFFF;
+    color: #FFFFFF;
     text-decoration: underline;
 }
 
 #left_side p, #right_side p {
-    margin: 10px;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin: 15px 10px;
     font-family: verdana, arial, sans-serif;
     font-size: 11px;
     line-height: 16px;
@@ -140,10 +135,7 @@ ul {
 }
 
 #left_side h3, #right_side h3 {
-    margin-top: 5px;
-    margin-bottom: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin: 5px 5px 10px;
     padding: 4px;
     font-family: verdana, arial, sans-serif;
     font-size: 14px;
@@ -155,8 +147,8 @@ ul {
 }
 
 #left_side h4, #right_side h4 {
-    margin-top: 0px;
-    margin-bottom: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
     margin-left: 10px;
     font-family: verdana, arial, sans-serif;
     font-size: 12px;
@@ -185,8 +177,8 @@ ul {
 }
 
 #content h4 {
-    margin-top: 0px;
-    margin-bottom: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
     font-family: verdana, arial, sans-serif;
     font-size: 14px;
     font-weight: bold;
@@ -196,7 +188,7 @@ ul {
 
 #navlist {
     margin-top: 1px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     text-align: center;
     padding: 5px 0;
     margin-left: 0;
@@ -216,7 +208,7 @@ ul {
     margin-left: 3px;
     border: 1px solid #0F3974;
     border-bottom: none;
-    background: #2153AA url( '../img/tab_bg.gif' ) bottom left repeat-x;
+    background: #2153AA url('../images/tab_bg.gif') bottom left repeat-x;
     text-decoration: none;
 }
 
@@ -252,8 +244,9 @@ ul {
 
 .featurebox_center {
     background-color: #fffff6;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding-left: 1em;
+    padding-right: 1em;
     border: 1px solid #DFE8F7;
     font-family: verdana, arial, sans-serif;
     font-size: 11px;
@@ -263,10 +256,7 @@ ul {
 
 .featurebox_side {
     background-color: #fffff6;
-    margin: 0px;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-bottom: 15px;
+    margin: 0 10px 15px;
     padding: 10px;
     border: 1px solid #DFE8F7;
     font-family: verdana, arial, sans-serif;
@@ -278,7 +268,6 @@ ul {
 /* Added by kinabalu */
 .action {
     background-color: #fff;
-    font-size: 80%;
 }
 
 .kick {
@@ -306,24 +295,10 @@ a {
     color: #c75f3e;
 }
 
-#mytable {
-    width: 600px;
-    padding: 0;
-    margin-right: 0 !important;
-    margin-right: 16px;
-    border-collapse: separate;
-}
-
-thead.filters-tr.td {
-    font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-    color: #4f6b72;
-    border-right: 1px solid #C1DAD7;
-    border-bottom: 1px solid #C1DAD7;
-    border-top: 1px solid #C1DAD7;
-    letter-spacing: 2px;
-    text-align: left;
-    padding: 6px 6px 6px 12px;
-    background: #CAE8EA url( ../img/bg_header.jpg ) no-repeat;
+.dataview {
+    width: 100%;
+    border-collapse: collapse;
+    empty-cells: show;
 }
 
 th {
@@ -335,7 +310,7 @@ th {
     letter-spacing: 2px;
     text-align: left;
     padding: 6px 6px 6px 12px;
-    background: #CAE8EA url( ../img/bg_header.jpg ) no-repeat;
+    background: #CAE8EA url(../images/bg_header.jpg) no-repeat;
 }
 
 th.lef {
@@ -347,7 +322,7 @@ th.lef {
     letter-spacing: 2px;
     text-align: left;
     padding: 6px 6px 6px 12px;
-    background: #CAE8EA url( ../img/bg_header.jpg ) no-repeat;
+    background: #CAE8EA url(../images/bg_header.jpg) no-repeat;
 }
 
 th.nobg {
@@ -358,15 +333,13 @@ th.nobg {
 }
 
 td {
-
-    border-right: 1px solid #C1DAD7;
-    border-bottom: 1px solid #C1DAD7;
+    margin: 0;
+    border: 1px solid #C1DAD7;
     background: #fff;
     padding: 6px 6px 6px 12px;
     color: #4f6b72;
     font-family: verdana, arial, sans-serif;
     font-size: 11px;
-    overflow: scroll
 }
 
 td.lef {
@@ -383,20 +356,18 @@ td.even {
     border-left: 1px solid #C1DAD7;
     border-right: 1px solid #C1DAD7;
     border-bottom: 1px solid #C1DAD7;
-    background: #fff;
+    background: #fff url(../images/bullet1.gif) no-repeat;
     padding: 6px 6px 6px 12px;
     color: #4f6b72;
-    background: #fff url( ../img/bullet1.gif ) no-repeat;
 }
 
 td.odd {
     border-left: 1px solid #C1DAD7;
     border-right: 1px solid #C1DAD7;
     border-bottom: 1px solid #C1DAD7;
-    background: #fff;
+    background: #fff url(../images/bullet2.gif) no-repeat;
     padding: 6px 6px 6px 12px;
     color: #4f6b72;
-    background: #fff url( ../img/bullet2.gif ) no-repeat;
 }
 
 td.alt {
@@ -407,61 +378,43 @@ td.alt {
 th.spec {
     border-left: 1px solid #C1DAD7;
     border-top: 0;
-    background: #fff url( ../img/bullet1.gif ) no-repeat;
+    background: #fff url(../images/bullet1.gif) no-repeat;
     font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
 }
 
 th.specalt {
     border-left: 1px solid #C1DAD7;
     border-top: 0;
-    background: #f5fafa url( ../img/bullet2.gif ) no-repeat;
+    background: #f5fafa url(../images/bullet2.gif) no-repeat;
     font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
     color: #797268;
 }
 
-/* FILTERS */
-table.grid td.filter-td {
-    font-size: 1em;
-    background-color: #c1e4ff;
-    border-bottom: 1px solid #0079d6;
+/* PAGINATION */
+
+.paginateButtons {
+    background: #fff url(../images/skin/shadow.jpg) bottom repeat-x;
+    border: 1px solid #ccc;
+    color: #666;
+    font-size: 10px;
+    overflow: hidden;
+    padding: 10px 3px;
+    text-align: right;
 }
 
-table.grid td.filter-td input.go {
-    width: 100%;
+.paginateButtons a {
+    background: #fff;
+    border: 1px solid;
+    border-color: #ccc #aaa #aaa #ccc;
+    color: #666;
+    margin: 0 3px;
+    padding: 2px 6px;
 }
 
-table.grid td.filter-td input.clear {
-    width: 100%;
+.paginateButtons span {
+    padding: 2px 3px;
 }
 
-table.grid td.filter-td input {
-    width: 100%;
-    font-size: 0.6em;
-}
-
-table.grid td.filter-td select {
-    width: 100%;
-    font-size: 0.6em;
-}
-
-/* Forms */
-/* Magik(tm) */
-
-INPUT, TEXTAREA {
-    border-left: 1px solid #C1DAD7;
-    border-top: 1px solid #C1DAD7;
-    border-bottom: 1px solid #C1DAD7;
-    border-right: 1px solid #C1DAD7;
-    background: #f5fafa url( ../img/bg_header.jpg ) no-repeat;
-    font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-    color: #797268;
-    width: 100%;
-}
-
-div.scrollWrapper {
-
-    overflow-y: hidden;
-    overflow-x: auto;
-    width: 100%;
-
+.nowrap {
+    white-space: nowrap;
 }

@@ -197,6 +197,7 @@
                         <packageBranchRate>85</packageBranchRate>
                     </check>
                 </configuration>
+<!--
                 <executions>
                     <execution>
                         <goals>
@@ -205,6 +206,7 @@
                         </goals>
                     </execution>
                 </executions>
+-->
             </plugin>
         </plugins>
     </build>

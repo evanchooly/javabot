@@ -1,5 +1,8 @@
 package javabot.wicket.panels;
 
+import java.text.SimpleDateFormat;
+import java.util.Iterator;
+
 import javabot.dao.ChangeDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Change;
@@ -24,9 +27,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
 
 public class ChangesPanel extends Panel {
     @SpringBean
@@ -55,12 +55,10 @@ public class ChangesPanel extends Panel {
             }
 
         };
-
         SortableChangeProvider dp = new SortableChangeProvider(dao);
         final DataTable dataView = new DataTable("dataView", columns, dp, 40);
         dataView.addTopToolbar(new NavigationToolbar(dataView));
         dataView.addTopToolbar(new HeadersToolbar(dataView, dp));
-
         FilterForm form = new FilterForm("filter-form", dp) {
             private static final long serialVersionUID = 1L;
 
@@ -69,7 +67,6 @@ public class ChangesPanel extends Panel {
                 dataView.setCurrentPage(0);
             }
         };
-
         dataView.addTopToolbar(new FilterToolbar(dataView, form, dp));
         form.add(dataView);
         add(form);
@@ -90,13 +87,19 @@ public class ChangesPanel extends Panel {
         }
 
         public SortableChangeProvider(ChangeDao changeDao) {
-            setSort("changeDate", false);
+//            setSort("changeDate", false);
             this.dao = changeDao;
         }
 
         public Iterator iterator(int first, int count) {
             SortParam sp = getSort();
-            QueryParam qp = new QueryParam(first, count, sp.getProperty(), sp.isAscending());
+            String property = null;
+            boolean ascending = false;
+            if (sp != null) {
+                property = sp.getProperty();
+                ascending = sp.isAscending();
+            }
+            QueryParam qp = new QueryParam(first, count, property, ascending);
             return dao.getChanges(qp, filter).iterator();
         }
 

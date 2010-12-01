@@ -15,22 +15,22 @@ body {
 }
 
 a:link {
-    COLOR: #0000FF;
+    color: #0000FF;
     text-decoration: none;
 }
 
 a:visited {
-    COLOR: #0000FF;
+    color: #0000FF;
     text-decoration: none;
 }
 
 a:active {
-    COLOR: #0000FF;
+    color: #0000FF;
     text-decoration: none;
 }
 
 a:hover {
-    COLOR: #FF0000;
+    color: #FF0000;
     text-decoration: underline;
 }
 
@@ -107,22 +107,22 @@ ul {
 }
 
 #footer A:link {
-    COLOR: #FFFFFF;
+    color: #FFFFFF;
     text-decoration: none;
 }
 
 #footer A:visited {
-    COLOR: #FFFFFF;
+    color: #FFFFFF;
     text-decoration: none;
 }
 
 #footer A:active {
-    COLOR: #FFFFFF;
+    color: #FFFFFF;
     text-decoration: none;
 }
 
 #footer A:hover {
-    COLOR: #FFFFFF;
+    color: #FFFFFF;
     text-decoration: underline;
 }
 

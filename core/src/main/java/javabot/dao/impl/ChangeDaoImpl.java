@@ -68,6 +68,8 @@ public class ChangeDaoImpl extends AbstractDaoImpl<Change> implements ChangeDao 
         if (!count && qp != null && qp.hasSort()) {
             hql.append("order by upper(target.").append(qp.getSort()).append(
                 ") ").append(qp.isSortAsc() ? " asc" : " desc");
+        } else if(!count && (qp == null || !qp.hasSort())) {
+            hql.append("order by target.changeDate desc");
         }
 
         final Query query = getEntityManager().createQuery(hql.toString());
