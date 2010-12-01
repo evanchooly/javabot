@@ -1,5 +1,6 @@
 package javabot.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
@@ -7,6 +8,7 @@ import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.AdminDao;
+import javabot.operations.BotOperation;
 import org.jibble.pircbot.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@SPI(Command.class)
-public class AddAdmin extends BaseCommand {
+@SPI({BotOperation.class, AdminCommand.class})
+public class AddAdmin extends AdminCommand {
     @Autowired
     private AdminDao dao;
     @Param
@@ -25,7 +27,8 @@ public class AddAdmin extends BaseCommand {
     String hostName;
 
     @Override
-    public void execute(List<String> args, final List<Message> responses, final Javabot bot, final BotEvent event) {
+    public List<Message> execute(final Javabot bot, final BotEvent event) {
+        final List<Message> responses = new ArrayList<Message>();
         final User user = findUser(bot, event, userName);
         if (user == null) {
             responses.add(new Message(event.getChannel(), event, "That user is not on this channel: " + userName));
@@ -38,6 +41,7 @@ public class AddAdmin extends BaseCommand {
                     new Message(event.getChannel(), event, user.getNick() + " has been added as a bot admin"));
             }
         }
+        return responses;
     }
 
     private User findUser(final Javabot bot, final BotEvent event, final String name) {

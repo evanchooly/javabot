@@ -1,6 +1,7 @@
 package javabot.commands;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
@@ -10,6 +11,7 @@ import javabot.Message;
 import javabot.dao.ApiDao;
 import javabot.javadoc.Api;
 import javabot.javadoc.JavadocParser;
+import javabot.operations.BotOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -17,8 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@SPI(Command.class)
-public class AddApi extends BaseCommand {
+@SPI({BotOperation.class, AdminCommand.class})
+public class AddApi extends AdminCommand {
     @Autowired
     private ApiDao dao;
     
@@ -33,7 +35,8 @@ public class AddApi extends BaseCommand {
 
     @Override
     @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
-    public void execute(List<String> args, final List<Message> responses, final Javabot bot, final BotEvent event) {
+    public List<Message> execute(final Javabot bot, final BotEvent event) {
+        final List<Message> responses = new ArrayList<Message>();
         final String destination = event.getChannel();
         final Api api = new Api(name, url, packages, zip);
         dao.save(api);
@@ -46,5 +49,6 @@ public class AddApi extends BaseCommand {
             }
         });
         responses.add(new Message(destination, event, "done adding javadoc for " + name));
+        return responses;
     }
 }

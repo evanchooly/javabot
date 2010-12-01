@@ -26,7 +26,7 @@ public class LockFactoid extends AdminCommand {
 
     @Override
     public boolean canHandle(String message) {
-        return message.startsWith("lock ") || message.startsWith("unlock ");
+        return "lock".equals(message) || "unlock".equals(message);
     }
 
     @Override

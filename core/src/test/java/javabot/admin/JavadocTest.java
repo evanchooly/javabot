@@ -28,7 +28,7 @@ public class JavadocTest extends BaseOperationTest {
 
     @Test(dependsOnMethods = "reprocessNonExistentApi")
     public void processApi() {
-        scanForResponse("~admin addApi "
+        scanForResponse("~admin addApi"
             + " --name=" + API_NAME
             + " --url=" + API_URL_STRING
             + " --zip=" + ZIP_LOCATION

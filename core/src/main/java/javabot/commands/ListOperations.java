@@ -1,5 +1,6 @@
 package javabot.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
@@ -16,12 +17,18 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@SPI(Command.class)
-public class ListOperations extends OperationsCommand implements Command {
+@SPI({BotOperation.class, AdminCommand.class})
+public class ListOperations extends OperationsCommand {
     private static final Logger log = LoggerFactory.getLogger(ListOperations.class);
 
     @Override
-    public void execute(List<String> args, final List<Message> responses, final Javabot bot, final BotEvent event) {
+    public String getName() {
+        return "ListOperations";
+    }
+
+    @Override
+    public List<Message> execute(final Javabot bot, final BotEvent event) {
+        final List<Message> responses = new ArrayList<Message>();
         responses.add(new Message(event.getChannel(), event, "I know of the following operations:"));
         responses.add(new Message(event.getChannel(), event,
             StringUtils.join(BotOperation.list().iterator(), ",")));
@@ -29,5 +36,6 @@ public class ListOperations extends OperationsCommand implements Command {
         listCurrent(responses, bot, event);
         responses.add(new Message(event.getChannel(), event, "use admin enableOperation or disableOperation to turn"
             + " operations on or off"));
+        return responses;
     }
 }

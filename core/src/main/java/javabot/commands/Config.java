@@ -2,6 +2,7 @@ package javabot.commands;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
@@ -9,11 +10,12 @@ import javabot.BotEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.ConfigDao;
+import javabot.operations.BotOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.commons.lang.StringUtils;
 
-@SPI(Command.class)
-public class Config extends BaseCommand {
+@SPI({BotOperation.class, AdminCommand.class})
+public class Config extends AdminCommand {
     @Autowired
     private ConfigDao dao;
     @Param(required = false)
@@ -22,7 +24,8 @@ public class Config extends BaseCommand {
     String value;
 
     @Override
-    public void execute(List<String> args, final List<Message> responses, final Javabot bot, final BotEvent event) {
+    public List<Message> execute(final Javabot bot, final BotEvent event) {
+        final List<Message> responses = new ArrayList<Message>();
         final javabot.model.Config config = dao.get();
         if (StringUtils.isEmpty(property)) {
             responses.add(new Message(event.getSender(), event, config.toString()));
@@ -47,5 +50,6 @@ public class Config extends BaseCommand {
                 responses.add(new Message(event.getSender(), event, "I don't know of a property named " + property));
             }
         }
+        return responses;
     }
 }

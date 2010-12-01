@@ -45,7 +45,7 @@ public class KarmaChangeOperation extends BotOperation {
     @Transactional
     public List<Message> handleMessage(final BotEvent event) {
         if (karmaRead == null) {
-            karmaRead = (KarmaReadOperation) getBot().getOperation(KarmaReadOperation.class);
+            karmaRead = (KarmaReadOperation) getBot().getOperation("KarmaRead");
         }
         String message = event.getMessage();
         final String sender = event.getSender();

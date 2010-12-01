@@ -1,10 +1,5 @@
 package javabot;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 import javabot.dao.AdminDao;
 import javabot.model.Channel;
 import org.jibble.pircbot.PircBot;
@@ -14,6 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.AfterSuite;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 @SuppressWarnings({"StaticNonFinalField"})
 public class BaseTest {
@@ -81,7 +82,16 @@ public class BaseTest {
         public TestBot(final String name) {
             final Properties props = new Properties();
             try {
-                props.load(getClass().getResourceAsStream("/spring-context-override.properties"));
+                final InputStream resourceAsStream = getClass().getResourceAsStream("/spring-context-override.properties");
+                try {
+                    if (resourceAsStream != null) {
+                        props.load(resourceAsStream);
+                    }
+                } finally {
+                    if (resourceAsStream != null) {
+                        resourceAsStream.close();
+                    }
+                }
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
                 throw new RuntimeException(e.getMessage());
@@ -89,23 +99,22 @@ public class BaseTest {
             setName(name);
         }
 
-
         @Override
         protected void onAction(final String sender, final String login, final String hostname, final String target,
-            final String action) {
+                                final String action) {
             responses.add(new Response(target, sender, login, hostname, action));
 
         }
 
         @Override
         public void onMessage(final String channel, final String sender, final String login,
-            final String hostname, final String message) {
+                              final String hostname, final String message) {
             responses.add(new Response(channel, sender, login, hostname, message));
         }
 
         @Override
         protected void onPrivateMessage(final String sender, final String login, final String hostname,
-            final String message) {
+                                        final String message) {
             log.debug(new Response(sender, sender, login, hostname, message).toString());
             onMessage(sender, sender, login, hostname, message);
         }
@@ -133,7 +142,7 @@ public class BaseTest {
 
         @Override
         public void onJoin(final String channel, final String sender, final String login,
-            final String hostname) {
+                           final String hostname) {
             super.onJoin(channel, sender, login, hostname);
         }
 
@@ -150,7 +159,9 @@ public class BaseTest {
                 setLogin(getNick());
                 setNickPassword(config.getPassword());
                 setStartStrings("~");
-                dao.create(BaseTest.TEST_USER, "localhost");
+                if(dao.getAdmin(BaseTest.TEST_USER, "localhost") == null) {
+                    dao.create(BaseTest.TEST_USER, "localhost");
+                }
             } catch (Exception e) {
                 log.debug(e.getMessage(), e);
                 throw new RuntimeException(e.getMessage(), e);

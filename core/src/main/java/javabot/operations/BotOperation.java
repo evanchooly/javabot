@@ -15,6 +15,7 @@ public abstract class BotOperation implements Comparable<BotOperation> {
     private Javabot bot;
     @Autowired
     private AdminDao dao;
+    private transient boolean enabled = false;
 
     public Javabot getBot() {
         return bot;
@@ -65,7 +66,7 @@ public abstract class BotOperation implements Comparable<BotOperation> {
 
     @Override
     public String toString() {
-        return getName();
+        return String.format("%s [%s]", getName(), isStandardOperation() ? "standard" : isEnabled());
     }
 
     public static List<BotOperation> list() {
@@ -79,5 +80,13 @@ public abstract class BotOperation implements Comparable<BotOperation> {
 
     protected boolean isAdminUser(final BotEvent event) {
         return dao.isAdmin(event.getSender(), event.getHostname());
+    }
+
+    public boolean isEnabled() {
+        return isStandardOperation() || enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

@@ -1,5 +1,6 @@
 package javabot.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
@@ -8,6 +9,7 @@ import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.ChannelDao;
 import javabot.model.Channel;
+import javabot.operations.BotOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -15,15 +17,16 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@SPI(Command.class)
-public class DropChannel extends BaseCommand {
+@SPI({BotOperation.class, AdminCommand.class})
+public class DropChannel extends AdminCommand {
     @Autowired
     private ChannelDao dao;
     @Param
     String channel;
 
     @Override
-    public void execute(List<String> args, final List<Message> responses, final Javabot bot, final BotEvent event) {
+    public List<Message> execute(final Javabot bot, final BotEvent event) {
+        final List<Message> responses = new ArrayList<Message>();
         final Channel chan = dao.get(channel);
         if (chan != null) {
             dao.delete(chan);
@@ -32,5 +35,7 @@ public class DropChannel extends BaseCommand {
         } else {
             responses.add(new Message(event.getChannel(), event, "I'm not in " + channel + ", " + event.getSender()));
         }
+
+        return responses;
     }
 }

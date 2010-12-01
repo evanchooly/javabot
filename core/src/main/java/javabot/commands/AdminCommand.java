@@ -36,9 +36,10 @@ public abstract class AdminCommand extends BotOperation {
         if (message.toLowerCase().startsWith("admin ")) {
             if (isAdminUser(event)) {
                 message = message.substring(6);
-                if (canHandle(message)) {
+                final String[] split = message.split(" ");
+                if (canHandle(split[0])) {
                     try {
-                        parse(Arrays.asList(message.split(" ")));
+                        parse(Arrays.asList(split));
                         responses.addAll(execute(getBot(), event));
                     } catch (ParseException e) {
                         log.error(e.getMessage(), e);
@@ -53,10 +54,8 @@ public abstract class AdminCommand extends BotOperation {
     }
 
     public boolean canHandle(String message) {
-        String name = getClass().getSimpleName();
-        name = name.substring(0, 1).toLowerCase() + name.substring(1);
         try {
-            return message.equalsIgnoreCase(name);
+            return message.equalsIgnoreCase(getClass().getSimpleName());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
@@ -160,6 +159,11 @@ public abstract class AdminCommand extends BotOperation {
 
     @Override
     public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public boolean isStandardOperation() {
         return true;
     }
 

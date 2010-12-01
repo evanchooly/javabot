@@ -1,6 +1,7 @@
 package javabot.commands;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
@@ -10,6 +11,7 @@ import javabot.Message;
 import javabot.dao.ApiDao;
 import javabot.javadoc.Api;
 import javabot.javadoc.JavadocParser;
+import javabot.operations.BotOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -17,8 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@SPI(Command.class)
-public class ReprocessApi extends BaseCommand {
+@SPI({BotOperation.class, AdminCommand.class})
+public class ReprocessApi extends AdminCommand {
     @Autowired
     private ApiDao dao;
     @Param
@@ -27,8 +29,14 @@ public class ReprocessApi extends BaseCommand {
     String packages;
 
     @Override
+    public boolean canHandle(String message) {
+        return message.startsWith("reprocessApi");
+    }
+
+    @Override
     @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
-    public void execute(List<String> args, final List<Message> responses, final Javabot bot, final BotEvent event) {
+    public List<Message> execute(final Javabot bot, final BotEvent event) {
+        final List<Message> responses = new ArrayList<Message>();
         final String destination = event.getChannel();
         Api api = dao.find(name);
         if (api == null) {
@@ -48,6 +56,7 @@ public class ReprocessApi extends BaseCommand {
             });
             responses.add(new Message(destination, event, "done reprocessing javadoc for " + name));
         }
+        return responses;
     }
 
     private void drop(final List<Message> responses, final BotEvent event, final String destination, final Api api,

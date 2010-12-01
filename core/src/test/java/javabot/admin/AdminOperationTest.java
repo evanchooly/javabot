@@ -18,18 +18,14 @@ public class AdminOperationTest extends BaseOperationTest {
 
     public void disableOperations() {
         final List<Message> messages = sendMessage("~admin listOperations");
+        System.out.println("messages = " + messages);
         final List<BotOperation> list = BotOperation.list();
         for (final String name : messages.get(3).getMessage().split(",")) {
-            sendMessage("~admin disableOperation --name=" + name.trim());
-            boolean standard = false;
-            for (final BotOperation operation : list) {
-                if (operation.getName().equals(name)) {
-                    standard = operation.isStandardOperation();
-                }
-            }
+            final String opName = name.trim().split(" ")[0];
+            sendMessage("~admin disableOperation --name=" + opName.trim());
 
-            if(!standard) {
-                Assert.assertFalse(findOperation(name));
+            if(!getJavabot().getOperation(opName).isStandardOperation()) {
+                Assert.assertFalse(findOperation(opName));
             }
         }
     }

@@ -98,7 +98,7 @@ public class Factoid implements Serializable, Persistent {
     }
 
     public Boolean getLocked() {
-        return locked;
+        return locked == null ? Boolean.FALSE : locked;
     }
 
     public void setLocked(Boolean locked) {
