@@ -11,7 +11,7 @@
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:applicationContext.xml</param-value>
+        <param-value>classpath:applicationContext.xml, WEB-INF/beans.xml</param-value>
     </context-param>
 
     <context-param>
@@ -58,4 +58,16 @@
         <filter-name>javabot</filter-name>
         <url-pattern>/javabot/*</url-pattern>
     </filter-mapping>
+
+    <servlet>
+        <display-name>CXF Servlet</display-name>
+        <servlet-name>CXFServlet</servlet-name>
+        <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>CXFServlet</servlet-name>
+        <url-pattern>/ws/*</url-pattern>
+    </servlet-mapping>
 </web-app>

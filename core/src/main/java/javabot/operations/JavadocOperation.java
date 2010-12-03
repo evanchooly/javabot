@@ -29,17 +29,11 @@ public class JavadocOperation extends BotOperation {
         final String message = event.getMessage();
         final List<Message> responses = new ArrayList<Message>();
         if (message.toLowerCase().startsWith("javadoc ")) {
-            final List<String> urls = new ArrayList<String>();
             final String key = message.substring("javadoc ".length()).trim();
             if (key.startsWith("-list") || "".equals(key)) {
                 displayApiList(event, responses);
             } else {
-                final int openIndex = key.indexOf('(');
-                if (openIndex == -1) {
-                    parseFieldOrClassRequest(urls, key);
-                } else {
-                    parseMethodRequest(urls, key, openIndex);
-                }
+                final List<String> urls = handle(key);
                 if (!urls.isEmpty()) {
                     StringBuilder urlMessage = new StringBuilder(event.getSender() + ": ");
                     String destination = event.getChannel();
@@ -66,6 +60,18 @@ public class JavadocOperation extends BotOperation {
             }
         }
         return responses;
+    }
+
+    public List<String> handle(final String key) {
+        final List<String> urls = new ArrayList<String>();
+        final int openIndex = key.indexOf('(');
+        if (openIndex == -1) {
+            parseFieldOrClassRequest(urls, key);
+        } else {
+            parseMethodRequest(urls, key, openIndex);
+        }
+
+        return urls;
     }
 
     private void parseFieldOrClassRequest(final List<String> urls, final String key) {

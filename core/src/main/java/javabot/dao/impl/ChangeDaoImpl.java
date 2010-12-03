@@ -66,8 +66,10 @@ public class ChangeDaoImpl extends AbstractDaoImpl<Change> implements ChangeDao 
             hql.append("and target.changeDate like :date ");
         }
         if (!count && qp != null && qp.hasSort()) {
-            hql.append("order by upper(target.").append(qp.getSort()).append(
-                ") ").append(qp.isSortAsc() ? " asc" : " desc");
+            hql.append("order by upper(target.")
+                .append(qp.getSort())
+                .append(") ")
+                .append(qp.isSortAsc() ? " asc" : " desc");
         } else if(!count && (qp == null || !qp.hasSort())) {
             hql.append("order by target.changeDate desc");
         }
