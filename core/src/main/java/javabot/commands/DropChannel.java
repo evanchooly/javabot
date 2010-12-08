@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.ChannelDao;
 import javabot.model.Channel;
-import javabot.operations.BotOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -17,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@SPI({BotOperation.class, AdminCommand.class})
+@SPI({AdminCommand.class})
 public class DropChannel extends AdminCommand {
     @Autowired
     private ChannelDao dao;
@@ -25,7 +24,7 @@ public class DropChannel extends AdminCommand {
     String channel;
 
     @Override
-    public List<Message> execute(final Javabot bot, final BotEvent event) {
+    public List<Message> execute(final Javabot bot, final IrcEvent event) {
         final List<Message> responses = new ArrayList<Message>();
         final Channel chan = dao.get(channel);
         if (chan != null) {

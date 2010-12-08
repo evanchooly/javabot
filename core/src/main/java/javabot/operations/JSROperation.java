@@ -4,8 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
-import javabot.Javabot;
+import javabot.IrcEvent;
 import javabot.Message;
 import javabot.operations.locator.JCPJSRLocator;
 import javabot.operations.locator.impl.JCPJSRLocatorImpl;
@@ -15,7 +14,7 @@ public class JSROperation extends BotOperation {
     JCPJSRLocator locator = new JCPJSRLocatorImpl();
 
     @Override
-    public List<Message> handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final IrcEvent event) {
         final String message = event.getMessage().toLowerCase();
         final String channel = event.getChannel();
         final List<Message> responses = new ArrayList<Message>();

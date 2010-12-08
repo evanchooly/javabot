@@ -1,7 +1,7 @@
 package javabot.operations;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.commands.AdminCommand;
@@ -17,18 +17,13 @@ import java.util.ServiceLoader;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@SPI({BotOperation.class, AdminCommand.class})
+@SPI({AdminCommand.class})
 public class ListAdminCommands extends AdminCommand {
     private static final Logger log = LoggerFactory.getLogger(ListAdminCommands.class);
     private static final String ADMIN_PREFIX = "admin ";
 
     @Override
-    public boolean isStandardOperation() {
-        return true;
-    }
-
-    @Override
-    public List<Message> execute(Javabot bot, BotEvent event) {
+    public List<Message> execute(Javabot bot, IrcEvent event) {
         final List<Message> responses = new ArrayList<Message>();
         final StringBuilder builder = new StringBuilder();
 

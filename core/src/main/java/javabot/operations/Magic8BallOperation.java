@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Message;
 
 @SPI(BotOperation.class)
@@ -35,7 +35,7 @@ public class Magic8BallOperation extends BotOperation {
     };
 
     @Override
-    public List<Message> handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final IrcEvent event) {
         final String message = event.getMessage().toLowerCase();
         final String channel = event.getChannel();
         final List<Message> messages = new ArrayList<Message>();

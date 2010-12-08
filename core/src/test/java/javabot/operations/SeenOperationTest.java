@@ -9,7 +9,7 @@ public class SeenOperationTest extends BaseOperationTest {
         send("MixedCase");
         send("lowercase");
         send("UPPERCASE");
-        changeNick(BaseTest.TEST_USER);
+        changeNick(BaseTest.TEST_USER.getNick());
     }
 
     private void lookFor(final Object nick) {
@@ -24,6 +24,6 @@ public class SeenOperationTest extends BaseOperationTest {
     }
 
     private void changeNick(final String nick) {
-        getTestBot().changeNick(nick);
+//        getTestBot().changeNick(nick);
     }
 }

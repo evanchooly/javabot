@@ -22,11 +22,13 @@ import org.hibernate.annotations.Index;
 @Entity
 @Table(name = "logs")
 @NamedQueries({
-    @NamedQuery(name= LogsDao.TODAY, query = "select s from Logs s WHERE s.channel=:channel AND (s.updated between :today and"
-        + " :tomorrow) order by s.updated"),
-    @NamedQuery(name=LogsDao.COUNT_LOGGED, query="select count(s) from Logs s where s.channel like '#%'"),
-    @NamedQuery(name = LogsDao.SEEN, query = "select new javabot.Seen(l.nick, l.message, l.channel, l.updated) from Logs l where"
-        + " l.nick = :nick AND l.channel = :channel order by l.updated desc")
+    @NamedQuery(name = LogsDao.TODAY,
+        query = "select s from Logs s WHERE s.channel=:channel AND (s.updated between :today and"
+            + " :tomorrow) order by s.updated"),
+    @NamedQuery(name = LogsDao.COUNT_LOGGED, query = "select count(s) from Logs s where s.channel like '#%'"),
+    @NamedQuery(name = LogsDao.SEEN,
+        query = "select new javabot.Seen(l.nick, l.message, l.channel, l.updated) from Logs l where"
+            + " l.nick = :nick AND l.channel = :channel order by l.updated desc")
 })
 @SPI(Persistent.class)
 public class Logs implements Serializable, Persistent {
@@ -37,7 +39,16 @@ public class Logs implements Serializable, Persistent {
     private Date updated;
 
     public enum Type {
-        JOIN, PART, QUIT, ACTION, KICK, BAN, MESSAGE
+        ACTION,
+        BAN,
+        DISCONNECTED,
+        INVITE,
+        JOIN,
+        PART,
+        KICK,
+        MESSAGE,
+        QUIT,
+        REGISTERED, TOPIC, NICK,
     }
 
     @Enumerated(EnumType.STRING)
@@ -103,7 +114,7 @@ public class Logs implements Serializable, Persistent {
 
     @Transient
     public boolean isKick() {
-        return message != null && Type.KICK==getType();
+        return message != null && Type.KICK == getType();
     }
 
     @Transient

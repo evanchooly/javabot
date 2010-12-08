@@ -6,8 +6,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,7 @@ public abstract class UrlOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(UrlOperation.class);
 
     @Override
-    public final List<Message> handleMessage(final BotEvent event) {
+    public final List<Message> handleMessage(final IrcEvent event) {
         String message = event.getMessage();
         final String channel = event.getChannel();
         final List<Message> responses = new ArrayList<Message>();

@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.ApiDao;
 import javabot.javadoc.Api;
-import javabot.operations.BotOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
@@ -18,7 +17,7 @@ import org.springframework.context.ApplicationContext;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@SPI({BotOperation.class, AdminCommand.class})
+@SPI({AdminCommand.class})
 public class DropApi extends AdminCommand {
     @Autowired
     private ApiDao dao;
@@ -29,7 +28,7 @@ public class DropApi extends AdminCommand {
 
     @Override
     @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
-    public List<Message> execute(final Javabot bot, final BotEvent event) {
+    public List<Message> execute(final Javabot bot, final IrcEvent event) {
         final List<Message> responses = new ArrayList<Message>();
         final String destination = event.getChannel();
         final Api api = dao.find(name);
@@ -42,7 +41,7 @@ public class DropApi extends AdminCommand {
         return responses;
     }
 
-    private void drop(final List<Message> responses, final BotEvent event, final String destination, final Api api,
+    private void drop(final List<Message> responses, final IrcEvent event, final String destination, final Api api,
         final ApiDao apiDao) {
         responses.add(new Message(destination, event, String.format("removing old %s javadoc", api.getName())));
         apiDao.delete(api);

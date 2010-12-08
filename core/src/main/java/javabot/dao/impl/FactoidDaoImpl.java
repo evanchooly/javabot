@@ -83,7 +83,7 @@ public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidD
         final Factoid factoid = getFactoid(key);
         if (factoid != null) {
             delete(factoid.getId());
-            changeDao.logChange(sender + " removed '" + key + "'");
+            changeDao.logChange(String.format("%s remove '%s' with a value of '%s'", sender, key, factoid.getValue()));
         }
     }
 

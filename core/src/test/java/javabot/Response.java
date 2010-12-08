@@ -1,5 +1,7 @@
 package javabot;
 
+import org.schwering.irc.lib.IRCUser;
+
 /**
  * Created Jan 27, 2009
 *
@@ -7,37 +9,24 @@ package javabot;
 */
 public class Response {
     private final String channel;
-    private final String sender;
-    private final String login;
-    private final String hostname;
+    private final IRCUser sender;
     private final String message;
 
-    public Response(final String channel, final String sender, final String login,
-        final String hostname, final String message) {
-        this.channel = channel;
-        this.sender = sender;
-        this.login = login;
-        this.hostname = hostname;
-        this.message = message;
+    public Response(final String target, final IRCUser user, final String msg) {
+        channel = target;
+        sender = user;
+        message = msg;
     }
 
     public String getChannel() {
         return channel;
     }
 
-    public String getHostname() {
-        return hostname;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
     public String getMessage() {
         return message;
     }
 
-    public String getSender() {
+    public IRCUser getSender() {
         return sender;
     }
 
@@ -46,8 +35,6 @@ public class Response {
         return "Response{" +
             "channel='" + channel + '\'' +
             ", sender='" + sender + '\'' +
-            ", login='" + login + '\'' +
-            ", hostname='" + hostname + '\'' +
             ", message='" + message + '\'' +
             '}';
     }

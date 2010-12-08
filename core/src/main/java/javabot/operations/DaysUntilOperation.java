@@ -8,18 +8,18 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
-import javabot.Javabot;
+import javabot.IrcEvent;
 import javabot.Message;
+import org.schwering.irc.lib.IRCUser;
 
 @SPI(BotOperation.class)
 public class DaysUntilOperation extends BotOperation {
     @Override
-    public List<Message> handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final IrcEvent event) {
         String message = event.getMessage().toLowerCase();
-        List<Message> responses = new ArrayList<Message>();
+        final List<Message> responses = new ArrayList<Message>();
         if (message.startsWith("days until ")) {
-            final String sender = event.getSender();
+            final IRCUser sender = event.getSender();
             message = message.substring("days until ".length());
             final Calendar calendar = Calendar.getInstance();
             final SimpleDateFormat sdf = new SimpleDateFormat();
@@ -47,8 +47,8 @@ public class DaysUntilOperation extends BotOperation {
         return responses;
     }
 
-    private void calcTime(final List<Message> responses, final BotEvent event, final String message,
-        final String sender, final Calendar calendar, final Date d) {
+    private void calcTime(final List<Message> responses, final IrcEvent event, final String message,
+        final IRCUser sender, final Calendar calendar, final Date d) {
         calendar.setTime(d);
         final Calendar today = Calendar.getInstance();
         today.set(Calendar.HOUR_OF_DAY, 0);

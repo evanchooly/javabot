@@ -1,18 +1,19 @@
 package javabot.operations;
 
 import javabot.operations.throttle.ThrottleItem;
+import org.schwering.irc.lib.IRCUser;
 
 public final class TellInfo implements ThrottleItem<TellInfo> {
-    private final String nick;
+    private final IRCUser user;
     private final String msg;
 
-    public TellInfo(final String nick, final String msg) {
-        this.nick = nick;
+    public TellInfo(final IRCUser user, final String msg) {
+        this.user = user;
         this.msg = msg;
     }
 
     public boolean matches(final TellInfo ti) {
-        return nick.equals(ti.nick) && msg.equals(ti.msg);
+        return user.equals(ti.user) && msg.equals(ti.msg);
     }
 
     @Override
@@ -20,7 +21,7 @@ public final class TellInfo implements ThrottleItem<TellInfo> {
         final StringBuilder sb = new StringBuilder();
         sb.append("TellInfo");
         sb.append("{msg='").append(msg).append('\'');
-        sb.append(", nick='").append(nick).append('\'');
+        sb.append(", nick='").append(user).append('\'');
         sb.append('}');
         return sb.toString();
     }

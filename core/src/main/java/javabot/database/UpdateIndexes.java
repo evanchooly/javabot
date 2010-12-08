@@ -10,11 +10,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
-import javax.sql.DataSource;
 
 import com.antwerkz.maven.SPI;
 import javabot.Javabot;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @SPI(UpgradeScript.class)
 public class UpdateIndexes extends UpgradeScript {

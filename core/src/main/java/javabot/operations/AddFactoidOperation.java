@@ -1,46 +1,38 @@
 package javabot.operations;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
-import javabot.Javabot;
+import javabot.IrcEvent;
 import javabot.Message;
-import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
+import org.schwering.irc.lib.IRCUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@SPI(BotOperation.class)
-public class AddFactoidOperation extends BotOperation {
+@SPI(StandardOperation.class)
+public class AddFactoidOperation extends StandardOperation {
     private static final Logger log = LoggerFactory.getLogger(AddFactoidOperation.class);
     @Autowired
     private FactoidDao factoidDao;
-    @Autowired
-    private ChangeDao changeDao;
 
     public AddFactoidOperation() {
     }
 
     @Override
-    public boolean isStandardOperation() {
-        return true;
-    }
-
-    @Override
-    public List<Message> handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final IrcEvent event) {
         String message = event.getMessage();
         final String channel = event.getChannel();
-        final String sender = event.getSender();
+        final IRCUser sender = event.getSender();
         if (message.startsWith("no")) {
             message = removeFactoid(event, event.getMessage());
         }
         return addFactoid(event, message, channel, sender);
     }
 
-    private String removeFactoid(final BotEvent event, final String message) {
+    private String removeFactoid(final IrcEvent event, final String message) {
         if (log.isDebugEnabled()) {
             log.debug("AddFactoidOperation: " + message);
         }
@@ -60,15 +52,15 @@ public class AddFactoidOperation extends BotOperation {
                 if (log.isDebugEnabled()) {
                     log.debug("AddFactoidOperation: Key " + key);
                 }
-                factoidDao.delete(event.getSender(), key);
+                factoidDao.delete(event.getSender().getNick(), key);
                 return actual;
             }
         }
         return message;
     }
 
-    private List<Message> addFactoid(final BotEvent event, final String message, final String channel, final String sender) {
-        List<Message> responses = new ArrayList<Message>();
+    private List<Message> addFactoid(final IrcEvent event, final String message, final String channel, final IRCUser sender) {
+        final List<Message> responses = new ArrayList<Message>();
         if (message.toLowerCase().contains(" is ")) {
             String key = message.substring(0, message.indexOf(" is "));
             key = key.toLowerCase();
@@ -95,26 +87,10 @@ public class AddFactoidOperation extends BotOperation {
                 if (value.startsWith("<see>")) {
                     value = value.toLowerCase();
                 }
-                factoidDao.addFactoid(sender, key, value);
+                factoidDao.addFactoid(sender.getNick(), key, value);
                 responses.add(new Message(channel, event, "OK, " + sender + "."));
             }
         }
         return responses;
-    }
-
-    public ChangeDao getChangeDao() {
-        return changeDao;
-    }
-
-    public void setChangeDao(final ChangeDao dao) {
-        changeDao = dao;
-    }
-
-    public FactoidDao getFactoidDao() {
-        return factoidDao;
-    }
-
-    public void setFactoidDao(final FactoidDao dao) {
-        factoidDao = dao;
     }
 }

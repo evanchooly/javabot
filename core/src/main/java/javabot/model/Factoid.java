@@ -101,13 +101,13 @@ public class Factoid implements Serializable, Persistent {
         return locked == null ? Boolean.FALSE : locked;
     }
 
-    public void setLocked(Boolean locked) {
+    public void setLocked(final Boolean locked) {
         this.locked = locked;
     }
 
     public String evaluate(final TellSubject subject, final String sender, final String replacedValue) {
         String message = getValue();
-        String target = subject == null ? sender : subject.getTarget();
+        final String target = subject == null ? sender : subject.getTarget().getNick();
         if(subject != null && !message.contains("$who") && message.startsWith("<reply>")) {
             message = new StringBuilder(message).insert(message.indexOf(">") + 1, "$who, ").toString();
         }
@@ -134,7 +134,7 @@ public class Factoid implements Serializable, Persistent {
         return message;
     }
 
-    private String urlencode(String in) {
+    private String urlencode(final String in) {
         try {
             return URLEncoder.encode(in, Charset.defaultCharset().displayName());
         } catch (UnsupportedEncodingException e) {
@@ -143,8 +143,8 @@ public class Factoid implements Serializable, Persistent {
         }
     }
 
-    private String camelcase(String in) {
-        StringBuilder sb = new StringBuilder(in.replaceAll("\\s", " "));
+    private String camelcase(final String in) {
+        final StringBuilder sb = new StringBuilder(in.replaceAll("\\s", " "));
         if (in.length() != 0) {
             int idx = sb.indexOf(" ");
             sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));

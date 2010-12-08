@@ -1,6 +1,7 @@
 package javabot.admin;
 
 import javabot.operations.BaseOperationTest;
+import org.schwering.irc.lib.IRCUser;
 import org.testng.annotations.Test;
 
 @Test
@@ -11,9 +12,10 @@ public class LockFactoidTest extends BaseOperationTest {
             sendMessage("~forget " + lockme);
             testMessage("~lockme is i should be locked", "OK, " + TEST_USER + ".");
             testMessage("~admin lock " + lockme, lockme + " locked.");
-            testMessageAs("bob", String.format("~forget %s", lockme), "Only admins can delete locked factoids, bob.");
+            final IRCUser bob = new IRCUser("bob", "bob", "localhost");
+            testMessageAs(bob, String.format("~forget %s", lockme), "Only admins can delete locked factoids, bob.");
             testMessage("~admin unlock " + lockme, lockme + " unlocked.");
-            testMessageAs("bob", String.format("~forget %s", lockme), getForgetMessage("bob", lockme));
+            testMessageAs(bob, String.format("~forget %s", lockme), getForgetMessage(bob, lockme));
 
             testMessage("~lockme is i should be locked", "OK, " + TEST_USER + ".");
             testMessage("~admin lock " + lockme, lockme + " locked.");

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Message;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
@@ -19,10 +19,10 @@ public class LiteralOperation extends BotOperation {
     private FactoidDao dao;
 
     /**
-     * @see BotOperation#handleMessage(BotEvent)
+     * @see BotOperation#handleMessage(IrcEvent)
      */
     @Override
-    public List<Message> handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final IrcEvent event) {
         final String message = event.getMessage().toLowerCase();
         final String channel = event.getChannel();
         final List<Message> responses = new ArrayList<Message>();

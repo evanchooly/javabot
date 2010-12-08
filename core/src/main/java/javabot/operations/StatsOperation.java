@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Message;
 import javabot.dao.FactoidDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class StatsOperation extends BotOperation {
     private int numberOfMessages = 0;
 
     @Override
-    public List<Message> handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final IrcEvent event) {
         numberOfMessages++;
         final String message = event.getMessage();
         final List<Message> responses = new ArrayList<Message>();

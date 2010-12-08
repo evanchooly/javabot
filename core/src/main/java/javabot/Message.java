@@ -1,17 +1,23 @@
 package javabot;
 
+import org.schwering.irc.lib.IRCUser;
+
 public class Message {
     private final String destination;
     private final String message;
-    private BotEvent event;
+    private IrcEvent event;
 
-    public Message(String dest, BotEvent evt, String value) {
+    public Message(final String dest, final IrcEvent evt, final String value) {
         destination = dest;
         message = value;
         event = evt;
     }
 
-    public BotEvent getEvent() {
+    public Message(final IRCUser sender, final IrcEvent event, final String value) {
+        this(sender.getNick(), event, value);
+    }
+
+    public IrcEvent getEvent() {
         return event;
     }
 
@@ -23,7 +29,7 @@ public class Message {
         return message;
     }
 
-    public void send(Javabot bot) {
+    public void send(final Javabot bot) {
         bot.postMessage(this);
     }
 

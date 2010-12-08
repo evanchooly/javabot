@@ -4,17 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
-import javabot.operations.BotOperation;
 
 /**
  * Created Jan 26, 2009
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@SPI({BotOperation.class, AdminCommand.class})
+@SPI({AdminCommand.class})
 public class DisableOperation extends OperationsCommand {
     @Param
     String name;
@@ -25,7 +24,7 @@ public class DisableOperation extends OperationsCommand {
     }
 
     @Override
-    public List<Message> execute(final Javabot bot, final BotEvent event) {
+    public List<Message> execute(final Javabot bot, final IrcEvent event) {
         final List<Message> responses = new ArrayList<Message>();
         if (bot.disableOperation(name)) {
             responses.add(new Message(event.getChannel(), event, name + " successfully disabled."));

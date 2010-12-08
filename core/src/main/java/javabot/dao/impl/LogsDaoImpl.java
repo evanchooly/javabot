@@ -1,9 +1,17 @@
 package javabot.dao.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import javax.persistence.NoResultException;
+
 import javabot.Seen;
 import javabot.dao.AbstractDaoImpl;
+import javabot.dao.ChannelDao;
 import javabot.dao.ConfigDao;
 import javabot.dao.LogsDao;
+import javabot.model.Channel;
 import javabot.model.Config;
 import javabot.model.Logs;
 import org.slf4j.Logger;
@@ -12,17 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.NoResultException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 @Component
 public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
     private static final Logger log = LoggerFactory.getLogger(LogsDaoImpl.class);
     @Autowired
     private ConfigDao dao;
+    @Autowired
+    private ChannelDao channelDao;
 
     public LogsDaoImpl() {
         super(Logs.class);
@@ -49,13 +53,16 @@ public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
     }
 
     public void logMessage(final Logs.Type type, final String nick, final String channel, final String message) {
-        final Logs logMessage = new Logs();
-        logMessage.setType(type);
-        logMessage.setNick(nick);
-        logMessage.setChannel(channel.toLowerCase());
-        logMessage.setMessage(message);
-        logMessage.setUpdated(new Date());
-        save(logMessage);
+        final Channel chan = channel != null ? channelDao.get(channel) : null;
+        if (chan == null || chan.getLogged()) {
+            final Logs logMessage = new Logs();
+            logMessage.setType(type);
+            logMessage.setNick(nick);
+            logMessage.setChannel(channel.toLowerCase());
+            logMessage.setMessage(message);
+            logMessage.setUpdated(new Date());
+            save(logMessage);
+        }
     }
 
     @Scheduled(cron = "0 0 1 * * ?")

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Message;
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
@@ -25,7 +25,7 @@ public class JavadocOperation extends BotOperation {
 
     @Override
     @Transactional
-    public List<Message> handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final IrcEvent event) {
         final String message = event.getMessage();
         final List<Message> responses = new ArrayList<Message>();
         if (message.toLowerCase().startsWith("javadoc ")) {
@@ -41,7 +41,7 @@ public class JavadocOperation extends BotOperation {
                         responses.add(new Message(event.getChannel(), event,
                             String.format("%s, too many results found.  Please see your private messages for results",
                                 event.getSender())));
-                        destination = event.getSender();
+                        destination = event.getSender().getNick();
                     }
                     for (int index = 0; index < urls.size(); index++) {
                         if ((urlMessage + urls.get(index)).length() > 400) {
@@ -112,7 +112,7 @@ public class JavadocOperation extends BotOperation {
         }
     }
 
-    private void displayApiList(final BotEvent event, final List<Message> responses) {
+    private void displayApiList(final IrcEvent event, final List<Message> responses) {
         final StringBuilder builder = new StringBuilder();
         for (final Api api : apiDao.findAll()) {
             if (builder.length() != 0) {

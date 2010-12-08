@@ -1,8 +1,7 @@
 package javabot;
 
 import javabot.dao.AdminDao;
-import javabot.model.Channel;
-import org.jibble.pircbot.PircBot;
+import org.schwering.irc.lib.IRCUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ import java.util.Properties;
 @SuppressWarnings({"StaticNonFinalField"})
 public class BaseTest {
     protected static final String TEST_BOT = "jbtestbot";
-    public static final String TEST_USER = "jbtestuser";
+    public static final IRCUser TEST_USER = new IRCUser("jbtestuser", "jbtestuser", "localhost");
     private static final Logger log = LoggerFactory.getLogger(BaseTest.class);
     @Autowired
     private AdminDao dao;
@@ -32,7 +31,7 @@ public class BaseTest {
         context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
         inject(this);
         createBot();
-        final String nick = BaseTest.TEST_USER;
+        final String nick = BaseTest.TEST_USER.getNick();
         ok = "OK, " + nick.substring(0, Math.min(nick.length(), 16)) + ".";
         sleep(2000);
     }
@@ -54,7 +53,7 @@ public class BaseTest {
     public final TestBot getTestBot() {
         synchronized (context) {
             if (user == null) {
-                user = new TestBot(TEST_USER);
+                user = new TestBot();
             }
             return user;
         }
@@ -76,10 +75,10 @@ public class BaseTest {
         }
     }
 
-    public static class TestBot extends PircBot {
+    public class TestBot {
         private final List<Response> responses = new ArrayList<Response>();
 
-        public TestBot(final String name) {
+        public TestBot() {
             final Properties props = new Properties();
             try {
                 final InputStream resourceAsStream = getClass().getResourceAsStream("/spring-context-override.properties");
@@ -96,35 +95,31 @@ public class BaseTest {
                 log.error(e.getMessage(), e);
                 throw new RuntimeException(e.getMessage());
             }
-            setName(name);
         }
 
-        @Override
         protected void onAction(final String sender, final String login, final String hostname, final String target,
                                 final String action) {
-            responses.add(new Response(target, sender, login, hostname, action));
+//            responses.add(new Response(target, sender, login, hostname, action));
 
         }
 
-        @Override
-        public void onMessage(final String channel, final String sender, final String login,
-                              final String hostname, final String message) {
-            responses.add(new Response(channel, sender, login, hostname, message));
+//        @Override
+        public void onPrivmsg(final String target, final IRCUser user, final String msg) {
+            responses.add(new Response(target, user, msg));
         }
 
-        @Override
-        protected void onPrivateMessage(final String sender, final String login, final String hostname,
-                                        final String message) {
-            log.debug(new Response(sender, sender, login, hostname, message).toString());
-            onMessage(sender, sender, login, hostname, message);
-        }
+//        @Override
+//        protected void onPrivateMessage(final String sender, final String login, final String hostname,
+//                                        final String message) {
+//            log.debug(new Response(sender, sender, login, hostname, message).toString());
+//            onMessage(sender, sender, login, hostname, message);
+//        }
 
     }
 
     @AfterSuite
     public void shutdown() throws InterruptedException {
-        Thread.sleep(3000);
-        getJavabot().shutdown();
+//        getJavabot().shutdown();
     }
 
     public class TestJavabot extends Javabot {
@@ -141,12 +136,6 @@ public class BaseTest {
         }
 
         @Override
-        public void onJoin(final String channel, final String sender, final String login,
-                           final String hostname) {
-            super.onJoin(channel, sender, login, hostname);
-        }
-
-        @Override
         public String getNick() {
             return TEST_BOT;
         }
@@ -155,12 +144,10 @@ public class BaseTest {
         public void loadConfig() {
             try {
                 log.debug("Running with configuration: " + config);
-                setName(getNick());
-                setLogin(getNick());
                 setNickPassword(config.getPassword());
                 setStartStrings("~");
-                if(dao.getAdmin(BaseTest.TEST_USER, "localhost") == null) {
-                    dao.create(BaseTest.TEST_USER, "localhost");
+                if(dao.getAdmin(BaseTest.TEST_USER.getNick(), "localhost") == null) {
+                    dao.create(BaseTest.TEST_USER.getNick(), "localhost");
                 }
             } catch (Exception e) {
                 log.debug(e.getMessage(), e);
@@ -170,18 +157,6 @@ public class BaseTest {
 
         @Override
         public void connect() {
-            try {
-                Channel chan = channelDao.get(getJavabotChannel());
-                if (chan == null) {
-                    chan = new Channel();
-                    chan.setName("##" + getNick());
-                    System.out.println("No channels found.  Initializing to " + chan.getName());
-                    channelDao.save(chan);
-                }
-                chan.join(this);
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage(), e);
-            }
         }
 
         @Override
@@ -196,7 +171,7 @@ public class BaseTest {
         }
 
         @Override
-        public boolean userIsOnChannel(final String nick, final String channel) {
+        public boolean userIsOnChannel(final IRCUser sender, final String channel) {
             return true;
         }
     }

@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ public class QuitOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(QuitOperation.class);
 
     @Override
-    public List<Message> handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final IrcEvent event) {
         final String message = event.getMessage();
         if(message.toLowerCase().startsWith("quit ")) {
             if(message.substring("quit ".length()).equals(getBot().getNickPassword())) {

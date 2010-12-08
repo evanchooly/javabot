@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
-import javabot.Javabot;
+import javabot.IrcEvent;
 import javabot.Message;
 import javabot.dao.ShunDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ public class ShunOperation extends BotOperation {
     @Autowired
     private ShunDao shunDao;
 
-    public List<Message> handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final IrcEvent event) {
         final String message = event.getMessage();
         final List<Message> responses = new ArrayList<Message>();
         if (message.startsWith("shun ")) {

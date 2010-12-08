@@ -35,7 +35,7 @@ public class LogDaoTest extends BaseServiceTest {
         while(cal.getTimeInMillis() < today.getTimeInMillis()) {
             final Logs message = new Logs();
             message.setType(Type.MESSAGE);
-            message.setNick(BaseTest.TEST_USER);
+            message.setNick(TEST_USER.getNick());
             message.setChannel(getJavabotChannel());
             message.setMessage("test message " + cal.getTimeInMillis());
             message.setUpdated(cal.getTime());

@@ -7,19 +7,20 @@ import java.util.Set;
 
 import com.antwerkz.maven.SPI;
 import javabot.Action;
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.TellMessage;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
 import javabot.operations.throttle.Throttler;
+import org.schwering.irc.lib.IRCUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@SPI(BotOperation.class)
-public class GetFactoidOperation extends BotOperation {
+@SPI(StandardOperation.class)
+public class GetFactoidOperation extends StandardOperation {
     private static final Logger log = LoggerFactory.getLogger(GetFactoidOperation.class);
     private static final Throttler<TellInfo> throttler = new Throttler<TellInfo>(100, Javabot.THROTTLE_TIME);
     @Autowired
@@ -33,12 +34,7 @@ public class GetFactoidOperation extends BotOperation {
     }
 
     @Override
-    public boolean isStandardOperation() {
-        return true;
-    }
-
-    @Override
-    public List<Message> handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final IrcEvent event) {
         List<Message> responses = tell(event);
         if (responses.isEmpty()) {
             responses = new ArrayList<Message>();
@@ -48,9 +44,8 @@ public class GetFactoidOperation extends BotOperation {
         return responses;
     }
 
-    private Message getFactoid(final TellSubject subject, final String toFind, final String sender,
-        final String channel,
-        final BotEvent event, final Set<String> backtrack) {
+    private Message getFactoid(final TellSubject subject, final String toFind, final IRCUser sender,
+        final String chadnnel, final IrcEvent event, final Set<String> backtrack) {
         String message = toFind;
         if (log.isDebugEnabled()) {
             log.debug(sender + " : " + message);
@@ -71,68 +66,67 @@ public class GetFactoidOperation extends BotOperation {
             factoid = factoidDao.getFactoid(firstWord + " $^");
         }
         return factoid != null
-            ? getResponse(subject, sender, channel, event, backtrack, params, factoid)
-            : new Message(channel, event, sender + ", I have no idea what " + toFind + " is.");
+            ? getResponse(subject, sender, event, backtrack, params, factoid)
+            : new Message(event.getChannel(), event, sender + ", I have no idea what " + toFind + " is.");
     }
 
-    private Message getResponse(final TellSubject subject, final String sender, final String channel,
-        final BotEvent event, final Set<String> backtrack, final String replacedValue, final Factoid factoid) {
-        final String message = factoid.evaluate(subject, sender, replacedValue);
+    private Message getResponse(final TellSubject subject, final IRCUser sender,
+        final IrcEvent event, final Set<String> backtrack, final String replacedValue, final Factoid factoid) {
+        final String message = factoid.evaluate(subject, sender.getNick(), replacedValue);
         if (message.startsWith("<see>")) {
             if (backtrack.contains(message)) {
-                return new Message(channel, event, "Loop detected for factoid '" + message + "'.");
+                return new Message(event.getChannel(), event, "Loop detected for factoid '" + message + "'.");
             } else {
                 backtrack.add(message);
-                return getFactoid(subject, message.substring(5).trim(), sender, channel, event, backtrack);
+                return getFactoid(subject, message.substring(5).trim(), sender, event.getChannel(), event, backtrack);
             }
         } else if (message.startsWith("<reply>")) {
-            return new Message(channel, event, message.substring("<reply>".length()));
+            return new Message(event.getChannel(), event, message.substring("<reply>".length()));
         } else if (message.startsWith("<action>")) {
-            return new Action(channel, event, message.substring("<action>".length()));
+            return new Action(event.getChannel(), event, message.substring("<action>".length()));
         } else {
-            return new Message(channel, event, message);
+            return new Message(event.getChannel(), event, message);
         }
     }
 
-    private List<Message> tell(final BotEvent event) {
+    private List<Message> tell(final IrcEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
-        final String sender = event.getSender();
+        final IRCUser sender = event.getSender();
         final List<Message> responses = new ArrayList<Message>();
         if (isTellCommand(message)) {
-            final TellSubject tellSubject = parseTellSubject(message);
+            final TellSubject tellSubject = parseTellSubject(event, message);
             if (tellSubject == null) {
                 responses.add(new Message(channel, event,
                     String.format("The syntax is: tell nick about factoid - you missed out the 'about', %s", sender)));
             } else {
-                String nick = tellSubject.getTarget();
-                if ("me".equals(nick)) {
-                    nick = sender;
+                IRCUser user = tellSubject.getTarget();
+                if ("me".equalsIgnoreCase(user.getNick())) {
+                    user = sender;
                 }
                 final String thing = tellSubject.getSubject();
-                if (nick.equals(getBot().getNick())) {
+                if (user.getNick().equalsIgnoreCase(getBot().getNick())) {
                     responses.add(new Message(channel, event, "I don't want to talk to myself"));
                 } else {
-                    final TellInfo info = new TellInfo(nick, thing);
+                    final TellInfo info = new TellInfo(user, thing);
                     if (throttler.isThrottled(info)) {
                         if (log.isDebugEnabled()) {
-                            log.debug(String.format("I already told %s about %s.", nick, thing));
+                            log.debug(String.format("I already told %s about %s.", user, thing));
                         }
                         responses.add(new Message(channel, event, sender + ", Slow down, Speedy Gonzalez!"));
-                    } else if (!getBot().userIsOnChannel(nick, channel)) {
-                        responses.add(new Message(channel, event, "The user " + nick + " is not on " + channel));
-                    } else if (sender.equals(channel) && !getBot().isOnSameChannelAs(nick)) {
+                    } else if (!getBot().userIsOnChannel(user, channel)) {
+                        responses.add(new Message(channel, event, "The user " + user + " is not on " + channel));
+                    } else if (sender.getNick().equals(channel) && !getBot().isOnSameChannelAs(user)) {
                         responses
                             .add(new Message(sender, event, "I will not send a message to someone who is not on any"
                                 + " of my channels."));
                     } else if (thing.endsWith("++") || thing.endsWith("--")) {
                         responses.add(new Message(channel, event, "I'm afraid I can't let you do that, Dave."));
                     } else {
-                        final List<Message> list = getBot()
-                            .getResponses(channel, nick, event.getLogin(), event.getHostname(), thing);
+                        final List<Message> list = getBot().getListener().getResponses(channel, sender, thing);
                         for (final Message msg : list) {
                             responses
-                                .add(new TellMessage(nick, msg.getDestination(), msg.getEvent(), msg.getMessage()));
+                                .add(new TellMessage(user, msg.getDestination(), msg.getEvent(), msg.getMessage()));
                         }
                         throttler.addThrottleItem(info);
                     }
@@ -142,14 +136,14 @@ public class GetFactoidOperation extends BotOperation {
         return responses;
     }
 
-    private TellSubject parseTellSubject(final String message) {
+    private TellSubject parseTellSubject(final IrcEvent event, final String message) {
         if (message.startsWith("tell ")) {
-            return parseLonghand(message);
+            return parseLonghand(event, message);
         }
-        return parseShorthand(message);
+        return parseShorthand(event, message);
     }
 
-    private TellSubject parseLonghand(final String message) {
+    private TellSubject parseLonghand(final IrcEvent event, final String message) {
         final String body = message.substring("tell ".length());
         final String nick = body.substring(0, body.indexOf(" "));
         final int about = body.indexOf("about ");
@@ -157,10 +151,10 @@ public class GetFactoidOperation extends BotOperation {
             return null;
         }
         final String thing = body.substring(about + "about ".length());
-        return new TellSubject(nick, thing);
+        return new TellSubject(getBot().getUser(nick), thing);
     }
 
-    private TellSubject parseShorthand(final String message) {
+    private TellSubject parseShorthand(final IrcEvent event, final String message) {
         String target = message;//.substring(0, space);
         for (final String start : getBot().getStartStrings()) {
             if (target.startsWith(start)) {
@@ -168,8 +162,9 @@ public class GetFactoidOperation extends BotOperation {
             }
         }
         final int space = target.indexOf(' ');
-        return space < 0 ? null
-            : new TellSubject(target.substring(0, space).trim(), target.substring(space + 1).trim());
+        final String user = target.substring(0, space);
+        final String value = target.substring(space + 1).trim();
+        return space < 0 ? null : new TellSubject(getBot().getUser(user.trim()), value);
     }
 
     private boolean isTellCommand(final String message) {

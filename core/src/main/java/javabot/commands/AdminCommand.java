@@ -1,9 +1,10 @@
 package javabot.commands;
 
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.operations.BotOperation;
+import javabot.operations.StandardOperation;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -22,14 +23,14 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class AdminCommand extends BotOperation {
+public abstract class AdminCommand extends StandardOperation {
     private static final Logger log = LoggerFactory.getLogger(AdminCommand.class);
     @Autowired
     ApplicationContext context;
     protected List<String> args;
 
     @Override
-    public final List<Message> handleMessage(final BotEvent event) {
+    public final List<Message> handleMessage(final IrcEvent event) {
         String message = event.getMessage();
         final String channel = event.getChannel();
         final List<Message> responses = new ArrayList<Message>();
@@ -62,7 +63,7 @@ public abstract class AdminCommand extends BotOperation {
         }
     }
 
-    public abstract List<Message> execute(Javabot bot, BotEvent event);
+    public abstract List<Message> execute(Javabot bot, IrcEvent event);
 
     public String getUsage() {
         final Options options = getOptions();
@@ -155,16 +156,6 @@ public abstract class AdminCommand extends BotOperation {
         String name = getClass().getSimpleName();
         name = name.substring(0, 1).toLowerCase() + name.substring(1);
         return name;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public boolean isStandardOperation() {
-        return true;
     }
 
     @Override

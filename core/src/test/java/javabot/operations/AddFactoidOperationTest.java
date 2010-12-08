@@ -7,6 +7,7 @@ import javabot.BaseTest;
 import javabot.Message;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
+import org.schwering.irc.lib.IRCUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -21,14 +22,15 @@ public class AddFactoidOperationTest extends BaseOperationTest {
 
     @BeforeMethod
     public void setUp() {
-        factoidDao.delete(BaseTest.TEST_USER, "test");
-        factoidDao.delete(BaseTest.TEST_USER, "ping $1");
-        factoidDao.delete(BaseTest.TEST_USER, "what");
-        factoidDao.delete(BaseTest.TEST_USER, "what up");
-        factoidDao.delete(BaseTest.TEST_USER, "test pong");
-        factoidDao.delete(BaseTest.TEST_USER, "asdf");
-        factoidDao.delete(BaseTest.TEST_USER, "12345");
-        factoidDao.delete(BaseTest.TEST_USER, "replace");
+        final String user = TEST_USER.getNick();
+        factoidDao.delete(user, "test");
+        factoidDao.delete(user, "ping $1");
+        factoidDao.delete(user, "what");
+        factoidDao.delete(user, "what up");
+        factoidDao.delete(user, "test pong");
+        factoidDao.delete(user, "asdf");
+        factoidDao.delete(user, "12345");
+        factoidDao.delete(user, "replace");
     }
 
     public void factoidAdd() {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javabot.BaseTest;
 import javabot.Message;
+import org.schwering.irc.lib.IRCUser;
 import org.testng.Assert;
 import org.unitils.spring.annotation.SpringApplicationContext;
 
@@ -26,11 +27,11 @@ public abstract class BaseOperationTest extends BaseTest {
         compareResults(sendMessage(message), responses);
     }
 
-    protected void testMessageAs(final String user, final String message, final String... responses) {
+    protected void testMessageAs(final IRCUser user, final String message, final String... responses) {
         compareResults(sendMessage(user, message), responses);
     }
 
-    private void compareResults(List<Message> list, String[] responses) {
+    private void compareResults(final List<Message> list, final String[] responses) {
         Assert.assertEquals(list.size(), responses.length, String.format("Should get expected response count back. "
                 + "\n** expected: \n%s"
                 + "\n** got: \n%s", Arrays.toString(responses), list));
@@ -41,12 +42,11 @@ public abstract class BaseOperationTest extends BaseTest {
     }
 
     protected List<Message> sendMessage(final String message) {
-        final String testUser = BaseTest.TEST_USER;
-        return sendMessage(testUser, message);
+        return sendMessage(TEST_USER, message);
     }
 
-    private List<Message> sendMessage(String testUser, String message) {
-        getJavabot().processMessage(getJavabotChannel(), message, testUser, testUser, "localhost");
+    private List<Message> sendMessage(final IRCUser testUser, final String message) {
+        getJavabot().getListener().processMessage(getJavabotChannel(), message, testUser);
         return getJavabot().getMessages();
     }
 
@@ -66,7 +66,7 @@ public abstract class BaseOperationTest extends BaseTest {
         return getForgetMessage(BaseTest.TEST_USER, factoid);
     }
 
-    public String getForgetMessage(String testUser, String factoid) {
+    public String getForgetMessage(final IRCUser testUser, final String factoid) {
         return String.format("I forgot about %s, %s.", factoid, testUser);
     }
 

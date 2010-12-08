@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Message;
 
 /**
@@ -37,7 +37,7 @@ public class UnixCommandOperation extends BotOperation {
     }
 
     @Override
-    public List<Message> handleChannelMessage(final BotEvent event) {
+    public List<Message> handleChannelMessage(final IrcEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
         final String[] split = message.split(" ");

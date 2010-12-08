@@ -15,7 +15,7 @@ public class ForgetFactoidOperationTest extends BaseOperationTest {
 
     public void forgetFactoid() {
         if (!factoidDao.hasFactoid("afky")) {
-            factoidDao.addFactoid(BaseTest.TEST_USER, "afky", "test");
+            factoidDao.addFactoid(TEST_USER.getNick(), "afky", "test");
         }
         testMessage("~forget afky", "I forgot about afky, " + BaseTest.TEST_USER + ".");
     }

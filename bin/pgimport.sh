@@ -37,4 +37,4 @@ import() {
 
 [ ! -d dumps ] && ./dldumps.sh
 
-import 2>&1 | tee import.out
+import #2>&1 | tee import.out

@@ -5,17 +5,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ServiceLoader;
 
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.AdminDao;
+import org.schwering.irc.lib.IRCUser;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class BotOperation implements Comparable<BotOperation> {
+public abstract class BotOperation {
     private Javabot bot;
     @Autowired
     private AdminDao dao;
     private transient boolean enabled = false;
+    private final OperationComparator operationComparator = new OperationComparator(this);
 
     public Javabot getBot() {
         return bot;
@@ -41,27 +43,16 @@ public abstract class BotOperation implements Comparable<BotOperation> {
      *
      * @return
      */
-    public List<Message> handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final IrcEvent event) {
         return Collections.emptyList();
     }
 
-    public List<Message> handleChannelMessage(final BotEvent event) {
+    public List<Message> handleChannelMessage(final IrcEvent event) {
         return Collections.emptyList();
     }
 
     public String getName() {
         return getClass().getSimpleName().replaceAll("Operation", "");
-    }
-
-    @Override
-    public int compareTo(final BotOperation o) {
-        if(o.getPriority() != getPriority()) {
-            return Integer.valueOf(getPriority()).compareTo(o.getPriority());
-        }
-        if(isStandardOperation() != o.isStandardOperation()) {
-            return Boolean.valueOf(isStandardOperation()).compareTo(o.isStandardOperation());
-        }
-        return getName().compareTo(o.getName());
     }
 
     @Override
@@ -78,8 +69,9 @@ public abstract class BotOperation implements Comparable<BotOperation> {
         return list;
     }
 
-    protected boolean isAdminUser(final BotEvent event) {
-        return dao.isAdmin(event.getSender(), event.getHostname());
+    protected boolean isAdminUser(final IrcEvent event) {
+        final IRCUser sender = event.getSender();
+        return dao.isAdmin(sender.getNick(), sender.getHost());
     }
 
     public boolean isEnabled() {

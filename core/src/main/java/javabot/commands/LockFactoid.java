@@ -1,23 +1,22 @@
 package javabot.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
-import javabot.operations.BotOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created Jan 26, 2009
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@SPI({BotOperation.class, AdminCommand.class})
+@SPI({AdminCommand.class})
 public class LockFactoid extends AdminCommand {
     @Param(primary = true)
     String name;
@@ -30,7 +29,7 @@ public class LockFactoid extends AdminCommand {
     }
 
     @Override
-    public List<Message> execute(final Javabot bot, final BotEvent event) {
+    public List<Message> execute(final Javabot bot, final IrcEvent event) {
         final List<Message> responses = new ArrayList<Message>();
         final String command = args.get(0);
         final Factoid factoid = dao.getFactoid(name);

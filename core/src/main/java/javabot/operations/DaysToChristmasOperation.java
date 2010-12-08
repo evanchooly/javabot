@@ -6,14 +6,13 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
-import javabot.Javabot;
+import javabot.IrcEvent;
 import javabot.Message;
 
 @SPI(BotOperation.class)
 public class DaysToChristmasOperation extends BotOperation {
     @Override
-    public List<Message> handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final IrcEvent event) {
         final List<Message> responses = new ArrayList<Message>();
         if ("countdown to christmas".equals(event.getMessage().toLowerCase())) {
             final Calendar calendar = Calendar.getInstance();

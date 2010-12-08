@@ -1,19 +1,22 @@
 package javabot;
 
-public class TellMessage extends Message {
-    private String target;
+import java.util.List;
 
-    public TellMessage(String tell, String dest, BotEvent evt, String value) {
-        super(dest, evt, value.contains(tell) ? value : String.format("%s, %s", tell, value));
+import org.schwering.irc.lib.IRCUser;
+
+public class TellMessage extends Message {
+    private final IRCUser target;
+
+    public TellMessage(final IRCUser tell, final String dest, final IrcEvent evt, final String value) {
+        super(dest, evt, value.contains(tell.getNick()) ? value : String.format("%s, %s", tell, value));
         target = tell;
     }
 
-/*
     @Override
     public void send(final Javabot bot) {
-        final BotEvent event = getEvent();
-        List<Message> messages = bot
-            .getResponses(event.getChannel(), target, event.getLogin(), event.getHostname(), event.getMessage());
+/*
+        final IrcEvent event = getEvent();
+        List<Message> messages = bot.getListener().getResponses(event.getChannel(), target, event.getMessage());
         final Message first = messages.remove(0);
         System.out.println("first = " + first);
         System.out.println("target = " + target);
@@ -24,6 +27,6 @@ public class TellMessage extends Message {
         for (Message message : messages) {
             message.send(bot);
         }
-    }
 */
+    }
 }

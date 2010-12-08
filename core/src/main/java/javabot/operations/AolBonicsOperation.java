@@ -7,8 +7,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
-import javabot.Javabot;
+import javabot.IrcEvent;
 import javabot.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +48,7 @@ public class AolBonicsOperation extends BotOperation {
     }
 
     @Override
-    public List<Message> handleChannelMessage(final BotEvent event) {
+    public List<Message> handleChannelMessage(final IrcEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
         final String[] split = message.split(" ");

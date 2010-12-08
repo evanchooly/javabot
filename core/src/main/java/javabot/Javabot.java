@@ -1,7 +1,20 @@
 package javabot;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import javax.persistence.NoResultException;
+
 import ca.grimoire.maven.ArtifactDescription;
 import ca.grimoire.maven.NoArtifactException;
+import javabot.commands.AdminCommand;
 import javabot.dao.ChannelDao;
 import javabot.dao.ConfigDao;
 import javabot.dao.LogsDao;
@@ -11,8 +24,10 @@ import javabot.model.Channel;
 import javabot.model.Config;
 import javabot.model.Logs;
 import javabot.operations.BotOperation;
-import org.jibble.pircbot.PircBot;
-import org.jibble.pircbot.User;
+import org.schwering.irc.lib.IRCConnection;
+import org.schwering.irc.lib.IRCEventAdapter;
+import org.schwering.irc.lib.IRCEventListener;
+import org.schwering.irc.lib.IRCUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -21,21 +36,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import javax.persistence.NoResultException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-public class Javabot extends PircBot implements ApplicationContextAware {
+public class Javabot implements ApplicationContextAware {
+    public static final int THROTTLE_TIME = 5 * 1000;
     private static final Logger log = LoggerFactory.getLogger(Javabot.class);
     private String host;
     private int port;
@@ -52,27 +54,28 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     @Autowired
     private ShunDao shunDao;
     private ApplicationContext context;
-    private final ExecutorService executors;
-    public static final int THROTTLE_TIME = 5 * 1000;
     Config config;
     private Map<String, BotOperation> operations;
+    private IRCConnection connection;
+    private String nick;
+    private final OperationsDispatchListener listener = new OperationsDispatchListener(this);
+    private final Map<String, Set<IRCUser>> channels = new HashMap<String, Set<IRCUser>>();
+    private final Map<String, IRCUser> users = new HashMap<String, IRCUser>();
+    private Set<BotOperation> activeOperations = new TreeSet<BotOperation>();
 
     @SuppressWarnings({"OverriddenMethodCallDuringObjectConstruction", "OverridableMethodCallDuringObjectConstruction"})
     public Javabot(final ApplicationContext applicationContext) {
         context = applicationContext;
         inject(this);
-        setVersion("Javabot " + loadVersion());
         try {
             config = configDao.get();
         } catch (NoResultException e) {
             config = configDao.create();
         }
-        executors = new ThreadPoolExecutor(15, 40, 10L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
-                new JavabotThreadFactory(true, "javabot-handler-thread-"));
         final Thread hook = new Thread(new Runnable() {
             @Override
             public void run() {
-                shutdown();
+                listener.shutdown();
             }
         });
         hook.setDaemon(false);
@@ -93,8 +96,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         }
     }
 
-
-    private String loadVersion() {
+    public String loadVersion() {
         try {
             final ArtifactDescription javabot = ArtifactDescription.locate("javabot", "core");
             return javabot.getVersion();
@@ -103,27 +105,15 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         }
     }
 
-    public void shutdown() {
-        if (!executors.isShutdown()) {
-            executors.shutdown();
-            try {
-                executors.awaitTermination(30, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                log.error(e.getMessage(), e);
-            }
-        }
-    }
-
     public void loadConfig() {
         try {
             log.debug("Running with configuration: " + config);
             host = config.getServer();
             port = config.getPort();
-            setName(config.getNick());
-            setLogin(config.getNick());
+            setNick(config.getNick());
             setNickPassword(config.getPassword());
             authWait = 3000;
-            startStrings = new String[]{getName(), "~"};
+            startStrings = new String[]{getNick(), "~"};
         } catch (Exception e) {
             log.debug(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
@@ -138,7 +128,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
             op.setBot(this);
             operations.put(op.getName(), op);
         }
-
         try {
             for (final String name : config.getOperations()) {
                 enableOperation(name);
@@ -147,9 +136,8 @@ public class Javabot extends PircBot implements ApplicationContextAware {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
         }
-
-        if(config.getOperations().isEmpty()) {
-            for (BotOperation operation : operations.values()) {
+        if (config.getOperations().isEmpty()) {
+            for (final BotOperation operation : operations.values()) {
                 enableOperation(operation.getName());
             }
         }
@@ -158,21 +146,20 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     public boolean disableOperation(final String name) {
         boolean disabled = false;
         if (operations.get(name) != null) {
-            operations.get(name).setEnabled(false);
-            disabled = true;
-        } else {
+            activeOperations.remove(operations.get(name));
             final Config c = configDao.get();
             c.getOperations().remove(name);
             configDao.save(c);
+            disabled = true;
         }
         return disabled;
     }
 
-    public boolean enableOperation(String name) {
+    public boolean enableOperation(final String name) {
         boolean enabled = false;
         final Config c = configDao.get();
         if (operations.get(name) != null) {
-            operations.get(name).setEnabled(true);
+            activeOperations.add(operations.get(name));
             c.getOperations().add(name);
             enabled = true;
         } else {
@@ -182,18 +169,18 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         return enabled;
     }
 
-    public BotOperation getOperation(String name) {
+    @Deprecated
+    public BotOperation getOperation(final String name) {
         return operations.get(name);
     }
 
     public Iterator<BotOperation> getOperations() {
-        Set<BotOperation> active = new TreeSet<BotOperation>();
-        for (BotOperation operation : operations.values()) {
-            if (operation.isEnabled()) {
-                active.add(operation);
-            }
+        final List<BotOperation> ops = new ArrayList<BotOperation>(activeOperations);
+        for (final BotOperation operation : ServiceLoader.load(AdminCommand.class)) {
+            ops.add(operation);
         }
-        return active.iterator();
+        ops.add(operations.get())
+        return ops.iterator();
     }
 
     @SuppressWarnings({"EmptyCatchBlock"})
@@ -206,10 +193,16 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     @SuppressWarnings({"StringContatenationInLoop"})
     public void connect() {
-        while (!isConnected()) {
+        if (connection == null) {
+            connection = new IRCConnection(host, new int[]{port}, password, "nick", "username", "realname");
+            addIrcEventListener(new LoggerListener());
+            addIrcEventListener(new Tracker());
+            addIrcEventListener(listener);
+        }
+        while (!connection.isConnected()) {
             try {
-                connect(host, port);
-                sendRawLine("PRIVMSG NickServ :identify " + getNickPassword());
+                connection.connect();
+                connection.send("PRIVMSG NickServ :identify " + getNickPassword());
                 sleep(authWait);
                 final List<Channel> channelList = channelDao.getChannels();
                 if (channelList.isEmpty()) {
@@ -229,171 +222,30 @@ public class Javabot extends PircBot implements ApplicationContextAware {
                     }
                 }
             } catch (Exception exception) {
-                disconnect();
+                connection.close();
                 log.error(exception.getMessage(), exception);
             }
             sleep(1000);
         }
     }
 
-    @Override
-    public void onMessage(final String channel, final String sender, final String login, final String hostname,
-                          final String message) {
-        executors.execute(new Runnable() {
-            @Override
-            public void run() {
-                processMessage(channel, message, sender, login, hostname);
-            }
-        });
+    public void addIrcEventListener(final IRCEventListener listener) {
+        inject(listener);
+        connection.addIRCEventListener(listener);
     }
 
-    @Override
-    public void onPrivateMessage(final String sender, final String login, final String hostname, final String message) {
-        if (isOnSameChannelAs(sender)) {
-            //The bot always replies with a private message ...
-            if (log.isDebugEnabled()) {
-                log.debug("PRIVMSG Sender:" + sender + " Login" + login);
-            }
-            executors.execute(new Runnable() {
-                @Override
-                public void run() {
-                    logsDao.logMessage(Logs.Type.MESSAGE, sender, sender, message);
-                    for (final Message response : getResponses(sender, sender, login, hostname, message)) {
-                        response.send(Javabot.this);
-                    }
-                }
-            });
-        }
-    }
-
-    @Override
-    public void onJoin(final String channel, final String sender, final String login, final String hostname) {
-        if (channelDao.get(channel).getLogged()) {
-            logsDao.logMessage(Logs.Type.JOIN, sender, channel, ":" + hostname + " joined the channel");
-        }
-    }
-
-    @Override
-    public void onQuit(final String channel, final String sender, final String login, final String hostname) {
-        final Channel chan = channelDao.get(channel);
-        if (chan != null && chan.getLogged()) {
-            logsDao.logMessage(Logs.Type.QUIT, sender, channel, "quit");
-        } else if (chan == null) {
-            log.debug("not logging " + channel);
-        }
-    }
-
-    @Override
-    public void onInvite(final String targetNick, final String sourceNick, final String sourceLogin,
-                         final String sourceHostname, final String channel) {
-        if (log.isDebugEnabled()) {
-            log.debug("Invited to " + channel + " by " + sourceNick);
-        }
-        if (channel.equals(channelDao.get(channel).getName())) {
-            joinChannel(channel);
-        }
-    }
-
-    @Override
-    public void onDisconnect() {
-        if (!executors.isShutdown()) {
-            connect();
-        }
-    }
-
-    @Override
-    public void onPart(final String channel, final String sender, final String login, final String hostname) {
-        final Channel chan = channelDao.get(channel);
-        if (chan != null && chan.getLogged()) {
-            logsDao.logMessage(Logs.Type.PART, sender, channel, "parted the channel");
-        }
-    }
-
-    @Override
-    public void onAction(final String sender, final String login, final String hostname, final String target,
-                         final String action) {
-        if (log.isDebugEnabled()) {
-            log.debug("Sender " + sender + " Message " + action);
-        }
-        if (channelDao.get(target).getLogged()) {
-            logsDao.logMessage(Logs.Type.ACTION, sender, target, action);
-        }
-    }
-
-    @Override
-    public void onKick(final String channel, final String kickerNick, final String kickerLogin,
-                       final String kickerHostname, final String recipientNick, final String reason) {
-        if (channelDao.get(channel).getLogged()) {
-            logsDao.logMessage(Logs.Type.KICK, kickerNick, channel, " kicked " + recipientNick + " (" + reason + ")");
-        }
-    }
-
-    public void processMessage(final String channel, final String message, final String sender, final String login,
-                               final String hostname) {
-        try {
-            logsDao.logMessage(Logs.Type.MESSAGE, sender, channel, message);
-            if (isValidSender(sender)) {
-                final List<Message> responses = new ArrayList<Message>();
-                for (final String startString : startStrings) {
-                    if (responses != null && message.startsWith(startString)) {
-                        String content = message.substring(startString.length()).trim();
-                        while (content.charAt(0) == ':' || content.charAt(0) == ',') {
-                            content = content.substring(1).trim();
-                        }
-                        responses.addAll(getResponses(channel, sender, login, hostname, content));
-                    }
-                }
-                if (responses.isEmpty()) {
-                    responses.addAll(getChannelResponses(channel, sender, login, hostname, message));
-                }
-                for (final Message response : responses) {
-                    response.send(this);
-                }
-            } else {
-                if (log.isInfoEnabled()) {
-                    log.info("ignoring " + sender);
-                }
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-
-    public List<Message> getResponses(final String channel, final String sender, final String login,
-                                      final String hostname, final String message) {
-        final Iterator<BotOperation> iterator = getOperations();
-        final List<Message> responses = new ArrayList<Message>();
-        final BotEvent event = new BotEvent(channel, sender, login, hostname, message);
-        while (responses.isEmpty() && iterator.hasNext()) {
-            responses.addAll(iterator.next().handleMessage(event));
-        }
-        return responses;
-    }
-
-    public List<Message> getChannelResponses(final String channel, final String sender, final String login,
-                                             final String hostname, final String message) {
-        final Iterator<BotOperation> iterator = getOperations();
-        final List<Message> responses = new ArrayList<Message>();
-        while (responses.isEmpty() && iterator.hasNext()) {
-            responses.addAll(iterator.next()
-                    .handleChannelMessage(new BotEvent(channel, sender, login, hostname, message)));
-        }
-        return responses;
-    }
-
-    public boolean isOnSameChannelAs(final String nick) {
+    public boolean isOnSameChannelAs(final IRCUser user) {
         for (final String channel : getChannels()) {
-            if (userIsOnChannel(nick, channel)) {
+            if (userIsOnChannel(user, channel)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean userIsOnChannel(final String nick, final String channel) {
-        for (final User user : getUsers(channel)) {
-            if (user.getNick().toLowerCase().equals(nick.toLowerCase())) {
+    public boolean userIsOnChannel(final IRCUser sender, final String channel) {
+        for (final IRCUser user : getUsers(channel)) {
+            if (user.getNick().equalsIgnoreCase(sender.getNick())) {
                 return true;
             }
         }
@@ -408,23 +260,16 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         return password;
     }
 
-    private boolean isValidSender(final String sender) {
-        return !ignores.contains(sender) && !isShunnedSender(sender);
+    public boolean isValidSender(final IRCUser sender) {
+        return !ignores.contains(sender.getNick()) && !isShunnedSender(sender);
     }
 
-    private boolean isShunnedSender(final String sender) {
-        return shunDao.isShunned(sender);
+    private boolean isShunnedSender(final IRCUser sender) {
+        return shunDao.isShunned(sender.getNick());
     }
 
     public void addIgnore(final String sender) {
         ignores.add(sender);
-    }
-
-    @Override
-    public void log(final String string) {
-        if (log.isInfoEnabled()) {
-            log.info(string);
-        }
     }
 
     public String[] getStartStrings() {
@@ -440,22 +285,20 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     void postMessage(final Message message) {
         logMessage(message);
-        sendMessage(message.getDestination(), message.getMessage());
+        connection.doPrivmsg(message.getDestination(), message.getMessage());
     }
 
     void postAction(final Message message) {
         logMessage(message);
-        sendAction(message.getDestination(), message.getMessage());
+//        sendAction(message.getDestination(), message.getMessage());
     }
 
     protected final void logMessage(final Message message) {
-        final BotEvent event = message.getEvent();
+        final IrcEvent event = message.getEvent();
         final String sender = getNick();
         final String channel = event.getChannel();
-        if (!channel.equals(sender)) {
-            if (channelDao.isLogged(channel)) {
-                logsDao.logMessage(Logs.Type.MESSAGE, sender, message.getDestination(), message.getMessage());
-            }
+        if (!channel.equals(sender) && channelDao.isLogged(channel)) {
+            logsDao.logMessage(Logs.Type.MESSAGE, sender, message.getDestination(), message.getMessage());
         }
     }
 
@@ -471,4 +314,74 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         new Javabot(new ClassPathXmlApplicationContext("classpath:applicationContext.xml"));
     }
 
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(final String nick) {
+        this.nick = nick;
+    }
+
+    public Set<String> getChannels() {
+        return channels.keySet();
+    }
+
+    public Set<IRCUser> getUsers(final String channel) {
+        return channels.get(channel);
+    }
+    public void joinChannel(final String channel) {
+        joinChannel(channel, "");
+    }
+
+    public void joinChannel(final String channel, final String key) {
+        connection.doJoin(channel, key);
+    }
+
+    public void partChannel(final String channel) {
+        connection.doPart(channel);
+    }
+
+    public OperationsDispatchListener getListener() {
+        return listener;
+    }
+
+    public IRCUser getUser(final String name) {
+        return users.get(name);
+    }
+
+    private class Tracker extends IRCEventAdapter {
+        @Override
+        public void onPart(final String chan, final IRCUser user, final String msg) {
+            if(user.getNick().equals(getNick())) {
+                channels.remove(chan);
+            } else {
+                channels.get(chan).remove(user);
+            }
+        }
+
+        @Override
+        public void onJoin(final String chan, final IRCUser user) {
+            Set<IRCUser> members;
+            synchronized (channels) {
+                members = channels.get(chan);
+                if(members == null) {
+                    members = new TreeSet<IRCUser>();
+                    channels.put(chan, members);
+                }
+            }
+            members.add(user);
+            users.put(user.getUsername(), user);
+        }
+
+        @Override
+        public void onNick(final IRCUser user, final String newNick) {
+
+            super.onNick(user, newNick);
+        }
+
+        @Override
+        public void onQuit(final IRCUser user, final String msg) {
+            super.onQuit(user, msg);
+        }
+    }
 }

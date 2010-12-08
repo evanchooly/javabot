@@ -6,7 +6,7 @@ package javabot;
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
 public class Action extends Message {
-    public Action(String dest, BotEvent evt, String value) {
+    public Action(String dest, IrcEvent evt, String value) {
         super(dest, evt, value);
     }
 

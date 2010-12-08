@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;
 import javabot.operations.throttle.ThrottleItem;
 import javabot.operations.throttle.Throttler;
+import org.schwering.irc.lib.IRCUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,27 +29,27 @@ public class KarmaChangeOperation extends BotOperation {
     }
 
     public static final class KarmaInfo implements ThrottleItem<KarmaInfo> {
-        private final String nick;
+        private final IRCUser user;
         private final String target;
 
-        public KarmaInfo(final String nick, final String target) {
-            this.nick = nick;
+        public KarmaInfo(final IRCUser user, final String target) {
+            this.user = user;
             this.target = target;
         }
 
         public boolean matches(final KarmaInfo ki) {
-            return nick.equals(ki.nick) && target.equals(ki.target);
+            return user.equals(ki.user) && target.equals(ki.target);
         }
     }
 
     @Override
     @Transactional
-    public List<Message> handleMessage(final BotEvent event) {
+    public List<Message> handleMessage(final IrcEvent event) {
         if (karmaRead == null) {
             karmaRead = (KarmaReadOperation) getBot().getOperation("KarmaRead");
         }
         String message = event.getMessage();
-        final String sender = event.getSender();
+        final IRCUser sender = event.getSender();
         final String channel = event.getChannel();
         final String nick;
         try {
@@ -69,7 +70,7 @@ public class KarmaChangeOperation extends BotOperation {
                 response.add(new Message(channel, event, "Rest those fingers, Tex"));
             } else {
                 throttler.addThrottleItem(new KarmaInfo(sender, nick));
-                if (nick.equals(sender.toLowerCase())) {
+                if (nick.equalsIgnoreCase(sender.getNick())) {
                     response.add(new Message(channel, event, "Changing one's own karma is not permitted."));
                     message = "--";
                 }
@@ -83,10 +84,10 @@ public class KarmaChangeOperation extends BotOperation {
                 } else {
                     karma.setValue(karma.getValue() - 1);
                 }
-                karma.setUserName(sender);
+                karma.setUserName(sender.getNick());
                 dao.save(karma);
-                response.addAll(karmaRead.handleMessage(new BotEvent(event.getChannel(), event.getSender(),
-                    event.getLogin(), event.getHostname(), "karma " + nick)));
+                response.addAll(karmaRead.handleMessage(new IrcEvent(event.getChannel(), event.getSender(),
+                    "karma " + nick)));
             }
         }
         return response;

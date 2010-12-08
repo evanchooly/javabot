@@ -6,6 +6,7 @@ import javabot.BaseTest;
 import javabot.dao.ChangeDao;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;
+import org.schwering.irc.lib.IRCUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -20,10 +21,8 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
     public void updateKarma() throws InterruptedException {
         final Karma karma = karmaDao.find("testjavabot");
         int value = karma != null ? karma.getValue() : 0;
-        final String nick = BaseTest.TEST_USER;
-
         testMessage("~testjavabot++",
-            String.format("testjavabot has a karma level of %d, %s", ++value, nick));
+            String.format("testjavabot has a karma level of %d, %s", ++value, BaseTest.TEST_USER));
 
         testMessage("~testjavabot++", "Rest those fingers, Tex");
 
@@ -35,17 +34,18 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
 
         Thread.sleep(7000);
         testMessage("~testjavabot++",
-            String.format("testjavabot has a karma level of %d, %s", ++value, nick));
+            String.format("testjavabot has a karma level of %d, %s", ++value, BaseTest.TEST_USER));
         Thread.sleep(7000);
         testMessage("~testjavabot--",
-            String.format("testjavabot has a karma level of %d, %s", --value, nick));
+            String.format("testjavabot has a karma level of %d, %s", --value, BaseTest.TEST_USER));
         Thread.sleep(7000);
-        testMessage("~testjavabot--", String.format("testjavabot has a karma level of %d, %s", --value, nick));
+        testMessage("~testjavabot--", String.format("testjavabot has a karma level of %d, %s", --value,
+            BaseTest.TEST_USER));
     }
 
     public void logNew() {
         final String target = new Date().getTime() + "";
-        final int karma = getKarma(target) + 1;
+        final int karma = getKarma(new IRCUser(target, target, "localhost")) + 1;
         testMessage("~" + target + "++", target + " has a karma level of " + karma + ", " + BaseTest.TEST_USER);
         final String message = BaseTest.TEST_USER + " changed '" + target + "' to '" + karma + "'";
         Assert.assertTrue(changeDao.findLog(message));
@@ -54,7 +54,7 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
 
     public void logChanged() {
         final String target = "javabot";
-        final int karma = getKarma(target) + 1;
+        final int karma = getKarma(new IRCUser(target, target, "localhost")) + 1;
         testMessage("~" + target + "++", target + " has a karma level of " + karma + ", " + BaseTest.TEST_USER);
     }
 
@@ -66,8 +66,8 @@ public class KarmaChangeOperationTest extends BaseOperationTest {
         Assert.assertTrue(karma2 == karma - 1, "Should have lost one karma point.");
     }
 
-    private int getKarma(final String target) {
-        final Karma karma = karmaDao.find(target);
+    private int getKarma(final IRCUser target) {
+        final Karma karma = karmaDao.find(target.getNick());
         return karma != null ? karma.getValue() : 0;
     }
 }

@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import javabot.BaseTest;
 import javabot.dao.FactoidDao;
+import org.schwering.irc.lib.IRCUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -20,20 +21,21 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     @BeforeClass
     public void createGets() {
         deleteFactoids();
-        factoidDao.addFactoid(BaseTest.TEST_USER, "api", "http://java.sun.com/javase/current/docs/api/index.html");
-        factoidDao.addFactoid(BaseTest.TEST_USER, "replyTest", "<reply>I'm a reply!");
-        factoidDao.addFactoid(BaseTest.TEST_USER, "stupid", "<reply>$who, what you've just said is one of the most"
+        final String user = TEST_USER.getNick();
+        factoidDao.addFactoid(user, "api", "http://java.sun.com/javase/current/docs/api/index.html");
+        factoidDao.addFactoid(user, "replyTest", "<reply>I'm a reply!");
+        factoidDao.addFactoid(user, "stupid", "<reply>$who, what you've just said is one of the most"
             + " insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you"
             + " even close to anything that could be considered a rational thought. Everyone in this room is now"
             + " dumber for having listened to it. I award you no points, and may God have mercy on your soul.");
-        factoidDao.addFactoid(BaseTest.TEST_USER, "seeTest", "<see>replyTest");
-        factoidDao.addFactoid(BaseTest.TEST_USER, "noReply", "I'm a reply!");
-        factoidDao.addFactoid(BaseTest.TEST_USER, "replace $1", "<reply>I replaced you $1");
-        factoidDao.addFactoid(BaseTest.TEST_USER, "camel $^", "<reply>$^");
-        factoidDao.addFactoid(BaseTest.TEST_USER, "url $+", "<reply>$+");
-        factoidDao.addFactoid(BaseTest.TEST_USER, "hey", "<reply>Hello, $who");
-        factoidDao.addFactoid(BaseTest.TEST_USER, "coin", "<reply>(heads|tails)");
-        factoidDao.addFactoid(BaseTest.TEST_USER, "hug $1", "<action> hugs $1");
+        factoidDao.addFactoid(user, "seeTest", "<see>replyTest");
+        factoidDao.addFactoid(user, "noReply", "I'm a reply!");
+        factoidDao.addFactoid(user, "replace $1", "<reply>I replaced you $1");
+        factoidDao.addFactoid(user, "camel $^", "<reply>$^");
+        factoidDao.addFactoid(user, "url $+", "<reply>$+");
+        factoidDao.addFactoid(user, "hey", "<reply>Hello, $who");
+        factoidDao.addFactoid(user, "coin", "<reply>(heads|tails)");
+        factoidDao.addFactoid(user, "hug $1", "<action> hugs $1");
     }
 
     @AfterClass
@@ -52,7 +54,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
 
     private void delete(final String key) {
         while (factoidDao.hasFactoid(key)) {
-            factoidDao.delete(BaseTest.TEST_USER, key);
+            factoidDao.delete(TEST_USER.getNick(), key);
         }
     }
 
@@ -102,49 +104,52 @@ public class GetFactoidOperationTest extends BaseOperationTest {
 
     @Test
     public void tell() {
-        final String nick = TEST_USER;
-        testMessage(String.format("~tell %s about hey", nick), "Hello, " + nick);
-        testMessage(String.format("~tell %s about camel I am a test", nick), nick + ", IAmATest");
-        testMessage(String.format("~tell %s about url I am a test", nick), String.format("%s, I+am+a+test", nick));
-        testMessage(String.format("~tell %s about stupid", nick), String.format("%s, what you've just said is one of the most"
+        testMessage(String.format("~tell %s about hey", TEST_USER), "Hello, " + TEST_USER);
+        testMessage(String.format("~tell %s about camel I am a test", TEST_USER), TEST_USER + ", IAmATest");
+        testMessage(String.format("~tell %s about url I am a test", TEST_USER), String.format("%s, I+am+a+test",
+            TEST_USER));
+        testMessage(String.format("~tell %s about stupid", TEST_USER), String.format("%s, what you've just said is one of the most"
             + " insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you"
             + " even close to anything that could be considered a rational thought. Everyone in this room is now"
-            + " dumber for having listened to it. I award you no points, and may God have mercy on your soul.", nick));
+            + " dumber for having listened to it. I award you no points, and may God have mercy on your soul.",
+            TEST_USER));
 
         sleep(6000);
-        testMessage(String.format("~~ %s seeTest", nick), String.format("%s, I'm a reply!", nick));
+        testMessage(String.format("~~ %s seeTest", TEST_USER), String.format("%s, I'm a reply!", TEST_USER));
 
-        testMessage(String.format("~~ %s bobloblaw", nick),
-            String.format("%s, I have no idea what bobloblaw is.", nick));
+        testMessage(String.format("~~ %s bobloblaw", TEST_USER),
+            String.format("%s, I have no idea what bobloblaw is.", TEST_USER));
 
-        testMessage(String.format("~~ %s api", nick),
-            String.format("%s, api is http://java.sun.com/javase/current/docs/api/index.html", nick));
+        testMessage(String.format("~~ %s api", TEST_USER),
+            String.format("%s, api is http://java.sun.com/javase/current/docs/api/index.html", TEST_USER));
 
         validate("camel I am a test 2", "IAmATest2");
 
-        testMessage(String.format("~~ %s url I am a test 2", nick), String.format("%s, I+am+a+test+2", nick));
+        testMessage(String.format("~~ %s url I am a test 2", TEST_USER), String.format("%s, I+am+a+test+2", TEST_USER));
 
-        scanForResponse(String.format("~~ %s javadoc String", nick), "[JDK: java.lang.String]");
+        scanForResponse(String.format("~~ %s javadoc String", TEST_USER), "[JDK: java.lang.String]");
 
-        testMessage(String.format("~~ %s stupid", nick), String.format("%s, what you've just said is one of the most"
+        testMessage(String.format("~~ %s stupid", TEST_USER), String.format("%s, what you've just said is one of the most"
             + " insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you"
             + " even close to anything that could be considered a rational thought. Everyone in this room is now"
-            + " dumber for having listened to it. I award you no points, and may God have mercy on your soul.", nick));
+            + " dumber for having listened to it. I award you no points, and may God have mercy on your soul.",
+            TEST_USER));
 
         sleep(6000);
 
-        testMessage(String.format("~~%s seeTest", nick), String.format("%s, I'm a reply!", nick));
+        testMessage(String.format("~~%s seeTest", TEST_USER), String.format("%s, I'm a reply!", TEST_USER));
 
-        testMessage(String.format("~~%s bobloblaw", nick), String.format("%s, I have no idea what bobloblaw is.", nick));
+        testMessage(String.format("~~%s bobloblaw", TEST_USER), String.format("%s, I have no idea what bobloblaw is.",
+            TEST_USER));
 
-        testMessage(String.format("~~%s api", nick),
-            String.format("%s, api is http://java.sun.com/javase/current/docs/api/index.html", nick));
+        testMessage(String.format("~~%s api", TEST_USER),
+            String.format("%s, api is http://java.sun.com/javase/current/docs/api/index.html", TEST_USER));
 
-        testMessage(String.format("~~%s camel I am a test 3", nick), String.format("%s, IAmATest3", nick));
+        testMessage(String.format("~~%s camel I am a test 3", TEST_USER), String.format("%s, IAmATest3", TEST_USER));
 
-        testMessage(String.format("~~%s url I am a test 3", nick), String.format("%s, I+am+a+test+3", nick));
+        testMessage(String.format("~~%s url I am a test 3", TEST_USER), String.format("%s, I+am+a+test+3", TEST_USER));
 
-        scanForResponse(String.format("~~%s javadoc String", nick), "[JDK: java.lang.String]");
+        scanForResponse(String.format("~~%s javadoc String", TEST_USER), "[JDK: java.lang.String]");
 
         validate("stupid", "what you've just said is one of the most insanely idiotic things I have ever heard. At no" +
                 " point in your rambling, incoherent response were you even close to anything that could be considered" +

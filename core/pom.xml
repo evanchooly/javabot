@@ -29,8 +29,8 @@
         </dependency>
 
         <dependency>
-            <groupId>pircbot</groupId>
-            <artifactId>pircbot</artifactId>
+            <groupId>org.schwering</groupId>
+            <artifactId>irclib</artifactId>
         </dependency>
 
         <dependency>
@@ -124,11 +124,10 @@
             <artifactId>jpa-api</artifactId>
         </dependency>
 
-        <!-- Unit testing deps -->
+        <!-- Unit testing dependencies -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <classifier>jdk15</classifier>
             <scope>test</scope>
         </dependency>
 

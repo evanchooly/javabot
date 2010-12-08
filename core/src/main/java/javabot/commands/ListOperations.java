@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.operations.BotOperation;
@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@SPI({BotOperation.class, AdminCommand.class})
+@SPI({AdminCommand.class})
 public class ListOperations extends OperationsCommand {
     private static final Logger log = LoggerFactory.getLogger(ListOperations.class);
 
@@ -27,7 +27,7 @@ public class ListOperations extends OperationsCommand {
     }
 
     @Override
-    public List<Message> execute(final Javabot bot, final BotEvent event) {
+    public List<Message> execute(final Javabot bot, final IrcEvent event) {
         final List<Message> responses = new ArrayList<Message>();
         responses.add(new Message(event.getChannel(), event, "I know of the following operations:"));
         responses.add(new Message(event.getChannel(), event,

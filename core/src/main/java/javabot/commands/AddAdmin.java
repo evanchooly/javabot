@@ -2,14 +2,16 @@ package javabot.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.antwerkz.maven.SPI;
-import javabot.BotEvent;
+import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.AdminDao;
 import javabot.operations.BotOperation;
-import org.jibble.pircbot.User;
+import javabot.operations.StandardOperation;
+import org.schwering.irc.lib.IRCUser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -17,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@SPI({BotOperation.class, AdminCommand.class})
+@SPI({AdminCommand.class})
 public class AddAdmin extends AdminCommand {
     @Autowired
     private AdminDao dao;
@@ -27,9 +29,9 @@ public class AddAdmin extends AdminCommand {
     String hostName;
 
     @Override
-    public List<Message> execute(final Javabot bot, final BotEvent event) {
+    public List<Message> execute(final Javabot bot, final IrcEvent event) {
         final List<Message> responses = new ArrayList<Message>();
-        final User user = findUser(bot, event, userName);
+        final IRCUser user = findUser(bot, event, userName);
         if (user == null) {
             responses.add(new Message(event.getChannel(), event, "That user is not on this channel: " + userName));
         } else {
@@ -44,14 +46,13 @@ public class AddAdmin extends AdminCommand {
         return responses;
     }
 
-    private User findUser(final Javabot bot, final BotEvent event, final String name) {
-        final User[] users = bot.getUsers(event.getChannel());
-        User user = null;
-        for (int index = 0; user == null && index < users.length; index++) {
-            if (users[index].getNick().equals(name)) {
-                user = users[index];
+    private IRCUser findUser(final Javabot bot, final IrcEvent event, final String name) {
+        final Set<IRCUser> users = bot.getUsers(event.getChannel());
+        for (final IRCUser user : users) {
+            if (user.getNick().equals(name)) {
+                return user;
             }
         }
-        return user;
+        return null;
     }
 }
