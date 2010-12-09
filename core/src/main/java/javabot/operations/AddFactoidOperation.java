@@ -1,56 +1,70 @@
 package javabot.operations;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
 import javabot.Message;
 import javabot.dao.FactoidDao;
+import javabot.dao.LogsDao;
+import javabot.model.Factoid;
+import javabot.model.Logs.Type;
 import org.schwering.irc.lib.IRCUser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SPI(StandardOperation.class)
 public class AddFactoidOperation extends StandardOperation {
-    private static final Logger log = LoggerFactory.getLogger(AddFactoidOperation.class);
     @Autowired
     private FactoidDao factoidDao;
-
-    public AddFactoidOperation() {
-    }
+    @Autowired
+    private LogsDao logDao;
 
     @Override
     public List<Message> handleMessage(final IrcEvent event) {
         String message = event.getMessage();
         final String channel = event.getChannel();
         final IRCUser sender = event.getSender();
-        if (message.startsWith("no")) {
-            message = removeFactoid(event, event.getMessage());
+        final List<Message> responses = new ArrayList<Message>();
+        if (message.startsWith("no ") || message.startsWith("no, ")) {
+            message = message.substring(2);
+            if (message.startsWith(",")) {
+                message = message.substring(1);
+            }
+            message = message.trim();
+            responses.addAll(updateFactoid(event, message));
         }
-        return addFactoid(event, message, channel, sender);
+        if (responses.isEmpty()) {
+            return addFactoid(event, message, channel, sender);
+        }
+        return responses;
     }
 
-    private String removeFactoid(final IrcEvent event, final String message) {
-        if (message.toLowerCase().startsWith("no")) {
-            String actual = message.substring(2);
-            if (actual.startsWith(",")) {
-                actual = actual.substring(1);
-            }
-            actual = actual.trim();
-            final int is = actual.indexOf(" is ");
-            if (is != -1) {
-                String key = actual.substring(0, is);
-                key = key.replaceAll("^\\s+", "");
-                factoidDao.delete(event.getSender().getNick(), key);
-                return actual;
+    private List<Message> updateFactoid(final IrcEvent event, final String message) {
+        final List<Message> responses = new ArrayList<Message>();
+        final int is = message.indexOf(" is ");
+        if (is != -1) {
+            String key = message.substring(0, is);
+            key = key.replaceAll("^\\s+", "");
+            final Factoid factoid = factoidDao.getFactoid(key);
+            if (factoid != null) {
+                final String newValue = message.substring(is + 4);
+                logDao.logMessage(Type.MESSAGE, event.getSender().getNick(), event.getChannel(),
+                    String.format("%s changed '%s' from '%s' to '%s'", event.getSender(), key, factoid.getValue(),
+                        newValue));
+                factoid.setValue(newValue);
+                factoid.setUpdated(new Date());
+                factoid.setUserName(event.getSender().getNick());
+                factoidDao.save(factoid);
+                responses.add(new Message(event.getChannel(), event, "OK, " + event.getSender() + "."));
             }
         }
-        return message;
+        return responses;
     }
 
-    private List<Message> addFactoid(final IrcEvent event, final String message, final String channel, final IRCUser sender) {
+    private List<Message> addFactoid(final IrcEvent event, final String message, final String channel,
+        final IRCUser sender) {
         final List<Message> responses = new ArrayList<Message>();
         if (message.toLowerCase().contains(" is ")) {
             String key = message.substring(0, message.indexOf(" is "));

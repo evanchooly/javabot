@@ -14,9 +14,9 @@ public class ShunOperationTest extends BaseOperationTest {
         sendMessage("~forget shunHey");
         try {
             sendMessage("~shunHey is <reply>shunHey");
-            scanForResponse("~shun " + BaseTest.TEST_USER + " 10", BaseTest.TEST_USER + " is shunned until");
-            testMessage("~ping");
-            Thread.sleep(10000);
+            scanForResponse("~shun " + BaseTest.TEST_USER + " 5", BaseTest.TEST_USER + " is shunned until");
+            testMessage("~shunHey");
+            Thread.sleep(5000);
             testMessage("~shunHey", "shunHey");
         } finally {
             sendMessage("~forget shunHey");
