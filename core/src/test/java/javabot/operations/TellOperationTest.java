@@ -14,9 +14,10 @@ public class TellOperationTest extends BaseOperationTest {
         dao.delete(getJavabot().getNick(), "shortcut");
         try {
             final String nick = getJavabot().getNick();
-            testMessage("~shortcut is <reply>shortcut", ok);
+            final String message = "I'm a shortcut response";
+            testMessage("~shortcut is <reply>" + message, ok);
             testMessage(String.format("~~ %s shortcut", BaseTest.TEST_USER),
-                String.format("%s, shortcut", BaseTest.TEST_USER));
+                String.format("%s, %s", BaseTest.TEST_USER, message));
         } finally {
             dao.delete(getJavabot().getNick(), "shortcut");
         }

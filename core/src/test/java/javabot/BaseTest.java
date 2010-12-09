@@ -1,5 +1,11 @@
 package javabot;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import javabot.dao.AdminDao;
 import org.schwering.irc.lib.IRCUser;
 import org.slf4j.Logger;
@@ -8,12 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.AfterSuite;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 @SuppressWarnings({"StaticNonFinalField"})
 public class BaseTest {
@@ -30,7 +30,6 @@ public class BaseTest {
     public BaseTest() {
         context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
         inject(this);
-        createBot();
         final String nick = BaseTest.TEST_USER.getNick();
         ok = "OK, " + nick.substring(0, Math.min(nick.length(), 16)) + ".";
         sleep(2000);
@@ -43,7 +42,7 @@ public class BaseTest {
         return bot;
     }
 
-    public TestJavabot getJavabot() {
+    public final TestJavabot getJavabot() {
         if (bot == null) {
             createBot();
         }
@@ -144,7 +143,6 @@ public class BaseTest {
         public void loadConfig() {
             try {
                 log.debug("Running with configuration: " + config);
-                setNickPassword(config.getPassword());
                 setStartStrings("~");
                 if(dao.getAdmin(BaseTest.TEST_USER.getNick(), "localhost") == null) {
                     dao.create(BaseTest.TEST_USER.getNick(), "localhost");

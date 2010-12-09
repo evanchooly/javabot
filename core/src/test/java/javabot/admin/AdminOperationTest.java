@@ -4,9 +4,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import javabot.Message;
+import javabot.commands.AdminCommand;
 import javabot.dao.ConfigDao;
 import javabot.operations.BaseOperationTest;
 import javabot.operations.BotOperation;
+import javabot.operations.StandardOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -18,24 +20,23 @@ public class AdminOperationTest extends BaseOperationTest {
 
     public void disableOperations() {
         final List<Message> messages = sendMessage("~admin listOperations");
-        System.out.println("messages = " + messages);
-        final List<BotOperation> list = BotOperation.list();
         for (final String name : messages.get(3).getMessage().split(",")) {
             final String opName = name.trim().split(" ")[0];
             sendMessage("~admin disableOperation --name=" + opName.trim());
-
-            if(!getJavabot().getOperation(opName).isStandardOperation()) {
-                Assert.assertFalse(findOperation(opName));
-            }
+            final BotOperation operation = findOperation(opName);
+            Assert.assertTrue(operation == null || operation instanceof AdminCommand || operation instanceof StandardOperation);
         }
     }
 
-    public boolean findOperation(final String name) {
-        boolean found = false;
+    public BotOperation findOperation(final String name) {
         final Iterator<BotOperation> it = getJavabot().getOperations();
-        while (it.hasNext() && !(found = it.next().getName().equals(name))) {
+        while (it.hasNext()) {
+            final BotOperation op = it.next();
+            if(op.getName().equals(name)) {
+                return op;
+            }
         }
-        return found;
+        return null;
     }
 
     @Test(dependsOnMethods = {"disableOperations"})
@@ -44,7 +45,7 @@ public class AdminOperationTest extends BaseOperationTest {
         for (final String name : message.split(",")) {
             final String opName = name.trim().split(" ")[0];
             sendMessage("~admin enableOperation --name=" + opName);
-            Assert.assertTrue(findOperation(opName), "Looking for " + opName);
+            Assert.assertTrue(findOperation(opName) != null, "Looking for " + opName);
         }
     }
 }

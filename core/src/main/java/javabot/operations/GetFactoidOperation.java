@@ -47,9 +47,6 @@ public class GetFactoidOperation extends StandardOperation {
     private Message getFactoid(final TellSubject subject, final String toFind, final IRCUser sender,
         final String chadnnel, final IrcEvent event, final Set<String> backtrack) {
         String message = toFind;
-        if (log.isDebugEnabled()) {
-            log.debug(sender + " : " + message);
-        }
         if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
             message = message.substring(0, message.length() - 1);
         }
@@ -110,9 +107,6 @@ public class GetFactoidOperation extends StandardOperation {
                 } else {
                     final TellInfo info = new TellInfo(user, thing);
                     if (throttler.isThrottled(info)) {
-                        if (log.isDebugEnabled()) {
-                            log.debug(String.format("I already told %s about %s.", user, thing));
-                        }
                         responses.add(new Message(channel, event, sender + ", Slow down, Speedy Gonzalez!"));
                     } else if (!getBot().userIsOnChannel(user, channel)) {
                         responses.add(new Message(channel, event, "The user " + user + " is not on " + channel));

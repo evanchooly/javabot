@@ -3,7 +3,7 @@ package javabot.operations;
 import javabot.BaseTest;
 import org.testng.annotations.Test;
 
-@Test
+@Test(enabled = false)
 public class SeenOperationTest extends BaseOperationTest {
     public void stringCase() {
         send("MixedCase");

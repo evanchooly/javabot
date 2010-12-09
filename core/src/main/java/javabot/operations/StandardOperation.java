@@ -6,8 +6,4 @@ public abstract class StandardOperation extends BotOperation {
         return true;
     }
 
-    @Override
-    public final boolean isEnabled() {
-        return true;
-    }
 }

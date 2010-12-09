@@ -33,25 +33,16 @@ public class AddFactoidOperation extends StandardOperation {
     }
 
     private String removeFactoid(final IrcEvent event, final String message) {
-        if (log.isDebugEnabled()) {
-            log.debug("AddFactoidOperation: " + message);
-        }
         if (message.toLowerCase().startsWith("no")) {
             String actual = message.substring(2);
             if (actual.startsWith(",")) {
                 actual = actual.substring(1);
             }
             actual = actual.trim();
-            if (log.isDebugEnabled()) {
-                log.debug("AddFactoidOperation: " + message);
-            }
             final int is = actual.indexOf(" is ");
             if (is != -1) {
                 String key = actual.substring(0, is);
                 key = key.replaceAll("^\\s+", "");
-                if (log.isDebugEnabled()) {
-                    log.debug("AddFactoidOperation: Key " + key);
-                }
                 factoidDao.delete(event.getSender().getNick(), key);
                 return actual;
             }
@@ -71,10 +62,6 @@ public class AddFactoidOperation extends StandardOperation {
             String value = null;
             if (index != -1) {
                 value = message.substring(index + 4, message.length());
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("Value: " + value);
-                log.debug("Key: " + key);
             }
             if (key.trim().length() == 0) {
                 responses.add(new Message(channel, event, "Invalid factoid name"));

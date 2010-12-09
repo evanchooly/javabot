@@ -1,20 +1,10 @@
 package javabot.operations;
 
-public class OperationComparator implements Comparable<BotOperation> {
-    private final BotOperation botOperation;
+import java.util.Comparator;
 
-    public OperationComparator(BotOperation botOperation) {
-        this.botOperation = botOperation;
-    }
-
+public class OperationComparator implements Comparator<BotOperation> {
     @Override
-    public int compareTo(final BotOperation o) {
-        if (o.getPriority() != botOperation.getPriority()) {
-            return Integer.valueOf(botOperation.getPriority()).compareTo(o.getPriority());
-        }
-        if (botOperation.isStandardOperation() != o.isStandardOperation()) {
-            return Boolean.valueOf(botOperation.isStandardOperation()).compareTo(o.isStandardOperation());
-        }
+    public int compare(final BotOperation botOperation, final BotOperation o) {
         return botOperation.getName().compareTo(o.getName());
     }
 }

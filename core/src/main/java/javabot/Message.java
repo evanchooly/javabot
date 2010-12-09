@@ -4,7 +4,7 @@ import org.schwering.irc.lib.IRCUser;
 
 public class Message {
     private final String destination;
-    private final String message;
+    private String message;
     private IrcEvent event;
 
     public Message(final String dest, final IrcEvent evt, final String value) {
@@ -27,6 +27,10 @@ public class Message {
 
     public String getMessage() {
         return message;
+    }
+
+    protected void setMessage(final String message) {
+        this.message = message;
     }
 
     public void send(final Javabot bot) {

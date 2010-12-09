@@ -46,6 +46,7 @@ public abstract class BaseOperationTest extends BaseTest {
     }
 
     private List<Message> sendMessage(final IRCUser testUser, final String message) {
+        getJavabot().addUser(testUser);
         getJavabot().getListener().processMessage(getJavabotChannel(), message, testUser);
         return getJavabot().getMessages();
     }

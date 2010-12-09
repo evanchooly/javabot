@@ -11,6 +11,15 @@ import org.testng.annotations.Test;
 @Test
 public class ShunOperationTest extends BaseOperationTest {
     public void shunMe() throws InterruptedException {
-        scanForResponse("~shun " + BaseTest.TEST_USER + " 10", BaseTest.TEST_USER + " is shunned until");
+        sendMessage("~forget shunHey");
+        try {
+            sendMessage("~shunHey is <reply>shunHey");
+            scanForResponse("~shun " + BaseTest.TEST_USER + " 10", BaseTest.TEST_USER + " is shunned until");
+            testMessage("~ping");
+            Thread.sleep(10000);
+            testMessage("~shunHey", "shunHey");
+        } finally {
+            sendMessage("~forget shunHey");
+        }
     }
 }

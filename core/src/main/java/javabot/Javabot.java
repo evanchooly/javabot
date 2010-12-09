@@ -2,6 +2,8 @@ package javabot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +26,8 @@ import javabot.model.Channel;
 import javabot.model.Config;
 import javabot.model.Logs;
 import javabot.operations.BotOperation;
+import javabot.operations.OperationComparator;
+import javabot.operations.StandardOperation;
 import org.schwering.irc.lib.IRCConnection;
 import org.schwering.irc.lib.IRCEventAdapter;
 import org.schwering.irc.lib.IRCEventListener;
@@ -61,7 +65,8 @@ public class Javabot implements ApplicationContextAware {
     private final OperationsDispatchListener listener = new OperationsDispatchListener(this);
     private final Map<String, Set<IRCUser>> channels = new HashMap<String, Set<IRCUser>>();
     private final Map<String, IRCUser> users = new HashMap<String, IRCUser>();
-    private Set<BotOperation> activeOperations = new TreeSet<BotOperation>();
+    private final Set<BotOperation> activeOperations = new TreeSet<BotOperation>(new OperationComparator());
+    private final List<BotOperation> standard = new ArrayList<BotOperation>();
 
     @SuppressWarnings({"OverriddenMethodCallDuringObjectConstruction", "OverridableMethodCallDuringObjectConstruction"})
     public Javabot(final ApplicationContext applicationContext) {
@@ -141,6 +146,30 @@ public class Javabot implements ApplicationContextAware {
                 enableOperation(operation.getName());
             }
         }
+
+        addDefaultOperations(ServiceLoader.load(AdminCommand.class));
+        addDefaultOperations(ServiceLoader.load(StandardOperation.class));
+        
+        Collections.sort(standard, new Comparator<BotOperation>() {
+            @Override
+            public int compare(final BotOperation o1, final BotOperation o2) {
+                if("GetFactoid".equals(o1.getName())) {
+                    return 1;
+                }
+                if("GetFactoid".equals(o2.getName())) {
+                    return -1;
+                }
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+    }
+
+    private void addDefaultOperations(final ServiceLoader<? extends BotOperation> loader) {
+        for (final BotOperation operation : loader) {
+            inject(operation);
+            operation.setBot(this);
+            standard.add(operation);
+        }
     }
 
     public boolean disableOperation(final String name) {
@@ -176,10 +205,7 @@ public class Javabot implements ApplicationContextAware {
 
     public Iterator<BotOperation> getOperations() {
         final List<BotOperation> ops = new ArrayList<BotOperation>(activeOperations);
-        for (final BotOperation operation : ServiceLoader.load(AdminCommand.class)) {
-            ops.add(operation);
-        }
-        ops.add(operations.get())
+        ops.addAll(standard);
         return ops.iterator();
     }
 
@@ -345,6 +371,10 @@ public class Javabot implements ApplicationContextAware {
         return listener;
     }
 
+    public void addUser(final IRCUser user) {
+        users.put(user.getUsername(), user);
+    }
+
     public IRCUser getUser(final String name) {
         return users.get(name);
     }
@@ -370,18 +400,8 @@ public class Javabot implements ApplicationContextAware {
                 }
             }
             members.add(user);
-            users.put(user.getUsername(), user);
+            addUser(user);
         }
 
-        @Override
-        public void onNick(final IRCUser user, final String newNick) {
-
-            super.onNick(user, newNick);
-        }
-
-        @Override
-        public void onQuit(final IRCUser user, final String msg) {
-            super.onQuit(user, msg);
-        }
     }
 }
