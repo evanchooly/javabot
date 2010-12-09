@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings({"unchecked"})
 @Component
 public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidDao {
     private static final Logger log = LoggerFactory.getLogger(FactoidDaoImpl.class);
@@ -32,7 +33,6 @@ public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidD
         super(Factoid.class);
     }
 
-    @SuppressWarnings("unchecked")
     public List<Factoid> find(final QueryParam qp) {
         final StringBuilder query = new StringBuilder("from Factoid f");
         if (qp.hasSort()) {
@@ -45,7 +45,6 @@ public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidD
             .setMaxResults(qp.getCount()).getResultList();
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<Factoid> getFactoids() {
         return (List<Factoid>) getEntityManager().createNamedQuery(ALL).getResultList();
     }
@@ -87,12 +86,26 @@ public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidD
         }
     }
 
-    /**
-     * @noinspection unchecked
-     */
     public Factoid getFactoid(final String name) {
         final List<Factoid> list = getEntityManager().createNamedQuery(FactoidDao.BY_NAME)
             .setParameter("name", name.toLowerCase())
+            .getResultList();
+        Factoid factoid = null;
+        if(! list.isEmpty()) {
+            factoid = list.get(0);
+            factoid.setLastUsed(new Date());
+            super.save(factoid);
+        }
+        return factoid;
+    }
+
+    public Factoid getParameterizedFactoid(final String name) {
+        final String lower = name.toLowerCase();
+        final Query query = getEntityManager().createNamedQuery(FactoidDao.BY_PARAMETERIZED_NAME)
+            .setParameter("name1", lower + " $1")
+            .setParameter("name2", lower + " $^")
+            .setParameter("name3", lower + " $+");
+        final List<Factoid> list = query
             .getResultList();
         Factoid factoid = null;
         if(! list.isEmpty()) {
@@ -111,7 +124,6 @@ public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidD
         return (Long) buildFindQuery(null, filter, true).getSingleResult();
     }
 
-    @SuppressWarnings({"unchecked"})
     public List<Factoid> getFactoidsFiltered(final QueryParam qp, final Factoid filter) {
         return buildFindQuery(qp, filter, false).getResultList();
     }

@@ -12,7 +12,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Test(groups = {"operations"})
-public class KarmaChangeOperationTest extends BaseOperationTest {
+public class KarmaOperationTest extends BaseOperationTest {
     @Autowired
     private KarmaDao karmaDao;
     @Autowired

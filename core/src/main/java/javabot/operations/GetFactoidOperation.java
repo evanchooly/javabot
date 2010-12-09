@@ -37,7 +37,6 @@ public class GetFactoidOperation extends StandardOperation {
     public List<Message> handleMessage(final IrcEvent event) {
         List<Message> responses = tell(event);
         if (responses.isEmpty()) {
-            responses = new ArrayList<Message>();
             responses.add(getFactoid(null, event.getMessage(), event.getSender(), event.getChannel(), event,
                 new HashSet<String>()));
         }
@@ -54,17 +53,11 @@ public class GetFactoidOperation extends StandardOperation {
         final String params = message.substring(firstWord.length()).trim();
         Factoid factoid = factoidDao.getFactoid(message.toLowerCase());
         if (factoid == null) {
-            factoid = factoidDao.getFactoid(firstWord + " $1");
-        }
-        if (factoid == null) {
-            factoid = factoidDao.getFactoid(firstWord + " $+");
-        }
-        if (factoid == null) {
-            factoid = factoidDao.getFactoid(firstWord + " $^");
+            factoid = factoidDao.getParameterizedFactoid(firstWord);
         }
         return factoid != null
             ? getResponse(subject, sender, event, backtrack, params, factoid)
-            : new Message(event.getChannel(), event, sender + ", I have no idea what " + toFind + " is.");
+            : new Message(event.getChannel(), event, sender + ", what does that even *mean*?");
     }
 
     private Message getResponse(final TellSubject subject, final IRCUser sender,

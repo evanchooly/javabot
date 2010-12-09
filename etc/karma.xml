@@ -7,7 +7,7 @@
 			</run>
 		</groups>
 		<classes>
-			<class name="javabot.operations.KarmaChangeOperationTest"/>
+			<class name="javabot.operations.KarmaOperationTest"/>
 		</classes>
 	</test>
 </suite>

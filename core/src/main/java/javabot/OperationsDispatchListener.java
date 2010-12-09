@@ -108,14 +108,6 @@ public class OperationsDispatchListener extends IRCEventAdapter {
             final BotOperation next = iterator.next();
             responses.addAll(next.handleMessage(event));
         }
-        if(message.contains("shortcut")) {
-            log.debug("message = " + message);
-            final Iterator<BotOperation> it = getOperations();
-            while(it.hasNext()) {
-                log.debug(it.next().toString());
-            }
-            log.debug("responses = " + responses);
-        }
         return responses;
     }
 

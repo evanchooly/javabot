@@ -5,7 +5,6 @@ import java.util.Arrays;
 
 import javabot.BaseTest;
 import javabot.dao.FactoidDao;
-import org.schwering.irc.lib.IRCUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -95,7 +94,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
     }
 
     public void noGuess() {
-        testMessage("~apiz", BaseTest.TEST_USER + ", I have no idea what apiz is.");
+        testMessage("~apiz", BaseTest.TEST_USER + ", what does that even *mean*?");
     }
 
     public void action() {
@@ -118,7 +117,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
         testMessage(String.format("~~ %s seeTest", TEST_USER), String.format("%s, I'm a reply!", TEST_USER));
 
         testMessage(String.format("~~ %s bobloblaw", TEST_USER),
-            String.format("%s, I have no idea what bobloblaw is.", TEST_USER));
+            String.format("%s, what does that even *mean*?", TEST_USER));
 
         testMessage(String.format("~~ %s api", TEST_USER),
             String.format("%s, api is http://java.sun.com/javase/current/docs/api/index.html", TEST_USER));
@@ -139,7 +138,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
 
         testMessage(String.format("~~%s seeTest", TEST_USER), String.format("%s, I'm a reply!", TEST_USER));
 
-        testMessage(String.format("~~%s bobloblaw", TEST_USER), String.format("%s, I have no idea what bobloblaw is.",
+        testMessage(String.format("~~%s bobloblaw", TEST_USER), String.format("%s, what does that even *mean*?",
             TEST_USER));
 
         testMessage(String.format("~~%s api", TEST_USER),

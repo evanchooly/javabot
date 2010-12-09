@@ -11,6 +11,7 @@ public interface FactoidDao extends BaseDao<Factoid> {
     String ALL = "Factoid.all";
     String COUNT = "Factoid.count";
     String BY_NAME = "Factoid.byName";
+    String BY_PARAMETERIZED_NAME = "Factoid.byParameterizedName";
 
     boolean hasFactoid(String key);
 
@@ -19,6 +20,8 @@ public interface FactoidDao extends BaseDao<Factoid> {
     void delete(String sender, String key);
 
     Factoid getFactoid(String key);
+
+    Factoid getParameterizedFactoid(String key);
 
     Factoid find(Long id);
 

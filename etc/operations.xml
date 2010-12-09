@@ -10,7 +10,7 @@
 			<class name="javabot.operations.AddFactoidOperationTest" />
 			<class name="javabot.operations.ForgetFactoidOperationTest" />
 			<class name="javabot.operations.GetFactoidOperationTest"/>
-			<class name="javabot.operations.KarmaChangeOperationTest"/>
+			<class name="javabot.operations.KarmaOperationTest"/>
 		</classes>
 	</test>
 </suite>

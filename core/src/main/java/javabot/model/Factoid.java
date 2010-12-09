@@ -27,7 +27,8 @@ import org.slf4j.LoggerFactory;
 @NamedQueries({
     @NamedQuery(name= FactoidDao.ALL, query="select f from Factoid f"),
     @NamedQuery(name= FactoidDao.COUNT, query= "select count(f) from Factoid f"),
-    @NamedQuery(name= FactoidDao.BY_NAME, query= "select m from Factoid m where lower(m.name) = :name")
+    @NamedQuery(name= FactoidDao.BY_NAME, query= "select m from Factoid m where lower(m.name) = :name"),
+    @NamedQuery(name= FactoidDao.BY_PARAMETERIZED_NAME, query= "select m from Factoid m where lower(m.name) in (:name1, :name2, :name3)")
 
 })
 @SPI(Persistent.class)
