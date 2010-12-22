@@ -8,23 +8,23 @@
             http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <context:component-scan base-package="javabot"/>
-    <!--<util:properties id="jdbcProperties" location="classpath:org/example/config/jdbc.properties"/>-->
-
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>classpath:spring-context.properties</value>
-                <value>file:spring-context-override.properties</value>
+                <value>file:javabot.properties</value>
             </list>
         </property>
         <property name="ignoreResourceNotFound" value="true"/>
     </bean>
+    
+    <context:component-scan base-package="javabot"/>
+    <!--<util:properties id="jdbcProperties" location="classpath:org/example/config/jdbc.properties"/>-->
 
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="${jdbc.driver}"/>
-        <property name="url" value="${jdbc.url}"/>
-        <property name="username" value="${jdbc.username}"/>
+
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="${jdbc.driver}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
     </bean>
 

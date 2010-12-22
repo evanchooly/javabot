@@ -58,7 +58,9 @@ public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
             final Logs logMessage = new Logs();
             logMessage.setType(type);
             logMessage.setNick(nick);
-            logMessage.setChannel(channel.toLowerCase());
+            if(channel != null) {
+                logMessage.setChannel(channel.toLowerCase());
+            }
             logMessage.setMessage(message);
             logMessage.setUpdated(new Date());
             save(logMessage);
