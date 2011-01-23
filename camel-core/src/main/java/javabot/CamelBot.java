@@ -8,7 +8,6 @@ import org.apache.camel.component.irc.IrcEndpoint;
 import org.apache.camel.component.irc.IrcMessage;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.model.ProcessorDefinition;
-import org.schwering.irc.lib.IRCUser;
 
 public class CamelBot extends RouteBuilder {
     private String nick = "muleknuckle";

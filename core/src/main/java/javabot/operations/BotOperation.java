@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ServiceLoader;
 
+import javabot.IrcUser;
 import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.AdminDao;
-import org.schwering.irc.lib.IRCUser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class BotOperation {
@@ -23,11 +23,6 @@ public abstract class BotOperation {
 
     public void setBot(final Javabot bot) {
         this.bot = bot;
-    }
-
-    @Deprecated
-    public boolean isStandardOperation() {
-        return false;
     }
 
     /**
@@ -65,7 +60,7 @@ public abstract class BotOperation {
     }
 
     protected boolean isAdminUser(final IrcEvent event) {
-        final IRCUser sender = event.getSender();
+        final IrcUser sender = event.getSender();
         return dao.isAdmin(sender.getNick(), sender.getHost());
     }
 

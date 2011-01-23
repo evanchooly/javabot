@@ -62,7 +62,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
 
                 <configuration>
-                    <mainClass>javabot.Javabot</mainClass>
+                    <mainClass>javabot.pircbot.PircBotJavabot</mainClass>
                     <classpathScope>test</classpathScope>
                     <arguments>
                         <argument>-Xmx512m</argument>

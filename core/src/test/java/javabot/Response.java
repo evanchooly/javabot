@@ -1,6 +1,6 @@
 package javabot;
 
-import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.IrcUser;
 
 /**
  * Created Jan 27, 2009
@@ -9,10 +9,10 @@ import org.schwering.irc.lib.IRCUser;
 */
 public class Response {
     private final String channel;
-    private final IRCUser sender;
+    private final IrcUser sender;
     private final String message;
 
-    public Response(final String target, final IRCUser user, final String msg) {
+    public Response(final String target, final IrcUser user, final String msg) {
         channel = target;
         sender = user;
         message = msg;
@@ -26,7 +26,7 @@ public class Response {
         return message;
     }
 
-    public IRCUser getSender() {
+    public IrcUser getSender() {
         return sender;
     }
 

@@ -1,17 +1,17 @@
 package javabot.operations;
 
-import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.IrcUser;
 
 public final class TellSubject {
-    private final IRCUser target;
+    private final IrcUser target;
     private final String subject;
 
-    public TellSubject(final IRCUser target, final String subject) {
+    public TellSubject(final IrcUser target, final String subject) {
         this.target = target;
         this.subject = subject;
     }
 
-    public IRCUser getTarget() {
+    public IrcUser getTarget() {
         return target;
     }
 

@@ -1,13 +1,13 @@
 package javabot.operations;
 
 import javabot.operations.throttle.ThrottleItem;
-import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.IrcUser;
 
 public final class TellInfo implements ThrottleItem<TellInfo> {
-    private final IRCUser user;
+    private final IrcUser user;
     private final String msg;
 
-    public TellInfo(final IRCUser user, final String msg) {
+    public TellInfo(final IrcUser user, final String msg) {
         this.user = user;
         this.msg = msg;
     }

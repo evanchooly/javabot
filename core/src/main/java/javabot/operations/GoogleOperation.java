@@ -1,7 +1,6 @@
 package javabot.operations;
 
 import com.antwerkz.maven.SPI;
-import javabot.Javabot;
 
 @SPI(BotOperation.class)
 public class GoogleOperation extends UrlOperation {

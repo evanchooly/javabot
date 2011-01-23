@@ -12,7 +12,7 @@ public class IgnoreOperation extends BotOperation {
     @Override
     public List<Message> handleMessage(final IrcEvent event) {
 //        final String message = event.getMessage();
-        //Javabot bot = event.getBot();
+        //PircBotJavabot bot = event.getBot();
 //        final String[] parts = message.split(" ");
 /*        if((parts.length == 3)
             && parts[0].equals("quit ")

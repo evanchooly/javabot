@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +16,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import javax.persistence.NoResultException;
 
 import ca.grimoire.maven.ArtifactDescription;
@@ -30,55 +27,42 @@ import javabot.dao.LogsDao;
 import javabot.dao.ShunDao;
 import javabot.database.UpgradeScript;
 import javabot.model.Config;
-import javabot.model.Logs;
 import javabot.operations.BotOperation;
 import javabot.operations.OperationComparator;
 import javabot.operations.StandardOperation;
-import org.schwering.irc.lib.IRCEventAdapter;
-import org.schwering.irc.lib.IRCEventListener;
-import org.schwering.irc.lib.IRCUser;
-import org.schwering.irc.manager.Channel;
-import org.schwering.irc.manager.ChannelUser;
-import org.schwering.irc.manager.Connection;
-import org.schwering.irc.manager.event.ConnectionAdapter;
-import org.schwering.irc.manager.event.NamesEvent;
+import javabot.pircbot.PircBotJavabot;
+import org.jibble.pircbot.PircBot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class Javabot implements ApplicationContextAware {
+public abstract class Javabot extends PircBot implements ApplicationContextAware {
     public static final int THROTTLE_TIME = 5 * 1000;
-    private static final Logger log = LoggerFactory.getLogger(Javabot.class);
+    public static final Logger log = LoggerFactory.getLogger(IrcLibJavabot.class);
+    protected ApplicationContext context;
     private String host;
+    private String password;
     private int port;
     private String[] startStrings;
     private int authWait;
-    private String password;
-    private final List<String> ignores = new ArrayList<String>();
+    protected final List<String> ignores = new ArrayList<String>();
     @Autowired
-    private LogsDao logsDao;
+    protected LogsDao logsDao;
     @Autowired
     ChannelDao channelDao;
     @Autowired
     private ConfigDao configDao;
     @Autowired
-    private ShunDao shunDao;
-    private ApplicationContext context;
+    protected ShunDao shunDao;
     Config config;
     private Map<String, BotOperation> operations;
-    private Connection connection;
-    private String nick;
-    private final OperationsDispatchListener listener = new OperationsDispatchListener(this);
-    private final Map<String, Channel> channels = new HashMap<String, Channel>();
-    private final Map<String, IRCUser> users = new HashMap<String, IRCUser>();
     private final Set<BotOperation> activeOperations = new TreeSet<BotOperation>(new OperationComparator());
     private final List<BotOperation> standard = new ArrayList<BotOperation>();
+    private String nick;
 
-    @SuppressWarnings({"OverriddenMethodCallDuringObjectConstruction", "OverridableMethodCallDuringObjectConstruction"})
     public Javabot(final ApplicationContext applicationContext) {
         context = applicationContext;
         inject(this);
@@ -87,25 +71,56 @@ public class Javabot implements ApplicationContextAware {
         } catch (NoResultException e) {
             config = configDao.create();
         }
-        final Thread hook = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                listener.shutdown();
-            }
-        });
-        hook.setDaemon(false);
-        Runtime.getRuntime().addShutdownHook(hook);
         loadOperations(config);
         loadConfig();
         applyUpgradeScripts();
         connect();
     }
 
-    public void inject(final Object object) {
+    public static void validateProperties() {
+        final Properties props = new Properties();
+        InputStream stream = null;
+        try {
+            try {
+                stream = new FileInputStream("javabot.properties");
+                props.load(stream);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException("Please define a javabot.properties file to configure the bot");
+            } finally {
+                if (stream != null) {
+                    stream.close();
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+        check(props, "javabot.server");
+        check(props, "javabot.port");
+        check(props, "jdbc.url");
+        check(props, "jdbc.username");
+        check(props, "jdbc.password");
+        check(props, "jdbc.driver");
+        check(props, "hibernate.dialect");
+        check(props, "javabot.nick");
+        check(props, "javabot.password");
+        check(props, "javabot.admin.nick");
+        check(props, "javabot.admin.hostmask");
+        System.getProperties().putAll(props);
+    }
+
+    static void check(final Properties props, final String key) {
+        if (props.get(key) == null) {
+            throw new RuntimeException(String.format("Please specify the property %s in javabot.properties", key));
+        }
+    }
+
+    protected abstract void connect();
+
+    public final void inject(final Object object) {
         context.getAutowireCapableBeanFactory().autowireBean(object);
     }
 
-    private void applyUpgradeScripts() {
+    protected final void applyUpgradeScripts() {
         for (final UpgradeScript script : UpgradeScript.loadScripts()) {
             script.execute(this);
         }
@@ -135,8 +150,17 @@ public class Javabot implements ApplicationContextAware {
         }
     }
 
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(final String nick) {
+        this.nick = nick;
+    }
+
+
     @SuppressWarnings({"unchecked"})
-    private void loadOperations(final Config config) {
+    protected final void loadOperations(final Config config) {
         operations = new TreeMap<String, BotOperation>();
         for (final BotOperation op : BotOperation.list()) {
             inject(op);
@@ -206,6 +230,14 @@ public class Javabot implements ApplicationContextAware {
         return enabled;
     }
 
+    public int getAuthWait() {
+        return authWait;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
     public Iterator<BotOperation> getOperations() {
         final List<BotOperation> ops = new ArrayList<BotOperation>(activeOperations);
         ops.addAll(standard);
@@ -213,84 +245,16 @@ public class Javabot implements ApplicationContextAware {
     }
 
     @SuppressWarnings({"EmptyCatchBlock"})
-    private void sleep(final int milliseconds) {
+    protected void sleep(final int milliseconds) {
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException exception) {
         }
     }
 
-    @SuppressWarnings({"StringContatenationInLoop"})
-    public void connect() {
-        if (connection == null) {
-            connection = new Connection(host, new int[]{port}, false, getNickPassword(),
-                getNick(), getNick(), getNick());
-            addIrcEventListener(new LoggerListener());
-            addIrcEventListener(new Tracker());
-            addIrcEventListener(listener);
-        }
-        try {
-            connection.connect();
-            connection.send("PRIVMSG NickServ :identify " + getNickPassword());
-            sleep(authWait);
-            for (final javabot.model.Channel channel : channelDao.getChannels()) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        channel.join(Javabot.this);
-                    }
-                }).start();
-            }
-        } catch (Exception exception) {
-            connection.quit(exception.getMessage());
-            log.error(exception.getMessage(), exception);
-        }
-    }
+    public abstract void postMessage(final Message message);
 
-    public void addIrcEventListener(final IRCEventListener listener) {
-        inject(listener);
-        connection.addIRCEventListener(listener);
-    }
-
-    public boolean isOnSameChannelAs(final IRCUser user) {
-        for (final Channel channel : channels.values()) {
-            if (userIsOnChannel(user, channel.getName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean userIsOnChannel(final IRCUser sender, final String channel) {
-        final Channel chan = channels.get(channel);
-//        chan.getUser(sender);
-        for (final ChannelUser user : chan.getChannelUsers()) {
-            if (user.getNick().equalsIgnoreCase(sender.getNick())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void setNickPassword(final String value) {
-        password = value;
-    }
-
-    public String getNickPassword() {
-        return password;
-    }
-
-    public boolean isValidSender(final IRCUser sender) {
-        return !ignores.contains(sender.getNick()) && !isShunnedSender(sender);
-    }
-
-    private boolean isShunnedSender(final IRCUser sender) {
-        return shunDao.isShunned(sender.getNick());
-    }
-
-    public void addIgnore(final String sender) {
-        ignores.add(sender);
-    }
+    public abstract void postAction(final Message message);
 
     public String[] getStartStrings() {
         return startStrings;
@@ -303,167 +267,31 @@ public class Javabot implements ApplicationContextAware {
         this.startStrings = start.toArray(new String[start.size()]);
     }
 
-    void postMessage(final Message message) {
-        logMessage(message);
-        connection.sendPrivmsg(message.getDestination(), message.getMessage());
+    public void addIgnore(final String sender) {
+        ignores.add(sender);
     }
 
-    void postAction(final Message message) {
-        logMessage(message);
-        connection.sendCtcpAction(message.getDestination(), message.getMessage());
+    public abstract boolean userIsOnChannel(final IrcUser user, final String channel);
+
+    public abstract boolean isOnSameChannelAs(final IrcUser user);
+
+    public abstract List<Message> getResponses(final String channel, final IrcUser sender, final String thing);
+
+    public String getNickPassword() {
+        return password;
     }
 
-    protected final void logMessage(final Message message) {
-        final IrcEvent event = message.getEvent();
-        final String sender = getNick();
-        final String channel = event.getChannel();
-        if (!channel.equals(sender) && channelDao.isLogged(channel)) {
-            logsDao.logMessage(Logs.Type.MESSAGE, sender, message.getDestination(), message.getMessage());
-        }
+    public void setNickPassword(final String password) {
+        this.password = password;
     }
 
-    @Override
-    public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
-        context = applicationContext;
-    }
-
-    public String getNick() {
-        return nick;
-    }
-
-    public void setNick(final String nick) {
-        this.nick = nick;
-    }
-
-    public Set<String> getChannels() {
-        return channels.keySet();
-    }
-
-    public void joinChannel(final String channel) {
-        joinChannel(channel, "");
-    }
-
-    public void joinChannel(final String channel, final String key) {
-        final BlockingJoinAdapter listener = new BlockingJoinAdapter(connection, channel);
-        connection.addConnectionListener(listener);
-        connection.joinChannel(channel, key);
-        listener.await();
-    }
-
-    public void partChannel(final String channel) {
-        connection.partChannel(channel);
-    }
-
-    public OperationsDispatchListener getListener() {
-        return listener;
-    }
-
-    public void addUser(final IRCUser user) {
-        users.put(user.getUsername(), user);
-    }
-
-    public IRCUser getUser(final String name) {
-        return users.get(name);
-    }
-
-    private static class BlockingJoinAdapter extends ConnectionAdapter {
-        private final Connection connection;
-        private final String channel;
-        private final CountDownLatch latch = new CountDownLatch(1);
-
-        public BlockingJoinAdapter(final Connection connection, final String channel) {
-            this.connection = connection;
-            this.channel = channel;
-        }
-
-        @Override
-        public void namesReceived(final NamesEvent event) {
-            super.namesReceived(event);
-            latch.countDown();
-        }
-
-        public void await() {
-            try {
-                latch.await(10, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(String.format("Joining %s timed out", channel), e);
-            } finally {
-                connection.removeConnectionListener(this);
-            }
-        }
-    }
-
-    private class Tracker extends IRCEventAdapter {
-        @Override
-        public void onPart(final String chan, final IRCUser user, final String msg) {
-            if (user.getNick().equals(getNick())) {
-                channels.remove(chan);
-            }
-        }
-
-        @Override
-        public void onJoin(final String name, final IRCUser user) {
-            for (final Channel channel : connection.getChannels()) {
-                if (name.equals(channel.getName())) {
-                    channels.put(name, channel);
-                }
-            }
-            addUser(user);
-        }
-
-        @Override
-        public void onInvite(final String chan, final IRCUser user, final String passiveNick) {
-            super.onInvite(chan, user, passiveNick);
-            final javabot.model.Channel channel = new javabot.model.Channel();
-            channel.setName(chan);
-            channelDao.save(channel);
-            channel.join(Javabot.this);
-            connection.sendPrivmsg(chan, "I was invited by " + user);
-        }
-    }
-
-    public static void validateProperties() {
-        final Properties props = new Properties();
-        InputStream stream = null;
-        try {
-            try {
-                stream = new FileInputStream("javabot.properties");
-                props.load(stream);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException("Please define a javabot.properties file to configure the bot");
-            } finally {
-                if (stream != null) {
-                    stream.close();
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-        check(props, "javabot.server");
-        check(props, "javabot.port");
-        check(props, "jdbc.url");
-        check(props, "jdbc.username");
-        check(props, "jdbc.password");
-        check(props, "jdbc.driver");
-        check(props, "hibernate.dialect");
-        check(props, "javabot.nick");
-        check(props, "javabot.password");
-        check(props, "javabot.admin.nick");
-        check(props, "javabot.admin.hostmask");
-        System.getProperties().putAll(props);
-    }
-
-    private static void check(final Properties props, final String key) {
-        if (props.get(key) == null) {
-            throw new RuntimeException(String.format("Please specify the property %s in javabot.properties", key));
-        }
-    }
+    public abstract IrcUser getUser(String name);
 
     public static void main(final String[] args) throws IOException {
         if (log.isInfoEnabled()) {
-            log.info("Starting Javabot");
+            log.info("Starting PircBotJavabot");
         }
         validateProperties();
-        new Javabot(new ClassPathXmlApplicationContext("classpath:applicationContext.xml"));
+        new PircBotJavabot(new ClassPathXmlApplicationContext("classpath:applicationContext.xml"));
     }
 }

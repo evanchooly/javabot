@@ -84,6 +84,12 @@
             </dependency>
 
             <dependency>
+                <groupId>pircbot</groupId>
+                <artifactId>pircbot</artifactId>
+                <version>1.4.6</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-spring</artifactId>
                 <version>${camel.version}</version>
@@ -162,7 +168,7 @@
                 <artifactId>c3p0</artifactId>
                 <version>0.9.1.2</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>

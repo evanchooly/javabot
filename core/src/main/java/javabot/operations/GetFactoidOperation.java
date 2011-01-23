@@ -14,7 +14,7 @@ import javabot.TellMessage;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
 import javabot.operations.throttle.Throttler;
-import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.IrcUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class GetFactoidOperation extends StandardOperation {
         return responses;
     }
 
-    private Message getFactoid(final TellSubject subject, final String toFind, final IRCUser sender,
+    private Message getFactoid(final TellSubject subject, final String toFind, final IrcUser sender,
         final String chadnnel, final IrcEvent event, final Set<String> backtrack) {
         String message = toFind;
         if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
@@ -60,7 +60,7 @@ public class GetFactoidOperation extends StandardOperation {
             : new Message(event.getChannel(), event, sender + ", what does that even *mean*?");
     }
 
-    private Message getResponse(final TellSubject subject, final IRCUser sender,
+    private Message getResponse(final TellSubject subject, final IrcUser sender,
         final IrcEvent event, final Set<String> backtrack, final String replacedValue, final Factoid factoid) {
         final String message = factoid.evaluate(subject, sender.getNick(), replacedValue);
         if (message.startsWith("<see>")) {
@@ -82,7 +82,7 @@ public class GetFactoidOperation extends StandardOperation {
     private List<Message> tell(final IrcEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
-        final IRCUser sender = event.getSender();
+        final IrcUser sender = event.getSender();
         final List<Message> responses = new ArrayList<Message>();
         if (isTellCommand(message)) {
             final TellSubject tellSubject = parseTellSubject(event, message);
@@ -90,32 +90,34 @@ public class GetFactoidOperation extends StandardOperation {
                 responses.add(new Message(channel, event,
                     String.format("The syntax is: tell nick about factoid - you missed out the 'about', %s", sender)));
             } else {
-                IRCUser user = tellSubject.getTarget();
-                if ("me".equalsIgnoreCase(user.getNick())) {
-                    user = sender;
-                }
-                final String thing = tellSubject.getSubject();
-                if (user.getNick().equalsIgnoreCase(getBot().getNick())) {
-                    responses.add(new Message(channel, event, "I don't want to talk to myself"));
-                } else {
-                    final TellInfo info = new TellInfo(user, thing);
-                    if (throttler.isThrottled(info)) {
-                        responses.add(new Message(channel, event, sender + ", Slow down, Speedy Gonzalez!"));
-                    } else if (!getBot().userIsOnChannel(user, channel)) {
-                        responses.add(new Message(channel, event, "The user " + user + " is not on " + channel));
-                    } else if (sender.getNick().equals(channel) && !getBot().isOnSameChannelAs(user)) {
-                        responses
-                            .add(new Message(sender, event, "I will not send a message to someone who is not on any"
-                                + " of my channels."));
-                    } else if (thing.endsWith("++") || thing.endsWith("--")) {
-                        responses.add(new Message(channel, event, "I'm afraid I can't let you do that, Dave."));
+                IrcUser user = tellSubject.getTarget();
+                if (user != null) {
+                    if ("me".equalsIgnoreCase(user.getNick())) {
+                        user = sender;
+                    }
+                    final String thing = tellSubject.getSubject();
+                    if (user.getNick().equalsIgnoreCase(getBot().getNick())) {
+                        responses.add(new Message(channel, event, "I don't want to talk to myself"));
                     } else {
-                        final List<Message> list = getBot().getListener().getResponses(channel, sender, thing);
-                        for (final Message msg : list) {
+                        final TellInfo info = new TellInfo(user, thing);
+                        if (throttler.isThrottled(info)) {
+                            responses.add(new Message(channel, event, sender + ", Slow down, Speedy Gonzalez!"));
+                        } else if (!getBot().userIsOnChannel(user, channel)) {
+                            responses.add(new Message(channel, event, "The user " + user + " is not on " + channel));
+                        } else if (sender.getNick().equals(channel) && !getBot().isOnSameChannelAs(user)) {
                             responses
-                                .add(new TellMessage(user, msg.getDestination(), msg.getEvent(), msg.getMessage()));
+                                .add(new Message(sender, event, "I will not send a message to someone who is not on any"
+                                    + " of my channels."));
+                        } else if (thing.endsWith("++") || thing.endsWith("--")) {
+                            responses.add(new Message(channel, event, "I'm afraid I can't let you do that, Dave."));
+                        } else {
+                            final List<Message> list = getBot().getResponses(channel, sender, thing);
+                            for (final Message msg : list) {
+                                responses
+                                    .add(new TellMessage(user, msg.getDestination(), msg.getEvent(), msg.getMessage()));
+                            }
+                            throttler.addThrottleItem(info);
                         }
-                        throttler.addThrottleItem(info);
                     }
                 }
             }
@@ -151,7 +153,7 @@ public class GetFactoidOperation extends StandardOperation {
         final int space = target.indexOf(' ');
         final String user = target.substring(0, space);
         final String value = target.substring(space + 1).trim();
-        return space < 0 ? null : new TellSubject(getBot().getUser(user.trim()), value);
+        return space < 0 ? null : new TellSubject(getBot().getUser(user), value);
     }
 
     private boolean isTellCommand(final String message) {

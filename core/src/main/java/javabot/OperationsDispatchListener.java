@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 import javabot.dao.ChannelDao;
 import javabot.operations.BotOperation;
 import org.schwering.irc.lib.IRCEventAdapter;
-import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.IrcUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +21,15 @@ public class OperationsDispatchListener extends IRCEventAdapter {
     private final ExecutorService executors;
     @Autowired
     private ChannelDao channelDao;
-    private final Javabot bot;
+    private final IrcLibJavabot bot;
 
-    public OperationsDispatchListener(final Javabot javabot) {
+    public OperationsDispatchListener(final IrcLibJavabot javabot) {
         bot = javabot;
         executors = new ThreadPoolExecutor(15, 40, 10L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
             new JavabotThreadFactory(true, "javabot-handler-thread-"));
     }
 
-    public void onMessage(final String channel, final IRCUser user, final String message) {
+    public void onMessage(final String channel, final IrcUser user, final String message) {
         executors.execute(new Runnable() {
             @Override
             public void run() {
@@ -39,14 +39,17 @@ public class OperationsDispatchListener extends IRCEventAdapter {
     }
 
     @Override
-    public void onPrivmsg(final String channel, final IRCUser user, final String message) {
+    public void onPrivmsg(final String channel, final IrcUser user, final String message) {
         if (bot.isOnSameChannelAs(user)) {
             executors.execute(new Runnable() {
                 @Override
                 public void run() {
+               processMessage(channel, message, user);
+/*
                     for (final Message response : getResponses(channel, user, message)) {
                         response.send(bot);
                     }
+*/
                 }
             });
         }
@@ -58,7 +61,7 @@ public class OperationsDispatchListener extends IRCEventAdapter {
         }
     }
 
-    public void processMessage(final String channel, final String message, final IRCUser sender) {
+    public void processMessage(final String channel, final String message, final IrcUser sender) {
         try {
             if (bot.isValidSender(sender)) {
                 final List<Message> responses = new ArrayList<Message>();
@@ -89,7 +92,7 @@ public class OperationsDispatchListener extends IRCEventAdapter {
     }
 
     @Override
-    public void onInvite(final String channel, final IRCUser user, final String passiveNick) {
+    public void onInvite(final String channel, final IrcUser user, final String passiveNick) {
         if (channelDao.get(channel) != null) {
 //            bot.joinChannel(channel);
         }
@@ -99,7 +102,7 @@ public class OperationsDispatchListener extends IRCEventAdapter {
         return bot.getOperations();
     }
 
-    public List<Message> getResponses(final String channel, final IRCUser sender, final String message) {
+    public List<Message> getResponses(final String channel, final IrcUser sender, final String message) {
         final Iterator<BotOperation> iterator = getOperations();
         final List<Message> responses = new ArrayList<Message>();
         final IrcEvent event = new IrcEvent(channel, sender, message);
@@ -110,7 +113,7 @@ public class OperationsDispatchListener extends IRCEventAdapter {
         return responses;
     }
 
-    public List<Message> getChannelResponses(final String channel, final IRCUser sender, final String message) {
+    public List<Message> getChannelResponses(final String channel, final IrcUser sender, final String message) {
         final Iterator<BotOperation> iterator = getOperations();
         final List<Message> responses = new ArrayList<Message>();
         while (responses.isEmpty() && iterator.hasNext()) {

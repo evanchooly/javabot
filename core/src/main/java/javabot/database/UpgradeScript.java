@@ -24,7 +24,7 @@ public abstract class UpgradeScript {
         bot.inject(this);
         final Config config = configDao.get();
         if (config.getSchemaVersion() < id()) {
-            Connection connection = null;
+            Connection connection;
             try {
                 connection = dataSource.getConnection();
                 try {

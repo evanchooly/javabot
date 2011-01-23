@@ -8,7 +8,7 @@ import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
 import javabot.Message;
 import javabot.dao.LogsDao;
-import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.IrcUser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SPI(BotOperation.class)
@@ -20,7 +20,7 @@ public class SeenOperation extends BotOperation {
     public List<Message> handleMessage(final IrcEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
-        final IRCUser sender = event.getSender();
+        final IrcUser sender = event.getSender();
         final List<Message> responses = new ArrayList<Message>();
         if ("seen ".equalsIgnoreCase(message.substring(0, Math.min(message.length(), 5)))) {
             final String key = message.substring("seen ".length());

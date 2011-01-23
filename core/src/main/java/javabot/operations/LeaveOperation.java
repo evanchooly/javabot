@@ -6,7 +6,7 @@ import java.util.List;
 import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
 import javabot.Message;
-import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.IrcUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +18,7 @@ public class LeaveOperation extends BotOperation {
     public List<Message> handleMessage(final IrcEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
-        final IRCUser sender = event.getSender();
+        final IrcUser sender = event.getSender();
         final List<Message> responses = new ArrayList<Message>();
         if ("leave".equals(message.toLowerCase())) {
             if (channel.equalsIgnoreCase(sender.getNick())) {

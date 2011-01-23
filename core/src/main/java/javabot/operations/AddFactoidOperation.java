@@ -11,7 +11,7 @@ import javabot.dao.FactoidDao;
 import javabot.dao.LogsDao;
 import javabot.model.Factoid;
 import javabot.model.Logs.Type;
-import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.IrcUser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SPI(StandardOperation.class)
@@ -25,7 +25,7 @@ public class AddFactoidOperation extends StandardOperation {
     public List<Message> handleMessage(final IrcEvent event) {
         String message = event.getMessage();
         final String channel = event.getChannel();
-        final IRCUser sender = event.getSender();
+        final IrcUser sender = event.getSender();
         final List<Message> responses = new ArrayList<Message>();
         if (message.startsWith("no ") || message.startsWith("no, ")) {
             message = message.substring(2);
@@ -64,7 +64,7 @@ public class AddFactoidOperation extends StandardOperation {
     }
 
     private List<Message> addFactoid(final IrcEvent event, final String message, final String channel,
-        final IRCUser sender) {
+        final IrcUser sender) {
         final List<Message> responses = new ArrayList<Message>();
         if (message.toLowerCase().contains(" is ")) {
             String key = message.substring(0, message.indexOf(" is "));

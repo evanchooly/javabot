@@ -1,13 +1,11 @@
 package javabot;
 
-import org.schwering.irc.lib.IRCUser;
-
 public class IrcEvent {
     private final String channel;
-    private final IRCUser sender;
+    private final IrcUser sender;
     private String message;
 
-    public IrcEvent(final String eventChannel, final IRCUser user, final String eventMessage) {
+    public IrcEvent(final String eventChannel, final IrcUser user, final String eventMessage) {
         channel = eventChannel;
         sender = user;
         message = eventMessage;
@@ -17,7 +15,7 @@ public class IrcEvent {
         return channel;
     }
 
-    public IRCUser getSender() {
+    public IrcUser getSender() {
         return sender;
     }
 

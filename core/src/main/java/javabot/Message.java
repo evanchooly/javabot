@@ -1,6 +1,6 @@
 package javabot;
 
-import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.IrcUser;
 
 public class Message {
     private final String destination;
@@ -13,7 +13,7 @@ public class Message {
         event = evt;
     }
 
-    public Message(final IRCUser sender, final IrcEvent event, final String value) {
+    public Message(final IrcUser sender, final IrcEvent event, final String value) {
         this(sender.getNick(), event, value);
     }
 

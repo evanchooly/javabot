@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Properties;
 
 import javabot.dao.AdminDao;
-import org.schwering.irc.lib.IRCUser;
+import javabot.pircbot.PircBotJavabot;
+import org.schwering.irc.lib.IrcUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import org.testng.annotations.AfterSuite;
 @SuppressWarnings({"StaticNonFinalField"})
 public class BaseTest {
     protected static final String TEST_BOT = "jbtestbot";
-    public static final IRCUser TEST_USER = new IRCUser("jbtestuser", "jbtestuser", "localhost");
+    public static final IrcUser TEST_USER = new IrcUser("jbtestuser", "jbtestuser", "localhost");
     private static final Logger log = LoggerFactory.getLogger(BaseTest.class);
     @Autowired
     private AdminDao dao;
@@ -94,7 +95,7 @@ public class BaseTest {
         }
 
 //        @Override
-        public void onPrivmsg(final String target, final IRCUser user, final String msg) {
+        public void onPrivmsg(final String target, final IrcUser user, final String msg) {
             responses.add(new Response(target, user, msg));
         }
 
@@ -112,7 +113,7 @@ public class BaseTest {
 //        getJavabot().shutdown();
     }
 
-    public class TestJavabot extends Javabot {
+    public class TestJavabot extends PircBotJavabot {
         private final List<Message> messages = new ArrayList<Message>();
 
         public TestJavabot(final ApplicationContext applicationContext) {
@@ -150,18 +151,18 @@ public class BaseTest {
         }
 
         @Override
-        void postAction(final Message message) {
+        public void postAction(final Message message) {
             postMessage(message);
         }
 
         @Override
-        void postMessage(final Message message) {
+        public void postMessage(final Message message) {
             logMessage(message);
             messages.add(message);
         }
 
         @Override
-        public boolean userIsOnChannel(final IRCUser sender, final String channel) {
+        public boolean userIsOnChannel(final IrcUser sender, final String channel) {
             return true;
         }
     }

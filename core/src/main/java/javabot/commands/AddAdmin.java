@@ -8,7 +8,7 @@ import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.AdminDao;
-import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.IrcUser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -28,7 +28,7 @@ public class AddAdmin extends AdminCommand {
     @Override
     public List<Message> execute(final Javabot bot, final IrcEvent event) {
         final List<Message> responses = new ArrayList<Message>();
-        final IRCUser user = findUser(bot, event, userName);
+        final IrcUser user = findUser(bot, event, userName);
         if (user == null) {
             responses.add(new Message(event.getChannel(), event, "That user is not on this channel: " + userName));
         } else {
@@ -43,7 +43,7 @@ public class AddAdmin extends AdminCommand {
         return responses;
     }
 
-    private IRCUser findUser(final Javabot bot, final IrcEvent event, final String name) {
+    private IrcUser findUser(final Javabot bot, final IrcEvent event, final String name) {
 /*
         final Collection<ChannelUser> users = bot.getChannels().get(event.getChannel()).getChannelUsers();
         for (final ChannelUser user : users) {

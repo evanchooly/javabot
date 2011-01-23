@@ -42,6 +42,7 @@ public class Logs implements Serializable, Persistent {
         ACTION,
         BAN,
         DISCONNECTED,
+        ERROR,
         INVITE,
         JOIN,
         PART,

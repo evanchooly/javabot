@@ -1,5 +1,9 @@
 package javabot.operations;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ServiceLoader;
+
 import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
 import javabot.Javabot;
@@ -7,10 +11,6 @@ import javabot.Message;
 import javabot.commands.AdminCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ServiceLoader;
 
 /**
  * Created Dec 17, 2008

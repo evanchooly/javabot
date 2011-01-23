@@ -33,7 +33,7 @@ public class NavigationPanel extends Panel {
             forward.add(new Label("forward", sdf.format(calendar.getTime())));
             add(forward);
         } else {
-            add(new Label("channel", "FreeNode Javabot"));
+            add(new Label("channel", "FreeNode PircBotJavabot"));
             add(new Label("back", "blah")).setVisible(false);
             add(new Label("forward", "blah")).setVisible(false);
         }

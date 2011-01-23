@@ -1,13 +1,13 @@
 package javabot.database;
 
-import com.antwerkz.maven.SPI;
-import javabot.Javabot;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import com.antwerkz.maven.SPI;
+import javabot.Javabot;
 
 @SPI(UpgradeScript.class)
 public class RenamePrefixes extends UpgradeScript {

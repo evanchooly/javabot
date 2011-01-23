@@ -5,7 +5,7 @@ import javabot.IrcEvent;
 import javabot.Message;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
-import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.IrcUser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class ForgetFactoidOperation extends StandardOperation {
     public List<Message> handleMessage(final IrcEvent event) {
         final String channel = event.getChannel();
         String message = event.getMessage();
-        final IRCUser sender = event.getSender();
+        final IrcUser sender = event.getSender();
         final List<Message> responses = new ArrayList<Message>();
         if (message.startsWith("forget ")) {
             message = message.substring("forget ".length());
@@ -34,7 +34,7 @@ public class ForgetFactoidOperation extends StandardOperation {
     }
 
     protected void forget(final List<Message> responses, final IrcEvent event, final String channel,
-                          final IRCUser sender, final String key) {
+                          final IrcUser sender, final String key) {
         final Factoid factoid = factoidDao.getFactoid(key);
         if (factoid != null) {
             if (!factoid.getLocked() || isAdminUser(event)) {

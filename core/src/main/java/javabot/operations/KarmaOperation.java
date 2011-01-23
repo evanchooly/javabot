@@ -11,7 +11,7 @@ import javabot.dao.KarmaDao;
 import javabot.model.Karma;
 import javabot.operations.throttle.ThrottleItem;
 import javabot.operations.throttle.Throttler;
-import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.IrcUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +25,10 @@ public class KarmaOperation extends BotOperation {
     private static final Throttler<KarmaInfo> throttler = new Throttler<KarmaInfo>(100, Javabot.THROTTLE_TIME);
 
     public static final class KarmaInfo implements ThrottleItem<KarmaInfo> {
-        private final IRCUser user;
+        private final IrcUser user;
         private final String target;
 
-        public KarmaInfo(final IRCUser user, final String target) {
+        public KarmaInfo(final IrcUser user, final String target) {
             this.user = user;
             this.target = target;
         }
@@ -45,7 +45,7 @@ public class KarmaOperation extends BotOperation {
         responses.addAll(readKarma(event));
         if (responses.isEmpty()) {
             String message = event.getMessage();
-            final IRCUser sender = event.getSender();
+            final IrcUser sender = event.getSender();
             final String channel = event.getChannel();
             final String nick;
             try {
@@ -91,7 +91,7 @@ public class KarmaOperation extends BotOperation {
     public List<Message> readKarma(final IrcEvent event) {
         final String message = event.getMessage();
         final String channel = event.getChannel();
-        final IRCUser sender = event.getSender();
+        final IrcUser sender = event.getSender();
         final List<Message> response = new ArrayList<Message>();
         if (message.startsWith("karma ")) {
             final String nick = message.substring("karma ".length()).toLowerCase();

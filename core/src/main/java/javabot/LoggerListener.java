@@ -6,7 +6,7 @@ import javabot.dao.LogsDao;
 import javabot.model.Logs.Type;
 import org.schwering.irc.lib.IRCEventListener;
 import org.schwering.irc.lib.IRCModeParser;
-import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.IrcUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class LoggerListener implements IRCEventListener {
     @Autowired
     private LogsDao logsDao;
 
-    public void onAction(final IRCUser sender, final String action) {
+    public void onAction(final IrcUser sender, final String action) {
         if (log.isDebugEnabled()) {
             log.debug("Sender " + sender + " Message " + action);
         }
@@ -35,6 +35,7 @@ public class LoggerListener implements IRCEventListener {
 
     @Override
     public void onError(final String msg) {
+        logsDao.logMessage(Type.ERROR, null, null, "Disconnected at " + new Date());
     }
 
     @Override
@@ -42,39 +43,39 @@ public class LoggerListener implements IRCEventListener {
     }
 
     @Override
-    public void onInvite(final String chan, final IRCUser user, final String passiveNick) {
+    public void onInvite(final String chan, final IrcUser user, final String passiveNick) {
         logsDao.logMessage(Type.INVITE, null, chan, String.format("Invited to %s by %s", chan, user.getNick()));
     }
 
     @Override
-    public void onJoin(final String chan, final IRCUser user) {
+    public void onJoin(final String chan, final IrcUser user) {
         logsDao.logMessage(Type.INVITE, user.getNick(), chan, String.format("%s joined %s", user.getNick(), chan));
     }
 
     @Override
-    public void onKick(final String chan, final IRCUser user, final String passiveNick, final String msg) {
+    public void onKick(final String chan, final IrcUser user, final String passiveNick, final String msg) {
         logsDao.logMessage(Type.KICK, user.getNick(), chan, String.format("%s was kicked from %s", user.getNick(), chan));
     }
 
     @Override
-    public void onMode(final String chan, final IRCUser user, final IRCModeParser modeParser) {
+    public void onMode(final String chan, final IrcUser user, final IRCModeParser modeParser) {
     }
 
     @Override
-    public void onMode(final IRCUser user, final String passiveNick, final String mode) {
+    public void onMode(final IrcUser user, final String passiveNick, final String mode) {
     }
 
     @Override
-    public void onNick(final IRCUser user, final String newNick) {
+    public void onNick(final IrcUser user, final String newNick) {
         logsDao.logMessage(Type.NICK, user.getNick(), null, String.format("%s changed nicks to %s", user.getNick(), newNick));
     }
 
     @Override
-    public void onNotice(final String target, final IRCUser user, final String msg) {
+    public void onNotice(final String target, final IrcUser user, final String msg) {
     }
 
     @Override
-    public void onPart(final String chan, final IRCUser user, final String msg) {
+    public void onPart(final String chan, final IrcUser user, final String msg) {
         logsDao.logMessage(Type.PART, user.getNick(), chan, String.format("%s parted %s with [%s]", user.getNick(),
             chan, msg));
     }
@@ -85,12 +86,12 @@ public class LoggerListener implements IRCEventListener {
     }
 
     @Override
-    public void onPrivmsg(final String target, final IRCUser user, final String msg) {
+    public void onPrivmsg(final String target, final IrcUser user, final String msg) {
         logsDao.logMessage(Type.MESSAGE, user.getNick(), target, msg);
     }
 
     @Override
-    public void onQuit(final IRCUser user, final String msg) {
+    public void onQuit(final IrcUser user, final String msg) {
         logsDao.logMessage(Type.QUIT, user.getNick(), null, String.format("%s quit with [%s]", user.getNick(), msg));
     }
 
@@ -99,7 +100,7 @@ public class LoggerListener implements IRCEventListener {
     }
 
     @Override
-    public void onTopic(final String chan, final IRCUser user, final String topic) {
+    public void onTopic(final String chan, final IrcUser user, final String topic) {
         logsDao.logMessage(Type.TOPIC, user.getNick(), chan, String.format("%s changed the topic to [%s]",
             user.getNick(), topic));
     }

@@ -5,7 +5,7 @@ import java.util.List;
 
 import javabot.BaseTest;
 import javabot.Message;
-import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.lib.IrcUser;
 import org.testng.Assert;
 import org.unitils.spring.annotation.SpringApplicationContext;
 
@@ -27,7 +27,7 @@ public abstract class BaseOperationTest extends BaseTest {
         compareResults(sendMessage(message), responses);
     }
 
-    protected void testMessageAs(final IRCUser user, final String message, final String... responses) {
+    protected void testMessageAs(final IrcUser user, final String message, final String... responses) {
         compareResults(sendMessage(user, message), responses);
     }
 
@@ -45,9 +45,9 @@ public abstract class BaseOperationTest extends BaseTest {
         return sendMessage(TEST_USER, message);
     }
 
-    private List<Message> sendMessage(final IRCUser testUser, final String message) {
-        getJavabot().addUser(testUser);
-        getJavabot().getListener().processMessage(getJavabotChannel(), message, testUser);
+    private List<Message> sendMessage(final IrcUser testUser, final String message) {
+//        getJavabot().addUser(testUser.getNick());
+        getJavabot().processMessage(getJavabotChannel(), testUser, message);
         return getJavabot().getMessages();
     }
 
@@ -67,7 +67,7 @@ public abstract class BaseOperationTest extends BaseTest {
         return getForgetMessage(BaseTest.TEST_USER, factoid);
     }
 
-    public String getForgetMessage(final IRCUser testUser, final String factoid) {
+    public String getForgetMessage(final IrcUser testUser, final String factoid) {
         return String.format("I forgot about %s, %s.", factoid, testUser);
     }
 
