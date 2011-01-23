@@ -20,7 +20,6 @@ import javax.tools.StandardLocation;
 
 import com.antwerkz.maven.BaseProcessor;
 import com.antwerkz.maven.SPI;
-import com.sun.tools.javac.processing.JavacFiler;
 
 @SupportedAnnotationTypes("org.hibernate.annotations.Index")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
