@@ -28,16 +28,15 @@ public class OperationsDispatchListener extends IRCEventAdapter {
         executors = new ThreadPoolExecutor(15, 40, 10L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
             new JavabotThreadFactory(true, "javabot-handler-thread-"));
     }
-//    @Override
-//    public void onMessage(final String channel, final String sender, final String login, final String hostname,
-//        final String message) {
-//        executors.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                processMessage(channel, message, sender, login, hostname);
-//            }
-//        });
-//    }
+
+    public void onMessage(final String channel, final IRCUser user, final String message) {
+        executors.execute(new Runnable() {
+            @Override
+            public void run() {
+                processMessage(channel, message, user);
+            }
+        });
+    }
 
     @Override
     public void onPrivmsg(final String channel, final IRCUser user, final String message) {

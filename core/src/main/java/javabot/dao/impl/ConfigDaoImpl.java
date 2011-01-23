@@ -35,12 +35,12 @@ public class ConfigDaoImpl extends AbstractDaoImpl<Config> implements ConfigDao 
 
     public Config create() {
         final Config config = new Config();
-
+        System.out.println("System.getProperties() = " + System.getProperties());
         config.setNick(System.getProperty("javabot.nick"));
         config.setPassword(System.getProperty("javabot.password")); // optional
         config.setServer(System.getProperty("javabot.server", "irc.freenode.org"));
-        config.setTrigger("~");
         config.setPort(Integer.parseInt(System.getProperty("javabot.port", "6667")));
+        config.setTrigger("~");
 
         final List<BotOperation> it = BotOperation.list();
         final Set<String> list = new TreeSet<String>();

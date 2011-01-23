@@ -210,7 +210,6 @@
                     </execution>
                 </executions>
             </plugin>
-<!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
@@ -223,16 +222,30 @@
                         </goals>
                         <phase>validate</phase>
                         <configuration>
-                            <file>lib/irclib.jar</file>
+                            <file>lib/irclib-${irclib.version}.jar</file>
                             <groupId>org.schwering</groupId>
                             <artifactId>irclib</artifactId>
-                            <version>1.10-evanchooly</version>
+                            <version>${irclib.version}</version>
+                            <packaging>jar</packaging>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install schwering lib sources</id>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <file>lib/irclib-${irclib.version}-sources.jar</file>
+                            <groupId>org.schwering</groupId>
+                            <artifactId>irclib</artifactId>
+                            <version>${irclib.version}</version>
+                            <classifier>source</classifier>
                             <packaging>jar</packaging>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
--->
         </plugins>
     </build>
 

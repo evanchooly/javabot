@@ -17,6 +17,8 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import javax.persistence.NoResultException;
 
 import ca.grimoire.maven.ArtifactDescription;
@@ -27,7 +29,6 @@ import javabot.dao.ConfigDao;
 import javabot.dao.LogsDao;
 import javabot.dao.ShunDao;
 import javabot.database.UpgradeScript;
-import javabot.model.Channel;
 import javabot.model.Config;
 import javabot.model.Logs;
 import javabot.operations.BotOperation;
@@ -36,7 +37,11 @@ import javabot.operations.StandardOperation;
 import org.schwering.irc.lib.IRCEventAdapter;
 import org.schwering.irc.lib.IRCEventListener;
 import org.schwering.irc.lib.IRCUser;
+import org.schwering.irc.manager.Channel;
+import org.schwering.irc.manager.ChannelUser;
 import org.schwering.irc.manager.Connection;
+import org.schwering.irc.manager.event.ConnectionAdapter;
+import org.schwering.irc.manager.event.NamesEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -68,7 +73,7 @@ public class Javabot implements ApplicationContextAware {
     private Connection connection;
     private String nick;
     private final OperationsDispatchListener listener = new OperationsDispatchListener(this);
-    private final Map<String, Set<IRCUser>> channels = new HashMap<String, Set<IRCUser>>();
+    private final Map<String, Channel> channels = new HashMap<String, Channel>();
     private final Map<String, IRCUser> users = new HashMap<String, IRCUser>();
     private final Set<BotOperation> activeOperations = new TreeSet<BotOperation>(new OperationComparator());
     private final List<BotOperation> standard = new ArrayList<BotOperation>();
@@ -201,11 +206,6 @@ public class Javabot implements ApplicationContextAware {
         return enabled;
     }
 
-    @Deprecated
-    public BotOperation getOperation(final String name) {
-        return operations.get(name);
-    }
-
     public Iterator<BotOperation> getOperations() {
         final List<BotOperation> ops = new ArrayList<BotOperation>(activeOperations);
         ops.addAll(standard);
@@ -233,7 +233,7 @@ public class Javabot implements ApplicationContextAware {
             connection.connect();
             connection.send("PRIVMSG NickServ :identify " + getNickPassword());
             sleep(authWait);
-            for (final Channel channel : channelDao.getChannels()) {
+            for (final javabot.model.Channel channel : channelDao.getChannels()) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -253,8 +253,8 @@ public class Javabot implements ApplicationContextAware {
     }
 
     public boolean isOnSameChannelAs(final IRCUser user) {
-        for (final String channel : getChannels()) {
-            if (userIsOnChannel(user, channel)) {
+        for (final Channel channel : channels.values()) {
+            if (userIsOnChannel(user, channel.getName())) {
                 return true;
             }
         }
@@ -262,7 +262,9 @@ public class Javabot implements ApplicationContextAware {
     }
 
     public boolean userIsOnChannel(final IRCUser sender, final String channel) {
-        for (final IRCUser user : getUsers(channel)) {
+        final Channel chan = channels.get(channel);
+//        chan.getUser(sender);
+        for (final ChannelUser user : chan.getChannelUsers()) {
             if (user.getNick().equalsIgnoreCase(sender.getNick())) {
                 return true;
             }
@@ -337,16 +339,15 @@ public class Javabot implements ApplicationContextAware {
         return channels.keySet();
     }
 
-    public Set<IRCUser> getUsers(final String channel) {
-        return channels.get(channel);
-    }
-
     public void joinChannel(final String channel) {
-        connection.joinChannel(channel);
+        joinChannel(channel, "");
     }
 
     public void joinChannel(final String channel, final String key) {
+        final BlockingJoinAdapter listener = new BlockingJoinAdapter(connection, channel);
+        connection.addConnectionListener(listener);
         connection.joinChannel(channel, key);
+        listener.await();
     }
 
     public void partChannel(final String channel) {
@@ -365,50 +366,78 @@ public class Javabot implements ApplicationContextAware {
         return users.get(name);
     }
 
+    private static class BlockingJoinAdapter extends ConnectionAdapter {
+        private final Connection connection;
+        private final String channel;
+        private final CountDownLatch latch = new CountDownLatch(1);
+
+        public BlockingJoinAdapter(final Connection connection, final String channel) {
+            this.connection = connection;
+            this.channel = channel;
+        }
+
+        @Override
+        public void namesReceived(final NamesEvent event) {
+            super.namesReceived(event);
+            latch.countDown();
+        }
+
+        public void await() {
+            try {
+                latch.await(10, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(String.format("Joining %s timed out", channel), e);
+            } finally {
+                connection.removeConnectionListener(this);
+            }
+        }
+    }
+
     private class Tracker extends IRCEventAdapter {
         @Override
         public void onPart(final String chan, final IRCUser user, final String msg) {
             if (user.getNick().equals(getNick())) {
                 channels.remove(chan);
-            } else {
-                channels.get(chan).remove(user);
             }
         }
 
         @Override
-        public void onJoin(final String chan, final IRCUser user) {
-            Set<IRCUser> members;
-            synchronized (channels) {
-                members = channels.get(chan);
-                if (members == null) {
-                    members = new TreeSet<IRCUser>();
-                    channels.put(chan, members);
+        public void onJoin(final String name, final IRCUser user) {
+            for (final Channel channel : connection.getChannels()) {
+                if (name.equals(channel.getName())) {
+                    channels.put(name, channel);
                 }
             }
-            members.add(user);
             addUser(user);
         }
 
         @Override
         public void onInvite(final String chan, final IRCUser user, final String passiveNick) {
             super.onInvite(chan, user, passiveNick);
-            joinChannel(chan);
-            connection.sendPrivmsg(chan, "I was asked to join by " + user);
+            final javabot.model.Channel channel = new javabot.model.Channel();
+            channel.setName(chan);
+            channelDao.save(channel);
+            channel.join(Javabot.this);
+            connection.sendPrivmsg(chan, "I was invited by " + user);
         }
     }
 
-    private static void validateProperties() throws IOException {
-        Properties props = new Properties();
+    public static void validateProperties() {
+        final Properties props = new Properties();
         InputStream stream = null;
         try {
-            stream = new FileInputStream("javabot.properties");
-            props.load(stream);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Please define a javabot.properties file to configure the bot");
-        } finally {
-            if (stream != null) {
-                stream.close();
+            try {
+                stream = new FileInputStream("javabot.properties");
+                props.load(stream);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException("Please define a javabot.properties file to configure the bot");
+            } finally {
+                if (stream != null) {
+                    stream.close();
+                }
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
         }
         check(props, "javabot.server");
         check(props, "javabot.port");
@@ -421,7 +450,6 @@ public class Javabot implements ApplicationContextAware {
         check(props, "javabot.password");
         check(props, "javabot.admin.nick");
         check(props, "javabot.admin.hostmask");
-
         System.getProperties().putAll(props);
     }
 

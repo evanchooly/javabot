@@ -2,6 +2,8 @@ package javabot.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -12,6 +14,7 @@ import javax.persistence.Table;
 import com.antwerkz.maven.SPI;
 import javabot.Javabot;
 import javabot.dao.ChannelDao;
+import org.schwering.irc.lib.IRCUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +37,7 @@ public class Channel implements Serializable, Persistent {
     private String key;
     private Date updated;
     private Boolean logged = true;
+    private transient final List<IRCUser> users = new CopyOnWriteArrayList<IRCUser>();
 
     @Id
     @GeneratedValue
@@ -96,5 +100,13 @@ public class Channel implements Serializable, Persistent {
                 bot.joinChannel(getName(), getKey());
             }
         }
+    }
+
+    public void add(final IRCUser user) {
+        users.add(user);
+    }
+
+    public void remove(final IRCUser user) {
+        users.remove(user);
     }
 }

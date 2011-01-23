@@ -24,7 +24,6 @@ public class BaseTest {
     private AdminDao dao;
     public final String ok;
     private static TestJavabot bot;
-    private static TestBot user;
     private final ApplicationContext context;
 
     public BaseTest() {
@@ -35,8 +34,9 @@ public class BaseTest {
         sleep(2000);
     }
 
-    protected final Javabot createBot() {
+    protected final TestJavabot createBot() {
         if (bot == null) {
+            Javabot.validateProperties();
             bot = new TestJavabot(context);
         }
         return bot;
@@ -47,15 +47,6 @@ public class BaseTest {
             createBot();
         }
         return bot;
-    }
-
-    public final TestBot getTestBot() {
-        synchronized (context) {
-            if (user == null) {
-                user = new TestBot();
-            }
-            return user;
-        }
     }
 
     protected final void inject(final Object object) {
@@ -124,8 +115,8 @@ public class BaseTest {
     public class TestJavabot extends Javabot {
         private final List<Message> messages = new ArrayList<Message>();
 
-        public TestJavabot(final ApplicationContext context) {
-            super(context);
+        public TestJavabot(final ApplicationContext applicationContext) {
+            super(applicationContext);
         }
 
         public List<Message> getMessages() {
@@ -142,6 +133,7 @@ public class BaseTest {
         @Override
         public void loadConfig() {
             try {
+                super.loadConfig();
                 log.debug("Running with configuration: " + config);
                 setStartStrings("~");
                 if(dao.getAdmin(BaseTest.TEST_USER.getNick(), "localhost") == null) {

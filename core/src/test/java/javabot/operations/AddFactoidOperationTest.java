@@ -1,13 +1,10 @@
 package javabot.operations;
 
 import java.io.IOException;
-import java.util.List;
 
 import javabot.BaseTest;
-import javabot.Message;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
-import org.schwering.irc.lib.IRCUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;

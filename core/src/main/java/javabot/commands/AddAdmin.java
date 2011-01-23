@@ -2,15 +2,12 @@ package javabot.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.AdminDao;
-import javabot.operations.BotOperation;
-import javabot.operations.StandardOperation;
 import org.schwering.irc.lib.IRCUser;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -47,12 +44,14 @@ public class AddAdmin extends AdminCommand {
     }
 
     private IRCUser findUser(final Javabot bot, final IrcEvent event, final String name) {
-        final Set<IRCUser> users = bot.getUsers(event.getChannel());
-        for (final IRCUser user : users) {
+/*
+        final Collection<ChannelUser> users = bot.getChannels().get(event.getChannel()).getChannelUsers();
+        for (final ChannelUser user : users) {
             if (user.getNick().equals(name)) {
-                return user;
+                return bot.getUser(name);
             }
         }
+*/
         return null;
     }
 }

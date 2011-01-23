@@ -296,5 +296,6 @@
     <properties>
         <camel.version>2.3.0</camel.version>
         <spring.version>3.0.5.RELEASE</spring.version>
+        <irclib.version>2.0-SNAPSHOT</irclib.version>
     </properties>
 </project>

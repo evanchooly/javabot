@@ -81,6 +81,7 @@ public class LoggerListener implements IRCEventListener {
 
     @Override
     public void onPing(final String ping) {
+        System.out.println("ping = " + ping);
     }
 
     @Override
