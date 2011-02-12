@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
 import javabot.Message;
-import org.schwering.irc.lib.IrcUser;
+import javabot.IrcUser;
 
 @SPI(BotOperation.class)
 public class DaysUntilOperation extends BotOperation {

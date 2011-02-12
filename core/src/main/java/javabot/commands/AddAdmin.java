@@ -8,7 +8,7 @@ import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.AdminDao;
-import org.schwering.irc.lib.IrcUser;
+import javabot.IrcUser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

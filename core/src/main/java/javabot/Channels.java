@@ -3,8 +3,6 @@ package javabot;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.schwering.irc.lib.IrcUser;
-
 public class Channels {
     private final Map<String, ChannelList> channels = new ConcurrentHashMap<String, ChannelList>();
     private final Map<String, IrcUser> users = new ConcurrentHashMap<String, IrcUser>();
@@ -14,7 +12,7 @@ public class Channels {
     }
 
     public ChannelList add(final String channel) {
-        final ChannelList list = new ChannelList(channel);
+        final ChannelList list = new ChannelList(this, channel);
         final ChannelList put = channels.put(channel, list);
         return put == null ? list : put;
     }
@@ -27,5 +25,9 @@ public class Channels {
 
     public IrcUser getUser(final String name) {
         return users.get(name);
+    }
+
+    public void add(final IrcUser user) {
+        users.put(user.getNick(), user);
     }
 }

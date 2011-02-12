@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javabot.dao.AdminDao;
-import javabot.pircbot.PircBotJavabot;
-import org.schwering.irc.lib.IrcUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,7 +111,7 @@ public class BaseTest {
 //        getJavabot().shutdown();
     }
 
-    public class TestJavabot extends PircBotJavabot {
+    public class TestJavabot extends Javabot {
         private final List<Message> messages = new ArrayList<Message>();
 
         public TestJavabot(final ApplicationContext applicationContext) {
@@ -135,7 +133,6 @@ public class BaseTest {
         public void loadConfig() {
             try {
                 super.loadConfig();
-                log.debug("Running with configuration: " + config);
                 setStartStrings("~");
                 if(dao.getAdmin(BaseTest.TEST_USER.getNick(), "localhost") == null) {
                     dao.create(BaseTest.TEST_USER.getNick(), "localhost");
@@ -162,8 +159,12 @@ public class BaseTest {
         }
 
         @Override
-        public boolean userIsOnChannel(final IrcUser sender, final String channel) {
+        public boolean userIsOnChannel(final String sender, final String channel) {
             return true;
+        }
+
+        public void addUser(final IrcUser user) {
+            channels.add(user);
         }
     }
 }

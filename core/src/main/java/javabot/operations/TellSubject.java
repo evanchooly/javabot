@@ -1,6 +1,6 @@
 package javabot.operations;
 
-import org.schwering.irc.lib.IrcUser;
+import javabot.IrcUser;
 
 public final class TellSubject {
     private final IrcUser target;

@@ -14,7 +14,7 @@ import javabot.TellMessage;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
 import javabot.operations.throttle.Throttler;
-import org.schwering.irc.lib.IrcUser;
+import javabot.IrcUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,9 +102,9 @@ public class GetFactoidOperation extends StandardOperation {
                         final TellInfo info = new TellInfo(user, thing);
                         if (throttler.isThrottled(info)) {
                             responses.add(new Message(channel, event, sender + ", Slow down, Speedy Gonzalez!"));
-                        } else if (!getBot().userIsOnChannel(user, channel)) {
+                        } else if (!getBot().userIsOnChannel(user.getNick(), channel)) {
                             responses.add(new Message(channel, event, "The user " + user + " is not on " + channel));
-                        } else if (sender.getNick().equals(channel) && !getBot().isOnSameChannelAs(user)) {
+                        } else if (sender.getNick().equals(channel) && !getBot().isOnSameChannelAs(user.getNick())) {
                             responses
                                 .add(new Message(sender, event, "I will not send a message to someone who is not on any"
                                     + " of my channels."));
@@ -140,7 +140,7 @@ public class GetFactoidOperation extends StandardOperation {
             return null;
         }
         final String thing = body.substring(about + "about ".length());
-        return new TellSubject(getBot().getUser(nick), thing);
+        return new TellSubject(event.getSender(), thing);
     }
 
     private TellSubject parseShorthand(final IrcEvent event, final String message) {
@@ -153,7 +153,7 @@ public class GetFactoidOperation extends StandardOperation {
         final int space = target.indexOf(' ');
         final String user = target.substring(0, space);
         final String value = target.substring(space + 1).trim();
-        return space < 0 ? null : new TellSubject(getBot().getUser(user), value);
+        return space < 0 ? null : new TellSubject(event.getSender(), value);
     }
 
     private boolean isTellCommand(final String message) {

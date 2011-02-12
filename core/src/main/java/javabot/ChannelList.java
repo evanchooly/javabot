@@ -3,14 +3,13 @@ package javabot;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.schwering.irc.lib.IrcUser;
-
 public class ChannelList {
-    private String channel;
-    private Channels channels;
+    private final String channel;
+    private final Channels channels;
     private final Map<String, IrcUser> users = new ConcurrentHashMap<String, IrcUser>();
 
-    public ChannelList(final String channel) {
+    public ChannelList(final Channels channels, final String channel) {
+        this.channels = channels;
         this.channel = channel;
     }
 

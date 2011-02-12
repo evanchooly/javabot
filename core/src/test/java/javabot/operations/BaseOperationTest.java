@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import javabot.BaseTest;
+import javabot.IrcUser;
 import javabot.Message;
-import org.schwering.irc.lib.IrcUser;
 import org.testng.Assert;
 import org.unitils.spring.annotation.SpringApplicationContext;
 
@@ -46,7 +46,7 @@ public abstract class BaseOperationTest extends BaseTest {
     }
 
     private List<Message> sendMessage(final IrcUser testUser, final String message) {
-//        getJavabot().addUser(testUser.getNick());
+        getJavabot().addUser(testUser);
         getJavabot().processMessage(getJavabotChannel(), testUser, message);
         return getJavabot().getMessages();
     }

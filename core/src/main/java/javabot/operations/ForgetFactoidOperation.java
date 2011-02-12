@@ -1,15 +1,15 @@
 package javabot.operations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
+import javabot.IrcUser;
 import javabot.Message;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
-import org.schwering.irc.lib.IrcUser;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SPI(StandardOperation.class)
 public class ForgetFactoidOperation extends StandardOperation {

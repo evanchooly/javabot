@@ -1,7 +1,5 @@
 package javabot;
 
-import org.schwering.irc.lib.IrcUser;
-
 public class Message {
     private final String destination;
     private String message;

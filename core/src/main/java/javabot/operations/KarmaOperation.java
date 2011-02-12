@@ -11,7 +11,7 @@ import javabot.dao.KarmaDao;
 import javabot.model.Karma;
 import javabot.operations.throttle.ThrottleItem;
 import javabot.operations.throttle.Throttler;
-import org.schwering.irc.lib.IrcUser;
+import javabot.IrcUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,5 @@
 package javabot;
 
-import org.schwering.irc.lib.IrcUser;
-
 /**
  * Created Jan 27, 2009
 *

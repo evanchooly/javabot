@@ -12,9 +12,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import com.antwerkz.maven.SPI;
+import javabot.IrcUser;
 import javabot.Javabot;
 import javabot.dao.ChannelDao;
-import org.schwering.irc.lib.IrcUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,6 @@ public class Channel implements Serializable, Persistent {
     private String key;
     private Date updated;
     private Boolean logged = true;
-    private transient final List<IrcUser> users = new CopyOnWriteArrayList<IrcUser>();
 
     @Id
     @GeneratedValue
@@ -100,13 +99,5 @@ public class Channel implements Serializable, Persistent {
                 bot.joinChannel(getName(), getKey());
             }
         }
-    }
-
-    public void add(final IrcUser user) {
-        users.add(user);
-    }
-
-    public void remove(final IrcUser user) {
-        users.remove(user);
     }
 }

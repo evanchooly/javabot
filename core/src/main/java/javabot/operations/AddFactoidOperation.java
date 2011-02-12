@@ -6,12 +6,12 @@ import java.util.List;
 
 import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
+import javabot.IrcUser;
 import javabot.Message;
 import javabot.dao.FactoidDao;
 import javabot.dao.LogsDao;
 import javabot.model.Factoid;
 import javabot.model.Logs.Type;
-import org.schwering.irc.lib.IrcUser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SPI(StandardOperation.class)

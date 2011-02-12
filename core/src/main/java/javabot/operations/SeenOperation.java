@@ -8,7 +8,7 @@ import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
 import javabot.Message;
 import javabot.dao.LogsDao;
-import org.schwering.irc.lib.IrcUser;
+import javabot.IrcUser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SPI(BotOperation.class)

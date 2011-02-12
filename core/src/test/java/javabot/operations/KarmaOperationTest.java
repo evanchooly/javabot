@@ -3,10 +3,10 @@ package javabot.operations;
 import java.util.Date;
 
 import javabot.BaseTest;
+import javabot.IrcUser;
 import javabot.dao.ChangeDao;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;
-import org.schwering.irc.lib.IrcUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;

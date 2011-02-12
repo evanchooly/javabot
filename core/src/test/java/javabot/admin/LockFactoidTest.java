@@ -1,7 +1,7 @@
 package javabot.admin;
 
+import javabot.IrcUser;
 import javabot.operations.BaseOperationTest;
-import org.schwering.irc.lib.IrcUser;
 import org.testng.annotations.Test;
 
 @Test
