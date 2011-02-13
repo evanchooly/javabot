@@ -140,7 +140,7 @@ public class GetFactoidOperation extends StandardOperation {
             return null;
         }
         final String thing = body.substring(about + "about ".length());
-        return new TellSubject(event.getSender(), thing);
+        return new TellSubject(new IrcUser(nick), thing);
     }
 
     private TellSubject parseShorthand(final IrcEvent event, final String message) {
@@ -153,7 +153,7 @@ public class GetFactoidOperation extends StandardOperation {
         final int space = target.indexOf(' ');
         final String user = target.substring(0, space);
         final String value = target.substring(space + 1).trim();
-        return space < 0 ? null : new TellSubject(event.getSender(), value);
+        return space < 0 ? null : new TellSubject(new IrcUser(target), value);
     }
 
     private boolean isTellCommand(final String message) {

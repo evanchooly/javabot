@@ -11,6 +11,10 @@ public class IrcUser {
         this.userName = userName;
     }
 
+    public IrcUser(final String nick) {
+        this.nick = nick;
+    }
+
     public String getHost() {
         return host;
     }
