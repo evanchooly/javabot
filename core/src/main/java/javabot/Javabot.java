@@ -24,6 +24,7 @@ import javax.persistence.NoResultException;
 
 import ca.grimoire.maven.ArtifactDescription;
 import ca.grimoire.maven.NoArtifactException;
+import ca.grimoire.maven.ResourceProvider;
 import javabot.commands.AdminCommand;
 import javabot.dao.AdminDao;
 import javabot.dao.ChannelDao;
@@ -187,11 +188,26 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     }
 
     public final String loadVersion() {
+        ArtifactDescription javabot;
         try {
-            final ArtifactDescription javabot = ArtifactDescription.locate("javabot", "core");
+            javabot = ArtifactDescription.locate("javabot", "core");
             return javabot.getVersion();
         } catch (NoArtifactException nae) {
-            return "UNKNOWN";
+            try {
+                javabot = ArtifactDescription.locate("javabot", "core", new ResourceProvider() {
+                    @Override
+                    public InputStream getResourceAsStream(final String resource) {
+                        try {
+                            return new FileInputStream("target/maven-archiver/pom.properties");
+                        } catch (FileNotFoundException e) {
+                            throw new RuntimeException(e.getMessage(), e);
+                        }
+                    }
+                });
+                return javabot.getVersion();
+            } catch (NoArtifactException e) {
+                return "UNKNOWN";
+            }
         }
     }
 
@@ -419,7 +435,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
 
     public boolean userIsOnChannel(final String nick, final String channel) {
         for (final User user : getUsers(channel)) {
-            if(user.getNick().equals(nick)){
+            if (user.getNick().equals(nick)) {
                 return true;
             }
         }
@@ -445,6 +461,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
         } catch (InterruptedException exception) {
         }
     }
+
     public void log(final String string) {
         if (log.isInfoEnabled()) {
             log.info(string);
@@ -495,9 +512,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     @Override
     public void onInvite(final String targetNick, final String sourceNick, final String sourceLogin,
         final String sourceHostname, final String channel) {
-        if (log.isDebugEnabled()) {
-            log.debug("Invited to " + channel + " by " + sourceNick);
-        }
         if (channelDao.get(channel) != null) {
             joinChannel(channel);
         }
@@ -519,10 +533,6 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     public void onPrivateMessage(final String sender, final String login, final String hostname,
         final String message) {
         if (adminDao.isAdmin(sender, hostname) || isOnSameChannelAs(sender)) {
-            //The bot always replies with a private message ...
-            if (log.isDebugEnabled()) {
-                log.debug("PRIVMSG Sender:" + sender + " Login" + login);
-            }
             executors.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -546,20 +556,13 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     @Override
     public void onAction(final String sender, final String login, final String hostname, final String target,
         final String action) {
-        if (log.isDebugEnabled()) {
-            log.debug("Sender " + sender + " Message " + action);
-        }
-        if (channelDao.get(target).getLogged()) {
-            logsDao.logMessage(Logs.Type.ACTION, sender, target, action);
-        }
+        logsDao.logMessage(Logs.Type.ACTION, sender, target, action);
     }
 
     @Override
     public void onKick(final String channel, final String kickerNick, final String kickerLogin,
         final String kickerHostname, final String recipientNick, final String reason) {
-        if (channelDao.get(channel).getLogged()) {
-            logsDao
-                .logMessage(Logs.Type.KICK, kickerNick, channel, " kicked " + recipientNick + " (" + reason + ")");
-        }
+        logsDao
+            .logMessage(Logs.Type.KICK, kickerNick, channel, " kicked " + recipientNick + " (" + reason + ")");
     }
 }

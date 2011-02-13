@@ -59,9 +59,6 @@ public class KarmaOperation extends BotOperation {
                 responses.add(new Message(channel, event, "Sorry, karma changes are not allowed in private messages."));
             } else if (message.endsWith("++") || message.endsWith("--")) {
                 if (throttler.isThrottled(new KarmaInfo(sender, nick))) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("skipping karma change by " + nick + " for " + nick);
-                    }
                     responses.add(new Message(channel, event, "Rest those fingers, Tex"));
                 } else {
                     throttler.addThrottleItem(new KarmaInfo(sender, nick));

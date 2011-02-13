@@ -18,9 +18,6 @@ public class QuitOperation extends BotOperation {
         final String message = event.getMessage();
         if(message.toLowerCase().startsWith("quit ")) {
             if(message.substring("quit ".length()).equals(getBot().getNickPassword())) {
-                if(log.isDebugEnabled()) {
-                    log.debug("About to quit");
-                }
                 System.exit(0);
             }
         }

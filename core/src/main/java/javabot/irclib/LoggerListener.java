@@ -18,9 +18,7 @@ public class LoggerListener implements IRCEventListener {
     private LogsDao logsDao;
 
     public void onAction(final IRCUser sender, final String action) {
-        if (log.isDebugEnabled()) {
-            log.debug("Sender " + sender + " Message " + action);
-        }
+        logsDao.logMessage(Type.ACTION, null, null, action);
     }
 
     @Override

@@ -52,9 +52,6 @@ public class AolBonicsOperation extends BotOperation {
         final String message = event.getMessage();
         final String channel = event.getChannel();
         final String[] split = message.split(" ");
-        if (log.isDebugEnabled()) {
-            log.debug("AolBonicsOperation: " + message);
-        }
         final List<Message> responses = new ArrayList<Message>();
         for (final String bad : split) {
             if (phrases.contains(bad.toLowerCase().replaceAll("!|\\.|\\?|,", "")) && responses.isEmpty()) {
