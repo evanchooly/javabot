@@ -153,7 +153,7 @@ public class GetFactoidOperation extends StandardOperation {
         final int space = target.indexOf(' ');
         final String user = target.substring(0, space);
         final String value = target.substring(space + 1).trim();
-        return space < 0 ? null : new TellSubject(new IrcUser(target), value);
+        return space < 0 ? null : new TellSubject(new IrcUser(user), value);
     }
 
     private boolean isTellCommand(final String message) {
