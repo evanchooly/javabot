@@ -74,11 +74,13 @@ public class Javabot extends PircBot implements ApplicationContextAware {
     private ShunDao shunDao;
     @Autowired
     private AdminDao adminDao;
+    private SynchronousQueue<Runnable> queue;
 
     public Javabot(final ApplicationContext applicationContext) {
         context = applicationContext;
         setVersion(loadVersion());
-        executors = new ThreadPoolExecutor(15, 40, 10L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(),
+        queue = new SynchronousQueue<Runnable>();
+        executors = new ThreadPoolExecutor(15, 40, 10L, TimeUnit.SECONDS, queue,
             new JavabotThreadFactory(true, "javabot-handler-thread-"));
         final Thread hook = new Thread(new Runnable() {
             @Override
@@ -135,6 +137,7 @@ public class Javabot extends PircBot implements ApplicationContextAware {
                 }
             } catch (Exception exception) {
                 disconnect();
+                queue.clear();
                 log.error(exception.getMessage(), exception);
             }
             sleep(1000);
