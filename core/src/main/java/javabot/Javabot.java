@@ -125,12 +125,13 @@ public class Javabot extends PircBot implements ApplicationContextAware {
                 sleep(authWait);
                 final List<Channel> channelList = channelDao.getChannels();
                 for (final Channel channel : channelList) {
-                    new Thread(new Runnable() {
+                    executors.submit(new Runnable() {
                         @Override
                         public void run() {
                             channel.join(Javabot.this);
+                            sleep(500);
                         }
-                    }).start();
+                    });
                 }
             } catch (Exception exception) {
                 disconnect();
