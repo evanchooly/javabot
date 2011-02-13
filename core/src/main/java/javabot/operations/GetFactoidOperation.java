@@ -111,7 +111,7 @@ public class GetFactoidOperation extends StandardOperation {
                         } else if (thing.endsWith("++") || thing.endsWith("--")) {
                             responses.add(new Message(channel, event, "I'm afraid I can't let you do that, Dave."));
                         } else {
-                            final List<Message> list = getBot().getResponses(channel, sender, thing);
+                            final List<Message> list = getBot().getResponses(channel, user, thing);
                             for (final Message msg : list) {
                                 responses
                                     .add(new TellMessage(user, msg.getDestination(), msg.getEvent(), msg.getMessage()));
@@ -144,7 +144,7 @@ public class GetFactoidOperation extends StandardOperation {
     }
 
     private TellSubject parseShorthand(final IrcEvent event, final String message) {
-        String target = message;//.substring(0, space);
+        String target = message;
         for (final String start : getBot().getStartStrings()) {
             if (target.startsWith(start)) {
                 target = target.substring(start.length()).trim();

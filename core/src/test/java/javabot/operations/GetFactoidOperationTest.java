@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import javabot.BaseTest;
+import javabot.IrcUser;
 import javabot.dao.FactoidDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
@@ -128,13 +129,16 @@ public class GetFactoidOperationTest extends BaseOperationTest {
 
         scanForResponse(String.format("~~ %s javadoc String", TEST_USER), "[JDK: java.lang.String]");
 
-        testMessage(String.format("~~ %s stupid", TEST_USER), String.format("%s, what you've just said is one of the most"
-            + " insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you"
-            + " even close to anything that could be considered a rational thought. Everyone in this room is now"
-            + " dumber for having listened to it. I award you no points, and may God have mercy on your soul.",
-            TEST_USER));
+        scanForResponse(String.format("~~ %s javadoc String", new IrcUser("jimbob")), "jimbob");
+        
+        testMessage(String.format("~~ %s stupid", TEST_USER),
+            String.format("%s, what you've just said is one of the most"
+                + " insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you"
+                + " even close to anything that could be considered a rational thought. Everyone in this room is now"
+                + " dumber for having listened to it. I award you no points, and may God have mercy on your soul.",
+                TEST_USER));
 
-        sleep(6000);
+//        sleep(6000);
 
         testMessage(String.format("~~%s seeTest", TEST_USER), String.format("%s, I'm a reply!", TEST_USER));
 
