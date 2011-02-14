@@ -30,7 +30,7 @@ public class DropChannel extends AdminCommand {
         if (chan != null) {
             dao.delete(chan);
             responses.add(new Message(channel, event, "I was asked to leave this channel by " + event.getSender()));
-            bot.partChannel(chan.getName());
+            bot.getPircBot().partChannel(chan.getName());
         } else {
             responses.add(new Message(event.getChannel(), event, "I'm not in " + channel + ", " + event.getSender()));
         }

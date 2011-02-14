@@ -96,7 +96,7 @@ public class GetFactoidOperation extends StandardOperation {
                         user = sender;
                     }
                     final String thing = tellSubject.getSubject();
-                    if (user.getNick().equalsIgnoreCase(getBot().getNick())) {
+                    if (user.getNick().equalsIgnoreCase(getBot().getPircBot().getNick())) {
                         responses.add(new Message(channel, event, "I don't want to talk to myself"));
                     } else {
                         final TellInfo info = new TellInfo(user, thing);

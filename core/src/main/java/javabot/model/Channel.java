@@ -2,8 +2,6 @@ package javabot.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -12,7 +10,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import com.antwerkz.maven.SPI;
-import javabot.IrcUser;
 import javabot.Javabot;
 import javabot.dao.ChannelDao;
 import org.slf4j.Logger;
@@ -94,9 +91,9 @@ public class Channel implements Serializable, Persistent {
         if (getName().startsWith("#")) {
             log.debug("Joining " + getName());
             if (getKey() == null) {
-                bot.joinChannel(getName());
+                bot.getPircBot().joinChannel(getName());
             } else {
-                bot.joinChannel(getName(), getKey());
+                bot.getPircBot().joinChannel(getName(), getKey());
             }
         }
     }

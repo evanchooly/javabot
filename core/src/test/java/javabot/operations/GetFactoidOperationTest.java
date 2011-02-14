@@ -138,8 +138,6 @@ public class GetFactoidOperationTest extends BaseOperationTest {
                 + " dumber for having listened to it. I award you no points, and may God have mercy on your soul.",
                 TEST_USER));
 
-//        sleep(6000);
-
         testMessage(String.format("~~%s seeTest", TEST_USER), String.format("%s, I'm a reply!", TEST_USER));
 
         testMessage(String.format("~~%s bobloblaw", TEST_USER), String.format("%s, what does that even *mean*?",

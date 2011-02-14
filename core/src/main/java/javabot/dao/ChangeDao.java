@@ -14,7 +14,7 @@ public interface ChangeDao extends BaseDao<Change> {
     @Transactional
     void logChange(String message);
 
-    public boolean findLog(String message);
+    boolean findLog(String message);
 
     List<Change> getChanges(QueryParam qp, Change filter);
 

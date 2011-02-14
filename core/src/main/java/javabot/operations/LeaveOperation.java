@@ -28,13 +28,13 @@ public class LeaveOperation extends BotOperation {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        getBot().partChannel(channel);
+                        getBot().getPircBot().partChannel(channel);
                         try {
                             Thread.sleep(60000 * 15);
                         } catch (InterruptedException exception) {
                             log.error(exception.getMessage(), exception);
                         }
-                        getBot().joinChannel(channel);
+                        getBot().getPircBot().joinChannel(channel);
                     }
                 }).start();
             }

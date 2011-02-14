@@ -14,7 +14,8 @@ public class VersionOperation extends StandardOperation {
         final String message = event.getMessage();
         final List<Message> responses = new ArrayList<Message>();
         if ("version".equalsIgnoreCase(message)) {
-            responses.add(new Message(event.getChannel(), event, getBot().loadVersion()));
+            responses.add(new Message(event.getChannel(), event, String.format("I am currently running version %s",
+                getBot().loadVersion())));
         }
         return responses;
     }
