@@ -39,7 +39,7 @@ public abstract class AdminCommand extends BotOperation {
                 final String[] split = message.split(" ");
                 if (canHandle(split[0])) {
                     try {
-                        parse(Arrays.asList(split));
+                        parse(new ArrayList<String>(Arrays.asList(split)));
                         responses.addAll(execute(getBot(), event));
                     } catch (ParseException e) {
                         log.error(e.getMessage(), e);
@@ -108,6 +108,14 @@ public abstract class AdminCommand extends BotOperation {
     }
 
     public final void parse(final List<String> params) throws ParseException {
+        int index = 2 ;
+        while(index < params.size()) {
+            if(!params.get(index).startsWith("-")) {
+                params.set(index - 1, params.get(index - 1) + " " + params.remove(index));
+            } else {
+                index++;
+            }
+        }
         final Options options = getOptions();
         final CommandLineParser parser = new GnuParser();
         final CommandLine line = parser.parse(options, params.toArray(new String[params.size()]));
