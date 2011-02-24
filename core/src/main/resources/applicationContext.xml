@@ -11,7 +11,7 @@
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>file:javabot.properties</value>
+                <value>classpath:javabot.properties</value>
             </list>
         </property>
         <property name="ignoreResourceNotFound" value="true"/>

@@ -31,7 +31,6 @@ public abstract class AdminCommand extends BotOperation {
     @Override
     public final List<Message> handleMessage(final IrcEvent event) {
         String message = event.getMessage();
-        final String channel = event.getChannel();
         final List<Message> responses = new ArrayList<Message>();
         if (message.toLowerCase().startsWith("admin ")) {
             if (isAdminUser(event)) {
@@ -43,11 +42,12 @@ public abstract class AdminCommand extends BotOperation {
                         responses.addAll(execute(getBot(), event));
                     } catch (ParseException e) {
                         log.error(e.getMessage(), e);
-                        responses.add(new Message(channel, event, "An error occurred processing this request."));
+                        responses.add(new Message(event.getChannel(), event, "An error occurred processing this request: "
+                            + e.getMessage()));
                     }
                 }
             } else {
-                responses.add(new Message(channel, event, event.getSender() + ", you're not an admin"));
+                responses.add(new Message(event.getChannel(), event, event.getSender() + ", you're not an admin"));
             }
         }
         return responses;

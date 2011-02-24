@@ -11,15 +11,15 @@ public class TellOperationTest extends BaseOperationTest {
     private FactoidDao dao;
 
     public void shortcut() {
-        dao.delete(getJavabot().getNick(), "shortcut");
+        final String nick = getJavabot().getPircBot().getNick();
+        dao.delete(nick, "shortcut");
         try {
-            final String nick = getJavabot().getNick();
             final String message = "I'm a shortcut response";
             testMessage("~shortcut is <reply>" + message, ok);
             testMessage(String.format("~~ %s shortcut", BaseTest.TEST_USER),
                 String.format("%s, %s", BaseTest.TEST_USER, message));
         } finally {
-            dao.delete(getJavabot().getNick(), "shortcut");
+            dao.delete(nick, "shortcut");
         }
     }
 }

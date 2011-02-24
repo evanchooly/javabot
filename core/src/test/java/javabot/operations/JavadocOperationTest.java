@@ -3,8 +3,6 @@ package javabot.operations;
 import javabot.BaseTest;
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
@@ -18,7 +16,7 @@ public class JavadocOperationTest extends BaseOperationTest {
     public void methods() {
         scanForResponse("~javadoc String.split(String)", "[JDK: java.lang.String.split(String)]");
         scanForResponse("~javadoc String.split(java.lang.String)", "[JDK: java.lang.String.split(String)]");
-        scanForResponse(String.format("%s %s", getJavabot().getNick(), "javadoc String.split(*)"),
+        scanForResponse(String.format("%s %s", getJavabot().getPircBot().getNick(), "javadoc String.split(*)"),
             "[JDK: java.lang.String.split(String)]");
     }
 

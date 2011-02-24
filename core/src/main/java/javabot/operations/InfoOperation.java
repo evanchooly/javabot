@@ -30,7 +30,7 @@ public class InfoOperation extends BotOperation {
             if (factoid != null) {
                 responses.add(new Message(channel, event,
                     String.format("%s%s was added by: %s on %s and has a literal value of: %s", key,
-                        factoid.getUserName(), factoid.getLocked() ? "*" : "", formatDate(factoid), factoid.getValue())));
+                        factoid.getLocked() ? "*" : "", factoid.getUserName(), formatDate(factoid), factoid.getValue())));
             } else {
                 responses.add(new Message(channel, event, "I have no factoid called \"" + key + "\""));
             }
