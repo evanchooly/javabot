@@ -59,6 +59,7 @@
         <url-pattern>/javabot/*</url-pattern>
     </filter-mapping>
 
+<!--
     <servlet>
         <display-name>CXF Servlet</display-name>
         <servlet-name>CXFServlet</servlet-name>
@@ -70,4 +71,5 @@
         <servlet-name>CXFServlet</servlet-name>
         <url-pattern>/ws/*</url-pattern>
     </servlet-mapping>
+-->
 </web-app>
