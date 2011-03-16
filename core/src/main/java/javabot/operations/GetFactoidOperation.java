@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class GetFactoidOperation extends StandardOperation {
     private static final Logger log = LoggerFactory.getLogger(GetFactoidOperation.class);
     private static final Throttler<TellInfo> throttler = new Throttler<TellInfo>(100, Javabot.THROTTLE_TIME);
+    public static final String UNKNOWN_MESSSAGE = ", what does that even *mean*?";
     @Autowired
     private FactoidDao factoidDao;
 
@@ -57,7 +58,7 @@ public class GetFactoidOperation extends StandardOperation {
         }
         return factoid != null
             ? getResponse(subject, sender, event, backtrack, params, factoid)
-            : new Message(event.getChannel(), event, sender + ", what does that even *mean*?");
+            : new Message(event.getChannel(), event, sender + UNKNOWN_MESSSAGE);
     }
 
     private Message getResponse(final TellSubject subject, final IrcUser sender,
@@ -113,8 +114,14 @@ public class GetFactoidOperation extends StandardOperation {
                         } else {
                             final List<Message> list = getBot().getResponses(channel, user, thing);
                             for (final Message msg : list) {
+                                final String resultMsg = msg.getMessage();
+                                if(resultMsg.endsWith(UNKNOWN_MESSSAGE)) {
+                                    responses.add(
+                                        new Message(msg.getDestination(), msg.getEvent(), sender + UNKNOWN_MESSSAGE));
+                                } else {
                                 responses
-                                    .add(new TellMessage(user, msg.getDestination(), msg.getEvent(), msg.getMessage()));
+                                    .add(new TellMessage(user, msg.getDestination(), msg.getEvent(), resultMsg));
+                                }
                             }
                             throttler.addThrottleItem(info);
                         }

@@ -22,4 +22,11 @@ public class TellOperationTest extends BaseOperationTest {
             dao.delete(nick, "shortcut");
         }
     }
+
+    public void unknownTell() {
+        final String nick = getJavabot().getPircBot().getNick();
+        dao.delete(nick, "shortcut");
+        testMessage(String.format("~~ %s shortcut", BaseTest.TEST_USER),
+            String.format("%s, what does that even *mean*?", nick));
+    }
 }
