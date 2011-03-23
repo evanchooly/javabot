@@ -20,7 +20,6 @@
     <context:component-scan base-package="javabot"/>
     <!--<util:properties id="jdbcProperties" location="classpath:org/example/config/jdbc.properties"/>-->
 
-
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
         <property name="driverClass" value="${jdbc.driver}"/>
         <property name="jdbcUrl" value="${jdbc.url}"/>
@@ -61,21 +60,4 @@
             <bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
         </property>
     </bean>
-
-
-    <!--
-    <bean class="org.springframework.scheduling.timer.TimerFactoryBean">
-        <property name="scheduledTimerTasks">
-            <list>
-                <ref bean="factoidTrigger"/>
-                <ref bean="logTrigger"/>
-            </list>
-        </property>
-        <property name="quartzProperties">
-            <props>
-                <prop key="org.quartz.threadPool.threadCount">2</prop>
-            </props>
-        </property>
-    </bean>
--->
 </beans>
