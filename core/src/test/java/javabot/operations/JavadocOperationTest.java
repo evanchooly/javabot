@@ -6,7 +6,7 @@ import javabot.dao.ClazzDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
-@Test(dependsOnGroups = {"javadoc"})
+@Test//(dependsOnGroups = {"javadoc"})
 public class JavadocOperationTest extends BaseOperationTest {
     @Autowired
     private ApiDao apiDao;
@@ -36,5 +36,9 @@ public class JavadocOperationTest extends BaseOperationTest {
     public void fields() {
         scanForResponse("~javadoc Integer.MAX_VALUE", "[JDK: java.lang.Integer.MAX_VALUE:int]");
         scanForResponse("~javadoc System.in", "[JDK: java.lang.System.in:java.io.InputStream]");
+    }
+
+    public void inherited() {
+        scanForResponse("~javadoc ArrayList.listIterator(*)", "[JDK: java.util.AbstractList.listIterator(int)]");
     }
 }

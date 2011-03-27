@@ -42,7 +42,7 @@ public abstract class BaseOperationTest extends BaseTest {
     }
 
     protected List<Message> sendMessage(final String message) {
-        return sendMessage(new IrcUser(getJavabot().getPircBot().getNick()), message);
+        return sendMessage(BaseTest.TEST_USER, message);
     }
 
     private List<Message> sendMessage(final IrcUser testUser, final String message) {

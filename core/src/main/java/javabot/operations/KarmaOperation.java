@@ -51,7 +51,6 @@ public class KarmaOperation extends BotOperation {
             try {
                 nick = message.substring(0, message.length() - 2).trim().toLowerCase();
             } catch (StringIndexOutOfBoundsException e) {
-                System.out.println("KarmaChangeOperation.handleMessage: message = " + message);
                 throw e;
             }
             if (message.contains(" ") || "".equals(nick)) {

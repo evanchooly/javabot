@@ -24,9 +24,8 @@ public class TellOperationTest extends BaseOperationTest {
     }
 
     public void unknownTell() {
-        final String nick = getJavabot().getPircBot().getNick();
-        dao.delete(nick, "shortcut");
+        dao.delete(getJavabot().getPircBot().getNick(), "shortcut");
         testMessage(String.format("~~ %s shortcut", BaseTest.TEST_USER),
-            String.format("%s, what does that even *mean*?", nick));
+            String.format("%s, what does that even *mean*?", BaseTest.TEST_USER));
     }
 }

@@ -1,6 +1,7 @@
 package javabot.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -8,8 +9,8 @@ import javax.persistence.Query;
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ClazzDao;
 import javabot.javadoc.Clazz;
-import javabot.javadoc.Method;
 import javabot.javadoc.Field;
+import javabot.javadoc.Method;
 import org.springframework.stereotype.Component;
 
 /**
@@ -89,9 +90,15 @@ public class ClazzDaoImpl extends AbstractDaoImpl<Clazz> implements ClazzDao {
     @SuppressWarnings({"unchecked"})
     public List<Method> getMethods(final String className, final String methodName, final String signatureTypes) {
         final Clazz[] classes = getClass(className);
+        List<Clazz> list = new ArrayList<Clazz>(Arrays.asList(classes));
         final List<Method> methods = new ArrayList<Method>();
-        for (final Clazz clazz : classes) {
-            methods.addAll(getMethods(methodName, signatureTypes, clazz));
+        while (!list.isEmpty()) {
+            Clazz clazz = list.remove(0);
+            if (clazz != null) {
+                final List<Method> m = getMethods(methodName, signatureTypes, clazz);
+                methods.addAll(m);
+                list.add(clazz.getSuperClass());
+            }
         }
         return methods;
     }

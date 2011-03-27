@@ -20,7 +20,6 @@ public class RenamePrefixes extends UpgradeScript {
     public void doUpgrade(final Javabot bot, final Connection connection) throws SQLException, IOException {
         final ResultSet rs = connection.getMetaData().getColumns(null, null, "configuration", "prefixes");
         while(rs.next()) {
-            System.out.println("found prefixes");
             final Statement statement = connection.createStatement();
             try {
                 statement.execute("update configuration set trigger=prefixes");

@@ -241,6 +241,7 @@ public class Javabot implements ApplicationContextAware {
         try {
             for (final String name : config.getOperations()) {
                 enableOperation(name);
+                activeOperations.add(operations.get(name));
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);

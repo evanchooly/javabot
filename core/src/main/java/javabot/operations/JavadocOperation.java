@@ -70,7 +70,6 @@ public class JavadocOperation extends BotOperation {
         } else {
             parseMethodRequest(urls, key, openIndex);
         }
-
         return urls;
     }
 
@@ -102,11 +101,10 @@ public class JavadocOperation extends BotOperation {
         final int finalIndex = key.lastIndexOf('.', openIndex);
         final int closeIndex = key.indexOf(')');
         if (closeIndex != -1) {
-            final String className = key.substring(0, finalIndex);
+            String className = key.substring(0, finalIndex);
             final String methodName = key.substring(finalIndex + 1, openIndex);
             final String signatureTypes = key.substring(openIndex + 1, closeIndex);
-            final List<Method> list = dao.getMethods(className, methodName, signatureTypes);
-            for (final Method method : list) {
+            for (final Method method : dao.getMethods(className, methodName, signatureTypes)) {
                 urls.add(method.getDisplayUrl(method.toString(), dao));
             }
         }
