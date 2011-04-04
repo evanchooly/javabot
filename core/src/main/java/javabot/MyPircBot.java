@@ -65,8 +65,10 @@ public class MyPircBot extends PircBot {
 
     @Override
     public void onDisconnect() {
+        System.out.println("MyPircBot.onDisconnect");
         if (!javabot.executors.isShutdown()) {
             try {
+                System.out.println("trying to reconnect");
                 connect(javabot.getHost(), getPort());
             } catch (Exception e) {
                 Javabot.log.error(e.getMessage(), e);
