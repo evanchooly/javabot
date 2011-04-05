@@ -62,7 +62,7 @@ public class Javabot implements ApplicationContextAware {
     private final List<BotOperation> standard = new ArrayList<BotOperation>();
     private final List<String> ignores = new ArrayList<String>();
     private final Set<BotOperation> activeOperations = new TreeSet<BotOperation>(new OperationComparator());
-    private int authWait;
+    private int authWait = 3000;
     private int port;
     @Autowired
     ChannelDao channelDao;
@@ -134,7 +134,7 @@ public class Javabot implements ApplicationContextAware {
                 final List<Channel> channelList = channelDao.getChannels();
                 for (final Channel channel : channelList) {
                     channel.join(this);
-                    sleep(500);
+                    sleep(1000);
                 }
             } catch (Exception exception) {
                 pircBot.disconnect();
@@ -222,7 +222,6 @@ public class Javabot implements ApplicationContextAware {
             port = config.getPort();
             nick = config.getNick();
             setNickPassword(config.getPassword());
-            authWait = 3000;
             log.debug("Running with configuration: " + config);
         } catch (Exception e) {
             log.debug(e.getMessage(), e);
@@ -316,8 +315,12 @@ public class Javabot implements ApplicationContextAware {
         this.startStrings = start.toArray(new String[start.size()]);
     }
 
-    public void processMessage(final String channel, final IrcUser sender, final String message) {
+    public void processMessage(IrcEvent event) {
         try {
+            final IrcUser sender = event.getSender();
+            final String message = event.getMessage();
+            final String channel = event.getChannel();
+
             logsDao.logMessage(Logs.Type.MESSAGE, sender.getNick(), channel, message);
             if (isValidSender(sender.getNick())) {
                 final List<Message> responses = new ArrayList<Message>();

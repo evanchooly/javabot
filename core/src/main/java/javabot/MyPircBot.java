@@ -31,7 +31,8 @@ public class MyPircBot extends PircBot {
         javabot.executors.execute(new Runnable() {
             @Override
             public void run() {
-                javabot.processMessage(channel, javabot.getUser(sender, login, hostname), message);
+                final IrcEvent event = new IrcEvent(channel, new IrcUser(sender, login, hostname), message);
+                javabot.processMessage(event);
             }
         });
     }
