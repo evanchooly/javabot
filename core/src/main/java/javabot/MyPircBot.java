@@ -3,7 +3,6 @@ package javabot;
 import javabot.model.Channel;
 import javabot.model.Logs;
 import org.jibble.pircbot.PircBot;
-import org.jibble.pircbot.User;
 
 public class MyPircBot extends PircBot {
     private final Javabot javabot;
@@ -31,23 +30,13 @@ public class MyPircBot extends PircBot {
         javabot.executors.execute(new Runnable() {
             @Override
             public void run() {
-                final IrcEvent event = new IrcEvent(channel, new IrcUser(sender, login, hostname), message);
-                javabot.processMessage(event);
+                javabot.processMessage(new IrcEvent(channel, javabot.getUser(sender, login, hostname), message));
             }
         });
     }
 
     @Override
     public void onJoin(final String channel, final String sender, final String login, final String hostname) {
-        ChannelList list = javabot.getChannel(channel);
-        if (list == null) {
-            list = javabot.channels.add(channel);
-            final User[] users = getUsers(channel);
-            for (final User user : users) {
-                list.addUser(user.getNick());
-            }
-        }
-        list.addUser(sender);
         javabot.logsDao.logMessage(Logs.Type.JOIN, sender, channel, ":" + hostname + " joined the channel");
     }
 
@@ -58,9 +47,10 @@ public class MyPircBot extends PircBot {
 
     @Override
     public void onInvite(final String targetNick, final String sourceNick, final String sourceLogin,
-        final String sourceHostname, final String channel) {
-        if (javabot.channelDao.get(channel) != null) {
-            joinChannel(channel);
+        final String sourceHostname, final String channelName) {
+        final Channel channel = javabot.channelDao.get(channelName);
+        if (channel != null) {
+            channel.join(javabot);
         }
     }
 
@@ -86,7 +76,7 @@ public class MyPircBot extends PircBot {
                 @Override
                 public void run() {
                     javabot.logsDao.logMessage(Logs.Type.MESSAGE, sender, sender, message);
-                    for (final Message response : javabot.getResponses(sender, new IrcUser(sender, login, hostname),
+                    for (final Message response : javabot.getResponses(sender, javabot.getUser(sender, login, hostname),
                         message)) {
                         response.send(javabot);
                     }
@@ -97,7 +87,6 @@ public class MyPircBot extends PircBot {
 
     @Override
     public void onPart(final String channel, final String sender, final String login, final String hostname) {
-        final Channel chan = javabot.channelDao.get(channel);
         javabot.logsDao.logMessage(Logs.Type.PART, sender, channel, "parted the channel");
     }
 

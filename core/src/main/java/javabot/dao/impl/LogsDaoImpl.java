@@ -71,12 +71,12 @@ public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
     public void pruneHistory() {
         final Calendar cal = Calendar.getInstance();
         final Config config = dao.get();
-        final Integer length = config.getHistoryLength();
-        if (length != null && length != 0) {
+        final Integer duration = config.getHistoryLength();
+        if (duration != null && duration != 0) {
             cal.clear(Calendar.MILLISECOND);
             cal.clear(Calendar.SECOND);
             cal.clear(Calendar.HOUR);
-            cal.add(Calendar.MONTH, length * -1);
+            cal.add(Calendar.MONTH, duration * -1);
             log.debug(
                 "pruning history older than " + new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").format(cal.getTime()));
             getEntityManager().createQuery("delete from Logs l where l.updated < :date")

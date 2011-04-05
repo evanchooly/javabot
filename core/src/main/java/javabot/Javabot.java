@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -57,12 +56,10 @@ public class Javabot implements ApplicationContextAware {
     String nick;
     private String password;
     private String[] startStrings;
-    protected final Channels channels = new Channels();
     final ExecutorService executors;
     private final List<BotOperation> standard = new ArrayList<BotOperation>();
     private final List<String> ignores = new ArrayList<String>();
     private final Set<BotOperation> activeOperations = new TreeSet<BotOperation>(new OperationComparator());
-    private int authWait = 3000;
     private int port;
     @Autowired
     ChannelDao channelDao;
@@ -130,7 +127,7 @@ public class Javabot implements ApplicationContextAware {
             try {
                 pircBot.connect(host, port);
                 pircBot.sendRawLine("PRIVMSG NickServ :identify " + getNickPassword());
-                sleep(authWait);
+                sleep(3000);
                 final List<Channel> channelList = channelDao.getChannels();
                 for (final Channel channel : channelList) {
                     channel.join(this);
@@ -290,10 +287,6 @@ public class Javabot implements ApplicationContextAware {
         return enabled;
     }
 
-    public int getAuthWait() {
-        return authWait;
-    }
-
     public String getHost() {
         return host;
     }
@@ -308,14 +301,7 @@ public class Javabot implements ApplicationContextAware {
         return startStrings;
     }
 
-    public void setStartStrings(final String... startStrings) {
-        final List<String> start = new ArrayList<String>();
-        start.add(pircBot.getNick());
-        start.addAll(Arrays.asList(startStrings));
-        this.startStrings = start.toArray(new String[start.size()]);
-    }
-
-    public void processMessage(IrcEvent event) {
+    public void processMessage(final IrcEvent event) {
         try {
             final IrcUser sender = event.getSender();
             final String message = event.getMessage();
@@ -418,10 +404,6 @@ public class Javabot implements ApplicationContextAware {
         new Javabot(new ClassPathXmlApplicationContext("classpath:applicationContext.xml"));
     }
 
-    public IrcUser getUser(final String name) {
-        return channels.getUser(name);
-    }
-
     IrcUser getUser(final String sender, final String login, final String hostname) {
         return new IrcUser(sender, login, hostname);
     }
@@ -441,10 +423,6 @@ public class Javabot implements ApplicationContextAware {
 
     private boolean isShunnedSender(final String sender) {
         return shunDao.isShunned(sender);
-    }
-
-    ChannelList getChannel(final String channel) {
-        return channels.get(channel);
     }
 
     @SuppressWarnings({"EmptyCatchBlock"})
