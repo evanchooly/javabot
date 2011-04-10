@@ -65,7 +65,7 @@ public class MyPircBot extends PircBot {
         if (!javabot.executors.isShutdown()) {
             try {
                 System.out.println("trying to reconnect");
-                connect(javabot.getHost(), getPort());
+                javabot.connect();
             } catch (Exception e) {
                 Javabot.log.error(e.getMessage(), e);
                 throw new RuntimeException(e.getMessage(), e);
