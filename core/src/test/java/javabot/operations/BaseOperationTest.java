@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javabot.BaseTest;
+import javabot.IrcEvent;
 import javabot.IrcUser;
 import javabot.Message;
 import org.testng.Assert;
@@ -46,8 +47,7 @@ public abstract class BaseOperationTest extends BaseTest {
     }
 
     private List<Message> sendMessage(final IrcUser testUser, final String message) {
-        getJavabot().addUser(testUser);
-        getJavabot().processMessage(getJavabotChannel(), testUser, message);
+        getJavabot().processMessage(new IrcEvent(getJavabotChannel(), testUser, message));
         return getJavabot().getMessages();
     }
 

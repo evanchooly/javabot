@@ -118,9 +118,5 @@ public class BaseTest {
         public boolean userIsOnChannel(final String sender, final String channel) {
             return true;
         }
-
-        public void addUser(final IrcUser user) {
-            channels.add(user);
-        }
     }
 }

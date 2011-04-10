@@ -41,6 +41,11 @@ public class MyPircBot extends PircBot {
     }
 
     @Override
+    public void onPart(final String channel, final String sender, final String login, final String hostname) {
+        javabot.logsDao.logMessage(Logs.Type.PART, sender, channel, ":" + hostname + " parted the channel");
+    }
+
+    @Override
     public void onQuit(final String channel, final String sender, final String login, final String hostname) {
         javabot.logsDao.logMessage(Logs.Type.QUIT, sender, channel, "quit");
     }
@@ -83,11 +88,6 @@ public class MyPircBot extends PircBot {
                 }
             });
         }
-    }
-
-    @Override
-    public void onPart(final String channel, final String sender, final String login, final String hostname) {
-        javabot.logsDao.logMessage(Logs.Type.PART, sender, channel, "parted the channel");
     }
 
     @Override

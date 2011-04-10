@@ -1,5 +1,6 @@
 package javabot;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -134,8 +135,8 @@ public class Javabot implements ApplicationContextAware {
                     sleep(1000);
                 }
             } catch (Exception exception) {
-                pircBot.disconnect();
                 queue.clear();
+                pircBot.disconnect();
                 log.error(exception.getMessage(), exception);
             }
             sleep(1000);
@@ -190,23 +191,28 @@ public class Javabot implements ApplicationContextAware {
     }
 
     public final String loadVersion() {
-        ArtifactDescription javabot;
+        ArtifactDescription description;
         try {
-            javabot = ArtifactDescription.locate("javabot", "core");
-            return javabot.getVersion();
+            description = ArtifactDescription.locate("javabot", "core");
+            return description.getVersion();
         } catch (NoArtifactException nae) {
             try {
-                javabot = ArtifactDescription.locate("javabot", "core", new ResourceProvider() {
+                final File file = new File("target/maven-archiver/pom.properties");
+                if(file.exists()) {
+                description = ArtifactDescription.locate("javabot", "core", new ResourceProvider() {
                     @Override
                     public InputStream getResourceAsStream(final String resource) {
                         try {
-                            return new FileInputStream("target/maven-archiver/pom.properties");
+                            return new FileInputStream(file);
                         } catch (FileNotFoundException e) {
                             throw new RuntimeException(e.getMessage(), e);
                         }
                     }
                 });
-                return javabot.getVersion();
+                return description.getVersion();
+                } else {
+                    return "UNKNOWN";
+                }
             } catch (NoArtifactException e) {
                 return "UNKNOWN";
             }
