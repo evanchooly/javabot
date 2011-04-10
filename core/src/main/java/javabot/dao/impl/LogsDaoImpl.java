@@ -54,17 +54,15 @@ public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
 
     public void logMessage(final Logs.Type type, final String nick, final String channel, final String message) {
         final Channel chan = channel != null ? channelDao.get(channel) : null;
-        if (chan == null || chan.getLogged()) {
-            final Logs logMessage = new Logs();
-            logMessage.setType(type);
-            logMessage.setNick(nick);
-            if(channel != null) {
-                logMessage.setChannel(channel.toLowerCase());
-            }
-            logMessage.setMessage(message);
-            logMessage.setUpdated(new Date());
-            save(logMessage);
+        final Logs logMessage = new Logs();
+        logMessage.setType(type);
+        logMessage.setNick(nick);
+        if (channel != null) {
+            logMessage.setChannel(channel.toLowerCase());
         }
+        logMessage.setMessage(message);
+        logMessage.setUpdated(new Date());
+        save(logMessage);
     }
 
     @Scheduled(cron = "0 0 1 * * ?")
