@@ -32,6 +32,8 @@
             <groupId>org.schwering</groupId>
             <artifactId>irclib</artifactId>
             <version>${irclib.version}</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/irclib-2.0-SNAPSHOT.jar</systemPath>
         </dependency>
 
         <dependency>
