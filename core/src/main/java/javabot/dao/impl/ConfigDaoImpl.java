@@ -44,7 +44,7 @@ public class ConfigDaoImpl extends AbstractDaoImpl<Config> implements ConfigDao 
         final List<BotOperation> it = BotOperation.list();
         final Set<String> list = new TreeSet<String>();
         for (final BotOperation operation : it) {
-            list.add(operation.getClass().getName());
+            list.add(operation.getName());
         }
         config.setOperations(list);
         adminDao.create(getProperty("javabot.admin.nick"), getProperty("javabot.admin.hostmask"));
