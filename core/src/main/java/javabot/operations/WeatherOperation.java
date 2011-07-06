@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
   * Gets current weather conditions for a place given as a parameter.
   *
-  * @author Craig Tataryn <craiger@tataryn.net>
+  * @author Craig Tataryn &lt;craiger@tataryn.net&gt;
   */
 @SPI(BotOperation.class)
 public class WeatherOperation extends BotOperation {

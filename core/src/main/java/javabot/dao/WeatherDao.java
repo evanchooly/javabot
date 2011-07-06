@@ -4,7 +4,7 @@ import javabot.model.Weather;
 /**
  * Interface for getting Weather info from a service
  *
- * @author Craig Tataryn <craiger@tataryn.net>
+ * @author Craig Tataryn &lt;craiger@tataryn.net&gt;
  */
 public interface WeatherDao {
 

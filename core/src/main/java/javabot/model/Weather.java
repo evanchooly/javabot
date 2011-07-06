@@ -3,7 +3,7 @@ package javabot.model;
 /**
  * Simple model for passing around Weather conditions
  *
- * @author Craig Tataryn <craiger@tataryn.net>
+ * @author Craig Tataryn &lt;craiger@tataryn.net&gt;
  */
 public class Weather {
     private String city;
