@@ -1,14 +1,12 @@
 package javabot.dao.impl;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import java.util.HashMap;
+import java.util.Map;
 
+import javabot.model.Weather;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import java.util.HashMap;
-import java.util.Map;
-import javabot.model.Weather;
 
 /**
  * SAX handler for Google's weather API
@@ -17,26 +15,21 @@ import javabot.model.Weather;
 public class GoogleWeatherSaxHandler extends DefaultHandler {
     private boolean collectData;
     private boolean error;
-    private Map<String, String> weatherMap = new HashMap<String, String>();
+    private final Map<String, String> weatherMap = new HashMap<String, String>();
 
-    public void startElement(String uri, String localName, 
-            String qName, Attributes attributes) 
+    public void startElement(final String uri, final String localName, final String qName, final Attributes attributes)
                 throws SAXException {
-        if (qName.equalsIgnoreCase("current_conditions")) {
+        if ("current_conditions".equalsIgnoreCase(qName) || "forecast_information".equalsIgnoreCase(qName)) {
             collectData = true;
-        } else if (qName.equalsIgnoreCase("forecast_information")) {
-            collectData = true;
-        } else if (qName.equalsIgnoreCase("problem_cause")) {
+        } else if ("problem_cause".equalsIgnoreCase(qName)) {
             error = true;
         } else if (collectData) {
             weatherMap.put(qName, attributes.getValue("data"));
-
         }
-
     }
 
-    public void endElement(String uri, String localName, String qName) throws SAXException {
-        if (qName.equalsIgnoreCase("current_conditions")) {
+    public void endElement(final String uri, final String localName, final String qName) throws SAXException {
+        if ("current_conditions".equalsIgnoreCase(qName)) {
             collectData = false;
         }
     }
@@ -50,7 +43,7 @@ public class GoogleWeatherSaxHandler extends DefaultHandler {
             //TODO Log
             return null;
         } else {
-            Weather weather = new Weather();
+            final Weather weather = new Weather();
             weather.setCity(weatherMap.get("city"));
             weather.setCondition(weatherMap.get("condition"));
             weather.setTempf(weatherMap.get("temp_f"));

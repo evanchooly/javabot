@@ -1,7 +1,5 @@
 package javabot.operations;
 
-import javabot.dao.WeatherDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
 /**
@@ -13,12 +11,12 @@ import org.testng.annotations.Test;
 public class WeatherOperationTest extends BaseOperationTest {
     @Test
     public void tellWeather() throws Exception {
-        super.scanForResponse("~weather Winnipeg", "Weather for");
+        scanForResponse("~weather Winnipeg", "Weather for");
     }
 
     @Test
     public void cityNotFound() throws Exception {
-        super.scanForResponse("~weather lajdlfjlasjdf", "only places on Earth");
+        scanForResponse("~weather lajdlfjlasjdf", "only places on Earth");
 
     }
 }

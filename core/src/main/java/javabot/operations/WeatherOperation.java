@@ -6,12 +6,6 @@ import java.util.List;
 import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
 import javabot.Message;
-import javabot.dao.ApiDao;
-import javabot.dao.ClazzDao;
-import javabot.javadoc.Api;
-import javabot.javadoc.Clazz;
-import javabot.javadoc.Field;
-import javabot.javadoc.Method;
 import javabot.dao.WeatherDao;
 import javabot.model.Weather;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +32,7 @@ public class WeatherOperation extends BotOperation {
                 responses.add(new Message(event.getChannel(), event,
                     "The weather operation currently supports only places on Earth; thank you come again." + place));
             } else {
-                String destination = event.getChannel();
-                responses.add(new Message(destination, event, result.toString()));
+                responses.add(new Message(event.getChannel(), event, result.toString()));
             }
         }
         return responses;
