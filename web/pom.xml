@@ -5,7 +5,7 @@
     <parent>
         <groupId>javabot</groupId>
         <artifactId>javabot</artifactId>
-        <version>4.0.0</version>
+        <version>4.0.1</version>
     </parent>
 
     <groupId>javabot</groupId>
@@ -20,13 +20,6 @@
             <artifactId>core</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-<!--
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-bundle</artifactId>
-        </dependency>
--->
 
         <dependency>
             <groupId>org.springframework</groupId>

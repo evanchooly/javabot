@@ -75,7 +75,7 @@ public class KarmaPanel extends Panel {
             }
         });
 
-        add(new OrderByBorder("orderByNick", "nick", dp) {
+        add(new OrderByBorder("orderByNick", "userName", dp) {
             @Override
             protected void onSortChanged() {
                 dataView.setCurrentPage(0);

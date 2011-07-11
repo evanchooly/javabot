@@ -3,7 +3,7 @@
     <parent>
         <groupId>javabot</groupId>
         <artifactId>javabot</artifactId>
-        <version>4.0.0</version>
+        <version>4.0.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -11,7 +11,7 @@
     <groupId>javabot</groupId>
     <artifactId>apt-tools</artifactId>
     <packaging>jar</packaging>
-    <version>4.0.0</version>
+    <version>4.0.1</version>
     <name>javabot build plugins</name>
     <build>
         <plugins>
@@ -32,8 +32,8 @@
             <artifactId>spi-apt</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
+            <groupId>org.hibernate.java-persistence</groupId>
+            <artifactId>jpa-api</artifactId>
         </dependency>
     </dependencies>
 </project>

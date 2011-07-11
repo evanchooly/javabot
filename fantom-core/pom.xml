@@ -5,12 +5,12 @@
     <parent>
         <groupId>javabot</groupId>
         <artifactId>javabot</artifactId>
-        <version>4.0.0</version>
+        <version>4.0.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>javabot</groupId>
-    <artifactId>fantom-core</artifactId>
+    <artifactId>fantom</artifactId>
     <packaging>jar</packaging>
 
     <name>javabot fantom core</name>
@@ -27,7 +27,7 @@
         <testSourceDirectory>src/test/fantom</testSourceDirectory>
         <defaultGoal>install</defaultGoal>
 
-<plugins>
+        <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
@@ -41,33 +41,33 @@
                     <argLine>-Xms256m -Xmx512m</argLine>
                 </configuration>
             </plugin>
-<!--
-            <plugin>
-                <inherited>true</inherited>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
--->
+            <!--
+                        <plugin>
+                            <inherited>true</inherited>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-source-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>attach-sources</id>
+                                    <goals>
+                                        <goal>jar</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>attach-javadocs</id>
+                                    <goals>
+                                        <goal>jar</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+            -->
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <executions>
@@ -99,7 +99,7 @@
                 </configuration>
             </plugin>
         </plugins>
-        
+
     </build>
     <properties>
         <fantom.home>/Users/jlee/bin/fantom</fantom.home>
