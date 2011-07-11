@@ -16,7 +16,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>${groupId}</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>core</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -106,12 +106,6 @@
         <dependency>
             <groupId>jaxen</groupId>
             <artifactId>jaxen</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>${groupId}</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -242,6 +236,13 @@
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                     <contextPath>/</contextPath>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>c3p0</groupId>
+                        <artifactId>c3p0</artifactId>
+                        <version>0.9.1.2</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
         <finalName>javabot</finalName>

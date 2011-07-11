@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javabot.dao.AdminDao;
+import javabot.dao.ChannelDao;
+import javabot.model.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -15,6 +17,8 @@ public class BaseTest {
     public static final IrcUser TEST_USER = new IrcUser("jbtestuser", "jbtestuser", "localhost");
     @Autowired
     private AdminDao dao;
+    @Autowired
+    private ChannelDao channelDao;
     public final String ok;
     private static TestJavabot bot;
     private final ApplicationContext context;
@@ -31,6 +35,7 @@ public class BaseTest {
         if (bot == null) {
             Javabot.validateProperties();
             bot = new TestJavabot(context);
+
         }
         return bot;
     }
@@ -38,6 +43,13 @@ public class BaseTest {
     public final TestJavabot getJavabot() {
         if (bot == null) {
             createBot();
+        }
+        Channel channel = channelDao.get(getJavabotChannel());
+        if(channel == null) {
+            channel = new Channel();
+            channel.setName(getJavabotChannel());
+            channel.setLogged(true);
+            channelDao.save(channel);
         }
         return bot;
     }

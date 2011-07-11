@@ -4,8 +4,8 @@ import org.jibble.pircbot.PircBot
 import ca.grimoire.maven.{ArtifactDescription, NoArtifactException}
 
 
-class Javabot extends PircBot {
-  val version: String = "Javabot " + loadVersion;
+class Milo extends PircBot {
+  val version: String = "Milo " + loadVersion;
   
   val host: String = null
   val port: Int = 0
@@ -15,7 +15,7 @@ class Javabot extends PircBot {
   
   def loadVersion: String = {
       try {
-          return ArtifactDescription.locate("javabot", "core").getVersion();
+          return ArtifactDescription.locate("javabot", "core").getVersion;
       } catch {
           case nae: NoArtifactException => "UNKNOWN";
       }

@@ -2,9 +2,7 @@ package javabot.dao;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
-import javabot.BaseTest;
 import javabot.model.Config;
 import javabot.model.Logs;
 import javabot.model.Logs.Type;
@@ -20,8 +18,7 @@ public class LogDaoTest extends BaseServiceTest {
     private ConfigDao dao;
 
     public void getDailyLog() {
-        final List<Logs> logdata = logsDao.dailyLog(getJavabotChannel(), new Date());
-        Assert.assertFalse(logdata.isEmpty(), "Should have log data");
+        Assert.assertFalse(logsDao.dailyLog(getJavabotChannel(), new Date()).isEmpty(), "Should have log data");
     }
 
     public void logPruning() {
