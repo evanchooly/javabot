@@ -15,8 +15,12 @@ public class WeatherOperationTest extends BaseOperationTest {
     }
 
     @Test
+    public void zipCode() throws Exception {
+        scanForResponse("~weather 11217", "Weather for");
+    }
+
+    @Test
     public void cityNotFound() throws Exception {
         scanForResponse("~weather lajdlfjlasjdf", "only places on Earth");
-
     }
 }
