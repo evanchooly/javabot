@@ -23,4 +23,11 @@ public class WeatherOperationTest extends BaseOperationTest {
     public void cityNotFound() throws Exception {
         scanForResponse("~weather lajdlfjlasjdf", "only places on Earth");
     }
+
+    @Test
+    public void cityWithSpaces() throws Exception {
+        super.scanForResponse("~weather New York", "Weather for");
+
+    }
+
 }
