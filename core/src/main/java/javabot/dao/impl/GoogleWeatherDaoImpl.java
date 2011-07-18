@@ -9,6 +9,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import javabot.model.Weather;
@@ -17,7 +19,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * Implements a weather service Dao using Google's weather API
- * 
+ *
+ * @author Craig Tataryn &lt;craiger@tataryn.net&gt;
  */
 @Component
 public class GoogleWeatherDaoImpl implements WeatherDao {
@@ -29,7 +32,7 @@ public class GoogleWeatherDaoImpl implements WeatherDao {
         try {
             XMLReader reader = XMLReaderFactory.createXMLReader();
             reader.setContentHandler(handler); 
-            reader.parse(new InputSource(new URL(API_URL + place)
+            reader.parse(new InputSource(new URL(API_URL + URLEncoder.encode(place, "UTF-8"))
                         .openStream()));
         } catch (Exception e) {
             //TODO proper logging/distinction between error vs no-data

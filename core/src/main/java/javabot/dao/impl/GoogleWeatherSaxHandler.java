@@ -12,7 +12,8 @@ import javabot.model.Weather;
 
 /**
  * SAX handler for Google's weather API
- * 
+ *
+ * @author Craig Tataryn &lt;craiger@tataryn.net&gt;
  */
 public class GoogleWeatherSaxHandler extends DefaultHandler {
     private boolean collectData;

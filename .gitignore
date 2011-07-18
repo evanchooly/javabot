@@ -6,3 +6,6 @@ core/src/main/resources/javabot.properties
 *.ipr
 *.iws
 *.swp
+.settings
+.classpath
+.project
