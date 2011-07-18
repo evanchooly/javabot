@@ -13,7 +13,10 @@ import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * Implements a weather service Dao using Google's weather API
  *
+<<<<<<< HEAD
  * @see WeatherDaoImpl
+=======
+>>>>>>> Test and code for Cities with spaces in them
  * @author Craig Tataryn &lt;craiger@tataryn.net&gt;
  */
 public class GoogleWeatherDaoImpl implements WeatherDao {
