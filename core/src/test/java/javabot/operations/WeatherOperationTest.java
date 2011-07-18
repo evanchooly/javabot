@@ -30,4 +30,10 @@ public class WeatherOperationTest extends BaseOperationTest {
 
     }
 
+    @Test
+    public void cityWithSpaces() throws Exception {
+        super.scanForResponse("~weather New York", "Weather for");
+
+    }
+
 }
