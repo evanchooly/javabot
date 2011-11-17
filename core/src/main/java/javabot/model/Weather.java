@@ -1,5 +1,7 @@
 package javabot.model;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Simple model for passing around Weather conditions
  *
@@ -12,7 +14,8 @@ public class Weather {
     private String tempc;
     private String humidity;
     private String wind;
-    
+    private String windChill;
+
     /**
      * Get city. This is just a ad-hoc String which is set by the underlying API retrieving weather info
      *
@@ -133,19 +136,42 @@ public class Weather {
         this.wind = wind;
     }
 
+    /**
+     * Get a windchill condition (i.e. 15 F (-9 C) )
+     * @return
+     */
+    public String getWindChill() {
+        return windChill;
+    }
+
+    public void setWindChill(String windChill) {
+        this.windChill = windChill;
+    }
+
+    private String replaceDegrees(String degrees) {
+        return degrees.replace('C', '℃').replace('F', '℉');
+    }
+    
     @Override
     public String toString() {
-        StringBuffer result = new StringBuffer("Weather for [");
+        StringBuffer result = new StringBuffer("Weather for ");
         result.append(this.city);
-        result.append("] ");
-        result.append(this.condition);
-        result.append(' ');
+        result.append(" · ");
         result.append(this.tempf);
-        result.append("f/");
+        result.append(" ℉ (");
         result.append(this.tempc);
-        result.append("c | ");
+        result.append(" ℃)");
+        if (StringUtils.trimToEmpty(this.windChill).equals("")) {
+            result.append(" · ");
+        } else {
+            result.append(" feels like ");
+            result.append(replaceDegrees(this.windChill));
+            result.append(" · ");
+        }
         result.append(this.humidity);
-        result.append(" | ");
+        result.append(" · ");
+        result.append(this.condition);
+        result.append(" · ");
         result.append(this.wind);
         return result.toString();
     }
