@@ -30,4 +30,21 @@ public class WeatherOperationTest extends BaseOperationTest {
 
     }
 
+    @Test
+    public void weatherFromGoogle() throws Exception {
+        super.scanForResponse("~weather from google for New York", "Weather for");
+    }
+
+    @Test
+    public void weatherFromWeatherUnderground() throws Exception {
+        super.scanForResponse("~weather from wu for Winnipeg", "Weather for");
+    }
+
+    @Test
+    public void weatherFromUknown() throws Exception {
+        //the weather service should still return something because it will just default to
+        //trying all weather services until it gets a result
+        super.scanForResponse("~weather from somethingelse for Winnipeg", "Weather for");
+    }
+
 }
