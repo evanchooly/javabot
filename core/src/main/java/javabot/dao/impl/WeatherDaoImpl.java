@@ -17,7 +17,7 @@ import java.util.List;
  * Implements a weather service Dao using Weather Underground's Weather service,
  * if that fails it tries Google's.
  * <p>
- *     The user can also specify "from google [place]" or "from wu [place]" if they want to retrieve
+ *     The user can also specify "from google for [place]" or "from wu for [place]" if they want to retrieve
  *     weather data from a specific API
  * </p>
  *
