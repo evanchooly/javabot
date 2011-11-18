@@ -64,7 +64,7 @@ public class WeatherUndergroundSaxHandler extends DefaultHandler {
         if (!error) {
             if (collectWeatherData && weatherElems.contains(currentElem)) {
                 weatherMap.put(currentElem, body);
-            } else if (collectLocationData && "full".contains(currentElem)) {
+            } else if (collectLocationData && "full".equals(currentElem)) {
                 weatherMap.put(currentElem, body);
             }
         }
