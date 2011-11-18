@@ -8,6 +8,10 @@ import org.apache.commons.lang.StringUtils;
  * @author Craig Tataryn &lt;craiger@tataryn.net&gt;
  */
 public class Weather {
+    private static char C = '\u2103';
+    private static char F = '\u2109';
+    private static char DOT = '\u00B7';
+
     private String city;
     private String condition;
     private String tempf;
@@ -154,24 +158,29 @@ public class Weather {
     
     @Override
     public String toString() {
+        String dotWithSpaces = " " + DOT + " ";
         StringBuffer result = new StringBuffer("Weather for ");
         result.append(this.city);
-        result.append(" · ");
+        result.append(dotWithSpaces);
         result.append(this.tempf);
-        result.append(" ℉ (");
+        result.append(' ');
+        result.append(F);
+        result.append(" (");
         result.append(this.tempc);
-        result.append(" ℃)");
+        result.append(" ");
+        result.append(C);
+        result.append(')');
         if (StringUtils.trimToEmpty(this.windChill).equals("")) {
-            result.append(" · ");
+            result.append(dotWithSpaces);
         } else {
             result.append(" feels like ");
             result.append(replaceDegrees(this.windChill));
-            result.append(" · ");
+            result.append(dotWithSpaces);
         }
         result.append(this.humidity);
-        result.append(" · ");
+        result.append(dotWithSpaces);
         result.append(this.condition);
-        result.append(" · ");
+        result.append(dotWithSpaces);
         result.append(this.wind);
         return result.toString();
     }
