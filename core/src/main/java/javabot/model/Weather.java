@@ -153,7 +153,7 @@ public class Weather {
     }
 
     private String replaceDegrees(String degrees) {
-        return degrees.replace('C', '℃').replace('F', '℉');
+        return degrees.replace('C', C).replace('F', F);
     }
     
     @Override
