@@ -8,9 +8,14 @@ import org.apache.commons.lang.StringUtils;
  * @author Craig Tataryn &lt;craiger@tataryn.net&gt;
  */
 public class Weather {
-    private static char C = '\u2103';
-    private static char F = '\u2109';
-    private static char DOT = '\u00B7';
+//    PIRCbot does not support unicode at this time
+//    private static char C = '\u2103';
+//    private static char F = '\u2109';
+//    private static char DOT = '\u00B7';
+
+    private static char C = 'C';
+    private static char F = 'F';
+    private static char SEPARATOR = '|';
 
     private String city;
     private String condition;
@@ -158,7 +163,7 @@ public class Weather {
     
     @Override
     public String toString() {
-        String dotWithSpaces = " " + DOT + " ";
+        String dotWithSpaces = " " + SEPARATOR + " ";
         StringBuffer result = new StringBuffer("Weather for ");
         result.append(this.city);
         result.append(dotWithSpaces);
