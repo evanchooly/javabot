@@ -63,7 +63,8 @@ public class WeatherUndergroundSaxHandler extends DefaultHandler {
         String body = StringUtils.trimToEmpty(new StringBuffer().append(chars, start, length).toString());
         if (!error) {
             if (collectWeatherData && weatherElems.contains(currentElem)) {
-                weatherMap.put(currentElem, body);
+                //In certain cases WU will display "NA" for elements that don't have a value
+                weatherMap.put(currentElem, StringUtils.trimToEmpty(body).equals("NA") ? "" : body);
             } else if (collectLocationData && "full".equals(currentElem)) {
                 weatherMap.put(currentElem, body);
             }
