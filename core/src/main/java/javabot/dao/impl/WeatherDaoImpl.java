@@ -17,7 +17,7 @@ import java.util.List;
  * Implements a weather service Dao using Weather Underground's Weather service,
  * if that fails it tries Google's.
  * <p>
- *     The user can also specify "from google for [place]" or "from wu for [place]" if they want to retrieve
+ *     The user can also specify "using google for [place]" or "using wu for [place]" if they want to retrieve
  *     weather data from a specific API
  * </p>
  *
@@ -38,10 +38,10 @@ public class WeatherDaoImpl implements WeatherDao {
     public Weather getWeatherFor(final String place) {
         Weather weather = null;
         //if they ask for a specific service, use it
-        if (place.toLowerCase().startsWith("from google for ")) {
-            return weatherDaos.get(GOOGLE).getWeatherFor(place.substring(16));
-        } else if (place.toLowerCase().startsWith("from wu for ")) {
-            return weatherDaos.get(WU).getWeatherFor(place.substring(12));
+        if (place.toLowerCase().startsWith("using google for ")) {
+            return weatherDaos.get(GOOGLE).getWeatherFor(place.substring(17));
+        } else if (place.toLowerCase().startsWith("using wu for ")) {
+            return weatherDaos.get(WU).getWeatherFor(place.substring(13));
         }
 
         //if they don't want a sepcific service, then use each service until one returns something
