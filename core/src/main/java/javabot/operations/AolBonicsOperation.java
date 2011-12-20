@@ -37,7 +37,7 @@ public class AolBonicsOperation extends BotOperation {
         // Slightly questionable....
         // phrases.add("lol");
         phrases.add("ftw");
-        
+
         insults.add("dumbass");
         insults.add("genius");
         insults.add("Einstein");

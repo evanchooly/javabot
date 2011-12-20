@@ -9,7 +9,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 // Date: May 21, 2007
 // Time: 1:14:08 PM
 
-// 
+//
 public class FactoidCount extends Label {
 
     @SpringBean

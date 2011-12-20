@@ -18,7 +18,7 @@ public class JavabotInfo extends Panel {
     public JavabotInfo(String id) {
         super(id);
         add(new ExternalLink("homepage", "http://kenai.com/projects/javabot", "HomePage"));
-                            
+
         Link factoid = new BookmarkablePageLink("factoid_link", Factoids.class);
         factoid.add(new Label("factoid", "Factoids: "));
         add(factoid);

@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class AddApi extends AdminCommand {
     @Autowired
     private ApiDao dao;
-    
+
     @Param
     String name;
     @Param

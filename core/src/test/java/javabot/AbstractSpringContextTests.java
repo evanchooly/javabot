@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2006 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * Superclass for TestNG test cases using a Spring context.
  *
  * <p>Maintains a static cache of contexts by key. This has significant performance
- * benefit if initializing the context would take time. While initializing a 
+ * benefit if initializing the context would take time. While initializing a
  * Spring context itself is very quick, some beans in a context, such as
  * a LocalSessionFactoryBean for working with Hibernate, may take some time
  * to initialize. Hence it often makes sense to do that initializing once.
@@ -51,7 +51,7 @@ public abstract class AbstractSpringContextTests {
 
   /** Logger available to subclasses */
   protected static final Logger logger = LoggerFactory.getLogger(AbstractSpringContextTests.class);
-  
+
   /**
    * Map of context keys returned by subclasses of this class, to
 	 * Spring contexts. This needs to be static, as JUnit tests are

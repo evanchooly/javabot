@@ -6,7 +6,7 @@ class Change {
     version false
     changeDate column:'changeDate'
   }
-  
+
   Long id;
   String message;
   Date changeDate;
