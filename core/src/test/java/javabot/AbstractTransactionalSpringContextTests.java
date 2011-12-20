@@ -58,7 +58,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
  * Dependency Injection mechanism. If using the superclass's Field Injection mechanism,
  * the implementation should be named "transactionManager". This mechanism allows the
  * use of this superclass even when there's more than one transaction manager in the context.
- * 
+ *
  * <p><i>This superclass can also be used without transaction management, if no
  * PlatformTransactionManager bean is found in the context provided. Be careful about
  * using this mode, as it allows the potential to permanently modify data.
@@ -83,7 +83,7 @@ public abstract class AbstractTransactionalSpringContextTests extends AbstractDe
 
 	/** Number of transactions started */
 	private int transactionsStarted = 0;
-	
+
 	/**
 	 * Default transaction definition is used.
 	 * Subclasses can change this to cause different behaviour.
@@ -274,7 +274,7 @@ public abstract class AbstractTransactionalSpringContextTests extends AbstractDe
     }
     complete = false;
   }
-  
+
   /**
 	 * Immediately force a commit or rollback of the transaction,
 	 * according to the complete flag.

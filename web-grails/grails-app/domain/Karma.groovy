@@ -7,7 +7,7 @@ class Karma {
     version false
     userName column:'userName'
   }
-  
+
   Long id;
   String name;
   Integer value;

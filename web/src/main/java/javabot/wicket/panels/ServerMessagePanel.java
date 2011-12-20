@@ -26,6 +26,6 @@ public class ServerMessagePanel extends Panel {
         add(new Label("date", "["+timeFormat.format( log.getUpdated())+"]"));
 
         String message = "*** " + log.getNick() + " " + log.getMessage();
-        add(new Label("message", message));        
+        add(new Label("message", message));
     }
 }

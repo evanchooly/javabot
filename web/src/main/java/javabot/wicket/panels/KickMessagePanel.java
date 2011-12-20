@@ -29,4 +29,4 @@ public class KickMessagePanel extends Panel {
         add(new Label("message", message));
 
     }
-}                              
+}

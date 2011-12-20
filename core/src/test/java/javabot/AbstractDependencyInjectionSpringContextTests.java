@@ -160,7 +160,7 @@ public abstract class AbstractDependencyInjectionSpringContextTests extends Abst
 	 * <p>You can certainly override this method if you want to totally control
 	 * how dependencies are injected into 'this' instance.
 	 * @throws Exception in the case of any errors
-	 * @see #populateProtectedVariables() 
+	 * @see #populateProtectedVariables()
 	 */
 	private void injectDependencies() throws Exception {
 		if (isPopulateProtectedVariables()) {

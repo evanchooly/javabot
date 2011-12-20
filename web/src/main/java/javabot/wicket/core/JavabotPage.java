@@ -11,7 +11,7 @@ import javabot.wicket.panels.ChannelBox;
 // Date: May 17, 2007
 // Time: 3:25:10 PM
 
-// 
+//
 public class JavabotPage extends WebPage {
     public JavabotPage() {
     }

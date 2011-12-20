@@ -20,33 +20,33 @@
                 <table>
                     <thead>
                         <tr>
-                        
+
                    	        <g:sortableColumn property="id" title="Id" />
-                        
+
                    	        <g:sortableColumn property="key" title="Key" />
-                        
+
                    	        <g:sortableColumn property="logged" title="Logged" />
-                        
+
                    	        <g:sortableColumn property="name" title="Name" />
-                        
+
                    	        <g:sortableColumn property="updated" title="Updated" />
-                        
+
                         </tr>
                     </thead>
                     <tbody>
                     <g:each in="${channelInstanceList}" status="i" var="channelInstance">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                        
+
                             <td><g:link action="show" id="${channelInstance.id}">${fieldValue(bean:channelInstance, field:'id')}</g:link></td>
-                        
+
                             <td>${fieldValue(bean:channelInstance, field:'key')}</td>
-                        
+
                             <td>${fieldValue(bean:channelInstance, field:'logged')}</td>
-                        
+
                             <td>${fieldValue(bean:channelInstance, field:'name')}</td>
-                        
+
                             <td>${fieldValue(bean:channelInstance, field:'updated')}</td>
-                        
+
                         </tr>
                     </g:each>
                     </tbody>

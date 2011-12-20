@@ -15,7 +15,7 @@ public class Index extends JavabotPage {
 
     public Index(final PageParameters parameters) {
         super(parameters);
-        
+
         String year = parameters.getString("0");
         String month = parameters.getString("1");
         String day = parameters.getString("2");

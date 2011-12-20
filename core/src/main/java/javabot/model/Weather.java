@@ -34,7 +34,7 @@ public class Weather {
     {
         return city;
     }
-    
+
     /**
      * Set city.
      *
@@ -44,7 +44,7 @@ public class Weather {
     {
         this.city = city;
     }
-    
+
     /**
      * Gets the weather conditions (i.e. "Sunny")
      *
@@ -54,7 +54,7 @@ public class Weather {
     {
         return condition;
     }
-    
+
     /**
      * Set condition.
      *
@@ -64,7 +64,7 @@ public class Weather {
     {
         this.condition = condition;
     }
-    
+
     /**
      * Gets the tempturature in Fahrenheit
      *
@@ -74,7 +74,7 @@ public class Weather {
     {
         return tempf;
     }
-    
+
     /**
      * Set tempf.
      *
@@ -84,7 +84,7 @@ public class Weather {
     {
         this.tempf = tempf;
     }
-    
+
     /**
      * Get the temperature in Celcius
      *
@@ -94,7 +94,7 @@ public class Weather {
     {
         return tempc;
     }
-    
+
     /**
      * Set tempc.
      *
@@ -104,7 +104,7 @@ public class Weather {
     {
         this.tempc = tempc;
     }
-    
+
     /**
      * Get humidity.
      *
@@ -114,7 +114,7 @@ public class Weather {
     {
         return humidity;
     }
-    
+
     /**
      * Set humidity.
      *
@@ -124,7 +124,7 @@ public class Weather {
     {
         this.humidity = humidity;
     }
-    
+
     /**
      * Get wind speed/direction text (i.e. Wind: NW at 20mph)
      *
@@ -134,7 +134,7 @@ public class Weather {
     {
         return wind;
     }
-    
+
     /**
      * Set wind.
      *
@@ -160,7 +160,7 @@ public class Weather {
     private String replaceDegrees(String degrees) {
         return degrees.replace('C', C).replace('F', F);
     }
-    
+
     @Override
     public String toString() {
         String dotWithSpaces = " " + SEPARATOR + " ";

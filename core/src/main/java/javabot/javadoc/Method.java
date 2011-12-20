@@ -31,7 +31,7 @@ public class Method extends JavadocElement implements Persistent {
 
     public Method(final String name, final Clazz parent, final int count, final String longArgs, final String longArgsStripped,
         final String shortArgs, final String shortArgsStripped) {
-        
+
         methodName = name;
         clazz = parent;
         paramCount = count;

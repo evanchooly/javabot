@@ -20,42 +20,42 @@
                 <table>
                     <tbody>
 
-                    
+
                         <tr class="prop">
                             <td valign="top" class="name">Id:</td>
-                            
+
                             <td valign="top" class="value">${fieldValue(bean:logInstance, field:'id')}</td>
-                            
+
                         </tr>
-                    
+
                         <tr class="prop">
                             <td valign="top" class="name">Channel:</td>
-                            
+
                             <td valign="top" class="value">${fieldValue(bean:logInstance, field:'channel')}</td>
-                            
+
                         </tr>
-                    
+
                         <tr class="prop">
                             <td valign="top" class="name">Message:</td>
-                            
+
                             <td valign="top" class="value">${fieldValue(bean:logInstance, field:'message')}</td>
-                            
+
                         </tr>
-                    
+
                         <tr class="prop">
                             <td valign="top" class="name">Nick:</td>
-                            
+
                             <td valign="top" class="value">${fieldValue(bean:logInstance, field:'nick')}</td>
-                            
+
                         </tr>
-                    
+
                         <tr class="prop">
                             <td valign="top" class="name">Updated:</td>
-                            
+
                             <td valign="top" class="value">${fieldValue(bean:logInstance, field:'updated')}</td>
-                            
+
                         </tr>
-                    
+
                     </tbody>
                 </table>
             </div>

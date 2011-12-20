@@ -27,12 +27,12 @@ public class UnixCommandOperation extends BotOperation {
         commands.add("rm");
         commands.add("ls");
         commands.add("clear");
-        
+
         insults.add("dumbass");
         insults.add("genius");
         insults.add("Einstein");
         insults.add("pal");
-        
+
         random = new Random();
     }
 

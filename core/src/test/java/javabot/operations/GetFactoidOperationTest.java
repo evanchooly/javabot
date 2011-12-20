@@ -130,7 +130,7 @@ public class GetFactoidOperationTest extends BaseOperationTest {
         scanForResponse(String.format("~~ %s javadoc String", TEST_USER), "[JDK: java.lang.String]");
 
         scanForResponse(String.format("~~ %s javadoc String", new IrcUser("jimbob")), "jimbob");
-        
+
         testMessage(String.format("~~ %s stupid", TEST_USER),
             String.format("%s, what you've just said is one of the most"
                 + " insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you"

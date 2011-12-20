@@ -21,42 +21,42 @@
                 <table>
                     <tbody>
 
-                    
+
                         <tr class="prop">
                             <td valign="top" class="name">Id:</td>
-                            
+
                             <td valign="top" class="value">${fieldValue(bean:channelInstance, field:'id')}</td>
-                            
+
                         </tr>
-                    
+
                         <tr class="prop">
                             <td valign="top" class="name">Key:</td>
-                            
+
                             <td valign="top" class="value">${fieldValue(bean:channelInstance, field:'key')}</td>
-                            
+
                         </tr>
-                    
+
                         <tr class="prop">
                             <td valign="top" class="name">Logged:</td>
-                            
+
                             <td valign="top" class="value">${fieldValue(bean:channelInstance, field:'logged')}</td>
-                            
+
                         </tr>
-                    
+
                         <tr class="prop">
                             <td valign="top" class="name">Name:</td>
-                            
+
                             <td valign="top" class="value">${fieldValue(bean:channelInstance, field:'name')}</td>
-                            
+
                         </tr>
-                    
+
                         <tr class="prop">
                             <td valign="top" class="name">Updated:</td>
-                            
+
                             <td valign="top" class="value">${fieldValue(bean:channelInstance, field:'updated')}</td>
-                            
+
                         </tr>
-                    
+
                     </tbody>
                 </table>
             </div>

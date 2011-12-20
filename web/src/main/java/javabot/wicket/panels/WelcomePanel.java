@@ -8,6 +8,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 public class WelcomePanel extends Panel {
     public WelcomePanel(String id) {
         super(id);
-  
+
     }
 }

@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class FactoidDaoImpl extends AbstractDaoImpl<Factoid> implements FactoidDao {
     private static final Logger log = LoggerFactory.getLogger(FactoidDaoImpl.class);
-    
+
     @Autowired
     private ChangeDao changeDao;
     @Autowired
