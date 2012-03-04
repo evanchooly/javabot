@@ -1,4 +1,0 @@
-
-
-class FantomBotTest : sys::Test {
-}
