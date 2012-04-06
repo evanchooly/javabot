@@ -1,0 +1,9 @@
+# Application dependencies
+
+require:
+    - play
+    - play -> less 0.9
+    - play -> deadbolt 1.5.1
+    - play -> router 1.2
+    - play -> securesocial 0.2.4
+#    - play -> fastergt 1.3

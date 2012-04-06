@@ -14,13 +14,7 @@
         <module>spi-apt</module>
         <module>apt-tools</module>
         <module>core</module>
-        <!-- Some day...
-        <module>fantom-core</module>
-        <module>camel-core</module>
-        -->
         <module>web</module>
-        <module>web-grails</module>
-        <!--<module>scalacore</module>-->
     </modules>
 
     <build>

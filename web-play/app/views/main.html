@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>#{get 'title' /}</title>
+    <meta charset="${_response_encoding}">
+    <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.less'}">
+#{get 'moreStyles' /}
+    <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
+    <script src="@{'/public/javascripts/jquery-1.6.4.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+    <script src="@{'/public/javascripts/javabot.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+#{get 'moreScripts' /}
+</head>
+<body>
+<div id="page_wrapper">
+    <div id="header_wrapper">
+        <div id="header">
+            <h1>Javabot</h1>
+        </div>
+    </div>
+
+    <div id="left_side">
+        <h3>Channels</h3>
+
+        <div class="boxWrapper">
+            <ul class="plain">
+            #{list context.channels, as:'channel'}
+                <li><a id="${channel.name}"
+                       onclick="document.location = '/logs/' + encodeURIComponent(this.id) + '/' + today() ;">${channel.name}</a></li>
+            #{/list}
+            </ul>
+        </div>
+    </div>
+
+    <div id="right_side">
+        <div>
+            <h3>Info</h3>
+
+            <div id="boxWrapper">
+                <ul class="plain">
+                    <li><a href="/">Home Page</a></li>
+                    <li><a href="/factoids">Factoids</a>: ${context.factoidCount}</li>
+                *{<li><a wicket:id="activity_link"><span wicket:id="stats">[stats]</span></a></li>}*
+                    <li><a href="/karma">Karma Ranking</a></li>
+                    <li><a href="/changes">Changelog</a></li>
+                </ul>
+            </div>
+
+        </div>
+        <div>
+            <h3>Credits</h3>
+            <ul>
+                <li>cheeser</li>
+                <li>ernimril</li>
+                <li>joed</li>
+                <li>kinabalu</li>
+                <li>lunk</li>
+                <li>ojacobson</li>
+                <li>r0bby</li>
+                <li>ThaDon</li>
+                <li>kinabalu</li>
+                <li>ricky_clarkson</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="content">
+        <div class='featurebox_center'>
+            <span wicket:id="navigation"></span>
+        </div>
+        <div class='featurebox_center'>
+            <span wicket:id="Welcome"></span>
+            <span wicket:id="ChannelLog">#{doLayout /}</span>
+        </div>
+        <br style="clear:both;border:none"/>
+
+    </div>
+</div>
+</body>
+</html>

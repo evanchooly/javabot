@@ -1,0 +1,15 @@
+#{extends 'main.html' /}
+${context.logs.size()}
+<table cellspacing="0" class="mytable" width="100%">
+    <tr id="logHeader">
+        <th class="lef">Nick</th>
+        <th>Message</th>
+        <th>Date</th>
+    </tr>
+    #{list context.logs, as: 'log'}
+    <tr>
+        ${log}
+        <span wicket:id="messagePanel">[messagePanel]</span>
+    </tr>
+    #{/list}
+</table>
