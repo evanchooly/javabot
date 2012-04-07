@@ -1,6 +1,5 @@
 #{extends 'main.html' /}
-${context.logs.size()}
-<table cellspacing="0" class="mytable" width="100%">
+<table cellspacing="0" class="mytable">
     <tr id="logHeader">
         <th class="lef">Nick</th>
         <th>Message</th>
@@ -8,8 +7,23 @@ ${context.logs.size()}
     </tr>
     #{list context.logs, as: 'log'}
     <tr>
-        ${log}
-        <span wicket:id="messagePanel">[messagePanel]</span>
+        #{if log.isAction()}
+            <td class="lef" colspan="2">${log.message}</td>
+            <td class="time">[${log.shortDate()}]</td>
+        #{/if}
+        #{elseif log.isKick()}
+            <td class="lef kick" colspan="2">*** ${log.nick} ${log.message}</td>
+            <td class="time">[${log.shortDate()}]</td>
+        #{/elseif}
+        #{elseif log.isServerMessage()}
+            <td class="lef server" colspan="2">*** ${log.nick} ${log.message}</td>
+            <td class="time">[${log.shortDate()}]</td>
+        #{/elseif}
+        #{else}
+            <td class="lef nick">${log.nick}</td>
+            <td>${log.message}</td>
+            <td class="time">[${log.shortDate()}]</td>
+        #{/else}
     </tr>
     #{/list}
 </table>

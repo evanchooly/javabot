@@ -2,16 +2,10 @@ package models;
 
 import play.db.jpa.Model;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "logs")
@@ -20,6 +14,7 @@ public class Log extends Model {
     private String channel;
     private String message;
     private Date updated;
+    private static final SimpleDateFormat SHORT = new SimpleDateFormat("hh:mm");
 
     public enum Type {
         ACTION,
@@ -34,12 +29,32 @@ public class Log extends Model {
         QUIT,
         REGISTERED,
         TOPIC,
-        NICK,
+        NICK,;
+        private static final EnumSet<Type> SERVER_SET = EnumSet.of(JOIN, PART, QUIT);
     }
 
     @Enumerated(EnumType.STRING)
     private Type type;
 
+    @Transient
+    public boolean isAction() {
+        return message != null && Type.ACTION == type;
+    }
+
+    @Transient
+    public boolean isKick() {
+        return message != null && Type.KICK == type;
+    }
+
+    @Transient
+    public boolean isServerMessage() {
+        return message != null && Type.SERVER_SET.contains(type);
+    }
+
+    @Transient
+    public String shortDate() {
+        return SHORT.format(updated);
+    }
     public static List<Log> findByChannel(String name, String date) {
         Channel channel = Channel.find("byName", name).first();
         List<Log> logs;
@@ -59,8 +74,6 @@ public class Log extends Model {
             day.add(Calendar.DATE, 1);
             day.add(Calendar.MILLISECOND, -1);
             Date end = day.getTime();
-            System.out.println("start = " + start);
-            System.out.println("end = " + end);
             logs= Log.find("channel = ? and updated >= ? and updated < ?", name, start, end).fetch();
         } else {
             logs = Collections.<Log>emptyList();

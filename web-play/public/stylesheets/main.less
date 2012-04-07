@@ -1,6 +1,10 @@
 @lightblue: #2153AA;
-@fontfamily: verdana, arial, sans-serif;
-@sidebarimage:  url('../images/side_bg.gif');
+@fontfamily: verdana,
+arial, sans-serif
+
+;
+@sidebarimage: url('../images/side_bg.gif');
+@bordercolor: #C1DAD7;
 
 body {
     font: normal 11px auto "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
@@ -56,16 +60,15 @@ a {
     padding: 15px;
     background: url('../images/header_bg.gif') top right no-repeat;
     margin: 0;
+    font-family: @fontfamily;
 
     h1 {
-        font-family: @fontfamily;
         font-size: 28px;
         color: #ffffff;
         letter-spacing: -1px;
     }
 
     h2 {
-        font-family: @fontfamily;
         font-size: 14px;
         color: #B1C6EB;
         letter-spacing: 1px;
@@ -82,7 +85,7 @@ a {
 
 #left_side, #right_side {
     margin-top: 10px;
-    width: 160px;
+    width: 15%;
     background: #F1F6FE @sidebarimage bottom left repeat-x;
 
     p {
@@ -117,6 +120,10 @@ a {
     }
 }
 
+.mytable {
+    width: 70%;
+}
+
 #content {
     margin: 20px 180px 0;
 
@@ -148,4 +155,65 @@ a {
         line-height: 12px;
         color: @lightblue;
     }
+}
+
+table {
+    color: #4f6b72;
+}
+
+th {
+    font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+    border-bottom: 1px solid @bordercolor;
+    border-top: 1px solid @bordercolor;
+    letter-spacing: 2px;
+    text-align: left;
+    padding: 6px 6px 6px 12px;
+    background: #CAE8EA url(../images/bg_header.jpg) no-repeat;
+}
+
+th.lef {
+    border-left: 1px solid @bordercolor;
+    border-right: 1px solid @bordercolor;
+    text-align: left;
+    padding: 6px 6px 6px 12px;
+}
+
+td {
+    margin: 0;
+    border-left: 1px solid @bordercolor;
+//    border-right: 1px solid @bordercolor;
+    border-bottom: 1px solid @bordercolor;
+    background: #fff;
+    padding: 6px 6px 6px 12px;
+    color: #4f6b72;
+    font-family: verdana, arial, sans-serif;
+    font-size: 11px;
+}
+
+td.lef {
+    font-weight: bolder;
+}
+
+td.server {
+    font-weight: normal;
+    font-style: italic;
+}
+
+td.kick {
+    font-weight: normal;
+    font-style: italic;
+    color: red;
+}
+
+td.even {
+    background: #fff url(../images/bullet1.gif) no-repeat;
+}
+
+td.odd {
+    background: #fff url(../images/bullet2.gif) no-repeat;
+}
+
+td.alt {
+    background: #F5FAFA;
+    color: #797268;
 }
