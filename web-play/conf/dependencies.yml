@@ -6,4 +6,5 @@ require:
     - play -> deadbolt 1.5.1
     - play -> router 1.2
     - play -> securesocial 0.2.4
+    - play -> paginate 0.14
 #    - play -> fastergt 1.3

@@ -1,29 +1,26 @@
 #{extends 'main.html' /}
-<table cellspacing="0" class="mytable">
+<table class="mytable">
     <tr id="logHeader">
-        <th class="lef">Nick</th>
+        <th class="left">Nick</th>
         <th>Message</th>
         <th>Date</th>
     </tr>
     #{list context.logs, as: 'log'}
     <tr>
         #{if log.isAction()}
-            <td class="lef" colspan="2">${log.message}</td>
-            <td class="time">[${log.shortDate()}]</td>
+            <td class="left" colspan="2">${log.message}</td>
         #{/if}
         #{elseif log.isKick()}
-            <td class="lef kick" colspan="2">*** ${log.nick} ${log.message}</td>
-            <td class="time">[${log.shortDate()}]</td>
+            <td class="left kick" colspan="2">*** ${log.nick} ${log.message}</td>
         #{/elseif}
         #{elseif log.isServerMessage()}
-            <td class="lef server" colspan="2">*** ${log.nick} ${log.message}</td>
-            <td class="time">[${log.shortDate()}]</td>
+            <td class="left server" colspan="2">*** ${log.nick} ${log.message}</td>
         #{/elseif}
         #{else}
-            <td class="lef nick">${log.nick}</td>
+            <td class="left nick">${log.nick}</td>
             <td>${log.message}</td>
-            <td class="time">[${log.shortDate()}]</td>
         #{/else}
+        <td class="time">[${log.updated.format("hh:mm")}]</td>
     </tr>
     #{/list}
 </table>

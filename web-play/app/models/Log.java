@@ -14,7 +14,6 @@ public class Log extends Model {
     private String channel;
     private String message;
     private Date updated;
-    private static final SimpleDateFormat SHORT = new SimpleDateFormat("hh:mm");
 
     public enum Type {
         ACTION,
@@ -51,10 +50,6 @@ public class Log extends Model {
         return message != null && Type.SERVER_SET.contains(type);
     }
 
-    @Transient
-    public String shortDate() {
-        return SHORT.format(updated);
-    }
     public static List<Log> findByChannel(String name, String date) {
         Channel channel = Channel.find("byName", name).first();
         List<Log> logs;

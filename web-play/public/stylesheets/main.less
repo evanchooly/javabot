@@ -171,7 +171,7 @@ th {
     background: #CAE8EA url(../images/bg_header.jpg) no-repeat;
 }
 
-th.lef {
+.left {
     border-left: 1px solid @bordercolor;
     border-right: 1px solid @bordercolor;
     text-align: left;
@@ -181,17 +181,26 @@ th.lef {
 td {
     margin: 0;
     border-left: 1px solid @bordercolor;
-//    border-right: 1px solid @bordercolor;
     border-bottom: 1px solid @bordercolor;
     background: #fff;
     padding: 6px 6px 6px 12px;
     color: #4f6b72;
     font-family: verdana, arial, sans-serif;
     font-size: 11px;
+    max-width: 20%;
+    overflow-wrap: break-word;
 }
 
-td.lef {
+td.left {
     font-weight: bolder;
+}
+
+td.right {
+    border-right: 1px solid @bordercolor;
+}
+
+td.top {
+    border-top: 1px solid @bordercolor;
 }
 
 td.server {
@@ -216,4 +225,8 @@ td.odd {
 td.alt {
     background: #F5FAFA;
     color: #797268;
+}
+
+table {
+    border-collapse: collapse;
 }

@@ -3,6 +3,7 @@ package controllers;
 import models.Channel;
 import models.Factoid;
 import models.Log;
+import play.modules.paginate.ModelPaginator;
 import play.modules.router.Get;
 import play.modules.router.ServeStatic;
 import play.modules.router.StaticRoutes;
@@ -28,10 +29,19 @@ public class Application extends Controller {
         render(context);
     }
 
+    @Get("/factoids/?")
+    public static void factoids() {
+        Context context = new Context();
+        context.paginator = new ModelPaginator<Factoid>(Factoid.class)
+                .orderBy("name ASC");
+        render(context);
+    }
+
     private static class Context {
-        private final List<Channel> channels;
-        private final Long factoidCount;
-        private List<Log> logs;
+        final List<Channel> channels;
+        final Long factoidCount;
+        List<Log> logs;
+        ModelPaginator<Factoid> paginator;
 
         public Context() {
             channels = Channel.findLogged();
@@ -54,4 +64,6 @@ public class Application extends Controller {
             logs = Log.findByChannel(channel, date);
         }
     }
+
+
 }
