@@ -1,0 +1,24 @@
+#{extends 'main.html' /}
+
+<table class="factoids">
+    <tr>
+        <td class="right top" colspan="4">
+            #{paginate.summary items:context.paginator/}
+            #{paginate.controls items:context.paginator /}
+        </td>
+    </tr>
+    <tr>
+        <th>Nick</th>
+        <th>Karma</th>
+        <th>Last Donoor</th>
+        <th class="right">Date</th>
+    </tr>
+    #{paginate.list items:context.paginator, as:'karma'}
+        <tr>
+            <td>${karma.name}</td>
+            <td>${karma.value}</td>
+            <td>${karma.userName}</td>
+            <td class="right">${karma.updated.format("yyyy.MM.dd hh:mm")}</td>
+        </tr>
+    #{/paginate.list}
+</table>

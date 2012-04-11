@@ -1,9 +1,6 @@
 package controllers;
 
-import models.Change;
-import models.Channel;
-import models.Factoid;
-import models.Log;
+import models.*;
 import play.db.jpa.GenericModel;
 import play.modules.paginate.ModelPaginator;
 import play.modules.router.Get;
@@ -37,6 +34,13 @@ public class Application extends Controller {
     public static void factoids() {
         Context context = new Context();
         context.paginator = new ModelPaginator<Factoid>(Factoid.class).orderBy("name ASC");
+        context.paginator.setPageSize(PAGE_SIZE);
+        render(context);
+    }
+    @Get("/karma/?")
+    public static void karma() {
+        Context context = new Context();
+        context.paginator = new ModelPaginator<Karma>(Karma.class).orderBy("value DESC");
         context.paginator.setPageSize(PAGE_SIZE);
         render(context);
     }
