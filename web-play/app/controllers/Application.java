@@ -1,8 +1,10 @@
 package controllers;
 
+import models.Change;
 import models.Channel;
 import models.Factoid;
 import models.Log;
+import play.db.jpa.GenericModel;
 import play.modules.paginate.ModelPaginator;
 import play.modules.router.Get;
 import play.modules.router.ServeStatic;
@@ -12,9 +14,11 @@ import play.mvc.Controller;
 import java.util.List;
 
 @StaticRoutes({
-        @ServeStatic(value="/public/", directory="public")
+        @ServeStatic(value = "/public/", directory = "public")
 })
 public class Application extends Controller {
+
+    private static final int PAGE_SIZE = 50;
 
     @Get("/")
     public static void index() {
@@ -32,16 +36,28 @@ public class Application extends Controller {
     @Get("/factoids/?")
     public static void factoids() {
         Context context = new Context();
-        context.paginator = new ModelPaginator<Factoid>(Factoid.class)
-                .orderBy("name ASC");
+        context.paginator = new ModelPaginator<Factoid>(Factoid.class).orderBy("name ASC");
+        context.paginator.setPageSize(PAGE_SIZE);
         render(context);
     }
 
-    private static class Context {
+    @Get("/changes/?")
+    public static void changes(String message) {
+        Context context = new Context();
+        if(message != null) {
+            context.paginator = new ModelPaginator<Change>(Change.class, "message like ?", "%" + message + "%").orderBy("changeDate ASC");
+        } else {
+            context.paginator = new ModelPaginator<Change>(Change.class).orderBy("changeDate ASC");
+        }
+        context.paginator.setPageSize(PAGE_SIZE);
+        render(context, message);
+    }
+
+    private static class Context<T extends GenericModel> {
         final List<Channel> channels;
         final Long factoidCount;
         List<Log> logs;
-        ModelPaginator<Factoid> paginator;
+        ModelPaginator<T> paginator;
 
         public Context() {
             channels = Channel.findLogged();
@@ -64,6 +80,4 @@ public class Application extends Controller {
             logs = Log.findByChannel(channel, date);
         }
     }
-
-
 }

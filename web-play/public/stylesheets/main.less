@@ -4,7 +4,7 @@ arial, sans-serif
 
 ;
 @sidebarimage: url('../images/side_bg.gif');
-@bordercolor: #C1DAD7;
+@border: 1px solid #C1DAD7;
 
 body {
     font: normal 11px auto "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
@@ -163,25 +163,29 @@ table {
 
 th {
     font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-    border-bottom: 1px solid @bordercolor;
-    border-top: 1px solid @bordercolor;
+    border-bottom: @border;
+    border-top: @border;
     letter-spacing: 2px;
     text-align: left;
     padding: 6px 6px 6px 12px;
     background: #CAE8EA url(../images/bg_header.jpg) no-repeat;
+
+    &.right {
+        border-right: @border;
+    }
 }
 
 .left {
-    border-left: 1px solid @bordercolor;
-    border-right: 1px solid @bordercolor;
+    border-left: @border;
+    border-right: @border;
     text-align: left;
     padding: 6px 6px 6px 12px;
 }
 
 td {
     margin: 0;
-    border-left: 1px solid @bordercolor;
-    border-bottom: 1px solid @bordercolor;
+    border-left: @border;
+    border-bottom: @border;
     background: #fff;
     padding: 6px 6px 6px 12px;
     color: #4f6b72;
@@ -189,44 +193,52 @@ td {
     font-size: 11px;
     max-width: 20%;
     overflow-wrap: break-word;
-}
 
-td.left {
-    font-weight: bolder;
-}
+    &.left {
+        font-weight: bolder;
+    }
 
-td.right {
-    border-right: 1px solid @bordercolor;
-}
+    &.right {
+        border-right: @border;
+    }
 
-td.top {
-    border-top: 1px solid @bordercolor;
-}
+    &.top {
+        border-top: @border;
+    }
 
-td.server {
-    font-weight: normal;
-    font-style: italic;
-}
+    &.server {
+        font-weight: normal;
+        font-style: italic;
+    }
 
-td.kick {
-    font-weight: normal;
-    font-style: italic;
-    color: red;
-}
+    &.kick {
+        font-weight: normal;
+        font-style: italic;
+        color: red;
+    }
 
-td.even {
-    background: #fff url(../images/bullet1.gif) no-repeat;
-}
+    &.even {
+        background: #fff url(../images/bullet1.gif) no-repeat;
+    }
 
-td.odd {
-    background: #fff url(../images/bullet2.gif) no-repeat;
-}
+    &.odd {
+        background: #fff url(../images/bullet2.gif) no-repeat;
+    }
 
-td.alt {
-    background: #F5FAFA;
-    color: #797268;
+    &.alt {
+        background: #F5FAFA;
+        color: #797268;
+    }
 }
 
 table {
     border-collapse: collapse;
+    min-width: 100%;
+    width: 100%;
+    max-width: 100%;
+}
+
+.pagination-container {
+    display: inline;
+    float: right;
 }
