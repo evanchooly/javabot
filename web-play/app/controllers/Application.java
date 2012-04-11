@@ -8,6 +8,7 @@ import play.modules.router.ServeStatic;
 import play.modules.router.StaticRoutes;
 import play.mvc.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @StaticRoutes({
@@ -31,12 +32,42 @@ public class Application extends Controller {
     }
 
     @Get("/factoids/?")
-    public static void factoids() {
+    public static void factoids(String factoidName, String factoidValue, String userName) {
         Context context = new Context();
-        context.paginator = new ModelPaginator<Factoid>(Factoid.class).orderBy("name ASC");
+        StringBuilder builder = new StringBuilder();
+        List<String> params = new ArrayList<String>();
+        append(builder, params, factoidName, "name");
+        append(builder, params, factoidValue, "value");
+        append(builder, params, userName, "userName");
+        if (params.isEmpty()) {
+            context.paginator = new ModelPaginator<Factoid>(Factoid.class).orderBy("name ASC");
+        } else {
+            context.paginator = new ModelPaginator<Factoid>(Factoid.class,
+                    builder.toString(), params.toArray()).orderBy("name ASC");
+        }
         context.paginator.setPageSize(PAGE_SIZE);
-        render(context);
+        if (factoidName == null) {
+            factoidName = "";
+        }
+        if (factoidValue == null) {
+            factoidValue = "";
+        }
+        if (userName == null) {
+            userName = "";
+        }
+        render(context, factoidName, factoidValue, userName);
     }
+
+    private static void append(StringBuilder builder, List<String> params, String value, final String attribute) {
+        if (value != null) {
+            if (builder.length() != 0) {
+                builder.append(" and ");
+            }
+            builder.append(attribute + " like ?");
+            params.add("%" + value + "%");
+        }
+    }
+
     @Get("/karma/?")
     public static void karma() {
         Context context = new Context();
@@ -48,11 +79,12 @@ public class Application extends Controller {
     @Get("/changes/?")
     public static void changes(String message) {
         Context context = new Context();
-        if(message != null) {
-            context.paginator = new ModelPaginator<Change>(Change.class, "message like ?", "%" + message + "%").orderBy("changeDate ASC");
+        if (message != null) {
+            context.paginator = new ModelPaginator<Change>(Change.class, "message like ?", "%" + message + "%");
         } else {
-            context.paginator = new ModelPaginator<Change>(Change.class).orderBy("changeDate ASC");
+            context.paginator = new ModelPaginator<Change>(Change.class);
         }
+        context.paginator.orderBy("changeDate ASC");
         context.paginator.setPageSize(PAGE_SIZE);
         render(context, message);
     }

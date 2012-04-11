@@ -1,18 +1,25 @@
 #{extends 'main.html' /}
 
-<table class="factoids">
-    <tr>
-        <td class="right top" colspan="4">
+<form action="@{Application.factoids}">
+    <table class="factoids">
+        <tr>
+            <td class="right top" colspan="4">
             #{paginate.summary items:context.paginator/}
             #{paginate.controls items:context.paginator /}
-        </td>
-    </tr>
-    <tr>
-        <th>Name</th>
-        <th >Value</th>
-        <th>Added By</th>
-        <th class="right">Updated</th>
-    </tr>
+            </td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <th>Value</th>
+            <th>Added By</th>
+            <th class="right">Updated</th>
+        </tr>
+        <tr>
+            <td><input name="factoidName" value="${factoidName}"></td>
+            <td><input name="factoidValue" value="${factoidValue}"></td>
+            <td><input name="userName" value="${userName}"></td>
+            <td class="right"><input type="submit" class="submit"></td>
+        </tr>
     #{paginate.list items:context.paginator, as:'factoid'}
         <tr>
             <td>${factoid.name}</td>
@@ -21,4 +28,5 @@
             <td class="right">${factoid.updated.format("yyyy.MM.dd hh:mm")}</td>
         </tr>
     #{/paginate.list}
-</table>
+    </table>
+</form>
