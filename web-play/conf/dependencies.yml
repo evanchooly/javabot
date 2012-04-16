@@ -5,6 +5,10 @@ require:
     - play -> less 0.9
     - play -> deadbolt 1.5.1
     - play -> router 1.2
-    - play -> securesocial 0.2.4
+    - org.twitter4j -> twitter4j-core 2.2.5:
+        exclude:
+            - commons-logging -> *
     - play -> paginate 0.14
+
+#   - play -> securesocial 0.2.4
 #    - play -> fastergt 1.3

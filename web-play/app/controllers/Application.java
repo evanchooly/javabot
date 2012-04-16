@@ -1,6 +1,10 @@
 package controllers;
 
-import models.*;
+import models.Change;
+import models.Channel;
+import models.Factoid;
+import models.Karma;
+import models.Log;
 import play.db.jpa.GenericModel;
 import play.modules.paginate.ModelPaginator;
 import play.modules.router.Get;
@@ -84,20 +88,22 @@ public class Application extends Controller {
         } else {
             context.paginator = new ModelPaginator<Change>(Change.class);
         }
-        context.paginator.orderBy("changeDate ASC");
+        context.paginator.orderBy("changeDate DESC");
         context.paginator.setPageSize(PAGE_SIZE);
         render(context, message);
     }
 
-    private static class Context<T extends GenericModel> {
+    public static class Context<T extends GenericModel> {
         final List<Channel> channels;
         final Long factoidCount;
         List<Log> logs;
         ModelPaginator<T> paginator;
+        Admin.TwitterContext twitterContext;
 
         public Context() {
             channels = Channel.findLogged();
             factoidCount = Factoid.count();
+            twitterContext = Admin.getTwitterContext();
         }
 
         public Long getFactoidCount() {
