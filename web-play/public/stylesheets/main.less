@@ -4,7 +4,9 @@ arial, sans-serif
 
 ;
 @sidebarimage: url('../images/side_bg.gif');
-@border: 1px solid #C1DAD7;
+@border: 1pxsolid #C1DAD7
+
+;
 
 body {
     font: normal 11px auto "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
@@ -168,7 +170,8 @@ th {
     letter-spacing: 2px;
     text-align: left;
     padding: 6px 6px 6px 12px;
-    background: #CAE8EA url(../images/bg_header.jpg) no-repeat;
+    background: #CAE8EA no-repeat;
+    border-left: @border;
 
     &.right {
         border-right: @border;
@@ -245,4 +248,22 @@ table {
 
 .submit {
     visibility: hidden;
+}
+
+.tableWrapper {
+    padding: 0;
+    border-collapse: collapse;
+    border: none;
+}
+
+.dateNav {
+    white-space: nowrap;
+
+    &.today {
+        text-align: center;
+    }
+
+    &.nextNav {
+        text-align: right;
+    }
 }

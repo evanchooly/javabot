@@ -2,6 +2,7 @@ idea-files
 target
 core/src/main/resources/javabot.properties
 web-play/conf/oauth.conf
+play.war
 .idea
 *.iml
 *.ipr

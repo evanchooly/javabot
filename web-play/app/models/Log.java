@@ -2,10 +2,16 @@ package models;
 
 import play.db.jpa.Model;
 
-import javax.persistence.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.List;
 
 @Entity
 @Table(name = "logs")
@@ -50,16 +56,12 @@ public class Log extends Model {
         return message != null && Type.SERVER_SET.contains(type);
     }
 
-    public static List<Log> findByChannel(String name, String date) {
+    public static List<Log> findByChannel(String name, Date date) {
         Channel channel = Channel.find("byName", name).first();
         List<Log> logs;
         if (channel.logged) {
             Calendar day = Calendar.getInstance();
-            try {
-                day.setTime(new SimpleDateFormat("yyyy.MM.dd").parse(date));
-            } catch (ParseException e) {
-                throw new RuntimeException(e.getMessage(), e);
-            }
+            day.setTime(date);
             day.clear(Calendar.HOUR);
             day.clear(Calendar.MINUTE);
             day.clear(Calendar.SECOND);

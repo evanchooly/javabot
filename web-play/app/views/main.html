@@ -24,9 +24,13 @@
 
         <div class="boxWrapper">
             <ul class="plain">
-            #{list context.channels, as:'channel'}
-                <li><a id="${channel.name}"
-                       onclick="document.location = '/logs/' + encodeURIComponent(this.id) + '/' + today() ;">${channel.name}</a></li>
+            #{list context.channels, as:'logged'}
+                <li>
+                    <a id="${logged.name}"
+                    #{if channel=logged.name}
+                        class="current"
+                    #{/if}
+                       onclick="document.location = '/logs/' + encodeURIComponent(this.id) + '/' + today() ;">${logged.name}</a></li>
             #{/list}
             </ul>
         </div>

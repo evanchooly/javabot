@@ -5,6 +5,7 @@ import models.Channel;
 import models.Factoid;
 import models.Karma;
 import models.Log;
+import play.data.binding.As;
 import play.db.jpa.GenericModel;
 import play.modules.paginate.ModelPaginator;
 import play.modules.router.Get;
@@ -13,6 +14,8 @@ import play.modules.router.StaticRoutes;
 import play.mvc.Controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @StaticRoutes({
@@ -29,12 +32,23 @@ public class Application extends Controller {
     }
 
     @Get("/logs/{channel}/{date}/?")
-    public static void logs(String channel, String date) {
+    public static void logs(String channel, @As("yyyy-MM-dd") Date date) {
         Context context = new Context();
+        if(date == null) {
+            date = new Date();
+        }
         context.logChannel(channel, date);
-        render(context);
+        Date before = add(date, -1);
+        Date after = add(date, 1);
+        render(context, channel, date, before, after);
     }
 
+    private static Date add(Date start, int i) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(start);
+        cal.add(Calendar.DATE, i);
+        return cal.getTime();
+    }
     @Get("/factoids/?")
     public static void factoids(String factoidName, String factoidValue, String userName) {
         Context context = new Context();
@@ -118,7 +132,7 @@ public class Application extends Controller {
             return logs;
         }
 
-        public void logChannel(String channel, String date) {
+        public void logChannel(String channel, Date date) {
             logs = Log.findByChannel(channel, date);
         }
     }
