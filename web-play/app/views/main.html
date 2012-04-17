@@ -27,10 +27,10 @@
             #{list context.channels, as:'logged'}
                 <li>
                     <a id="${logged.name}"
-                    #{if channel=logged.name}
+                    #{if channel==logged.name}
                         class="current"
                     #{/if}
-                       onclick="document.location = '/logs/' + encodeURIComponent(this.id) + '/' + today() ;">${logged.name}</a></li>
+                       href="@{Application.logs(logged.name.urlEncode(), context.today.format("yyyy-MM-dd"))}">${logged.name}</a></li>
             #{/list}
             </ul>
         </div>

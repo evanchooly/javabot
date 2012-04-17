@@ -113,6 +113,7 @@ public class Application extends Controller {
         List<Log> logs;
         ModelPaginator<T> paginator;
         Admin.TwitterContext twitterContext;
+        Date today = new Date();
 
         public Context() {
             channels = Channel.findLogged();

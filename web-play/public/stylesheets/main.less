@@ -1,12 +1,9 @@
 @lightblue: #2153AA;
-@fontfamily: verdana,
-arial, sans-serif
-
-;
+@fontfamily: verdana, arial, sans-serif;
 @sidebarimage: url('../images/side_bg.gif');
-@border: 1pxsolid #C1DAD7
-
-;
+@border: 1pxsolid #C1DAD7;
+@left-margin: 15%;
+@content-margin: 100% - @left-margin + 2%;
 
 body {
     font: normal 11px auto "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
@@ -87,7 +84,7 @@ a {
 
 #left_side, #right_side {
     margin-top: 10px;
-    width: 15%;
+    width: @left-margin;
     background: #F1F6FE @sidebarimage bottom left repeat-x;
 
     p {
@@ -123,11 +120,12 @@ a {
 }
 
 .mytable {
-    width: 70%;
+    width: 100%;
 }
 
 #content {
-    margin: 20px 180px 0;
+    margin-top: 10px;
+    margin-left: 18%;
 
     p {
         margin-top: 15px;
@@ -266,4 +264,11 @@ table {
     &.nextNav {
         text-align: right;
     }
+}
+
+a.current {
+    font: bold;
+    color: red;
+    font-size: larger;
+    font-style: italic;
 }
