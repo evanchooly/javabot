@@ -1,13 +1,13 @@
 package javabot.dao.impl;
 
-import java.util.Date;
-import java.util.List;
-import javax.persistence.EntityManager;
-
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.AdminDao;
 import javabot.model.Admin;
 import org.springframework.stereotype.Component;
+
+import javax.persistence.EntityManager;
+import java.util.Date;
+import java.util.List;
 
 @Component
 public class AdminDaoImpl extends AbstractDaoImpl<Admin> implements AdminDao {
@@ -47,7 +47,6 @@ public class AdminDaoImpl extends AbstractDaoImpl<Admin> implements AdminDao {
         final Admin admin = new Admin();
         admin.setUserName(newAdmin);
         admin.setUpdated(new Date());
-        admin.setHostName(newHostName);
 
         save(admin);
     }

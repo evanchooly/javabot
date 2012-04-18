@@ -39,14 +39,29 @@
 
             <div id="boxWrapper">
                 <ul class="plain">
-                    <li><a href="/">Home Page</a></li>
-                    <li><a href="/factoids">Factoids</a>: ${context.factoidCount}</li>
+                    <li><a href="@{Application.index()}">Home Page</a></li>
+                    <li><a href="@{Application.factoids()}">Factoids</a>: ${context.factoidCount}</li>
                 *{<li><a wicket:id="activity_link"><span wicket:id="stats">[stats]</span></a></li>}*
-                    <li><a href="/karma">Karma Ranking</a></li>
-                    <li><a href="/changes">Changelog</a></li>
+                    <li><a href="@{Application.karma()}">Karma Ranking</a></li>
+                    <li><a href="@{Application.changes()}">Changelog</a></li>
                 </ul>
             </div>
         </div>
+    #{roleHolderNotPresent}
+        <div>
+            <h3><a href="@{AdminController.index()}">Login</a></h3>
+        </div>
+    #{/roleHolderNotPresent}
+    #{deadbolt.roleHolderPresent}
+        #{deadbolt.restrict roles:[['botAdmin']]}
+            <div>
+                <h3>Admin</h3>
+                <ul>
+                    <li><a href="@{AdminController.index()}">Admins</a></li>
+                </ul>
+            </div>
+        #{/deadbolt.restrict}
+    #{/deadbolt.roleHolderPresent}
         <div>
             <h3>Credits</h3>
             <ul>
@@ -58,7 +73,6 @@
                 <li>ojacobson</li>
                 <li>r0bby</li>
                 <li>ThaDon</li>
-                <li>kinabalu</li>
                 <li>ricky_clarkson</li>
             </ul>
         </div>

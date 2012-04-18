@@ -107,18 +107,24 @@ public class Application extends Controller {
         render(context, message);
     }
 
+    @Get("/login/?")
+    public static void login() {
+        AdminController.oauth();
+        index();
+    }
+
     public static class Context<T extends GenericModel> {
         final List<Channel> channels;
         final Long factoidCount;
         List<Log> logs;
         ModelPaginator<T> paginator;
-        Admin.TwitterContext twitterContext;
+        AdminController.TwitterContext twitterContext;
         Date today = new Date();
 
         public Context() {
             channels = Channel.findLogged();
             factoidCount = Factoid.count();
-            twitterContext = Admin.getTwitterContext();
+            twitterContext = AdminController.getTwitterContext();
         }
 
         public Long getFactoidCount() {

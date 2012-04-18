@@ -2,9 +2,11 @@ package controllers;
 
 import controllers.deadbolt.Deadbolt;
 import controllers.deadbolt.Restrict;
+import models.Admin;
 import models.JavabotRoleHolder;
 import play.cache.Cache;
 import play.modules.router.Get;
+import play.modules.router.Post;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
@@ -18,9 +20,11 @@ import twitter4j.auth.RequestToken;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 @With(Deadbolt.class)
-public class Admin extends Controller {
+public class AdminController extends Controller {
     private static final String CONTEXT_NAME = "-context";
     private static final String twitterKey;
     private static final String twitterSecret;
@@ -28,7 +32,7 @@ public class Admin extends Controller {
     static {
         try {
             Properties props = new Properties();
-            InputStream stream = Admin.class.getResourceAsStream("/oauth.conf");
+            InputStream stream = AdminController.class.getResourceAsStream("/oauth.conf");
             try {
                 props.load(stream);
             } finally {
@@ -72,9 +76,31 @@ public class Admin extends Controller {
     @Restrict(JavabotRoleHolder.BOT_ADMIN)
     public static void index() {
         Application.Context context = new Application.Context();
-        render(context);
+        List<Admin> admins = Admin.find("order by userName").fetch();
+        render(context, admins);
     }
 
+    @Post("/add")
+    @Restrict(JavabotRoleHolder.BOT_ADMIN)
+    public static void add(String name) {
+        Admin admin = new Admin();
+        admin.userName = name;
+        admin.addedBy = getTwitterContext().screenName;
+        admin.updated = new Date();
+        admin.save();
+        index();
+    }
+
+    @Post("/updateAdmin")
+    @Restrict(JavabotRoleHolder.BOT_ADMIN)
+    public static void updateAdmin(String userName, String ircName) {
+        List<Admin> list = Admin.find("userName = ?", userName).fetch();
+        Admin admin = list.get(0);
+        admin.ircName = ircName;
+        admin.save();
+
+        index();
+    }
     public static TwitterContext getTwitterContext() {
         return (TwitterContext) Cache.get(session.getId() + CONTEXT_NAME);
     }

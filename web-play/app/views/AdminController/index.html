@@ -1,0 +1,30 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+
+<table class="karma">
+    <tr>
+        <td class="right top" colspan="4">
+            <form action="@{AdminController.add()}" method="POST">
+                Add admin: <input name="name">
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <th>IRC Name</th>
+        <th>Twitter</th>
+        <th>Added By</th>
+        <th class="right">Date</th>
+    </tr>
+#{list admins, as: 'admin'}
+    <tr>
+        <td>
+            #{form @AdminController.updateAdmin(admin.userName)}
+                <input name="ircName" value="${admin.ircName}">
+            #{/form}
+        </td>
+        <td>${admin.userName}</td>
+        <td>${admin.addedBy}</td>
+        <td class="right">${admin.updated.format("yyyy.MM.dd")}</td>
+    </tr>
+#{/list}
+</table>

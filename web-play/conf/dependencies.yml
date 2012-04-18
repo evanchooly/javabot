@@ -3,7 +3,7 @@
 require:
     - play
     - play -> less 0.9
-    - play -> deadbolt 1.5.1
+    - play -> deadbolt 1.5.3
     - play -> router 1.2
     - org.twitter4j -> twitter4j-core 2.2.5:
         exclude:

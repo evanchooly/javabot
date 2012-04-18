@@ -9,7 +9,8 @@ import java.util.Date;
 @Entity
 @Table(name = "admin")
 public class Admin extends Model {
-    String userName;
-    String ircName;
-    Date updated;
+    public String userName;
+    public String ircName;
+    public String addedBy;
+    public Date updated;
 }

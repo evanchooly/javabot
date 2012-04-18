@@ -4,21 +4,17 @@ import controllers.deadbolt.AbstractDeadboltHandler;
 import models.JavabotRoleHolder;
 import models.deadbolt.RoleHolder;
 
-import java.util.List;
-
 public class JavabotDeadboltHandler extends AbstractDeadboltHandler {
     public void beforeRoleCheck() {
-        Admin.oauth();
+        AdminController.oauth();
     }
 
     @Override
     public RoleHolder getRoleHolder() {
-        Admin.TwitterContext twitterContext = Admin.getTwitterContext();
-        List<models.Admin> list = models.Admin.find("userName   ", twitterContext.screenName).fetch();
-        if (!list.isEmpty()) {
-            return new JavabotRoleHolder();
-        } else {
-            return super.getRoleHolder();
-        }
+        AdminController.TwitterContext twitterContext = AdminController.getTwitterContext();
+        return twitterContext != null
+            && !models.Admin.find("userName", twitterContext.screenName).<models.Admin>fetch().isEmpty()
+                ? new JavabotRoleHolder()
+                : null; //super.getRoleHolder();
     }
 }

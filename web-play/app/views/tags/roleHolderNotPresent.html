@@ -1,0 +1,6 @@
+%{
+    boolean allowAccess = !controllers.deadbolt.Deadbolt.isRoleHolderPresent();
+}%
+#{if allowAccess}
+    #{doBody /}
+#{/if}

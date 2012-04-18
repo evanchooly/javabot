@@ -25,7 +25,8 @@ import javabot.dao.AdminDao;
 public class Admin implements Serializable, Persistent {
     private Long id;
     private String userName;
-    private String hostName;
+    private String ircName;
+    private String addedBy;
     private Date updated;
 
     @Override
@@ -48,14 +49,6 @@ public class Admin implements Serializable, Persistent {
         userName = adminName;
     }
 
-    public String getHostName() {
-        return hostName;
-    }
-
-    public void setHostName(String hostName) {
-        this.hostName = hostName;
-    }
-
     public Date getUpdated() {
         return updated;
     }
@@ -64,4 +57,19 @@ public class Admin implements Serializable, Persistent {
         updated = date;
     }
 
+    public String getAddedBy() {
+        return addedBy;
+    }
+
+    public void setAddedBy(String addedBy) {
+        this.addedBy = addedBy;
+    }
+
+    public String getIrcName() {
+        return ircName;
+    }
+
+    public void setIrcName(String ircName) {
+        this.ircName = ircName;
+    }
 }
