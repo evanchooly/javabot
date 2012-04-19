@@ -46,10 +46,11 @@ public class AdminController extends Controller {
         }
     }
 
-    @Before
+    @Before(unless = "callback")
     public static void oauth() {
         try {
-            if (getTwitterContext() == null) {
+            TwitterContext twitterContext = getTwitterContext();
+            if (twitterContext == null || twitterContext.screenName == null) {
                 TwitterContext context = new TwitterContext();
                 Cache.set(session.getId() + CONTEXT_NAME, context);
                 RequestToken requestToken = context.twitter.getOAuthRequestToken(request.getBase() + "/callback");
@@ -60,11 +61,15 @@ public class AdminController extends Controller {
         }
     }
 
+    @Get("/login")
+    public static void login() {
+        index();
+    }
+
     @Get("/callback")
     public static void callback(String oauth_token, String oauth_verifier) {
         try {
-            final TwitterContext context = getTwitterContext();
-            context.authenticate(oauth_token, oauth_verifier);
+            getTwitterContext().authenticate(oauth_token, oauth_verifier);
             index();
         } catch (TwitterException e) {
             System.out.println("e = " + e);

@@ -7,7 +7,8 @@
     <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.less'}">
 #{get 'moreStyles' /}
     <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
-    <script src="@{'/public/javascripts/jquery-1.6.4.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+    <script src="@{'/public/javascripts/jquery-1.6.4.min.js'}" type="text/javascript"
+            charset="${_response_encoding}"></script>
     <script src="@{'/public/javascripts/javabot.js'}" type="text/javascript" charset="${_response_encoding}"></script>
 #{get 'moreScripts' /}
 </head>
@@ -20,17 +21,25 @@
     </div>
 
     <div id="left_side">
-        <h3>Channels</h3>
+        <h3>
+            <table>
+                <tr>
+                    <td>Channels</td>
+                    <td>#{deadbolt.restrict roles:[['botAdmin']]}+#{/deadbolt.restrict}</td>
+                </tr>
+            </table>
+        </h3>
 
         <div class="boxWrapper">
             <ul class="plain">
             #{list context.channels, as:'logged'}
                 <li>
                     <a id="${logged.name}"
-                    #{if channel==logged.name}
-                        class="current"
-                    #{/if}
-                       href="@{Application.logs(logged.name.urlEncode(), context.today.format("yyyy-MM-dd"))}">${logged.name}</a></li>
+                        #{if channel==logged.name}
+                       class="current"
+                        #{/if}
+                       href="@{Application.logs(logged.name.urlEncode(), context.today.format("yyyy-MM-dd"))}">${logged.name}</a>
+                </li>
             #{/list}
             </ul>
         </div>
@@ -47,21 +56,19 @@
                 </ul>
             </div>
         </div>
-    #{roleHolderNotPresent}
+    #{deadbolt.restrict roles:[['!botAdmin']]}
         <div>
-            <h3><a href="@{AdminController.index()}">Login</a></h3>
+            <h3><a href="@{AdminController.login()}">Login</a></h3>
         </div>
-    #{/roleHolderNotPresent}
-    #{deadbolt.roleHolderPresent}
-        #{deadbolt.restrict roles:[['botAdmin']]}
-            <div>
-                <h3>Admin</h3>
-                <ul>
-                    <li><a href="@{AdminController.index()}">Admins</a></li>
-                </ul>
-            </div>
-        #{/deadbolt.restrict}
-    #{/deadbolt.roleHolderPresent}
+    #{/deadbolt.restrict}
+    #{deadbolt.restrict roles:[['botAdmin']]}
+        <div>
+            <h3>Admin</h3>
+            <ul>
+                <li><a href="@{AdminController.index()}">Admins</a></li>
+            </ul>
+        </div>
+    #{/deadbolt.restrict}
         <div>
             <h3>Credits</h3>
             <ul>
@@ -80,7 +87,7 @@
 
     <div id="content">
         <div class='featurebox_center'>
-            #{doLayout /}
+        #{doLayout /}
         </div>
     </div>
     <br style="clear:both;border:none"/>
