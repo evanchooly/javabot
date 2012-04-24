@@ -3,8 +3,11 @@ package controllers;
 import controllers.deadbolt.Deadbolt;
 import controllers.deadbolt.Restrict;
 import models.Admin;
+import models.Channel;
 import models.JavabotRoleHolder;
 import play.cache.Cache;
+import play.data.validation.Valid;
+import play.data.validation.Validation;
 import play.modules.router.Get;
 import play.modules.router.Post;
 import play.mvc.Before;
@@ -63,14 +66,14 @@ public class AdminController extends Controller {
 
     @Get("/login")
     public static void login() {
-        index();
+        Application.index();
     }
 
     @Get("/callback")
     public static void callback(String oauth_token, String oauth_verifier) {
         try {
             getTwitterContext().authenticate(oauth_token, oauth_verifier);
-            index();
+            Application.index();
         } catch (TwitterException e) {
             System.out.println("e = " + e);
             throw new RuntimeException(e.getMessage(), e);
@@ -106,13 +109,49 @@ public class AdminController extends Controller {
 
         index();
     }
+
+    @Get("/addChannel")
+    @Restrict(JavabotRoleHolder.BOT_ADMIN)
+    public static void addChannel() {
+        Application.Context context = new Application.Context();
+        Channel channel = new Channel();
+        renderTemplate("AdminController/editChannel.html", context, channel);
+    }
+
+    @Get("/showChannel")
+    @Restrict(JavabotRoleHolder.BOT_ADMIN)
+    public static void showChannel(String name) {
+        Application.Context context = new Application.Context();
+        Channel channel = Channel.find("name = ?1", name).<Channel>first();
+        renderTemplate("AdminController/editChannel.html", context, channel);
+    }
+
+    @Get("/editChannel")
+    public static void editChannel(Channel channel) {
+        Application.Context context = new Application.Context();
+        render(context, channel);
+    }
+
+    @Get("/saveChannel")
+    @Restrict(JavabotRoleHolder.BOT_ADMIN)
+    public static void saveChannel(@Valid Channel channel) {
+        if(Validation.hasErrors()) {
+            params.flash(); // add http parameters to the flash scope
+            Validation.keep(); // keep the errors for the next request
+            editChannel(channel);
+        }
+        channel.updated = new Date();
+        channel.save();
+        index();
+    }
+
     public static TwitterContext getTwitterContext() {
         return (TwitterContext) Cache.get(session.getId() + CONTEXT_NAME);
     }
 
     public static class TwitterContext implements Serializable {
-        String screenName;
-        private Twitter twitter;
+        public String screenName;
+        private final Twitter twitter;
 
         public TwitterContext() {
             twitter = new TwitterFactory().getInstance();

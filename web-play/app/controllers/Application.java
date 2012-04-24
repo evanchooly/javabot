@@ -49,6 +49,7 @@ public class Application extends Controller {
         cal.add(Calendar.DATE, i);
         return cal.getTime();
     }
+
     @Get("/factoids/?")
     public static void factoids(String factoidName, String factoidValue, String userName) {
         Context context = new Context();

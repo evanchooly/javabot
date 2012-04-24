@@ -6,3 +6,5 @@ play-paginate.summary.display=Showing
 play-paginate.summary.to=to
 play-paginate.summary.from=of
 play-paginate.summary.entries=
+
+channel.name=Channel names must begin with #

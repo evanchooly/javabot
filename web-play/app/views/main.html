@@ -20,29 +20,8 @@
         </div>
     </div>
 
-    <div id="left_side">
-        <h3>
-            <table>
-                <tr>
-                    <td>Channels</td>
-                    <td>#{deadbolt.restrict roles:[['botAdmin']]}+#{/deadbolt.restrict}</td>
-                </tr>
-            </table>
-        </h3>
 
-        <div class="boxWrapper">
-            <ul class="plain">
-            #{list context.channels, as:'logged'}
-                <li>
-                    <a id="${logged.name}"
-                        #{if channel==logged.name}
-                       class="current"
-                        #{/if}
-                       href="@{Application.logs(logged.name.urlEncode(), context.today.format("yyyy-MM-dd"))}">${logged.name}</a>
-                </li>
-            #{/list}
-            </ul>
-        </div>
+    <div id="left_side">
         <div>
             <h3>Info</h3>
 
@@ -69,6 +48,36 @@
             </ul>
         </div>
     #{/deadbolt.restrict}
+        <h3>
+            <table>
+                <tr>
+                    <td>Channels</td>
+                    <td>#{deadbolt.restrict roles:[['botAdmin']]}
+                        <a href="@{AdminController.showChannel()}">+</a>
+                    #{/deadbolt.restrict}</td>
+                </tr>
+            </table>
+        </h3>
+
+        <div class="boxWrapper">
+            <table class="plain">
+            #{list context.channels, as:'logged'}
+                <tr>
+                    <td>
+                        <a id="${logged.name}"
+                            #{if channel==logged.name}
+                           class="current"
+                            #{/if}
+                           href="@{Application.logs(logged.name.urlEncode(), context.today.format("yyyy-MM-dd"))}">${logged.name}</a>
+                    </td>
+                    #{deadbolt.restrict roles:[['!botAdmin']]}
+                        <td></td>
+                        <td></td>
+                    #{/deadbolt.restrict}
+                </tr>
+            #{/list}
+            </table>
+        </div>
         <div>
             <h3>Credits</h3>
             <ul>

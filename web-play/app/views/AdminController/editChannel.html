@@ -1,0 +1,36 @@
+#{extends 'main.html' /}
+#{set title:'Add Channel' /}
+
+#{form @AdminController.saveChannel()}
+<table class="form">
+    <tr>
+        <td class="top">Name</td>
+        <td class="top right">
+            #{if channel?.id != null}
+                <input type="hidden" name="channel.id" value="${channel?.id}"/>
+            #{/if}
+            <input type="text" name="channel.name" value="${channel?.name}"
+                #{if channel?.id != null} disabled #{/if}/>
+            <span class="error">#{error 'channel.name' /}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Key (optional)</td>
+        <td class="right"><input type="text" name="channel.key" value="${channel?.key}"/></td>
+    </tr>
+    <tr>
+        <td>Logged?</td>
+        <td class="right">
+            <select name="channel.logged">
+                <option value="true" title="yes">yes</option>
+                <option value="false" title="no">no</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="form-submit right" colspan="2">
+            <input type="submit" value="Save">
+        </td>
+    </tr>
+</table>
+#{/form}
