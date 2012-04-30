@@ -7,8 +7,10 @@
         <class>javabot.javadoc.Clazz</class>
         <class>javabot.javadoc.Method</class>
         <class>javabot.model.Admin</class>
+        <class>javabot.model.AdminEvent</class>
         <class>javabot.model.Change</class>
         <class>javabot.model.Channel</class>
+        <class>javabot.model.ChannelEvent</class>
         <class>javabot.model.Config</class>
         <class>javabot.model.Factoid</class>
         <class>javabot.model.Karma</class>

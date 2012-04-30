@@ -88,13 +88,6 @@ public class Channel implements Serializable, Persistent {
     }
 
     public void join(final Javabot bot) {
-        if (getName().startsWith("#")) {
-            log.debug("Joining " + getName());
-            if (getKey() == null) {
-                bot.getPircBot().joinChannel(getName());
-            } else {
-                bot.getPircBot().joinChannel(getName(), getKey());
-            }
-        }
+        bot.join(name, key);
     }
 }

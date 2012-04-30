@@ -27,9 +27,9 @@ public class Channel extends Model {
 
     @Override
     public Channel save() {
+        ChannelEvent event = new ChannelEvent(name, key, id == null ? ChannelEvent.Type.ADD : ChannelEvent.Type.UPDATE,
+                AdminController.getTwitterContext().screenName);
         Channel save = super.save();
-
-        ChannelEvent event = new ChannelEvent(name, true, AdminController.getTwitterContext().screenName, updated);
         event.save();
         return save;
     }

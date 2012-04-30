@@ -1,26 +1,5 @@
 package javabot;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import javax.persistence.NoResultException;
-
 import ca.grimoire.maven.ArtifactDescription;
 import ca.grimoire.maven.NoArtifactException;
 import ca.grimoire.maven.ResourceProvider;
@@ -28,9 +7,11 @@ import javabot.commands.AdminCommand;
 import javabot.dao.AdminDao;
 import javabot.dao.ChannelDao;
 import javabot.dao.ConfigDao;
+import javabot.dao.EventDao;
 import javabot.dao.LogsDao;
 import javabot.dao.ShunDao;
 import javabot.database.UpgradeScript;
+import javabot.model.AdminEvent;
 import javabot.model.Channel;
 import javabot.model.Config;
 import javabot.model.Logs;
@@ -47,6 +28,30 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import javax.persistence.NoResultException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 public class Javabot implements ApplicationContextAware {
     public static final Logger log = LoggerFactory.getLogger(Javabot.class);
     public static final int THROTTLE_TIME = 5 * 1000;
@@ -57,7 +62,9 @@ public class Javabot implements ApplicationContextAware {
     String nick;
     private String password;
     private String[] startStrings;
-    final ExecutorService executors;
+    ExecutorService executors;
+    private final ScheduledExecutorService eventHandler = Executors.newScheduledThreadPool(1,
+            new JavabotThreadFactory(true, "javabot-event-handler"));
     private final List<BotOperation> standard = new ArrayList<BotOperation>();
     private final List<String> ignores = new ArrayList<String>();
     private final Set<BotOperation> activeOperations = new TreeSet<BotOperation>(new OperationComparator());
@@ -71,23 +78,15 @@ public class Javabot implements ApplicationContextAware {
     @Autowired
     private ShunDao shunDao;
     @Autowired
+    private EventDao eventDao;
+    @Autowired
     AdminDao adminDao;
-    private final SynchronousQueue<Runnable> queue;
+    private BlockingQueue<Runnable> queue;
     protected MyPircBot pircBot;
 
     public Javabot(final ApplicationContext applicationContext) {
         context = applicationContext;
-        queue = new SynchronousQueue<Runnable>();
-        executors = new ThreadPoolExecutor(15, 40, 10L, TimeUnit.SECONDS, queue,
-            new JavabotThreadFactory(true, "javabot-handler-thread-"));
-        final Thread hook = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                shutdown();
-            }
-        });
-        hook.setDaemon(false);
-        Runtime.getRuntime().addShutdownHook(hook);
+        setUpThreads();
         inject(this);
         try {
             config = configDao.get();
@@ -100,6 +99,36 @@ public class Javabot implements ApplicationContextAware {
         createIrcBot();
         startStrings = new String[]{pircBot.getNick(), "~"};
         connect();
+    }
+
+    private void setUpThreads() {
+        queue = new ArrayBlockingQueue<Runnable>(50);
+        executors = new ThreadPoolExecutor(5, 10, 10L, TimeUnit.SECONDS, queue,
+            new JavabotThreadFactory(true, "javabot-handler-thread-"));
+        final Thread hook = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                shutdown();
+            }
+        });
+        hook.setDaemon(false);
+        Runtime.getRuntime().addShutdownHook(hook);
+
+        eventHandler.schedule(new Runnable() {
+            @Override
+            public void run() {
+                processAdminEvents();
+            }
+        }, 5, TimeUnit.SECONDS);
+    }
+
+    protected void processAdminEvents() {
+        List<AdminEvent> list = eventDao.findUnprocessed();
+        for (AdminEvent event : list) {
+            event.handle(this);
+            event.setProcessed(true);
+            eventDao.save(event);
+        }
     }
 
     protected void createIrcBot() {
@@ -115,6 +144,10 @@ public class Javabot implements ApplicationContextAware {
                 log.error(e.getMessage(), e);
             }
         }
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return context;
     }
 
     @Override
@@ -402,14 +435,6 @@ public class Javabot implements ApplicationContextAware {
         return false;
     }
 
-    public static void main(final String[] args) {
-        if (log.isInfoEnabled()) {
-            log.info("Starting Javabot");
-        }
-        validateProperties();
-        new Javabot(new ClassPathXmlApplicationContext("classpath:applicationContext.xml"));
-    }
-
     IrcUser getUser(final String sender, final String login, final String hostname) {
         return new IrcUser(sender, login, hostname);
     }
@@ -441,6 +466,28 @@ public class Javabot implements ApplicationContextAware {
 
     public PircBot getPircBot() {
         return pircBot;
+    }
+
+    public void join(String name, String key) {
+        if (name.startsWith("#")) {
+            log.debug("Joining " + name);
+            if (key == null) {
+                pircBot.joinChannel(name);
+            } else {
+                pircBot.joinChannel(name, key);
+            }
+        }
+    }
+
+    public void leave(String name, String reason) {
+        pircBot.partChannel(name, reason);
+    }
+    public static void main(final String[] args) {
+        if (log.isInfoEnabled()) {
+            log.info("Starting Javabot");
+        }
+        validateProperties();
+        new Javabot(new ClassPathXmlApplicationContext("classpath:applicationContext.xml"));
     }
 
 }

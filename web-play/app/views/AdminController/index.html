@@ -11,20 +11,24 @@
     </tr>
     <tr>
         <th>IRC Name</th>
+        <th>Host Name</th>
         <th>Twitter</th>
         <th>Added By</th>
         <th class="right">Date</th>
     </tr>
 #{list admins, as: 'admin'}
-    <tr>
-        <td>
-            #{form @AdminController.updateAdmin(admin.userName)}
+    #{form @AdminController.updateAdmin(admin.userName)}
+        <tr>
+            <td>
                 <input name="ircName" value="${admin.ircName}">
-            #{/form}
-        </td>
-        <td>${admin.userName}</td>
-        <td>${admin.addedBy}</td>
-        <td class="right">${admin.updated.format("yyyy.MM.dd")}</td>
-    </tr>
+            </td>
+            <td>
+                <input name="ircName" value="${admin.hostName}">
+            </td>
+            <td>${admin.userName}</td>
+            <td>${admin.addedBy}</td>
+            <td class="right">${admin.updated.format("yyyy.MM.dd")}</td>
+        </tr>
+    #{/form}
 #{/list}
 </table>

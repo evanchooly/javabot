@@ -24,6 +24,7 @@ import javabot.dao.AdminDao;
 @SPI(Persistent.class)
 public class Admin implements Serializable, Persistent {
     private Long id;
+    private String hostName;
     private String userName;
     private String ircName;
     private String addedBy;
@@ -71,5 +72,13 @@ public class Admin implements Serializable, Persistent {
 
     public void setIrcName(String ircName) {
         this.ircName = ircName;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
 }

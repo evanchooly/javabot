@@ -1,8 +1,5 @@
 package javabot;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javabot.dao.AdminDao;
 import javabot.dao.ChannelDao;
 import javabot.model.Channel;
@@ -10,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.AfterSuite;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings({"StaticNonFinalField"})
 public class BaseTest {
@@ -31,7 +31,7 @@ public class BaseTest {
         sleep(2000);
     }
 
-    protected final TestJavabot createBot() {
+    protected TestJavabot createBot() {
         if (bot == null) {
             Javabot.validateProperties();
             bot = new TestJavabot(context);
@@ -45,13 +45,17 @@ public class BaseTest {
             createBot();
         }
         Channel channel = channelDao.get(getJavabotChannel());
-        if(channel == null) {
+        if (channel == null) {
             channel = new Channel();
             channel.setName(getJavabotChannel());
             channel.setLogged(true);
             channelDao.save(channel);
         }
         return bot;
+    }
+
+    public ApplicationContext getContext() {
+        return context;
     }
 
     protected final void inject(final Object object) {
@@ -72,7 +76,10 @@ public class BaseTest {
 
     @AfterSuite
     public void shutdown() throws InterruptedException {
-        getJavabot().shutdown();
+        TestJavabot javabot = getJavabot();
+        if (javabot != null) {
+            javabot.shutdown();
+        }
     }
 
     public class TestJavabot extends Javabot {

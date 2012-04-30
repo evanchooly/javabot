@@ -10,6 +10,7 @@ import java.util.Date;
 @Table(name = "admin")
 public class Admin extends Model {
     public String userName;
+    public String hostName;
     public String ircName;
     public String addedBy;
     public Date updated;
