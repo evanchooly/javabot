@@ -77,6 +77,12 @@
             </dependency>
 
             <dependency>
+                <groupId>com.antwerkz.sofia</groupId>
+                <artifactId>maven</artifactId>
+                <version>0.2</version>
+            </dependency>
+
+            <dependency>
                 <groupId>javabot</groupId>
                 <artifactId>apt-tools</artifactId>
                 <version>${project.version}</version>

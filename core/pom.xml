@@ -29,14 +29,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.schwering</groupId>
-            <artifactId>irclib</artifactId>
-            <version>${irclib.version}</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/irclib-2.0-SNAPSHOT.jar</systemPath>
-        </dependency>
-
-        <dependency>
             <groupId>pircbot</groupId>
             <artifactId>pircbot</artifactId>
         </dependency>
@@ -139,14 +131,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!--
-                <dependency>
-                    <groupId>org.easymock</groupId>
-                    <artifactId>easymockclassextension</artifactId>
-                    <scope>test</scope>
-                </dependency>
-        -->
-
         <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils</artifactId>
@@ -213,38 +197,13 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>2.3.1</version>
+                <groupId>com.antwerkz.sofia</groupId>
+                <artifactId>maven</artifactId>
                 <executions>
                     <execution>
-                        <id>install schwering lib</id>
                         <goals>
-                            <goal>install-file</goal>
+                            <goal>generate</goal>
                         </goals>
-                        <phase>validate</phase>
-                        <configuration>
-                            <file>lib/irclib-${irclib.version}.jar</file>
-                            <groupId>org.schwering</groupId>
-                            <artifactId>irclib</artifactId>
-                            <version>${irclib.version}</version>
-                            <packaging>jar</packaging>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>install schwering lib sources</id>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <phase>validate</phase>
-                        <configuration>
-                            <file>lib/irclib-${irclib.version}-sources.jar</file>
-                            <groupId>org.schwering</groupId>
-                            <artifactId>irclib</artifactId>
-                            <version>${irclib.version}</version>
-                            <classifier>source</classifier>
-                            <packaging>jar</packaging>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

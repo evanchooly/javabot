@@ -1,5 +1,6 @@
 package javabot.model;
 
+import com.antwerkz.sofia.Sofia;
 import javabot.Javabot;
 import javabot.dao.ChannelDao;
 import javabot.dao.EventDao;
@@ -104,7 +105,7 @@ public class ChannelEvent extends AdminEvent {
         Channel chan = dao.get(channel);
         if(chan != null) {
             dao.delete(chan.getId());
-            bot.leave(channel, "I was asked to leave this channel by " + getRequestedBy());
+            chan.leave(bot, Sofia.channelDeleted(getRequestedBy()));
         }
     }
 
@@ -115,6 +116,8 @@ public class ChannelEvent extends AdminEvent {
             chan.setLogged(logged);
             chan.setKey(key);
             dao.save(chan);
+            chan.leave(bot, Sofia.channelUpdated());
+            chan.join(bot);
         }
     }
 }

@@ -90,4 +90,7 @@ public class Channel implements Serializable, Persistent {
     public void join(final Javabot bot) {
         bot.join(name, key);
     }
+    public void leave(final Javabot bot, final String reason) {
+        bot.leave(name, reason);
+    }
 }
