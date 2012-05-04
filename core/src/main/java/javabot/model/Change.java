@@ -12,6 +12,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.antwerkz.maven.SPI;
+import org.hibernate.annotations.Index;
 
 @Entity
 @Table(name = "changes")
@@ -41,6 +42,7 @@ public class Change implements Serializable, Persistent {
         message = value;
     }
 
+    @Index(name = "changed")
     @Temporal(TemporalType.TIMESTAMP)
     public Date getChangeDate() {
         return changeDate;

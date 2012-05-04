@@ -17,7 +17,8 @@ import javabot.dao.AdminDao;
 @Entity
 @Table(name = "admin")
 @NamedQueries({
-    @NamedQuery(name = AdminDao.FIND_WITH_HOST, query = "select a from Admin a where a.userName = :username "
+    @NamedQuery(name = AdminDao.FIND, query = "select a from Admin a where a.userName = :username "),
+        @NamedQuery(name = AdminDao.FIND_WITH_HOST, query = "select a from Admin a where a.userName = :username "
         + "and a.hostName = :hostName"),
     @NamedQuery(name = AdminDao.FIND_ALL, query = "select a from Admin a order by a.userName")
 })

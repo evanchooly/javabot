@@ -1,14 +1,14 @@
 package javabot.dao.impl;
 
-import java.util.List;
-import javax.persistence.NoResultException;
-
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ApiDao;
 import javabot.javadoc.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import javax.persistence.NoResultException;
+import java.util.List;
 
 /**
  * Created Oct 29, 2008
@@ -28,7 +28,7 @@ public class ApiDaoImpl extends AbstractDaoImpl<Api> implements ApiDao {
         try {
             api = (Api)getEntityManager()
                 .createNamedQuery(ApiDao.FIND_BY_NAME)
-                .setParameter("name", name)
+                .setParameter("name", name.toUpperCase())
                 .getSingleResult();
         } catch(NoResultException e) {
             // no such API yet

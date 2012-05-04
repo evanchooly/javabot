@@ -1,6 +1,6 @@
 package javabot.model;
 
-public enum ChannelEventType {
+public enum EventType {
     ADD,
     DELETE,
     UPDATE

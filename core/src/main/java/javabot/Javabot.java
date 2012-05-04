@@ -114,18 +114,22 @@ public class Javabot implements ApplicationContextAware {
         hook.setDaemon(false);
         Runtime.getRuntime().addShutdownHook(hook);
 
-        eventHandler.schedule(new Runnable() {
+        eventHandler.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 processAdminEvents();
             }
-        }, 5, TimeUnit.SECONDS);
+        }, 5, 5, TimeUnit.SECONDS);
     }
 
     protected void processAdminEvents() {
         List<AdminEvent> list = eventDao.findUnprocessed();
         for (AdminEvent event : list) {
-            event.handle(this);
+            try {
+                event.handle(this);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
             event.setProcessed(true);
             eventDao.save(event);
         }

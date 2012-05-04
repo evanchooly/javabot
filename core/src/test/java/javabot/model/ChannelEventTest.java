@@ -42,7 +42,7 @@ public class ChannelEventTest extends BaseTest {
     public void addChannel() throws InterruptedException {
         TestJavabot javabot = getJavabot();
         String name = "##testChannel";
-        ChannelEvent event = new ChannelEvent(name, ChannelEventType.ADD, "testng");
+        ChannelEvent event = new ChannelEvent(name, EventType.ADD, "testng");
         latch = new CountDownLatch(1);
         dao.save(event);
         latch.await(60, TimeUnit.SECONDS);
@@ -56,7 +56,7 @@ public class ChannelEventTest extends BaseTest {
         TestJavabot javabot = getJavabot();
         String name = "##testChannel";
         String key = "abcdef";
-        ChannelEvent event = new ChannelEvent(name, key, ChannelEventType.ADD, "testng");
+        ChannelEvent event = new ChannelEvent(name, key, EventType.ADD, "testng");
         latch = new CountDownLatch(1);
         dao.save(event);
         latch.await(60, TimeUnit.SECONDS);
@@ -69,7 +69,7 @@ public class ChannelEventTest extends BaseTest {
     public void leave() throws InterruptedException {
         TestJavabot javabot = getJavabot();
         String name = "##testChannel";
-        ChannelEvent event = new ChannelEvent(name, ChannelEventType.DELETE, "testng");
+        ChannelEvent event = new ChannelEvent(name, EventType.DELETE, "testng");
         latch = new CountDownLatch(1);
         dao.save(event);
         latch.await(60, TimeUnit.SECONDS);
@@ -82,7 +82,7 @@ public class ChannelEventTest extends BaseTest {
     public void update() throws InterruptedException {
         TestJavabot javabot = getJavabot();
         String name = "##testChannel";
-        ChannelEvent event = new ChannelEvent(name, ChannelEventType.UPDATE, "testng");
+        ChannelEvent event = new ChannelEvent(name, EventType.UPDATE, "testng");
         latch = new CountDownLatch(2);
         dao.save(event);
         latch.await(60, TimeUnit.SECONDS);

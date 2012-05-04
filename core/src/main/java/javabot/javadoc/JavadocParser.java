@@ -1,5 +1,14 @@
 package javabot.javadoc;
 
+import javabot.JavabotThreadFactory;
+import javabot.dao.ClazzDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.asm.ClassReader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -7,13 +16,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -21,20 +30,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import javabot.JavabotThreadFactory;
-import javabot.dao.ClazzDao;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.asm.ClassReader;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 /**
  * Created Jan 9, 2009
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  * @noinspection unchecked
  */
+@Component
 public class JavadocParser {
     private static final Logger log = LoggerFactory.getLogger(JavadocParser.class);
     @Autowired
@@ -60,7 +62,7 @@ public class JavadocParser {
             executor.prestartCoreThread();
             final String[] locations = api.getZipLocations().split(",");
             for (String location : locations) {
-                File zip = new File(tmpDir, new File(location).getName());
+                File zip = new File(location);
                 if (!zip.exists() || zip.length() == 0) {
                     download(location, zip);
                 }

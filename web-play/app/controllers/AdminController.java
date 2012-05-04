@@ -3,11 +3,13 @@ package controllers;
 import controllers.deadbolt.Deadbolt;
 import controllers.deadbolt.Restrict;
 import models.Admin;
+import models.Api;
 import models.Channel;
 import models.JavabotRoleHolder;
 import play.cache.Cache;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
+import play.libs.Files;
 import play.modules.router.Get;
 import play.modules.router.Post;
 import play.mvc.Before;
@@ -20,6 +22,7 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -86,6 +89,29 @@ public class AdminController extends Controller {
         Application.Context context = new Application.Context();
         List<Admin> admins = Admin.find("order by userName").fetch();
         render(context, admins);
+    }
+
+    @Get("/javadoc")
+    @Restrict(JavabotRoleHolder.BOT_ADMIN)
+    public static void javadoc() {
+        Application.Context context = new Application.Context();
+        List<Api> apis = Api.find("order by name").fetch();
+        render(context, apis);
+    }
+
+    @Post("/addJavadoc")
+    @Restrict(JavabotRoleHolder.BOT_ADMIN)
+    public static void addJavadoc(String name, String packages, String baseUrl, File file) throws IOException {
+        File savedFile = File.createTempFile("javadoc", ".jar");
+        Api api = new Api();
+        api.name = name;
+        api.baseUrl = baseUrl;
+        api.packages = packages;
+        api.zipLocations = savedFile.getAbsolutePath();
+        Files.copy(file, savedFile);
+        api.save();
+
+        javadoc();
     }
 
     @Post("/add")

@@ -6,45 +6,23 @@ import javabot.dao.ChannelDao;
 import javabot.dao.EventDao;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "events")
-@NamedQueries({
-    @NamedQuery(name = EventDao.FIND_ALL, query = "select a from javabot.model.AdminEvent a where" +
-        " a.processed = false order by a.requestedOn ASC")
-})
 public class ChannelEvent extends AdminEvent {
     private String channel;
     private String key;
     private Boolean logged;
-    @Enumerated(EnumType.STRING)
-    private ChannelEventType type;
 
     protected ChannelEvent() {
     }
 
-    public ChannelEvent(String channel, ChannelEventType type, String requestedBy) {
+    public ChannelEvent(String channel, EventType type, String requestedBy) {
        this(channel, null, type, requestedBy);
     }
-    public ChannelEvent(String channel, String key, ChannelEventType type, String requestedBy) {
-        super(requestedBy);
+    public ChannelEvent(String channel, String key, EventType type, String requestedBy) {
+        super(type, requestedBy);
         this.key = key;
-        this.type = type;
         this.channel = channel;
-    }
-
-    @Enumerated(EnumType.STRING)
-    public ChannelEventType getType() {
-        return type;
-    }
-
-    public void setType(ChannelEventType type) {
-        this.type = type;
     }
 
     public String getChannel() {
@@ -90,13 +68,7 @@ public class ChannelEvent extends AdminEvent {
     }
 
     public void add(Javabot bot) {
-        Channel chan = new Channel();
-        chan.setName(channel);
-        chan.setKey(key);
-        chan.setLogged(logged);
-
-        ChannelDao dao = bot.getApplicationContext().getBean(ChannelDao.class);
-        dao.save(chan);
+        Channel chan = bot.getApplicationContext().getBean(ChannelDao.class).get(channel);
         chan.join(bot);
     }
 

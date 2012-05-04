@@ -1,0 +1,32 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+
+<table>
+    #{form @AdminController.addJavadoc(), enctype:'multipart/form-data'}
+    <tr>
+        <td class="left top">
+            <input type="text" name="name" />
+        </td>
+        <td class="top">
+            <input type="text" name="packages" />
+        </td>
+        <td class="right top">
+            <input type="text" name="baseUrl" width="30"/>
+            <input type="file" id="file" name="file" />
+            <input type="submit" value="Add" />
+        </td>
+    </tr>
+    #{/}
+    <tr>
+        <th>Name</th>
+        <th>Packages</th>
+        <th class="right">Base URL</th>
+    </tr>
+#{list apis, as: 'api'}
+        <tr>
+            <td>${api.name}</td>
+            <td>${api.packages}</td>
+            <td class="right">${api.baseUrl}</td>
+        </tr>
+#{/list}
+</table>
