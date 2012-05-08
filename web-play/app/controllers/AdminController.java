@@ -5,6 +5,7 @@ import controllers.deadbolt.Restrict;
 import models.Admin;
 import models.Api;
 import models.Channel;
+import models.Factoid;
 import models.JavabotRoleHolder;
 import play.cache.Cache;
 import play.data.validation.Valid;
@@ -169,6 +170,15 @@ public class AdminController extends Controller {
         channel.updated = new Date();
         channel.save();
         index();
+    }
+
+    @Get("/toggleLock")
+    @Restrict(JavabotRoleHolder.BOT_ADMIN)
+    public static void toggleLock(Long id) {
+        Factoid factoid = Factoid.findById(id);
+        factoid.locked = !factoid.locked;
+        factoid.save();
+        renderJSON(factoid.locked);
     }
 
     public static TwitterContext getTwitterContext() {

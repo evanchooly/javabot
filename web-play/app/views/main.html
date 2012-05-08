@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/play-pagination.css'}">
     <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.less'}">
 #{get 'moreStyles' /}
-    <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
+    *{<link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">}*
     <script src="@{'/public/javascripts/jquery-1.6.4.min.js'}" type="text/javascript"
             charset="${_response_encoding}"></script>
     <script src="@{'/public/javascripts/javabot.js'}" type="text/javascript" charset="${_response_encoding}"></script>
@@ -19,7 +19,6 @@
             <h1>Javabot</h1>
         </div>
     </div>
-
 
     <div id="left_side">
         <div>

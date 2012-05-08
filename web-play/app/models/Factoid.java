@@ -9,10 +9,10 @@ import java.util.Date;
 @Entity
 @Table(name = "factoids")
 public class Factoid extends Model {
-    String name;
-    String value;
-    String userName;
-    Date updated;
-    Date lastUsed;
-    Boolean locked;
+    public String name;
+    public String value;
+    public String userName;
+    public Date updated;
+    public Date lastUsed;
+    public Boolean locked;
 }
