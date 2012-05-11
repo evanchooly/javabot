@@ -4,6 +4,7 @@ import controllers.deadbolt.Deadbolt;
 import controllers.deadbolt.Restrict;
 import models.Admin;
 import models.Api;
+import models.ApiEvent;
 import models.Channel;
 import models.Factoid;
 import models.JavabotRoleHolder;
@@ -104,13 +105,9 @@ public class AdminController extends Controller {
     @Restrict(JavabotRoleHolder.BOT_ADMIN)
     public static void addJavadoc(String name, String packages, String baseUrl, File file) throws IOException {
         File savedFile = File.createTempFile("javadoc", ".jar");
-        Api api = new Api();
-        api.name = name;
-        api.baseUrl = baseUrl;
-        api.packages = packages;
-        api.zipLocations = savedFile.getAbsolutePath();
         Files.copy(file, savedFile);
-        api.save();
+        new ApiEvent(Api.find("byName", name).<Api>first() == null, AdminController.getTwitterContext().screenName,
+                name, packages, baseUrl, savedFile).save();
 
         javadoc();
     }
@@ -162,7 +159,7 @@ public class AdminController extends Controller {
     @Get("/saveChannel")
     @Restrict(JavabotRoleHolder.BOT_ADMIN)
     public static void saveChannel(@Valid Channel channel) {
-        if(Validation.hasErrors()) {
+        if (Validation.hasErrors()) {
             params.flash(); // add http parameters to the flash scope
             Validation.keep(); // keep the errors for the next request
             editChannel(channel);

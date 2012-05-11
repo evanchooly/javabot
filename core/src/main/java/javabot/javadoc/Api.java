@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -43,21 +44,16 @@ public class Api implements Persistent {
     private String name;
     private String baseUrl;
     private String packages;
-    private String zipLocations;
     private List<Clazz> classes = new ArrayList<Clazz>();
     private static final List<String> JDK_JARS = Arrays.asList("classes.jar", "rt.jar", "jce.jar", "jsse.jar");
 
     public Api() {
     }
 
-    public Api(final String apiName, final String url, final String pkgs, final String zip) {
+    public Api(final String apiName, final String url, final String pkgs) {
         name = apiName;
         baseUrl = url.endsWith("/") ? url : url + "/";
         packages = pkgs;
-        zipLocations = zip;
-        if ("JDK".equals(name)) {
-            zipLocations = findJDKJars();
-        }
     }
 
     @Id
@@ -87,7 +83,7 @@ public class Api implements Persistent {
         this.baseUrl = baseUrl;
     }
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "api")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "api", fetch = FetchType.EAGER)
     public List<Clazz> getClasses() {
         return classes;
     }
@@ -102,34 +98,5 @@ public class Api implements Persistent {
 
     public void setPackages(final String packages) {
         this.packages = packages;
-    }
-
-    public String getZipLocations() {
-        return zipLocations;
-    }
-
-    public void setZipLocations(final String zipLocations) {
-        this.zipLocations = zipLocations;
-    }
-
-    private String findJDKJars() {
-        final Set<String> jars = new TreeSet<String>();
-        String paths = System.getProperty("sun.boot.class.path");
-        if (paths == null) {
-            paths = System.getProperty("java.class.path");
-        }
-        for (final String path : paths.split(File.pathSeparator)) {
-            final File file = new File(path);
-            if (JDK_JARS.contains(file.getName())) {
-                try {
-                    jars.add(file.getCanonicalFile().toURI().toURL().toString());
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e.getMessage());
-                } catch (IOException e) {
-                    throw new RuntimeException(e.getMessage());
-                }
-            }
-        }
-        return StringUtils.join(jars, ",");
     }
 }

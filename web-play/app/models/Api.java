@@ -1,6 +1,5 @@
 package models;
 
-import controllers.AdminController;
 import play.db.jpa.Model;
 
 import javax.persistence.Entity;
@@ -13,13 +12,4 @@ public class Api extends Model {
     public String baseUrl;
     public String packages;
     public String zipLocations;
-
-    @Override
-    public Api save() {
-        Api save = super.save();
-
-        ApiEvent event = new ApiEvent(name, EventType.ADD, AdminController.getTwitterContext().screenName);
-        event.save();
-        return save;
-    }
 }

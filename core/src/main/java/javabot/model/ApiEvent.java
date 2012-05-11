@@ -1,5 +1,8 @@
 package javabot.model;
 
+import java.io.StringWriter;
+import javax.persistence.Entity;
+
 import javabot.IrcEvent;
 import javabot.IrcUser;
 import javabot.Javabot;
@@ -10,12 +13,12 @@ import javabot.dao.EventDao;
 import javabot.javadoc.Api;
 import javabot.javadoc.JavadocParser;
 
-import javax.persistence.Entity;
-import java.io.StringWriter;
-
 @Entity
 public class ApiEvent extends AdminEvent {
     public String name;
+    public String packages;
+    public String baseUrl;
+    public String file;
 
     @Override
     public void handle(Javabot bot) {
@@ -43,23 +46,51 @@ public class ApiEvent extends AdminEvent {
         this.name = name;
     }
 
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
+    public String getPackages() {
+        return packages;
+    }
+
+    public void setPackages(String packages) {
+        this.packages = packages;
+    }
+
     private void update(Javabot bot) {
+        delete(bot);
+        add(bot);
     }
 
     private void delete(Javabot bot) {
+        ApiDao dao = bot.getApplicationContext().getBean(ApiDao.class);
+        Api api = dao.find(name);
+        dao.delete(api);
     }
 
     private void add(final Javabot bot) {
         final JavadocParser parser = new JavadocParser();
-        System.out.println("parser = " + parser);
         bot.getApplicationContext().getAutowireCapableBeanFactory().autowireBean(parser);
-        System.out.println("parser = " + parser);
         ApiDao dao = bot.getApplicationContext().getBean(ApiDao.class);
-        Api api = dao.find(name);
+        Api api = new Api(name, baseUrl, packages);
+        dao.save(api);
         final Admin admin = bot.getApplicationContext().getBean(AdminDao.class).getAdmin(getRequestedBy());
         final IrcUser user = new IrcUser(admin.getIrcName(), admin.getIrcName(), admin.getHostName());
         final IrcEvent event = new IrcEvent(admin.getIrcName(), user, null);
-        parser.parse(api, new StringWriter() {
+        parser.parse(api, file, new StringWriter() {
             @Override
             public void write(final String line) {
                 event.setMessage(line);

@@ -1,7 +1,7 @@
 package javabot.javadoc;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 import javabot.dao.ClazzDao;
 import org.slf4j.Logger;
@@ -59,11 +59,13 @@ public class JavadocClassVisitor extends EmptyVisitor {
     }
 
     private boolean isPublic(final int access) {
-        return ((access & Opcodes.ACC_PUBLIC) == Opcodes.ACC_PUBLIC);
+        return (access & Opcodes.ACC_PUBLIC) == Opcodes.ACC_PUBLIC;
     }
 
     private String getPackage(final String name) {
-        return name.substring(0, name.lastIndexOf("/")).replace('/', '.');
+        return name.contains("/")
+                ? name.substring(0, name.lastIndexOf("/")).replace('/', '.')
+                : "";
     }
 
     @Override

@@ -123,7 +123,9 @@ public class Javabot implements ApplicationContextAware {
     }
 
     protected void processAdminEvents() {
+        System.out.println("Javabot.processAdminEvents");
         List<AdminEvent> list = eventDao.findUnprocessed();
+        System.out.println("list.size() = " + list.size());
         for (AdminEvent event : list) {
             try {
                 event.handle(this);

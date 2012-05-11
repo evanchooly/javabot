@@ -1,17 +1,18 @@
 package javabot.dao.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.ClazzDao;
 import javabot.javadoc.Clazz;
 import javabot.javadoc.Field;
 import javabot.javadoc.Method;
+import javabot.model.Persistent;
 import org.springframework.stereotype.Component;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created Jul 27, 2007
@@ -28,16 +29,16 @@ public class ClazzDaoImpl extends AbstractDaoImpl<Clazz> implements ClazzDao {
     public List<Clazz> findAll(final String api) {
         final EntityManager em = getEntityManager();
         return em.createQuery("select c from Clazz c where c.api.name=:api order by c.packageName, c.className")
-            .setParameter("api", api)
-            .getResultList();
+                .setParameter("api", api)
+                .getResultList();
     }
 
     @SuppressWarnings({"unchecked"})
     public void deleteAll(final String api) {
         final EntityManager em = getEntityManager();
         em.createQuery("delete from Clazz c where c.api.name=:api")
-            .setParameter("api", api)
-            .executeUpdate();
+                .setParameter("api", api)
+                .executeUpdate();
         getEntityManager().flush();
     }
 
@@ -107,15 +108,29 @@ public class ClazzDaoImpl extends AbstractDaoImpl<Clazz> implements ClazzDao {
         final Query query;
         if ("*".equals(signatureTypes)) {
             query = getEntityManager().createNamedQuery(ClazzDao.GET_METHOD_NO_SIG)
-                .setParameter("classId", clazz.getId())
-                .setParameter("name", name.toUpperCase());
+                    .setParameter("classId", clazz.getId())
+                    .setParameter("name", name.toUpperCase());
         } else {
             query = getEntityManager().createNamedQuery(ClazzDao.GET_METHOD)
-                .setParameter("classId", clazz.getId())
-                .setParameter("name", name.toUpperCase())
-                .setParameter("params", signatureTypes.toUpperCase());
+                    .setParameter("classId", clazz.getId())
+                    .setParameter("name", name.toUpperCase())
+                    .setParameter("params", signatureTypes.toUpperCase());
         }
         return query.getResultList();
+    }
+
+    @Override
+    public void delete(Persistent persistedObject) {
+        getEntityManager()
+                .createQuery("delete from Method m where m.clazz=:clazz")
+                .setParameter("clazz", this)
+        .executeUpdate();
+        getEntityManager()
+                .createQuery("delete from Field f where f.clazz=:clazz")
+                .setParameter("clazz", this)
+        .executeUpdate();
+
+        super.delete(persistedObject);
     }
 
     private String[] calculateNameAndPackage(final String href) {
