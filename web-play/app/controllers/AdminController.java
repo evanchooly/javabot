@@ -1,5 +1,12 @@
 package controllers;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
 import controllers.deadbolt.Deadbolt;
 import controllers.deadbolt.Restrict;
 import models.Admin;
@@ -24,176 +31,176 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-
 @With(Deadbolt.class)
 public class AdminController extends Controller {
-    private static final String CONTEXT_NAME = "-context";
-    private static final String twitterKey;
-    private static final String twitterSecret;
+  private static final String CONTEXT_NAME = "-context";
+  private static final String twitterKey;
+  private static final String twitterSecret;
 
-    static {
-        try {
-            Properties props = new Properties();
-            InputStream stream = AdminController.class.getResourceAsStream("/oauth.conf");
-            try {
-                props.load(stream);
-            } finally {
-                stream.close();
-            }
+  static {
+    try {
+      Properties props = new Properties();
+      InputStream stream = AdminController.class.getResourceAsStream("/oauth.conf");
+      try {
+        props.load(stream);
+      } finally {
+        stream.close();
+      }
+      twitterKey = props.get("twitter.key");
+      twitterSecret = props.get("twitter.secret");
+    } catch (IOException e) {
+      throw new RuntimeException(e.getMessage(), e);
+    }
+  }
 
-            twitterKey = props.get("twitter.key");
-            twitterSecret = props.get("twitter.secret");
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+  @Before(unless = "callback")
+  public static void oauth() {
+    try {
+      TwitterContext twitterContext = getTwitterContext();
+      if (twitterContext == null || twitterContext.screenName == null) {
+        TwitterContext context = new TwitterContext();
+        Cache.set(session.getId() + CONTEXT_NAME, context);
+        RequestToken requestToken = context.twitter.getOAuthRequestToken(request.getBase() + "/callback");
+        redirect(requestToken.getAuthenticationURL());
+      }
+    } catch (TwitterException e) {
+      throw new RuntimeException(e.getMessage(), e);
+    }
+  }
+
+  @Get("/login")
+  public static void login() {
+    Application.index();
+  }
+
+  @Get("/callback")
+  public static void callback(String oauth_token, String oauth_verifier) {
+    try {
+      getTwitterContext().authenticate(oauth_token, oauth_verifier);
+      Application.index();
+    } catch (TwitterException e) {
+      System.out.println("e = " + e);
+      throw new RuntimeException(e.getMessage(), e);
+    }
+  }
+
+  @Get("/admin")
+  @Restrict(JavabotRoleHolder.BOT_ADMIN)
+  public static void index() {
+    Application.Context context = new Application.Context();
+    List<Admin> admins = Admin.find("order by userName").fetch();
+    render(context, admins);
+  }
+
+  @Get("/javadoc")
+  @Restrict(JavabotRoleHolder.BOT_ADMIN)
+  public static void javadoc() {
+    Application.Context context = new Application.Context();
+    List<Api> apis = Api.find("order by name").fetch();
+    render(context, apis);
+  }
+
+  @Post("/addJavadoc")
+  @Restrict(JavabotRoleHolder.BOT_ADMIN)
+  public static void addJavadoc(String name, String packages, String baseUrl, File file) throws IOException {
+    File savedFile = File.createTempFile("javadoc", ".jar");
+    Files.copy(file, savedFile);
+    new ApiEvent(Api.find("byName", name).<Api>first() == null, AdminController.getTwitterContext().screenName,
+      name, packages, baseUrl, savedFile).save();
+    javadoc();
+  }
+
+  @Post("/deleteApi")
+  @Restrict(JavabotRoleHolder.BOT_ADMIN)
+  public static void deleteApi(Long id) throws IOException {
+    ApiEvent event = new ApiEvent(id, AdminController.getTwitterContext().screenName);
+    event.save();
+    javadoc();
+  }
+
+  @Post("/add")
+  @Restrict(JavabotRoleHolder.BOT_ADMIN)
+  public static void add(String ircName, String hostName, String twitter) {
+    Admin admin = new Admin();
+    admin.ircName = ircName;
+    admin.hostName = hostName;
+    admin.userName = twitter;
+    admin.addedBy = getTwitterContext().screenName;
+    admin.updated = new Date();
+    admin.save();
+    index();
+  }
+
+  @Post("/updateAdmin")
+  @Restrict(JavabotRoleHolder.BOT_ADMIN)
+  public static void updateAdmin(String userName, String ircName) {
+    List<Admin> list = Admin.find("userName = ?", userName).fetch();
+    Admin admin = list.get(0);
+    admin.ircName = ircName;
+    admin.save();
+    index();
+  }
+
+  @Get("/addChannel")
+  @Restrict(JavabotRoleHolder.BOT_ADMIN)
+  public static void addChannel() {
+    Application.Context context = new Application.Context();
+    Channel channel = new Channel();
+    renderTemplate("AdminController/editChannel.html", context, channel);
+  }
+
+  @Get("/showChannel")
+  @Restrict(JavabotRoleHolder.BOT_ADMIN)
+  public static void showChannel(String name) {
+    Application.Context context = new Application.Context();
+    Channel channel = Channel.find("name = ?1", name).<Channel>first();
+    renderTemplate("AdminController/editChannel.html", context, channel);
+  }
+
+  @Get("/editChannel")
+  public static void editChannel(Channel channel) {
+    Application.Context context = new Application.Context();
+    render(context, channel);
+  }
+
+  @Get("/saveChannel")
+  @Restrict(JavabotRoleHolder.BOT_ADMIN)
+  public static void saveChannel(@Valid Channel channel) {
+    if (Validation.hasErrors()) {
+      params.flash(); // add http parameters to the flash scope
+      Validation.keep(); // keep the errors for the next request
+      editChannel(channel);
+    }
+    channel.updated = new Date();
+    channel.save();
+    index();
+  }
+
+  @Get("/toggleLock")
+  @Restrict(JavabotRoleHolder.BOT_ADMIN)
+  public static void toggleLock(Long id) {
+    Factoid factoid = Factoid.findById(id);
+    factoid.locked = !factoid.locked;
+    factoid.save();
+    renderJSON(factoid.locked);
+  }
+
+  public static TwitterContext getTwitterContext() {
+    return (TwitterContext) Cache.get(session.getId() + CONTEXT_NAME);
+  }
+
+  public static class TwitterContext implements Serializable {
+    public String screenName;
+    private final Twitter twitter;
+
+    public TwitterContext() {
+      twitter = new TwitterFactory().getInstance();
+      twitter.setOAuthConsumer(twitterKey, twitterSecret);
     }
 
-    @Before(unless = "callback")
-    public static void oauth() {
-        try {
-            TwitterContext twitterContext = getTwitterContext();
-            if (twitterContext == null || twitterContext.screenName == null) {
-                TwitterContext context = new TwitterContext();
-                Cache.set(session.getId() + CONTEXT_NAME, context);
-                RequestToken requestToken = context.twitter.getOAuthRequestToken(request.getBase() + "/callback");
-                redirect(requestToken.getAuthenticationURL());
-            }
-        } catch (TwitterException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+    public void authenticate(String oauth_token, String oauth_verifier) throws TwitterException {
+      AccessToken token = twitter.getOAuthAccessToken(new RequestToken(oauth_token, oauth_verifier));
+      screenName = token.getScreenName();
     }
-
-    @Get("/login")
-    public static void login() {
-        Application.index();
-    }
-
-    @Get("/callback")
-    public static void callback(String oauth_token, String oauth_verifier) {
-        try {
-            getTwitterContext().authenticate(oauth_token, oauth_verifier);
-            Application.index();
-        } catch (TwitterException e) {
-            System.out.println("e = " + e);
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-
-    @Get("/admin")
-    @Restrict(JavabotRoleHolder.BOT_ADMIN)
-    public static void index() {
-        Application.Context context = new Application.Context();
-        List<Admin> admins = Admin.find("order by userName").fetch();
-        render(context, admins);
-    }
-
-    @Get("/javadoc")
-    @Restrict(JavabotRoleHolder.BOT_ADMIN)
-    public static void javadoc() {
-        Application.Context context = new Application.Context();
-        List<Api> apis = Api.find("order by name").fetch();
-        render(context, apis);
-    }
-
-    @Post("/addJavadoc")
-    @Restrict(JavabotRoleHolder.BOT_ADMIN)
-    public static void addJavadoc(String name, String packages, String baseUrl, File file) throws IOException {
-        File savedFile = File.createTempFile("javadoc", ".jar");
-        Files.copy(file, savedFile);
-        new ApiEvent(Api.find("byName", name).<Api>first() == null, AdminController.getTwitterContext().screenName,
-                name, packages, baseUrl, savedFile).save();
-
-        javadoc();
-    }
-
-    @Post("/add")
-    @Restrict(JavabotRoleHolder.BOT_ADMIN)
-    public static void add(String name) {
-        Admin admin = new Admin();
-        admin.userName = name;
-        admin.addedBy = getTwitterContext().screenName;
-        admin.updated = new Date();
-        admin.save();
-        index();
-    }
-
-    @Post("/updateAdmin")
-    @Restrict(JavabotRoleHolder.BOT_ADMIN)
-    public static void updateAdmin(String userName, String ircName) {
-        List<Admin> list = Admin.find("userName = ?", userName).fetch();
-        Admin admin = list.get(0);
-        admin.ircName = ircName;
-        admin.save();
-
-        index();
-    }
-
-    @Get("/addChannel")
-    @Restrict(JavabotRoleHolder.BOT_ADMIN)
-    public static void addChannel() {
-        Application.Context context = new Application.Context();
-        Channel channel = new Channel();
-        renderTemplate("AdminController/editChannel.html", context, channel);
-    }
-
-    @Get("/showChannel")
-    @Restrict(JavabotRoleHolder.BOT_ADMIN)
-    public static void showChannel(String name) {
-        Application.Context context = new Application.Context();
-        Channel channel = Channel.find("name = ?1", name).<Channel>first();
-        renderTemplate("AdminController/editChannel.html", context, channel);
-    }
-
-    @Get("/editChannel")
-    public static void editChannel(Channel channel) {
-        Application.Context context = new Application.Context();
-        render(context, channel);
-    }
-
-    @Get("/saveChannel")
-    @Restrict(JavabotRoleHolder.BOT_ADMIN)
-    public static void saveChannel(@Valid Channel channel) {
-        if (Validation.hasErrors()) {
-            params.flash(); // add http parameters to the flash scope
-            Validation.keep(); // keep the errors for the next request
-            editChannel(channel);
-        }
-        channel.updated = new Date();
-        channel.save();
-        index();
-    }
-
-    @Get("/toggleLock")
-    @Restrict(JavabotRoleHolder.BOT_ADMIN)
-    public static void toggleLock(Long id) {
-        Factoid factoid = Factoid.findById(id);
-        factoid.locked = !factoid.locked;
-        factoid.save();
-        renderJSON(factoid.locked);
-    }
-
-    public static TwitterContext getTwitterContext() {
-        return (TwitterContext) Cache.get(session.getId() + CONTEXT_NAME);
-    }
-
-    public static class TwitterContext implements Serializable {
-        public String screenName;
-        private final Twitter twitter;
-
-        public TwitterContext() {
-            twitter = new TwitterFactory().getInstance();
-            twitter.setOAuthConsumer(twitterKey, twitterSecret);
-        }
-
-        public void authenticate(String oauth_token, String oauth_verifier) throws TwitterException {
-            AccessToken token = twitter.getOAuthAccessToken(new RequestToken(oauth_token, oauth_verifier));
-            screenName = token.getScreenName();
-        }
-    }
+  }
 }

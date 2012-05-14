@@ -2,31 +2,35 @@
 #{set title:'Home' /}
 
 <table>
-    #{form @AdminController.addJavadoc(), enctype:'multipart/form-data'}
+#{form @AdminController.addJavadoc(), enctype:'multipart/form-data'}
     <tr>
         <td class="left top">
-            <input type="text" name="name" />
+            <input type="text" name="name"/>
         </td>
         <td class="top">
-            <input type="text" name="packages" />
+            <input type="text" name="packages"/>
+        </td>
+        <td class="top">
+            <input type="text" name="baseUrl" width="30"/>
+            <input type="file" id="file" name="file"/>
         </td>
         <td class="right top">
-            <input type="text" name="baseUrl" width="30"/>
-            <input type="file" id="file" name="file" />
-            <input type="submit" value="Add" />
+            <input type="image" src="public/images/boomy/add32.png" alt="Add"/>
         </td>
     </tr>
-    #{/}
+#{/}
     <tr>
         <th>Name</th>
         <th>Packages</th>
-        <th class="right">Base URL</th>
+        <th>Base URL</th>
+        <th class="right">&nbsp;</th>
     </tr>
 #{list apis, as: 'api'}
-        <tr>
-            <td>${api.name}</td>
-            <td>${api.packages}</td>
-            <td class="right">${api.baseUrl}</td>
-        </tr>
+    <tr>
+        <td>${api.name}</td>
+        <td>${api.packages}</td>
+        <td>${api.baseUrl}</td>
+        <td class="right"><a href="@{AdminController.deleteApi(api.id)}"><img src="public/images/boomy/delete32.png"</a> </td>
+    </tr>
 #{/list}
 </table>

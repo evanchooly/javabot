@@ -1,10 +1,13 @@
 @lightblue: #2153AA;
 @fontfamily: verdana, arial, sans-serif;
-@sidebarimage: url('../images/side_bg.gif');
 @border: 1pxsolid #C1DAD7;
 @left-margin: 15%;
 @content-margin: 100% - @left-margin + 2%;
 @h3size: 14px;
+
+@sidebarimage: url('../images/side_bg.gif');
+@unlockedImage: url(../images/boomy/file32.png);
+@lockedImage: url(../images/boomy/fileLocked32.png);
 
 body {
     font: normal 11px auto "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
@@ -41,12 +44,12 @@ a {
 }
 
 a.locklink {
-    background: url(../images/kiwi/Unlocked.png) no-repeat left center;
+    background: @unlockedImage no-repeat left center;
     padding: 15px;
 }
 
 a.locked {
-    background: url(../images/kiwi/Locked.png) no-repeat left center !important;
+    background: @lockedImage no-repeat left center;
 }
 
 #page_wrapper {

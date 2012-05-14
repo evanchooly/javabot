@@ -2,19 +2,30 @@
 #{set title:'Home' /}
 
 <table>
-    <tr>
-        <td class="right top" colspan="4">
-            <form action="@{AdminController.add()}" method="POST">
-                Add admin: <input name="name">
-            </form>
-        </td>
-    </tr>
+    <form action="@{AdminController.addAdmin()}" method="POST">
+        <tr>
+            <td class="top">
+                <input name="ircName">
+            </td>
+            <td class="top">
+                <input name="hostName">
+            </td>
+            <td class="top">
+                <input name="twitter">
+            </td>
+            <td class="top" colspan="2">&nbsp;</td>
+            <td class="right top">
+                <input type="image" src="public/images/boomy/add32.png" alt="Add"/>
+            </td>
+        </tr>
+    </form>
     <tr>
         <th>IRC Name</th>
         <th>Host Name</th>
         <th>Twitter</th>
         <th>Added By</th>
-        <th class="right">Date</th>
+        <th>Date</th>
+        <th class="right">&nbsp;</th>
     </tr>
 #{list admins, as: 'admin'}
     #{form @AdminController.updateAdmin(admin.userName)}
@@ -28,6 +39,9 @@
             <td>${admin.userName}</td>
             <td>${admin.addedBy}</td>
             <td class="right">${admin.updated.format("yyyy.MM.dd")}</td>
+            <td class="right top">
+                <input type="image" src="public/images/boomy/delete32.png" alt="Add"/>
+            </td>
         </tr>
     #{/form}
 #{/list}

@@ -25,8 +25,11 @@
             <td>
                 #{deadbolt.restrict roles:[['botAdmin']]}
                     #{if factoid.locked}
-                        #{set locked:'locked'/}
+                        #{set locked: 'locked'/}
                     #{/if}
+                    #{else}
+                        #{set locked: ''/}
+                    #{/else}
                     <a id="${factoid.id}" href="" class="locklink #{get 'locked'/}">&nbsp;</a>
                 #{/deadbolt.restrict}
             ${factoid.name}

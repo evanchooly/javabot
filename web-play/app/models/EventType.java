@@ -1,6 +1,6 @@
 package models;
 
-enum EventType {
+public enum EventType {
     ADD,
     DELETE,
     UPDATE
