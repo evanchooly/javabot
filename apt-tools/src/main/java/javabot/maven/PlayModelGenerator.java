@@ -2,9 +2,9 @@ package javabot.maven;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.processing.Processor;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
@@ -13,13 +13,17 @@ import javax.lang.model.element.Element;
 import javax.persistence.Table;
 
 import com.antwerkz.maven.BaseProcessor;
-import com.antwerkz.maven.SPI;
 
 @SupportedAnnotationTypes("javax.persistence.Entity")
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-@SPI(Processor.class)
 public class PlayModelGenerator extends BaseProcessor {
-  private final String TEMPLATE = "package models.bases;%n"
+  private static final String TEMPLATE = "package models;%n"
+    + "%n"
+    + "import models.bases.%s;%n"
+    + "%n"
+    + "public class %s extends %sBase {%n"
+    + "}%n";
+  private static final String BASE_TEMPLATE = "package models.bases;%n"
     + "%n"
     + "import play.db.jpa.Model;%n"
     + "%n"
@@ -40,24 +44,42 @@ public class PlayModelGenerator extends BaseProcessor {
     Table annotation = element.getAnnotation(Table.class);
     try {
       final String table;
-      if(annotation != null) {
+      if (annotation != null) {
         table = String.format("@Table(name = \"%s\")%n", annotation.name());
       } else {
         table = "";
       }
-      File modelBaseDir = new File("../web-play/app/models/bases/");
-      File file = new File(modelBaseDir, name + "Base.java");
-      file.getParentFile().mkdirs();
-      FileWriter writer = new FileWriter(file);
-      try {
-        writer.write(String.format(TEMPLATE, table, name, getFields(element)));
-      } finally {
-        writer.close();
-      }
+      generateBaseFile(element, name, table);
+      generateFile(element, name, table);
     } catch (Exception e) {
       System.out.println("name = " + name);
       e.printStackTrace();
       throw new RuntimeException(e);
+    }
+  }
+
+  private void generateBaseFile(Element element, String name, String table) throws IOException {
+    File modelBaseDir = new File("../web-play/app/models/bases/");
+    File file = new File(modelBaseDir, name + "Base.java");
+    file.getParentFile().mkdirs();
+    FileWriter writer = new FileWriter(file);
+    try {
+      writer.write(String.format(BASE_TEMPLATE, table, name, getFields(element)));
+    } finally {
+      writer.close();
+    }
+  }
+
+  private void generateFile(Element element, String name, String table) throws IOException {
+    File modelBaseDir = new File("../web-play/app/models/");
+    File file = new File(modelBaseDir, name + ".java");
+    if (!file.exists()) {
+      FileWriter writer = new FileWriter(file);
+      try {
+        writer.write(String.format(TEMPLATE, name, name, name));
+      } finally {
+        writer.close();
+      }
     }
   }
 
