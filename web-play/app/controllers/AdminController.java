@@ -77,6 +77,12 @@ public class AdminController extends Controller {
   public static void callback(String oauth_token, String oauth_verifier) {
     try {
       getTwitterContext().authenticate(oauth_token, oauth_verifier);
+      if (Admin.findAll().isEmpty()) {
+        Admin admin = new Admin("", "", getTwitterContext().screenName, "auto added bot owner");
+        admin.botOwner = true;
+        admin.save();
+        index();
+      }
       Application.index();
     } catch (TwitterException e) {
       System.out.println("e = " + e);
@@ -118,16 +124,22 @@ public class AdminController extends Controller {
     javadoc();
   }
 
-  @Post("/add")
+  @Post("/addAdmin")
   @Restrict(JavabotRoleHolder.BOT_ADMIN)
-  public static void add(String ircName, String hostName, String twitter) {
-    Admin admin = new Admin();
-    admin.ircName = ircName;
-    admin.hostName = hostName;
-    admin.userName = twitter;
-    admin.addedBy = getTwitterContext().screenName;
-    admin.updated = new Date();
-    admin.save();
+  public static void addAdmin(String ircName, String hostName, String twitter) {
+    if (!twitter.isEmpty()) {
+      new Admin(ircName, hostName, twitter, getTwitterContext().screenName).save();
+    }
+    index();
+  }
+
+  @Get("/deleteAdmin")
+  @Restrict(JavabotRoleHolder.BOT_ADMIN)
+  public static void deleteAdmin(Long id) {
+    Admin admin = Admin.findById(id);
+    if (admin != null && !admin.botOwner) {
+      admin.delete();
+    }
     index();
   }
 

@@ -40,7 +40,9 @@
             <td>${admin.addedBy}</td>
             <td class="right">${admin.updated.format("yyyy.MM.dd")}</td>
             <td class="right top">
-                <input type="image" src="public/images/boomy/delete32.png" alt="Add"/>
+                #{if !admin.botOwner}
+                    <a href="@{AdminController.deleteAdmin(admin.id)}"><img src="public/images/boomy/delete32.png" alt="Add"/></a>
+                #{/if}
             </td>
         </tr>
     #{/form}

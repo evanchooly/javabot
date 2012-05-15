@@ -1,15 +1,15 @@
 package models;
 
+import java.util.Date;
+import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 import controllers.AdminController;
 import play.data.validation.Check;
 import play.data.validation.CheckWith;
 import play.data.validation.Required;
 import play.db.jpa.Model;
-
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "channel")
@@ -21,8 +21,9 @@ public class Channel extends Model {
     @Required
     public boolean logged;
 
-    public static List<Channel> findLogged() {
-        return Channel.find("logged = true order by name").fetch();
+    @SuppressWarnings("unchecked")
+    public static List<Channel> findLogged(Boolean showAll) {
+      return (List<Channel>) (showAll ? Channel.findAll() : Channel.find("logged = true order by name").fetch());
     }
 
     @Override
