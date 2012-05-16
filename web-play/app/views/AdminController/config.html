@@ -1,0 +1,70 @@
+#{extends 'main.html' /}
+#{set title:'Edit Configuration' /}
+
+<table class="form">
+#{form @saveConfig()}
+    <tr>
+        <td class="top">
+            &{'irc.server'}
+        </td>
+        <td class="top">
+            <input type="text" name="config.server" value="${config.server}"/>
+        </td>
+        <td class="top right" rowspan="12">
+            <ul>
+            #{list operations, as:'operation'}
+                <li><input type="checkbox" name="config.operations" value="${operation}"
+                        #{if config.operations.contains(operation)}
+                        checked="true"
+                        #{/if}/>${operation}</li>
+            #{/list}
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td>
+        &{'irc.port'}
+        </td>
+        <td class="right">
+            <input type="text" name="config.port" value="${config.port}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+        &{'irc.history'}
+        </td>
+        <td class="right">
+            <input type="text" name="config.historyLength" value="${config.historyLength}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+        &{'irc.trigger'}
+        </td>
+        <td class="right">
+            <input type="text" name="config.trigger" value="${config.trigger}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+        &{'irc.nick'}
+        </td>
+        <td class="right">
+            <input type="text" name="config.nick" value="${config.nick}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+        &{'irc.password'}
+        </td>
+        <td class="right">
+            <input type="password" name="config.password" value="${config.password}"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="right form-submit" colspan="2">
+            <input type="submit" value="Save"/>
+        </td>
+    </tr>
+</table>
+#{/form}

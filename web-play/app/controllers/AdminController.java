@@ -13,12 +13,14 @@ import models.Admin;
 import models.Api;
 import models.ApiEvent;
 import models.Channel;
+import models.Config;
 import models.Factoid;
 import models.JavabotRoleHolder;
 import play.cache.Cache;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
 import play.libs.Files;
+import play.libs.IO;
 import play.modules.router.Get;
 import play.modules.router.Post;
 import play.mvc.Before;
@@ -36,6 +38,7 @@ public class AdminController extends Controller {
   private static final String CONTEXT_NAME = "-context";
   private static final String twitterKey;
   private static final String twitterSecret;
+  public static final List<String> OPERATIONS;
 
   static {
     try {
@@ -48,6 +51,14 @@ public class AdminController extends Controller {
       }
       twitterKey = props.get("twitter.key");
       twitterSecret = props.get("twitter.secret");
+
+      stream = AdminController.class.getResourceAsStream("/operations.list");
+      try {
+        OPERATIONS = IO.readLines(stream);
+      } finally {
+        stream.close();
+      }
+
     } catch (IOException e) {
       throw new RuntimeException(e.getMessage(), e);
     }
@@ -96,6 +107,29 @@ public class AdminController extends Controller {
     Application.Context context = new Application.Context();
     List<Admin> admins = Admin.find("order by userName").fetch();
     render(context, admins);
+  }
+
+  @Get("/config")
+  @Restrict(JavabotRoleHolder.BOT_ADMIN)
+  public static void config() {
+    Application.Context context = new Application.Context();
+    Config config = (Config) Config.findAll().get(0);
+    List<String> operations = OPERATIONS;
+    render(context, config, operations);
+  }
+
+  @Get("/saveConfig")
+  @Restrict(JavabotRoleHolder.BOT_ADMIN)
+  public static void saveConfig(Config config) {
+    List<Config> all = Config.findAll();
+    Config old = (Config) all.get(0);
+    if (!old.operations.equals(config.operations)) {
+      Config.updateOperations(old.operations, config.operations);
+    }
+    config.id = old.id;
+    Config updated = config.merge();
+    updated.save();
+    index();
   }
 
   @Get("/javadoc")

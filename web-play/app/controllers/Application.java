@@ -124,13 +124,15 @@ public class Application extends Controller {
     Boolean showAll = Boolean.FALSE;
 
     public Context() {
-      if(AdminController.getTwitterContext() != null) {
-        Admin admin = Admin.find("byUsername", AdminController.getTwitterContext().screenName).first();
-        showAll = admin.botOwner;
+      twitterContext = AdminController.getTwitterContext();
+      if(twitterContext != null) {
+        if(twitterContext.screenName != null) {
+          Admin admin = Admin.find("byUsername", twitterContext.screenName).first();
+          showAll = admin.botOwner;
+        }
       }
       channels = Channel.findLogged(showAll);
       factoidCount = Factoid.count();
-      twitterContext = AdminController.getTwitterContext();
     }
 
     public Long getFactoidCount() {
