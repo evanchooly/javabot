@@ -9,7 +9,6 @@ import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.AdminDao;
 import javabot.dao.ApiDao;
-import javabot.dao.EventDao;
 import javabot.javadoc.Api;
 import javabot.javadoc.JavadocParser;
 
@@ -19,24 +18,6 @@ public class ApiEvent extends AdminEvent {
     public String packages;
     public String baseUrl;
     public String file;
-
-    @Override
-    public void handle(Javabot bot) {
-        switch (type) {
-            case ADD:
-                add(bot);
-                break;
-            case DELETE:
-                delete(bot);
-                break;
-            case UPDATE:
-                update(bot);
-                break;
-        }
-
-        setProcessed(true);
-        bot.getApplicationContext().getBean(EventDao.class).save(this);
-    }
 
     public String getName() {
         return name;
@@ -70,18 +51,18 @@ public class ApiEvent extends AdminEvent {
         this.packages = packages;
     }
 
-    private void update(Javabot bot) {
+    public void update(Javabot bot) {
         delete(bot);
         add(bot);
     }
 
-    private void delete(Javabot bot) {
+    public void delete(Javabot bot) {
         ApiDao dao = bot.getApplicationContext().getBean(ApiDao.class);
         Api api = dao.find(name);
         dao.delete(api);
     }
 
-    private void add(final Javabot bot) {
+    public void add(final Javabot bot) {
         final JavadocParser parser = new JavadocParser();
         bot.getApplicationContext().getAutowireCapableBeanFactory().autowireBean(parser);
         ApiDao dao = bot.getApplicationContext().getBean(ApiDao.class);

@@ -1,11 +1,10 @@
 package javabot.model;
 
+import javax.persistence.Entity;
+
 import com.antwerkz.sofia.Sofia;
 import javabot.Javabot;
 import javabot.dao.ChannelDao;
-import javabot.dao.EventDao;
-
-import javax.persistence.Entity;
 
 @Entity
 public class ChannelEvent extends AdminEvent {
@@ -49,30 +48,12 @@ public class ChannelEvent extends AdminEvent {
         this.logged = logged;
     }
 
-    @Override
-    public void handle(Javabot bot) {
-        switch (type) {
-            case ADD:
-                add(bot);
-                break;
-            case DELETE:
-                delete(bot);
-                break;
-            case UPDATE:
-                update(bot);
-                break;
-        }
-
-        setProcessed(true);
-        bot.getApplicationContext().getBean(EventDao.class).save(this);
-    }
-
     public void add(Javabot bot) {
         Channel chan = bot.getApplicationContext().getBean(ChannelDao.class).get(channel);
         chan.join(bot);
     }
 
-    private void delete(Javabot bot) {
+    public void delete(Javabot bot) {
         ChannelDao dao = bot.getApplicationContext().getBean(ChannelDao.class);
         Channel chan = dao.get(channel);
         if(chan != null) {
@@ -81,7 +62,7 @@ public class ChannelEvent extends AdminEvent {
         }
     }
 
-    private void update(Javabot bot) {
+    public void update(Javabot bot) {
         ChannelDao dao = bot.getApplicationContext().getBean(ChannelDao.class);
         Channel chan = dao.get(channel);
         if(chan != null) {
