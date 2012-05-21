@@ -52,7 +52,6 @@ public class AdminController extends Controller {
       }
       twitterKey = props.get("twitter.key");
       twitterSecret = props.get("twitter.secret");
-
       stream = AdminController.class.getResourceAsStream("/operations.list");
       try {
         OPERATIONS = IO.readLines(stream);
@@ -129,6 +128,9 @@ public class AdminController extends Controller {
     }
     config.id = old.id;
     Config updated = config.merge();
+    while (updated.url.endsWith("/")) {
+      updated.url = updated.url.substring(0, updated.url.length() - 1);
+    }
     updated.save();
     index();
   }
@@ -236,9 +238,9 @@ public class AdminController extends Controller {
   @Restrict(JavabotRoleHolder.BOT_ADMIN)
   public static void registerAdmin(String id) {
     NickRegistration registration = NickRegistration.find("byUrl", id).first();
-    if(registration != null && getTwitterContext().screenName.equals(registration.twitterName)) {
+    if (registration != null && getTwitterContext().screenName.equals(registration.twitterName)) {
       Admin admin = Admin.find("byUsername", registration.twitterName).first();
-      if(admin != null) {
+      if (admin != null) {
         admin.ircName = registration.nick;
         admin.hostName = registration.host;
         admin.save();

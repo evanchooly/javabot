@@ -17,6 +17,7 @@ public class Config extends Model {
   public Integer port;
   public Integer historyLength;
   public String trigger;
+  public String url;
   public String nick;
   public String password;
   public Integer schemaVersion;
@@ -38,6 +39,7 @@ public class Config extends Model {
     sb.append("Config {");
     sb.append(" server='").append(server).append('\'');
     sb.append(", port=").append(port);
+    sb.append(", url=").append(url);
     sb.append(", nick='").append(nick).append('\'');
     sb.append(", trigger='").append(trigger).append('\'');
     sb.append(", historyLength=").append(historyLength);

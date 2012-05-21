@@ -5,20 +5,28 @@
 #{form @saveConfig()}
     <tr>
         <td class="top">
+            &{'web.url'}
+        </td>
+        <td class="top right">
+            <input type="text" name="config.url" value="${config.url}"/>
+        </td>
+        <td class="top right" rowspan="12">
+            <ul>
+                #{list operations, as:'operation'}
+                    <li><input type="checkbox" name="config.operations" value="${operation}"
+                        #{if config.operations.contains(operation)}
+                               checked="true"
+                        #{/if}/>${operation}</li>
+                #{/list}
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td class="top">
             &{'irc.server'}
         </td>
         <td class="top">
             <input type="text" name="config.server" value="${config.server}"/>
-        </td>
-        <td class="top right" rowspan="12">
-            <ul>
-            #{list operations, as:'operation'}
-                <li><input type="checkbox" name="config.operations" value="${operation}"
-                        #{if config.operations.contains(operation)}
-                        checked="true"
-                        #{/if}/>${operation}</li>
-            #{/list}
-            </ul>
         </td>
     </tr>
     <tr>

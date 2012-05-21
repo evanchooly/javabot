@@ -8,6 +8,8 @@ import com.antwerkz.sofia.Sofia;
 import javabot.IrcEvent;
 import javabot.Message;
 import javabot.dao.AdminDao;
+import javabot.dao.ConfigDao;
+import javabot.model.Config;
 import javabot.model.NickRegistration;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class RegisterNickOperation extends BotOperation {
   @Autowired
   private AdminDao adminDao;
+  @Autowired
+  private ConfigDao configDao;
 
   @Override
   public List<Message> handleMessage(IrcEvent event) {
@@ -26,8 +30,8 @@ public class RegisterNickOperation extends BotOperation {
         String twitterName = split[1];
         NickRegistration registration = new NickRegistration(event.getSender(), twitterName);
         adminDao.save(registration);
-        String eventMessage = Sofia.registerNick(
-          String.format("http://evanchooly.com/register?id=%s", registration.getUrl()), twitterName);
+        Config config = configDao.get();
+        String eventMessage = Sofia.registerNick(config.getUrl(), registration.getUrl(), twitterName);
 
         responses.add(new Message(event.getSender(), new IrcEvent(event.getSender().getNick(), event.getSender(), eventMessage),
           eventMessage));
