@@ -16,6 +16,7 @@ import models.Channel;
 import models.Config;
 import models.Factoid;
 import models.JavabotRoleHolder;
+import models.NickRegistration;
 import play.cache.Cache;
 import play.data.validation.Valid;
 import play.data.validation.Validation;
@@ -229,6 +230,22 @@ public class AdminController extends Controller {
     factoid.locked = !factoid.locked;
     factoid.save();
     renderJSON(factoid.locked);
+  }
+
+  @Get("/register")
+  @Restrict(JavabotRoleHolder.BOT_ADMIN)
+  public static void registerAdmin(String id) {
+    NickRegistration registration = NickRegistration.find("byUrl", id).first();
+    if(registration != null && getTwitterContext().screenName.equals(registration.twitterName)) {
+      Admin admin = Admin.find("byUsername", registration.twitterName).first();
+      if(admin != null) {
+        admin.ircName = registration.nick;
+        admin.hostName = registration.host;
+        admin.save();
+      }
+      registration.delete();
+    }
+    index();
   }
 
   public static TwitterContext getTwitterContext() {

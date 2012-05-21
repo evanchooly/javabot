@@ -15,10 +15,10 @@ import javabot.dao.AdminDao;
 @Entity
 @Table(name = "admin")
 @NamedQueries({
-  @NamedQuery(name = AdminDao.FIND, query = "select a from Admin a where a.userName = :username "),
-  @NamedQuery(name = AdminDao.FIND_WITH_HOST, query = "select a from Admin a where a.userName = :username "
+  @NamedQuery(name = AdminDao.FIND, query = "select a from Admin a where a.ircName = :ircName "),
+  @NamedQuery(name = AdminDao.FIND_WITH_HOST, query = "select a from Admin a where a.ircName = :ircName "
     + "and a.hostName = :hostName"),
-  @NamedQuery(name = AdminDao.FIND_ALL, query = "select a from Admin a order by a.userName")
+  @NamedQuery(name = AdminDao.FIND_ALL, query = "select a from Admin a order by a.ircName")
 })
 @SPI(Persistent.class)
 public class Admin implements Serializable, Persistent {

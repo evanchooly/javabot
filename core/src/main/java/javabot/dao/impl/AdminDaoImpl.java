@@ -1,13 +1,13 @@
 package javabot.dao.impl;
 
+import java.util.Date;
+import java.util.List;
+import javax.persistence.EntityManager;
+
 import javabot.dao.AbstractDaoImpl;
 import javabot.dao.AdminDao;
 import javabot.model.Admin;
 import org.springframework.stereotype.Component;
-
-import javax.persistence.EntityManager;
-import java.util.Date;
-import java.util.List;
 
 @Component
 public class AdminDaoImpl extends AbstractDaoImpl<Admin> implements AdminDao {
@@ -29,9 +29,9 @@ public class AdminDaoImpl extends AbstractDaoImpl<Admin> implements AdminDao {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Admin getAdmin(final String userName, final String hostName) {
+    public Admin getAdmin(final String ircName, final String hostName) {
         final List<Admin> list = getEntityManager().createNamedQuery(AdminDao.FIND_WITH_HOST)
-            .setParameter("username", userName)
+            .setParameter("ircName", ircName)
             .setParameter("hostName", hostName)
             .getResultList();
         return list.isEmpty() ? null : list.get(0);

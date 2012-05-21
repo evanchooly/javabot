@@ -7,7 +7,7 @@ import javabot.model.Config;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-public interface ConfigDao extends BaseDao<Config> {
+public interface ConfigDao extends BaseDao {
     String GET_CONFIG = "Config.get";
 
     Config get();

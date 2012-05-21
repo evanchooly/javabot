@@ -7,7 +7,7 @@ import javabot.model.Channel;
 import javabot.Activity;
 
 @SuppressWarnings({"ConstantNamingConvention"})
-public interface ChannelDao extends BaseDao<Channel> {
+public interface ChannelDao extends BaseDao {
     String BY_NAME = "Channel.byName";
     String ALL = "Channel.all";
     String CONFIGURED_CHANNELS = "Channel.configure";

@@ -77,9 +77,9 @@ public class AddFactoidOperation extends StandardOperation {
             if (index != -1) {
                 value = message.substring(index + 4, message.length());
             }
-            if (key.trim().length() == 0) {
+            if (key.trim().isEmpty()) {
                 responses.add(new Message(channel, event, "Invalid factoid name"));
-            } else if (value == null || value.trim().length() == 0) {
+            } else if (value == null || value.trim().isEmpty()) {
                 responses.add(new Message(channel, event, "Invalid factoid value"));
             } else if (factoidDao.hasFactoid(key)) {
                 responses.add(

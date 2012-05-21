@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Transactional
-public class AbstractDaoImpl<T> implements BaseDao<T> {
+public class AbstractDaoImpl<T> implements BaseDao {
     private static final Logger log = LoggerFactory.getLogger(AbstractDaoImpl.class);
     private final Class entityClass;
     private EntityManager entityManager;

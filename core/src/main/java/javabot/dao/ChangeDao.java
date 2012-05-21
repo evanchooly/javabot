@@ -6,7 +6,7 @@ import javabot.dao.util.QueryParam;
 import javabot.model.Change;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface ChangeDao extends BaseDao<Change> {
+public interface ChangeDao extends BaseDao {
 
     @Transactional
     void logAdd(String sender, String key, String value);

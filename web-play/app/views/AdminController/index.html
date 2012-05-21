@@ -5,10 +5,10 @@
     <form action="@{AdminController.addAdmin()}" method="POST">
         <tr>
             <td class="top">
-                <input name="ircName">
+                &nbsp;
             </td>
             <td class="top">
-                <input name="hostName">
+                &nbsp;
             </td>
             <td class="top">
                 <input name="twitter">
@@ -31,10 +31,10 @@
     #{form @AdminController.updateAdmin(admin.userName)}
         <tr>
             <td>
-                <input name="ircName" value="${admin.ircName}">
+                ${admin.ircName}
             </td>
             <td>
-                <input name="ircName" value="${admin.hostName}">
+                ${admin.hostName}
             </td>
             <td>${admin.userName}</td>
             <td>${admin.addedBy}</td>

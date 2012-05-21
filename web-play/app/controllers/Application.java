@@ -128,7 +128,7 @@ public class Application extends Controller {
       if(twitterContext != null) {
         if(twitterContext.screenName != null) {
           Admin admin = Admin.find("byUsername", twitterContext.screenName).first();
-          showAll = admin.botOwner;
+          showAll = admin != null && admin.botOwner;
         }
       }
       channels = Channel.findLogged(showAll);

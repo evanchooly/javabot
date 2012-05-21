@@ -7,7 +7,7 @@ import javabot.model.Logs;
 import javabot.Seen;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface LogsDao extends BaseDao<Logs> {
+public interface LogsDao extends BaseDao {
     String TODAY = "Logs.today";
     String COUNT_LOGGED = "Logs.countLogged";
     String SEEN = "Logs.seen";

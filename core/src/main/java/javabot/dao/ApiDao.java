@@ -9,7 +9,7 @@ import javabot.javadoc.Api;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-public interface ApiDao extends BaseDao<Api> {
+public interface ApiDao extends BaseDao {
     String FIND_BY_NAME = "Javadoc.findByName";
     String FIND_ALL = "Javadoc.findAll";
 

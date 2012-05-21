@@ -11,7 +11,7 @@ import javabot.javadoc.Field;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-public interface ClazzDao extends BaseDao<Clazz> {
+public interface ClazzDao extends BaseDao {
     String DELETE_ALL = "ClazzDao.deleteAll";
     String DELETE_ALL_METHODS = "ClazzDao.deleteAllMethods";
     String GET_BY_NAME = "ClazzDao.getByName";

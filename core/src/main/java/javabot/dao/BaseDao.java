@@ -9,7 +9,7 @@ import javabot.model.Persistent;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-public interface BaseDao<T> {
+public interface BaseDao {
     void save(Persistent persistent);
 
     void delete(Persistent persistent);

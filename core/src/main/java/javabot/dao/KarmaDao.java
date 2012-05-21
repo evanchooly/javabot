@@ -6,7 +6,7 @@ import javabot.dao.util.QueryParam;
 import javabot.model.Karma;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface KarmaDao extends BaseDao<Karma> {
+public interface KarmaDao extends BaseDao {
     String ALL = "Karma.all";
     String COUNT = "Karma.count";
     String BY_NAME = "Karma.byName";

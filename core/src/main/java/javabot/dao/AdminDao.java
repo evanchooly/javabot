@@ -1,10 +1,10 @@
 package javabot.dao;
 
-import javabot.model.Admin;
-
 import java.util.List;
 
-public interface AdminDao extends BaseDao<Admin> {
+import javabot.model.Admin;
+
+public interface AdminDao extends BaseDao {
     String FIND = "Admin.find";
     String FIND_WITH_HOST = "Admin.findWithHost";
     String FIND_ALL = "Admin.findAll";
