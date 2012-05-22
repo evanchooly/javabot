@@ -3,7 +3,6 @@ package controllers;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -28,17 +27,14 @@ import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.With;
 import play.utils.Properties;
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
 @With(Deadbolt.class)
 public class AdminController extends Controller {
   private static final String CONTEXT_NAME = "-context";
-  private static final String twitterKey;
-  private static final String twitterSecret;
+  static final String twitterKey;
+  static final String twitterSecret;
   public static final List<String> OPERATIONS;
 
   static {
@@ -254,18 +250,4 @@ public class AdminController extends Controller {
     return (TwitterContext) Cache.get(session.getId() + CONTEXT_NAME);
   }
 
-  public static class TwitterContext implements Serializable {
-    public String screenName;
-    private final Twitter twitter;
-
-    public TwitterContext() {
-      twitter = new TwitterFactory().getInstance();
-      twitter.setOAuthConsumer(twitterKey, twitterSecret);
-    }
-
-    public void authenticate(String oauth_token, String oauth_verifier) throws TwitterException {
-      AccessToken token = twitter.getOAuthAccessToken(new RequestToken(oauth_token, oauth_verifier));
-      screenName = token.getScreenName();
-    }
-  }
 }

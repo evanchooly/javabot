@@ -119,7 +119,7 @@ public class Application extends Controller {
     final Long factoidCount;
     List<Log> logs;
     ModelPaginator<T> paginator;
-    AdminController.TwitterContext twitterContext;
+    TwitterContext twitterContext;
     Date today = new Date();
     Boolean showAll = Boolean.FALSE;
 

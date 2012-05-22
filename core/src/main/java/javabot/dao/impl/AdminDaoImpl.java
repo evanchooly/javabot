@@ -40,7 +40,7 @@ public class AdminDaoImpl extends AbstractDaoImpl<Admin> implements AdminDao {
     @SuppressWarnings("unchecked")
     public Admin getAdmin(final String userName) {
         final List<Admin> list = getEntityManager().createNamedQuery(AdminDao.FIND)
-            .setParameter("username", userName)
+            .setParameter("userName", userName)
             .getResultList();
         return list.isEmpty() ? null : list.get(0);
     }

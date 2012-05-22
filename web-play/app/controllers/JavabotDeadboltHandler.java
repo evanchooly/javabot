@@ -11,7 +11,7 @@ public class JavabotDeadboltHandler extends AbstractDeadboltHandler {
 
     @Override
     public RoleHolder getRoleHolder() {
-        AdminController.TwitterContext twitterContext = AdminController.getTwitterContext();
+        TwitterContext twitterContext = AdminController.getTwitterContext();
         return twitterContext != null
             && !Admin.find("userName", twitterContext.screenName).<Admin>fetch().isEmpty()
                 ? new JavabotRoleHolder()
