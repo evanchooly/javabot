@@ -20,5 +20,7 @@ public class ApiEvent extends AdminEvent {
 
   public ApiEvent(Long id, String requestedBy) {
     super(EventType.DELETE, requestedBy);
+    Api api = Api.findById(id);
+    name = api.name;
   }
 }

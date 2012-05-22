@@ -149,7 +149,7 @@ public class AdminController extends Controller {
     javadoc();
   }
 
-  @Post("/deleteApi")
+  @Get("/deleteApi")
   @Restrict(JavabotRoleHolder.BOT_ADMIN)
   public static void deleteApi(Long id) throws IOException {
     ApiEvent event = new ApiEvent(id, AdminController.getTwitterContext().screenName);
