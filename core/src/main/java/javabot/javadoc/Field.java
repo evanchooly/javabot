@@ -20,7 +20,13 @@ import javabot.model.Persistent;
         + " upper(c.packageName)=:packageName and upper(c.className)=:className "
         + " and upper(f.name)=:fieldName order by c.packageName, c.className, f.name"),
     @NamedQuery(name = ClazzDao.GET_FIELD_WITH_CLS, query = "select f from Field f join f.clazz c where "
-        + " upper(c.className)=:className and upper(f.name)=:fieldName order by c.packageName, c.className, f.name")
+        + " upper(c.className)=:className and upper(f.name)=:fieldName order by c.packageName, c.className, f.name"),
+
+    @NamedQuery(name = ClazzDao.GET_FIELD_WITH_CLS_PKG_API, query = "select f from Field f join f.clazz c where "
+        + " upper(c.packageName)=:packageName and upper(c.className)=:className and c.api.id=:api"
+        + " and upper(f.name)=:fieldName order by c.packageName, c.className, f.name"),
+    @NamedQuery(name = ClazzDao.GET_FIELD_WITH_CLS_API, query = "select f from Field f join f.clazz c join c.api a where a.id=:api "
+        + " and upper(c.className)=:className and upper(f.name)=:fieldName order by c.packageName, c.className, f.name")
 })
 @SPI(Persistent.class)
 public class Field extends JavadocElement {

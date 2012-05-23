@@ -29,10 +29,14 @@ import org.slf4j.LoggerFactory;
     @NamedQuery(name = ClazzDao.DELETE_ALL_METHODS, query = "delete from Method m where m.clazz.api=:api"),
     @NamedQuery(name = ClazzDao.GET_BY_NAME, query = "select c from Clazz c where "
         + " upper(c.className)=:name"),
+    @NamedQuery(name = ClazzDao.GET_BY_NAME_API, query = "select c from Clazz c where "
+        + " upper(c.className)=:name and c.api.id=:api"),
+
     @NamedQuery(name = ClazzDao.GET_BY_API_PACKAGE_AND_NAME, query = "select c from Clazz c where "
         + " c.packageName=:package and c.api=:api and c.className=:name"),
     @NamedQuery(name = ClazzDao.GET_BY_PACKAGE_AND_NAME, query = "select c from Clazz c where "
         + " upper(c.packageName)=upper(:package) and upper(c.className)=upper(:name)"),
+
     @NamedQuery(name = ClazzDao.GET_METHOD_NO_SIG, query = "select m from Method m where "
         + "m.clazz.id=:classId and upper(m.methodName)=:name order by m.shortSignatureStripped"),
     @NamedQuery(name = ClazzDao.GET_METHOD, query = "select m from Clazz c join c.methods m where "
@@ -41,7 +45,7 @@ import org.slf4j.LoggerFactory;
         + " or upper(m.longSignatureStripped)=:params) order by m.shortSignatureStripped")
 })
 @SPI(Persistent.class)
-public class Clazz extends JavadocElement implements Persistent {
+public class Clazz extends JavadocElement {
     private static final Logger log = LoggerFactory.getLogger(Clazz.class);
     private Long id;
     private Api api;

@@ -83,7 +83,7 @@ public class Api implements Persistent {
         this.baseUrl = baseUrl;
     }
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "api", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "api", fetch = FetchType.LAZY)
     public List<Clazz> getClasses() {
         return classes;
     }

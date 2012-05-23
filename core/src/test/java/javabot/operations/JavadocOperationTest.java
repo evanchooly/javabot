@@ -15,6 +15,7 @@ public class JavadocOperationTest extends BaseOperationTest {
 
     public void methods() {
         scanForResponse("~javadoc String.split(String)", "[JDK: java.lang.String.split(String)]");
+        scanForResponse("~javadoc -jdk String.split(String)", "[JDK: java.lang.String.split(String)]");
         scanForResponse("~javadoc String.split(java.lang.String)", "[JDK: java.lang.String.split(String)]");
         scanForResponse(String.format("%s %s", getJavabot().getPircBot().getNick(), "javadoc String.split(*)"),
             "[JDK: java.lang.String.split(String)]");
@@ -36,6 +37,7 @@ public class JavadocOperationTest extends BaseOperationTest {
     public void fields() {
         scanForResponse("~javadoc Integer.MAX_VALUE", "[JDK: java.lang.Integer.MAX_VALUE:int]");
         scanForResponse("~javadoc System.in", "[JDK: java.lang.System.in:java.io.InputStream]");
+        scanForResponse("~javadoc -jdk System.in", "[JDK: java.lang.System.in:java.io.InputStream]");
     }
 
     public void inherited() {

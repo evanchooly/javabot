@@ -79,7 +79,7 @@
             <dependency>
                 <groupId>com.antwerkz.sofia</groupId>
                 <artifactId>maven</artifactId>
-                <version>0.2</version>
+                <version>0.3</version>
             </dependency>
 
             <dependency>
