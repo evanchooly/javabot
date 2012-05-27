@@ -442,7 +442,7 @@ public class Javabot implements ApplicationContextAware {
 
   public boolean userIsOnChannel(final String nick, final String channel) {
     for (final User user : pircBot.getUsers(channel)) {
-      if (user.getNick().equals(nick)) {
+      if (user.getNick().equalsIgnoreCase(nick)) {
         return true;
       }
     }
