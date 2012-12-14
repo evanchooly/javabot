@@ -52,7 +52,7 @@
         <repository>
             <id>repository.jboss.org</id>
             <name>JBoss Maven Repository</name>
-            <url>http://repository.jboss.org/maven2</url>
+            <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
         </repository>
         <repository>
             <id>JBoss</id>
