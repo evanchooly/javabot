@@ -11,7 +11,6 @@ import javabot.Message;
 import javabot.dao.AdminDao;
 import javabot.dao.FactoidDao;
 import javabot.dao.LogsDao;
-import javabot.dao.impl.AdminDaoImpl;
 import javabot.model.Factoid;
 import javabot.model.Logs.Type;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,8 @@ public class AddFactoidOperation extends StandardOperation {
     private FactoidDao factoidDao;
     @Autowired
     private LogsDao logDao;
+    @Autowired
+    private AdminDao adminDao;
 
     @Override
     public List<Message> handleMessage(final IrcEvent event) {
@@ -50,10 +51,9 @@ public class AddFactoidOperation extends StandardOperation {
             String key = message.substring(0, is);
             key = key.replaceAll("^\\s+", "");
             final Factoid factoid = factoidDao.getFactoid(key);
-            final IrcUser user = event.getSender();
-            final AdminDaoImpl adminDao = new AdminDaoImpl();
+            boolean admin = adminDao.isAdmin(event.getSender().getUserName(), event.getSender().getHost());
             if (factoid.getLocked()) {
-                if (adminDao.isAdmin(event.getSender().getUserName(), event.getSender().getHost())) {
+                if (admin) {
                     responses.add(updateExistingFactoid(event, message, factoid, is, key));
                 } else {
                     logDao.logMessage(Type.MESSAGE, event.getSender().getNick(), event.getChannel(),
