@@ -8,8 +8,10 @@ import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
 import javabot.IrcUser;
 import javabot.Message;
+import javabot.dao.AdminDao;
 import javabot.dao.FactoidDao;
 import javabot.dao.LogsDao;
+import javabot.dao.impl.AdminDaoImpl;
 import javabot.model.Factoid;
 import javabot.model.Logs.Type;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,20 +50,18 @@ public class AddFactoidOperation extends StandardOperation {
             String key = message.substring(0, is);
             key = key.replaceAll("^\\s+", "");
             final Factoid factoid = factoidDao.getFactoid(key);
+            final IrcUser user = event.getSender();
+            final AdminDaoImpl adminDao = new AdminDaoImpl();
             if (factoid.getLocked()) {
-                logDao.logMessage(Type.MESSAGE, event.getSender().getNick(), event.getChannel(),
-                    String.format("%s attempted to change '%s' but it is locked", event.getSender(), key));
-                responses.add(new Message(event.getChannel(), event, "That factoid is locked, " + event.getSender()));
+                if (adminDao.isAdmin(event.getSender().getUserName(), event.getSender().getHost())) {
+                    responses.add(updateExistingFactoid(event, message, factoid, is, key));
+                } else {
+                    logDao.logMessage(Type.MESSAGE, event.getSender().getNick(), event.getChannel(),
+                        String.format("%s attempted to change '%s' but it is locked", event.getSender(), key));
+                    responses.add(new Message(event.getChannel(), event, "That factoid is locked, " + event.getSender()));
+                }
             } else if (factoid != null) {
-                final String newValue = message.substring(is + 4);
-                logDao.logMessage(Type.MESSAGE, event.getSender().getNick(), event.getChannel(),
-                    String.format("%s changed '%s' from '%s' to '%s'", event.getSender(), key, factoid.getValue(),
-                        newValue));
-                factoid.setValue(newValue);
-                factoid.setUpdated(new Date());
-                factoid.setUserName(event.getSender().getNick());
-                factoidDao.save(factoid);
-                responses.add(new Message(event.getChannel(), event, "OK, " + event.getSender() + "."));
+                responses.add(updateExistingFactoid(event, message, factoid, is, key));
             }
         }
         return responses;
@@ -97,5 +97,19 @@ public class AddFactoidOperation extends StandardOperation {
             }
         }
         return responses;
+    }
+
+    private Message updateExistingFactoid(final IrcEvent event, final String message, final Factoid factoid, final int is, final String key) {
+        final String newValue = message.substring(is + 4);
+        logDao.logMessage(Type.MESSAGE, event.getSender().getNick(), event.getChannel(),
+                String.format("%s changed '%s' from '%s' to '%s'", event.getSender(), key, factoid.getValue(),
+                        newValue));
+        factoid.setValue(newValue);
+        factoid.setUpdated(new Date());
+        factoid.setUserName(event.getSender().getNick());
+        factoidDao.save(factoid);
+        Message msg =new Message(event.getChannel(), event, "OK, " + event.getSender() + ".");
+
+        return msg;
     }
 }
