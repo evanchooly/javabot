@@ -108,7 +108,7 @@ public class AddFactoidOperation extends StandardOperation {
         factoid.setUpdated(new Date());
         factoid.setUserName(event.getSender().getNick());
         factoidDao.save(factoid);
-        Message msg =new Message(event.getChannel(), event, "OK, " + event.getSender() + ".");
+        Message msg = new Message(event.getChannel(), event, "OK, " + event.getSender() + ".");
 
         return msg;
     }
