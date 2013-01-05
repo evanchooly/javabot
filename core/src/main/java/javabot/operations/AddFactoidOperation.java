@@ -52,16 +52,18 @@ public class AddFactoidOperation extends StandardOperation {
             key = key.replaceAll("^\\s+", "");
             final Factoid factoid = factoidDao.getFactoid(key);
             boolean admin = adminDao.isAdmin(event.getSender().getUserName(), event.getSender().getHost());
-            if (factoid.getLocked()) {
-                if (admin) {
-                    responses.add(updateExistingFactoid(event, message, factoid, is, key));
+            if (factoid != null) {
+                if (factoid.getLocked()) {
+                    if (admin) {
+                        responses.add(updateExistingFactoid(event, message, factoid, is, key));
+                    } else {
+                        logDao.logMessage(Type.MESSAGE, event.getSender().getNick(), event.getChannel(),
+                            String.format("%s attempted to change '%s' but it is locked", event.getSender(), key));
+                        responses.add(new Message(event.getChannel(), event, "That factoid is locked, " + event.getSender()));
+                    }
                 } else {
-                    logDao.logMessage(Type.MESSAGE, event.getSender().getNick(), event.getChannel(),
-                        String.format("%s attempted to change '%s' but it is locked", event.getSender(), key));
-                    responses.add(new Message(event.getChannel(), event, "That factoid is locked, " + event.getSender()));
+                    responses.add(updateExistingFactoid(event, message, factoid, is, key));
                 }
-            } else if (factoid != null) {
-                responses.add(updateExistingFactoid(event, message, factoid, is, key));
             }
         }
         return responses;
