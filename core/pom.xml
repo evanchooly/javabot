@@ -132,6 +132,12 @@
             <artifactId>jpa-api</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.antwerkz.sofia</groupId>
+            <artifactId>sofia-core</artifactId>
+            <version>${sofia.version}</version>
+        </dependency>
+
         <!-- Unit testing dependencies -->
         <dependency>
             <groupId>org.testng</groupId>
@@ -206,7 +212,8 @@
             </plugin>
             <plugin>
                 <groupId>com.antwerkz.sofia</groupId>
-                <artifactId>maven</artifactId>
+                <artifactId>sofia-maven</artifactId>
+                <version>${sofia.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -214,6 +221,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <loggingType>slf4j</loggingType>
+                </configuration>
             </plugin>
         </plugins>
     </build>

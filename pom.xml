@@ -24,15 +24,14 @@
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
-                        <!--<compilerArgument>-proc:none</compilerArgument>-->
+                        <source>1.7</source>
+                        <target>1.7</target>
                     </configuration>
                 </plugin>
                 <plugin>
                     <groupId>com.antwerkz.sofia</groupId>
-                    <artifactId>maven</artifactId>
-                    <version>0.3</version>
+                    <artifactId>sofia-maven</artifactId>
+                    <version>${sofia.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -247,5 +246,6 @@
         <camel.version>2.3.0</camel.version>
         <spring.version>3.0.5.RELEASE</spring.version>
         <irclib.version>2.0-SNAPSHOT</irclib.version>
+         <sofia.version>0.13</sofia.version>
     </properties>
 </project>

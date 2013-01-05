@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
+import com.antwerkz.sofia.Sofia;
 import javabot.IrcEvent;
 import javabot.IrcUser;
 import javabot.Message;
@@ -58,8 +59,8 @@ public class AddFactoidOperation extends StandardOperation {
                         responses.add(updateExistingFactoid(event, message, factoid, is, key));
                     } else {
                         logDao.logMessage(Type.MESSAGE, event.getSender().getNick(), event.getChannel(),
-                            String.format("%s attempted to change '%s' but it is locked", event.getSender(), key));
-                        responses.add(new Message(event.getChannel(), event, "That factoid is locked, " + event.getSender()));
+                            String.format(Sofia.changingLockedFactoid(event.getSender(), key)));
+                        responses.add(new Message(event.getChannel(), event, Sofia.factoidLocked( event.getSender())));
                     }
                 } else {
                     responses.add(updateExistingFactoid(event, message, factoid, is, key));
@@ -84,34 +85,32 @@ public class AddFactoidOperation extends StandardOperation {
                 value = message.substring(index + 4, message.length());
             }
             if (key.trim().isEmpty()) {
-                responses.add(new Message(channel, event, "Invalid factoid name"));
+                responses.add(new Message(channel, event, Sofia.invalidFactoidName()));
             } else if (value == null || value.trim().isEmpty()) {
-                responses.add(new Message(channel, event, "Invalid factoid value"));
+                responses.add(new Message(channel, event, Sofia.invalidFactoidValue()));
             } else if (factoidDao.hasFactoid(key)) {
                 responses.add(
-                    new Message(channel, event, String.format("I already have a factoid named %s, %s", key, sender)));
+                    new Message(channel, event, Sofia.factoidExists(key, sender)));
             } else {
                 if (value.startsWith("<see>")) {
                     value = value.toLowerCase();
                 }
                 factoidDao.addFactoid(sender.getNick(), key, value);
-                responses.add(new Message(channel, event, "OK, " + sender + "."));
+                responses.add(new Message(channel, event, Sofia.ok(sender)));
             }
         }
         return responses;
     }
 
-    private Message updateExistingFactoid(final IrcEvent event, final String message, final Factoid factoid, final int is, final String key) {
+    private Message updateExistingFactoid(final IrcEvent event, final String message, final Factoid factoid,
+        final int is, final String key) {
         final String newValue = message.substring(is + 4);
         logDao.logMessage(Type.MESSAGE, event.getSender().getNick(), event.getChannel(),
-                String.format("%s changed '%s' from '%s' to '%s'", event.getSender(), key, factoid.getValue(),
-                        newValue));
+                Sofia.factoidChanged(event.getSender(), key, factoid.getValue(), newValue));
         factoid.setValue(newValue);
         factoid.setUpdated(new Date());
         factoid.setUserName(event.getSender().getNick());
         factoidDao.save(factoid);
-        Message msg = new Message(event.getChannel(), event, "OK, " + event.getSender() + ".");
-
-        return msg;
+        return new Message(event.getChannel(), event, Sofia.ok(event.getSender()));
     }
 }
