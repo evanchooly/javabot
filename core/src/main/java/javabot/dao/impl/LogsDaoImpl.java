@@ -95,7 +95,7 @@ public class LogsDaoImpl extends AbstractDaoImpl<Logs> implements LogsDao {
         Seen seen = null;
         try {
             seen = (Seen) getEntityManager().createNamedQuery(LogsDao.SEEN)
-                .setParameter("nick", nick)
+                .setParameter("nick", nick.toLowerCase())
                 .setParameter("channel", channel)
                 .setMaxResults(1)
                 .getSingleResult();

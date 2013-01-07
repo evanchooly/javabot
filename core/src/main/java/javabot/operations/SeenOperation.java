@@ -21,7 +21,7 @@ public class SeenOperation extends BotOperation {
         final String message = event.getMessage();
         final String channel = event.getChannel();
         final IrcUser sender = event.getSender();
-        final List<Message> responses = new ArrayList<Message>();
+        final List<Message> responses = new ArrayList<>();
         if ("seen ".equalsIgnoreCase(message.substring(0, Math.min(message.length(), 5)))) {
             final String key = message.substring("seen ".length());
             if (dao.isSeen(key, channel)) {

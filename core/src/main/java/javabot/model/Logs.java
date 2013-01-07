@@ -29,7 +29,7 @@ import org.hibernate.annotations.Index;
     @NamedQuery(name = LogsDao.COUNT_LOGGED, query = "select count(s) from Logs s where s.channel like '#%'"),
     @NamedQuery(name = LogsDao.SEEN,
         query = "select new javabot.Seen(l.nick, l.message, l.channel, l.updated) from Logs l where"
-            + " l.nick = :nick AND l.channel = :channel order by l.updated desc")
+            + " lower(l.nick) = :nick AND l.channel = :channel order by l.updated desc")
 })
 @SPI(Persistent.class)
 public class Logs implements Serializable, Persistent {
