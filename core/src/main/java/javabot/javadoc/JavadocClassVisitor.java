@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class JavadocClassVisitor extends EmptyVisitor {
     private static final Logger log = LoggerFactory.getLogger(JavadocClassVisitor.class);
-    @Autowired
+//    @Autowired
     private ClazzDao dao;
     private Clazz clazz;
     private JavadocParser parser;

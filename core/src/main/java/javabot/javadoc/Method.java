@@ -1,25 +1,18 @@
 package javabot.javadoc;
 
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import com.antwerkz.maven.SPI;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
 import javabot.model.Persistent;
-import org.apache.commons.lang.StringUtils;
 
-@Entity
-@Table(name = "methods")
+@Entity("methods")
 @SPI(Persistent.class)
-public class Method extends JavadocElement implements Persistent {
-    private Clazz clazz;
-    private String methodName;
+public class Method extends JavadocElement {
+    @Id
     private Long id;
+    private Long clazzId;
+    private String parentName;
+    private String methodName;
     private String longSignatureTypes;
     private String shortSignatureTypes;
     private String longSignatureStripped;
@@ -29,29 +22,27 @@ public class Method extends JavadocElement implements Persistent {
     public Method() {
     }
 
-    public Method(final String name, final Clazz parent, final int count, final String longArgs, final String longArgsStripped,
+    public Method(final String name, final Clazz parent, final int count, final String longArgs,
+        final String longArgsStripped,
         final String shortArgs, final String shortArgsStripped) {
-        
         methodName = name;
-        clazz = parent;
+        clazzId = parent.getId();
+        parentName = parent.toString();
         paramCount = count;
         longSignatureTypes = longArgs;
         longSignatureStripped = longArgsStripped;
         shortSignatureTypes = shortArgs;
         shortSignatureStripped = shortArgsStripped;
-        final String url = clazz.getDirectUrl() + "#" + methodName + "(" + longArgs + ")";
+        final String url = parent.getDirectUrl() + "#" + methodName + "(" + longArgs + ")";
         setLongUrl(url);
         setDirectUrl(url);
     }
 
     @Override
-    @Transient
     public String getApiName() {
-        return getClazz().getApi().getName();
+        return null;//getClazz().getApi().getName();
     }
 
-    @Id
-    @GeneratedValue
     public Long getId() {
         return id;
     }
@@ -60,7 +51,6 @@ public class Method extends JavadocElement implements Persistent {
         id = methodId;
     }
 
-    @Transient
     public String getShortSignature() {
         return methodName + "(" + shortSignatureStripped + ")";
     }
@@ -73,7 +63,6 @@ public class Method extends JavadocElement implements Persistent {
         methodName = name;
     }
 
-    @Column(length = 1000)
     public String getLongSignatureStripped() {
         return longSignatureStripped;
     }
@@ -82,7 +71,6 @@ public class Method extends JavadocElement implements Persistent {
         longSignatureStripped = stripped;
     }
 
-    @Column(length = 1000)
     public String getLongSignatureTypes() {
         return longSignatureTypes;
     }
@@ -91,7 +79,6 @@ public class Method extends JavadocElement implements Persistent {
         longSignatureTypes = types;
     }
 
-    @Column(length = 1000)
     public String getShortSignatureStripped() {
         return shortSignatureStripped;
     }
@@ -100,22 +87,12 @@ public class Method extends JavadocElement implements Persistent {
         shortSignatureStripped = stripped;
     }
 
-    @Column(length = 1000)
     public String getShortSignatureTypes() {
         return shortSignatureTypes;
     }
 
     public void setShortSignatureTypes(final String types) {
         shortSignatureTypes = types;
-    }
-
-    @ManyToOne
-    public Clazz getClazz() {
-        return clazz;
-    }
-
-    public void setClazz(final Clazz parent) {
-        clazz = parent;
     }
 
     public Integer getParamCount() {
@@ -128,6 +105,6 @@ public class Method extends JavadocElement implements Persistent {
 
     @Override
     public String toString() {
-        return clazz + "." + getShortSignature();
+        return parentName + "." + getShortSignature();
     }
 }

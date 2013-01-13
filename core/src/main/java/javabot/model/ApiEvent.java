@@ -1,7 +1,7 @@
 package javabot.model;
 
 import java.io.StringWriter;
-import javax.persistence.Entity;
+import com.google.code.morphia.annotations.Entity;
 
 import javabot.IrcEvent;
 import javabot.IrcUser;

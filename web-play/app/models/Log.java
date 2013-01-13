@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
-import javax.persistence.Entity;
+import com.google.code.morphia.annotations.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
@@ -14,7 +14,7 @@ import javax.persistence.Transient;
 import play.db.jpa.Model;
 
 @Entity
-@Table(name = "logs")
+("logs")
 public class Log extends Model {
   private String nick;
   private String channel;

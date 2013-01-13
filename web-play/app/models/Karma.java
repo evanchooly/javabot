@@ -2,7 +2,7 @@ package models;
 
 import play.db.jpa.Model;
 
-import javax.persistence.Entity;
+import com.google.code.morphia.annotations.Entity;
 import javax.persistence.Table;
 import java.util.Date;
 

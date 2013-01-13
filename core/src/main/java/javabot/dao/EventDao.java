@@ -1,11 +1,19 @@
 package javabot.dao;
 
-import javabot.model.AdminEvent;
-
 import java.util.List;
 
-public interface EventDao extends BaseDao {
-    String FIND_ALL = "Event.findAll";
+import javabot.model.AdminEvent;
+import javabot.model.criteria.AdminEventCriteria;
 
-    List<AdminEvent> findUnprocessed();
+public class EventDao extends BaseDao<AdminEvent> {
+    protected EventDao() {
+        super(AdminEvent.class);
+    }
+
+    public List<AdminEvent> findUnprocessed() {
+        AdminEventCriteria criteria = new AdminEventCriteria(ds);
+        criteria.processed().equal(Boolean.FALSE);
+        criteria.query().order("-requestedOn");
+        return criteria.query().asList();
+    }
 }

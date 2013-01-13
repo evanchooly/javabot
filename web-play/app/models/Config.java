@@ -2,7 +2,7 @@ package models;
 
 import java.util.Set;
 import java.util.TreeSet;
-import javax.persistence.Entity;
+import com.google.code.morphia.annotations.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
 
@@ -11,7 +11,7 @@ import org.hibernate.annotations.CollectionOfElements;
 import play.db.jpa.Model;
 
 @Entity
-@Table(name = "configuration")
+("configuration")
 public class Config extends Model {
   public String server;
   public Integer port;

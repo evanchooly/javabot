@@ -35,7 +35,7 @@ public class AddAdmin extends AdminCommand {
             if (dao.getAdmin(user.getNick(), hostName) != null) {
                 responses.add(new Message(event.getChannel(), event, user.getNick() + " is already a bot admin"));
             } else {
-                dao.create(user.getNick(), hostName);
+                dao.create(user.getNick());
                 responses.add(
                     new Message(event.getChannel(), event, user.getNick() + " has been added as a bot admin"));
             }

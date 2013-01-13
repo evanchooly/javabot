@@ -3,7 +3,7 @@ package models;
 import play.db.jpa.Model;
 
 import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
+import com.google.code.morphia.annotations.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import java.util.Date;
 
 @Entity
-@Table(name = "events")
+("events")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(length = 255)
 public class AdminEvent extends Model {

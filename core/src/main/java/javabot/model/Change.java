@@ -2,29 +2,22 @@ package javabot.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import com.antwerkz.maven.SPI;
-import org.hibernate.annotations.Index;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Indexed;
 
-@Entity
-@Table(name = "changes")
+@Entity("changes")
 @SPI(Persistent.class)
 public class Change implements Serializable, Persistent {
 
+    @Id
     private Long id;
     private String message;
+    @Indexed(name = "changed")
     private Date changeDate;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return id;
     }
@@ -33,7 +26,6 @@ public class Change implements Serializable, Persistent {
         this.id = id;
     }
 
-    @Column(name = "`message`", length = 2000)
     public String getMessage() {
         return message;
     }
@@ -42,8 +34,6 @@ public class Change implements Serializable, Persistent {
         message = value;
     }
 
-    @Index(name = "changed")
-    @Temporal(TemporalType.TIMESTAMP)
     public Date getChangeDate() {
         return changeDate;
     }

@@ -1,13 +1,13 @@
 package models;
 
 import java.util.Date;
-import javax.persistence.Entity;
+import com.google.code.morphia.annotations.Entity;
 import javax.persistence.Table;
 
 import play.db.jpa.Model;
 
 @Entity
-@Table(name = "admin")
+("admin")
 public class Admin extends Model {
   public Boolean botOwner;
   public String userName;

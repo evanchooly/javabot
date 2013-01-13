@@ -1,6 +1,6 @@
 package models;
 
-import javax.persistence.Entity;
+import com.google.code.morphia.annotations.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 

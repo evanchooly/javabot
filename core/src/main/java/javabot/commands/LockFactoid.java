@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class LockFactoid extends AdminCommand {
     @Param(primary = true)
     String name;
-    @Autowired
+//    @Autowired
     private FactoidDao dao;
 
     @Override

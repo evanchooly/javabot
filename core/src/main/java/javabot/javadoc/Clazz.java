@@ -2,28 +2,15 @@ package javabot.javadoc;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.antwerkz.maven.SPI;
-import javabot.dao.ClazzDao;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Indexed;
 import javabot.model.Persistent;
-import org.hibernate.annotations.Index;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@Entity
-@Table(name = "classes")
+@Entity ("classes")
+/*
 @NamedQueries({
     @NamedQuery(name = ClazzDao.DELETE_ALL, query = "delete from Clazz c where c.api=:api"),
     @NamedQuery(name = ClazzDao.DELETE_ALL_METHODS, query = "delete from Method m where m.clazz.api=:api"),
@@ -44,28 +31,20 @@ import org.slf4j.LoggerFactory;
         + " or upper(m.shortSignatureStripped)=:params or upper(m.longSignatureTypes)=:params"
         + " or upper(m.longSignatureStripped)=:params) order by m.shortSignatureStripped")
 })
+*/
 @SPI(Persistent.class)
 public class Clazz extends JavadocElement {
-    private static final Logger log = LoggerFactory.getLogger(Clazz.class);
+    @Id
     private Long id;
     private Api api;
     private String packageName;
+    @Indexed(name = "classNames")
     private String className;
     private Clazz superClass;
-    private List<Method> methods = new ArrayList<Method>();
-    private List<Field> fields = new ArrayList<Field>();
+    private List<Method> methods = new ArrayList<>();
+    private List<Field> fields = new ArrayList<>();
 
     public Clazz() {
-    }
-
-    @Id
-    @GeneratedValue
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long classId) {
-        id = classId;
     }
 
     public Clazz(final Api apiName, final String pkg, final String name) {
@@ -76,7 +55,14 @@ public class Clazz extends JavadocElement {
         setLongUrl(apiName.getBaseUrl() + "index.html?" + pkg.replace('.', '/') + "/" + name + ".html");
     }
 
-    @ManyToOne
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(final Long classId) {
+        id = classId;
+    }
+
     public Api getApi() {
         return api;
     }
@@ -86,12 +72,10 @@ public class Clazz extends JavadocElement {
     }
 
     @Override
-    @Transient
     public String getApiName() {
         return getApi().getName();
     }
 
-    @Column(nullable = false)
     public String getPackageName() {
         return packageName;
     }
@@ -100,8 +84,6 @@ public class Clazz extends JavadocElement {
         packageName = name;
     }
 
-    @Column(nullable = false)
-    @Index(name = "ClazzName")
     public String getClassName() {
         return className;
     }
@@ -110,7 +92,6 @@ public class Clazz extends JavadocElement {
         className = name;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
     public Clazz getSuperClass() {
         return superClass;
     }
@@ -119,7 +100,6 @@ public class Clazz extends JavadocElement {
         superClass = aClass;
     }
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "clazz")
     public List<Method> getMethods() {
         return methods;
     }
@@ -128,7 +108,6 @@ public class Clazz extends JavadocElement {
         methods = list;
     }
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "clazz")
     public List<Field> getFields() {
         return fields;
     }

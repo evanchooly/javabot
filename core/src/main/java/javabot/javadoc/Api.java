@@ -1,28 +1,13 @@
 package javabot.javadoc;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Arrays;
-import java.util.Set;
-import java.util.TreeSet;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import java.util.List;
 
 import com.antwerkz.maven.SPI;
-import javabot.dao.ApiDao;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
 import javabot.model.Persistent;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,15 +16,17 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  */
-@Entity
-@Table(name = "apis")
+@Entity("apis")
+/*
 @NamedQueries({
     @NamedQuery(name = ApiDao.FIND_BY_NAME, query = "select a from Api a where upper(a.name)=upper(:name)"),
     @NamedQuery(name = ApiDao.FIND_ALL, query = "select a from Api a order by a.name")
 })
+*/
 @SPI(Persistent.class)
 public class Api implements Persistent {
     private static final Logger log = LoggerFactory.getLogger(Api.class);
+    @Id
     private Long id;
     private String name;
     private String baseUrl;
@@ -56,8 +43,6 @@ public class Api implements Persistent {
         packages = pkgs;
     }
 
-    @Id
-    @GeneratedValue
     public Long getId() {
         return id;
     }
@@ -74,7 +59,6 @@ public class Api implements Persistent {
         this.name = name;
     }
 
-    @Column(length = 1000)
     public String getBaseUrl() {
         return baseUrl;
     }
@@ -83,7 +67,6 @@ public class Api implements Persistent {
         this.baseUrl = baseUrl;
     }
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "api", fetch = FetchType.LAZY)
     public List<Clazz> getClasses() {
         return classes;
     }

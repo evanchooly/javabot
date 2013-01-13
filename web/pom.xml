@@ -74,22 +74,6 @@
             <artifactId>postgresql</artifactId>
         </dependency>
 
-        <!-- Hibernate -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>oswego-concurrent</groupId>
-            <artifactId>concurrent</artifactId>
-        </dependency>
-
         <!-- XML-processing crud -->
         <dependency>
             <groupId>xml-apis</groupId>
@@ -168,33 +152,6 @@
             <artifactId>postgresql</artifactId>
             <version>8.3-603.jdbc4</version>
             <scope>runtime</scope>
-        </dependency>
-
-        <!-- Hibernate -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.3.1.ga</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate</artifactId>
-            <version>3.2.6.ga</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>oswego-concurrent</groupId>
-            <artifactId>concurrent</artifactId>
-            <version>1.3.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>2.8.1</version>
         </dependency>
 
         <!-- XML-processing crud -->

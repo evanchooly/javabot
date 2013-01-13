@@ -23,17 +23,15 @@
         </dependency>
 
         <dependency>
-            <groupId>javabot</groupId>
-            <artifactId>apt-tools</artifactId>
-            <scope>compile</scope>
+            <groupId>com.antwerkz.critter</groupId>
+            <artifactId>critter</artifactId>
+            <version>1.0</version>
         </dependency>
 
         <dependency>
-            <groupId>org.schwering</groupId>
-            <artifactId>irclib</artifactId>
-            <version>${irclib.version}</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/irclib-2.0-SNAPSHOT.jar</systemPath>
+            <groupId>javabot</groupId>
+            <artifactId>apt-tools</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -99,43 +97,19 @@
 
         <!-- Database drivers -->
         <dependency>
-            <groupId>c3p0</groupId>
-            <artifactId>c3p0</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Hibernate -->
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate.java-persistence</groupId>
-            <artifactId>jpa-api</artifactId>
+            <groupId>com.google.code.morphia</groupId>
+            <artifactId>morphia</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.antwerkz.sofia</groupId>
             <artifactId>sofia-core</artifactId>
-            <version>${sofia.version}</version>
         </dependency>
 
         <!-- Unit testing dependencies -->
@@ -217,6 +191,20 @@
                 <configuration>
                     <loggingType>slf4j</loggingType>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.bsc.maven</groupId>
+                <artifactId>maven-processor-plugin</artifactId>
+                <version>2.1.0</version>
+                <executions>
+                    <execution>
+                        <id>process</id>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <phase>compile</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

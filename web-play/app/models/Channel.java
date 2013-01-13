@@ -2,7 +2,7 @@ package models;
 
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Entity;
+import com.google.code.morphia.annotations.Entity;
 import javax.persistence.Table;
 
 import controllers.AdminController;
@@ -12,7 +12,7 @@ import play.data.validation.Required;
 import play.db.jpa.Model;
 
 @Entity
-@Table(name = "channel")
+("channel")
 public class Channel extends Model {
     @CheckWith(IrcChannelNameValidator.class)
     public String name;

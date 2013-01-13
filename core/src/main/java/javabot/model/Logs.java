@@ -2,25 +2,18 @@ package javabot.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import com.antwerkz.maven.SPI;
-import javabot.dao.LogsDao;
-import org.hibernate.annotations.Index;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Index;
+import com.google.code.morphia.annotations.Indexes;
 
-@Entity
-@Table(name = "logs")
+@Entity("logs")
+@Indexes({
+    @Index(value = "channel, updated, nick", name = "Logs")
+})
+/*
 @NamedQueries({
     @NamedQuery(name = LogsDao.TODAY,
 //        query = "select s from Logs s join s.channel c WHERE s.channel=:channel AND c.logged AND (s.updated between :today and"
@@ -31,8 +24,10 @@ import org.hibernate.annotations.Index;
         query = "select new javabot.Seen(l.nick, l.message, l.channel, l.updated) from Logs l where"
             + " lower(l.nick) = :nick AND l.channel = :channel order by l.updated desc")
 })
+*/
 @SPI(Persistent.class)
 public class Logs implements Serializable, Persistent {
+    @Id
     private Long id;
     private String nick;
     private String channel;
@@ -53,11 +48,8 @@ public class Logs implements Serializable, Persistent {
         REGISTERED, TOPIC, NICK,
     }
 
-    @Enumerated(EnumType.STRING)
     private Type type;
 
-    @Id
-    @GeneratedValue
     public Long getId() {
         return id;
     }
@@ -82,7 +74,6 @@ public class Logs implements Serializable, Persistent {
         channel = chanName;
     }
 
-    @Column(length = 4000)
     public String getMessage() {
         return message;
     }
@@ -91,8 +82,6 @@ public class Logs implements Serializable, Persistent {
         message = logMessage;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Index(name = "Logs", columnNames = {"channel", "updated", "nick"})
     public Date getUpdated() {
         return updated;
     }
@@ -109,17 +98,14 @@ public class Logs implements Serializable, Persistent {
         type = value;
     }
 
-    @Transient
     public boolean isAction() {
         return message != null && Type.ACTION == getType();
     }
 
-    @Transient
     public boolean isKick() {
         return message != null && Type.KICK == getType();
     }
 
-    @Transient
     public boolean isServerMessage() {
         return message != null && Type.JOIN == getType() || Type.PART == getType() || Type.QUIT == getType();
     }

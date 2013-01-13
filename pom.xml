@@ -82,8 +82,8 @@
 
             <dependency>
                 <groupId>com.antwerkz.sofia</groupId>
-                <artifactId>maven</artifactId>
-                <version>0.3</version>
+                <artifactId>sofia-core</artifactId>
+                <version>${sofia.version}</version>
             </dependency>
 
             <dependency>
@@ -161,45 +161,15 @@
 
             <!-- Database drivers -->
             <dependency>
-                <groupId>c3p0</groupId>
-                <artifactId>c3p0</artifactId>
-                <version>0.9.1.2</version>
-            </dependency>
-
-            <dependency>
-                <groupId>hsqldb</groupId>
-                <artifactId>hsqldb</artifactId>
-                <version>1.8.0.7</version>
-            </dependency>
-
-            <dependency>
                 <groupId>postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>9.0-801.jdbc4</version>
             </dependency>
 
             <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>3.4.0.GA</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate</artifactId>
-                <version>3.2.7.ga</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernate.java-persistence</groupId>
-                <artifactId>jpa-api</artifactId>
-                <version>2.0-cr-1</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-jpamodelgen</artifactId>
-                <version>1.0.0.Final</version>
+                <groupId>com.google.code.morphia</groupId>
+                <artifactId>morphia</artifactId>
+                <version>0.99</version>
             </dependency>
 
             <dependency>
@@ -243,9 +213,7 @@
     </dependencyManagement>
 
     <properties>
-        <camel.version>2.3.0</camel.version>
         <spring.version>3.0.5.RELEASE</spring.version>
-        <irclib.version>2.0-SNAPSHOT</irclib.version>
-         <sofia.version>0.13</sofia.version>
+        <sofia.version>0.13</sofia.version>
     </properties>
 </project>

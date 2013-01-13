@@ -1,6 +1,6 @@
 package javabot.model;
 
-import javax.persistence.Entity;
+import com.google.code.morphia.annotations.Entity;
 
 import com.antwerkz.sofia.Sofia;
 import javabot.Javabot;

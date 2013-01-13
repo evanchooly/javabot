@@ -15,7 +15,7 @@ import javabot.model.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class UpgradeScript {
-    @Autowired
+//    @Autowired
     private DataSource dataSource;
     @Autowired
     private ConfigDao configDao;

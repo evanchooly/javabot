@@ -2,42 +2,34 @@ package javabot.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import com.antwerkz.maven.SPI;
-import javabot.dao.KarmaDao;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
 
-@Entity
-@Table(name = "karma")
+@Entity("karma")
+/*
 @NamedQueries({
     @NamedQuery(name= KarmaDao.ALL, query= "from Karma k order by k.name"),
     @NamedQuery(name= KarmaDao.COUNT, query= "select count(*) from Karma"),
     @NamedQuery(name= KarmaDao.BY_NAME, query="from Karma k where k.name = :name")
 })
+*/
 @SPI(Persistent.class)
 public class Karma implements Serializable, Persistent {
+    @Id
     private Long id;
     private String name;
     private Integer value = 0;
     private String userName;
     private Date updated;
 
-    @Id
-    @GeneratedValue
     public Long getId() {
         return id;
     }
 
-    public void setId(Long karmId) {
-        id = karmId;
+    public void setId(Long karmaId) {
+        id = karmaId;
     }
 
     public String getName() {
@@ -48,7 +40,6 @@ public class Karma implements Serializable, Persistent {
         name = karmaName;
     }
 
-    @Column
     public Integer getValue() {
         return value;
     }
@@ -57,7 +48,6 @@ public class Karma implements Serializable, Persistent {
         value = karmaValue;
     }
 
-    @Column(length = 100)
     public String getUserName() {
         return userName;
     }
@@ -66,7 +56,6 @@ public class Karma implements Serializable, Persistent {
         userName = usrName;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
     public Date getUpdated() {
         return updated;
     }

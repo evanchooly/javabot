@@ -20,8 +20,8 @@
             <artifactId>spi-apt</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.hibernate.java-persistence</groupId>
-            <artifactId>jpa-api</artifactId>
+            <groupId>com.google.code.morphia</groupId>
+            <artifactId>morphia</artifactId>
         </dependency>
         <dependency>
             <groupId>freemarker</groupId>

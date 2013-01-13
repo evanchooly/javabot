@@ -110,7 +110,7 @@ public class BaseTest {
             try {
                 super.loadConfig();
                 if (dao.getAdmin(BaseTest.TEST_USER.getNick(), "localhost") == null) {
-                    dao.create(BaseTest.TEST_USER.getNick(), "localhost");
+                    dao.create(BaseTest.TEST_USER.getNick());
                 }
             } catch (Exception e) {
                 log.debug(e.getMessage(), e);

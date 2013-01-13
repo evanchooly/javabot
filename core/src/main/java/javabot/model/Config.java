@@ -3,25 +3,20 @@ package javabot.model;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
 
 import com.antwerkz.maven.SPI;
-import javabot.dao.ConfigDao;
-import org.hibernate.annotations.CollectionOfElements;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
 
-@Entity
-@Table(name = "configuration")
+@Entity("configuration")
+/*
 @NamedQueries({
   @NamedQuery(name = ConfigDao.GET_CONFIG, query = "select c from Config c")
 })
+*/
 @SPI(Persistent.class)
 public class Config implements Serializable, Persistent {
+    @Id
   private Long id;
   private String server = "irc.freenode.org";
   private String url;
@@ -33,8 +28,6 @@ public class Config implements Serializable, Persistent {
   private Integer schemaVersion;
   private Set<String> operations = new TreeSet<String>();
 
-  @Id
-  @GeneratedValue
   public Long getId() {
     return id;
   }
@@ -51,8 +44,6 @@ public class Config implements Serializable, Persistent {
     nick = botName;
   }
 
-  @SuppressWarnings({"JpaModelErrorInspection", "JpaAttributeTypeInspection"})
-  @CollectionOfElements(fetch = FetchType.EAGER)
   public Set<String> getOperations() {
     return operations;
   }

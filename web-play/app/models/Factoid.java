@@ -1,13 +1,13 @@
 package models;
 
 import java.util.Date;
-import javax.persistence.Entity;
+import com.google.code.morphia.annotations.Entity;
 import javax.persistence.Table;
 
 import play.db.jpa.Model;
 
 @Entity
-@Table(name = "factoids")
+("factoids")
 public class Factoid extends Model {
     public String name;
     public String value;

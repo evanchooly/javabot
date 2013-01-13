@@ -1,7 +1,7 @@
 package models;
 
 import java.io.File;
-import javax.persistence.Entity;
+import com.google.code.morphia.annotations.Entity;
 
 @Entity
 public class ApiEvent extends AdminEvent {

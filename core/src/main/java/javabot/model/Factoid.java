@@ -2,28 +2,20 @@ package javabot.model;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.util.Date;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import java.util.Date;
 
 import com.antwerkz.maven.SPI;
-import javabot.dao.FactoidDao;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Indexed;
 import javabot.operations.TellSubject;
-import org.hibernate.annotations.Index;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Entity
-@Table(name = "factoids")
+@Entity("factoids")
+/*
 @NamedQueries({
     @NamedQuery(name= FactoidDao.ALL, query="select f from Factoid f"),
     @NamedQuery(name= FactoidDao.COUNT, query= "select count(f) from Factoid f"),
@@ -31,11 +23,14 @@ import org.slf4j.LoggerFactory;
     @NamedQuery(name= FactoidDao.BY_PARAMETERIZED_NAME, query= "select m from Factoid m where lower(m.name) in (:name1, :name2, :name3)")
 
 })
+*/
 @SPI(Persistent.class)
 public class Factoid implements Serializable, Persistent {
     private static final Logger log = LoggerFactory.getLogger(Factoid.class);
 
+    @Id
     private Long id;
+    @Indexed(name = "names", unique = true)
     private String name;
     private String value;
     private String userName;
@@ -43,8 +38,6 @@ public class Factoid implements Serializable, Persistent {
     private Date lastUsed;
     private Boolean locked;
 
-    @Id
-    @GeneratedValue
     public Long getId() {
         return id;
     }
@@ -53,7 +46,6 @@ public class Factoid implements Serializable, Persistent {
         id = factoidId;
     }
 
-    @Index(name = "names")
     public String getName() {
         return name;
     }
@@ -62,7 +54,6 @@ public class Factoid implements Serializable, Persistent {
         this.name = name;
     }
 
-    @Column(length = 2000)
     public String getValue() {
         return value;
     }
@@ -71,7 +62,6 @@ public class Factoid implements Serializable, Persistent {
         this.value = value;
     }
 
-    @Column(length = 100)
     public String getUserName() {
         return userName;
     }
@@ -80,7 +70,6 @@ public class Factoid implements Serializable, Persistent {
         userName = creator;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
     public Date getUpdated() {
         return updated;
     }
@@ -89,7 +78,6 @@ public class Factoid implements Serializable, Persistent {
         updated = date;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
     public Date getLastUsed() {
         return lastUsed;
     }
@@ -146,7 +134,7 @@ public class Factoid implements Serializable, Persistent {
 
     private String camelcase(final String in) {
         final StringBuilder sb = new StringBuilder(in.replaceAll("\\s", " "));
-        if (in.length() != 0) {
+        if (!in.isEmpty()) {
             int idx = sb.indexOf(" ");
             sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
             while (idx > -1) {

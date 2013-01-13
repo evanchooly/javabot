@@ -1,20 +1,12 @@
 package javabot.javadoc;
 
-import javax.persistence.Transient;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-
 import com.antwerkz.maven.SPI;
-import javabot.dao.ClazzDao;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
 import javabot.model.Persistent;
 
-@Entity
-@Table(name = "fields")
+@Entity("fields")
+/*
 @NamedQueries({
     @NamedQuery(name = ClazzDao.GET_FIELD_WITH_CLS_AND_PKG, query = "select f from Field f join f.clazz c where "
         + " upper(c.packageName)=:packageName and upper(c.className)=:className "
@@ -28,8 +20,10 @@ import javabot.model.Persistent;
     @NamedQuery(name = ClazzDao.GET_FIELD_WITH_CLS_API, query = "select f from Field f join f.clazz c join c.api a where a.id=:api "
         + " and upper(c.className)=:className and upper(f.name)=:fieldName order by c.packageName, c.className, f.name")
 })
+*/
 @SPI(Persistent.class)
 public class Field extends JavadocElement {
+    @Id
     private Long id;
     private Clazz clazz;
     private String name;
@@ -48,13 +42,10 @@ public class Field extends JavadocElement {
     }
 
     @Override
-    @Transient
     public String getApiName() {
         return getClazz().getApi().getName();
     }
 
-    @Id
-    @GeneratedValue
     public Long getId() {
         return id;
     }
@@ -63,7 +54,6 @@ public class Field extends JavadocElement {
         id = methodId;
     }
 
-    @ManyToOne
     public Clazz getClazz() {
         return clazz;
     }

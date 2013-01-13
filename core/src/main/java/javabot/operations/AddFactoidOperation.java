@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @SPI(StandardOperation.class)
 public class AddFactoidOperation extends StandardOperation {
-    @Autowired
+//    @Autowired
     private FactoidDao factoidDao;
     @Autowired
     private LogsDao logDao;

@@ -2,11 +2,11 @@ package models;
 
 import play.db.jpa.Model;
 
-import javax.persistence.Entity;
+import com.google.code.morphia.annotations.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "apis")
+("apis")
 public class Api extends Model {
     public String name;
     public String baseUrl;

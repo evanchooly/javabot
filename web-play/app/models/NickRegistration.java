@@ -1,12 +1,12 @@
 package models;
 
-import javax.persistence.Entity;
+import com.google.code.morphia.annotations.Entity;
 import javax.persistence.Table;
 
 import play.db.jpa.Model;
 
 @Entity
-@Table(name = "registrations")
+("registrations")
 public class NickRegistration extends Model {
   public String url;
   public String nick;
