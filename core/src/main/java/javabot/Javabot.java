@@ -504,4 +504,7 @@ public class Javabot implements ApplicationContextAware {
         new Javabot(new ClassPathXmlApplicationContext("classpath:applicationContext.xml"));
     }
 
+  public void setReconnecting(final boolean reconnecting) {
+    this.reconnecting = reconnecting;
+  }
 }

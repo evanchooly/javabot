@@ -59,19 +59,20 @@ public class MyPircBot extends PircBot {
         }
     }
 
-    @Override
-    public void onDisconnect() {
-        System.out.println("MyPircBot.onDisconnect");
-        if (!javabot.executors.isShutdown()) {
-            try {
-                System.out.println("trying to reconnect");
-                javabot.connect();
-            } catch (Exception e) {
-                Javabot.log.error(e.getMessage(), e);
-                throw new RuntimeException(e.getMessage(), e);
-            }
-        }
-    }
+  @Override
+      public void onDisconnect() {
+          System.out.println("MyPircBot.onDisconnect");
+          if (!javabot.executors.isShutdown()) {
+              try {
+                  System.out.println("trying to reconnect");
+                  javabot.setReconnecting(true);
+                  javabot.connect();
+              } catch (Exception e) {
+                  Javabot.log.error(e.getMessage(), e);
+                  throw new RuntimeException(e.getMessage(), e);
+              }
+          }
+      }
 
     @Override
     public void onPrivateMessage(final String sender, final String login, final String hostname,
