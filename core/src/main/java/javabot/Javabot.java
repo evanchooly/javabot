@@ -15,6 +15,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -41,6 +42,7 @@ import javabot.model.Logs;
 import javabot.operations.BotOperation;
 import javabot.operations.OperationComparator;
 import javabot.operations.StandardOperation;
+import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 import org.slf4j.Logger;
@@ -82,8 +84,9 @@ public class Javabot implements ApplicationContextAware {
     AdminDao adminDao;
     private BlockingQueue<Runnable> queue;
     protected MyPircBot pircBot;
+  private boolean reconnecting = false;
 
-    public Javabot(final ApplicationContext applicationContext) {
+  public Javabot(final ApplicationContext applicationContext) {
         context = applicationContext;
         setUpThreads();
         inject(this);
@@ -112,10 +115,10 @@ public class Javabot implements ApplicationContextAware {
         hook.setDaemon(false);
         Runtime.getRuntime().addShutdownHook(hook);
         eventHandler.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                processAdminEvents();
-            }
+          @Override
+          public void run() {
+            processAdminEvents();
+          }
         }, 5, 5, TimeUnit.SECONDS);
     }
 
@@ -155,26 +158,43 @@ public class Javabot implements ApplicationContextAware {
         context = applicationContext;
     }
 
-    @SuppressWarnings({"StringContatenationInLoop"})
-    public void connect() {
-        while (!pircBot.isConnected()) {
-            try {
-                pircBot.connect(host, port);
-                pircBot.sendRawLine("PRIVMSG NickServ :identify " + getNickPassword());
-                sleep(3000);
-                final List<Channel> channelList = channelDao.getChannels();
-                for (final Channel channel : channelList) {
-                    channel.join(this);
-                    sleep(1000);
-                }
-            } catch (Exception exception) {
-                queue.clear();
-                pircBot.disconnect();
-                log.error(exception.getMessage(), exception);
-            }
-            sleep(1000);
-        }
+  public void connect() {
+    while (!pircBot.isConnected()) {
+      try {
+        connectAndId();
+      } catch (Exception exception) {
+        queue.clear();
+        pircBot.disconnect();
+        log.error(exception.getMessage(), exception);
+      }
+      sleep(1000);
     }
+    final List<Channel> channelList = channelDao.getChannels();
+    for (final Channel channel : channelList) {
+      channel.join(this);
+      sleep(1000);
+    }
+  }
+
+  private void connectAndId() throws IOException, IrcException {
+    if (reconnecting) {
+      String oldNick = nick;
+      nick = UUID.randomUUID().toString();
+      pircBot.connect(host, port);
+      sleep(3000);
+      pircBot.sendMessage("NickServ", String.format("GHOST %s %s", oldNick, getNickPassword()));
+      sleep(3000);
+      pircBot.sendMessage("NickServ", String.format("RELEASE %s %s", oldNick, getNickPassword()));
+      sleep(3000);
+      reconnecting = false;
+      nick = oldNick;
+      pircBot.disconnect();
+    } else {
+      pircBot.connect(host, port);
+      pircBot.sendRawLine("PRIVMSG NickServ :identify " + getNickPassword());
+      sleep(3000);
+    }
+  }
 
     public static void validateProperties() {
         final Properties props = new Properties();
