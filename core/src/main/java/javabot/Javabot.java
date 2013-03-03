@@ -15,6 +15,7 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -42,6 +43,7 @@ import javabot.model.Logs;
 import javabot.operations.BotOperation;
 import javabot.operations.OperationComparator;
 import javabot.operations.StandardOperation;
+import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
 import org.slf4j.Logger;
@@ -83,6 +85,7 @@ public class Javabot implements ApplicationContextAware {
   AdminDao adminDao;
   private BlockingQueue<Runnable> queue;
   protected MyPircBot pircBot;
+  private boolean reconnecting = false;
 
   public Javabot(final ApplicationContext applicationContext) {
     context = applicationContext;
@@ -161,14 +164,7 @@ public class Javabot implements ApplicationContextAware {
   public void connect() {
     while (!pircBot.isConnected()) {
       try {
-        pircBot.connect(host, port);
-        pircBot.sendRawLine("PRIVMSG NickServ :identify " + getNickPassword());
-        sleep(3000);
-        final List<Channel> channelList = channelDao.getChannels();
-        for (final Channel channel : channelList) {
-          channel.join(this);
-          sleep(1000);
-        }
+        connectAndId();
       } catch (Exception exception) {
         queue.clear();
         pircBot.disconnect();
@@ -176,24 +172,39 @@ public class Javabot implements ApplicationContextAware {
       }
       sleep(1000);
     }
+    final List<Channel> channelList = channelDao.getChannels();
+    for (final Channel channel : channelList) {
+      channel.join(this);
+      sleep(1000);
+    }
+  }
+
+  private void connectAndId() throws IOException, IrcException {
+    if (reconnecting) {
+      String oldNick = nick;
+      nick = UUID.randomUUID().toString();
+      pircBot.connect(host, port);
+      sleep(3000);
+      pircBot.sendMessage("NickServ", String.format("GHOST %s %s", oldNick, getNickPassword()));
+      sleep(3000);
+      pircBot.sendMessage("NickServ", String.format("RELEASE %s %s", oldNick, getNickPassword()));
+      sleep(3000);
+      reconnecting = false;
+      nick = oldNick;
+      pircBot.disconnect();
+    } else {
+      pircBot.connect(host, port);
+      pircBot.sendRawLine("PRIVMSG NickServ :identify " + getNickPassword());
+      sleep(3000);
+    }
   }
 
   public static void validateProperties() {
     final Properties props = new Properties();
-    InputStream stream = null;
-    try {
-      try {
-        stream = Javabot.class.getResourceAsStream("/javabot.properties");
-        props.load(stream);
-      } catch (FileNotFoundException e) {
-        throw new RuntimeException("Please define a javabot.properties file to configure the bot");
-      } finally {
-        if (stream != null) {
-          stream.close();
-        }
-      }
+    try (InputStream stream = Javabot.class.getResourceAsStream("/javabot.properties")) {
+      props.load(stream);
     } catch (IOException e) {
-      throw new RuntimeException(e.getMessage(), e);
+      throw new RuntimeException("Please define a javabot.properties file to configure the bot");
     }
     check(props, "javabot.server");
     check(props, "javabot.port");
@@ -492,4 +503,7 @@ public class Javabot implements ApplicationContextAware {
     new Javabot(new ClassPathXmlApplicationContext("classpath:applicationContext.xml"));
   }
 
+  public void setReconnecting(final boolean reconnecting) {
+    this.reconnecting = reconnecting;
+  }
 }
