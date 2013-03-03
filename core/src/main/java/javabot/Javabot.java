@@ -178,17 +178,11 @@ public class Javabot implements ApplicationContextAware {
 
     public static void validateProperties() {
         final Properties props = new Properties();
-        InputStream stream = null;
         try {
-            try {
-                stream = Javabot.class.getResourceAsStream("/javabot.properties");
+            try(InputStream stream = Javabot.class.getResourceAsStream("/javabot.properties")) {
                 props.load(stream);
             } catch (FileNotFoundException e) {
                 throw new RuntimeException("Please define a javabot.properties file to configure the bot");
-            } finally {
-                if (stream != null) {
-                    stream.close();
-                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage(), e);
