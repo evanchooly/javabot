@@ -6,7 +6,6 @@ import java.util.TreeSet;
 
 import javabot.model.Config;
 import javabot.operations.BotOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created Jun 21, 2007
@@ -18,7 +17,7 @@ public class ConfigDao extends BaseDao<Config> {
 
   //    @Autowired
       private ChannelDao channelDao;
-      @Autowired
+//      @Autowired
       private AdminDao adminDao;
 
       protected ConfigDao() {
@@ -26,7 +25,7 @@ public class ConfigDao extends BaseDao<Config> {
       }
 
       public Config get() {
-          return null;//(Config) getEntityManager().createNamedQuery(ConfigDao.GET_CONFIG).getSingleResult();
+          return ds.createQuery(Config.class).get();
       }
 
       public Config create() {

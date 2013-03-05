@@ -8,42 +8,46 @@ import javabot.dao.util.EntityNotFoundException;
 import javabot.model.Persistent;
 
 public class BaseDao<T extends Persistent> {
-    private final Class<T> entityClass;
-    protected Datastore ds;
+  private final Class<T> entityClass;
+  protected Datastore ds;
 
-    protected BaseDao(final Class<T> dataClass) {
-        entityClass = dataClass;
-    }
+  protected BaseDao(final Class<T> dataClass) {
+    entityClass = dataClass;
+  }
 
-    public Query<T> getQuery() {
-        return ds.createQuery(entityClass);
-    }
+  public Query<T> getQuery() {
+    return getQuery(entityClass);
+  }
 
-    public T find(final Long id) {
-        return ds.<T>createQuery(entityClass).filter("_id", id).get();
-    }
+  public <U> Query<U> getQuery(Class<U> clazz) {
+    return ds.createQuery(clazz);
+  }
 
-    public List<T> findAll() {
-        return ds.createQuery(entityClass).asList();
-    }
+  public T find(final Long id) {
+    return ds.<T>createQuery(entityClass).filter("_id", id).get();
+  }
 
-    private T loadChecked(final Long id) {
-        final T persistedObject = find(id);
-        if(persistedObject == null) {
-            throw new EntityNotFoundException(entityClass, id);
-        }
-        return persistedObject;
-    }
+  public List<T> findAll() {
+    return ds.createQuery(entityClass).asList();
+  }
 
-    public void save(final Persistent object) {
-        ds.save(object);
+  private T loadChecked(final Long id) {
+    final T persistedObject = find(id);
+    if (persistedObject == null) {
+      throw new EntityNotFoundException(entityClass, id);
     }
+    return persistedObject;
+  }
 
-    public void delete(final Persistent object) {
-        ds.delete(object);
-    }
+  public void save(final Persistent object) {
+    ds.save(object);
+  }
 
-    public void delete(final Long id) {
-        delete(loadChecked(id));
-    }
+  public void delete(final Persistent object) {
+    ds.delete(object);
+  }
+
+  public void delete(final Long id) {
+    delete(loadChecked(id));
+  }
 }

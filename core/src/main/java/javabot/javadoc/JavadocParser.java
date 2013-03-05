@@ -18,11 +18,11 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import javabot.JavabotThreadFactory;
+import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.asm.ClassReader;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +35,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class JavadocParser {
   private static final Logger log = LoggerFactory.getLogger(JavadocParser.class);
-  @Autowired
+//  @Autowired
+  private ApiDao apiDao;
   private ClazzDao dao;
   private final BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
   private final ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 30, 30, TimeUnit.SECONDS, workQueue,
@@ -54,8 +55,7 @@ public class JavadocParser {
       }
       executor.prestartCoreThread();
       File file = new File(location);
-      final JarFile jarFile = new JarFile(file);
-      try {
+      try (JarFile jarFile = new JarFile(file)) {
         for (final Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements(); ) {
           final JarEntry entry = entries.nextElement();
           if (entry.getName().endsWith(".class")) {
@@ -63,7 +63,7 @@ public class JavadocParser {
               @Override
               public void run() {
                 try {
-                  JavadocClassVisitor visitor = new JavadocClassVisitor(JavadocParser.this, dao);
+                  JavadocClassVisitor visitor = new JavadocClassVisitor(JavadocParser.this, dao, apiDao);
                   new ClassReader(jarFile.getInputStream(entry)).accept(visitor, true);
                 } catch (Exception e) {
                   log.error(e.getMessage(), e);
@@ -75,15 +75,14 @@ public class JavadocParser {
         }
         while (!workQueue.isEmpty()) {
           writer.write(String.format("Waiting on %s work queue to drain.  %d items left", api.getName(),
-            workQueue.size()));
+              workQueue.size()));
           Thread.sleep(5000);
         }
         executor.shutdown();
       } finally {
-        jarFile.close();
         file.delete();
         writer.write(String.format("Finished importing %s.  %s!", api.getName(),
-          workQueue.isEmpty() ? "SUCCESS" : "FAILURE"));
+            workQueue.isEmpty() ? "SUCCESS" : "FAILURE"));
       }
     } catch (IOException e) {
       log.debug(e.getMessage(), e);
@@ -148,7 +147,7 @@ public class JavadocParser {
       final List<Clazz> list = deferred.get(pkg + "." + name);
       if (list != null) {
         for (Clazz subclazz : list) {
-          subclazz.setSuperClass(cls);
+          subclazz.setSuperClassId(cls);
           dao.save(subclazz);
         }
         deferred.remove(pkg + "." + name);

@@ -88,7 +88,7 @@ public class ChangesPanel extends Panel {
 
         public SortableChangeProvider(ChangeDao changeDao) {
 //            setSort("changeDate", false);
-            this.dao = changeDao;
+          dao = changeDao;
         }
 
         public Iterator iterator(int first, int count) {

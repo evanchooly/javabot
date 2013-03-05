@@ -3,6 +3,7 @@ package javabot.javadoc;
 import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.PrePersist;
 import javabot.model.Persistent;
 
 @Entity("fields")
@@ -23,64 +24,94 @@ import javabot.model.Persistent;
 */
 @SPI(Persistent.class)
 public class Field extends JavadocElement {
-    @Id
-    private Long id;
-    private Clazz clazz;
-    private String name;
-    private String type;
+  @Id
+  private Long id;
+  private Long apiId;
+  private Clazz clazz;
+  private Long classId;
+  private String name;
+  private String upperName;
+  private String type;
+  private String apiName;
 
-    public Field(final Clazz parent, final String fieldName, final String fieldType) {
-        clazz = parent;
-        name = fieldName;
-        type = fieldType;
-        final String url = clazz.getDirectUrl() + "#" + name;
-        setLongUrl(url);
-        setDirectUrl(url);
-    }
+  public Field() {
+  }
 
-    public Field() {
-    }
+  public Field(final Clazz parent, final String fieldName, final String fieldType) {
+    clazz = parent;
+    name = fieldName;
+    type = fieldType;
+    apiName = parent.getApiName();
+    String url = clazz.getDirectUrl() + "#" + name;
+    setLongUrl(url);
+    setDirectUrl(url);
+  }
 
-    @Override
-    public String getApiName() {
-        return getClazz().getApi().getName();
-    }
+  public Long getApiId() {
+    return apiId;
+  }
 
-    public Long getId() {
-        return id;
-    }
+  public void setApiId(final Long apiId) {
+    this.apiId = apiId;
+  }
 
-    public void setId(final Long methodId) {
-        id = methodId;
-    }
+  @Override
+  public String getApiName() {
+    return apiName;
+  }
 
-    public Clazz getClazz() {
-        return clazz;
-    }
+  public void setApiName(final String apiName) {
+    this.apiName = apiName;
+  }
 
-    public void setClazz(final Clazz clazz) {
-        this.clazz = clazz;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setId(final Long methodId) {
+    id = methodId;
+  }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
+  public Clazz getClazz() {
+    return clazz;
+  }
 
-    public String getType() {
-        return type;
-    }
+  public void setClazz(final Clazz clazz) {
+    this.clazz = clazz;
+  }
 
-    public void setType(final String type) {
-        this.type = type;
-    }
+  public Long getClassId() {
+    return classId;
+  }
 
-    @Override
-    public String toString() {
-        return clazz + "." + name + ":" + type;
-    }
+  public void setClassId(final Long classId) {
+    this.classId = classId;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(final String name) {
+    this.name = name;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(final String type) {
+    this.type = type;
+  }
+
+  @PrePersist
+  public void uppers() {
+    upperName = name.toUpperCase();
+  }
+
+  @Override
+  public String toString() {
+    return clazz + "." + name + ":" + type;
+  }
 
 }

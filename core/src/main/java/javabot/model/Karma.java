@@ -6,6 +6,8 @@ import java.util.Date;
 import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Index;
+import com.google.code.morphia.annotations.Indexes;
 
 @Entity("karma")
 /*
@@ -16,10 +18,14 @@ import com.google.code.morphia.annotations.Id;
 })
 */
 @SPI(Persistent.class)
+@Indexes({
+    @Index("upperName")
+})
 public class Karma implements Serializable, Persistent {
     @Id
     private Long id;
     private String name;
+    private String upperName;
     private Integer value = 0;
     private String userName;
     private Date updated;

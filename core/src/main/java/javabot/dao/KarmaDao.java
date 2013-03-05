@@ -3,63 +3,46 @@ package javabot.dao;
 import java.util.Date;
 import java.util.List;
 
+import com.google.code.morphia.query.Query;
 import javabot.dao.util.QueryParam;
 import javabot.model.Karma;
+import javabot.model.criteria.KarmaCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class KarmaDao extends BaseDao<Karma> {
-    String ALL = "Karma.all";
-    String COUNT = "Karma.count";
-    String BY_NAME = "Karma.byName";
+  //    @Autowired
+  private ChangeDao changeDao;
 
-    private static final Logger log = LoggerFactory.getLogger(KarmaDao.class);
+  public KarmaDao() {
+    super(Karma.class);
 
-//    @Autowired
-    private ChangeDao changeDao;
+  }
 
-    public KarmaDao() {
-        super(Karma.class);
-
+  public List<Karma> getKarmas(QueryParam qp) {
+    Query<Karma> query = ds.createQuery(Karma.class);
+    if (qp.hasSort()) {
+      query.order(qp.getSort() + (qp.isSortAsc() ? " 1" : " -1"));
     }
+    query.offset(qp.getFirst());
+    query.limit(qp.getCount());
+    return query.asList();
+  }
 
-    @SuppressWarnings("unchecked")
-    public List<Karma> getKarmas(QueryParam qp) {
-        StringBuilder query = new StringBuilder("from Karma");
-        if (qp.hasSort()) {
-            query.append(" order by ")
-                    .append(qp.getSort())
-                    .append(qp.isSortAsc() ? " desc" : " asc");
-        }
-        return null;//getEntityManager().createQuery(query.toString())
-//                .setFirstResult(qp.getFirst())
-//                .setMaxResults(qp.getCount()).getResultList();
-    }
+  public void save(Karma karma) {
+    karma.setUpdated(new Date());
+    super.save(karma);
+    changeDao.logChange(String.format("%s changed '%s' to '%d'", karma.getUserName(), karma.getName(),
+        karma.getValue()));
+  }
 
-    @SuppressWarnings({"unchecked"})
-    public List<Karma> findAll() {
-        return null;//getEntityManager().createNamedQuery(KarmaDao.ALL).getResultList();
-    }
+  public Karma find(String name) {
+    KarmaCriteria criteria = new KarmaCriteria(ds);
+    criteria.upperName().equal(name.toUpperCase());
+    return criteria.query().get();
+  }
 
-    public void save(Karma karma) {
-        karma.setUpdated(new Date());
-        if(karma.getId() == null) {
-            super.save(karma);
-        } else {
-            save(karma);
-        }
-        changeDao.logChange(karma.getUserName() + " changed '" + karma.getName() + "' to '" + karma.getValue() + "'");
-    }
-
-    public Karma find(String name) {
-        Karma karma = null;
-//            karma = (Karma)getEntityManager().createNamedQuery(KarmaDao.BY_NAME)
-//                .setParameter("name", name.toLowerCase())
-//                .getSingleResult();
-        return karma;
-    }
-
-    public Long getCount() {
-        return null;//(Long) getEntityManager().createQuery("select count(k) from Karma k").getSingleResult();
-    }
+  public Long getCount() {
+    return ds.createQuery(Karma.class).countAll();
+  }
 }
