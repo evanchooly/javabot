@@ -2,9 +2,11 @@ package javabot.operations;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 
 import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
+import com.google.inject.persist.Transactional;
 import javabot.IrcEvent;
 import javabot.Message;
 import javabot.dao.ApiDao;
@@ -13,14 +15,12 @@ import javabot.javadoc.Api;
 import javabot.javadoc.Clazz;
 import javabot.javadoc.Field;
 import javabot.javadoc.Method;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 @SPI(BotOperation.class)
 public class JavadocOperation extends BotOperation {
-  @Autowired
+  @Inject
   private ApiDao apiDao;
-  @Autowired
+  @Inject
   private ClazzDao dao;
   private static final int RESULT_LIMIT = 5;
 
@@ -28,7 +28,7 @@ public class JavadocOperation extends BotOperation {
   @Transactional
   public List<Message> handleMessage(final IrcEvent event) {
     final String message = event.getMessage();
-    final List<Message> responses = new ArrayList<Message>();
+    final List<Message> responses = new ArrayList<>();
     if (message.toLowerCase().startsWith("javadoc")) {
       String key = message.substring("javadoc".length()).trim();
       if (key.startsWith("-list") || key.isEmpty()) {
@@ -82,7 +82,7 @@ public class JavadocOperation extends BotOperation {
   }
 
   public List<String> handle(final Api api, final String key) {
-    final List<String> urls = new ArrayList<String>();
+    final List<String> urls = new ArrayList<>();
     final int openIndex = key.indexOf('(');
     if (openIndex == -1) {
       parseFieldOrClassRequest(urls, api, key);

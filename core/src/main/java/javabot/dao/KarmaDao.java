@@ -2,16 +2,15 @@ package javabot.dao;
 
 import java.util.Date;
 import java.util.List;
+import javax.inject.Inject;
 
 import com.google.code.morphia.query.Query;
 import javabot.dao.util.QueryParam;
 import javabot.model.Karma;
 import javabot.model.criteria.KarmaCriteria;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class KarmaDao extends BaseDao<Karma> {
-  //    @Autowired
+  @Inject
   private ChangeDao changeDao;
 
   public KarmaDao() {

@@ -5,7 +5,6 @@ import java.util.List;
 
 import javabot.dao.WeatherDao;
 import javabot.model.Weather;
-import org.springframework.stereotype.Component;
 
 /**
  * Implements a weather service Dao using Weather Underground's Weather service, if that fails it tries Google's. <p>
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
  *
  * @author Craig Tataryn &lt;craiger@tataryn.net&gt;
  */
-@Component
 public class WeatherDaoImpl implements WeatherDao {
   private static final int WU = 0;
   private static final int GOOGLE = 1;

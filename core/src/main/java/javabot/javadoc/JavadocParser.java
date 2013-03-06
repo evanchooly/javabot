@@ -16,15 +16,15 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import javax.inject.Inject;
 
+import com.google.inject.persist.Transactional;
 import javabot.JavabotThreadFactory;
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
+import org.objectweb.asm.ClassReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.asm.ClassReader;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created Jan 9, 2009
@@ -32,18 +32,18 @@ import org.springframework.transaction.annotation.Transactional;
  * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
  * @noinspection unchecked
  */
-@Component
 public class JavadocParser {
   private static final Logger log = LoggerFactory.getLogger(JavadocParser.class);
-//  @Autowired
+  @Inject
   private ApiDao apiDao;
+  @Inject
   private ClazzDao dao;
-  private final BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
+  private final BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
   private final ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 30, 30, TimeUnit.SECONDS, workQueue,
-    new JavabotThreadFactory(false, "javadoc-thread-"));
+      new JavabotThreadFactory(false, "javadoc-thread-"));
   private Api api;
   private List<String> packages;
-  private final Map<String, List<Clazz>> deferred = new HashMap<String, List<Clazz>>();
+  private final Map<String, List<Clazz>> deferred = new HashMap<>();
 
   @Transactional
   public void parse(final Api classApi, String location, final Writer writer) {
@@ -64,7 +64,7 @@ public class JavadocParser {
               public void run() {
                 try {
                   JavadocClassVisitor visitor = new JavadocClassVisitor(JavadocParser.this, dao, apiDao);
-                  new ClassReader(jarFile.getInputStream(entry)).accept(visitor, true);
+                  new ClassReader(jarFile.getInputStream(entry)).accept(visitor, 0);
                 } catch (Exception e) {
                   log.error(e.getMessage(), e);
                   throw new RuntimeException(e.getMessage(), e);
@@ -96,13 +96,13 @@ public class JavadocParser {
   public boolean acceptPackage(final String pkg) {
     if (packages == null) {
       packages = api.getPackages() == null ? Collections.<String>emptyList()
-        : Arrays.asList(api.getPackages().split(","));
+          : Arrays.asList(api.getPackages().split(","));
     }
     if (packages.isEmpty()) {
       return true;
     }
-    for (String pakg : packages) {
-      if (pkg.startsWith(pakg)) {
+    for (String name : packages) {
+      if (pkg.startsWith(name)) {
         return true;
       }
     }
@@ -122,7 +122,7 @@ public class JavadocParser {
         final String fqcn = pkg + "." + name;
         List<Clazz> list = deferred.get(fqcn);
         if (list == null) {
-          list = new ArrayList<Clazz>();
+          list = new ArrayList<>();
           deferred.put(fqcn, list);
         }
         list.add(newClazz);

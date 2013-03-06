@@ -2,19 +2,20 @@ package javabot.javadoc;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Inject;
 
 import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.asm.FieldVisitor;
-import org.springframework.asm.MethodVisitor;
-import org.springframework.asm.Opcodes;
-import org.springframework.asm.commons.EmptyVisitor;
 
-public class JavadocClassVisitor extends EmptyVisitor {
+public class JavadocClassVisitor extends ClassVisitor {
   private static final Logger log = LoggerFactory.getLogger(JavadocClassVisitor.class);
-  //    @Autowired
+  @Inject
   private ClazzDao dao;
   private ApiDao apiDao;
   private Clazz clazz;
@@ -33,6 +34,7 @@ public class JavadocClassVisitor extends EmptyVisitor {
   }
 
   public JavadocClassVisitor(final JavadocParser javadocParser, final ClazzDao clazzDao, final ApiDao apiDao) {
+    super(4);
     parser = javadocParser;
     dao = clazzDao;
     this.apiDao = apiDao;

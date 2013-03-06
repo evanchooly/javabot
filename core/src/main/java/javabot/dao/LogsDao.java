@@ -3,6 +3,7 @@ package javabot.dao;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import javax.inject.Inject;
 
 import javabot.Seen;
 import javabot.model.Channel;
@@ -17,9 +18,9 @@ public class LogsDao extends BaseDao<Logs> {
   public static final String COUNT_LOGGED = "Logs.countLogged";
   public static final String SEEN = "Logs.seen";
   public static final Logger log = LoggerFactory.getLogger(LogsDao.class);
-  //    @Autowired
+  @Inject
   public ConfigDao dao;
-  //    @Autowired
+  @Inject
   public ChannelDao channelDao;
 
   public LogsDao() {
@@ -74,7 +75,6 @@ public class LogsDao extends BaseDao<Logs> {
     criteria.upperNick().equal(nick.toUpperCase());
     criteria.channel().equal(channel);
     Logs logs = criteria.query().get();
-
     return new Seen(logs.getChannel(), logs.getMessage(), logs.getNick(), logs.getUpdated());
   }
 

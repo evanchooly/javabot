@@ -2,22 +2,23 @@ package javabot.dao;
 
 import java.util.Date;
 import java.util.List;
+import javax.inject.Inject;
 
 import com.google.code.morphia.query.Query;
+import com.google.inject.persist.Transactional;
 import javabot.dao.util.QueryParam;
 import javabot.model.Factoid;
 import javabot.model.Persistent;
 import javabot.model.criteria.FactoidCriteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
 
 @SuppressWarnings({"ConstantNamingConvention"})
 public class FactoidDao extends BaseDao<Factoid> {
   private static final Logger log = LoggerFactory.getLogger(FactoidDao.class);
-  //    @Autowired
+  @Inject
   private ChangeDao changeDao;
-  //    @Autowired
+  @Inject
   private ConfigDao dao;
 
   public FactoidDao() {

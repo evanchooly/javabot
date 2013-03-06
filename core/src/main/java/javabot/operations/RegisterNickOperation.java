@@ -2,6 +2,7 @@ package javabot.operations;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 
 import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
@@ -11,13 +12,12 @@ import javabot.dao.AdminDao;
 import javabot.dao.ConfigDao;
 import javabot.model.Config;
 import javabot.model.NickRegistration;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @SPI(BotOperation.class)
 public class RegisterNickOperation extends BotOperation {
-  @Autowired
+  @Inject
   private AdminDao adminDao;
-  @Autowired
+  @Inject
   private ConfigDao configDao;
 
   @Override

@@ -4,11 +4,13 @@ import java.util.List;
 
 import com.google.code.morphia.Datastore;
 import com.google.code.morphia.query.Query;
+import com.google.inject.Inject;
 import javabot.dao.util.EntityNotFoundException;
 import javabot.model.Persistent;
 
 public class BaseDao<T extends Persistent> {
   private final Class<T> entityClass;
+  @Inject
   protected Datastore ds;
 
   protected BaseDao(final Class<T> dataClass) {

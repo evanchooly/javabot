@@ -5,7 +5,6 @@ import java.net.URLEncoder;
 
 import javabot.dao.WeatherDao;
 import javabot.model.Weather;
-import org.springframework.stereotype.Component;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
