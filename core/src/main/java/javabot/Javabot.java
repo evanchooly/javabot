@@ -52,41 +52,63 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Javabot {
-  public static final Logger log = LoggerFactory.getLogger(Javabot.class);
-  public static final int THROTTLE_TIME = 5 * 1000;
-  Config config;
-  private Map<String, BotOperation> operations;
-  private String host;
-  String nick;
-  private String password;
-  private String[] startStrings;
-  ExecutorService executors;
-  private final ScheduledExecutorService eventHandler = Executors.newScheduledThreadPool(1,
-      new JavabotThreadFactory(true, "javabot-event-handler"));
-  private final List<BotOperation> standard = new ArrayList<>();
-  private final List<String> ignores = new ArrayList<>();
-  private final Set<BotOperation> activeOperations = new TreeSet<>(new OperationComparator());
-  private int port;
   @Inject
   ChannelDao channelDao;
+
   @Inject
   private ConfigDao configDao;
+
   @Inject
   LogsDao logsDao;
+
   @Inject
   private ShunDao shunDao;
+
   @Inject
   private EventDao eventDao;
+
   @Inject
   AdminDao adminDao;
+
   @Inject
   private Injector injector;
 
+  public static final Logger log = LoggerFactory.getLogger(Javabot.class);
+
+  public static final int THROTTLE_TIME = 5 * 1000;
+
+  Config config;
+
+  private Map<String, BotOperation> operations;
+
+  private String host;
+
+  String nick;
+
+  private String password;
+
+  private String[] startStrings;
+
+  ExecutorService executors;
+
+  private final ScheduledExecutorService eventHandler = Executors.newScheduledThreadPool(1,
+      new JavabotThreadFactory(true, "javabot-event-handler"));
+
+  private final List<BotOperation> standard = new ArrayList<>();
+
+  private final List<String> ignores = new ArrayList<>();
+
+  private final Set<BotOperation> activeOperations = new TreeSet<>(new OperationComparator());
+
+  private int port;
+
   private BlockingQueue<Runnable> queue;
+
   protected MyPircBot pircBot;
+
   private boolean reconnecting = false;
 
-  public Javabot() {
+  public void start() {
     setUpThreads();
     config = configDao.get();
     if (config == null) {
@@ -199,11 +221,9 @@ public class Javabot {
     }
     check(props, "javabot.server");
     check(props, "javabot.port");
-    check(props, "jdbc.url");
-    check(props, "jdbc.username");
-    check(props, "jdbc.password");
-    check(props, "jdbc.driver");
-    check(props, "hibernate.dialect");
+    check(props, "database.host");
+    check(props, "database.port");
+    check(props, "database.name");
     check(props, "javabot.nick");
     check(props, "javabot.password");
     check(props, "javabot.admin.nick");
@@ -219,7 +239,8 @@ public class Javabot {
 
   protected final void applyUpgradeScripts() {
     for (final UpgradeScript script : UpgradeScript.loadScripts()) {
-      script.execute(this);
+      injector.injectMembers(script);
+      script.execute();
     }
   }
 
@@ -330,10 +351,10 @@ public class Javabot {
     return host;
   }
 
-  public Iterator<BotOperation> getOperations() {
+  public List<BotOperation> getOperations() {
     final List<BotOperation> ops = new ArrayList<>(activeOperations);
     ops.addAll(standard);
-    return ops.iterator();
+    return ops;
   }
 
   public String[] getStartStrings() {
@@ -398,7 +419,8 @@ public class Javabot {
   }
 
   public List<Message> getResponses(final String channel, final IrcUser sender, final String message) {
-    final Iterator<BotOperation> iterator = getOperations();
+    final Iterator<BotOperation> iterator = getOperations().iterator();
+    System.out.println("ops = " + getOperations());
     final List<Message> responses = new ArrayList<>();
     final IrcEvent event = new IrcEvent(channel, sender, message);
     while (responses.isEmpty() && iterator.hasNext()) {
@@ -416,7 +438,7 @@ public class Javabot {
   }
 
   public List<Message> getChannelResponses(final String channel, final IrcUser sender, final String message) {
-    final Iterator<BotOperation> iterator = getOperations();
+    final Iterator<BotOperation> iterator = getOperations().iterator();
     final List<Message> responses = new ArrayList<>();
     while (responses.isEmpty() && iterator.hasNext()) {
       responses.addAll(iterator.next()
@@ -448,11 +470,7 @@ public class Javabot {
   }
 
   protected boolean isValidSender(final String sender) {
-    return !ignores.contains(sender) && !isShunnedSender(sender);
-  }
-
-  private boolean isShunnedSender(final String sender) {
-    return shunDao.isShunned(sender);
+    return !ignores.contains(sender) && !shunDao.isShunned(sender);
   }
 
   @SuppressWarnings({"EmptyCatchBlock"})
@@ -484,12 +502,12 @@ public class Javabot {
 
   public static void main(final String[] args) {
     Injector injector = Guice.createInjector(new JavabotModule());
-
     if (log.isInfoEnabled()) {
       log.info("Starting Javabot");
     }
     validateProperties();
-    injector.getInstance(Javabot.class);
+    Javabot bot = injector.getInstance(Javabot.class);
+    bot.start();
   }
 
   public void setReconnecting(final boolean reconnecting) {

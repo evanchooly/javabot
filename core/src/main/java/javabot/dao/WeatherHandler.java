@@ -7,7 +7,7 @@ import javabot.model.Weather;
  *
  * @author Craig Tataryn &lt;craiger@tataryn.net&gt;
  */
-public interface WeatherDao {
+public interface WeatherHandler {
   /**
    * Gets weather info, or null if none can be found
    *

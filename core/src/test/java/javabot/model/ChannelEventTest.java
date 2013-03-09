@@ -7,10 +7,12 @@ import javax.inject.Inject;
 import com.antwerkz.sofia.Sofia;
 import com.google.inject.Injector;
 import javabot.BaseTest;
+import javabot.TestJavabot;
 import javabot.dao.EventDao;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@Test(enabled = false)
 public class ChannelEventTest extends BaseTest {
   private CountDownLatch latch;
   @Inject
@@ -23,7 +25,9 @@ public class ChannelEventTest extends BaseTest {
 
   @Override
   protected TestJavabot createBot() {
-    return injector.getInstance(ChannelEventTestJavabot.class);
+    ChannelEventTestJavabot bot = injector.getInstance(ChannelEventTestJavabot.class);
+    bot.start();
+    return bot;
   }
 
   @Test

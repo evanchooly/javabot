@@ -50,7 +50,7 @@ public class AddFactoidOperationTest extends BaseOperationTest {
   public void duplicateAdd() throws IOException {
     final String message = "~test pong is pong";
     testMessage(message, ok);
-    testMessage(message, String.format("I already have a factoid named %s, %s", "test pong", BaseTest.TEST_USER));
+    testMessage(message, String.format("I already have a factoid named '%s', %s", "test pong", BaseTest.TEST_USER));
     forgetFactoid("test pong");
   }
 

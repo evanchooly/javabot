@@ -30,7 +30,7 @@ public class AddFactoidOperation extends StandardOperation {
     String message = event.getMessage();
     final String channel = event.getChannel();
     final IrcUser sender = event.getSender();
-    final List<Message> responses = new ArrayList<Message>();
+    final List<Message> responses = new ArrayList<>();
     if (message.startsWith("no ") || message.startsWith("no, ")) {
       message = message.substring(2);
       if (message.startsWith(",")) {
@@ -46,7 +46,7 @@ public class AddFactoidOperation extends StandardOperation {
   }
 
   private List<Message> updateFactoid(final IrcEvent event, final String message) {
-    final List<Message> responses = new ArrayList<Message>();
+    final List<Message> responses = new ArrayList<>();
     final int is = message.indexOf(" is ");
     if (is != -1) {
       String key = message.substring(0, is);
@@ -72,7 +72,7 @@ public class AddFactoidOperation extends StandardOperation {
 
   private List<Message> addFactoid(final IrcEvent event, final String message, final String channel,
       final IrcUser sender) {
-    final List<Message> responses = new ArrayList<Message>();
+    final List<Message> responses = new ArrayList<>();
     if (message.toLowerCase().contains(" is ")) {
       String key = message.substring(0, message.indexOf(" is "));
       key = key.toLowerCase();

@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
 import javabot.Message;
-import javabot.dao.WeatherDao;
+import javabot.dao.impl.WeatherDao;
 import javabot.model.Weather;
 
 /**

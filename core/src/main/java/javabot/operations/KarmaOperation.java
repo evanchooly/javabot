@@ -22,7 +22,7 @@ public class KarmaOperation extends BotOperation {
   @Inject
   private KarmaDao dao;
   private static final Logger log = LoggerFactory.getLogger(KarmaOperation.class);
-  private static final Throttler<KarmaInfo> throttler = new Throttler<KarmaInfo>(100, Javabot.THROTTLE_TIME);
+  private static final Throttler<KarmaInfo> throttler = new Throttler<>(100, Javabot.THROTTLE_TIME);
 
   public static final class KarmaInfo implements ThrottleItem<KarmaInfo> {
     private final IrcUser user;
@@ -41,7 +41,7 @@ public class KarmaOperation extends BotOperation {
   @Override
   @Transactional
   public List<Message> handleMessage(final IrcEvent event) {
-    final List<Message> responses = new ArrayList<Message>();
+    final List<Message> responses = new ArrayList<>();
     responses.addAll(readKarma(event));
     if (responses.isEmpty()) {
       String message = event.getMessage();
@@ -89,7 +89,7 @@ public class KarmaOperation extends BotOperation {
     final String message = event.getMessage();
     final String channel = event.getChannel();
     final IrcUser sender = event.getSender();
-    final List<Message> response = new ArrayList<Message>();
+    final List<Message> response = new ArrayList<>();
     if (message.startsWith("karma ")) {
       final String nick = message.substring("karma ".length()).toLowerCase();
       final Karma karma = dao.find(nick);

@@ -1,14 +1,9 @@
 javabot.server=irc.freenode.org
 javabot.port=6667
 
-jdbc.url=jdbc:postgresql:javabot
-jdbc.username=
-jdbc.password=
-jdbc.driver=org.postgresql.Driver
-hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+database.name=javabot
 
 javabot.nick=
 javabot.password=
 javabot.admin.nick=
 javabot.admin.hostmask=
-

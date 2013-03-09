@@ -41,7 +41,6 @@ public class ConfigDao extends BaseDao<Config> {
       list.add(operation.getName());
     }
     config.setOperations(list);
-    adminDao.create(getProperty("javabot.admin.nick"));
     save(config);
     return config;
   }

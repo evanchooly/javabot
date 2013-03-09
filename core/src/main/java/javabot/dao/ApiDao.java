@@ -1,13 +1,16 @@
 package javabot.dao;
 
 import javabot.javadoc.Api;
+import javabot.javadoc.criteria.ApiCriteria;
 
 public class ApiDao extends BaseDao<Api> {
-    protected ApiDao() {
-        super(Api.class);
-    }
+  protected ApiDao() {
+    super(Api.class);
+  }
 
-    public Api find(final String name) {
-        return getQuery().filter("lower(name) = ", name.toLowerCase()).get();
-    }
+  public Api find(final String name) {
+    ApiCriteria criteria = new ApiCriteria(ds);
+    criteria.upperName().equal(name.toUpperCase());
+    return criteria.query().get();
+  }
 }

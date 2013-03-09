@@ -8,6 +8,7 @@ import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Index;
 import com.google.code.morphia.annotations.Indexes;
+import org.bson.types.ObjectId;
 
 @Entity("logs")
 @Indexes({
@@ -16,7 +17,7 @@ import com.google.code.morphia.annotations.Indexes;
 @SPI(Persistent.class)
 public class Logs implements Serializable, Persistent {
     @Id
-    private Long id;
+    private ObjectId id;
     private String nick;
     private String upperNick;
     private String channel;
@@ -39,11 +40,11 @@ public class Logs implements Serializable, Persistent {
 
     private Type type;
 
-    public Long getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(final Long logsId) {
+    public void setId(final ObjectId logsId) {
         id = logsId;
     }
 

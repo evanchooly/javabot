@@ -35,7 +35,7 @@ public class ChannelDaoTest extends BaseServiceTest {
     Assert.assertTrue(!channels.isEmpty());
   }
 
-  @Test
+  @Test(enabled=false)
   public void stats() {
     final List<Activity> list = channelDao.getStatistics();
     Assert.assertTrue(!list.isEmpty());

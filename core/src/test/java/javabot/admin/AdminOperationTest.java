@@ -1,6 +1,6 @@
 package javabot.admin;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -20,19 +20,26 @@ public class AdminOperationTest extends BaseOperationTest {
 
   public void disableOperations() {
     final List<Message> messages = sendMessage("~admin listOperations");
-    for (final String name : messages.get(3).getMessage().split(",")) {
-      final String opName = name.trim().split(" ")[0];
-      sendMessage("~admin disableOperation --name=" + opName.trim());
-      final BotOperation operation = findOperation(opName);
-      Assert
-          .assertTrue(operation == null || operation instanceof AdminCommand || operation instanceof StandardOperation);
+    List<String> disabled = new ArrayList<>();
+    try {
+      for (final String name : messages.get(3).getMessage().split(",")) {
+        final String opName = name.trim().split(" ")[0].trim();
+        disabled.add(opName);
+        sendMessage("~admin disableOperation --name=" + opName);
+        final BotOperation operation = findOperation(opName);
+        Assert
+            .assertTrue(
+                operation == null || operation instanceof AdminCommand || operation instanceof StandardOperation);
+      }
+    } finally {
+      for (String name : disabled) {
+        sendMessage("~admin enableOperation --name=" + name);
+      }
     }
   }
 
   public BotOperation findOperation(final String name) {
-    final Iterator<BotOperation> it = getJavabot().getOperations();
-    while (it.hasNext()) {
-      final BotOperation op = it.next();
+    for (BotOperation op : getJavabot().getOperations()) {
       if (op.getName().equals(name)) {
         return op;
       }

@@ -5,13 +5,14 @@ import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.PrePersist;
 import javabot.model.Persistent;
+import org.bson.types.ObjectId;
 
 @Entity("methods")
 @SPI(Persistent.class)
 public class Method extends JavadocElement {
   @Id
-  private Long id;
-  private Long clazzId;
+  private ObjectId id;
+  private ObjectId clazzId;
   private String parentName;
   private String methodName;
   private String upperMethodName;
@@ -43,11 +44,11 @@ public class Method extends JavadocElement {
     return apiName;
   }
 
-  public Long getId() {
+  public ObjectId getId() {
     return id;
   }
 
-  public void setId(final Long methodId) {
+  public void setId(final ObjectId methodId) {
     id = methodId;
   }
 

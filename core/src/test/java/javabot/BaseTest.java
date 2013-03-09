@@ -1,7 +1,5 @@
 package javabot;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.inject.Inject;
 
 import com.google.inject.Injector;
@@ -17,7 +15,7 @@ public class BaseTest {
   protected static final String TEST_BOT = "jbtestbot";
   public static final IrcUser TEST_USER = new IrcUser("jbtestuser", "jbtestuser", "localhost");
   @Inject
-  private AdminDao dao;
+  private AdminDao adminDao;
   @Inject
   private ChannelDao channelDao;
   @Inject
@@ -35,7 +33,7 @@ public class BaseTest {
     if (bot == null) {
       Javabot.validateProperties();
       bot = injector.getInstance(TestJavabot.class);
-
+      bot.start();
     }
     return bot;
   }
@@ -74,56 +72,4 @@ public class BaseTest {
     }
   }
 
-  public class TestJavabot extends Javabot {
-    private final List<Message> messages = new ArrayList<>();
-
-    @Override
-    protected void createIrcBot() {
-      pircBot = new MyPircBot(this) {
-        @Override
-        public String getNick() {
-          return BaseTest.TEST_BOT;
-        }
-      };
-    }
-
-    public List<Message> getMessages() {
-      final List<Message> list = new ArrayList<>(messages);
-      messages.clear();
-      return list;
-    }
-
-    @Override
-    public void loadConfig() {
-      try {
-        super.loadConfig();
-        if (dao.getAdmin(BaseTest.TEST_USER.getNick(), "localhost") == null) {
-          dao.create(BaseTest.TEST_USER.getNick());
-        }
-      } catch (Exception e) {
-        log.debug(e.getMessage(), e);
-        throw new RuntimeException(e.getMessage(), e);
-      }
-    }
-
-    @Override
-    public void connect() {
-    }
-
-    @Override
-    public void postAction(final Message message) {
-      postMessage(message);
-    }
-
-    @Override
-    public void postMessage(final Message message) {
-      logMessage(message);
-      messages.add(message);
-    }
-
-    @Override
-    public boolean userIsOnChannel(final String sender, final String channel) {
-      return true;
-    }
-  }
 }

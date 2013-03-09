@@ -1,7 +1,9 @@
 package javabot.model;
 
-public interface Persistent {
-    Long getId();
+import org.bson.types.ObjectId;
 
-    void setId(Long id);
+public interface Persistent {
+    ObjectId getId();
+
+    void setId(ObjectId id);
 }

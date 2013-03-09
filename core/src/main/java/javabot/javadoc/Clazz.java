@@ -11,6 +11,7 @@ import com.google.code.morphia.annotations.Indexed;
 import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.PrePersist;
 import javabot.model.Persistent;
+import org.bson.types.ObjectId;
 
 @Entity("classes")
 @SPI(Persistent.class)
@@ -20,16 +21,16 @@ import javabot.model.Persistent;
 })
 public class Clazz extends JavadocElement {
   @Id
-  private Long id;
+  private ObjectId id;
   private Api api;
-  private Long apiId;
+  private ObjectId apiId;
   private String packageName;
   private String upperPackage;
   @Indexed(name = "classNames")
   private String className;
   @Indexed(name = "upperClassNames")
   private String upperClassName;
-  private Long superClassId;
+  private ObjectId superClassId;
   private List<Method> methods = new ArrayList<>();
   private List<Field> fields = new ArrayList<>();
   private String apiName;
@@ -45,11 +46,11 @@ public class Clazz extends JavadocElement {
     setLongUrl(api.getBaseUrl() + "index.html?" + pkg.replace('.', '/') + "/" + name + ".html");
   }
 
-  public Long getId() {
+  public ObjectId getId() {
     return id;
   }
 
-  public void setId(final Long classId) {
+  public void setId(final ObjectId classId) {
     id = classId;
   }
 
@@ -61,11 +62,11 @@ public class Clazz extends JavadocElement {
     this.api = api;
   }
 
-  public Long getApiId() {
+  public ObjectId getApiId() {
     return apiId;
   }
 
-  public void setApiId(final Long apiId) {
+  public void setApiId(final ObjectId apiId) {
     this.apiId = apiId;
   }
 
@@ -90,7 +91,7 @@ public class Clazz extends JavadocElement {
     className = name;
   }
 
-  public Long getSuperClassId() {
+  public ObjectId getSuperClassId() {
     return superClassId;
   }
 

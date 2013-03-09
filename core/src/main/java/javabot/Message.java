@@ -1,47 +1,44 @@
 package javabot;
 
 public class Message {
-    private final String destination;
-    private String message;
-    private IrcEvent event;
+  private final String destination;
 
-    public Message(final String dest, final IrcEvent evt, final String value) {
-        destination = dest;
-        message = value;
-        event = evt;
-    }
+  private String message;
 
-    public Message(final IrcUser sender, final IrcEvent event, final String value) {
-        this(sender.getNick(), event, value);
-    }
+  private IrcEvent event;
 
-    public IrcEvent getEvent() {
-        return event;
-    }
+  public Message(final String dest, final IrcEvent evt, final String value) {
+    destination = dest;
+    message = value;
+    event = evt;
+  }
 
-    public String getDestination() {
-        return destination;
-    }
+  public Message(final IrcUser sender, final IrcEvent event, final String value) {
+    this(sender.getNick(), event, value);
+  }
 
-    public String getMessage() {
-        return message;
-    }
+  public IrcEvent getEvent() {
+    return event;
+  }
 
-    protected void setMessage(final String message) {
-        this.message = message;
-    }
+  public String getDestination() {
+    return destination;
+  }
 
-    public void send(final Javabot bot) {
-        bot.postMessage(this);
-    }
+  public String getMessage() {
+    return message;
+  }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + " {" +
-            "type='" + getClass().getSimpleName() + "'" +
-            ", destination='" + destination + "'" +
-            ", message='" + message + "'" +
-            ", event='" + event + "'" +
-            "}";
-    }
+  protected void setMessage(final String message) {
+    this.message = message;
+  }
+
+  public void send(final Javabot bot) {
+    bot.postMessage(this);
+  }
+
+  @Override
+  public String toString() {
+    return message;
+  }
 }

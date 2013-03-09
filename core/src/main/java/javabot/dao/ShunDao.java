@@ -3,14 +3,38 @@ package javabot.dao;
 import java.util.Date;
 
 import javabot.model.Shun;
+import javabot.model.criteria.ShunCriteria;
 
-public interface ShunDao {
-    String CLEANUP = "Shun.cleanup";
-    String BY_NAME = "Shun.byName";
+public class ShunDao extends BaseDao<Shun> {
 
-    void addShun(String nick, Date until);
+  public ShunDao() {
+    super(Shun.class);
+  }
 
-    Shun getShun(String nick);
+  public boolean isShunned(final String nick) {
+    return getShun(nick) != null;
+  }
 
-    boolean isShunned(String nick);
+  public Shun getShun(final String nick) {
+    expireShuns();
+    ShunCriteria criteria = new ShunCriteria(ds);
+    criteria.upperNick().equal(nick.toUpperCase());
+    return criteria.query().get();
+  }
+
+  private void expireShuns() {
+    ShunCriteria criteria = new ShunCriteria(ds);
+    criteria.expiry().lessThan(new Date());
+    ds.delete(criteria.query());
+  }
+
+  public void addShun(final String nick, final Date until) {
+    Shun shun = getShun(nick);
+    if (shun == null) {
+      shun = new Shun();
+      shun.setNick(nick);
+      shun.setExpiry(until);
+      save(shun);
+    }
+  }
 }

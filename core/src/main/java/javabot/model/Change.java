@@ -7,22 +7,23 @@ import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Indexed;
+import org.bson.types.ObjectId;
 
 @Entity("changes")
 @SPI(Persistent.class)
 public class Change implements Serializable, Persistent {
 
     @Id
-    private Long id;
+    private ObjectId id;
     private String message;
     @Indexed(name = "changed")
     private Date changeDate;
 
-    public Long getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 

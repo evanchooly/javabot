@@ -16,8 +16,8 @@ public class JavadocTest extends BaseOperationTest {
   private ClazzDao clazzDao;
   private static final String API_NAME = "Servlet";
   private static final String ZIP_LOCATION
-      = "http://repo1.maven.org/maven2/javax/servlet/servlet-api/2.3/servlet-api-2.3.jar";
-  private static final String API_URL_STRING = "http://java.sun.com/products/servlet/2.3/javadoc/";
+      = "http://search.maven.org/remotecontent?filepath=javax/servlet/javax.servlet-api/3.0.1/javax.servlet-api-3.0.1.jar";
+  private static final String API_URL_STRING = "http://tomcat.apache.org/tomcat-7.0-doc/servletapi/index.html";
 
   @Test
   public void reprocessNonExistentApi() {

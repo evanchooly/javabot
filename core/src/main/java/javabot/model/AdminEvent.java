@@ -8,13 +8,14 @@ import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import javabot.Javabot;
 import javabot.dao.EventDao;
+import org.bson.types.ObjectId;
 
 @Entity("events")
 public class AdminEvent implements Serializable, Persistent {
   @Inject
   private EventDao eventDao;
   @Id
-  private Long id;
+  private ObjectId id;
   private String requestedBy;
   private Date requestedOn;
   private Boolean processed;
@@ -31,12 +32,12 @@ public class AdminEvent implements Serializable, Persistent {
   }
 
   @Override
-  public Long getId() {
+  public ObjectId getId() {
     return id;
   }
 
   @Override
-  public void setId(Long id) {
+  public void setId(ObjectId id) {
     this.id = id;
   }
 

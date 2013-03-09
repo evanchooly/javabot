@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.QueryImpl;
 import javabot.Activity;
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
 import javabot.model.criteria.ChannelCriteria;
 import org.apache.commons.lang.StringUtils;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,7 @@ public class ChannelDao extends BaseDao<Channel> {
     super(Channel.class);
   }
 
-  public void delete(final Long id) {
+  public void delete(final ObjectId id) {
     delete(find(id));
   }
 
@@ -68,10 +68,9 @@ public class ChannelDao extends BaseDao<Channel> {
   }
 
   public Channel get(final String name) {
-    Query<Channel> query = getQuery().filter("lower(channel) = ", name.toLowerCase());
-    final List<Channel> list = query.asList();
-    return list.isEmpty() ? null : (Channel) list.get(0);
-
+    ChannelCriteria criteria = new ChannelCriteria(ds);
+    criteria.upperName().equal(name.toUpperCase());
+    return criteria.query().get();
   }
 
   @SuppressWarnings({"unchecked"})
@@ -108,7 +107,7 @@ public class ChannelDao extends BaseDao<Channel> {
 
   public void save(final Channel channel) {
     channel.setUpdated(new Date());
-    save(channel);
+    super.save(channel);
   }
 
 }

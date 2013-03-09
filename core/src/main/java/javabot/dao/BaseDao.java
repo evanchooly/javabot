@@ -7,6 +7,7 @@ import com.google.code.morphia.query.Query;
 import com.google.inject.Inject;
 import javabot.dao.util.EntityNotFoundException;
 import javabot.model.Persistent;
+import org.bson.types.ObjectId;
 
 public class BaseDao<T extends Persistent> {
   private final Class<T> entityClass;
@@ -25,7 +26,7 @@ public class BaseDao<T extends Persistent> {
     return ds.createQuery(clazz);
   }
 
-  public T find(final Long id) {
+  public T find(final ObjectId id) {
     return ds.<T>createQuery(entityClass).filter("_id", id).get();
   }
 
@@ -33,7 +34,7 @@ public class BaseDao<T extends Persistent> {
     return ds.createQuery(entityClass).asList();
   }
 
-  private T loadChecked(final Long id) {
+  private T loadChecked(final ObjectId id) {
     final T persistedObject = find(id);
     if (persistedObject == null) {
       throw new EntityNotFoundException(entityClass, id);
@@ -49,7 +50,7 @@ public class BaseDao<T extends Persistent> {
     ds.delete(object);
   }
 
-  public void delete(final Long id) {
+  public void delete(final ObjectId id) {
     delete(loadChecked(id));
   }
 }

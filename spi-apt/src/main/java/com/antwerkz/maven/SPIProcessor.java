@@ -29,78 +29,72 @@ import javax.tools.StandardLocation;
 @SupportedAnnotationTypes("com.antwerkz.maven.SPI")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class SPIProcessor extends BaseProcessor {
-    private final Map<String, Set<String>> impls = new TreeMap<String, Set<String>>();
+  private final Map<String, Set<String>> impls = new TreeMap<>();
 
-    @Override
-    public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
-        final boolean b = super.process(annotations, roundEnv);
-        try {
-            for (final Entry<String, Set<String>> entry : impls.entrySet()) {
-                write(entry);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        } finally {
-            impls.clear();
-        }
-        return b;
+  @Override
+  public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
+    final boolean b = super.process(annotations, roundEnv);
+    try {
+      for (final Entry<String, Set<String>> entry : impls.entrySet()) {
+        write(entry);
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e.getMessage(), e);
+    } finally {
+      impls.clear();
     }
+    return b;
+  }
 
-    @Override
-    public void generate(final Element element, final AnnotationMirror mirror) {
-        final Map<? extends ExecutableElement, ? extends AnnotationValue> map = mirror.getElementValues();
-        for (final AnnotationValue value : map.values()) {
-            final List<AnnotationValue> list = (List<AnnotationValue>) value.getValue();
-            for (final AnnotationValue v : list) {
-                final DeclaredType o = (DeclaredType) v.getValue();
-                put(getFQN((TypeElement) o.asElement()), getFQN((TypeElement) element));
-            }
-        }
+  @Override
+  public void generate(final Element element, final AnnotationMirror mirror) {
+    final Map<? extends ExecutableElement, ? extends AnnotationValue> map = mirror.getElementValues();
+    for (final AnnotationValue value : map.values()) {
+      final List<AnnotationValue> list = (List<AnnotationValue>) value.getValue();
+      for (final AnnotationValue v : list) {
+        final DeclaredType o = (DeclaredType) v.getValue();
+        put(getFQN((TypeElement) o.asElement()), getFQN((TypeElement) element));
+      }
     }
+  }
 
-    private void put(final String name, final String qualifiedName) {
-        Set<String> set = impls.get(name);
-        if (set == null) {
-            set = new TreeSet<String>();
-            impls.put(name, set);
-        }
-        set.add(qualifiedName);
+  private void put(final String name, final String qualifiedName) {
+    Set<String> set = impls.get(name);
+    if (set == null) {
+      set = new TreeSet<>();
+      impls.put(name, set);
     }
+    set.add(qualifiedName);
+  }
 
-    private void write(final Entry<String, Set<String>> entry) throws IOException {
-        final Filer filer = processingEnv.getFiler();
-        final Set<String> current = readCurrentEntries(entry, filer);
-        FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/" + entry.getKey());
-        final PrintWriter writer = new PrintWriter(file.openWriter(), true);
-        try {
-            for (final String impl : current) {
-                writer.println(impl);
-            }
-        } finally {
-            writer.close();
-        }
+  private void write(final Entry<String, Set<String>> entry) throws IOException {
+    final Filer filer = processingEnv.getFiler();
+    final Set<String> current = readCurrentEntries(entry, filer);
+    FileObject file = filer.createResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/" + entry.getKey());
+    try (PrintWriter writer = new PrintWriter(file.openWriter(), true)) {
+      for (final String impl : current) {
+        writer.println(impl);
+      }
     }
+  }
 
-    private Set<String> readCurrentEntries(Entry<String, Set<String>> entry, Filer filer) throws IOException {
-        final FileObject file = filer.getResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/" + entry.getKey());
-        final Set<String> current = new TreeSet<String>(entry.getValue());
-        try {
-            final InputStream stream = file.openInputStream();
-            if (stream != null) {
-                final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-                try {
-                    String spi;
-                    while ((spi = reader.readLine()) != null) {
-                        current.add(spi);
-                    }
-                    current.addAll(entry.getValue());
-                } finally {
-                    reader.close();
-                }
-            }
-        } catch (FileNotFoundException e) {
-            // Noting to update
+  private Set<String> readCurrentEntries(Entry<String, Set<String>> entry, Filer filer) throws IOException {
+    final FileObject file = filer.getResource(StandardLocation.CLASS_OUTPUT, "", "META-INF/services/" + entry.getKey());
+    final Set<String> current = new TreeSet<>(entry.getValue());
+    try {
+      final InputStream stream = file.openInputStream();
+      if (stream != null) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+          String spi;
+          while ((spi = reader.readLine()) != null) {
+            current.add(spi);
+          }
+          current.addAll(entry.getValue());
         }
-        return current;
+      }
+    } catch (FileNotFoundException e) {
+      // Noting to update
     }
+    return current;
+  }
 }

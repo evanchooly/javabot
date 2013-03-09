@@ -6,9 +6,12 @@ import java.util.Date;
 import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Index;
 import com.google.code.morphia.annotations.Indexed;
+import com.google.code.morphia.annotations.Indexes;
+import org.bson.types.ObjectId;
 
-@Entity ("shun")
+@Entity("shun")
 /*
 @NamedQueries({
     @NamedQuery(name = ShunDao.BY_NAME, query = "select s from Shun s where s.nick = :nick"),
@@ -16,34 +19,49 @@ import com.google.code.morphia.annotations.Indexed;
 })
 */
 @SPI(Persistent.class)
+@Indexes({
+    @Index("upperNick")
+})
 public class Shun implements Serializable, Persistent {
-    @Id
-    private Long id;
-    @Indexed(unique = true)
-    private String nick;
-    private Date expiry;
+  @Id
+  private ObjectId id;
 
-    public Long getId() {
-        return id;
-    }
+  @Indexed(unique = true)
+  private String nick;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  private String upperNick;
 
-    public String getNick() {
-        return nick;
-    }
+  private Date expiry;
 
-    public void setNick(String nick) {
-        this.nick = nick;
-    }
+  public ObjectId getId() {
+    return id;
+  }
 
-    public Date getExpiry() {
-        return expiry;
-    }
+  public void setId(ObjectId id) {
+    this.id = id;
+  }
 
-    public void setExpiry(Date updated) {
-        this.expiry = updated;
-    }
+  public String getNick() {
+    return nick;
+  }
+
+  public void setNick(String nick) {
+    this.nick = nick;
+  }
+
+  public Date getExpiry() {
+    return expiry;
+  }
+
+  public void setExpiry(Date updated) {
+    this.expiry = updated;
+  }
+
+  public String getUpperNick() {
+    return upperNick;
+  }
+
+  public void setUpperNick(final String upperNick) {
+    this.upperNick = upperNick;
+  }
 }

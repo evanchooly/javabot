@@ -7,6 +7,7 @@ import java.util.TreeSet;
 import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import org.bson.types.ObjectId;
 
 @Entity("configuration")
 /*
@@ -16,8 +17,8 @@ import com.google.code.morphia.annotations.Id;
 */
 @SPI(Persistent.class)
 public class Config implements Serializable, Persistent {
-    @Id
-  private Long id;
+  @Id
+  private ObjectId id;
   private String server = "irc.freenode.org";
   private String url;
   private Integer port = 6667;
@@ -28,11 +29,11 @@ public class Config implements Serializable, Persistent {
   private Integer schemaVersion;
   private Set<String> operations = new TreeSet<String>();
 
-  public Long getId() {
+  public ObjectId getId() {
     return id;
   }
 
-  public void setId(final Long configId) {
+  public void setId(final ObjectId configId) {
     id = configId;
   }
 

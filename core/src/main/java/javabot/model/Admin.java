@@ -6,6 +6,7 @@ import java.util.Date;
 import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import org.bson.types.ObjectId;
 
 @Entity("admin")
 /*
@@ -19,7 +20,7 @@ import com.google.code.morphia.annotations.Id;
 @SPI(Persistent.class)
 public class Admin implements Serializable, Persistent {
     @Id
-    private Long id;
+    private ObjectId id;
     private Boolean botOwner;
     private String hostName;
     private String userName;
@@ -28,12 +29,12 @@ public class Admin implements Serializable, Persistent {
     private Date updated;
 
     @Override
-    public Long getId() {
+    public ObjectId getId() {
         return id;
     }
 
     @Override
-    public void setId(Long adminId) {
+    public void setId(ObjectId adminId) {
         id = adminId;
     }
 

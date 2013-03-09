@@ -8,6 +8,8 @@ import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Index;
 import com.google.code.morphia.annotations.Indexes;
+import com.google.code.morphia.annotations.PrePersist;
+import org.bson.types.ObjectId;
 
 @Entity("karma")
 /*
@@ -22,51 +24,61 @@ import com.google.code.morphia.annotations.Indexes;
     @Index("upperName")
 })
 public class Karma implements Serializable, Persistent {
-    @Id
-    private Long id;
-    private String name;
-    private String upperName;
-    private Integer value = 0;
-    private String userName;
-    private Date updated;
+  @Id
+  private ObjectId id;
 
-    public Long getId() {
-        return id;
-    }
+  private String name;
 
-    public void setId(Long karmaId) {
-        id = karmaId;
-    }
+  private String upperName;
 
-    public String getName() {
-        return name;
-    }
+  private Integer value = 0;
 
-    public void setName(String karmaName) {
-        name = karmaName;
-    }
+  private String userName;
 
-    public Integer getValue() {
-        return value;
-    }
+  private Date updated;
 
-    public void setValue(Integer karmaValue) {
-        value = karmaValue;
-    }
+  public ObjectId getId() {
+    return id;
+  }
 
-    public String getUserName() {
-        return userName;
-    }
+  public void setId(ObjectId karmaId) {
+    id = karmaId;
+  }
 
-    public void setUserName(String usrName) {
-        userName = usrName;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public Date getUpdated() {
-        return updated;
-    }
+  public void setName(String karmaName) {
+    name = karmaName;
+  }
 
-    public void setUpdated(Date date) {
-        updated = date;
-    }
+  public Integer getValue() {
+    return value;
+  }
+
+  public void setValue(Integer karmaValue) {
+    value = karmaValue;
+  }
+
+  public String getUserName() {
+    return userName;
+  }
+
+  public void setUserName(String usrName) {
+    userName = usrName;
+  }
+
+  public Date getUpdated() {
+    return updated;
+  }
+
+  public void setUpdated(Date date) {
+    updated = date;
+  }
+
+  @PrePersist
+  public void uppers() {
+    upperName = name.toUpperCase();
+  }
 }

@@ -1,21 +1,21 @@
 package javabot.dao.impl;
 
-import javabot.dao.WeatherDao;
+import java.net.URL;
+import java.net.URLEncoder;
+
+import javabot.dao.WeatherHandler;
 import javabot.model.Weather;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import java.net.URL;
-import java.net.URLEncoder;
-
 /**
  * Implements a weather service Dao using Weather Underground's weather API
  *
- * @see WeatherDaoImpl
+ * @see WeatherDao
  * @author Craig Tataryn &lt;craiger@tataryn.net&gt;
  */
-public class WeatherUndergroundDaoImpl implements WeatherDao {
+public class WeatherUndergroundHandler implements WeatherHandler {
     private static final String API_URL = "http://api.wunderground.com/auto/wui/geo/WXCurrentObXML/index.xml?query=";
 
     public Weather getWeatherFor(final String place) {

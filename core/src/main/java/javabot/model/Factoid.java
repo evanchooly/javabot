@@ -13,27 +13,20 @@ import com.google.code.morphia.annotations.Index;
 import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.PrePersist;
 import javabot.operations.TellSubject;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Entity("factoids")
-/*
-@NamedQueries({
-    @NamedQuery(name= FactoidDao.ALL, query="select f from Factoid f"),
-    @NamedQuery(name= FactoidDao.COUNT, query= "select count(f) from Factoid f"),
-    @NamedQuery(name= FactoidDao.BY_NAME, query= "select m from Factoid m where lower(m.name) = :name"),
-    @NamedQuery(name= FactoidDao.BY_PARAMETERIZED_NAME, query= "select m from Factoid m where lower(m.name) in (:name1, :name2, :name3)")
-
-})
-*/
 @SPI(Persistent.class)
 @Indexes({
+    @Index(value = "upperName", unique = true),
     @Index("upperName, upperUserName")
 })
 public class Factoid implements Serializable, Persistent {
   private static final Logger log = LoggerFactory.getLogger(Factoid.class);
   @Id
-  private Long id;
+  private ObjectId id;
   private String name;
   private String upperName;
   private String value;
@@ -43,11 +36,11 @@ public class Factoid implements Serializable, Persistent {
   private Date lastUsed;
   private Boolean locked;
 
-  public Long getId() {
+  public ObjectId getId() {
     return id;
   }
 
-  public void setId(final Long factoidId) {
+  public void setId(final ObjectId factoidId) {
     id = factoidId;
   }
 

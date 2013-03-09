@@ -13,7 +13,6 @@ import javabot.javadoc.criteria.ClazzCriteria;
 import javabot.javadoc.criteria.FieldCriteria;
 import javabot.javadoc.criteria.MethodCriteria;
 
-@SuppressWarnings("ALL")
 public class ClazzDao extends BaseDao<Clazz> {
   protected ClazzDao() {
     super(Clazz.class);
@@ -31,7 +30,7 @@ public class ClazzDao extends BaseDao<Clazz> {
     if (pkgName != null) {
       criteria.upperPackage().equal(pkgName.toUpperCase());
     }
-    return (Clazz[]) criteria.query().asList().toArray(new Clazz[0]);
+    return criteria.query().asList().toArray(new Clazz[0]);
   }
 
   @SuppressWarnings({"unchecked"})
@@ -39,14 +38,11 @@ public class ClazzDao extends BaseDao<Clazz> {
     final ClazzCriteria criteria = new ClazzCriteria(ds);
     criteria.upperPackage().equal(pkg.toUpperCase());
     criteria.upperClassName().equal(name.toUpperCase());
-    return (Clazz[]) criteria.query().asList().toArray(new Clazz[0]);
+    return criteria.query().asList().toArray(new Clazz[0]);
   }
 
   @SuppressWarnings({"unchecked"})
   public List<Field> getField(Api api, final String className, final String fieldName) {
-    final String[] strings = calculateNameAndPackage(className);
-    final String pkgName = strings[0];
-    final String clsName = strings[1].toUpperCase();
     final FieldCriteria criteria = new FieldCriteria(ds);
     Clazz[] classes = getClass(api, className);
     if (classes.length != 0) {
@@ -62,8 +58,8 @@ public class ClazzDao extends BaseDao<Clazz> {
   public List<Method> getMethods(Api api, final String className, final String methodName,
       final String signatureTypes) {
     final Clazz[] classes = getClass(api, className);
-    List<Clazz> list = new ArrayList<Clazz>(Arrays.asList(classes));
-    final List<Method> methods = new ArrayList<Method>();
+    List<Clazz> list = new ArrayList<>(Arrays.asList(classes));
+    final List<Method> methods = new ArrayList<>();
     while (!list.isEmpty()) {
       Clazz clazz = list.remove(0);
       if (clazz != null) {

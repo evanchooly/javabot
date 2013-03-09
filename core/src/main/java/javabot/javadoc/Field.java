@@ -5,6 +5,7 @@ import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.PrePersist;
 import javabot.model.Persistent;
+import org.bson.types.ObjectId;
 
 @Entity("fields")
 /*
@@ -25,10 +26,10 @@ import javabot.model.Persistent;
 @SPI(Persistent.class)
 public class Field extends JavadocElement {
   @Id
-  private Long id;
-  private Long apiId;
+  private ObjectId id;
+  private ObjectId apiId;
   private Clazz clazz;
-  private Long classId;
+  private ObjectId classId;
   private String name;
   private String upperName;
   private String type;
@@ -47,11 +48,11 @@ public class Field extends JavadocElement {
     setDirectUrl(url);
   }
 
-  public Long getApiId() {
+  public ObjectId getApiId() {
     return apiId;
   }
 
-  public void setApiId(final Long apiId) {
+  public void setApiId(final ObjectId apiId) {
     this.apiId = apiId;
   }
 
@@ -64,11 +65,11 @@ public class Field extends JavadocElement {
     this.apiName = apiName;
   }
 
-  public Long getId() {
+  public ObjectId getId() {
     return id;
   }
 
-  public void setId(final Long methodId) {
+  public void setId(final ObjectId methodId) {
     id = methodId;
   }
 
@@ -80,11 +81,11 @@ public class Field extends JavadocElement {
     this.clazz = clazz;
   }
 
-  public Long getClassId() {
+  public ObjectId getClassId() {
     return classId;
   }
 
-  public void setClassId(final Long classId) {
+  public void setClassId(final ObjectId classId) {
     this.classId = classId;
   }
 

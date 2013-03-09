@@ -5,7 +5,6 @@ import java.util.Arrays;
 import javax.inject.Inject;
 
 import javabot.BaseTest;
-import javabot.IrcUser;
 import javabot.dao.FactoidDao;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -122,8 +121,8 @@ public class GetFactoidOperationTest extends BaseOperationTest {
         String.format("%s, api is http://java.sun.com/javase/current/docs/api/index.html", TEST_USER));
     validate("camel I am a test 2", "IAmATest2");
     testMessage(String.format("~~ %s url I am a test 2", TEST_USER), String.format("%s, I+am+a+test+2", TEST_USER));
-    scanForResponse(String.format("~~ %s javadoc String", TEST_USER), "[JDK: java.lang.String]");
-    scanForResponse(String.format("~~ %s javadoc String", new IrcUser("jimbob")), "jimbob");
+//    scanForResponse(String.format("~~ %s javadoc String", TEST_USER), "[JDK: java.lang.String]");
+//    scanForResponse(String.format("~~ %s javadoc String", new IrcUser("jimbob")), "jimbob");
     testMessage(String.format("~~ %s stupid", TEST_USER),
         String.format("%s, what you've just said is one of the most"
             + " insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you"
@@ -137,7 +136,6 @@ public class GetFactoidOperationTest extends BaseOperationTest {
         String.format("%s, api is http://java.sun.com/javase/current/docs/api/index.html", TEST_USER));
     testMessage(String.format("~~%s camel I am a test 3", TEST_USER), String.format("%s, IAmATest3", TEST_USER));
     testMessage(String.format("~~%s url I am a test 3", TEST_USER), String.format("%s, I+am+a+test+3", TEST_USER));
-    scanForResponse(String.format("~~%s javadoc String", TEST_USER), "[JDK: java.lang.String]");
     validate("stupid", "what you've just said is one of the most insanely idiotic things I have ever heard. At no" +
         " point in your rambling, incoherent response were you even close to anything that could be considered" +
         " a rational thought. Everyone in this room is now dumber for having listened to it. I award you no" +
