@@ -14,7 +14,6 @@
         <module>spi-apt</module>
         <module>apt-tools</module>
         <module>core</module>
-        <module>web</module>
     </modules>
 
     <build>
