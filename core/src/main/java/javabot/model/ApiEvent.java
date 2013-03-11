@@ -4,6 +4,7 @@ import java.io.StringWriter;
 import javax.inject.Inject;
 
 import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Transient;
 import javabot.IrcEvent;
 import javabot.IrcUser;
 import javabot.Javabot;
@@ -13,17 +14,20 @@ import javabot.dao.ApiDao;
 import javabot.javadoc.Api;
 import javabot.javadoc.JavadocParser;
 
-@Entity
+@Entity("events")
 public class ApiEvent extends AdminEvent {
   public String name;
   public String packages;
   public String baseUrl;
   public String file;
   @Inject
+  @Transient
   private JavadocParser parser;
   @Inject
-  private ApiDao dao;
+  @Transient
+  private ApiDao apiDao;
   @Inject
+  @Transient
   private AdminDao adminDao;
 
   public String getName() {
@@ -64,13 +68,15 @@ public class ApiEvent extends AdminEvent {
   }
 
   public void delete(Javabot bot) {
-    Api api = dao.find(name);
-    dao.delete(api);
+    Api api = apiDao.find(name);
+    if(api != null) {
+      apiDao.delete(api);
+    }
   }
 
   public void add(final Javabot bot) {
     Api api = new Api(name, baseUrl, packages);
-    dao.save(api);
+    apiDao.save(api);
 
     final Admin admin = adminDao.getAdmin(getRequestedBy());
     final IrcUser user = new IrcUser(admin.getIrcName(), admin.getIrcName(), admin.getHostName());

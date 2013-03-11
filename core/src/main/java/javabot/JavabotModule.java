@@ -35,7 +35,7 @@ public class JavabotModule extends AbstractModule {
     String dbName = properties.getProperty("database.name");
     Morphia morphia = new Morphia();
     Datastore datastore = morphia.createDatastore(mongo, dbName);
-    datastore.setDefaultWriteConcern(WriteConcern.FSYNC_SAFE);
+    datastore.setDefaultWriteConcern(WriteConcern.SAFE);
     datastore.ensureIndexes();
     return datastore;
   }

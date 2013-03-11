@@ -7,17 +7,16 @@ import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Index;
-import com.google.code.morphia.annotations.Indexed;
 import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.PrePersist;
 import javabot.model.Persistent;
 import org.bson.types.ObjectId;
 
-@Entity("classes")
+@Entity(value = "classes")
 @SPI(Persistent.class)
 @Indexes({
-    @Index(value = "upperClassName"),
-    @Index(value = "upperPackageName, upperClassName")
+    @Index(value = "upperName"),
+    @Index(value = "upperPackageName, upperName")
 })
 public class Clazz extends JavadocElement {
   @Id
@@ -26,10 +25,8 @@ public class Clazz extends JavadocElement {
   private ObjectId apiId;
   private String packageName;
   private String upperPackage;
-  @Indexed(name = "classNames")
-  private String className;
-  @Indexed(name = "upperClassNames")
-  private String upperClassName;
+  private String name;
+  private String upperName;
   private ObjectId superClassId;
   private List<Method> methods = new ArrayList<>();
   private List<Field> fields = new ArrayList<>();
@@ -39,9 +36,10 @@ public class Clazz extends JavadocElement {
   }
 
   public Clazz(final Api api, final String pkg, final String name) {
+    apiId = api.getId();
     apiName = api.getName();
     packageName = pkg;
-    className = name;
+    this.name = name;
     setDirectUrl(api.getBaseUrl() + pkg.replace('.', '/') + "/" + name + ".html");
     setLongUrl(api.getBaseUrl() + "index.html?" + pkg.replace('.', '/') + "/" + name + ".html");
   }
@@ -52,10 +50,6 @@ public class Clazz extends JavadocElement {
 
   public void setId(final ObjectId classId) {
     id = classId;
-  }
-
-  public Api getApi() {
-    return api;
   }
 
   public void setApi(final Api api) {
@@ -83,12 +77,12 @@ public class Clazz extends JavadocElement {
     packageName = name;
   }
 
-  public String getClassName() {
-    return className;
+  public String getName() {
+    return name;
   }
 
-  public void setClassName(final String name) {
-    className = name;
+  public void setName(final String name) {
+    this.name = name;
   }
 
   public ObjectId getSuperClassId() {
@@ -115,12 +109,12 @@ public class Clazz extends JavadocElement {
     fields = list;
   }
 
-  public String getUpperClassName() {
-    return upperClassName;
+  public String getUpperName() {
+    return upperName;
   }
 
-  public void setUpperClassName(final String upperClassName) {
-    this.upperClassName = upperClassName;
+  public void setUpperName(final String upperName) {
+    this.upperName = upperName;
   }
 
   public String getUpperPackage() {
@@ -133,12 +127,12 @@ public class Clazz extends JavadocElement {
 
   @PrePersist
   public void uppers() {
-    upperClassName = className.toUpperCase();
+    upperName = name.toUpperCase();
     upperPackage = packageName.toUpperCase();
   }
 
   @Override
   public String toString() {
-    return packageName + "." + className;
+    return packageName + "." + name;
   }
 }

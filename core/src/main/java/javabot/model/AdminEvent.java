@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Transient;
 import javabot.Javabot;
 import javabot.dao.EventDao;
 import org.bson.types.ObjectId;
@@ -13,12 +14,13 @@ import org.bson.types.ObjectId;
 @Entity("events")
 public class AdminEvent implements Serializable, Persistent {
   @Inject
+  @Transient
   private EventDao eventDao;
   @Id
   private ObjectId id;
   private String requestedBy;
   private Date requestedOn;
-  private Boolean processed;
+  private Boolean processed = Boolean.FALSE;
   private EventType type;
 
   protected AdminEvent() {
@@ -85,8 +87,6 @@ public class AdminEvent implements Serializable, Persistent {
         update(bot);
         break;
     }
-    setProcessed(true);
-    eventDao.save(this);
   }
 
   public void add(Javabot bot) {

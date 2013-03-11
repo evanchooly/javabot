@@ -7,7 +7,7 @@ import javabot.dao.ApiDao;
 import javabot.dao.ClazzDao;
 import org.testng.annotations.Test;
 
-@Test(enabled=false)//(dependsOnGroups = {"javadoc"})
+@Test(dependsOnMethods = {"javabot.admin.JavadocTest.addJdk"})
 public class JavadocOperationTest extends BaseOperationTest {
   @Inject
   private ApiDao apiDao;
@@ -30,6 +30,7 @@ public class JavadocOperationTest extends BaseOperationTest {
     scanForResponse("~javadoc String.format(*)", "[JDK: java.lang.String.format(Locale,String,Object[])]");
   }
 
+  @Test(enabled = false)
   public void doFinal() {
     scanForResponse("~javadoc Cipher.doFinal(*)",
         BaseTest.TEST_USER + ", too many results found.  Please see your private messages for results");

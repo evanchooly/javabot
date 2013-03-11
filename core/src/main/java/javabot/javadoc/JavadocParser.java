@@ -79,6 +79,7 @@ public class JavadocParser {
           Thread.sleep(5000);
         }
         executor.shutdown();
+        executor.awaitTermination(1, TimeUnit.HOURS);
       } finally {
         file.delete();
         writer.write(String.format("Finished importing %s.  %s!", api.getName(),
@@ -110,11 +111,10 @@ public class JavadocParser {
   }
 
   public Clazz getOrQueue(final Api api, final String pkg, final String name, final Clazz newClazz) {
-    final Clazz[] clazzes = dao.getClass(pkg, name);
     synchronized (deferred) {
       Clazz parent = null;
-      for (Clazz clazz : clazzes) {
-        if (clazz.getApi().getId().equals(api.getId())) {
+      for (Clazz clazz : dao.getClass(pkg, name)) {
+        if (clazz.getApiId().equals(api.getId())) {
           parent = clazz;
         }
       }
@@ -132,11 +132,10 @@ public class JavadocParser {
   }
 
   public Clazz getOrCreate(final Api api, final String pkg, final String name) {
-    final Clazz[] clazzes = dao.getClass(pkg, name);
     synchronized (deferred) {
       Clazz cls = null;
-      for (Clazz clazz : clazzes) {
-        if (clazz.getApi().getId().equals(api.getId())) {
+      for (Clazz clazz : dao.getClass(pkg, name)) {
+        if (clazz.getApiId().equals(api.getId())) {
           cls = clazz;
         }
       }
@@ -146,9 +145,9 @@ public class JavadocParser {
       }
       final List<Clazz> list = deferred.get(pkg + "." + name);
       if (list != null) {
-        for (Clazz subclazz : list) {
-          subclazz.setSuperClassId(cls);
-          dao.save(subclazz);
+        for (Clazz subclass : list) {
+          subclass.setSuperClassId(cls);
+          dao.save(subclass);
         }
         deferred.remove(pkg + "." + name);
       }

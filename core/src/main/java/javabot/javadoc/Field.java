@@ -3,35 +3,27 @@ package javabot.javadoc;
 import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Index;
+import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.PrePersist;
 import javabot.model.Persistent;
 import org.bson.types.ObjectId;
 
 @Entity("fields")
-/*
-@NamedQueries({
-    @NamedQuery(name = ClazzDao.GET_FIELD_WITH_CLS_AND_PKG, query = "select f from Field f join f.clazz c where "
-        + " upper(c.packageName)=:packageName and upper(c.className)=:className "
-        + " and upper(f.name)=:fieldName order by c.packageName, c.className, f.name"),
-    @NamedQuery(name = ClazzDao.GET_FIELD_WITH_CLS, query = "select f from Field f join f.clazz c where "
-        + " upper(c.className)=:className and upper(f.name)=:fieldName order by c.packageName, c.className, f.name"),
-
-    @NamedQuery(name = ClazzDao.GET_FIELD_WITH_CLS_PKG_API, query = "select f from Field f join f.clazz c where "
-        + " upper(c.packageName)=:packageName and upper(c.className)=:className and c.api.id=:api"
-        + " and upper(f.name)=:fieldName order by c.packageName, c.className, f.name"),
-    @NamedQuery(name = ClazzDao.GET_FIELD_WITH_CLS_API, query = "select f from Field f join f.clazz c join c.api a where a.id=:api "
-        + " and upper(c.className)=:className and upper(f.name)=:fieldName order by c.packageName, c.className, f.name")
-})
-*/
 @SPI(Persistent.class)
+@Indexes({
+    @Index("clazzId, name"),
+    @Index("apiName"),
+})
+
 public class Field extends JavadocElement {
   @Id
   private ObjectId id;
   private ObjectId apiId;
-  private Clazz clazz;
   private ObjectId classId;
   private String name;
   private String upperName;
+  private String parentName;
   private String type;
   private String apiName;
 
@@ -39,11 +31,13 @@ public class Field extends JavadocElement {
   }
 
   public Field(final Clazz parent, final String fieldName, final String fieldType) {
-    clazz = parent;
+    classId = parent.getId();
     name = fieldName;
     type = fieldType;
     apiName = parent.getApiName();
-    String url = clazz.getDirectUrl() + "#" + name;
+    apiId = parent.getApiId();
+    parentName = parent.toString();
+    String url = parent.getDirectUrl() + "#" + name;
     setLongUrl(url);
     setDirectUrl(url);
   }
@@ -71,14 +65,6 @@ public class Field extends JavadocElement {
 
   public void setId(final ObjectId methodId) {
     id = methodId;
-  }
-
-  public Clazz getClazz() {
-    return clazz;
-  }
-
-  public void setClazz(final Clazz clazz) {
-    this.clazz = clazz;
   }
 
   public ObjectId getClassId() {
@@ -112,7 +98,7 @@ public class Field extends JavadocElement {
 
   @Override
   public String toString() {
-    return clazz + "." + name + ":" + type;
+    return parentName + "." + name + ":" + type;
   }
 
 }

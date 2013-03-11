@@ -4,7 +4,7 @@ import com.google.code.morphia.annotations.Entity;
 
 import javabot.Javabot;
 
-@Entity
+@Entity("events")
 public class OperationEvent extends AdminEvent {
   private String operation;
 

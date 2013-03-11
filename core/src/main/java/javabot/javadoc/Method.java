@@ -3,12 +3,18 @@ package javabot.javadoc;
 import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Index;
+import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.PrePersist;
 import javabot.model.Persistent;
 import org.bson.types.ObjectId;
 
 @Entity("methods")
 @SPI(Persistent.class)
+@Indexes({
+    @Index("clazzId, name"),
+    @Index("apiName"),
+})
 public class Method extends JavadocElement {
   @Id
   private ObjectId id;
@@ -20,18 +26,19 @@ public class Method extends JavadocElement {
   private String shortSignatureTypes;
   private Integer paramCount;
   private String apiName;
+  private ObjectId apiId;
 
   public Method() {
   }
 
-  public Method(final String apiName, final Clazz parent, final String name, final int count,
-      final String longArgs,
+  public Method(final String apiName, final Clazz parent, final String name, final int count, final String longArgs,
       final String shortArgs) {
-    this.apiName = apiName;
     methodName = name;
     clazzId = parent.getId();
     parentName = parent.toString();
     paramCount = count;
+    this.apiName = apiName;
+    apiId = parent.getApiId();
     longSignatureTypes = longArgs;
     shortSignatureTypes = shortArgs;
     final String url = parent.getDirectUrl() + "#" + methodName + "(" + longArgs + ")";

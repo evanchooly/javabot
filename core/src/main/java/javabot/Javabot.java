@@ -420,7 +420,6 @@ public class Javabot {
 
   public List<Message> getResponses(final String channel, final IrcUser sender, final String message) {
     final Iterator<BotOperation> iterator = getOperations().iterator();
-    System.out.println("ops = " + getOperations());
     final List<Message> responses = new ArrayList<>();
     final IrcEvent event = new IrcEvent(channel, sender, message);
     while (responses.isEmpty() && iterator.hasNext()) {

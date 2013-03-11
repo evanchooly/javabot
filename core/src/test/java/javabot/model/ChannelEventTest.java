@@ -32,6 +32,7 @@ public class ChannelEventTest extends BaseTest {
 
   @Test
   public void addChannel() throws InterruptedException {
+    getJavabot();
     String name = "##testChannel";
     ChannelEvent event = new ChannelEvent(name, EventType.ADD, "testng");
     latch = new CountDownLatch(1);

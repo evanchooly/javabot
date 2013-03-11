@@ -45,7 +45,6 @@ public class PlayModelGenerator extends BaseProcessor {
             generateBaseFile(element, name, table);
             generateFile(element, name, table);
         } catch (Exception e) {
-            System.out.println("name = " + name);
             e.printStackTrace();
             throw new RuntimeException(e);
         }

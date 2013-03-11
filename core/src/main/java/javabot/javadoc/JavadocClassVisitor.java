@@ -34,7 +34,7 @@ public class JavadocClassVisitor extends ClassVisitor {
   }
 
   public JavadocClassVisitor(final JavadocParser javadocParser, final ClazzDao clazzDao, final ApiDao apiDao) {
-    super(4);
+    super(Opcodes.ASM4);
     parser = javadocParser;
     dao = clazzDao;
     this.apiDao = apiDao;
@@ -52,7 +52,9 @@ public class JavadocClassVisitor extends ClassVisitor {
           String superPkg = getPackage(superName);
           String parentName = superName.substring(superName.lastIndexOf("/") + 1);
           final Clazz parent = parser.getOrQueue(parser.getApi(), superPkg, parentName, clazz);
-          clazz.setSuperClassId(parent);
+          if(parent != null) {
+            clazz.setSuperClassId(parent);
+          }
           dao.save(clazz);
         }
       }
@@ -93,8 +95,9 @@ public class JavadocClassVisitor extends ClassVisitor {
       StringBuilder longTypes = new StringBuilder();
       StringBuilder shortTypes = new StringBuilder();
       int count = processParam(name, desc, signature, longTypes, shortTypes, params);
-      dao.save(new Method(apiDao.find(clazz.getApiId()).getName(), clazz,
-          "<init>".equals(name) ? clazz.getClassName() : name, count, longTypes.toString(), shortTypes.toString()));
+      Api api1 = apiDao.find(clazz.getApiId());
+      dao.save(new Method(api1.getName(), clazz,
+          "<init>".equals(name) ? clazz.getName() : name, count, longTypes.toString(), shortTypes.toString()));
     }
     return null;
   }

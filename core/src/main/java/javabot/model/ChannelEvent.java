@@ -7,7 +7,7 @@ import com.google.code.morphia.annotations.Entity;
 import javabot.Javabot;
 import javabot.dao.ChannelDao;
 
-@Entity
+@Entity("events")
 public class ChannelEvent extends AdminEvent {
   @Inject
   private ChannelDao channelDao;

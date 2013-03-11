@@ -23,7 +23,7 @@ public class ClazzDao extends BaseDao<Clazz> {
     final String[] strings = calculateNameAndPackage(name);
     final String pkgName = strings[0];
     ClazzCriteria criteria = new ClazzCriteria(ds);
-    criteria.upperClassName().equal(strings[1].toUpperCase());
+    criteria.upperName().equal(strings[1].toUpperCase());
     if (api != null) {
       criteria.apiId().equal(api.getId());
     }
@@ -37,7 +37,7 @@ public class ClazzDao extends BaseDao<Clazz> {
   public Clazz[] getClass(final String pkg, final String name) {
     final ClazzCriteria criteria = new ClazzCriteria(ds);
     criteria.upperPackage().equal(pkg.toUpperCase());
-    criteria.upperClassName().equal(name.toUpperCase());
+    criteria.upperName().equal(name.toUpperCase());
     return criteria.query().asList().toArray(new Clazz[0]);
   }
 
@@ -108,5 +108,19 @@ public class ClazzDao extends BaseDao<Clazz> {
     }
     String pkgName = name.equals(clsName) ? null : name.substring(0, name.indexOf(clsName) - 1);
     return new String[]{pkgName, clsName};
+  }
+
+  public void deleteFor(final Api api) {
+    FieldCriteria fields = new FieldCriteria(ds);
+    fields.apiId().equal(api.getId());
+    ds.delete(fields.query());
+
+    MethodCriteria methods = new MethodCriteria(ds);
+    methods.apiId().equal(api.getId());
+    ds.delete(methods.query());
+
+    ClazzCriteria classes = new ClazzCriteria(ds);
+    classes.apiId().equal(api.getId());
+    ds.delete(classes.query());
   }
 }

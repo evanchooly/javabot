@@ -33,7 +33,7 @@ public class Api implements Persistent {
 
   private String packages;
 
-  private static final List<String> JDK_JARS = Arrays.asList("classes.jar", "rt.jar", "jce.jar", "jsse.jar");
+  public static final List<String> JDK_JARS = Arrays.asList("rt.jar", "jce.jar");
 
   public Api() {
   }
