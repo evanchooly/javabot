@@ -8,7 +8,7 @@
     <parent>
         <groupId>javabot</groupId>
         <artifactId>javabot</artifactId>
-        <version>4.0.1</version>
+        <version>5.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
