@@ -54,9 +54,9 @@ public class AddFactoidOperationTest extends BaseOperationTest {
     forgetFactoid("test pong");
   }
 
-  @Test(enabled = false)
+  @Test
   public void blankValue() {
-    testMessage("~pong is", "Invalid factoid value");
+    testMessage("~pong is", "jbtestuser, what does that even *mean*?");
   }
 
   public void addLog() {
