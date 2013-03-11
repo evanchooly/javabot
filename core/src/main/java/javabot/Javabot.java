@@ -39,6 +39,7 @@ import javabot.dao.LogsDao;
 import javabot.dao.ShunDao;
 import javabot.database.UpgradeScript;
 import javabot.model.AdminEvent;
+import javabot.model.AdminEvent.State;
 import javabot.model.Channel;
 import javabot.model.Config;
 import javabot.model.Logs;
@@ -143,14 +144,19 @@ public class Javabot {
   }
 
   protected void processAdminEvents() {
-    for (AdminEvent event : eventDao.findUnprocessed()) {
+    AdminEvent event = eventDao.findUnprocessed();
+    if(event != null) {
       try {
+        event.setState(State.PROCESSING);
+        eventDao.save(event);
         injector.injectMembers(event);
         event.handle(this);
       } catch (Exception e) {
+        event.setState(State.FAILED);
+        eventDao.save(event);
         log.error(e.getMessage(), e);
       }
-      event.setProcessed(true);
+      event.setState(State.COMPLETED);
       eventDao.save(event);
     }
   }

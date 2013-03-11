@@ -4,12 +4,14 @@ import javax.inject.Inject;
 
 import com.antwerkz.sofia.Sofia;
 import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Transient;
 import javabot.Javabot;
 import javabot.dao.ChannelDao;
 
 @Entity("events")
 public class ChannelEvent extends AdminEvent {
   @Inject
+  @Transient
   private ChannelDao channelDao;
   private String channel;
   private String key;
@@ -53,7 +55,7 @@ public class ChannelEvent extends AdminEvent {
   }
 
   public void add(Javabot bot) {
-    Channel chan = channelDao.get(channel);
+    Channel chan = channelDao.create(channel, logged, key);
     chan.join(bot);
   }
 

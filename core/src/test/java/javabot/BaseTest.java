@@ -1,10 +1,17 @@
 package javabot;
 
+import java.util.EnumSet;
+import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import com.google.inject.Injector;
+import com.jayway.awaitility.Awaitility;
+import com.jayway.awaitility.Duration;
 import javabot.dao.AdminDao;
 import javabot.dao.ChannelDao;
+import javabot.dao.EventDao;
+import javabot.model.AdminEvent;
+import javabot.model.AdminEvent.State;
 import javabot.model.Channel;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.Guice;
@@ -14,6 +21,11 @@ import org.testng.annotations.Guice;
 public class BaseTest {
   protected static final String TEST_BOT = "jbtestbot";
   public static final IrcUser TEST_USER = new IrcUser("jbtestuser", "jbtestuser", "localhost");
+  public EnumSet<State> done = EnumSet.of(State.COMPLETED, State.FAILED);
+
+  @Inject
+  protected EventDao eventDao;
+
   @Inject
   private AdminDao adminDao;
   @Inject
@@ -22,7 +34,7 @@ public class BaseTest {
   private Injector injector;
 
   public final String ok;
-  private static TestJavabot bot;
+  protected TestJavabot bot;
 
   public BaseTest() {
     final String nick = BaseTest.TEST_USER.getNick();
@@ -72,4 +84,14 @@ public class BaseTest {
     }
   }
 
+  protected void waitForEvent(final AdminEvent event, final String alias, final Duration timeout) {
+    Awaitility.await(alias)
+        .atMost(timeout)
+        .until(new Callable<Boolean>() {
+          @Override
+          public Boolean call() throws Exception {
+            return done.contains(eventDao.find(event.getId()).getState());
+          }
+        });
+  }
 }

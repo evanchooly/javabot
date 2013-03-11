@@ -17,7 +17,8 @@ import org.slf4j.LoggerFactory;
 @Entity("apis")
 @SPI(Persistent.class)
 @Indexes({
-    @Index("upperName")
+    @Index(value = "name", unique = true),
+    @Index(value = "upperName", unique = true)
 })
 public class Api implements Persistent {
   private static final Logger log = LoggerFactory.getLogger(Api.class);

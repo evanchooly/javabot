@@ -1,8 +1,7 @@
 package javabot.dao;
 
-import java.util.List;
-
 import javabot.model.AdminEvent;
+import javabot.model.AdminEvent.State;
 import javabot.model.criteria.AdminEventCriteria;
 
 public class EventDao extends BaseDao<AdminEvent> {
@@ -10,11 +9,10 @@ public class EventDao extends BaseDao<AdminEvent> {
     super(AdminEvent.class);
   }
 
-  public List<AdminEvent> findUnprocessed() {
+  public AdminEvent findUnprocessed() {
     AdminEventCriteria criteria = new AdminEventCriteria(ds);
-    criteria.processed().equal(Boolean.FALSE);
-    criteria.query().order("-requestedOn");
-    List<AdminEvent> adminEvents = criteria.query().asList();
-    return adminEvents;
+    criteria.state().equal(State.NEW);
+    criteria.query().order("requestedOn");
+    return criteria.query().get();
   }
 }

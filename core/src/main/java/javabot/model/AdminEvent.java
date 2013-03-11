@@ -13,6 +13,12 @@ import org.bson.types.ObjectId;
 
 @Entity("events")
 public class AdminEvent implements Serializable, Persistent {
+  public enum State {
+    NEW,
+    PROCESSING,
+    COMPLETED,
+    FAILED
+  }
   @Inject
   @Transient
   private EventDao eventDao;
@@ -20,7 +26,7 @@ public class AdminEvent implements Serializable, Persistent {
   private ObjectId id;
   private String requestedBy;
   private Date requestedOn;
-  private Boolean processed = Boolean.FALSE;
+  private State state = State.NEW;
   private EventType type;
 
   protected AdminEvent() {
@@ -30,7 +36,6 @@ public class AdminEvent implements Serializable, Persistent {
     this.type = type;
     this.requestedBy = requestedBy;
     requestedOn = new Date();
-    processed = false;
   }
 
   @Override
@@ -51,12 +56,12 @@ public class AdminEvent implements Serializable, Persistent {
     this.type = type;
   }
 
-  public Boolean getProcessed() {
-    return processed;
+  public State getState() {
+    return state;
   }
 
-  public void setProcessed(Boolean processed) {
-    this.processed = processed;
+  public void setState(final State state) {
+    this.state = state;
   }
 
   public String getRequestedBy() {

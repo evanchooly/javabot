@@ -1,98 +1,64 @@
 package javabot.model;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
-import com.antwerkz.sofia.Sofia;
 import com.google.inject.Injector;
+import com.jayway.awaitility.Duration;
 import javabot.BaseTest;
-import javabot.TestJavabot;
+import javabot.dao.ChannelDao;
 import javabot.dao.EventDao;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(enabled = false)
+@Test
 public class ChannelEventTest extends BaseTest {
-  private CountDownLatch latch;
   @Inject
   private Injector injector;
   @Inject
   private EventDao dao;
-  private String chanName;
-  private String chanKey;
-  private String message;
+  @Inject
+  private ChannelDao channelDao;
 
-  @Override
-  protected TestJavabot createBot() {
-    ChannelEventTestJavabot bot = injector.getInstance(ChannelEventTestJavabot.class);
-    bot.start();
-    return bot;
-  }
+  private static final String KEYED_CHANNEL = "##testKeyedChannel";
 
   @Test
   public void addChannel() throws InterruptedException {
     getJavabot();
     String name = "##testChannel";
     ChannelEvent event = new ChannelEvent(name, EventType.ADD, "testng");
-    latch = new CountDownLatch(1);
     dao.save(event);
-    latch.await(60, TimeUnit.SECONDS);
-    Assert.assertEquals(latch.getCount(), 0);
-    Assert.assertEquals(chanName, name);
-    Assert.assertNull(chanKey);
+    waitForEvent(event, "adding channel " + name, Duration.ONE_MINUTE);
+    Assert.assertNotNull(channelDao.get(name));
   }
 
   @Test
   public void addKeyedChannel() throws InterruptedException {
-    String name = "##testChannel";
+    getJavabot();
     String key = "abcdef";
-    ChannelEvent event = new ChannelEvent(name, key, EventType.ADD, "testng");
-    latch = new CountDownLatch(1);
+    ChannelEvent event = new ChannelEvent(KEYED_CHANNEL, key, EventType.ADD, "testng");
     dao.save(event);
-    latch.await(60, TimeUnit.SECONDS);
-    Assert.assertEquals(latch.getCount(), 0);
-    Assert.assertEquals(chanName, name);
-    Assert.assertEquals(chanKey, key);
+    waitForEvent(event, "adding keyed channel " + KEYED_CHANNEL, Duration.ONE_MINUTE);
+    Assert.assertNotNull(channelDao.get(KEYED_CHANNEL));
   }
 
   @Test
   public void leave() throws InterruptedException {
-    String name = "##testChannel";
-    ChannelEvent event = new ChannelEvent(name, EventType.DELETE, "testng");
-    latch = new CountDownLatch(1);
+    getJavabot();
+    ChannelEvent event = new ChannelEvent(KEYED_CHANNEL, EventType.DELETE, "testng");
     dao.save(event);
-    latch.await(60, TimeUnit.SECONDS);
-    Assert.assertEquals(latch.getCount(), 0);
-    Assert.assertEquals(name, name);
-    Assert.assertEquals(message, Sofia.channelDeleted("testng"));
+    waitForEvent(event, "leaving channel " + KEYED_CHANNEL, Duration.ONE_MINUTE);
+    Assert.assertNull(channelDao.get(KEYED_CHANNEL));
   }
 
   @Test
   public void update() throws InterruptedException {
     String name = "##testChannel";
-    ChannelEvent event = new ChannelEvent(name, EventType.UPDATE, "testng");
-    latch = new CountDownLatch(2);
+    ChannelEvent event = new ChannelEvent(name, "newKey", EventType.UPDATE, "testng");
     dao.save(event);
-    latch.await(60, TimeUnit.SECONDS);
-    Assert.assertEquals(latch.getCount(), 0);
-    Assert.assertEquals(name, name);
-    Assert.assertEquals(message, Sofia.channelUpdated());
-  }
+    waitForEvent(event, "updating channel " + name, Duration.ONE_MINUTE);
+    Channel channel = channelDao.get(name);
+    Assert.assertNotNull(channel);
+    Assert.assertEquals(channel.getKey(), "newKey");
 
-  private class ChannelEventTestJavabot extends TestJavabot {
-    @Override
-    public void join(String name, String key) {
-      chanName = name;
-      chanKey = key;
-      latch.countDown();
-    }
-
-    @Override
-    public void leave(String name, String reason) {
-      chanName = name;
-      message = reason;
-      latch.countDown();
-    }
   }
 }
