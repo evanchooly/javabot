@@ -9,6 +9,7 @@ require:
         exclude:
             - commons-logging -> *
     - play -> paginate 0.14
+    - com.antwerkz.javabot -> core 5.0.0-SNAPSHOT
 
 #   - play -> securesocial 0.2.4
 #    - play -> fastergt 1.3

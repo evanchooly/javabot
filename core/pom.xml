@@ -6,13 +6,12 @@
     </properties>
 
     <parent>
-        <groupId>javabot</groupId>
+        <groupId>com.antwerkz.javabot</groupId>
         <artifactId>javabot</artifactId>
         <version>5.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>javabot</groupId>
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
 
@@ -38,7 +37,7 @@
         </dependency>
 
         <dependency>
-            <groupId>javabot</groupId>
+            <groupId>com.antwerkz.javabot</groupId>
             <artifactId>apt-tools</artifactId>
             <scope>compile</scope>
         </dependency>
