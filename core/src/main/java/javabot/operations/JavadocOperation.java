@@ -10,18 +10,18 @@ import com.google.inject.persist.Transactional;
 import javabot.IrcEvent;
 import javabot.Message;
 import javabot.dao.ApiDao;
-import javabot.dao.ClazzDao;
-import javabot.javadoc.Api;
-import javabot.javadoc.Clazz;
-import javabot.javadoc.Field;
-import javabot.javadoc.Method;
+import javabot.dao.JavadocClassDao;
+import javabot.javadoc.JavadocApi;
+import javabot.javadoc.JavadocClass;
+import javabot.javadoc.JavadocField;
+import javabot.javadoc.JavadocMethod;
 
 @SPI(BotOperation.class)
 public class JavadocOperation extends BotOperation {
   @Inject
   private ApiDao apiDao;
   @Inject
-  private ClazzDao dao;
+  private JavadocClassDao dao;
   private static final int RESULT_LIMIT = 5;
 
   @Override
@@ -34,7 +34,7 @@ public class JavadocOperation extends BotOperation {
       if (key.startsWith("-list") || key.isEmpty()) {
         displayApiList(event, responses);
       } else {
-        Api api = null;
+        JavadocApi api = null;
         if (key.startsWith("-")) {
           if (key.contains(" ")) {
             api = apiDao.find(key.substring(1, key.indexOf(" ")));
@@ -51,7 +51,7 @@ public class JavadocOperation extends BotOperation {
     return responses;
   }
 
-  private void buildResponse(IrcEvent event, List<Message> responses, Api api, String key) {
+  private void buildResponse(IrcEvent event, List<Message> responses, JavadocApi api, String key) {
     final List<String> urls = handle(api, key);
     if (!urls.isEmpty()) {
       StringBuilder urlMessage = new StringBuilder(event.getSender() + ": ");
@@ -81,7 +81,7 @@ public class JavadocOperation extends BotOperation {
     return urlMessage;
   }
 
-  public List<String> handle(final Api api, final String key) {
+  public List<String> handle(final JavadocApi api, final String key) {
     final List<String> urls = new ArrayList<>();
     final int openIndex = key.indexOf('(');
     if (openIndex == -1) {
@@ -92,7 +92,7 @@ public class JavadocOperation extends BotOperation {
     return urls;
   }
 
-  private void parseFieldOrClassRequest(final List<String> urls, Api api, final String key) {
+  private void parseFieldOrClassRequest(final List<String> urls, JavadocApi api, final String key) {
     final int finalIndex = key.lastIndexOf('.');
     if (finalIndex == -1) {
       findClasses(api, urls, key);
@@ -102,28 +102,28 @@ public class JavadocOperation extends BotOperation {
       if (Character.isUpperCase(fieldName.charAt(0)) && !fieldName.toUpperCase().equals(fieldName)) {
         findClasses(api, urls, key);
       } else {
-        final List<Field> list = dao.getField(api, className, fieldName);
-        for (final Field field : list) {
+        final List<JavadocField> list = dao.getField(api, className, fieldName);
+        for (final JavadocField field : list) {
           urls.add(field.getDisplayUrl(field.toString(), dao));
         }
       }
     }
   }
 
-  private void findClasses(Api api, final List<String> urls, final String key) {
-    for (final Clazz clazz : dao.getClass(api, key)) {
-      urls.add(clazz.getDisplayUrl(clazz.toString(), dao));
+  private void findClasses(JavadocApi api, final List<String> urls, final String key) {
+    for (final JavadocClass javadocClass : dao.getClass(api, key)) {
+      urls.add(javadocClass.getDisplayUrl(javadocClass.toString(), dao));
     }
   }
 
-  private void parseMethodRequest(final List<String> urls, Api api, final String key, final int openIndex) {
+  private void parseMethodRequest(final List<String> urls, JavadocApi api, final String key, final int openIndex) {
     final int finalIndex = key.lastIndexOf('.', openIndex);
     final int closeIndex = key.indexOf(')');
     if (closeIndex != -1) {
       String className = key.substring(0, finalIndex);
       final String methodName = key.substring(finalIndex + 1, openIndex);
       final String signatureTypes = key.substring(openIndex + 1, closeIndex);
-      for (final Method method : dao.getMethods(api, className, methodName, signatureTypes)) {
+      for (final JavadocMethod method : dao.getMethods(api, className, methodName, signatureTypes)) {
         urls.add(method.getDisplayUrl(method.toString(), dao));
       }
     }
@@ -131,7 +131,7 @@ public class JavadocOperation extends BotOperation {
 
   private void displayApiList(final IrcEvent event, final List<Message> responses) {
     final StringBuilder builder = new StringBuilder();
-    for (final Api api : apiDao.findAll()) {
+    for (final JavadocApi api : apiDao.findAll()) {
       if (builder.length() != 0) {
         builder.append("; ");
       }

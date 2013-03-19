@@ -9,7 +9,7 @@ import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.ApiDao;
-import javabot.javadoc.Api;
+import javabot.javadoc.JavadocApi;
 
 /**
  * Created Jan 9, 2009
@@ -28,7 +28,7 @@ public class DropApi extends AdminCommand {
   public List<Message> execute(final Javabot bot, final IrcEvent event) {
     final List<Message> responses = new ArrayList<Message>();
     final String destination = event.getChannel();
-    final Api api = dao.find(name);
+    final JavadocApi api = dao.find(name);
     if (api != null) {
       drop(responses, event, destination, api, dao);
     } else {
@@ -38,7 +38,7 @@ public class DropApi extends AdminCommand {
     return responses;
   }
 
-  private void drop(final List<Message> responses, final IrcEvent event, final String destination, final Api api,
+  private void drop(final List<Message> responses, final IrcEvent event, final String destination, final JavadocApi api,
       final ApiDao apiDao) {
     responses.add(new Message(destination, event, String.format("removing old %s javadoc", api.getName())));
     apiDao.delete(api);

@@ -5,21 +5,21 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javabot.javadoc.Api;
-import javabot.javadoc.Clazz;
-import javabot.javadoc.Field;
-import javabot.javadoc.Method;
+import javabot.javadoc.JavadocApi;
+import javabot.javadoc.JavadocClass;
+import javabot.javadoc.JavadocField;
+import javabot.javadoc.JavadocMethod;
 import javabot.javadoc.criteria.ClazzCriteria;
 import javabot.javadoc.criteria.FieldCriteria;
 import javabot.javadoc.criteria.MethodCriteria;
 
-public class ClazzDao extends BaseDao<Clazz> {
-  protected ClazzDao() {
-    super(Clazz.class);
+public class JavadocClassDao extends BaseDao<JavadocClass> {
+  protected JavadocClassDao() {
+    super(JavadocClass.class);
   }
 
   @SuppressWarnings({"unchecked"})
-  public Clazz[] getClass(final Api api, final String name) {
+  public JavadocClass[] getClass(final JavadocApi api, final String name) {
     final String[] strings = calculateNameAndPackage(name);
     final String pkgName = strings[0];
     ClazzCriteria criteria = new ClazzCriteria(ds);
@@ -30,24 +30,24 @@ public class ClazzDao extends BaseDao<Clazz> {
     if (pkgName != null) {
       criteria.upperPackage().equal(pkgName.toUpperCase());
     }
-    return criteria.query().asList().toArray(new Clazz[0]);
+    return criteria.query().asList().toArray(new JavadocClass[0]);
   }
 
   @SuppressWarnings({"unchecked"})
-  public Clazz[] getClass(final String pkg, final String name) {
+  public JavadocClass[] getClass(final String pkg, final String name) {
     final ClazzCriteria criteria = new ClazzCriteria(ds);
     criteria.upperPackage().equal(pkg.toUpperCase());
     criteria.upperName().equal(name.toUpperCase());
-    return criteria.query().asList().toArray(new Clazz[0]);
+    return criteria.query().asList().toArray(new JavadocClass[0]);
   }
 
   @SuppressWarnings({"unchecked"})
-  public List<Field> getField(Api api, final String className, final String fieldName) {
+  public List<JavadocField> getField(JavadocApi api, final String className, final String fieldName) {
     final FieldCriteria criteria = new FieldCriteria(ds);
-    Clazz[] classes = getClass(api, className);
+    JavadocClass[] classes = getClass(api, className);
     if (classes.length != 0) {
-      Clazz clazz = classes[0];
-      criteria.classId().equal(clazz.getId());
+      JavadocClass javadocClass = classes[0];
+      criteria.classId().equal(javadocClass.getId());
       criteria.upperName().equal(fieldName.toUpperCase());
       return criteria.query().asList();
     }
@@ -55,24 +55,24 @@ public class ClazzDao extends BaseDao<Clazz> {
   }
 
   @SuppressWarnings({"unchecked"})
-  public List<Method> getMethods(Api api, final String className, final String methodName,
+  public List<JavadocMethod> getMethods(JavadocApi api, final String className, final String methodName,
       final String signatureTypes) {
-    final Clazz[] classes = getClass(api, className);
-    List<Clazz> list = new ArrayList<>(Arrays.asList(classes));
-    final List<Method> methods = new ArrayList<>();
+    final JavadocClass[] classes = getClass(api, className);
+    List<JavadocClass> list = new ArrayList<>(Arrays.asList(classes));
+    final List<JavadocMethod> methods = new ArrayList<>();
     while (!list.isEmpty()) {
-      Clazz clazz = list.remove(0);
-      if (clazz != null) {
-        methods.addAll(getMethods(methodName, signatureTypes, clazz));
-        list.add(find(clazz.getSuperClassId()));
+      JavadocClass javadocClass = list.remove(0);
+      if (javadocClass != null) {
+        methods.addAll(getMethods(methodName, signatureTypes, javadocClass));
+        list.add(find(javadocClass.getSuperClassId()));
       }
     }
     return methods;
   }
 
-  private List getMethods(final String name, final String signatureTypes, final Clazz clazz) {
+  private List getMethods(final String name, final String signatureTypes, final JavadocClass javadocClass) {
     final MethodCriteria criteria = new MethodCriteria(ds);
-    criteria.clazzId().equal(clazz.getId());
+    criteria.clazzId().equal(javadocClass.getId());
     criteria.upperMethodName().equal(name.toUpperCase());
     if (!"*".equals(signatureTypes)) {
       criteria.or(
@@ -83,22 +83,26 @@ public class ClazzDao extends BaseDao<Clazz> {
     return criteria.query().asList();
   }
 
-  public void delete(Clazz clazz) {
-    deleteFields(clazz);
-    deleteMethods(clazz);
-    super.delete(clazz);
+  public void delete(JavadocClass javadocClass) {
+    deleteFields(javadocClass);
+    deleteMethods(javadocClass);
+    super.delete(javadocClass);
   }
 
-  private void deleteFields(final Clazz clazz) {
+  private void deleteFields(final JavadocClass javadocClass) {
     FieldCriteria criteria = new FieldCriteria(ds);
-    criteria.classId().equal(clazz.getId());
+    criteria.classId().equal(javadocClass.getId());
     ds.delete(criteria.query());
   }
 
-  private void deleteMethods(final Clazz clazz) {
+  private void deleteMethods(final JavadocClass javadocClass) {
     MethodCriteria criteria = new MethodCriteria(ds);
-    criteria.clazzId().equal(clazz.getId());
+    criteria.clazzId().equal(javadocClass.getId());
     ds.delete(criteria.query());
+  }
+
+  public long countMethods() {
+    return ds.getCount(JavadocMethod.class);
   }
 
   private String[] calculateNameAndPackage(final String name) {
@@ -110,7 +114,7 @@ public class ClazzDao extends BaseDao<Clazz> {
     return new String[]{pkgName, clsName};
   }
 
-  public void deleteFor(final Api api) {
+  public void deleteFor(final JavadocApi api) {
     FieldCriteria fields = new FieldCriteria(ds);
     fields.apiId().equal(api.getId());
     ds.delete(fields.query());

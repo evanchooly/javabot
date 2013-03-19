@@ -16,7 +16,7 @@ import org.bson.types.ObjectId;
     @Index("apiName"),
 })
 
-public class Field extends JavadocElement {
+public class JavadocField extends JavadocElement {
   @Id
   private ObjectId id;
   private ObjectId apiId;
@@ -27,10 +27,10 @@ public class Field extends JavadocElement {
   private String type;
   private String apiName;
 
-  public Field() {
+  public JavadocField() {
   }
 
-  public Field(final Clazz parent, final String fieldName, final String fieldType) {
+  public JavadocField(final JavadocClass parent, final String fieldName, final String fieldType) {
     classId = parent.getId();
     name = fieldName;
     type = fieldType;

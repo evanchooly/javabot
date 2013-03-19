@@ -5,8 +5,7 @@ import javax.persistence.Table;
 
 import play.db.jpa.Model;
 
-@Entity
-("registrations")
+@Entity ("registrations")
 public class NickRegistration extends Model {
   public String url;
   public String nick;

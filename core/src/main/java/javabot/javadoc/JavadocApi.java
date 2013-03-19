@@ -20,8 +20,8 @@ import org.slf4j.LoggerFactory;
     @Index(value = "name", unique = true),
     @Index(value = "upperName", unique = true)
 })
-public class Api implements Persistent {
-  private static final Logger log = LoggerFactory.getLogger(Api.class);
+public class JavadocApi implements Persistent {
+  private static final Logger log = LoggerFactory.getLogger(JavadocApi.class);
 
   @Id
   private ObjectId id;
@@ -36,10 +36,10 @@ public class Api implements Persistent {
 
   public static final List<String> JDK_JARS = Arrays.asList("rt.jar", "jce.jar");
 
-  public Api() {
+  public JavadocApi() {
   }
 
-  public Api(final String apiName, final String url, final String pkgs) {
+  public JavadocApi(final String apiName, final String url, final String pkgs) {
     name = apiName;
     baseUrl = url.endsWith("/") ? url : url + "/";
     packages = pkgs;

@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import com.google.inject.persist.Transactional;
 import javabot.JavabotThreadFactory;
 import javabot.dao.ApiDao;
-import javabot.dao.ClazzDao;
+import javabot.dao.JavadocClassDao;
 import org.objectweb.asm.ClassReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,16 +37,16 @@ public class JavadocParser {
   @Inject
   private ApiDao apiDao;
   @Inject
-  private ClazzDao dao;
+  private JavadocClassDao dao;
   private final BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
   private final ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 30, 30, TimeUnit.SECONDS, workQueue,
       new JavabotThreadFactory(false, "javadoc-thread-"));
-  private Api api;
+  private JavadocApi api;
   private List<String> packages;
-  private final Map<String, List<Clazz>> deferred = new HashMap<>();
+  private final Map<String, List<JavadocClass>> deferred = new HashMap<>();
 
   @Transactional
-  public void parse(final Api classApi, String location, final Writer writer) {
+  public void parse(final JavadocApi classApi, String location, final Writer writer) {
     api = classApi;
     try {
       File tmpDir = new File("/tmp");
@@ -110,43 +110,43 @@ public class JavadocParser {
     return false;
   }
 
-  public Clazz getOrQueue(final Api api, final String pkg, final String name, final Clazz newClazz) {
+  public JavadocClass getOrQueue(final JavadocApi api, final String pkg, final String name, final JavadocClass newJavadocClass) {
     synchronized (deferred) {
-      Clazz parent = null;
-      for (Clazz clazz : dao.getClass(pkg, name)) {
-        if (clazz.getApiId().equals(api.getId())) {
-          parent = clazz;
+      JavadocClass parent = null;
+      for (JavadocClass javadocClass : dao.getClass(pkg, name)) {
+        if (javadocClass.getApiId().equals(api.getId())) {
+          parent = javadocClass;
         }
       }
       if (parent == null) {
         final String fqcn = pkg + "." + name;
-        List<Clazz> list = deferred.get(fqcn);
+        List<JavadocClass> list = deferred.get(fqcn);
         if (list == null) {
           list = new ArrayList<>();
           deferred.put(fqcn, list);
         }
-        list.add(newClazz);
+        list.add(newJavadocClass);
       }
       return parent;
     }
   }
 
-  public Clazz getOrCreate(final Api api, final String pkg, final String name) {
+  public JavadocClass getOrCreate(final JavadocApi api, final String pkg, final String name) {
     synchronized (deferred) {
-      Clazz cls = null;
-      for (Clazz clazz : dao.getClass(pkg, name)) {
-        if (clazz.getApiId().equals(api.getId())) {
-          cls = clazz;
+      JavadocClass cls = null;
+      for (JavadocClass javadocClass : dao.getClass(pkg, name)) {
+        if (javadocClass.getApiId().equals(api.getId())) {
+          cls = javadocClass;
         }
       }
       if (cls == null) {
-        cls = new Clazz(api, pkg, name);
+        cls = new JavadocClass(api, pkg, name);
         dao.save(cls);
       }
-      final List<Clazz> list = deferred.get(pkg + "." + name);
+      final List<JavadocClass> list = deferred.get(pkg + "." + name);
       if (list != null) {
-        for (Clazz subclass : list) {
-          subclass.setSuperClassId(cls);
+        for (JavadocClass subclass : list) {
+          subclass.setSuperClassId(cls.getSuperClassId());
           dao.save(subclass);
         }
         deferred.remove(pkg + "." + name);
@@ -155,7 +155,7 @@ public class JavadocParser {
     }
   }
 
-  public Api getApi() {
+  public JavadocApi getApi() {
     return api;
   }
 }

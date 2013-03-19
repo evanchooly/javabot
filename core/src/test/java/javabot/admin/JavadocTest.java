@@ -14,7 +14,7 @@ import com.jayway.awaitility.Duration;
 import javabot.BaseTest;
 import javabot.Message;
 import javabot.dao.ApiDao;
-import javabot.dao.ClazzDao;
+import javabot.dao.JavadocClassDao;
 import javabot.model.ApiEvent;
 import javabot.model.EventType;
 import javabot.operations.BaseOperationTest;
@@ -27,7 +27,7 @@ public class JavadocTest extends BaseOperationTest {
   private ApiDao apiDao;
 
   @Inject
-  private ClazzDao clazzDao;
+  private JavadocClassDao javadocClassDao;
 
   private static final String API_NAME = "Servlet";
 
@@ -59,7 +59,7 @@ public class JavadocTest extends BaseOperationTest {
     }
 
     List<Message> messages = getJavabot().getMessages();
-    Assert.assertTrue(clazzDao.getClass("java.lang", "Integer").length == 1);
+    Assert.assertTrue(javadocClassDao.getClass("java.lang", "Integer").length == 1);
   }
 
   private void addTestApi(final File file) {
@@ -75,7 +75,7 @@ public class JavadocTest extends BaseOperationTest {
 
     List<Message> messages = getJavabot().getMessages();
 
-    Assert.assertTrue(clazzDao.getClass("javax.servlet.http", "HttpServletRequest").length == 1);
+    Assert.assertTrue(javadocClassDao.getClass("javax.servlet.http", "HttpServletRequest").length == 1);
 
   }
 

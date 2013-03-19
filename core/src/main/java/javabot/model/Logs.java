@@ -16,87 +16,94 @@ import org.bson.types.ObjectId;
 })
 @SPI(Persistent.class)
 public class Logs implements Serializable, Persistent {
-    @Id
-    private ObjectId id;
-    private String nick;
-    private String upperNick;
-    private String channel;
-    private String message;
-    private Date updated;
+  @Id
+  private ObjectId id;
 
-    public enum Type {
-        ACTION,
-        BAN,
-        DISCONNECTED,
-        ERROR,
-        INVITE,
-        JOIN,
-        PART,
-        KICK,
-        MESSAGE,
-        QUIT,
-        REGISTERED, TOPIC, NICK,
-    }
+  private String nick;
 
-    private Type type;
+  private String upperNick;
 
-    public ObjectId getId() {
-        return id;
-    }
+  private String channel;
 
-    public void setId(final ObjectId logsId) {
-        id = logsId;
-    }
+  private String message;
 
-    public String getNick() {
-        return nick;
-    }
+  private Date updated;
 
-    public void setNick(final String user) {
-        nick = user;
-    }
+  public enum Type {
+    ACTION,
+    BAN,
+    DISCONNECTED,
+    ERROR,
+    INVITE,
+    JOIN,
+    PART,
+    KICK,
+    MESSAGE,
+    QUIT,
+    REGISTERED,
+    TOPIC,
+    NICK,
+  }
 
-    public String getChannel() {
-        return channel;
-    }
+  private Type type;
 
-    public void setChannel(final String chanName) {
-        channel = chanName;
-    }
+  public ObjectId getId() {
+    return id;
+  }
 
-    public String getMessage() {
-        return message;
-    }
+  public void setId(final ObjectId logsId) {
+    id = logsId;
+  }
 
-    public void setMessage(final String logMessage) {
-        message = logMessage;
-    }
+  public String getNick() {
+    return nick;
+  }
 
-    public Date getUpdated() {
-        return updated;
-    }
+  public void setNick(final String user) {
+    nick = user;
+  }
 
-    public void setUpdated(final Date date) {
-        updated = date;
-    }
+  public String getChannel() {
+    return channel;
+  }
 
-    public Type getType() {
-        return type;
-    }
+  public void setChannel(final String chanName) {
+    channel = chanName;
+  }
 
-    public void setType(final Type value) {
-        type = value;
-    }
+  public String getMessage() {
+    return message;
+  }
 
-    public boolean isAction() {
-        return message != null && Type.ACTION == getType();
-    }
+  public void setMessage(final String logMessage) {
+    message = logMessage;
+  }
 
-    public boolean isKick() {
-        return message != null && Type.KICK == getType();
-    }
+  public Date getUpdated() {
+    return updated;
+  }
 
-    public boolean isServerMessage() {
-        return message != null && Type.JOIN == getType() || Type.PART == getType() || Type.QUIT == getType();
-    }
+  public void setUpdated(final Date date) {
+    updated = date;
+  }
+
+  public Type getType() {
+    return type;
+  }
+
+  public void setType(final Type value) {
+    type = value;
+  }
+
+  public boolean isAction() {
+    return message != null && Type.ACTION == getType();
+  }
+
+  public boolean isKick() {
+    return message != null && Type.KICK == getType();
+  }
+
+  public boolean isServerMessage() {
+    return message != null && Type.JOIN == getType() || Type.PART == getType() || Type.QUIT == getType();
+  }
 }

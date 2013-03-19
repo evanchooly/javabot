@@ -15,10 +15,10 @@ import org.bson.types.ObjectId;
     @Index("clazzId, name"),
     @Index("apiName"),
 })
-public class Method extends JavadocElement {
+public class JavadocMethod extends JavadocElement {
   @Id
   private ObjectId id;
-  private ObjectId clazzId;
+  private ObjectId classId;
   private String parentName;
   private String methodName;
   private String upperMethodName;
@@ -28,13 +28,14 @@ public class Method extends JavadocElement {
   private String apiName;
   private ObjectId apiId;
 
-  public Method() {
+  public JavadocMethod() {
   }
 
-  public Method(final String apiName, final Clazz parent, final String name, final int count, final String longArgs,
+  public JavadocMethod(final String apiName, final JavadocClass parent, final String name, final int count,
+      final String longArgs,
       final String shortArgs) {
     methodName = name;
-    clazzId = parent.getId();
+    classId = parent.getId();
     parentName = parent.toString();
     paramCount = count;
     this.apiName = apiName;
@@ -51,8 +52,36 @@ public class Method extends JavadocElement {
     return apiName;
   }
 
+  public void setApiName(final String apiName) {
+    this.apiName = apiName;
+  }
+
   public ObjectId getId() {
     return id;
+  }
+
+  public ObjectId getApiId() {
+    return apiId;
+  }
+
+  public void setApiId(final ObjectId apiId) {
+    this.apiId = apiId;
+  }
+
+  public ObjectId getClassId() {
+    return classId;
+  }
+
+  public void setClassId(final ObjectId classId) {
+    this.classId = classId;
+  }
+
+  public String getParentName() {
+    return parentName;
+  }
+
+  public void setParentName(final String parentName) {
+    this.parentName = parentName;
   }
 
   public void setId(final ObjectId methodId) {

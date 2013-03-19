@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import javabot.dao.ApiDao;
-import javabot.dao.ClazzDao;
+import javabot.dao.JavadocClassDao;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
 public class JavadocClassVisitor extends ClassVisitor {
   private static final Logger log = LoggerFactory.getLogger(JavadocClassVisitor.class);
   @Inject
-  private ClazzDao dao;
+  private JavadocClassDao dao;
   private ApiDao apiDao;
-  private Clazz clazz;
+  private JavadocClass javadocClass;
   private JavadocParser parser;
   private static final Map<Character, String> PRIMITIVES = new HashMap<Character, String>();
 
@@ -33,10 +33,10 @@ public class JavadocClassVisitor extends ClassVisitor {
     PRIMITIVES.put('Z', "boolean");
   }
 
-  public JavadocClassVisitor(final JavadocParser javadocParser, final ClazzDao clazzDao, final ApiDao apiDao) {
+  public JavadocClassVisitor(final JavadocParser javadocParser, final JavadocClassDao javadocClassDao, final ApiDao apiDao) {
     super(Opcodes.ASM4);
     parser = javadocParser;
-    dao = clazzDao;
+    dao = javadocClassDao;
     this.apiDao = apiDao;
   }
 
@@ -47,15 +47,15 @@ public class JavadocClassVisitor extends ClassVisitor {
       final String pkg = getPackage(name);
       if (parser.acceptPackage(pkg) && isPublic(access)) {
         final String className = name.substring(name.lastIndexOf("/") + 1).replace('$', '.');
-        clazz = parser.getOrCreate(parser.getApi(), pkg, className);
+        javadocClass = parser.getOrCreate(parser.getApi(), pkg, className);
         if (superName != null) {
           String superPkg = getPackage(superName);
           String parentName = superName.substring(superName.lastIndexOf("/") + 1);
-          final Clazz parent = parser.getOrQueue(parser.getApi(), superPkg, parentName, clazz);
+          final JavadocClass parent = parser.getOrQueue(parser.getApi(), superPkg, parentName, javadocClass);
           if(parent != null) {
-            clazz.setSuperClassId(parent);
+            javadocClass.setSuperClassId(parent.getId());
           }
-          dao.save(clazz);
+          dao.save(javadocClass);
         }
       }
     } catch (Exception e) {
@@ -77,11 +77,11 @@ public class JavadocClassVisitor extends ClassVisitor {
   @Override
   public FieldVisitor visitField(final int access, final String name, final String desc, final String signature,
       final Object value) {
-    if (clazz != null && isPublic(access)) {
+    if (javadocClass != null && isPublic(access)) {
       StringBuilder longTypes = new StringBuilder();
       processParam(name, desc, signature, longTypes, new StringBuilder(), desc);
       final String type = longTypes.toString();
-      final Field field = new Field(clazz, name, type);
+      final JavadocField field = new JavadocField(javadocClass, name, type);
       dao.save(field);
     }
     return null;
@@ -90,14 +90,14 @@ public class JavadocClassVisitor extends ClassVisitor {
   @Override
   public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature,
       final String[] exceptions) {
-    if (clazz != null && isPublic(access)) {
+    if (javadocClass != null && isPublic(access)) {
       String params = desc.substring(1, desc.lastIndexOf(")"));
       StringBuilder longTypes = new StringBuilder();
       StringBuilder shortTypes = new StringBuilder();
       int count = processParam(name, desc, signature, longTypes, shortTypes, params);
-      Api api1 = apiDao.find(clazz.getApiId());
-      dao.save(new Method(api1.getName(), clazz,
-          "<init>".equals(name) ? clazz.getName() : name, count, longTypes.toString(), shortTypes.toString()));
+      JavadocApi api1 = apiDao.find(javadocClass.getApiId());
+      dao.save(new JavadocMethod(api1.getName(), javadocClass,
+          "<init>".equals(name) ? javadocClass.getName() : name, count, longTypes.toString(), shortTypes.toString()));
     }
     return null;
   }
@@ -122,7 +122,7 @@ public class JavadocClassVisitor extends ClassVisitor {
         arg = arg.substring(1);
       }
       if (base == null) {
-        log.debug("clazz = " + clazz);
+        log.debug("javadocClass = " + javadocClass);
         log.debug("name = " + name);
         log.debug("desc = " + desc);
         log.debug("signature = " + signature);

@@ -14,6 +14,7 @@
         <module>spi-apt</module>
         <module>apt-tools</module>
         <module>core</module>
+        <module>migration</module>
     </modules>
 
     <build>
@@ -21,10 +22,14 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.5.1</version>
+                    <inherited>true</inherited>
                     <configuration>
                         <source>1.7</source>
                         <target>1.7</target>
+                        <compilerArgument>-proc:none</compilerArgument>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -35,17 +40,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.5.1</version>
-                    <inherited>true</inherited>
-                    <configuration>
-                        <source>1.7</source>
-                        <target>1.7</target>
-                    </configuration>
+                    <version>2.4</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -160,7 +155,7 @@
             <dependency>
                 <groupId>postgresql</groupId>
                 <artifactId>postgresql</artifactId>
-                <version>9.0-801.jdbc4</version>
+                <version>9.1-902.jdbc4</version>
             </dependency>
 
             <dependency>
@@ -214,6 +209,11 @@
                 <groupId>com.google.inject.extensions</groupId>
                 <artifactId>guice-persist</artifactId>
                 <version>${guice.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongo-java-driver</artifactId>
+                <version>2.10.1</version>
             </dependency>
 
         </dependencies>

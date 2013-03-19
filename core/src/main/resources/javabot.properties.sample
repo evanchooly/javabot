@@ -7,3 +7,9 @@ javabot.nick=
 javabot.password=
 javabot.admin.nick=
 javabot.admin.hostmask=
+
+### Needed only to migrate from RDBMS to mongo
+jdbc.url=jdbc:postgresql:javabot
+jdbc.username=javabot
+jdbc.password=javabot
+jdbc.driver=org.postgresql.Driver

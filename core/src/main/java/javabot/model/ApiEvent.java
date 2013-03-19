@@ -11,7 +11,7 @@ import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.AdminDao;
 import javabot.dao.ApiDao;
-import javabot.javadoc.Api;
+import javabot.javadoc.JavadocApi;
 import javabot.javadoc.JavadocParser;
 
 @Entity("events")
@@ -68,14 +68,14 @@ public class ApiEvent extends AdminEvent {
   }
 
   public void delete(Javabot bot) {
-    Api api = apiDao.find(name);
+    JavadocApi api = apiDao.find(name);
     if(api != null) {
       apiDao.delete(api);
     }
   }
 
   public void add(final Javabot bot) {
-    Api api = new Api(name, baseUrl, packages);
+    JavadocApi api = new JavadocApi(name, baseUrl, packages);
     apiDao.save(api);
 
     final Admin admin = adminDao.getAdmin(getRequestedBy());

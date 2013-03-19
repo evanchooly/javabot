@@ -4,7 +4,7 @@ import javax.inject.Inject;
 
 import javabot.BaseTest;
 import javabot.dao.ApiDao;
-import javabot.dao.ClazzDao;
+import javabot.dao.JavadocClassDao;
 import org.testng.annotations.Test;
 
 @Test(dependsOnMethods = {"javabot.admin.JavadocTest.addJdk"})
@@ -12,7 +12,7 @@ public class JavadocOperationTest extends BaseOperationTest {
   @Inject
   private ApiDao apiDao;
   @Inject
-  private ClazzDao clazzDao;
+  private JavadocClassDao javadocClassDao;
 
   public void methods() {
     scanForResponse("~javadoc String.split(String)", "[JDK: java.lang.String.split(String)]");

@@ -18,24 +18,24 @@ import org.bson.types.ObjectId;
     @Index(value = "upperName"),
     @Index(value = "upperPackageName, upperName")
 })
-public class Clazz extends JavadocElement {
+public class JavadocClass extends JavadocElement {
   @Id
   private ObjectId id;
-  private Api api;
+  private JavadocApi api;
   private ObjectId apiId;
   private String packageName;
   private String upperPackage;
   private String name;
   private String upperName;
   private ObjectId superClassId;
-  private List<Method> methods = new ArrayList<>();
-  private List<Field> fields = new ArrayList<>();
+  private List<JavadocMethod> methods = new ArrayList<>();
+  private List<JavadocField> fields = new ArrayList<>();
   private String apiName;
 
-  public Clazz() {
+  public JavadocClass() {
   }
 
-  public Clazz(final Api api, final String pkg, final String name) {
+  public JavadocClass(final JavadocApi api, final String pkg, final String name) {
     apiId = api.getId();
     apiName = api.getName();
     packageName = pkg;
@@ -52,7 +52,7 @@ public class Clazz extends JavadocElement {
     id = classId;
   }
 
-  public void setApi(final Api api) {
+  public void setApi(final JavadocApi api) {
     this.api = api;
   }
 
@@ -89,23 +89,23 @@ public class Clazz extends JavadocElement {
     return superClassId;
   }
 
-  public void setSuperClassId(final Clazz aClass) {
-    superClassId = aClass.getId();
+  public void setSuperClassId(final ObjectId classId) {
+    superClassId = classId;
   }
 
-  public List<Method> getMethods() {
+  public List<JavadocMethod> getMethods() {
     return methods;
   }
 
-  public void setMethods(final List<Method> list) {
+  public void setMethods(final List<JavadocMethod> list) {
     methods = list;
   }
 
-  public List<Field> getFields() {
+  public List<JavadocField> getFields() {
     return fields;
   }
 
-  public void setFields(final List<Field> list) {
+  public void setFields(final List<JavadocField> list) {
     fields = list;
   }
 

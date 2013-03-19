@@ -8,9 +8,7 @@ import javabot.IrcEvent;
 import javabot.IrcUser;
 import javabot.Message;
 import org.testng.Assert;
-import org.unitils.spring.annotation.SpringApplicationContext;
 
-@SpringApplicationContext("classpath:applicationContext.xml")
 public abstract class BaseOperationTest extends BaseTest {
   protected void scanForResponse(final String message, final String target) {
     final List<Message> list = sendMessage(message);
