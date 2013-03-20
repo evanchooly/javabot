@@ -34,6 +34,7 @@ import javabot.javadoc.JavadocField;
 import javabot.javadoc.JavadocMethod;
 import javabot.model.Change;
 import javabot.model.Channel;
+import javabot.model.Config;
 import javabot.model.Factoid;
 import javabot.model.Karma;
 import javabot.model.Logs;
@@ -75,13 +76,35 @@ public class Migrator {
     logsDao.save(channel);
   }
 
-  private void configuration(final ResultSet resultSet) {
-  }
-
-  private void configuration_operations() {
-  }
-
-  private void events(final ResultSet resultSet) {
+  private Object configuration() throws SQLException {
+    System.out.println("Migrating configuration");
+    Config config = new Config();
+    try (Statement statement = connection.createStatement();
+         ResultSet resultSet = statement.executeQuery("select * from configuration")) {
+      if (resultSet.next()) {
+        config.setId(new ObjectId());
+        config.setHistoryLength(resultSet.getInt("historylength"));
+        config.setNick(resultSet.getString("nick"));
+        config.setPassword(resultSet.getString("password"));
+        config.setPort(resultSet.getInt("port"));
+        config.setServer(resultSet.getString("server"));
+        config.setSchemaVersion(resultSet.getInt("schemaversion"));
+        config.setTrigger(resultSet.getString("trigger"));
+        config.setUrl(resultSet.getString("url"));
+      }
+    } catch(Exception e) {
+      e.printStackTrace();
+      System.exit(-1);
+    }
+    try (Statement statement = connection.createStatement();
+         ResultSet resultSet = statement.executeQuery("select * from configuration_operations")) {
+      while (resultSet.next()) {
+        config.getOperations().add(resultSet.getString("element"));
+      }
+    }
+    logsDao.save(config);
+    System.out.println("Finished migrating configuration");
+    return null;
   }
 
   private void factoids(final ResultSet resultSet) throws SQLException {
@@ -175,7 +198,6 @@ public class Migrator {
     method.setParamCount(resultSet.getInt("paramcount"));
     method.setShortSignatureTypes(resultSet.getString("shortsignaturestripped"));
     method.setDirectUrl(resultSet.getString("directurl"));
-
     ObjectId classId = lookupId("classes", resultSet.getLong("clazz_id"));
     method.setClassId(classId);
     JavadocClass javadocClass = javadocClassDao.find(classId);
@@ -192,7 +214,6 @@ public class Migrator {
     field.setShortUrl(resultSet.getString("shorturl"));
     field.setName(resultSet.getString("name"));
     field.setType(resultSet.getString("type"));
-
     ObjectId clazzId = lookupId("classes", resultSet.getLong("clazz_id"));
     field.setClassId(clazzId);
     JavadocClass javadocClass = javadocClassDao.find(clazzId);
@@ -237,6 +258,16 @@ public class Migrator {
       executorService.submit(new TableIterator("registrations") {
         public void callOut(final ResultSet resultSet) throws SQLException {
           registrations(resultSet);
+        }
+      });
+      executorService.submit(new TableIterator("shun") {
+        public void callOut(final ResultSet resultSet) throws SQLException {
+          shun(resultSet);
+        }
+      });
+      executorService.submit(new Callable<Object>() {
+        public Object call() throws SQLException {
+          return configuration();
         }
       });
       executorService.submit(new Callable<Object>() {
@@ -341,15 +372,8 @@ public class Migrator {
             throw new RuntimeException(e.getMessage(), e);
           }
           start += count;
-          if ("methods".equals(table)) {
-            long newCount = javadocClassDao.countMethods();
-            if (newCount != start) {
-              System.out.printf("Count is off now: %s vs %s\n", start, newCount);
-            }
-          }
         }
         System.out.println("Finished migrating " + table);
-        System.out.println("start = " + start);
         return null;
       } catch (Throwable e) {
         e.printStackTrace();
