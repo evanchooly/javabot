@@ -6,6 +6,7 @@ import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Index;
 import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.PrePersist;
+import com.google.code.morphia.annotations.Reference;
 import javabot.model.Persistent;
 import org.bson.types.ObjectId;
 
@@ -13,50 +14,39 @@ import org.bson.types.ObjectId;
 @SPI(Persistent.class)
 @Indexes({
     @Index("clazzId, name"),
-    @Index("apiName"),
 })
 
 public class JavadocField extends JavadocElement {
   @Id
   private ObjectId id;
-  private ObjectId apiId;
-  private ObjectId classId;
+  @Reference
+  private JavadocApi api;
+  @Reference
+  private JavadocClass javadocClass;
   private String name;
   private String upperName;
-  private String parentName;
+
   private String type;
-  private String apiName;
 
   public JavadocField() {
   }
 
   public JavadocField(final JavadocClass parent, final String fieldName, final String fieldType) {
-    classId = parent.getId();
+    javadocClass = parent;
     name = fieldName;
     type = fieldType;
-    apiName = parent.getApiName();
-    apiId = parent.getApiId();
-    parentName = parent.toString();
+    api = parent.getApi();
     String url = parent.getDirectUrl() + "#" + name;
     setLongUrl(url);
     setDirectUrl(url);
   }
 
-  public ObjectId getApiId() {
-    return apiId;
+  public JavadocApi getApi() {
+    return api;
   }
 
-  public void setApiId(final ObjectId apiId) {
-    this.apiId = apiId;
-  }
-
-  @Override
-  public String getApiName() {
-    return apiName;
-  }
-
-  public void setApiName(final String apiName) {
-    this.apiName = apiName;
+  public void setApi(final JavadocApi api) {
+    this.api = api;
   }
 
   public ObjectId getId() {
@@ -67,12 +57,12 @@ public class JavadocField extends JavadocElement {
     id = methodId;
   }
 
-  public ObjectId getClassId() {
-    return classId;
+  public JavadocClass getJavadocClass() {
+    return javadocClass;
   }
 
-  public void setClassId(final ObjectId classId) {
-    this.classId = classId;
+  public void setJavadocClass(final JavadocClass javadocClass) {
+    this.javadocClass = javadocClass;
   }
 
   public String getName() {
@@ -98,7 +88,7 @@ public class JavadocField extends JavadocElement {
 
   @Override
   public String toString() {
-    return parentName + "." + name + ":" + type;
+    return javadocClass + "#" + name + ":" + type;
   }
 
 }

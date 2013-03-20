@@ -17,10 +17,12 @@ public class JavadocClassVisitor extends ClassVisitor {
   private static final Logger log = LoggerFactory.getLogger(JavadocClassVisitor.class);
   @Inject
   private JavadocClassDao dao;
+  @Inject
   private ApiDao apiDao;
   private JavadocClass javadocClass;
+  @Inject
   private JavadocParser parser;
-  private static final Map<Character, String> PRIMITIVES = new HashMap<Character, String>();
+  private static final Map<Character, String> PRIMITIVES = new HashMap<>();
 
   static {
     PRIMITIVES.put('B', "byte");
@@ -33,11 +35,8 @@ public class JavadocClassVisitor extends ClassVisitor {
     PRIMITIVES.put('Z', "boolean");
   }
 
-  public JavadocClassVisitor(final JavadocParser javadocParser, final JavadocClassDao javadocClassDao, final ApiDao apiDao) {
+  public JavadocClassVisitor() {
     super(Opcodes.ASM4);
-    parser = javadocParser;
-    dao = javadocClassDao;
-    this.apiDao = apiDao;
   }
 
   @Override
@@ -53,7 +52,7 @@ public class JavadocClassVisitor extends ClassVisitor {
           String parentName = superName.substring(superName.lastIndexOf("/") + 1);
           final JavadocClass parent = parser.getOrQueue(parser.getApi(), superPkg, parentName, javadocClass);
           if(parent != null) {
-            javadocClass.setSuperClassId(parent.getId());
+            javadocClass.setSuperClass(parent);
           }
           dao.save(javadocClass);
         }
@@ -95,8 +94,7 @@ public class JavadocClassVisitor extends ClassVisitor {
       StringBuilder longTypes = new StringBuilder();
       StringBuilder shortTypes = new StringBuilder();
       int count = processParam(name, desc, signature, longTypes, shortTypes, params);
-      JavadocApi api1 = apiDao.find(javadocClass.getApiId());
-      dao.save(new JavadocMethod(api1.getName(), javadocClass,
+      dao.save(new JavadocMethod(javadocClass,
           "<init>".equals(name) ? javadocClass.getName() : name, count, longTypes.toString(), shortTypes.toString()));
     }
     return null;

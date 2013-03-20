@@ -26,6 +26,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import javabot.JavabotModule;
+import javabot.dao.ApiDao;
 import javabot.dao.JavadocClassDao;
 import javabot.dao.LogsDao;
 import javabot.javadoc.JavadocApi;
@@ -52,6 +53,9 @@ public class Migrator {
 
   @Inject
   private LogsDao logsDao;
+
+  @Inject
+  private ApiDao apiDao;
 
   @Inject
   private JavadocClassDao javadocClassDao;
@@ -199,10 +203,9 @@ public class Migrator {
     method.setShortSignatureTypes(resultSet.getString("shortsignaturestripped"));
     method.setDirectUrl(resultSet.getString("directurl"));
     ObjectId classId = lookupId("classes", resultSet.getLong("clazz_id"));
-    method.setClassId(classId);
     JavadocClass javadocClass = javadocClassDao.find(classId);
-    method.setApiId(javadocClass.getApiId());
-    method.setApiName(javadocClass.getApiName());
+    method.setJavadocClass(javadocClass);
+    method.setApi(javadocClass.getApi());
     javadocClassDao.save(method);
   }
 
@@ -215,10 +218,9 @@ public class Migrator {
     field.setName(resultSet.getString("name"));
     field.setType(resultSet.getString("type"));
     ObjectId clazzId = lookupId("classes", resultSet.getLong("clazz_id"));
-    field.setClassId(clazzId);
     JavadocClass javadocClass = javadocClassDao.find(clazzId);
-    field.setApiId(javadocClass.getApiId());
-    field.setApiName(javadocClass.getApiName());
+    field.setJavadocClass(javadocClass);
+    field.setApi(javadocClass.getApi());
     javadocClassDao.save(field);
 
   }
@@ -240,11 +242,11 @@ public class Migrator {
           channel(resultSet);
         }
       });
-      executorService.submit(new TableIterator("logs") {
-        public void callOut(final ResultSet resultSet) throws SQLException {
-          logs(resultSet);
-        }
-      });
+//      executorService.submit(new TableIterator("logs") {
+//        public void callOut(final ResultSet resultSet) throws SQLException {
+//          logs(resultSet);
+//        }
+//      });
       executorService.submit(new TableIterator("factoids") {
         public void callOut(final ResultSet resultSet) throws SQLException {
           factoids(resultSet);
@@ -414,7 +416,7 @@ public class Migrator {
           ObjectId parentId = lookupId("classes", resultSet.getLong("superclass_id"));
           if (parentId != null) {
             JavadocClass javadocClass = javadocClassDao.find(lookupId("classes", id));
-            javadocClass.setSuperClassId(parentId);
+            javadocClass.setSuperClass(javadocClassDao.find(parentId));
             javadocClassDao.save(javadocClass);
             return true;
           }
@@ -435,7 +437,7 @@ public class Migrator {
       javadocClass.setPackageName(resultSet.getString("packagename"));
       setSuperClassId(resultSet, javadocClass, id);
       ObjectId apiId = lookupId("apis", resultSet.getLong("api_id"));
-      javadocClass.setApiId(apiId);
+      javadocClass.setApi(apiDao.find(apiId));
       javadocClassDao.save(javadocClass);
     }
 
@@ -447,7 +449,7 @@ public class Migrator {
         if (objectId == null) {
           defer(id);
         } else {
-          javadocClass.setSuperClassId(objectId);
+          javadocClass.setSuperClass(javadocClassDao.find(objectId));
         }
       }
     }

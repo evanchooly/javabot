@@ -6,6 +6,7 @@ import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Index;
 import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.PrePersist;
+import com.google.code.morphia.annotations.Reference;
 import javabot.model.Persistent;
 import org.bson.types.ObjectId;
 
@@ -18,70 +19,52 @@ import org.bson.types.ObjectId;
 public class JavadocMethod extends JavadocElement {
   @Id
   private ObjectId id;
-  private ObjectId classId;
-  private String parentName;
+  @Reference
+  private JavadocApi api;
+  @Reference
+  private JavadocClass javadocClass;
+
   private String methodName;
   private String upperMethodName;
   private String longSignatureTypes;
   private String shortSignatureTypes;
   private Integer paramCount;
-  private String apiName;
-  private ObjectId apiId;
 
   public JavadocMethod() {
   }
 
-  public JavadocMethod(final String apiName, final JavadocClass parent, final String name, final int count,
-      final String longArgs,
-      final String shortArgs) {
+  public JavadocMethod(final JavadocClass parent, final String name, final int count,
+      final String longArgs, final String shortArgs) {
     methodName = name;
-    classId = parent.getId();
-    parentName = parent.toString();
     paramCount = count;
-    this.apiName = apiName;
-    apiId = parent.getApiId();
     longSignatureTypes = longArgs;
     shortSignatureTypes = shortArgs;
     final String url = parent.getDirectUrl() + "#" + methodName + "(" + longArgs + ")";
     setLongUrl(url);
     setDirectUrl(url);
-  }
 
-  @Override
-  public String getApiName() {
-    return apiName;
-  }
-
-  public void setApiName(final String apiName) {
-    this.apiName = apiName;
+    javadocClass = parent;
+    api = parent.getApi();
   }
 
   public ObjectId getId() {
     return id;
   }
 
-  public ObjectId getApiId() {
-    return apiId;
+  public JavadocApi getApi() {
+    return api;
   }
 
-  public void setApiId(final ObjectId apiId) {
-    this.apiId = apiId;
+  public void setApi(final JavadocApi api) {
+    this.api = api;
   }
 
-  public ObjectId getClassId() {
-    return classId;
+  public JavadocClass getJavadocClass() {
+    return javadocClass;
   }
 
-  public void setClassId(final ObjectId classId) {
-    this.classId = classId;
-  }
-
-  public String getParentName() {
-    return parentName;
-  }
-
-  public void setParentName(final String parentName) {
-    this.parentName = parentName;
+  public void setJavadocClass(final JavadocClass javadocClass) {
+    this.javadocClass = javadocClass;
   }
 
   public void setId(final ObjectId methodId) {
@@ -139,6 +122,6 @@ public class JavadocMethod extends JavadocElement {
 
   @Override
   public String toString() {
-    return parentName + "." + getShortSignature();
+    return javadocClass + "." + getShortSignature();
   }
 }

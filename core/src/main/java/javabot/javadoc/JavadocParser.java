@@ -17,7 +17,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+import com.google.inject.Injector;
 import com.google.inject.persist.Transactional;
 import javabot.JavabotThreadFactory;
 import javabot.dao.ApiDao;
@@ -26,23 +28,28 @@ import org.objectweb.asm.ClassReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Created Jan 9, 2009
- *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
- * @noinspection unchecked
- */
+@Singleton
 public class JavadocParser {
   private static final Logger log = LoggerFactory.getLogger(JavadocParser.class);
+
   @Inject
   private ApiDao apiDao;
+
   @Inject
   private JavadocClassDao dao;
+
+  @Inject
+  private Injector injector;
+
   private final BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
+
   private final ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 30, 30, TimeUnit.SECONDS, workQueue,
       new JavabotThreadFactory(false, "javadoc-thread-"));
+
   private JavadocApi api;
+
   private List<String> packages;
+
   private final Map<String, List<JavadocClass>> deferred = new HashMap<>();
 
   @Transactional
@@ -63,7 +70,7 @@ public class JavadocParser {
               @Override
               public void run() {
                 try {
-                  JavadocClassVisitor visitor = new JavadocClassVisitor(JavadocParser.this, dao, apiDao);
+                  JavadocClassVisitor visitor = injector.getInstance(JavadocClassVisitor.class);
                   new ClassReader(jarFile.getInputStream(entry)).accept(visitor, 0);
                 } catch (Exception e) {
                   log.error(e.getMessage(), e);
@@ -110,11 +117,12 @@ public class JavadocParser {
     return false;
   }
 
-  public JavadocClass getOrQueue(final JavadocApi api, final String pkg, final String name, final JavadocClass newJavadocClass) {
+  public JavadocClass getOrQueue(final JavadocApi api, final String pkg, final String name,
+      final JavadocClass newJavadocClass) {
     synchronized (deferred) {
       JavadocClass parent = null;
       for (JavadocClass javadocClass : dao.getClass(pkg, name)) {
-        if (javadocClass.getApiId().equals(api.getId())) {
+        if (javadocClass.getApi().equals(api)) {
           parent = javadocClass;
         }
       }
@@ -135,7 +143,7 @@ public class JavadocParser {
     synchronized (deferred) {
       JavadocClass cls = null;
       for (JavadocClass javadocClass : dao.getClass(pkg, name)) {
-        if (javadocClass.getApiId().equals(api.getId())) {
+        if (javadocClass.getApi().equals(api)) {
           cls = javadocClass;
         }
       }
@@ -146,7 +154,7 @@ public class JavadocParser {
       final List<JavadocClass> list = deferred.get(pkg + "." + name);
       if (list != null) {
         for (JavadocClass subclass : list) {
-          subclass.setSuperClassId(cls.getSuperClassId());
+          subclass.setSuperClass(cls.getSuperClass());
           dao.save(subclass);
         }
         deferred.remove(pkg + "." + name);

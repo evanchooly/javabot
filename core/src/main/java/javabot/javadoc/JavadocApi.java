@@ -81,4 +81,9 @@ public class JavadocApi implements Persistent {
   public void uppers() {
     upperName = name.toUpperCase();
   }
+
+  @Override
+  public String toString() {
+    return name;
+  }
 }

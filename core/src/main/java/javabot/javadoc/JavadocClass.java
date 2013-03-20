@@ -9,6 +9,7 @@ import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Index;
 import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.PrePersist;
+import com.google.code.morphia.annotations.Reference;
 import javabot.model.Persistent;
 import org.bson.types.ObjectId;
 
@@ -21,23 +22,22 @@ import org.bson.types.ObjectId;
 public class JavadocClass extends JavadocElement {
   @Id
   private ObjectId id;
+  @Reference
   private JavadocApi api;
-  private ObjectId apiId;
   private String packageName;
   private String upperPackage;
   private String name;
   private String upperName;
-  private ObjectId superClassId;
+  @Reference
+  private JavadocClass superClass;
   private List<JavadocMethod> methods = new ArrayList<>();
   private List<JavadocField> fields = new ArrayList<>();
-  private String apiName;
 
   public JavadocClass() {
   }
 
   public JavadocClass(final JavadocApi api, final String pkg, final String name) {
-    apiId = api.getId();
-    apiName = api.getName();
+    this.api = api;
     packageName = pkg;
     this.name = name;
     setDirectUrl(api.getBaseUrl() + pkg.replace('.', '/') + "/" + name + ".html");
@@ -52,21 +52,12 @@ public class JavadocClass extends JavadocElement {
     id = classId;
   }
 
+  public JavadocApi getApi() {
+    return api;
+  }
+
   public void setApi(final JavadocApi api) {
     this.api = api;
-  }
-
-  public ObjectId getApiId() {
-    return apiId;
-  }
-
-  public void setApiId(final ObjectId apiId) {
-    this.apiId = apiId;
-  }
-
-  @Override
-  public String getApiName() {
-    return apiName;
   }
 
   public String getPackageName() {
@@ -85,28 +76,12 @@ public class JavadocClass extends JavadocElement {
     this.name = name;
   }
 
-  public ObjectId getSuperClassId() {
-    return superClassId;
+  public JavadocClass getSuperClass() {
+    return superClass;
   }
 
-  public void setSuperClassId(final ObjectId classId) {
-    superClassId = classId;
-  }
-
-  public List<JavadocMethod> getMethods() {
-    return methods;
-  }
-
-  public void setMethods(final List<JavadocMethod> list) {
-    methods = list;
-  }
-
-  public List<JavadocField> getFields() {
-    return fields;
-  }
-
-  public void setFields(final List<JavadocField> list) {
-    fields = list;
+  public void setSuperClass(final JavadocClass javadocClass) {
+    superClass = javadocClass;
   }
 
   public String getUpperName() {

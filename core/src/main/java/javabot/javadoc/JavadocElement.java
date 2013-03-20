@@ -12,7 +12,7 @@ public abstract class JavadocElement implements Persistent {
     private String longUrl;
     private String directUrl;
 
-    public abstract String getApiName();
+    public abstract JavadocApi getApi();
 
     private String buildShortUrl(final String url) {
         return new IsGdShortener(url).invoke();
@@ -37,7 +37,7 @@ public abstract class JavadocElement implements Persistent {
     public String getDisplayUrl(final String hint, final BaseDao dao) {
         String url = getShortUrl();
         if(url == null) {
-            setShortUrl(buildShortUrl(getLongUrl()) + " [" + getApiName() + ": " + hint +"]");
+            setShortUrl(buildShortUrl(getLongUrl()) + " [" + getApi() + ": " + hint +"]");
             url = getShortUrl();
             dao.save(this);
         }

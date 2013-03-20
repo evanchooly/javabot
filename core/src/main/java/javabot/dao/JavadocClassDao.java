@@ -64,7 +64,7 @@ public class JavadocClassDao extends BaseDao<JavadocClass> {
       JavadocClass javadocClass = list.remove(0);
       if (javadocClass != null) {
         methods.addAll(getMethods(methodName, signatureTypes, javadocClass));
-        list.add(find(javadocClass.getSuperClassId()));
+        list.add(find(javadocClass.getSuperClass().getId()));
       }
     }
     return methods;
