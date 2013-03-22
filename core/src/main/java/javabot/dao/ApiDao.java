@@ -2,9 +2,8 @@ package javabot.dao;
 
 import javax.inject.Inject;
 
-import com.google.code.morphia.query.Query;
 import javabot.javadoc.JavadocApi;
-import javabot.javadoc.criteria.ApiCriteria;
+import javabot.javadoc.criteria.JavadocApiCriteria;
 
 public class ApiDao extends BaseDao<JavadocApi> {
   @Inject
@@ -15,10 +14,10 @@ public class ApiDao extends BaseDao<JavadocApi> {
   }
 
   public JavadocApi find(final String name) {
-    ApiCriteria criteria = new ApiCriteria(ds);
+    JavadocApiCriteria criteria = new JavadocApiCriteria(ds);
     criteria.upperName().equal(name.toUpperCase());
-    Query<JavadocApi> query = criteria.query();
-    return query.get();
+    JavadocApi javadocApi = criteria.query().get();
+    return javadocApi;
   }
 
   public void delete(final JavadocApi api) {

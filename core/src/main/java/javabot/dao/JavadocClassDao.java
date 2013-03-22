@@ -9,9 +9,9 @@ import javabot.javadoc.JavadocApi;
 import javabot.javadoc.JavadocClass;
 import javabot.javadoc.JavadocField;
 import javabot.javadoc.JavadocMethod;
-import javabot.javadoc.criteria.ClazzCriteria;
-import javabot.javadoc.criteria.FieldCriteria;
-import javabot.javadoc.criteria.MethodCriteria;
+import javabot.javadoc.criteria.JavadocClassCriteria;
+import javabot.javadoc.criteria.JavadocFieldCriteria;
+import javabot.javadoc.criteria.JavadocMethodCriteria;
 
 public class JavadocClassDao extends BaseDao<JavadocClass> {
   protected JavadocClassDao() {
@@ -22,10 +22,10 @@ public class JavadocClassDao extends BaseDao<JavadocClass> {
   public JavadocClass[] getClass(final JavadocApi api, final String name) {
     final String[] strings = calculateNameAndPackage(name);
     final String pkgName = strings[0];
-    ClazzCriteria criteria = new ClazzCriteria(ds);
+    JavadocClassCriteria criteria = new JavadocClassCriteria(ds);
     criteria.upperName().equal(strings[1].toUpperCase());
     if (api != null) {
-      criteria.apiId().equal(api.getId());
+      criteria.api(api);
     }
     if (pkgName != null) {
       criteria.upperPackage().equal(pkgName.toUpperCase());
@@ -35,7 +35,7 @@ public class JavadocClassDao extends BaseDao<JavadocClass> {
 
   @SuppressWarnings({"unchecked"})
   public JavadocClass[] getClass(final String pkg, final String name) {
-    final ClazzCriteria criteria = new ClazzCriteria(ds);
+    final JavadocClassCriteria criteria = new JavadocClassCriteria(ds);
     criteria.upperPackage().equal(pkg.toUpperCase());
     criteria.upperName().equal(name.toUpperCase());
     return criteria.query().asList().toArray(new JavadocClass[0]);
@@ -43,11 +43,11 @@ public class JavadocClassDao extends BaseDao<JavadocClass> {
 
   @SuppressWarnings({"unchecked"})
   public List<JavadocField> getField(JavadocApi api, final String className, final String fieldName) {
-    final FieldCriteria criteria = new FieldCriteria(ds);
+    final JavadocFieldCriteria criteria = new JavadocFieldCriteria(ds);
     JavadocClass[] classes = getClass(api, className);
     if (classes.length != 0) {
       JavadocClass javadocClass = classes[0];
-      criteria.classId().equal(javadocClass.getId());
+      criteria.javadocClass(javadocClass);
       criteria.upperName().equal(fieldName.toUpperCase());
       return criteria.query().asList();
     }
@@ -64,15 +64,18 @@ public class JavadocClassDao extends BaseDao<JavadocClass> {
       JavadocClass javadocClass = list.remove(0);
       if (javadocClass != null) {
         methods.addAll(getMethods(methodName, signatureTypes, javadocClass));
-        list.add(find(javadocClass.getSuperClass().getId()));
+        JavadocClass superClass = javadocClass.getSuperClass();
+        if(superClass != null) {
+          list.add(find(superClass.getId()));
+        }
       }
     }
     return methods;
   }
 
   private List getMethods(final String name, final String signatureTypes, final JavadocClass javadocClass) {
-    final MethodCriteria criteria = new MethodCriteria(ds);
-    criteria.clazzId().equal(javadocClass.getId());
+    final JavadocMethodCriteria criteria = new JavadocMethodCriteria(ds);
+    criteria.javadocClass(javadocClass);
     criteria.upperMethodName().equal(name.toUpperCase());
     if (!"*".equals(signatureTypes)) {
       criteria.or(
@@ -90,14 +93,14 @@ public class JavadocClassDao extends BaseDao<JavadocClass> {
   }
 
   private void deleteFields(final JavadocClass javadocClass) {
-    FieldCriteria criteria = new FieldCriteria(ds);
-    criteria.classId().equal(javadocClass.getId());
+    JavadocFieldCriteria criteria = new JavadocFieldCriteria(ds);
+    criteria.javadocClass(javadocClass);
     ds.delete(criteria.query());
   }
 
   private void deleteMethods(final JavadocClass javadocClass) {
-    MethodCriteria criteria = new MethodCriteria(ds);
-    criteria.clazzId().equal(javadocClass.getId());
+    JavadocMethodCriteria criteria = new JavadocMethodCriteria(ds);
+    criteria.javadocClass(javadocClass);
     ds.delete(criteria.query());
   }
 
@@ -115,16 +118,16 @@ public class JavadocClassDao extends BaseDao<JavadocClass> {
   }
 
   public void deleteFor(final JavadocApi api) {
-    FieldCriteria fields = new FieldCriteria(ds);
-    fields.apiId().equal(api.getId());
+    JavadocFieldCriteria fields = new JavadocFieldCriteria(ds);
+    fields.api(api);
     ds.delete(fields.query());
 
-    MethodCriteria methods = new MethodCriteria(ds);
-    methods.apiId().equal(api.getId());
+    JavadocMethodCriteria methods = new JavadocMethodCriteria(ds);
+    methods.api(api);
     ds.delete(methods.query());
 
-    ClazzCriteria classes = new ClazzCriteria(ds);
-    classes.apiId().equal(api.getId());
+    JavadocClassCriteria classes = new JavadocClassCriteria(ds);
+    classes.api(api);
     ds.delete(classes.query());
   }
 }

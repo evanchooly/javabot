@@ -217,8 +217,8 @@ public class Migrator {
     field.setShortUrl(resultSet.getString("shorturl"));
     field.setName(resultSet.getString("name"));
     field.setType(resultSet.getString("type"));
-    ObjectId clazzId = lookupId("classes", resultSet.getLong("clazz_id"));
-    JavadocClass javadocClass = javadocClassDao.find(clazzId);
+    ObjectId classId = lookupId("classes", resultSet.getLong("clazz_id"));
+    JavadocClass javadocClass = javadocClassDao.find(classId);
     field.setJavadocClass(javadocClass);
     field.setApi(javadocClass.getApi());
     javadocClassDao.save(field);

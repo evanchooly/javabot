@@ -12,13 +12,14 @@ import org.testng.Assert;
 public abstract class BaseOperationTest extends BaseTest {
   protected void scanForResponse(final String message, final String target) {
     final List<Message> list = sendMessage(message);
+    StringBuilder returned = new StringBuilder();
     boolean found = false;
     for (final Message response : list) {
+      returned.append(response.getMessage())
+        .append("\n");
       found |= response.getMessage().contains(target);
     }
-    Assert.assertTrue(found, String.format("Should find the response in the responses."
-        + "\n** expected: \n%s"
-        + "\n** got: \n%s", target, list));
+    Assert.assertTrue(found, String.format("Did not find '%s' in '%s'", target, list));
   }
 
   protected void testMessage(final String message, final String... responses) {

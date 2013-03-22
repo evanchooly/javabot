@@ -95,6 +95,7 @@ public class JavadocTest extends BaseOperationTest {
   }
 
   private void dropTestApi() {
+    getJavabot();
     final ApiEvent event = new ApiEvent();
     event.setName(API_NAME);
     event.setType(EventType.DELETE);
