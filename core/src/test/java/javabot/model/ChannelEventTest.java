@@ -8,6 +8,7 @@ import javabot.BaseTest;
 import javabot.dao.ChannelDao;
 import javabot.dao.EventDao;
 import org.testng.Assert;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 @Test
@@ -21,6 +22,12 @@ public class ChannelEventTest extends BaseTest {
 
   private static final String KEYED_CHANNEL = "##testKeyedChannel";
 
+  @BeforeTest
+  public void clearEvents() {
+    for (AdminEvent event : dao.findAll()) {
+      dao.delete(event);
+    }
+  }
   @Test
   public void addChannel() throws InterruptedException {
     getJavabot();

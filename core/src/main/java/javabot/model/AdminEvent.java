@@ -6,12 +6,17 @@ import javax.inject.Inject;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Index;
+import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.Transient;
 import javabot.Javabot;
 import javabot.dao.EventDao;
 import org.bson.types.ObjectId;
 
 @Entity("events")
+@Indexes({
+    @Index("status")
+})
 public class AdminEvent implements Serializable, Persistent {
   public enum State {
     NEW,
@@ -19,14 +24,22 @@ public class AdminEvent implements Serializable, Persistent {
     COMPLETED,
     FAILED
   }
+
   @Inject
   @Transient
   private EventDao eventDao;
+
   @Id
   private ObjectId id;
+
   private String requestedBy;
+
   private Date requestedOn;
+
+  private Date completed;
+
   private State state = State.NEW;
+
   private EventType type;
 
   protected AdminEvent() {
@@ -46,6 +59,14 @@ public class AdminEvent implements Serializable, Persistent {
   @Override
   public void setId(ObjectId id) {
     this.id = id;
+  }
+
+  public void setCompleted(final Date completed) {
+    this.completed = completed;
+  }
+
+  public Date getCompleted() {
+    return completed;
   }
 
   public EventType getType() {

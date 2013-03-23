@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 @Entity("channel")
 @SPI(Persistent.class)
 @Indexes({
-    @Index("upperName")
+    @Index(value = "upperName", unique = true, dropDups = true)
 })
 public class Channel implements Serializable, Persistent {
   private static final Logger log = LoggerFactory.getLogger(Channel.class);

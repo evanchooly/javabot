@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -151,12 +152,12 @@ public class Javabot {
         eventDao.save(event);
         injector.injectMembers(event);
         event.handle(this);
+        event.setState(State.COMPLETED);
       } catch (Exception e) {
         event.setState(State.FAILED);
-        eventDao.save(event);
         log.error(e.getMessage(), e);
       }
-      event.setState(State.COMPLETED);
+      event.setCompleted(new Date());
       eventDao.save(event);
     }
   }

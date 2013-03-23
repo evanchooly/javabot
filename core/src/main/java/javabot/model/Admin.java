@@ -6,83 +6,87 @@ import java.util.Date;
 import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Index;
+import com.google.code.morphia.annotations.Indexes;
 import org.bson.types.ObjectId;
 
 @Entity("admin")
-/*
-@NamedQueries({
-  @NamedQuery(name = AdminDao.FIND, query = "select a from Admin a where a.userName = :userName "),
-  @NamedQuery(name = AdminDao.FIND_WITH_HOST, query = "select a from Admin a where a.ircName = :ircName "
-    + "and a.hostName = :hostName"),
-  @NamedQuery(name = AdminDao.FIND_ALL, query = "select a from Admin a order by a.ircName")
-})
-*/
 @SPI(Persistent.class)
+@Indexes({
+    @Index(value = "userName", unique = true),
+    @Index("ircName, hostName")
+} )
 public class Admin implements Serializable, Persistent {
-    @Id
-    private ObjectId id;
-    private Boolean botOwner;
-    private String hostName;
-    private String userName;
-    private String ircName;
-    private String addedBy;
-    private Date updated;
+  @Id
+  private ObjectId id;
 
-    @Override
-    public ObjectId getId() {
-        return id;
-    }
+  private Boolean botOwner;
 
-    @Override
-    public void setId(ObjectId adminId) {
-        id = adminId;
-    }
+  private String hostName;
 
-    public Boolean getBotOwner() {
-        return botOwner;
-    }
+  private String userName;
 
-    public void setBotOwner(Boolean botOwner) {
-        this.botOwner = botOwner;
-    }
+  private String ircName;
 
-    public String getUserName() {
-        return userName;
-    }
+  private String addedBy;
 
-    public void setUserName(String adminName) {
-        userName = adminName;
-    }
+  private Date updated;
 
-    public Date getUpdated() {
-        return updated;
-    }
+  @Override
+  public ObjectId getId() {
+    return id;
+  }
 
-    public void setUpdated(Date date) {
-        updated = date;
-    }
+  @Override
+  public void setId(ObjectId adminId) {
+    id = adminId;
+  }
 
-    public String getAddedBy() {
-        return addedBy;
-    }
+  public Boolean getBotOwner() {
+    return botOwner;
+  }
 
-    public void setAddedBy(String addedBy) {
-        this.addedBy = addedBy;
-    }
+  public void setBotOwner(Boolean botOwner) {
+    this.botOwner = botOwner;
+  }
 
-    public String getIrcName() {
-        return ircName;
-    }
+  public String getUserName() {
+    return userName;
+  }
 
-    public void setIrcName(String ircName) {
-        this.ircName = ircName;
-    }
+  public void setUserName(String adminName) {
+    userName = adminName;
+  }
 
-    public String getHostName() {
-        return hostName;
-    }
+  public Date getUpdated() {
+    return updated;
+  }
 
-    public void setHostName(String hostName) {
-        this.hostName = hostName;
-    }
+  public void setUpdated(Date date) {
+    updated = date;
+  }
+
+  public String getAddedBy() {
+    return addedBy;
+  }
+
+  public void setAddedBy(String addedBy) {
+    this.addedBy = addedBy;
+  }
+
+  public String getIrcName() {
+    return ircName;
+  }
+
+  public void setIrcName(String ircName) {
+    this.ircName = ircName;
+  }
+
+  public String getHostName() {
+    return hostName;
+  }
+
+  public void setHostName(String hostName) {
+    this.hostName = hostName;
+  }
 }
