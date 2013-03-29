@@ -3,15 +3,16 @@ package controllers;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 import java.util.List;
+import javax.inject.Inject;
 
 import controllers.deadbolt.Deadbolt;
 import controllers.deadbolt.Restrict;
+import javabot.dao.ChannelDao;
+import javabot.model.Channel;
 import models.Admin;
 import models.Api;
 import models.ApiEvent;
-import models.Channel;
 import models.Config;
 import models.Factoid;
 import models.JavabotRoleHolder;
@@ -36,6 +37,9 @@ public class AdminController extends Controller {
   static final String twitterKey;
   static final String twitterSecret;
   public static final List<String> OPERATIONS;
+
+  @Inject
+  private static ChannelDao channelDao;
 
   static {
     try {
@@ -198,7 +202,7 @@ public class AdminController extends Controller {
   @Restrict(JavabotRoleHolder.BOT_ADMIN)
   public static void showChannel(String name) {
     Application.Context context = new Application.Context();
-    Channel channel = Channel.find("name = ?1", name).<Channel>first();
+    Channel channel = channelDao.get(name);
     renderTemplate("AdminController/editChannel.html", context, channel);
   }
 
@@ -216,8 +220,7 @@ public class AdminController extends Controller {
       Validation.keep(); // keep the errors for the next request
       editChannel(channel);
     }
-    channel.updated = new Date();
-    channel.save();
+    channelDao.save(channel);
     index();
   }
 

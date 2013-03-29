@@ -26,14 +26,6 @@ public class LogsDao extends BaseDao<Logs> {
   public LogsDao() {
     super(Logs.class);
   }
-/*
-@NamedQueries({
-    @NamedQuery(name = LogsDao.COUNT_LOGGED, query = "select count(s) from Logs s where s.channel like '#%'"),
-    @NamedQuery(name = LogsDao.SEEN,
-        query = "select new javabot.Seen(l.nick, l.message, l.channel, l.updated) from Logs l where"
-            + " lower(l.nick) = :nick AND l.channel = :channel order by l.updated desc")
-})
-*/
 
   @SuppressWarnings({"unchecked"})
   public List<Logs> dailyLog(final String channelName, final Date date) {
@@ -78,4 +70,14 @@ public class LogsDao extends BaseDao<Logs> {
     return new Seen(logs.getChannel(), logs.getMessage(), logs.getNick(), logs.getUpdated());
   }
 
+  public List<Logs> findByChannel(String name, Date date, Boolean showAll) {
+      Channel channel = channelDao.get(name);
+      List<Logs> logs;
+      if (showAll || channel.getLogged()) {
+        logs = dailyLog(name, date);
+      } else {
+        logs = Collections.<Logs>emptyList();
+      }
+      return logs;
+    }
 }

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.QueryImpl;
 import javabot.Activity;
 import javabot.dao.util.QueryParam;
@@ -19,11 +20,17 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings({"ConstantNamingConvention"})
 public class ChannelDao extends BaseDao<Channel> {
   String BY_NAME = "Channel.byName";
+
   String ALL = "Channel.all";
+
   String CONFIGURED_CHANNELS = "Channel.configure";
+
   String STATISTICS = "Channel.stats";
+
   String LOGGED_CHANNELS = "Channel.loggedChannels";
+
   private static final Logger log = LoggerFactory.getLogger(ChannelDao.class);
+
   private final Map<String, Boolean> logCache = new HashMap<String, Boolean>();
 
   public ChannelDao() {
@@ -51,6 +58,16 @@ public class ChannelDao extends BaseDao<Channel> {
       condition = "-" + condition;
     }
     return getQuery().order(condition).asList();
+  }
+
+  public List<Channel> findLogged(Boolean showAll) {
+    ChannelCriteria channelCriteria = new ChannelCriteria(ds);
+    if (!showAll) {
+      channelCriteria.logged().equal(true);
+    }
+    Query<Channel> query = channelCriteria.query();
+    query.order("name");
+    return query.asList();
   }
 
   public boolean isLogged(final String channel) {

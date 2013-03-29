@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import javax.inject.Inject;
 
+import com.google.inject.Injector;
+import javabot.dao.AdminDao;
+import javabot.dao.ChannelDao;
+import javabot.dao.FactoidDao;
+import javabot.dao.LogsDao;
 import models.Admin;
 import models.Change;
-import models.Channel;
 import models.Factoid;
 import models.Karma;
 import models.Log;
@@ -25,6 +30,9 @@ import play.mvc.Controller;
 public class Application extends Controller {
   private static final int PAGE_SIZE = 50;
 
+  @Inject
+  private static Injector injector;
+
   @Get("/")
   public static void index() {
     Context context = new Context();
@@ -33,7 +41,7 @@ public class Application extends Controller {
 
   @Get("/logs/{channel}/{date}/?")
   public static void logs(String channel, @As("yyyy-MM-dd") Date date) {
-    Context context = new Context();
+    Context context = injector.getInstance(Context.class);
     if (date == null) {
       date = new Date();
     }
@@ -115,15 +123,28 @@ public class Application extends Controller {
   }
 
   public static class Context<T extends GenericModel> {
-    final List<Channel> channels;
+
+    @Inject
+    private FactoidDao factoidDao;
+    @Inject
+    private ChannelDao channelDao;
+    @Inject
+    private AdminDao adminDao;
+    @Inject
+    private LogsDao logsDao;
+
     final Long factoidCount;
     List<Log> logs;
     ModelPaginator<T> paginator;
     TwitterContext twitterContext;
     Date today = new Date();
-    Boolean showAll = Boolean.FALSE;
 
     public Context() {
+      factoidCount = Factoid.count();
+    }
+
+    public Boolean getShowAll() {
+      Boolean showAll = Boolean.FALSE;
       twitterContext = AdminController.getTwitterContext();
       if(twitterContext != null) {
         if(twitterContext.screenName != null) {
@@ -131,16 +152,15 @@ public class Application extends Controller {
           showAll = admin != null && admin.botOwner;
         }
       }
-      channels = Channel.findLogged(showAll);
-      factoidCount = Factoid.count();
+      return showAll;
     }
 
     public Long getFactoidCount() {
       return factoidCount;
     }
 
-    public List<Channel> getChannels() {
-      return channels;
+    public List<javabot.model.Channel> getChannels() {
+      return channelDao.findLogged(getShowAll());
     }
 
     public List<Log> getLogs() {
@@ -148,7 +168,7 @@ public class Application extends Controller {
     }
 
     public void logChannel(String channel, Date date) {
-      logs = Log.findByChannel(channel, date, showAll);
+      logs = logsDao.findByChannel(channel, date, getShowAll());
     }
   }
 }
