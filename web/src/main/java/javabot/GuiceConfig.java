@@ -14,6 +14,7 @@ public class GuiceConfig extends GuiceServletContextListener {
     return Guice.createInjector(new JavabotModule(), new JerseyServletModule() {
       @Override
       protected void configureServlets() {
+        bind(JavabotResource.class);
         serve("/api/*").with(GuiceContainer.class, new TreeMap<String, String>() {{
           put("jersey.config.server.provider.packages", "javabot");
         }});

@@ -2,14 +2,22 @@ var javabot = angular.module('Javabot', []);
 javabot.controller('MainControl', function ($scope, $http) {
     $scope.channels = [];
     $scope.listChannels = function () {
-        $http.get('/channels')
+        $http.get('/api/channels')
                 .success(function (data) {
-                    channels = data;
+                    $scope.channels = data;
+                })
+                .error(function (data) {
+                    alert(data);
                 });
     };
-    function today() {
-        return new Date().format("yyyy.MM.dd");
-    }
+    $scope.showLogs = function(channel) {
+      $scope.selected = channel;
+    };
+    $scope.today = function(channel) {
+        return encodeURIComponent(channel.name);
+    };
+
+    $scope.listChannels();
 });
 Date.prototype.format = function (format) {
     var o = {

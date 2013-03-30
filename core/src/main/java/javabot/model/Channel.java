@@ -4,12 +4,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.antwerkz.maven.SPI;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Index;
 import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.PrePersist;
 import javabot.Javabot;
+import javabot.json.Views.PUBLIC;
+import javabot.json.Views.SYSTEM;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,14 +28,19 @@ public class Channel implements Serializable, Persistent {
   @Id
   private ObjectId id;
 
+  @JsonView(PUBLIC.class)
   private String name;
 
+  @JsonView(SYSTEM.class)
   private String upperName;
 
+  @JsonView(SYSTEM.class)
   private String key;
 
+  @JsonView(PUBLIC.class)
   private Date updated;
 
+  @JsonView(PUBLIC.class)
   private Boolean logged = true;
 
   public ObjectId getId() {
