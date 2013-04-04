@@ -1,0 +1,24 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index
+
+GET     /factoids                  controllers.Application.factoids
+GET     /karma                  controllers.Application.karma
+GET     /changes                  controllers.Application.changes
+GET     /logs/{name}/{date}                  controllers.Application.logs(name, date)
+
+# Admin urls
+GET     /login                  controllers.AdminController.login
+GET     /admin                  controllers.AdminController.index
+GET     /config                  controllers.AdminController.config
+GET     /javadoc                  controllers.AdminController.javadoc
+GET     /showChannel                  controllers.AdminController.showChannel
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+GET     /webjars/*file              controllers.WebJarAssets.at(file)
+
