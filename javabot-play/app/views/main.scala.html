@@ -1,6 +1,8 @@
-@(handler: be.objectify.deadbolt.scala.DeadboltHandler, title: String, channels: List[Channel])(content: Html)
+@(handler: be.objectify.deadbolt.scala.DeadboltHandler, title: String, channels: List[Channel])(content: Html)(implicit request: Request[Any])
 
 @import java.net.URLEncoder
+@import be.objectify.deadbolt.scala.views.html._
+@import be.objectify.deadbolt.core.utils.TemplateUtils._
 
 <!DOCTYPE html>
 
@@ -59,9 +61,11 @@
                 <table>
                     <tr>
                         <td>Channels</td>
-                        <td>#{deadbolt.restrict roles:[['botAdmin']]}
-                            <a href="@{routes.AdminController.showChannel()}">+</a>
-                        #{/deadbolt.restrict}</td>
+                        <td>
+                            @restrict(handler, List(as("botAdmin"))) {
+                                <a href="@{routes.AdminController.showChannel()}">+</a>
+                            }
+                        </td>
                     </tr>
                 </table>
             </h3>

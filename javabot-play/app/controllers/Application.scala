@@ -4,14 +4,19 @@ import play.api.mvc._
 import models.Channel
 import java.util.Date
 import play.mvc.With
-import utils.RequestScopedAction
+import utils.{AdminDao, RequestScopedAction}
 import security.OAuthDeadboltHandler
+import com.google.inject.{Injector, Inject}
 
 object Application extends Controller {
+  @Inject
+  private var injector: Injector = null
 
-  @With(classOf[RequestScopedAction])
+  @With(Array(classOf[RequestScopedAction]))
   def index = Action {
-    Ok(views.html.index(new OAuthDeadboltHandler, "welcome", List.empty[Channel]))
+    implicit request =>
+      val handler: OAuthDeadboltHandler = injector.getInstance(classOf[OAuthDeadboltHandler])
+      Ok(views.html.index(new OAuthDeadboltHandler, "welcome", List.empty[Channel]))
   }
 
   def factoids = TODO

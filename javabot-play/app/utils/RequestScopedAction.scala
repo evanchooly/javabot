@@ -6,11 +6,10 @@ import java.util.concurrent.Callable
 import java.util
 import com.google.inject.Key
 
-class RequestScopedAction extends Action.Simple {
-
-  override def call(ctx: Http.Context) {
+class RequestScopedAction extends Action {
+  override def call(ctx: Http.Context): Result = {
     ServletScopes.scopeRequest(new Callable[Result] {
-      override def call {
+      override def call: Result = {
         try {
           delegate.call(ctx)
         } catch {

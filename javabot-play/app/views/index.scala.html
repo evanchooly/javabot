@@ -1,4 +1,4 @@
-@(handler: be.objectify.deadbolt.scala.DeadboltHandler, message: String, channels: List[Channel])
+@(handler: be.objectify.deadbolt.scala.DeadboltHandler, title: String, channels: List[Channel])(implicit request: Request[Any])
 
 @main(handler, "Welcome to Play 2.1", channels) {
 
