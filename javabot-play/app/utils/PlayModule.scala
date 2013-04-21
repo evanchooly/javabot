@@ -9,6 +9,7 @@ import javax.inject.Named
 import play.Play
 import play.api.libs.Files
 import play.mvc.Http
+import java.io.File
 
 class PlayModule extends AbstractModule {
   protected override def configure() {
@@ -30,11 +31,12 @@ class PlayModule extends AbstractModule {
         .annotatedWith(Names.named("twitter.secret"))
         .toInstance(props.getProperty("twitter.secret"))
 
-      val file = Files.readFile(Play.application.getFile("conf/operations.list"))
+      val file: File = Play.application.getFile("conf/operations.list")
 
+      val operations = if(file.exists) Files.readFile(file).split('\n') else new Array[String](0)
       bind(classOf[List[String]])
         .annotatedWith(Names.named("operations"))
-        .toInstance(file.split('\n').toList)
+        .toInstance(operations.toList)
 
     }
 
