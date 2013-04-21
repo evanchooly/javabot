@@ -1,6 +1,7 @@
 package javabot.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import javabot.model.Admin;
 import javabot.model.criteria.AdminCriteria;
@@ -8,6 +9,11 @@ import javabot.model.criteria.AdminCriteria;
 public class AdminDao extends BaseDao<Admin> {
   public AdminDao() {
     super(Admin.class);
+  }
+
+  @Override
+  public List<Admin> findAll() {
+    return ds.createQuery(Admin.class).order("userName").asList();
   }
 
   public boolean isAdmin(final String user, final String hostName) {

@@ -6,7 +6,7 @@ import java.util.concurrent.Callable
 import java.util
 import com.google.inject.Key
 
-class RequestScopedAction extends Action {
+case class RequestScopedAction[A](action: Action[A]) extends Action[A] {
   override def call(ctx: Http.Context): Result = {
     ServletScopes.scopeRequest(new Callable[Result] {
       override def call: Result = {

@@ -5,17 +5,20 @@
 # Home page
 GET     /                           controllers.Application.index
 
-GET     /factoids                  controllers.Application.factoids
-GET     /karma                  controllers.Application.karma
-GET     /changes                  controllers.Application.changes
-GET     /logs/{name}/{date}                  controllers.Application.logs(name, date)
+GET     /factoids                   controllers.Application.factoids
+GET     /karma                      controllers.Application.karma
+GET     /changes                    controllers.Application.changes
+GET     /logs/{name}/{date}         controllers.Application.logs(name, date)
 
 # Admin urls
-GET     /login                  controllers.AdminController.login
-GET     /admin                  controllers.AdminController.index
-GET     /config                  controllers.AdminController.config
-GET     /javadoc                  controllers.AdminController.javadoc
-GET     /showChannel                  controllers.AdminController.showChannel
+GET     /login                      controllers.AdminController.login
+GET     /admin                      controllers.AdminController.index
+GET     /config                     controllers.AdminController.config
+GET     /javadoc                    controllers.AdminController.javadoc
+GET     /addJavadoc                 controllers.AdminController.addJavadoc
+GET     /showChannel/{name}         controllers.AdminController.showChannel(name)
+
+POST    /saveChannel                controllers.AdminController.saveChannel
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

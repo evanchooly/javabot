@@ -1,5 +1,6 @@
 package javabot.model;
 
+import java.io.File;
 import java.io.StringWriter;
 import javax.inject.Inject;
 
@@ -18,8 +19,11 @@ import javabot.javadoc.JavadocParser;
 public class ApiEvent extends AdminEvent {
   public String name;
   public String packages;
+  public Boolean newApi;
+  public String requestedBy;
   public String baseUrl;
   public String file;
+
   @Inject
   @Transient
   private JavadocParser parser;
@@ -29,6 +33,23 @@ public class ApiEvent extends AdminEvent {
   @Inject
   @Transient
   private AdminDao adminDao;
+
+  public ApiEvent() {
+  }
+
+  public ApiEvent(boolean newApi, String requestedBy, String name, String packages, String baseUrl, File file) {
+    this.newApi = newApi;
+    this.requestedBy = requestedBy;
+    this.name = name;
+    this.packages = packages;
+    this.baseUrl = baseUrl;
+    this.file = file.getAbsolutePath();
+  }
+
+  public ApiEvent(String name, String requestedBy) {
+     super(EventType.DELETE, requestedBy);
+     this.name = name;
+   }
 
   public String getName() {
     return name;

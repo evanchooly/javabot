@@ -15,7 +15,9 @@ object ApplicationBuild extends Build {
     "com.antwerkz.javabot" % "core" % appVersion,
     "be.objectify" %% "deadbolt-scala" % "2.1-RC2",
     "com.google.inject.extensions" % "guice-servlet" % "3.0",
-    "com.google.inject.extensions" % "guice-multibindings" % "3.0"
+    "com.google.inject.extensions" % "guice-multibindings" % "3.0",
+    "org.twitter4j" % "twitter4j-core" % "3.0.3"
+
   )
 
 

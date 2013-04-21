@@ -1,4 +1,4 @@
-@(handler: be.objectify.deadbolt.scala.DeadboltHandler, title: String, channels: List[Channel])(content: Html)(implicit request: Request[Any])
+@(handler: be.objectify.deadbolt.scala.DeadboltHandler, context: utils.Context)(content: Html)(implicit request: Request[Any])
 
 @import java.net.URLEncoder
 @import be.objectify.deadbolt.scala.views.html._
@@ -8,7 +8,7 @@
 
 <html>
     <head>
-        <title>@title</title>
+        <title>javabot</title>
 
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("style/main.less")">
 
@@ -63,7 +63,7 @@
                         <td>Channels</td>
                         <td>
                             @restrict(handler, List(as("botAdmin"))) {
-                                <a href="@{routes.AdminController.showChannel()}">+</a>
+                                <a href="@{routes.AdminController.showChannel(null)}">+</a>
                             }
                         </td>
                     </tr>
@@ -72,7 +72,7 @@
 
             <div class="boxWrapper">
                 <table class="plain">
-                    @channels.map { logged =>
+                    @context.channels.map { logged =>
                     <tr>
                         <td>
                             <a id="${logged.name}"

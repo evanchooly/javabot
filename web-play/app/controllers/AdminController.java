@@ -114,7 +114,7 @@ public class AdminController extends Controller {
   public static void config() {
     Application.Context context = new Application.Context();
     Config config = (Config) Config.findAll().get(0);
-    List<String> operations = OPERATIONS;
+    List<String> operati    ons = OPERATIONS;
     render(context, config, operations);
   }
 

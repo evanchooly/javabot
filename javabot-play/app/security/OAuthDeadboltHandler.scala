@@ -8,17 +8,12 @@ import com.google.inject.Inject
 import models.Admin
 import utils.AdminDao
 
-class OAuthDeadboltHandler(dynamicResourceHandler: Option[DynamicResourceHandler] = None)
-  extends DeadboltHandler {
-
-  @Inject
-  private var adminDao: AdminDao = null
+class OAuthDeadboltHandler(@Inject adminDao: AdminDao) extends DeadboltHandler {
 
   def beforeAuthCheck[A](request: Request[A]) = Option.empty[Result]
 
   override def getSubject[A](request: Request[A]): Option[Subject] = {
-    val option: Option[String] = request.session.get("user")
-    if(option.isEmpty) Option.empty[Subject] else Option[Subject](adminDao.getAdmin(option.get))
+    adminDao.getSubject(request.session.get("user").get)
   }
 
   def onAuthFailure[A](request: Request[A]): Result = {

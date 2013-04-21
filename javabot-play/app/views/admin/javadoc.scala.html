@@ -1,0 +1,41 @@
+@(handler: be.objectify.deadbolt.scala.DeadboltHandler, context: utils.Context,
+    apis: java.util.List[javabot.javadoc.JavadocApi])(implicit request: Request[Any])
+
+@import helper._
+
+@main(handler, context) {
+<table>
+    @helper.form(action = routes.AdminController.addJavadoc()) {
+        <tr>
+            <td class="left top">
+                <input type="text" name="name"/>
+            </td>
+            <td class="top">
+                <input type="text" name="packages"/>
+            </td>
+            <td class="top">
+                <input type="text" name="baseUrl" width="30"/>
+                <input type="file" id="file" name="file"/>
+            </td>
+            <td class="right top">
+                <input type="image" src="public/images/boomy/add32.png" alt="Add"/>
+            </td>
+        </tr>
+    }
+    <tr>
+        <th>Name</th>
+        <th>Packages</th>
+        <th>Base URL</th>
+        <th class="right">&nbsp;</th>
+    </tr>
+    @for(api <- apis) {
+        <tr>
+            <td>${api.name}</td>
+            <td>${api.packages}</td>
+            <td>${api.baseUrl}</td>
+            <td class="right"><a href="@{AdminController.deleteApi(api.getId)}"><img src="public/images/boomy/delete32.png"</a> </td>
+        </tr>
+    }
+
+</table>
+}

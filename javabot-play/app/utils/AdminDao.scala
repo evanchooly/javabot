@@ -1,35 +1,29 @@
 package utils
 
-import models.Admin
-import javabot.dao.BaseDao
-import javabot.model.criteria.AdminCriteria
-import java.util.Date
+import be.objectify.deadbolt.core.models.{Permission, Role, Subject}
+import java.util.Collections
+import java.util
+import javabot.model.Admin
 
-class AdminDao extends BaseDao[Admin](classOf[Admin]) {
-
-  def isAdmin(user: String, hostName: String): Boolean = {
-    findAll().isEmpty || getAdmin(user, hostName) != null
+class AdminDao extends javabot.dao.AdminDao {
+  def getSubject(userName: String): Option[Subject] = {
+    val admin = getAdmin(userName)
+    Option(if (admin != null) new JavabotSubject(admin) else null)
   }
 
-  def getAdmin(ircName: String, hostName: String): Admin = {
-    ds.createQuery(classOf[Admin])
-      .filter("ircName =", ircName)
-      .filter("hostName = ", hostName)
-      .get()
-  }
+  class JavabotSubject(admin: Admin) extends Subject {
+    def getPermissions = {
+      new util.ArrayList[Permission]
+    }
 
-  def getAdmin(userName: String): Admin = {
-    ds.createQuery(classOf[Admin])
-      .filter("userName =", userName)
-      .get()
-  }
+    def getIdentifier = {
+      admin.getUserName
+    }
 
-  def create(ircName: String, userName: String, hostName: String) {
-    val admin = new Admin()
-    admin.setIrcName(ircName)
-    admin.setUserName(userName)
-    admin.setHostName(hostName)
-    admin.setUpdated(new Date())
-    save(admin)
+    def getRoles = {
+      util.Arrays.asList(new Role() {
+        def getName = "botAdmin"
+      })
+    }
   }
 }

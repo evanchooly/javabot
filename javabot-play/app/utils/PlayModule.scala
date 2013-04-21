@@ -1,12 +1,42 @@
 package utils
 
+import com.google.code.morphia.Morphia
+import com.google.inject.name.Names
+import com.google.inject.{Provides, AbstractModule, Provider}
+import com.mongodb.MongoClient
+import java.util.Properties
+import javax.inject.Named
+import play.Play
+import play.api.libs.Files
 import play.mvc.Http
-import com.google.inject.{AbstractModule, Provider}
-import com.google.inject.servlet.{ServletScopes, RequestScoped}
 
-abstract class PlayModule extends AbstractModule {
-  protected override def configure()  {
-    bindScope(classOf[RequestScoped], ServletScopes.REQUEST)
+class PlayModule extends AbstractModule {
+  protected override def configure() {
+    try {
+      val props = new Properties()
+      val stream = Play.application.resourceAsStream("conf/oauth.conf")
+      if (stream != null) {
+        try {
+          props.load(stream)
+        } finally {
+          stream.close()
+        }
+      }
+      bind(classOf[String])
+        .annotatedWith(Names.named("twitter.key"))
+        .toInstance(props.getProperty("twitter.key"))
+
+      bind(classOf[String])
+        .annotatedWith(Names.named("twitter.secret"))
+        .toInstance(props.getProperty("twitter.secret"))
+
+      val file = Files.readFile(Play.application.getFile("conf/operations.list"))
+
+      bind(classOf[List[String]])
+        .annotatedWith(Names.named("operations"))
+        .toInstance(file.split('\n').toList)
+
+    }
 
     // Bind Play request
     bind(classOf[Http.Request]).toProvider(new Provider[Http.Request]() {
@@ -28,10 +58,18 @@ abstract class PlayModule extends AbstractModule {
         Http.Context.current()
       }
     })
-
-    configurePlay()
   }
 
-  // Override me
-  def configurePlay()
+  @Provides
+  @Named("operations")
+  def operations = {
+    ""
+  }
+
+  @Provides
+  def datastore = {
+    val mongo = new MongoClient
+    val morphia = new Morphia
+    morphia.createDatastore(mongo, "javabot")
+  }
 }
