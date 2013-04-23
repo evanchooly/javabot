@@ -33,6 +33,11 @@ public class AdminEventCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("completed"));
   }
 
+  public AdminEventCriteria completed(java.util.Date value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("completed")).equal(value);
+    return this;
+  }
+
   public AdminEventCriteria distinctCompleted() {
     ((QueryImpl) query).getCollection().distinct("completed");
     return this;
@@ -40,6 +45,11 @@ public class AdminEventCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.AdminEvent, org.bson.types.ObjectId> id() {
     return new TypeSafeFieldEnd<>(query, query.criteria("id"));
+  }
+
+  public AdminEventCriteria id(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
   }
 
   public AdminEventCriteria distinctId() {
@@ -51,6 +61,11 @@ public class AdminEventCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("requestedBy"));
   }
 
+  public AdminEventCriteria requestedBy(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("requestedBy")).equal(value);
+    return this;
+  }
+
   public AdminEventCriteria distinctRequestedBy() {
     ((QueryImpl) query).getCollection().distinct("requestedBy");
     return this;
@@ -58,6 +73,11 @@ public class AdminEventCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.AdminEvent, java.util.Date> requestedOn() {
     return new TypeSafeFieldEnd<>(query, query.criteria("requestedOn"));
+  }
+
+  public AdminEventCriteria requestedOn(java.util.Date value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("requestedOn")).equal(value);
+    return this;
   }
 
   public AdminEventCriteria distinctRequestedOn() {
@@ -69,6 +89,11 @@ public class AdminEventCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("state"));
   }
 
+  public AdminEventCriteria state(javabot.model.AdminEvent.State value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("state")).equal(value);
+    return this;
+  }
+
   public AdminEventCriteria distinctState() {
     ((QueryImpl) query).getCollection().distinct("state");
     return this;
@@ -76,6 +101,11 @@ public class AdminEventCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.AdminEvent, javabot.model.EventType> type() {
     return new TypeSafeFieldEnd<>(query, query.criteria("type"));
+  }
+
+  public AdminEventCriteria type(javabot.model.EventType value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("type")).equal(value);
+    return this;
   }
 
   public AdminEventCriteria distinctType() {

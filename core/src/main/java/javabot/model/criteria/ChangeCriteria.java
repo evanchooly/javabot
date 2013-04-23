@@ -33,6 +33,11 @@ public class ChangeCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("changeDate"));
   }
 
+  public ChangeCriteria changeDate(java.util.Date value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("changeDate")).equal(value);
+    return this;
+  }
+
   public ChangeCriteria distinctChangeDate() {
     ((QueryImpl) query).getCollection().distinct("changeDate");
     return this;
@@ -42,6 +47,11 @@ public class ChangeCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("id"));
   }
 
+  public ChangeCriteria id(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
+  }
+
   public ChangeCriteria distinctId() {
     ((QueryImpl) query).getCollection().distinct("id");
     return this;
@@ -49,6 +59,11 @@ public class ChangeCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Change, java.lang.String> message() {
     return new TypeSafeFieldEnd<>(query, query.criteria("message"));
+  }
+
+  public ChangeCriteria message(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("message")).equal(value);
+    return this;
   }
 
   public ChangeCriteria distinctMessage() {

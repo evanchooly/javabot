@@ -24,9 +24,11 @@ class Context {
 
   var today = new Date
 
+  var channel: String = "#jbunittest"
+
   def factoidCount = factoidDao.count()
 
-  def getShowAll: Boolean = {
+  def showAll: Boolean = {
     var showAll = false
     twitterContext = controllers.AdminController.getTwitterContext
     if(twitterContext != null) {
@@ -39,7 +41,8 @@ class Context {
   }
 
   def channels = {
-    channelDao.findLogged(getShowAll)
+    println("*************** showAll = " + showAll)
+    channelDao.findLogged(showAll)
   }
 
   def getLogs = {
@@ -47,6 +50,6 @@ class Context {
   }
 
   def logChannel( channel: String,  date: Date) {
-    logs = logsDao.findByChannel(channel, date, getShowAll)
+    logs = logsDao.findByChannel(channel, date, showAll)
   }
 }

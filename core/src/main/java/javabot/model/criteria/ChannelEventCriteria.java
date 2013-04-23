@@ -33,6 +33,11 @@ public class ChannelEventCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("channel"));
   }
 
+  public ChannelEventCriteria channel(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("channel")).equal(value);
+    return this;
+  }
+
   public ChannelEventCriteria distinctChannel() {
     ((QueryImpl) query).getCollection().distinct("channel");
     return this;
@@ -40,6 +45,11 @@ public class ChannelEventCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, java.util.Date> completed() {
     return new TypeSafeFieldEnd<>(query, query.criteria("completed"));
+  }
+
+  public ChannelEventCriteria completed(java.util.Date value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("completed")).equal(value);
+    return this;
   }
 
   public ChannelEventCriteria distinctCompleted() {
@@ -51,6 +61,11 @@ public class ChannelEventCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("id"));
   }
 
+  public ChannelEventCriteria id(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
+  }
+
   public ChannelEventCriteria distinctId() {
     ((QueryImpl) query).getCollection().distinct("id");
     return this;
@@ -58,6 +73,11 @@ public class ChannelEventCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, java.lang.String> key() {
     return new TypeSafeFieldEnd<>(query, query.criteria("key"));
+  }
+
+  public ChannelEventCriteria key(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("key")).equal(value);
+    return this;
   }
 
   public ChannelEventCriteria distinctKey() {
@@ -69,6 +89,11 @@ public class ChannelEventCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("logged"));
   }
 
+  public ChannelEventCriteria logged(java.lang.Boolean value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("logged")).equal(value);
+    return this;
+  }
+
   public ChannelEventCriteria distinctLogged() {
     ((QueryImpl) query).getCollection().distinct("logged");
     return this;
@@ -76,6 +101,11 @@ public class ChannelEventCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, java.lang.String> requestedBy() {
     return new TypeSafeFieldEnd<>(query, query.criteria("requestedBy"));
+  }
+
+  public ChannelEventCriteria requestedBy(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("requestedBy")).equal(value);
+    return this;
   }
 
   public ChannelEventCriteria distinctRequestedBy() {
@@ -87,6 +117,11 @@ public class ChannelEventCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("requestedOn"));
   }
 
+  public ChannelEventCriteria requestedOn(java.util.Date value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("requestedOn")).equal(value);
+    return this;
+  }
+
   public ChannelEventCriteria distinctRequestedOn() {
     ((QueryImpl) query).getCollection().distinct("requestedOn");
     return this;
@@ -96,6 +131,11 @@ public class ChannelEventCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("state"));
   }
 
+  public ChannelEventCriteria state(javabot.model.AdminEvent.State value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("state")).equal(value);
+    return this;
+  }
+
   public ChannelEventCriteria distinctState() {
     ((QueryImpl) query).getCollection().distinct("state");
     return this;
@@ -103,6 +143,11 @@ public class ChannelEventCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, javabot.model.EventType> type() {
     return new TypeSafeFieldEnd<>(query, query.criteria("type"));
+  }
+
+  public ChannelEventCriteria type(javabot.model.EventType value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("type")).equal(value);
+    return this;
   }
 
   public ChannelEventCriteria distinctType() {

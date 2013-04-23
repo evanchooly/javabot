@@ -33,6 +33,11 @@ public class ShunCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("expiry"));
   }
 
+  public ShunCriteria expiry(java.util.Date value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("expiry")).equal(value);
+    return this;
+  }
+
   public ShunCriteria distinctExpiry() {
     ((QueryImpl) query).getCollection().distinct("expiry");
     return this;
@@ -40,6 +45,11 @@ public class ShunCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Shun, org.bson.types.ObjectId> id() {
     return new TypeSafeFieldEnd<>(query, query.criteria("id"));
+  }
+
+  public ShunCriteria id(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
   }
 
   public ShunCriteria distinctId() {
@@ -51,6 +61,11 @@ public class ShunCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("nick"));
   }
 
+  public ShunCriteria nick(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("nick")).equal(value);
+    return this;
+  }
+
   public ShunCriteria distinctNick() {
     ((QueryImpl) query).getCollection().distinct("nick");
     return this;
@@ -58,6 +73,11 @@ public class ShunCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Shun, java.lang.String> upperNick() {
     return new TypeSafeFieldEnd<>(query, query.criteria("upperNick"));
+  }
+
+  public ShunCriteria upperNick(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("upperNick")).equal(value);
+    return this;
   }
 
   public ShunCriteria distinctUpperNick() {

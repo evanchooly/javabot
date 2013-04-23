@@ -28,9 +28,12 @@ public class AdminDao extends BaseDao<Admin> {
   }
 
   public Admin getAdmin(final String userName) {
+      System.out.println("userName = [" + userName + "]");
     AdminCriteria adminCriteria = new AdminCriteria(ds);
     adminCriteria.userName().equal(userName);
-    return adminCriteria.query().get();
+      Admin admin = adminCriteria.query().get();
+      System.out.println("admin = " + admin);
+      return admin;
   }
 
   public void create(final String ircName, final String userName, final String hostName) {

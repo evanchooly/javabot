@@ -33,6 +33,11 @@ public class KarmaCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("id"));
   }
 
+  public KarmaCriteria id(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
+  }
+
   public KarmaCriteria distinctId() {
     ((QueryImpl) query).getCollection().distinct("id");
     return this;
@@ -40,6 +45,11 @@ public class KarmaCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Karma, java.lang.String> name() {
     return new TypeSafeFieldEnd<>(query, query.criteria("name"));
+  }
+
+  public KarmaCriteria name(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("name")).equal(value);
+    return this;
   }
 
   public KarmaCriteria distinctName() {
@@ -51,6 +61,11 @@ public class KarmaCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("updated"));
   }
 
+  public KarmaCriteria updated(java.util.Date value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("updated")).equal(value);
+    return this;
+  }
+
   public KarmaCriteria distinctUpdated() {
     ((QueryImpl) query).getCollection().distinct("updated");
     return this;
@@ -58,6 +73,11 @@ public class KarmaCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Karma, java.lang.String> upperName() {
     return new TypeSafeFieldEnd<>(query, query.criteria("upperName"));
+  }
+
+  public KarmaCriteria upperName(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("upperName")).equal(value);
+    return this;
   }
 
   public KarmaCriteria distinctUpperName() {
@@ -69,6 +89,11 @@ public class KarmaCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("userName"));
   }
 
+  public KarmaCriteria userName(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("userName")).equal(value);
+    return this;
+  }
+
   public KarmaCriteria distinctUserName() {
     ((QueryImpl) query).getCollection().distinct("userName");
     return this;
@@ -76,6 +101,11 @@ public class KarmaCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Karma, java.lang.Integer> value() {
     return new TypeSafeFieldEnd<>(query, query.criteria("value"));
+  }
+
+  public KarmaCriteria value(java.lang.Integer value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("value")).equal(value);
+    return this;
   }
 
   public KarmaCriteria distinctValue() {

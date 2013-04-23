@@ -10,26 +10,27 @@ import play.Play
 import play.api.libs.Files
 import play.mvc.Http
 import java.io.File
+import security.OAuthDeadboltHandler
 
 class PlayModule extends AbstractModule {
   protected override def configure() {
     try {
       val props = new Properties()
-      val stream = Play.application.resourceAsStream("conf/oauth.conf")
+      var stream = Play.application.resourceAsStream("oauth.conf")
       if (stream != null) {
         try {
           props.load(stream)
+          bind(classOf[String])
+            .annotatedWith(Names.named("twitter.key"))
+            .toInstance(props.getProperty("twitter.key"))
+
+          bind(classOf[String])
+            .annotatedWith(Names.named("twitter.secret"))
+            .toInstance(props.getProperty("twitter.secret"))
         } finally {
           stream.close()
         }
       }
-      bind(classOf[String])
-        .annotatedWith(Names.named("twitter.key"))
-        .toInstance(props.getProperty("twitter.key"))
-
-      bind(classOf[String])
-        .annotatedWith(Names.named("twitter.secret"))
-        .toInstance(props.getProperty("twitter.secret"))
 
       val file: File = Play.application.getFile("conf/operations.list")
 
@@ -74,4 +75,9 @@ class PlayModule extends AbstractModule {
     val morphia = new Morphia
     morphia.createDatastore(mongo, "javabot")
   }
+
+//  @Provides
+//  def handler = {
+//    new OAuthDeadboltHandler
+//  }
 }

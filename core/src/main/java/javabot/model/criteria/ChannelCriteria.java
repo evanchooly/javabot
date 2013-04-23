@@ -33,6 +33,11 @@ public class ChannelCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("id"));
   }
 
+  public ChannelCriteria id(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
+  }
+
   public ChannelCriteria distinctId() {
     ((QueryImpl) query).getCollection().distinct("id");
     return this;
@@ -40,6 +45,11 @@ public class ChannelCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Channel, java.lang.String> key() {
     return new TypeSafeFieldEnd<>(query, query.criteria("key"));
+  }
+
+  public ChannelCriteria key(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("key")).equal(value);
+    return this;
   }
 
   public ChannelCriteria distinctKey() {
@@ -51,6 +61,11 @@ public class ChannelCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("logged"));
   }
 
+  public ChannelCriteria logged(java.lang.Boolean value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("logged")).equal(value);
+    return this;
+  }
+
   public ChannelCriteria distinctLogged() {
     ((QueryImpl) query).getCollection().distinct("logged");
     return this;
@@ -58,6 +73,11 @@ public class ChannelCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Channel, java.lang.String> name() {
     return new TypeSafeFieldEnd<>(query, query.criteria("name"));
+  }
+
+  public ChannelCriteria name(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("name")).equal(value);
+    return this;
   }
 
   public ChannelCriteria distinctName() {
@@ -69,6 +89,11 @@ public class ChannelCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("updated"));
   }
 
+  public ChannelCriteria updated(java.util.Date value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("updated")).equal(value);
+    return this;
+  }
+
   public ChannelCriteria distinctUpdated() {
     ((QueryImpl) query).getCollection().distinct("updated");
     return this;
@@ -76,6 +101,11 @@ public class ChannelCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Channel, java.lang.String> upperName() {
     return new TypeSafeFieldEnd<>(query, query.criteria("upperName"));
+  }
+
+  public ChannelCriteria upperName(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("upperName")).equal(value);
+    return this;
   }
 
   public ChannelCriteria distinctUpperName() {

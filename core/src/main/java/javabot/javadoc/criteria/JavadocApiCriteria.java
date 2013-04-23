@@ -33,6 +33,11 @@ public class JavadocApiCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("baseUrl"));
   }
 
+  public JavadocApiCriteria baseUrl(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("baseUrl")).equal(value);
+    return this;
+  }
+
   public JavadocApiCriteria distinctBaseUrl() {
     ((QueryImpl) query).getCollection().distinct("baseUrl");
     return this;
@@ -40,6 +45,11 @@ public class JavadocApiCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocApi, org.bson.types.ObjectId> id() {
     return new TypeSafeFieldEnd<>(query, query.criteria("id"));
+  }
+
+  public JavadocApiCriteria id(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
   }
 
   public JavadocApiCriteria distinctId() {
@@ -51,6 +61,11 @@ public class JavadocApiCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("name"));
   }
 
+  public JavadocApiCriteria name(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("name")).equal(value);
+    return this;
+  }
+
   public JavadocApiCriteria distinctName() {
     ((QueryImpl) query).getCollection().distinct("name");
     return this;
@@ -60,6 +75,11 @@ public class JavadocApiCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("packages"));
   }
 
+  public JavadocApiCriteria packages(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("packages")).equal(value);
+    return this;
+  }
+
   public JavadocApiCriteria distinctPackages() {
     ((QueryImpl) query).getCollection().distinct("packages");
     return this;
@@ -67,6 +87,11 @@ public class JavadocApiCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocApi, java.lang.String> upperName() {
     return new TypeSafeFieldEnd<>(query, query.criteria("upperName"));
+  }
+
+  public JavadocApiCriteria upperName(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("upperName")).equal(value);
+    return this;
   }
 
   public JavadocApiCriteria distinctUpperName() {

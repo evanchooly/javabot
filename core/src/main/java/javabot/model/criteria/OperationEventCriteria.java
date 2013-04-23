@@ -33,6 +33,11 @@ public class OperationEventCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("completed"));
   }
 
+  public OperationEventCriteria completed(java.util.Date value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("completed")).equal(value);
+    return this;
+  }
+
   public OperationEventCriteria distinctCompleted() {
     ((QueryImpl) query).getCollection().distinct("completed");
     return this;
@@ -40,6 +45,11 @@ public class OperationEventCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.OperationEvent, org.bson.types.ObjectId> id() {
     return new TypeSafeFieldEnd<>(query, query.criteria("id"));
+  }
+
+  public OperationEventCriteria id(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
   }
 
   public OperationEventCriteria distinctId() {
@@ -51,6 +61,11 @@ public class OperationEventCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("operation"));
   }
 
+  public OperationEventCriteria operation(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("operation")).equal(value);
+    return this;
+  }
+
   public OperationEventCriteria distinctOperation() {
     ((QueryImpl) query).getCollection().distinct("operation");
     return this;
@@ -58,6 +73,11 @@ public class OperationEventCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.OperationEvent, java.lang.String> requestedBy() {
     return new TypeSafeFieldEnd<>(query, query.criteria("requestedBy"));
+  }
+
+  public OperationEventCriteria requestedBy(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("requestedBy")).equal(value);
+    return this;
   }
 
   public OperationEventCriteria distinctRequestedBy() {
@@ -69,6 +89,11 @@ public class OperationEventCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("requestedOn"));
   }
 
+  public OperationEventCriteria requestedOn(java.util.Date value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("requestedOn")).equal(value);
+    return this;
+  }
+
   public OperationEventCriteria distinctRequestedOn() {
     ((QueryImpl) query).getCollection().distinct("requestedOn");
     return this;
@@ -78,6 +103,11 @@ public class OperationEventCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("state"));
   }
 
+  public OperationEventCriteria state(javabot.model.AdminEvent.State value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("state")).equal(value);
+    return this;
+  }
+
   public OperationEventCriteria distinctState() {
     ((QueryImpl) query).getCollection().distinct("state");
     return this;
@@ -85,6 +115,11 @@ public class OperationEventCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.OperationEvent, javabot.model.EventType> type() {
     return new TypeSafeFieldEnd<>(query, query.criteria("type"));
+  }
+
+  public OperationEventCriteria type(javabot.model.EventType value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("type")).equal(value);
+    return this;
   }
 
   public OperationEventCriteria distinctType() {

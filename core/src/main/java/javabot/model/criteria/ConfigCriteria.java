@@ -33,6 +33,11 @@ public class ConfigCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("historyLength"));
   }
 
+  public ConfigCriteria historyLength(java.lang.Integer value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("historyLength")).equal(value);
+    return this;
+  }
+
   public ConfigCriteria distinctHistoryLength() {
     ((QueryImpl) query).getCollection().distinct("historyLength");
     return this;
@@ -40,6 +45,11 @@ public class ConfigCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, org.bson.types.ObjectId> id() {
     return new TypeSafeFieldEnd<>(query, query.criteria("id"));
+  }
+
+  public ConfigCriteria id(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
   }
 
   public ConfigCriteria distinctId() {
@@ -51,6 +61,11 @@ public class ConfigCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("nick"));
   }
 
+  public ConfigCriteria nick(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("nick")).equal(value);
+    return this;
+  }
+
   public ConfigCriteria distinctNick() {
     ((QueryImpl) query).getCollection().distinct("nick");
     return this;
@@ -58,6 +73,11 @@ public class ConfigCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, java.util.Set<java.lang.String>> operations() {
     return new TypeSafeFieldEnd<>(query, query.criteria("operations"));
+  }
+
+  public ConfigCriteria operations(java.util.Set<java.lang.String> value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("operations")).equal(value);
+    return this;
   }
 
   public ConfigCriteria distinctOperations() {
@@ -69,6 +89,11 @@ public class ConfigCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("password"));
   }
 
+  public ConfigCriteria password(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("password")).equal(value);
+    return this;
+  }
+
   public ConfigCriteria distinctPassword() {
     ((QueryImpl) query).getCollection().distinct("password");
     return this;
@@ -76,6 +101,11 @@ public class ConfigCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, java.lang.Integer> port() {
     return new TypeSafeFieldEnd<>(query, query.criteria("port"));
+  }
+
+  public ConfigCriteria port(java.lang.Integer value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("port")).equal(value);
+    return this;
   }
 
   public ConfigCriteria distinctPort() {
@@ -87,6 +117,11 @@ public class ConfigCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("schemaVersion"));
   }
 
+  public ConfigCriteria schemaVersion(java.lang.Integer value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("schemaVersion")).equal(value);
+    return this;
+  }
+
   public ConfigCriteria distinctSchemaVersion() {
     ((QueryImpl) query).getCollection().distinct("schemaVersion");
     return this;
@@ -94,6 +129,11 @@ public class ConfigCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, java.lang.String> server() {
     return new TypeSafeFieldEnd<>(query, query.criteria("server"));
+  }
+
+  public ConfigCriteria server(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("server")).equal(value);
+    return this;
   }
 
   public ConfigCriteria distinctServer() {
@@ -105,6 +145,11 @@ public class ConfigCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("trigger"));
   }
 
+  public ConfigCriteria trigger(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("trigger")).equal(value);
+    return this;
+  }
+
   public ConfigCriteria distinctTrigger() {
     ((QueryImpl) query).getCollection().distinct("trigger");
     return this;
@@ -112,6 +157,11 @@ public class ConfigCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, java.lang.String> url() {
     return new TypeSafeFieldEnd<>(query, query.criteria("url"));
+  }
+
+  public ConfigCriteria url(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("url")).equal(value);
+    return this;
   }
 
   public ConfigCriteria distinctUrl() {

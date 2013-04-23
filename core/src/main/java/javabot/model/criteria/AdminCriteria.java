@@ -33,6 +33,11 @@ public class AdminCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("addedBy"));
   }
 
+  public AdminCriteria addedBy(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("addedBy")).equal(value);
+    return this;
+  }
+
   public AdminCriteria distinctAddedBy() {
     ((QueryImpl) query).getCollection().distinct("addedBy");
     return this;
@@ -40,6 +45,11 @@ public class AdminCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Admin, java.lang.Boolean> botOwner() {
     return new TypeSafeFieldEnd<>(query, query.criteria("botOwner"));
+  }
+
+  public AdminCriteria botOwner(java.lang.Boolean value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("botOwner")).equal(value);
+    return this;
   }
 
   public AdminCriteria distinctBotOwner() {
@@ -51,6 +61,11 @@ public class AdminCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("hostName"));
   }
 
+  public AdminCriteria hostName(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("hostName")).equal(value);
+    return this;
+  }
+
   public AdminCriteria distinctHostName() {
     ((QueryImpl) query).getCollection().distinct("hostName");
     return this;
@@ -58,6 +73,11 @@ public class AdminCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Admin, org.bson.types.ObjectId> id() {
     return new TypeSafeFieldEnd<>(query, query.criteria("id"));
+  }
+
+  public AdminCriteria id(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
   }
 
   public AdminCriteria distinctId() {
@@ -69,6 +89,11 @@ public class AdminCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("ircName"));
   }
 
+  public AdminCriteria ircName(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("ircName")).equal(value);
+    return this;
+  }
+
   public AdminCriteria distinctIrcName() {
     ((QueryImpl) query).getCollection().distinct("ircName");
     return this;
@@ -78,6 +103,11 @@ public class AdminCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("updated"));
   }
 
+  public AdminCriteria updated(java.util.Date value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("updated")).equal(value);
+    return this;
+  }
+
   public AdminCriteria distinctUpdated() {
     ((QueryImpl) query).getCollection().distinct("updated");
     return this;
@@ -85,6 +115,11 @@ public class AdminCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Admin, java.lang.String> userName() {
     return new TypeSafeFieldEnd<>(query, query.criteria("userName"));
+  }
+
+  public AdminCriteria userName(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("userName")).equal(value);
+    return this;
   }
 
   public AdminCriteria distinctUserName() {

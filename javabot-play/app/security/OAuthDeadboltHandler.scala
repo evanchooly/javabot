@@ -7,13 +7,22 @@ import com.google.inject.Inject
 
 import models.Admin
 import utils.AdminDao
+import java.io.Serializable
+import scala.None
 
-class OAuthDeadboltHandler(@Inject adminDao: AdminDao) extends DeadboltHandler {
+class OAuthDeadboltHandler extends DeadboltHandler {
+
+  @Inject
+  private var adminDao: AdminDao = null
 
   def beforeAuthCheck[A](request: Request[A]) = Option.empty[Result]
 
   override def getSubject[A](request: Request[A]): Option[Subject] = {
-    adminDao.getSubject(request.session.get("user").get)
+    val subject = for {
+      name <- request.session.get("user")
+      upper <- adminDao.getSubject(name)
+    } yield upper
+    subject
   }
 
   def onAuthFailure[A](request: Request[A]): Result = {

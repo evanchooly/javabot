@@ -7,7 +7,7 @@ import play.api.mvc.{Action, Controller}
 object Application extends Controller {
   def index = Action {
     implicit request =>
-      Ok(views.html.index(Injectables.handler, new Context))
+      Ok(views.html.index(Injectables.handler, Injectables.context))
   }
 
   def factoids = TODO

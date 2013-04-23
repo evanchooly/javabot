@@ -16,8 +16,8 @@ object ApplicationBuild extends Build {
     "be.objectify" %% "deadbolt-scala" % "2.1-RC2",
     "com.google.inject.extensions" % "guice-servlet" % "3.0",
     "com.google.inject.extensions" % "guice-multibindings" % "3.0",
-    "org.twitter4j" % "twitter4j-core" % "3.0.3"
-
+    "org.twitter4j" % "twitter4j-core" % "3.0.3",
+    "com.google.code.morphia" % "morphia-logging-slf4j" % "0.99"
   )
 
 

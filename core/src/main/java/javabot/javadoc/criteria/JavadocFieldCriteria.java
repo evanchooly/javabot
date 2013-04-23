@@ -33,6 +33,11 @@ public class JavadocFieldCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("directUrl"));
   }
 
+  public JavadocFieldCriteria directUrl(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("directUrl")).equal(value);
+    return this;
+  }
+
   public JavadocFieldCriteria distinctDirectUrl() {
     ((QueryImpl) query).getCollection().distinct("directUrl");
     return this;
@@ -40,6 +45,11 @@ public class JavadocFieldCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, org.bson.types.ObjectId> id() {
     return new TypeSafeFieldEnd<>(query, query.criteria("id"));
+  }
+
+  public JavadocFieldCriteria id(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
   }
 
   public JavadocFieldCriteria distinctId() {
@@ -51,6 +61,11 @@ public class JavadocFieldCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("longUrl"));
   }
 
+  public JavadocFieldCriteria longUrl(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("longUrl")).equal(value);
+    return this;
+  }
+
   public JavadocFieldCriteria distinctLongUrl() {
     ((QueryImpl) query).getCollection().distinct("longUrl");
     return this;
@@ -58,6 +73,11 @@ public class JavadocFieldCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, java.lang.String> name() {
     return new TypeSafeFieldEnd<>(query, query.criteria("name"));
+  }
+
+  public JavadocFieldCriteria name(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("name")).equal(value);
+    return this;
   }
 
   public JavadocFieldCriteria distinctName() {
@@ -69,6 +89,11 @@ public class JavadocFieldCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("shortUrl"));
   }
 
+  public JavadocFieldCriteria shortUrl(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("shortUrl")).equal(value);
+    return this;
+  }
+
   public JavadocFieldCriteria distinctShortUrl() {
     ((QueryImpl) query).getCollection().distinct("shortUrl");
     return this;
@@ -78,6 +103,11 @@ public class JavadocFieldCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("type"));
   }
 
+  public JavadocFieldCriteria type(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("type")).equal(value);
+    return this;
+  }
+
   public JavadocFieldCriteria distinctType() {
     ((QueryImpl) query).getCollection().distinct("type");
     return this;
@@ -85,6 +115,11 @@ public class JavadocFieldCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, java.lang.String> upperName() {
     return new TypeSafeFieldEnd<>(query, query.criteria("upperName"));
+  }
+
+  public JavadocFieldCriteria upperName(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("upperName")).equal(value);
+    return this;
   }
 
   public JavadocFieldCriteria distinctUpperName() {

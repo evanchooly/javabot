@@ -33,6 +33,11 @@ public class JavadocMethodCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("directUrl"));
   }
 
+  public JavadocMethodCriteria directUrl(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("directUrl")).equal(value);
+    return this;
+  }
+
   public JavadocMethodCriteria distinctDirectUrl() {
     ((QueryImpl) query).getCollection().distinct("directUrl");
     return this;
@@ -40,6 +45,11 @@ public class JavadocMethodCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocMethod, org.bson.types.ObjectId> id() {
     return new TypeSafeFieldEnd<>(query, query.criteria("id"));
+  }
+
+  public JavadocMethodCriteria id(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
   }
 
   public JavadocMethodCriteria distinctId() {
@@ -51,6 +61,11 @@ public class JavadocMethodCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("longSignatureTypes"));
   }
 
+  public JavadocMethodCriteria longSignatureTypes(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("longSignatureTypes")).equal(value);
+    return this;
+  }
+
   public JavadocMethodCriteria distinctLongSignatureTypes() {
     ((QueryImpl) query).getCollection().distinct("longSignatureTypes");
     return this;
@@ -58,6 +73,11 @@ public class JavadocMethodCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocMethod, java.lang.String> longUrl() {
     return new TypeSafeFieldEnd<>(query, query.criteria("longUrl"));
+  }
+
+  public JavadocMethodCriteria longUrl(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("longUrl")).equal(value);
+    return this;
   }
 
   public JavadocMethodCriteria distinctLongUrl() {
@@ -69,6 +89,11 @@ public class JavadocMethodCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("methodName"));
   }
 
+  public JavadocMethodCriteria methodName(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("methodName")).equal(value);
+    return this;
+  }
+
   public JavadocMethodCriteria distinctMethodName() {
     ((QueryImpl) query).getCollection().distinct("methodName");
     return this;
@@ -76,6 +101,11 @@ public class JavadocMethodCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocMethod, java.lang.Integer> paramCount() {
     return new TypeSafeFieldEnd<>(query, query.criteria("paramCount"));
+  }
+
+  public JavadocMethodCriteria paramCount(java.lang.Integer value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("paramCount")).equal(value);
+    return this;
   }
 
   public JavadocMethodCriteria distinctParamCount() {
@@ -87,6 +117,11 @@ public class JavadocMethodCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("shortSignatureTypes"));
   }
 
+  public JavadocMethodCriteria shortSignatureTypes(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("shortSignatureTypes")).equal(value);
+    return this;
+  }
+
   public JavadocMethodCriteria distinctShortSignatureTypes() {
     ((QueryImpl) query).getCollection().distinct("shortSignatureTypes");
     return this;
@@ -96,6 +131,11 @@ public class JavadocMethodCriteria {
     return new TypeSafeFieldEnd<>(query, query.criteria("shortUrl"));
   }
 
+  public JavadocMethodCriteria shortUrl(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("shortUrl")).equal(value);
+    return this;
+  }
+
   public JavadocMethodCriteria distinctShortUrl() {
     ((QueryImpl) query).getCollection().distinct("shortUrl");
     return this;
@@ -103,6 +143,11 @@ public class JavadocMethodCriteria {
 
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocMethod, java.lang.String> upperMethodName() {
     return new TypeSafeFieldEnd<>(query, query.criteria("upperMethodName"));
+  }
+
+  public JavadocMethodCriteria upperMethodName(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("upperMethodName")).equal(value);
+    return this;
   }
 
   public JavadocMethodCriteria distinctUpperMethodName() {

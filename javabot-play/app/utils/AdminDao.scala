@@ -7,6 +7,8 @@ import javabot.model.Admin
 
 class AdminDao extends javabot.dao.AdminDao {
   def getSubject(userName: String): Option[Subject] = {
+    println("************ " + userName)
+    getAdmin(userName)
     val admin = getAdmin(userName)
     Option(if (admin != null) new JavabotSubject(admin) else null)
   }
