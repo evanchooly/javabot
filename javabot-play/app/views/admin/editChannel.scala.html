@@ -9,11 +9,11 @@
             <tr>
                 <td class="top">Name</td>
                 <td class="top right">
-                    @if(channel.getId != null) {
+                    @if(channelForm("id") != null) {
                         <input type="hidden" name="channel.id" value='@channelForm("id")'/>
                     }
-                    <input type="text" name="channel.name" value="@channel.getName"
-                    #{if channel?.id != null} disabled #{/if}/>
+                    <input type="text" name="channel.name" value='@channelForm("name")'
+                    @if(channelForm("id") != null){ disabled }/>
                     <span class="error">#{error 'channel.name' /}</span>
                 </td>
             </tr>

@@ -73,17 +73,17 @@
             <div class="boxWrapper">
                 <table class="plain">
                     @context.channels.map { logged =>
-                    <tr>
-                        <td>
-                            <a id="@{logged.getName()}"
-                                @if(context.channel.equals(logged.getName())) { class="current" }
-                            href="@{Application.logs(URLEncoder.encode(logged.getName(), "UTF-8"), null)}">@{logged.getName()}</a>
-                        </td>
-                        @subjectNotPresent(handler) {
-                            <td></td>
-                            <td></td>
-                        }
-                    </tr>
+                        <tr>
+                            <td>
+                                <a id="@{logged.getName()}"
+                                    @if(context.channel.equals(logged.getName())) { class="current" }
+                                href="@{routes.Application.logs(URLEncoder.encode(logged.getName(), "UTF-8"), "today")}">@{logged.getName()}</a>
+                            </td>
+                            @subjectNotPresent(handler) {
+                                <td></td>
+                                <td></td>
+                            }
+                        </tr>
                     }
                 </table>
             </div>

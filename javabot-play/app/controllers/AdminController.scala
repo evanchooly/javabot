@@ -1,24 +1,22 @@
 package controllers
 
-import java.io.File
+import be.objectify.deadbolt.scala.DeadboltActions
+import com.google.inject.Inject
 import java.util
-import javabot.dao.{ChannelDao, FactoidDao, AdminDao, ApiDao}
+import javabot.dao.{ChannelDao, FactoidDao, AdminDao}
 import javabot.model.{Channel, Factoid, ApiEvent, Config}
 import models.{ChannelInfo, Admin}
 import org.bson.types.ObjectId
 import play.api.data.Forms._
 import play.api.data._
-import play.api.data.format.{Formats, Formatter}
-import play.api.libs.Files
 import play.api.mvc._
 import twitter4j.TwitterException
 import twitter4j.auth.RequestToken
 import utils.Implicits._
 import utils.{Injectables, TwitterContext}
-import play.api.templates.Html
-import com.google.inject.Inject
+import javax.inject.Named
 
-object AdminController extends Controller {
+object AdminController extends Controller with DeadboltActions {
   @Inject
   var channelDao: ChannelDao = null
 
@@ -79,23 +77,27 @@ object AdminController extends Controller {
   }
 
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
-  def index = Action {
-    implicit request =>
-      Ok(views.html.admin.config(Injectables.handler, Injectables.context, Injectables.config, Injectables.operations))
+  def index = Restrict(Array("botAdmin"), Injectables.handler) {
+    Action {
+      implicit request =>
+        Ok(views.html.admin.config(Injectables.handler, Injectables.context, Injectables.config, Injectables.operations))
+    }
   }
 
   //  @Get("/config")
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
-  def config = Action {
-    implicit request =>
-      val context = Injectables.context
-      val config = Injectables.configDao.findAll.get(0)
-      Ok(views.html.admin.config(Injectables.handler, context, config, Injectables.operations))
+  def config = Restrict(Array("botAdmin"), Injectables.handler) {
+    Action {
+      implicit request =>
+        val context = Injectables.context
+        val config = Injectables.configDao.findAll.get(0)
+        Ok(views.html.admin.config(Injectables.handler, context, config, Injectables.operations))
+    }
   }
 
   //  @Get("/saveConfig")
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
-  def saveConfig(config: Config) {
+  private def saveConfig(config: Config) {
     val configDao = Injectables.configDao
     val all = configDao.findAll
     val old = all.get(0)
@@ -115,23 +117,28 @@ object AdminController extends Controller {
 
   //  @Get("/javadoc")
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
-  def javadoc = Action {
-    implicit request =>
-      Ok(views.html.admin.javadoc(Injectables.handler, Injectables.context, Injectables.apiDao.findAll))
+  def javadoc = Restrict(Array("botAdmin"), Injectables.handler) {
+    Action {
+      implicit request =>
+        Ok(views.html.admin.javadoc(Injectables.handler, Injectables.context, Injectables.apiDao.findAll))
+    }
   }
 
   //  @Post("/addJavadoc")
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
-  def addJavadoc/*(name: String, packages: String, baseUrl: String, file: File)*/ = Action {
-    implicit request =>
-/*
-    val savedFile: File = File.createTempFile("javadoc", ".jar")
-    Files.copyFile(file, savedFile)
-    val apiDao: ApiDao = Injectables.apiDao
-    apiDao.save(new ApiEvent(apiDao.find(name) == null, AdminController.getTwitterContext.screenName, name,
-      packages, baseUrl, savedFile))
-*/
-    Ok(views.html.admin.javadoc(Injectables.handler, Injectables.context, Injectables.apiDao.findAll))
+  /*(name: String, packages: String, baseUrl: String, file: File)*/
+  def addJavadoc = Restrict(Array("botAdmin"), Injectables.handler) {
+    Action {
+      implicit request =>
+      /*
+          val savedFile: File = File.createTempFile("javadoc", ".jar")
+          Files.copyFile(file, savedFile)
+          val apiDao: ApiDao = Injectables.apiDao
+          apiDao.save(new ApiEvent(apiDao.find(name) == null, AdminController.getTwitterContext.screenName, name,
+            packages, baseUrl, savedFile))
+      */
+        Ok(views.html.admin.javadoc(Injectables.handler, Injectables.context, Injectables.apiDao.findAll))
+    }
   }
 
   //  @Get("/deleteApi")
@@ -246,12 +253,12 @@ object AdminController extends Controller {
 
   private final val CONTEXT_NAME: String = "-context"
 
-  //  @Inject
-  //  @Named("twitterKey")
-  //  var twitterKey: String
-  //
-  //  @Inject
-  //  @Named("twitterSecret")
-  //  var twitterSecret: String
+  @Inject
+  @Named("twitterKey")
+  var twitterKey: String = null
+
+  @Inject
+  @Named("twitterSecret")
+  var twitterSecret: String = null
 
 }

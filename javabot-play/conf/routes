@@ -8,7 +8,7 @@ GET     /                           controllers.Application.index
 GET     /factoids                   controllers.Application.factoids
 GET     /karma                      controllers.Application.karma
 GET     /changes                    controllers.Application.changes
-GET     /logs/{name}/{date}         controllers.Application.logs(name, date)
+GET     /logs/:name/:date           controllers.Application.logs(name: String, date: String)
 
 # Admin urls
 GET     /login                      controllers.AdminController.login
@@ -16,7 +16,7 @@ GET     /admin                      controllers.AdminController.index
 GET     /config                     controllers.AdminController.config
 GET     /javadoc                    controllers.AdminController.javadoc
 GET     /addJavadoc                 controllers.AdminController.addJavadoc
-GET     /showChannel/{name}         controllers.AdminController.showChannel(name)
+GET     /show/:name                 controllers.AdminController.showChannel(name)
 
 POST    /saveChannel                controllers.AdminController.saveChannel
 
