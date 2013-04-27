@@ -1,10 +1,11 @@
 package utils
 
 import javax.inject.Inject
-import javabot.dao.{LogsDao, ChannelDao, FactoidDao}
+import javabot.dao.{ChannelDao, FactoidDao}
 import javabot.model.Logs
 import java.util.Date
 import java.util
+import org.joda.time.DateTime
 
 class Context {
 
@@ -17,7 +18,7 @@ class Context {
   @Inject
   private var logsDao:LogsDao = null
 
-  var logs : util.List[Logs] = null
+  var logs : List[Logs] = null
 
   @Inject
   private var twitterContext: TwitterContext = null
@@ -41,7 +42,6 @@ class Context {
   }
 
   def channels = {
-    println("*************** showAll = " + showAll)
     channelDao.findLogged(showAll)
   }
 
@@ -49,7 +49,7 @@ class Context {
     logs
   }
 
-  def logChannel( channel: String,  date: Date) {
+  def logChannel(channel: String,  date: DateTime) {
     logs = logsDao.findByChannel(channel, date, showAll)
   }
 }

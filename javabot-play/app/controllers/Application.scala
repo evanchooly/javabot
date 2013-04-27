@@ -31,14 +31,15 @@ object Application extends Controller {
         try {
           date = DateTime.parse(dateString, format)
         } catch {
-          case Exception => {
+          case e: Exception => {
             date = DateTime.now().withTimeAtStartOfDay()
           }
         }
       }
 
       val context = Injectables.context
-      context.logChannel(channel, date.toDate)
+      context.logChannel(channel, date)
+      println(context.logs)
 
       val before = date.minusDays(1).toString(pattern)
       val after = date.plusDays(1).toString(pattern)

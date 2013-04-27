@@ -1,15 +1,12 @@
 package javabot.dao;
 
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import javax.inject.Inject;
 
 import javabot.Seen;
 import javabot.model.Channel;
 import javabot.model.Logs;
 import javabot.model.criteria.LogsCriteria;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,23 +22,6 @@ public class LogsDao extends BaseDao<Logs> {
 
   public LogsDao() {
     super(Logs.class);
-  }
-
-  @SuppressWarnings({"unchecked"})
-  public List<Logs> dailyLog(final String channelName, final Date date) {
-    Channel channel = channelDao.get(channelName);
-    if (channel.getLogged()) {
-      DateTime today = new DateTime(date == null ? new Date() : date).toDateMidnight().toDateTime();
-      DateTime tomorrow = today.plusDays(1);
-      LogsCriteria criteria = new LogsCriteria(ds);
-      criteria.channel().equal(channelName);
-      criteria.or(
-          criteria.updated().greaterThanOrEq(today.toDate()),
-          criteria.updated().lessThanOrEq(tomorrow.toDate())
-      );
-      return criteria.query().asList();
-    }
-    return Collections.emptyList();
   }
 
   public void logMessage(final Logs.Type type, final String nick, final String channel,
@@ -70,14 +50,4 @@ public class LogsDao extends BaseDao<Logs> {
     return new Seen(logs.getChannel(), logs.getMessage(), logs.getNick(), logs.getUpdated());
   }
 
-  public List<Logs> findByChannel(String name, Date date, Boolean showAll) {
-      Channel channel = channelDao.get(name);
-      List<Logs> logs;
-      if (showAll || channel.getLogged()) {
-        logs = dailyLog(name, date);
-      } else {
-        logs = Collections.<Logs>emptyList();
-      }
-      return logs;
-    }
 }
