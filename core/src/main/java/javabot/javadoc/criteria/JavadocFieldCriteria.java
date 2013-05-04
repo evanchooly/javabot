@@ -38,6 +38,15 @@ public class JavadocFieldCriteria {
     return this;
   }
 
+  public JavadocFieldCriteria orderByDirectUrl() {
+    return orderByDirectUrl(true);
+  }
+
+  public JavadocFieldCriteria orderByDirectUrl(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "directUrl");
+    return this;
+  }
+
   public JavadocFieldCriteria distinctDirectUrl() {
     ((QueryImpl) query).getCollection().distinct("directUrl");
     return this;
@@ -49,6 +58,15 @@ public class JavadocFieldCriteria {
 
   public JavadocFieldCriteria id(org.bson.types.ObjectId value) {
     new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
+  }
+
+  public JavadocFieldCriteria orderById() {
+    return orderById(true);
+  }
+
+  public JavadocFieldCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
     return this;
   }
 
@@ -66,6 +84,15 @@ public class JavadocFieldCriteria {
     return this;
   }
 
+  public JavadocFieldCriteria orderByLongUrl() {
+    return orderByLongUrl(true);
+  }
+
+  public JavadocFieldCriteria orderByLongUrl(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "longUrl");
+    return this;
+  }
+
   public JavadocFieldCriteria distinctLongUrl() {
     ((QueryImpl) query).getCollection().distinct("longUrl");
     return this;
@@ -77,6 +104,15 @@ public class JavadocFieldCriteria {
 
   public JavadocFieldCriteria name(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("name")).equal(value);
+    return this;
+  }
+
+  public JavadocFieldCriteria orderByName() {
+    return orderByName(true);
+  }
+
+  public JavadocFieldCriteria orderByName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "name");
     return this;
   }
 
@@ -94,6 +130,15 @@ public class JavadocFieldCriteria {
     return this;
   }
 
+  public JavadocFieldCriteria orderByShortUrl() {
+    return orderByShortUrl(true);
+  }
+
+  public JavadocFieldCriteria orderByShortUrl(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "shortUrl");
+    return this;
+  }
+
   public JavadocFieldCriteria distinctShortUrl() {
     ((QueryImpl) query).getCollection().distinct("shortUrl");
     return this;
@@ -108,6 +153,15 @@ public class JavadocFieldCriteria {
     return this;
   }
 
+  public JavadocFieldCriteria orderByType() {
+    return orderByType(true);
+  }
+
+  public JavadocFieldCriteria orderByType(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "type");
+    return this;
+  }
+
   public JavadocFieldCriteria distinctType() {
     ((QueryImpl) query).getCollection().distinct("type");
     return this;
@@ -119,6 +173,15 @@ public class JavadocFieldCriteria {
 
   public JavadocFieldCriteria upperName(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("upperName")).equal(value);
+    return this;
+  }
+
+  public JavadocFieldCriteria orderByUpperName() {
+    return orderByUpperName(true);
+  }
+
+  public JavadocFieldCriteria orderByUpperName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "upperName");
     return this;
   }
 

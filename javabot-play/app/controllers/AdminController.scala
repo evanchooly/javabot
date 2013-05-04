@@ -15,7 +15,6 @@ import twitter4j.auth.RequestToken
 import utils.Implicits._
 import utils.{Injectables, TwitterContext}
 import javax.inject.Named
-import controllers.routes.ref
 
 object AdminController extends Controller with DeadboltActions {
   @Inject

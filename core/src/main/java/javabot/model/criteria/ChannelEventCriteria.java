@@ -38,6 +38,15 @@ public class ChannelEventCriteria {
     return this;
   }
 
+  public ChannelEventCriteria orderByChannel() {
+    return orderByChannel(true);
+  }
+
+  public ChannelEventCriteria orderByChannel(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "channel");
+    return this;
+  }
+
   public ChannelEventCriteria distinctChannel() {
     ((QueryImpl) query).getCollection().distinct("channel");
     return this;
@@ -49,6 +58,15 @@ public class ChannelEventCriteria {
 
   public ChannelEventCriteria completed(java.util.Date value) {
     new TypeSafeFieldEnd<>(query, query.criteria("completed")).equal(value);
+    return this;
+  }
+
+  public ChannelEventCriteria orderByCompleted() {
+    return orderByCompleted(true);
+  }
+
+  public ChannelEventCriteria orderByCompleted(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "completed");
     return this;
   }
 
@@ -66,6 +84,15 @@ public class ChannelEventCriteria {
     return this;
   }
 
+  public ChannelEventCriteria orderById() {
+    return orderById(true);
+  }
+
+  public ChannelEventCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
+    return this;
+  }
+
   public ChannelEventCriteria distinctId() {
     ((QueryImpl) query).getCollection().distinct("id");
     return this;
@@ -77,6 +104,15 @@ public class ChannelEventCriteria {
 
   public ChannelEventCriteria key(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("key")).equal(value);
+    return this;
+  }
+
+  public ChannelEventCriteria orderByKey() {
+    return orderByKey(true);
+  }
+
+  public ChannelEventCriteria orderByKey(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "key");
     return this;
   }
 
@@ -94,6 +130,15 @@ public class ChannelEventCriteria {
     return this;
   }
 
+  public ChannelEventCriteria orderByLogged() {
+    return orderByLogged(true);
+  }
+
+  public ChannelEventCriteria orderByLogged(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "logged");
+    return this;
+  }
+
   public ChannelEventCriteria distinctLogged() {
     ((QueryImpl) query).getCollection().distinct("logged");
     return this;
@@ -105,6 +150,15 @@ public class ChannelEventCriteria {
 
   public ChannelEventCriteria requestedBy(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("requestedBy")).equal(value);
+    return this;
+  }
+
+  public ChannelEventCriteria orderByRequestedBy() {
+    return orderByRequestedBy(true);
+  }
+
+  public ChannelEventCriteria orderByRequestedBy(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "requestedBy");
     return this;
   }
 
@@ -122,6 +176,15 @@ public class ChannelEventCriteria {
     return this;
   }
 
+  public ChannelEventCriteria orderByRequestedOn() {
+    return orderByRequestedOn(true);
+  }
+
+  public ChannelEventCriteria orderByRequestedOn(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "requestedOn");
+    return this;
+  }
+
   public ChannelEventCriteria distinctRequestedOn() {
     ((QueryImpl) query).getCollection().distinct("requestedOn");
     return this;
@@ -136,6 +199,15 @@ public class ChannelEventCriteria {
     return this;
   }
 
+  public ChannelEventCriteria orderByState() {
+    return orderByState(true);
+  }
+
+  public ChannelEventCriteria orderByState(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "state");
+    return this;
+  }
+
   public ChannelEventCriteria distinctState() {
     ((QueryImpl) query).getCollection().distinct("state");
     return this;
@@ -147,6 +219,15 @@ public class ChannelEventCriteria {
 
   public ChannelEventCriteria type(javabot.model.EventType value) {
     new TypeSafeFieldEnd<>(query, query.criteria("type")).equal(value);
+    return this;
+  }
+
+  public ChannelEventCriteria orderByType() {
+    return orderByType(true);
+  }
+
+  public ChannelEventCriteria orderByType(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "type");
     return this;
   }
 

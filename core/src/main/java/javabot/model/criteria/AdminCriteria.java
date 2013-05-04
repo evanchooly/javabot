@@ -38,6 +38,15 @@ public class AdminCriteria {
     return this;
   }
 
+  public AdminCriteria orderByAddedBy() {
+    return orderByAddedBy(true);
+  }
+
+  public AdminCriteria orderByAddedBy(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "addedBy");
+    return this;
+  }
+
   public AdminCriteria distinctAddedBy() {
     ((QueryImpl) query).getCollection().distinct("addedBy");
     return this;
@@ -49,6 +58,15 @@ public class AdminCriteria {
 
   public AdminCriteria botOwner(java.lang.Boolean value) {
     new TypeSafeFieldEnd<>(query, query.criteria("botOwner")).equal(value);
+    return this;
+  }
+
+  public AdminCriteria orderByBotOwner() {
+    return orderByBotOwner(true);
+  }
+
+  public AdminCriteria orderByBotOwner(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "botOwner");
     return this;
   }
 
@@ -66,6 +84,15 @@ public class AdminCriteria {
     return this;
   }
 
+  public AdminCriteria orderByHostName() {
+    return orderByHostName(true);
+  }
+
+  public AdminCriteria orderByHostName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "hostName");
+    return this;
+  }
+
   public AdminCriteria distinctHostName() {
     ((QueryImpl) query).getCollection().distinct("hostName");
     return this;
@@ -77,6 +104,15 @@ public class AdminCriteria {
 
   public AdminCriteria id(org.bson.types.ObjectId value) {
     new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
+  }
+
+  public AdminCriteria orderById() {
+    return orderById(true);
+  }
+
+  public AdminCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
     return this;
   }
 
@@ -94,6 +130,15 @@ public class AdminCriteria {
     return this;
   }
 
+  public AdminCriteria orderByIrcName() {
+    return orderByIrcName(true);
+  }
+
+  public AdminCriteria orderByIrcName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "ircName");
+    return this;
+  }
+
   public AdminCriteria distinctIrcName() {
     ((QueryImpl) query).getCollection().distinct("ircName");
     return this;
@@ -108,6 +153,15 @@ public class AdminCriteria {
     return this;
   }
 
+  public AdminCriteria orderByUpdated() {
+    return orderByUpdated(true);
+  }
+
+  public AdminCriteria orderByUpdated(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "updated");
+    return this;
+  }
+
   public AdminCriteria distinctUpdated() {
     ((QueryImpl) query).getCollection().distinct("updated");
     return this;
@@ -119,6 +173,15 @@ public class AdminCriteria {
 
   public AdminCriteria userName(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("userName")).equal(value);
+    return this;
+  }
+
+  public AdminCriteria orderByUserName() {
+    return orderByUserName(true);
+  }
+
+  public AdminCriteria orderByUserName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "userName");
     return this;
   }
 

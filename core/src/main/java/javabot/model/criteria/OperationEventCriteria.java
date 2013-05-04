@@ -38,6 +38,15 @@ public class OperationEventCriteria {
     return this;
   }
 
+  public OperationEventCriteria orderByCompleted() {
+    return orderByCompleted(true);
+  }
+
+  public OperationEventCriteria orderByCompleted(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "completed");
+    return this;
+  }
+
   public OperationEventCriteria distinctCompleted() {
     ((QueryImpl) query).getCollection().distinct("completed");
     return this;
@@ -49,6 +58,15 @@ public class OperationEventCriteria {
 
   public OperationEventCriteria id(org.bson.types.ObjectId value) {
     new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
+  }
+
+  public OperationEventCriteria orderById() {
+    return orderById(true);
+  }
+
+  public OperationEventCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
     return this;
   }
 
@@ -66,6 +84,15 @@ public class OperationEventCriteria {
     return this;
   }
 
+  public OperationEventCriteria orderByOperation() {
+    return orderByOperation(true);
+  }
+
+  public OperationEventCriteria orderByOperation(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "operation");
+    return this;
+  }
+
   public OperationEventCriteria distinctOperation() {
     ((QueryImpl) query).getCollection().distinct("operation");
     return this;
@@ -77,6 +104,15 @@ public class OperationEventCriteria {
 
   public OperationEventCriteria requestedBy(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("requestedBy")).equal(value);
+    return this;
+  }
+
+  public OperationEventCriteria orderByRequestedBy() {
+    return orderByRequestedBy(true);
+  }
+
+  public OperationEventCriteria orderByRequestedBy(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "requestedBy");
     return this;
   }
 
@@ -94,6 +130,15 @@ public class OperationEventCriteria {
     return this;
   }
 
+  public OperationEventCriteria orderByRequestedOn() {
+    return orderByRequestedOn(true);
+  }
+
+  public OperationEventCriteria orderByRequestedOn(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "requestedOn");
+    return this;
+  }
+
   public OperationEventCriteria distinctRequestedOn() {
     ((QueryImpl) query).getCollection().distinct("requestedOn");
     return this;
@@ -108,6 +153,15 @@ public class OperationEventCriteria {
     return this;
   }
 
+  public OperationEventCriteria orderByState() {
+    return orderByState(true);
+  }
+
+  public OperationEventCriteria orderByState(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "state");
+    return this;
+  }
+
   public OperationEventCriteria distinctState() {
     ((QueryImpl) query).getCollection().distinct("state");
     return this;
@@ -119,6 +173,15 @@ public class OperationEventCriteria {
 
   public OperationEventCriteria type(javabot.model.EventType value) {
     new TypeSafeFieldEnd<>(query, query.criteria("type")).equal(value);
+    return this;
+  }
+
+  public OperationEventCriteria orderByType() {
+    return orderByType(true);
+  }
+
+  public OperationEventCriteria orderByType(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "type");
     return this;
   }
 

@@ -12,6 +12,8 @@ class FactoidDao extends javabot.dao.FactoidDao {
     form.value.map( value => criteria.value().contains(value))
     form.user.map( user => criteria.userName().contains(user))
 
+    criteria.orderByName()
+
     val query = criteria.query()
     val total = ds.getCount(query)
     query.offset(start)

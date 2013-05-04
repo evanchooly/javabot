@@ -38,6 +38,15 @@ public class JavadocClassCriteria {
     return this;
   }
 
+  public JavadocClassCriteria orderByDirectUrl() {
+    return orderByDirectUrl(true);
+  }
+
+  public JavadocClassCriteria orderByDirectUrl(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "directUrl");
+    return this;
+  }
+
   public JavadocClassCriteria distinctDirectUrl() {
     ((QueryImpl) query).getCollection().distinct("directUrl");
     return this;
@@ -49,6 +58,15 @@ public class JavadocClassCriteria {
 
   public JavadocClassCriteria fields(java.util.List<javabot.javadoc.JavadocField> value) {
     new TypeSafeFieldEnd<>(query, query.criteria("fields")).equal(value);
+    return this;
+  }
+
+  public JavadocClassCriteria orderByFields() {
+    return orderByFields(true);
+  }
+
+  public JavadocClassCriteria orderByFields(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "fields");
     return this;
   }
 
@@ -66,6 +84,15 @@ public class JavadocClassCriteria {
     return this;
   }
 
+  public JavadocClassCriteria orderById() {
+    return orderById(true);
+  }
+
+  public JavadocClassCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
+    return this;
+  }
+
   public JavadocClassCriteria distinctId() {
     ((QueryImpl) query).getCollection().distinct("id");
     return this;
@@ -77,6 +104,15 @@ public class JavadocClassCriteria {
 
   public JavadocClassCriteria longUrl(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("longUrl")).equal(value);
+    return this;
+  }
+
+  public JavadocClassCriteria orderByLongUrl() {
+    return orderByLongUrl(true);
+  }
+
+  public JavadocClassCriteria orderByLongUrl(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "longUrl");
     return this;
   }
 
@@ -94,6 +130,15 @@ public class JavadocClassCriteria {
     return this;
   }
 
+  public JavadocClassCriteria orderByMethods() {
+    return orderByMethods(true);
+  }
+
+  public JavadocClassCriteria orderByMethods(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "methods");
+    return this;
+  }
+
   public JavadocClassCriteria distinctMethods() {
     ((QueryImpl) query).getCollection().distinct("methods");
     return this;
@@ -105,6 +150,15 @@ public class JavadocClassCriteria {
 
   public JavadocClassCriteria name(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("name")).equal(value);
+    return this;
+  }
+
+  public JavadocClassCriteria orderByName() {
+    return orderByName(true);
+  }
+
+  public JavadocClassCriteria orderByName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "name");
     return this;
   }
 
@@ -122,6 +176,15 @@ public class JavadocClassCriteria {
     return this;
   }
 
+  public JavadocClassCriteria orderByPackageName() {
+    return orderByPackageName(true);
+  }
+
+  public JavadocClassCriteria orderByPackageName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "packageName");
+    return this;
+  }
+
   public JavadocClassCriteria distinctPackageName() {
     ((QueryImpl) query).getCollection().distinct("packageName");
     return this;
@@ -133,6 +196,15 @@ public class JavadocClassCriteria {
 
   public JavadocClassCriteria shortUrl(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("shortUrl")).equal(value);
+    return this;
+  }
+
+  public JavadocClassCriteria orderByShortUrl() {
+    return orderByShortUrl(true);
+  }
+
+  public JavadocClassCriteria orderByShortUrl(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "shortUrl");
     return this;
   }
 
@@ -150,6 +222,15 @@ public class JavadocClassCriteria {
     return this;
   }
 
+  public JavadocClassCriteria orderByUpperName() {
+    return orderByUpperName(true);
+  }
+
+  public JavadocClassCriteria orderByUpperName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "upperName");
+    return this;
+  }
+
   public JavadocClassCriteria distinctUpperName() {
     ((QueryImpl) query).getCollection().distinct("upperName");
     return this;
@@ -161,6 +242,15 @@ public class JavadocClassCriteria {
 
   public JavadocClassCriteria upperPackage(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("upperPackage")).equal(value);
+    return this;
+  }
+
+  public JavadocClassCriteria orderByUpperPackage() {
+    return orderByUpperPackage(true);
+  }
+
+  public JavadocClassCriteria orderByUpperPackage(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "upperPackage");
     return this;
   }
 

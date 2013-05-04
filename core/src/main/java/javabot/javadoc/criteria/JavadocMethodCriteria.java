@@ -38,6 +38,15 @@ public class JavadocMethodCriteria {
     return this;
   }
 
+  public JavadocMethodCriteria orderByDirectUrl() {
+    return orderByDirectUrl(true);
+  }
+
+  public JavadocMethodCriteria orderByDirectUrl(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "directUrl");
+    return this;
+  }
+
   public JavadocMethodCriteria distinctDirectUrl() {
     ((QueryImpl) query).getCollection().distinct("directUrl");
     return this;
@@ -49,6 +58,15 @@ public class JavadocMethodCriteria {
 
   public JavadocMethodCriteria id(org.bson.types.ObjectId value) {
     new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
+  }
+
+  public JavadocMethodCriteria orderById() {
+    return orderById(true);
+  }
+
+  public JavadocMethodCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
     return this;
   }
 
@@ -66,6 +84,15 @@ public class JavadocMethodCriteria {
     return this;
   }
 
+  public JavadocMethodCriteria orderByLongSignatureTypes() {
+    return orderByLongSignatureTypes(true);
+  }
+
+  public JavadocMethodCriteria orderByLongSignatureTypes(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "longSignatureTypes");
+    return this;
+  }
+
   public JavadocMethodCriteria distinctLongSignatureTypes() {
     ((QueryImpl) query).getCollection().distinct("longSignatureTypes");
     return this;
@@ -77,6 +104,15 @@ public class JavadocMethodCriteria {
 
   public JavadocMethodCriteria longUrl(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("longUrl")).equal(value);
+    return this;
+  }
+
+  public JavadocMethodCriteria orderByLongUrl() {
+    return orderByLongUrl(true);
+  }
+
+  public JavadocMethodCriteria orderByLongUrl(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "longUrl");
     return this;
   }
 
@@ -94,6 +130,15 @@ public class JavadocMethodCriteria {
     return this;
   }
 
+  public JavadocMethodCriteria orderByMethodName() {
+    return orderByMethodName(true);
+  }
+
+  public JavadocMethodCriteria orderByMethodName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "methodName");
+    return this;
+  }
+
   public JavadocMethodCriteria distinctMethodName() {
     ((QueryImpl) query).getCollection().distinct("methodName");
     return this;
@@ -105,6 +150,15 @@ public class JavadocMethodCriteria {
 
   public JavadocMethodCriteria paramCount(java.lang.Integer value) {
     new TypeSafeFieldEnd<>(query, query.criteria("paramCount")).equal(value);
+    return this;
+  }
+
+  public JavadocMethodCriteria orderByParamCount() {
+    return orderByParamCount(true);
+  }
+
+  public JavadocMethodCriteria orderByParamCount(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "paramCount");
     return this;
   }
 
@@ -122,6 +176,15 @@ public class JavadocMethodCriteria {
     return this;
   }
 
+  public JavadocMethodCriteria orderByShortSignatureTypes() {
+    return orderByShortSignatureTypes(true);
+  }
+
+  public JavadocMethodCriteria orderByShortSignatureTypes(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "shortSignatureTypes");
+    return this;
+  }
+
   public JavadocMethodCriteria distinctShortSignatureTypes() {
     ((QueryImpl) query).getCollection().distinct("shortSignatureTypes");
     return this;
@@ -136,6 +199,15 @@ public class JavadocMethodCriteria {
     return this;
   }
 
+  public JavadocMethodCriteria orderByShortUrl() {
+    return orderByShortUrl(true);
+  }
+
+  public JavadocMethodCriteria orderByShortUrl(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "shortUrl");
+    return this;
+  }
+
   public JavadocMethodCriteria distinctShortUrl() {
     ((QueryImpl) query).getCollection().distinct("shortUrl");
     return this;
@@ -147,6 +219,15 @@ public class JavadocMethodCriteria {
 
   public JavadocMethodCriteria upperMethodName(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("upperMethodName")).equal(value);
+    return this;
+  }
+
+  public JavadocMethodCriteria orderByUpperMethodName() {
+    return orderByUpperMethodName(true);
+  }
+
+  public JavadocMethodCriteria orderByUpperMethodName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "upperMethodName");
     return this;
   }
 

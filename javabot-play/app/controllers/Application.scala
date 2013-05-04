@@ -1,7 +1,7 @@
 package controllers
 
 import java.net.URLEncoder
-import models.{Page, FactoidForm}
+import models.{ChangeForm, Page, FactoidForm}
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import play.api.data.Forms._
@@ -17,6 +17,12 @@ object Application extends Controller {
       "value" -> optional(text),
       "user" -> optional(text)
     )(FactoidForm.apply)(FactoidForm.unapply)
+  )
+
+  val changeForm: Form[ChangeForm] = Form(
+    mapping(
+      "message" -> optional(text)
+    )(ChangeForm.apply)(ChangeForm.unapply)
   )
 
   val PerPageCount = 50
@@ -35,7 +41,7 @@ object Application extends Controller {
 
   def factoids = Action {
     implicit request =>
-      val dao: FactoidDao = Injectables.factoidDao
+      val dao = Injectables.factoidDao
 
       val page = request.getQueryString("page")
       val form = factoidForm.bindFromRequest.fold(errors => errors.get, form => form)
@@ -58,7 +64,18 @@ object Application extends Controller {
       Ok(views.html.karma(Injectables.handler, Injectables.context, pageContent))
   }
 
-  def changes = TODO
+  def changes = Action {
+      implicit request =>
+        val dao = Injectables.changeDao
+        val form = changeForm.bindFromRequest.fold(errors => errors.get, form => form)
+
+        val page = request.getQueryString("page")
+        val pageNumber = page.getOrElse("0").toInt
+        val pair = dao.find(form, pageNumber * PerPageCount, PerPageCount)
+        val content = Page(pair._2, pageNumber, pageNumber * PerPageCount, pair._1)
+
+        Ok(views.html.changes(Injectables.handler, Injectables.context, changeForm.fill(form), content))
+    }
 
   def logs(channel: String, dateString: String) = Action {
     implicit request =>

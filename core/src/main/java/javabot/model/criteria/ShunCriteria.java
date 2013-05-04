@@ -38,6 +38,15 @@ public class ShunCriteria {
     return this;
   }
 
+  public ShunCriteria orderByExpiry() {
+    return orderByExpiry(true);
+  }
+
+  public ShunCriteria orderByExpiry(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "expiry");
+    return this;
+  }
+
   public ShunCriteria distinctExpiry() {
     ((QueryImpl) query).getCollection().distinct("expiry");
     return this;
@@ -49,6 +58,15 @@ public class ShunCriteria {
 
   public ShunCriteria id(org.bson.types.ObjectId value) {
     new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
+  }
+
+  public ShunCriteria orderById() {
+    return orderById(true);
+  }
+
+  public ShunCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
     return this;
   }
 
@@ -66,6 +84,15 @@ public class ShunCriteria {
     return this;
   }
 
+  public ShunCriteria orderByNick() {
+    return orderByNick(true);
+  }
+
+  public ShunCriteria orderByNick(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "nick");
+    return this;
+  }
+
   public ShunCriteria distinctNick() {
     ((QueryImpl) query).getCollection().distinct("nick");
     return this;
@@ -77,6 +104,15 @@ public class ShunCriteria {
 
   public ShunCriteria upperNick(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("upperNick")).equal(value);
+    return this;
+  }
+
+  public ShunCriteria orderByUpperNick() {
+    return orderByUpperNick(true);
+  }
+
+  public ShunCriteria orderByUpperNick(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "upperNick");
     return this;
   }
 

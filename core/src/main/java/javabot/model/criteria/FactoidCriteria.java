@@ -38,6 +38,15 @@ public class FactoidCriteria {
     return this;
   }
 
+  public FactoidCriteria orderById() {
+    return orderById(true);
+  }
+
+  public FactoidCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
+    return this;
+  }
+
   public FactoidCriteria distinctId() {
     ((QueryImpl) query).getCollection().distinct("id");
     return this;
@@ -49,6 +58,15 @@ public class FactoidCriteria {
 
   public FactoidCriteria lastUsed(java.util.Date value) {
     new TypeSafeFieldEnd<>(query, query.criteria("lastUsed")).equal(value);
+    return this;
+  }
+
+  public FactoidCriteria orderByLastUsed() {
+    return orderByLastUsed(true);
+  }
+
+  public FactoidCriteria orderByLastUsed(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "lastUsed");
     return this;
   }
 
@@ -66,6 +84,15 @@ public class FactoidCriteria {
     return this;
   }
 
+  public FactoidCriteria orderByLocked() {
+    return orderByLocked(true);
+  }
+
+  public FactoidCriteria orderByLocked(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "locked");
+    return this;
+  }
+
   public FactoidCriteria distinctLocked() {
     ((QueryImpl) query).getCollection().distinct("locked");
     return this;
@@ -77,6 +104,15 @@ public class FactoidCriteria {
 
   public FactoidCriteria name(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("name")).equal(value);
+    return this;
+  }
+
+  public FactoidCriteria orderByName() {
+    return orderByName(true);
+  }
+
+  public FactoidCriteria orderByName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "name");
     return this;
   }
 
@@ -94,6 +130,15 @@ public class FactoidCriteria {
     return this;
   }
 
+  public FactoidCriteria orderByUpdated() {
+    return orderByUpdated(true);
+  }
+
+  public FactoidCriteria orderByUpdated(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "updated");
+    return this;
+  }
+
   public FactoidCriteria distinctUpdated() {
     ((QueryImpl) query).getCollection().distinct("updated");
     return this;
@@ -105,6 +150,15 @@ public class FactoidCriteria {
 
   public FactoidCriteria upperName(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("upperName")).equal(value);
+    return this;
+  }
+
+  public FactoidCriteria orderByUpperName() {
+    return orderByUpperName(true);
+  }
+
+  public FactoidCriteria orderByUpperName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "upperName");
     return this;
   }
 
@@ -122,6 +176,15 @@ public class FactoidCriteria {
     return this;
   }
 
+  public FactoidCriteria orderByUpperUserName() {
+    return orderByUpperUserName(true);
+  }
+
+  public FactoidCriteria orderByUpperUserName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "upperUserName");
+    return this;
+  }
+
   public FactoidCriteria distinctUpperUserName() {
     ((QueryImpl) query).getCollection().distinct("upperUserName");
     return this;
@@ -136,6 +199,15 @@ public class FactoidCriteria {
     return this;
   }
 
+  public FactoidCriteria orderByUserName() {
+    return orderByUserName(true);
+  }
+
+  public FactoidCriteria orderByUserName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "userName");
+    return this;
+  }
+
   public FactoidCriteria distinctUserName() {
     ((QueryImpl) query).getCollection().distinct("userName");
     return this;
@@ -147,6 +219,15 @@ public class FactoidCriteria {
 
   public FactoidCriteria value(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("value")).equal(value);
+    return this;
+  }
+
+  public FactoidCriteria orderByValue() {
+    return orderByValue(true);
+  }
+
+  public FactoidCriteria orderByValue(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "value");
     return this;
   }
 

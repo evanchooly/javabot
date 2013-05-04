@@ -38,6 +38,15 @@ public class LogsCriteria {
     return this;
   }
 
+  public LogsCriteria orderByChannel() {
+    return orderByChannel(true);
+  }
+
+  public LogsCriteria orderByChannel(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "channel");
+    return this;
+  }
+
   public LogsCriteria distinctChannel() {
     ((QueryImpl) query).getCollection().distinct("channel");
     return this;
@@ -49,6 +58,15 @@ public class LogsCriteria {
 
   public LogsCriteria id(org.bson.types.ObjectId value) {
     new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
+  }
+
+  public LogsCriteria orderById() {
+    return orderById(true);
+  }
+
+  public LogsCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
     return this;
   }
 
@@ -66,6 +84,15 @@ public class LogsCriteria {
     return this;
   }
 
+  public LogsCriteria orderByMessage() {
+    return orderByMessage(true);
+  }
+
+  public LogsCriteria orderByMessage(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "message");
+    return this;
+  }
+
   public LogsCriteria distinctMessage() {
     ((QueryImpl) query).getCollection().distinct("message");
     return this;
@@ -77,6 +104,15 @@ public class LogsCriteria {
 
   public LogsCriteria nick(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("nick")).equal(value);
+    return this;
+  }
+
+  public LogsCriteria orderByNick() {
+    return orderByNick(true);
+  }
+
+  public LogsCriteria orderByNick(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "nick");
     return this;
   }
 
@@ -94,6 +130,15 @@ public class LogsCriteria {
     return this;
   }
 
+  public LogsCriteria orderByType() {
+    return orderByType(true);
+  }
+
+  public LogsCriteria orderByType(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "type");
+    return this;
+  }
+
   public LogsCriteria distinctType() {
     ((QueryImpl) query).getCollection().distinct("type");
     return this;
@@ -108,6 +153,15 @@ public class LogsCriteria {
     return this;
   }
 
+  public LogsCriteria orderByUpdated() {
+    return orderByUpdated(true);
+  }
+
+  public LogsCriteria orderByUpdated(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "updated");
+    return this;
+  }
+
   public LogsCriteria distinctUpdated() {
     ((QueryImpl) query).getCollection().distinct("updated");
     return this;
@@ -119,6 +173,15 @@ public class LogsCriteria {
 
   public LogsCriteria upperNick(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("upperNick")).equal(value);
+    return this;
+  }
+
+  public LogsCriteria orderByUpperNick() {
+    return orderByUpperNick(true);
+  }
+
+  public LogsCriteria orderByUpperNick(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "upperNick");
     return this;
   }
 

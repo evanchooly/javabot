@@ -38,6 +38,15 @@ public class AdminEventCriteria {
     return this;
   }
 
+  public AdminEventCriteria orderByCompleted() {
+    return orderByCompleted(true);
+  }
+
+  public AdminEventCriteria orderByCompleted(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "completed");
+    return this;
+  }
+
   public AdminEventCriteria distinctCompleted() {
     ((QueryImpl) query).getCollection().distinct("completed");
     return this;
@@ -49,6 +58,15 @@ public class AdminEventCriteria {
 
   public AdminEventCriteria id(org.bson.types.ObjectId value) {
     new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
+  }
+
+  public AdminEventCriteria orderById() {
+    return orderById(true);
+  }
+
+  public AdminEventCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
     return this;
   }
 
@@ -66,6 +84,15 @@ public class AdminEventCriteria {
     return this;
   }
 
+  public AdminEventCriteria orderByRequestedBy() {
+    return orderByRequestedBy(true);
+  }
+
+  public AdminEventCriteria orderByRequestedBy(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "requestedBy");
+    return this;
+  }
+
   public AdminEventCriteria distinctRequestedBy() {
     ((QueryImpl) query).getCollection().distinct("requestedBy");
     return this;
@@ -77,6 +104,15 @@ public class AdminEventCriteria {
 
   public AdminEventCriteria requestedOn(java.util.Date value) {
     new TypeSafeFieldEnd<>(query, query.criteria("requestedOn")).equal(value);
+    return this;
+  }
+
+  public AdminEventCriteria orderByRequestedOn() {
+    return orderByRequestedOn(true);
+  }
+
+  public AdminEventCriteria orderByRequestedOn(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "requestedOn");
     return this;
   }
 
@@ -94,6 +130,15 @@ public class AdminEventCriteria {
     return this;
   }
 
+  public AdminEventCriteria orderByState() {
+    return orderByState(true);
+  }
+
+  public AdminEventCriteria orderByState(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "state");
+    return this;
+  }
+
   public AdminEventCriteria distinctState() {
     ((QueryImpl) query).getCollection().distinct("state");
     return this;
@@ -105,6 +150,15 @@ public class AdminEventCriteria {
 
   public AdminEventCriteria type(javabot.model.EventType value) {
     new TypeSafeFieldEnd<>(query, query.criteria("type")).equal(value);
+    return this;
+  }
+
+  public AdminEventCriteria orderByType() {
+    return orderByType(true);
+  }
+
+  public AdminEventCriteria orderByType(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "type");
     return this;
   }
 

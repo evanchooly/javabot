@@ -38,6 +38,15 @@ public class ApiEventCriteria {
     return this;
   }
 
+  public ApiEventCriteria orderByBaseUrl() {
+    return orderByBaseUrl(true);
+  }
+
+  public ApiEventCriteria orderByBaseUrl(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "baseUrl");
+    return this;
+  }
+
   public ApiEventCriteria distinctBaseUrl() {
     ((QueryImpl) query).getCollection().distinct("baseUrl");
     return this;
@@ -49,6 +58,15 @@ public class ApiEventCriteria {
 
   public ApiEventCriteria completed(java.util.Date value) {
     new TypeSafeFieldEnd<>(query, query.criteria("completed")).equal(value);
+    return this;
+  }
+
+  public ApiEventCriteria orderByCompleted() {
+    return orderByCompleted(true);
+  }
+
+  public ApiEventCriteria orderByCompleted(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "completed");
     return this;
   }
 
@@ -66,6 +84,15 @@ public class ApiEventCriteria {
     return this;
   }
 
+  public ApiEventCriteria orderByFile() {
+    return orderByFile(true);
+  }
+
+  public ApiEventCriteria orderByFile(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "file");
+    return this;
+  }
+
   public ApiEventCriteria distinctFile() {
     ((QueryImpl) query).getCollection().distinct("file");
     return this;
@@ -77,6 +104,15 @@ public class ApiEventCriteria {
 
   public ApiEventCriteria id(org.bson.types.ObjectId value) {
     new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
+  }
+
+  public ApiEventCriteria orderById() {
+    return orderById(true);
+  }
+
+  public ApiEventCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
     return this;
   }
 
@@ -94,6 +130,15 @@ public class ApiEventCriteria {
     return this;
   }
 
+  public ApiEventCriteria orderByName() {
+    return orderByName(true);
+  }
+
+  public ApiEventCriteria orderByName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "name");
+    return this;
+  }
+
   public ApiEventCriteria distinctName() {
     ((QueryImpl) query).getCollection().distinct("name");
     return this;
@@ -105,6 +150,15 @@ public class ApiEventCriteria {
 
   public ApiEventCriteria newApi(java.lang.Boolean value) {
     new TypeSafeFieldEnd<>(query, query.criteria("newApi")).equal(value);
+    return this;
+  }
+
+  public ApiEventCriteria orderByNewApi() {
+    return orderByNewApi(true);
+  }
+
+  public ApiEventCriteria orderByNewApi(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "newApi");
     return this;
   }
 
@@ -122,6 +176,15 @@ public class ApiEventCriteria {
     return this;
   }
 
+  public ApiEventCriteria orderByPackages() {
+    return orderByPackages(true);
+  }
+
+  public ApiEventCriteria orderByPackages(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "packages");
+    return this;
+  }
+
   public ApiEventCriteria distinctPackages() {
     ((QueryImpl) query).getCollection().distinct("packages");
     return this;
@@ -133,6 +196,15 @@ public class ApiEventCriteria {
 
   public ApiEventCriteria requestedBy(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("requestedBy")).equal(value);
+    return this;
+  }
+
+  public ApiEventCriteria orderByRequestedBy() {
+    return orderByRequestedBy(true);
+  }
+
+  public ApiEventCriteria orderByRequestedBy(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "requestedBy");
     return this;
   }
 
@@ -150,6 +222,15 @@ public class ApiEventCriteria {
     return this;
   }
 
+  public ApiEventCriteria orderByRequestedOn() {
+    return orderByRequestedOn(true);
+  }
+
+  public ApiEventCriteria orderByRequestedOn(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "requestedOn");
+    return this;
+  }
+
   public ApiEventCriteria distinctRequestedOn() {
     ((QueryImpl) query).getCollection().distinct("requestedOn");
     return this;
@@ -164,6 +245,15 @@ public class ApiEventCriteria {
     return this;
   }
 
+  public ApiEventCriteria orderByState() {
+    return orderByState(true);
+  }
+
+  public ApiEventCriteria orderByState(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "state");
+    return this;
+  }
+
   public ApiEventCriteria distinctState() {
     ((QueryImpl) query).getCollection().distinct("state");
     return this;
@@ -175,6 +265,15 @@ public class ApiEventCriteria {
 
   public ApiEventCriteria type(javabot.model.EventType value) {
     new TypeSafeFieldEnd<>(query, query.criteria("type")).equal(value);
+    return this;
+  }
+
+  public ApiEventCriteria orderByType() {
+    return orderByType(true);
+  }
+
+  public ApiEventCriteria orderByType(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "type");
     return this;
   }
 

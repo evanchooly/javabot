@@ -38,6 +38,15 @@ public class KarmaCriteria {
     return this;
   }
 
+  public KarmaCriteria orderById() {
+    return orderById(true);
+  }
+
+  public KarmaCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
+    return this;
+  }
+
   public KarmaCriteria distinctId() {
     ((QueryImpl) query).getCollection().distinct("id");
     return this;
@@ -49,6 +58,15 @@ public class KarmaCriteria {
 
   public KarmaCriteria name(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("name")).equal(value);
+    return this;
+  }
+
+  public KarmaCriteria orderByName() {
+    return orderByName(true);
+  }
+
+  public KarmaCriteria orderByName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "name");
     return this;
   }
 
@@ -66,6 +84,15 @@ public class KarmaCriteria {
     return this;
   }
 
+  public KarmaCriteria orderByUpdated() {
+    return orderByUpdated(true);
+  }
+
+  public KarmaCriteria orderByUpdated(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "updated");
+    return this;
+  }
+
   public KarmaCriteria distinctUpdated() {
     ((QueryImpl) query).getCollection().distinct("updated");
     return this;
@@ -77,6 +104,15 @@ public class KarmaCriteria {
 
   public KarmaCriteria upperName(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("upperName")).equal(value);
+    return this;
+  }
+
+  public KarmaCriteria orderByUpperName() {
+    return orderByUpperName(true);
+  }
+
+  public KarmaCriteria orderByUpperName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "upperName");
     return this;
   }
 
@@ -94,6 +130,15 @@ public class KarmaCriteria {
     return this;
   }
 
+  public KarmaCriteria orderByUserName() {
+    return orderByUserName(true);
+  }
+
+  public KarmaCriteria orderByUserName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "userName");
+    return this;
+  }
+
   public KarmaCriteria distinctUserName() {
     ((QueryImpl) query).getCollection().distinct("userName");
     return this;
@@ -105,6 +150,15 @@ public class KarmaCriteria {
 
   public KarmaCriteria value(java.lang.Integer value) {
     new TypeSafeFieldEnd<>(query, query.criteria("value")).equal(value);
+    return this;
+  }
+
+  public KarmaCriteria orderByValue() {
+    return orderByValue(true);
+  }
+
+  public KarmaCriteria orderByValue(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "value");
     return this;
   }
 

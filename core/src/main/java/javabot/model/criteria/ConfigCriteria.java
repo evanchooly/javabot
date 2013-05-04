@@ -38,6 +38,15 @@ public class ConfigCriteria {
     return this;
   }
 
+  public ConfigCriteria orderByHistoryLength() {
+    return orderByHistoryLength(true);
+  }
+
+  public ConfigCriteria orderByHistoryLength(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "historyLength");
+    return this;
+  }
+
   public ConfigCriteria distinctHistoryLength() {
     ((QueryImpl) query).getCollection().distinct("historyLength");
     return this;
@@ -49,6 +58,15 @@ public class ConfigCriteria {
 
   public ConfigCriteria id(org.bson.types.ObjectId value) {
     new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
+  }
+
+  public ConfigCriteria orderById() {
+    return orderById(true);
+  }
+
+  public ConfigCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
     return this;
   }
 
@@ -66,6 +84,15 @@ public class ConfigCriteria {
     return this;
   }
 
+  public ConfigCriteria orderByNick() {
+    return orderByNick(true);
+  }
+
+  public ConfigCriteria orderByNick(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "nick");
+    return this;
+  }
+
   public ConfigCriteria distinctNick() {
     ((QueryImpl) query).getCollection().distinct("nick");
     return this;
@@ -77,6 +104,15 @@ public class ConfigCriteria {
 
   public ConfigCriteria operations(java.util.Set<java.lang.String> value) {
     new TypeSafeFieldEnd<>(query, query.criteria("operations")).equal(value);
+    return this;
+  }
+
+  public ConfigCriteria orderByOperations() {
+    return orderByOperations(true);
+  }
+
+  public ConfigCriteria orderByOperations(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "operations");
     return this;
   }
 
@@ -94,6 +130,15 @@ public class ConfigCriteria {
     return this;
   }
 
+  public ConfigCriteria orderByPassword() {
+    return orderByPassword(true);
+  }
+
+  public ConfigCriteria orderByPassword(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "password");
+    return this;
+  }
+
   public ConfigCriteria distinctPassword() {
     ((QueryImpl) query).getCollection().distinct("password");
     return this;
@@ -105,6 +150,15 @@ public class ConfigCriteria {
 
   public ConfigCriteria port(java.lang.Integer value) {
     new TypeSafeFieldEnd<>(query, query.criteria("port")).equal(value);
+    return this;
+  }
+
+  public ConfigCriteria orderByPort() {
+    return orderByPort(true);
+  }
+
+  public ConfigCriteria orderByPort(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "port");
     return this;
   }
 
@@ -122,6 +176,15 @@ public class ConfigCriteria {
     return this;
   }
 
+  public ConfigCriteria orderBySchemaVersion() {
+    return orderBySchemaVersion(true);
+  }
+
+  public ConfigCriteria orderBySchemaVersion(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "schemaVersion");
+    return this;
+  }
+
   public ConfigCriteria distinctSchemaVersion() {
     ((QueryImpl) query).getCollection().distinct("schemaVersion");
     return this;
@@ -133,6 +196,15 @@ public class ConfigCriteria {
 
   public ConfigCriteria server(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("server")).equal(value);
+    return this;
+  }
+
+  public ConfigCriteria orderByServer() {
+    return orderByServer(true);
+  }
+
+  public ConfigCriteria orderByServer(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "server");
     return this;
   }
 
@@ -150,6 +222,15 @@ public class ConfigCriteria {
     return this;
   }
 
+  public ConfigCriteria orderByTrigger() {
+    return orderByTrigger(true);
+  }
+
+  public ConfigCriteria orderByTrigger(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "trigger");
+    return this;
+  }
+
   public ConfigCriteria distinctTrigger() {
     ((QueryImpl) query).getCollection().distinct("trigger");
     return this;
@@ -161,6 +242,15 @@ public class ConfigCriteria {
 
   public ConfigCriteria url(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("url")).equal(value);
+    return this;
+  }
+
+  public ConfigCriteria orderByUrl() {
+    return orderByUrl(true);
+  }
+
+  public ConfigCriteria orderByUrl(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "url");
     return this;
   }
 

@@ -38,6 +38,15 @@ public class NickRegistrationCriteria {
     return this;
   }
 
+  public NickRegistrationCriteria orderByHost() {
+    return orderByHost(true);
+  }
+
+  public NickRegistrationCriteria orderByHost(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "host");
+    return this;
+  }
+
   public NickRegistrationCriteria distinctHost() {
     ((QueryImpl) query).getCollection().distinct("host");
     return this;
@@ -49,6 +58,15 @@ public class NickRegistrationCriteria {
 
   public NickRegistrationCriteria id(org.bson.types.ObjectId value) {
     new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
+  }
+
+  public NickRegistrationCriteria orderById() {
+    return orderById(true);
+  }
+
+  public NickRegistrationCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
     return this;
   }
 
@@ -66,6 +84,15 @@ public class NickRegistrationCriteria {
     return this;
   }
 
+  public NickRegistrationCriteria orderByNick() {
+    return orderByNick(true);
+  }
+
+  public NickRegistrationCriteria orderByNick(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "nick");
+    return this;
+  }
+
   public NickRegistrationCriteria distinctNick() {
     ((QueryImpl) query).getCollection().distinct("nick");
     return this;
@@ -80,6 +107,15 @@ public class NickRegistrationCriteria {
     return this;
   }
 
+  public NickRegistrationCriteria orderByTwitterName() {
+    return orderByTwitterName(true);
+  }
+
+  public NickRegistrationCriteria orderByTwitterName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "twitterName");
+    return this;
+  }
+
   public NickRegistrationCriteria distinctTwitterName() {
     ((QueryImpl) query).getCollection().distinct("twitterName");
     return this;
@@ -91,6 +127,15 @@ public class NickRegistrationCriteria {
 
   public NickRegistrationCriteria url(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("url")).equal(value);
+    return this;
+  }
+
+  public NickRegistrationCriteria orderByUrl() {
+    return orderByUrl(true);
+  }
+
+  public NickRegistrationCriteria orderByUrl(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "url");
     return this;
   }
 

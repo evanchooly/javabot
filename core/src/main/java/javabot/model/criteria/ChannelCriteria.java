@@ -38,6 +38,15 @@ public class ChannelCriteria {
     return this;
   }
 
+  public ChannelCriteria orderById() {
+    return orderById(true);
+  }
+
+  public ChannelCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
+    return this;
+  }
+
   public ChannelCriteria distinctId() {
     ((QueryImpl) query).getCollection().distinct("id");
     return this;
@@ -49,6 +58,15 @@ public class ChannelCriteria {
 
   public ChannelCriteria key(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("key")).equal(value);
+    return this;
+  }
+
+  public ChannelCriteria orderByKey() {
+    return orderByKey(true);
+  }
+
+  public ChannelCriteria orderByKey(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "key");
     return this;
   }
 
@@ -66,6 +84,15 @@ public class ChannelCriteria {
     return this;
   }
 
+  public ChannelCriteria orderByLogged() {
+    return orderByLogged(true);
+  }
+
+  public ChannelCriteria orderByLogged(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "logged");
+    return this;
+  }
+
   public ChannelCriteria distinctLogged() {
     ((QueryImpl) query).getCollection().distinct("logged");
     return this;
@@ -77,6 +104,15 @@ public class ChannelCriteria {
 
   public ChannelCriteria name(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("name")).equal(value);
+    return this;
+  }
+
+  public ChannelCriteria orderByName() {
+    return orderByName(true);
+  }
+
+  public ChannelCriteria orderByName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "name");
     return this;
   }
 
@@ -94,6 +130,15 @@ public class ChannelCriteria {
     return this;
   }
 
+  public ChannelCriteria orderByUpdated() {
+    return orderByUpdated(true);
+  }
+
+  public ChannelCriteria orderByUpdated(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "updated");
+    return this;
+  }
+
   public ChannelCriteria distinctUpdated() {
     ((QueryImpl) query).getCollection().distinct("updated");
     return this;
@@ -105,6 +150,15 @@ public class ChannelCriteria {
 
   public ChannelCriteria upperName(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("upperName")).equal(value);
+    return this;
+  }
+
+  public ChannelCriteria orderByUpperName() {
+    return orderByUpperName(true);
+  }
+
+  public ChannelCriteria orderByUpperName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "upperName");
     return this;
   }
 

@@ -38,6 +38,15 @@ public class ChangeCriteria {
     return this;
   }
 
+  public ChangeCriteria orderByChangeDate() {
+    return orderByChangeDate(true);
+  }
+
+  public ChangeCriteria orderByChangeDate(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "changeDate");
+    return this;
+  }
+
   public ChangeCriteria distinctChangeDate() {
     ((QueryImpl) query).getCollection().distinct("changeDate");
     return this;
@@ -52,6 +61,15 @@ public class ChangeCriteria {
     return this;
   }
 
+  public ChangeCriteria orderById() {
+    return orderById(true);
+  }
+
+  public ChangeCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
+    return this;
+  }
+
   public ChangeCriteria distinctId() {
     ((QueryImpl) query).getCollection().distinct("id");
     return this;
@@ -63,6 +81,15 @@ public class ChangeCriteria {
 
   public ChangeCriteria message(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("message")).equal(value);
+    return this;
+  }
+
+  public ChangeCriteria orderByMessage() {
+    return orderByMessage(true);
+  }
+
+  public ChangeCriteria orderByMessage(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "message");
     return this;
   }
 

@@ -38,6 +38,15 @@ public class JavadocApiCriteria {
     return this;
   }
 
+  public JavadocApiCriteria orderByBaseUrl() {
+    return orderByBaseUrl(true);
+  }
+
+  public JavadocApiCriteria orderByBaseUrl(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "baseUrl");
+    return this;
+  }
+
   public JavadocApiCriteria distinctBaseUrl() {
     ((QueryImpl) query).getCollection().distinct("baseUrl");
     return this;
@@ -49,6 +58,15 @@ public class JavadocApiCriteria {
 
   public JavadocApiCriteria id(org.bson.types.ObjectId value) {
     new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
+    return this;
+  }
+
+  public JavadocApiCriteria orderById() {
+    return orderById(true);
+  }
+
+  public JavadocApiCriteria orderById(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "id");
     return this;
   }
 
@@ -66,6 +84,15 @@ public class JavadocApiCriteria {
     return this;
   }
 
+  public JavadocApiCriteria orderByName() {
+    return orderByName(true);
+  }
+
+  public JavadocApiCriteria orderByName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "name");
+    return this;
+  }
+
   public JavadocApiCriteria distinctName() {
     ((QueryImpl) query).getCollection().distinct("name");
     return this;
@@ -80,6 +107,15 @@ public class JavadocApiCriteria {
     return this;
   }
 
+  public JavadocApiCriteria orderByPackages() {
+    return orderByPackages(true);
+  }
+
+  public JavadocApiCriteria orderByPackages(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "packages");
+    return this;
+  }
+
   public JavadocApiCriteria distinctPackages() {
     ((QueryImpl) query).getCollection().distinct("packages");
     return this;
@@ -91,6 +127,15 @@ public class JavadocApiCriteria {
 
   public JavadocApiCriteria upperName(java.lang.String value) {
     new TypeSafeFieldEnd<>(query, query.criteria("upperName")).equal(value);
+    return this;
+  }
+
+  public JavadocApiCriteria orderByUpperName() {
+    return orderByUpperName(true);
+  }
+
+  public JavadocApiCriteria orderByUpperName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "upperName");
     return this;
   }
 
