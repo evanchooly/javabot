@@ -34,28 +34,28 @@
 
                 <div id="boxWrapper">
                     <ul class="plain">
-                        <li><a href="@{routes.Application.index()}">Home Page</a></li>
-                        <li><a href="@{routes.Application.factoids()}">Factoids</a>: @{context.factoidCount}</li>
-                    <!--<li><a wicket:id="activity_link"><span wicket:id="stats">[stats]</span></a></li>-->
-                        <li><a href="@{routes.Application.karma()}">Karma Ranking</a></li>
-                        <li><a href="@{routes.Application.changes()}">Changelog</a></li>
+                        <li><a href="@{routes.Application.index}">Home Page</a></li>
+                        <li><a href="@{routes.Application.factoids}">Factoids</a>: @{context.factoidCount}</li>
+                        <!--<li><a wicket:id="activity_link"><span wicket:id="stats">[stats]</span></a></li>-->
+                        <li><a href="@{routes.Application.karma}">Karma Ranking</a></li>
+                        <li><a href="@{routes.Application.changes}">Changelog</a></li>
                     </ul>
                 </div>
             </div>
             @subjectNotPresent(handler) {
-                <div>
-                    <h3><a href="@{routes.AdminController.login()}">Login</a></h3>
-                </div>
+            <div>
+                <h3><a href="@{routes.AdminController.login()}">Login</a></h3>
+            </div>
             }
-            @subjectPresent(handler) {
-                <div>
-                    <h3>Admin</h3>
-                    <ul>
-                        <li><a href="@{routes.AdminController.index()}">Admins</a></li>
-                        <li><a href="@{routes.AdminController.config()}">Configuration</a></li>
-                        <li><a href="@{routes.AdminController.javadoc()}">Javadoc</a></li>
-                    </ul>
-                </div>
+            @restrict(handler, List(as("botAdmin"))) {
+            <div>
+                <h3>Admin</h3>
+                <ul>
+                    <li><a href="@{routes.AdminController.index()}">Admins</a></li>
+                    <li><a href="@{routes.AdminController.config()}">Configuration</a></li>
+                    <li><a href="@{routes.AdminController.javadoc()}">Javadoc</a></li>
+                </ul>
+            </div>
             }
             <h3>
                 <table>
@@ -63,7 +63,7 @@
                         <td>Channels</td>
                         <td>
                             @restrict(handler, List(as("botAdmin"))) {
-                                <a href="@{routes.AdminController.showChannel(null)}">+</a>
+                            <a href="@{routes.AdminController.showChannel(null)}">+</a>
                             }
                         </td>
                     </tr>
@@ -73,17 +73,17 @@
             <div class="boxWrapper">
                 <table class="plain">
                     @context.channels.map { logged =>
-                        <tr>
-                            <td>
-                                <a id="@{logged.getName()}"
-                                    @if(context.channel.equals(logged.getName())) { class="current" }
-                                href="@{routes.Application.logs(URLEncoder.encode(logged.getName(), "UTF-8"), "today")}">@{logged.getName()}</a>
-                            </td>
-                            @subjectNotPresent(handler) {
-                                <td></td>
-                                <td></td>
-                            }
-                        </tr>
+                    <tr>
+                        <td>
+                            <a id="@{logged.getName()}"
+                            @if(logged.getName().equals(context.channel)) { class="current" }
+                            href="@{routes.Application.logs(URLEncoder.encode(logged.getName(), "UTF-8"), "today")}">@{logged.getName()}</a>
+                        </td>
+                        @subjectNotPresent(handler) {
+                            <td></td>
+                            <td></td>
+                        }
+                    </tr>
                     }
                 </table>
             </div>
@@ -103,12 +103,12 @@
                 </ul>
             </div>
         </div>
-
         <div id="content">
             <div class='featurebox_center'>
                 @content
             </div>
         </div>
+
         <br style="clear:both;border:none"/>
     </div>
     </body>

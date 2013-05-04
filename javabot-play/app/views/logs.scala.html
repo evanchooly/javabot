@@ -18,7 +18,7 @@
                         </td>
                         <td class="dateNav top today">
                             <h3>@date</h3>
-                            @subjectPresent(handler) {
+                            @restrict(handler, List(as("botAdmin"))) {
                                 <a href="@{routes.AdminController.showChannel(channel)}">(edit channel)</a>
                             }
                         </td>

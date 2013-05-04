@@ -25,22 +25,22 @@ ul {
 
 a {
     &:link {
-        color: #0000FF;
+//        color: #0000FF;
         text-decoration: none;
     }
 
     &:visited {
-        color: #0000FF;
+//        color: #0000FF;
         text-decoration: none;
     }
 
     &:active {
-        color: #0000FF;
+//        color: #0000FF;
         text-decoration: none;
     }
 
     &:hover {
-        color: #FF0000;
+//        color: #FF0000;
         text-decoration: underline;
     }
 }
@@ -319,6 +319,7 @@ table.form {
 table.plain {
     margin-left: 3em;
 }
+
 .plain {
     td {
         background-color: inherit;
@@ -326,4 +327,36 @@ table.plain {
         margin: 0;
         padding: 0;
     }
+}
+
+.disabled {
+  a {
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  color: lightgrey;
+}
+.pagination {
+  li {
+    display: inline;
+    border: 1px solid grey;
+    padding: 1em;
+
+    .prev {
+      padding-right: 0.5em;
+      border-right: 0;
+    }
+
+    .next {
+      padding-left: 0.5em;
+      border-left: 0;
+    }
+
+    .current {
+      border-left: 0;
+      border-right: 0;
+    }
+  }
 }

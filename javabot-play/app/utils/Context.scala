@@ -1,10 +1,9 @@
 package utils
 
-import javax.inject.Inject
-import javabot.dao.{ChannelDao, FactoidDao}
-import javabot.model.Logs
 import java.util.Date
-import java.util
+import javabot.dao.ChannelDao
+import javabot.model.Logs
+import javax.inject.Inject
 import org.joda.time.DateTime
 
 class Context {
@@ -25,7 +24,7 @@ class Context {
 
   var today = new Date
 
-  var channel: String = "#jbunittest"
+  var channel: String = null
 
   def factoidCount = factoidDao.count()
 

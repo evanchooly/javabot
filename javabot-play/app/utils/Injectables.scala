@@ -2,7 +2,7 @@ package utils
 
 import com.google.inject.{Key, Stage, Guice, Injector}
 import security.OAuthDeadboltHandler
-import javabot.dao.{ApiDao, ChannelDao, FactoidDao}
+import javabot.dao.{ApiDao, ChannelDao}
 import javabot.model.NickRegistration
 import twitter4j.TwitterFactory
 import com.google.inject.name.Names
@@ -23,6 +23,8 @@ object Injectables {
   def adminDao = injector.getInstance(classOf[AdminDao])
 
   def configDao =  injector.getInstance(classOf[ConfigDao])
+
+  def logsDao =  injector.getInstance(classOf[LogsDao])
 
   def operations = injector.getInstance(Key.get(classOf[java.util.List[String]], Names.named("operations")))
 

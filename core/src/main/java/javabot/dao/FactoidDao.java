@@ -25,16 +25,6 @@ public class FactoidDao extends BaseDao<Factoid> {
     super(Factoid.class);
   }
 
-  public List<Factoid> find(final QueryParam qp) {
-    Query<Factoid> query = ds.createQuery(Factoid.class);
-    if (qp.hasSort()) {
-      query.order(qp.getSort() + (qp.isSortAsc() ? " 1" : " -1"));
-    }
-    query.offset(qp.getFirst());
-    query.limit(qp.getCount());
-    return query.asList();
-  }
-
   public void save(final Persistent persistent) {
     Factoid factoid = (Factoid) persistent;
     super.save(persistent);

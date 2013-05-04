@@ -27,7 +27,6 @@ class LogsDao extends javabot.dao.LogsDao {
   }
 
   def findByChannel(name: String, date: DateTime, showAll: Boolean): List[Logs] = {
-    System.out.println("name = [" + name + "], date = [" + date + "], showAll = [" + showAll + "]");
     val channel = channelDao.get(name)
     var logs: List[Logs] = null
     if (showAll || channel.getLogged) {
