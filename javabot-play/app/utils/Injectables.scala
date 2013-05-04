@@ -8,6 +8,8 @@ import twitter4j.TwitterFactory
 import com.google.inject.name.Names
 
 object Injectables {
+  def karmaDao = injector.getInstance(classOf[KarmaDao])
+
   def context = injector.getInstance(classOf[Context])
 
   def twitter = new TwitterFactory().getInstance

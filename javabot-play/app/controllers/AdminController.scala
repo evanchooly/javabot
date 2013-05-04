@@ -15,6 +15,7 @@ import twitter4j.auth.RequestToken
 import utils.Implicits._
 import utils.{Injectables, TwitterContext}
 import javax.inject.Named
+import controllers.routes.ref
 
 object AdminController extends Controller with DeadboltActions {
   @Inject
@@ -47,8 +48,9 @@ object AdminController extends Controller with DeadboltActions {
       Unauthorized(views.html.index(Injectables.handler, context))
   }
 
-  def login = {
-    Application.index
+  def login = Action {
+    implicit request =>
+    controllers.Application.index(request)
   }
 
   def callback(oauth_token: String, oauth_verifier: String) {
@@ -84,8 +86,6 @@ object AdminController extends Controller with DeadboltActions {
     }
   }
 
-  //  @Get("/config")
-  //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
   def config = Restrict(Array("botAdmin"), Injectables.handler) {
     Action {
       implicit request =>

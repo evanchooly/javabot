@@ -47,13 +47,18 @@ object Application extends Controller {
       Ok(views.html.factoids(Injectables.handler, Injectables.context, fill, content))
   }
 
-  def get(flash: Flash, name: String): String = {
-    flash.get(name).getOrElse(null)
+  def karma = Action {
+    implicit request =>
+
+      val page = request.getQueryString("page")
+      val pageNumber = page.getOrElse("0").toInt
+      val pair = Injectables.karmaDao.find(pageNumber * PerPageCount, PerPageCount)
+      val pageContent = Page(pair._2, pageNumber, pageNumber * PerPageCount, pair._1)
+
+      Ok(views.html.karma(Injectables.handler, Injectables.context, pageContent))
   }
 
   def changes = TODO
-
-  def karma = TODO
 
   def logs(channel: String, dateString: String) = Action {
     implicit request =>

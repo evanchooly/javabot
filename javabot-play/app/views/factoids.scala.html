@@ -53,7 +53,7 @@
                 <tr>
                     <td>
                         @restrict(handler, List(as("botAdmin"))) {
-                            <a id="${factoid.id}" href="" class="locklink if(factoid.getLocked) locked">&nbsp;</a>
+                            <a id="@factoid.getId" href="" class="locklink if(factoid.getLocked) locked">&nbsp;</a>
                         }
                     @factoid.getName
                     </td>
