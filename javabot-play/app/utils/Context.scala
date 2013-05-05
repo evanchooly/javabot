@@ -48,7 +48,8 @@ class Context {
     logs
   }
 
-  def logChannel(channel: String,  date: DateTime) {
-    logs = logsDao.findByChannel(channel, date, showAll)
+  def logChannel(name: String,  date: DateTime) {
+    channel = name
+    logs = logsDao.findByChannel(name, date, showAll)
   }
 }
