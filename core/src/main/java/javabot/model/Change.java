@@ -1,13 +1,13 @@
 package javabot.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Indexed;
 import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
 
 @Entity("changes")
 @SPI(Persistent.class)
@@ -17,7 +17,7 @@ public class Change implements Serializable, Persistent {
     private ObjectId id;
     private String message;
     @Indexed(name = "changed")
-    private Date changeDate;
+    private DateTime changeDate;
 
     public ObjectId getId() {
         return id;
@@ -35,11 +35,11 @@ public class Change implements Serializable, Persistent {
         message = value;
     }
 
-    public Date getChangeDate() {
+    public DateTime getChangeDate() {
         return changeDate;
     }
 
-    public void setChangeDate(Date date) {
-        changeDate = date;
+    public void setChangeDate(DateTime DateTime) {
+        changeDate = DateTime;
     }
 }

@@ -144,11 +144,11 @@ public class LogsCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Logs, java.util.Date> updated() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Logs, org.joda.time.DateTime> updated() {
     return new TypeSafeFieldEnd<>(query, query.criteria("updated"));
   }
 
-  public LogsCriteria updated(java.util.Date value) {
+  public LogsCriteria updated(org.joda.time.DateTime value) {
     new TypeSafeFieldEnd<>(query, query.criteria("updated")).equal(value);
     return this;
   }

@@ -25,7 +25,7 @@ public class JavadocClass extends JavadocElement {
   @Reference
   private JavadocApi api;
   private String packageName;
-  private String upperPackage;
+  private String upperPackageName;
   private String name;
   private String upperName;
   @Reference
@@ -92,18 +92,18 @@ public class JavadocClass extends JavadocElement {
     this.upperName = upperName;
   }
 
-  public String getUpperPackage() {
-    return upperPackage;
+  public String getUpperPackageName() {
+    return upperPackageName;
   }
 
-  public void setUpperPackage(final String upperPackage) {
-    this.upperPackage = upperPackage;
+  public void setUpperPackageName(final String upperPackageName) {
+    this.upperPackageName = upperPackageName;
   }
 
   @PrePersist
   public void uppers() {
     upperName = name.toUpperCase();
-    upperPackage = packageName.toUpperCase();
+    upperPackageName = packageName.toUpperCase();
   }
 
   @Override

@@ -1,7 +1,6 @@
 package javabot.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
@@ -9,6 +8,7 @@ import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Index;
 import com.google.code.morphia.annotations.Indexes;
 import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
 
 @Entity("admin")
 @SPI(Persistent.class)
@@ -30,7 +30,7 @@ public class Admin implements Serializable, Persistent {
 
   private String addedBy;
 
-  private Date updated;
+  private DateTime updated;
 
   @Override
   public ObjectId getId() {
@@ -58,11 +58,11 @@ public class Admin implements Serializable, Persistent {
     userName = adminName;
   }
 
-  public Date getUpdated() {
+  public DateTime getUpdated() {
     return updated;
   }
 
-  public void setUpdated(Date date) {
+  public void setUpdated(DateTime date) {
     updated = date;
   }
 

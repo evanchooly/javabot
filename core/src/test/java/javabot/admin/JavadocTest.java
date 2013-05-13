@@ -59,7 +59,7 @@ public class JavadocTest extends BaseOperationTest {
     }
 
     List<Message> messages = getJavabot().getMessages();
-    Assert.assertTrue(javadocClassDao.getClass("java.lang", "Integer").length == 1);
+    Assert.assertNotEquals(javadocClassDao.getClass("java.lang", "Integer").length, 0);
   }
 
   private void addTestApi(final File file) {
@@ -75,7 +75,7 @@ public class JavadocTest extends BaseOperationTest {
 
     List<Message> messages = getJavabot().getMessages();
 
-    Assert.assertTrue(javadocClassDao.getClass("javax.servlet.http", "HttpServletRequest").length == 1);
+    Assert.assertTrue(javadocClassDao.getClass("javax.servlet.http", "HttpServletRequest").length != 0);
 
   }
 

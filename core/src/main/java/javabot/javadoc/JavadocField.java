@@ -13,7 +13,7 @@ import org.bson.types.ObjectId;
 @Entity("fields")
 @SPI(Persistent.class)
 @Indexes({
-    @Index("clazzId, name"),
+    @Index("javadocClass, upperName"),
 })
 
 public class JavadocField extends JavadocElement {

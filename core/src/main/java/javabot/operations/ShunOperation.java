@@ -1,7 +1,6 @@
 package javabot.operations;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -45,11 +44,10 @@ public class ShunOperation extends BotOperation {
       return String.format("%s is already shunned.", victim);
     }
     System.out.println("DateTime.now() = " + DateTime.now());
-    final Date until = (parts.length == 1
+    final DateTime until = parts.length == 1
         ? DateTime.now().plusMinutes(5)
-        : DateTime.now().plusSeconds(Integer.parseInt(parts[1])))
-        .toDate();
+        : DateTime.now().plusSeconds(Integer.parseInt(parts[1]));
     shunDao.addShun(victim, until);
-    return String.format("%s is shunned until %2$tY/%2$tm/%2$td %2$tH:%2$tM:%2$tS.", victim, until);
+    return String.format("%s is shunned until %s.", victim, until.toString("yyyy/MM/dd HH:mm:ss"));
   }
 }

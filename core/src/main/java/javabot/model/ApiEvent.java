@@ -20,7 +20,6 @@ public class ApiEvent extends AdminEvent {
   public String name;
   public String packages;
   public Boolean newApi;
-  public String requestedBy;
   public String baseUrl;
   public String file;
 
@@ -39,7 +38,7 @@ public class ApiEvent extends AdminEvent {
 
   public ApiEvent(boolean newApi, String requestedBy, String name, String packages, String baseUrl, File file) {
     this.newApi = newApi;
-    this.requestedBy = requestedBy;
+    setRequestedBy(requestedBy);
     this.name = name;
     this.packages = packages;
     this.baseUrl = baseUrl;

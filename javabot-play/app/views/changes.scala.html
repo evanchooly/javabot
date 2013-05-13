@@ -48,7 +48,7 @@
             @for(change <- page.items) {
                 <tr>
                     <td>@change.getMessage</td>
-                    <td class="right">@{change.getChangeDate.format("yyyy.MM.dd hh:mm")}</td>
+                    <td class="right">@{change.getChangeDate.toString("yyyy.MM.dd hh:mm")}</td>
                 </tr>
             }
         </table>

@@ -52,11 +52,11 @@ public class ChannelEventCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, java.util.Date> completed() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, org.joda.time.DateTime> completed() {
     return new TypeSafeFieldEnd<>(query, query.criteria("completed"));
   }
 
-  public ChannelEventCriteria completed(java.util.Date value) {
+  public ChannelEventCriteria completed(org.joda.time.DateTime value) {
     new TypeSafeFieldEnd<>(query, query.criteria("completed")).equal(value);
     return this;
   }
@@ -167,11 +167,11 @@ public class ChannelEventCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, java.util.Date> requestedOn() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, org.joda.time.DateTime> requestedOn() {
     return new TypeSafeFieldEnd<>(query, query.criteria("requestedOn"));
   }
 
-  public ChannelEventCriteria requestedOn(java.util.Date value) {
+  public ChannelEventCriteria requestedOn(org.joda.time.DateTime value) {
     new TypeSafeFieldEnd<>(query, query.criteria("requestedOn")).equal(value);
     return this;
   }

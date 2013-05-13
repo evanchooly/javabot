@@ -29,11 +29,11 @@ public class OperationEventCriteria {
     return query.and(criteria);
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.OperationEvent, java.util.Date> completed() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.OperationEvent, org.joda.time.DateTime> completed() {
     return new TypeSafeFieldEnd<>(query, query.criteria("completed"));
   }
 
-  public OperationEventCriteria completed(java.util.Date value) {
+  public OperationEventCriteria completed(org.joda.time.DateTime value) {
     new TypeSafeFieldEnd<>(query, query.criteria("completed")).equal(value);
     return this;
   }
@@ -121,11 +121,11 @@ public class OperationEventCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.OperationEvent, java.util.Date> requestedOn() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.OperationEvent, org.joda.time.DateTime> requestedOn() {
     return new TypeSafeFieldEnd<>(query, query.criteria("requestedOn"));
   }
 
-  public OperationEventCriteria requestedOn(java.util.Date value) {
+  public OperationEventCriteria requestedOn(org.joda.time.DateTime value) {
     new TypeSafeFieldEnd<>(query, query.criteria("requestedOn")).equal(value);
     return this;
   }

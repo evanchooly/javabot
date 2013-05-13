@@ -2,7 +2,6 @@ package javabot.model.criteria;
 
 import com.antwerkz.critter.TypeSafeFieldEnd;
 import com.google.code.morphia.Datastore;
-import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.query.Criteria;
 import com.google.code.morphia.query.CriteriaContainer;
 import com.google.code.morphia.query.Query;
@@ -121,11 +120,11 @@ public class ChannelCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Channel, java.util.Date> updated() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Channel, org.joda.time.DateTime> updated() {
     return new TypeSafeFieldEnd<>(query, query.criteria("updated"));
   }
 
-  public ChannelCriteria updated(java.util.Date value) {
+  public ChannelCriteria updated(org.joda.time.DateTime value) {
     new TypeSafeFieldEnd<>(query, query.criteria("updated")).equal(value);
     return this;
   }

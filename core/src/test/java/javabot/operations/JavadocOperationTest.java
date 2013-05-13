@@ -37,8 +37,8 @@ public class JavadocOperationTest extends BaseOperationTest {
   }
 
   public void fields() {
-    scanForResponse("~javadoc Integer.MAX_VALUE", "[JDK: java.lang.Integer#MAX_VALUE:int]");
     scanForResponse("~javadoc System.in", "[JDK: java.lang.System#in:java.io.InputStream]");
+    scanForResponse("~javadoc Integer.MAX_VALUE", "[JDK: java.lang.Integer#MAX_VALUE:int]");
     scanForResponse("~javadoc -jdk System.in", "[JDK: java.lang.System#in:java.io.InputStream]");
   }
 

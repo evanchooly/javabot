@@ -1,7 +1,6 @@
 package javabot.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
@@ -10,14 +9,9 @@ import com.google.code.morphia.annotations.Index;
 import com.google.code.morphia.annotations.Indexed;
 import com.google.code.morphia.annotations.Indexes;
 import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
 
 @Entity("shun")
-/*
-@NamedQueries({
-    @NamedQuery(name = ShunDao.BY_NAME, query = "select s from Shun s where s.nick = :nick"),
-    @NamedQuery(name = ShunDao.CLEANUP, query = "delete from Shun s where s.expiry <= :now")
-})
-*/
 @SPI(Persistent.class)
 @Indexes({
     @Index("upperNick")
@@ -31,7 +25,7 @@ public class Shun implements Serializable, Persistent {
 
   private String upperNick;
 
-  private Date expiry;
+  private DateTime expiry;
 
   public ObjectId getId() {
     return id;
@@ -49,11 +43,11 @@ public class Shun implements Serializable, Persistent {
     this.nick = nick;
   }
 
-  public Date getExpiry() {
+  public DateTime getExpiry() {
     return expiry;
   }
 
-  public void setExpiry(Date updated) {
+  public void setExpiry(DateTime updated) {
     this.expiry = updated;
   }
 

@@ -144,11 +144,11 @@ public class AdminCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Admin, java.util.Date> updated() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Admin, org.joda.time.DateTime> updated() {
     return new TypeSafeFieldEnd<>(query, query.criteria("updated"));
   }
 
-  public AdminCriteria updated(java.util.Date value) {
+  public AdminCriteria updated(org.joda.time.DateTime value) {
     new TypeSafeFieldEnd<>(query, query.criteria("updated")).equal(value);
     return this;
   }

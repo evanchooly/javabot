@@ -29,11 +29,11 @@ public class AdminEventCriteria {
     return query.and(criteria);
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.AdminEvent, java.util.Date> completed() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.AdminEvent, org.joda.time.DateTime> completed() {
     return new TypeSafeFieldEnd<>(query, query.criteria("completed"));
   }
 
-  public AdminEventCriteria completed(java.util.Date value) {
+  public AdminEventCriteria completed(org.joda.time.DateTime value) {
     new TypeSafeFieldEnd<>(query, query.criteria("completed")).equal(value);
     return this;
   }
@@ -98,11 +98,11 @@ public class AdminEventCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.AdminEvent, java.util.Date> requestedOn() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.AdminEvent, org.joda.time.DateTime> requestedOn() {
     return new TypeSafeFieldEnd<>(query, query.criteria("requestedOn"));
   }
 
-  public AdminEventCriteria requestedOn(java.util.Date value) {
+  public AdminEventCriteria requestedOn(org.joda.time.DateTime value) {
     new TypeSafeFieldEnd<>(query, query.criteria("requestedOn")).equal(value);
     return this;
   }

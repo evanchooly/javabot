@@ -52,11 +52,11 @@ public class FactoidCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Factoid, java.util.Date> lastUsed() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Factoid, org.joda.time.DateTime> lastUsed() {
     return new TypeSafeFieldEnd<>(query, query.criteria("lastUsed"));
   }
 
-  public FactoidCriteria lastUsed(java.util.Date value) {
+  public FactoidCriteria lastUsed(org.joda.time.DateTime value) {
     new TypeSafeFieldEnd<>(query, query.criteria("lastUsed")).equal(value);
     return this;
   }
@@ -121,11 +121,11 @@ public class FactoidCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Factoid, java.util.Date> updated() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Factoid, org.joda.time.DateTime> updated() {
     return new TypeSafeFieldEnd<>(query, query.criteria("updated"));
   }
 
-  public FactoidCriteria updated(java.util.Date value) {
+  public FactoidCriteria updated(org.joda.time.DateTime value) {
     new TypeSafeFieldEnd<>(query, query.criteria("updated")).equal(value);
     return this;
   }

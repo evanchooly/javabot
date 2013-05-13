@@ -1,10 +1,10 @@
 package javabot.dao;
 
-import java.util.Date;
 import java.util.List;
 
 import javabot.model.Admin;
 import javabot.model.criteria.AdminCriteria;
+import org.joda.time.DateTime;
 
 public class AdminDao extends BaseDao<Admin> {
   public AdminDao() {
@@ -28,12 +28,9 @@ public class AdminDao extends BaseDao<Admin> {
   }
 
   public Admin getAdmin(final String userName) {
-      System.out.println("userName = [" + userName + "]");
     AdminCriteria adminCriteria = new AdminCriteria(ds);
     adminCriteria.userName().equal(userName);
-      Admin admin = adminCriteria.query().get();
-      System.out.println("admin = " + admin);
-      return admin;
+    return adminCriteria.query().get();
   }
 
   public void create(final String ircName, final String userName, final String hostName) {
@@ -41,7 +38,7 @@ public class AdminDao extends BaseDao<Admin> {
     admin.setIrcName(ircName);
     admin.setUserName(userName);
     admin.setHostName(hostName);
-    admin.setUpdated(new Date());
+    admin.setUpdated(new DateTime());
     save(admin);
   }
 }

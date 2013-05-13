@@ -121,26 +121,26 @@ public class JavadocMethodCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocMethod, java.lang.String> methodName() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("methodName"));
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocMethod, java.lang.String> name() {
+    return new TypeSafeFieldEnd<>(query, query.criteria("name"));
   }
 
-  public JavadocMethodCriteria methodName(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("methodName")).equal(value);
+  public JavadocMethodCriteria name(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("name")).equal(value);
     return this;
   }
 
-  public JavadocMethodCriteria orderByMethodName() {
-    return orderByMethodName(true);
+  public JavadocMethodCriteria orderByName() {
+    return orderByName(true);
   }
 
-  public JavadocMethodCriteria orderByMethodName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "methodName");
+  public JavadocMethodCriteria orderByName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "name");
     return this;
   }
 
-  public JavadocMethodCriteria distinctMethodName() {
-    ((QueryImpl) query).getCollection().distinct("methodName");
+  public JavadocMethodCriteria distinctName() {
+    ((QueryImpl) query).getCollection().distinct("name");
     return this;
   }
 
@@ -213,26 +213,26 @@ public class JavadocMethodCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocMethod, java.lang.String> upperMethodName() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("upperMethodName"));
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocMethod, java.lang.String> upperName() {
+    return new TypeSafeFieldEnd<>(query, query.criteria("upperName"));
   }
 
-  public JavadocMethodCriteria upperMethodName(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("upperMethodName")).equal(value);
+  public JavadocMethodCriteria upperName(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("upperName")).equal(value);
     return this;
   }
 
-  public JavadocMethodCriteria orderByUpperMethodName() {
-    return orderByUpperMethodName(true);
+  public JavadocMethodCriteria orderByUpperName() {
+    return orderByUpperName(true);
   }
 
-  public JavadocMethodCriteria orderByUpperMethodName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "upperMethodName");
+  public JavadocMethodCriteria orderByUpperName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "upperName");
     return this;
   }
 
-  public JavadocMethodCriteria distinctUpperMethodName() {
-    ((QueryImpl) query).getCollection().distinct("upperMethodName");
+  public JavadocMethodCriteria distinctUpperName() {
+    ((QueryImpl) query).getCollection().distinct("upperName");
     return this;
   }
 

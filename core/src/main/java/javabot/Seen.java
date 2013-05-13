@@ -1,14 +1,14 @@
 package javabot;
 
-import java.util.Date;
+import org.joda.time.DateTime;
 
 public class Seen {
     private String nick;
     private String channel;
     private String message;
-    private Date updated;
+    private DateTime updated;
 
-    public Seen(final String channel, final String message, final String nick, final Date updated) {
+    public Seen(final String channel, final String message, final String nick, final DateTime updated) {
         this.channel = channel;
         this.message = message;
         this.nick = nick;
@@ -39,11 +39,11 @@ public class Seen {
         message = seenMessage;
     }
 
-    public Date getUpdated() {
+    public DateTime getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Date date) {
+    public void setUpdated(DateTime date) {
         updated = date;
     }
 }

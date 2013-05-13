@@ -19,7 +19,7 @@ public abstract class BaseOperationTest extends BaseTest {
         .append("\n");
       found |= response.getMessage().contains(target);
     }
-    Assert.assertTrue(found, String.format("Did not find '%s' in '%s'", target, list));
+    Assert.assertTrue(found, String.format("Did not find \n'%s' in \n'%s'", target, list));
   }
 
   protected void testMessage(final String message, final String... responses) {

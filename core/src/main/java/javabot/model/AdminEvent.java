@@ -1,7 +1,6 @@
 package javabot.model;
 
 import java.io.Serializable;
-import java.util.Date;
 import javax.inject.Inject;
 
 import com.google.code.morphia.annotations.Entity;
@@ -12,10 +11,11 @@ import com.google.code.morphia.annotations.Transient;
 import javabot.Javabot;
 import javabot.dao.EventDao;
 import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
 
 @Entity("events")
 @Indexes({
-    @Index("status")
+    @Index("state, requestedOn")
 })
 public class AdminEvent implements Serializable, Persistent {
   public enum State {
@@ -34,9 +34,9 @@ public class AdminEvent implements Serializable, Persistent {
 
   private String requestedBy;
 
-  private Date requestedOn;
+  private DateTime requestedOn;
 
-  private Date completed;
+  private DateTime completed;
 
   private State state = State.NEW;
 
@@ -48,7 +48,7 @@ public class AdminEvent implements Serializable, Persistent {
   public AdminEvent(EventType type, String requestedBy) {
     this.type = type;
     this.requestedBy = requestedBy;
-    requestedOn = new Date();
+    requestedOn = new DateTime();
   }
 
   @Override
@@ -61,11 +61,11 @@ public class AdminEvent implements Serializable, Persistent {
     this.id = id;
   }
 
-  public void setCompleted(final Date completed) {
+  public void setCompleted(final DateTime completed) {
     this.completed = completed;
   }
 
-  public Date getCompleted() {
+  public DateTime getCompleted() {
     return completed;
   }
 
@@ -93,11 +93,11 @@ public class AdminEvent implements Serializable, Persistent {
     this.requestedBy = requestedBy;
   }
 
-  public Date getRequestedOn() {
+  public DateTime getRequestedOn() {
     return requestedOn;
   }
 
-  public void setRequestedOn(Date requestedOn) {
+  public void setRequestedOn(DateTime requestedOn) {
     this.requestedOn = requestedOn;
   }
 

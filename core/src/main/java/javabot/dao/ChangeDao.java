@@ -1,12 +1,12 @@
 package javabot.dao;
 
-import java.util.Date;
 import java.util.List;
 
 import com.google.code.morphia.query.Query;
 import javabot.dao.util.QueryParam;
 import javabot.model.Change;
 import javabot.model.criteria.ChangeCriteria;
+import org.joda.time.DateTime;
 
 public class ChangeDao extends BaseDao<Change> {
     public ChangeDao() {
@@ -21,7 +21,7 @@ public class ChangeDao extends BaseDao<Change> {
     public void logChange(final String message) {
         final Change change = new Change();
         change.setMessage(message);
-        change.setChangeDate(new Date());
+        change.setChangeDate(new DateTime());
         save(change);
     }
 

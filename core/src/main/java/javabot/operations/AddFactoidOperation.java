@@ -1,7 +1,6 @@
 package javabot.operations;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -15,6 +14,7 @@ import javabot.dao.FactoidDao;
 import javabot.dao.LogsDao;
 import javabot.model.Factoid;
 import javabot.model.Logs.Type;
+import org.joda.time.DateTime;
 
 @SPI(StandardOperation.class)
 public class AddFactoidOperation extends StandardOperation {
@@ -108,7 +108,7 @@ public class AddFactoidOperation extends StandardOperation {
     logDao.logMessage(Type.MESSAGE, event.getSender().getNick(), event.getChannel(),
         Sofia.factoidChanged(event.getSender(), key, factoid.getValue(), newValue));
     factoid.setValue(newValue);
-    factoid.setUpdated(new Date());
+    factoid.setUpdated(new DateTime());
     factoid.setUserName(event.getSender().getNick());
     factoidDao.save(factoid);
     return new Message(event.getChannel(), event, Sofia.ok(event.getSender()));

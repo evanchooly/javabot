@@ -1,12 +1,12 @@
 package javabot.dao;
 
-import java.util.Date;
 import javax.inject.Inject;
 
 import javabot.Seen;
 import javabot.model.Channel;
 import javabot.model.Logs;
 import javabot.model.criteria.LogsCriteria;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,7 @@ public class LogsDao extends BaseDao<Logs> {
       logMessage.setChannel(channel.toLowerCase());
     }
     logMessage.setMessage(message);
-    logMessage.setUpdated(new Date());
+    logMessage.setUpdated(new DateTime());
     save(logMessage);
   }
 

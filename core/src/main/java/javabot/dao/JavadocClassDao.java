@@ -28,7 +28,7 @@ public class JavadocClassDao extends BaseDao<JavadocClass> {
       criteria.api(api);
     }
     if (pkgName != null) {
-      criteria.upperPackage().equal(pkgName.toUpperCase());
+      criteria.upperPackageName().equal(pkgName.toUpperCase());
     }
     return criteria.query().asList().toArray(new JavadocClass[0]);
   }
@@ -36,7 +36,7 @@ public class JavadocClassDao extends BaseDao<JavadocClass> {
   @SuppressWarnings({"unchecked"})
   public JavadocClass[] getClass(final String pkg, final String name) {
     final JavadocClassCriteria criteria = new JavadocClassCriteria(ds);
-    criteria.upperPackage().equal(pkg.toUpperCase());
+    criteria.upperPackageName().equal(pkg.toUpperCase());
     criteria.upperName().equal(name.toUpperCase());
     return criteria.query().asList().toArray(new JavadocClass[0]);
   }
@@ -76,7 +76,7 @@ public class JavadocClassDao extends BaseDao<JavadocClass> {
   private List getMethods(final String name, final String signatureTypes, final JavadocClass javadocClass) {
     final JavadocMethodCriteria criteria = new JavadocMethodCriteria(ds);
     criteria.javadocClass(javadocClass);
-    criteria.upperMethodName().equal(name.toUpperCase());
+    criteria.upperName().equal(name.toUpperCase());
     if (!"*".equals(signatureTypes)) {
       criteria.or(
           criteria.shortSignatureTypes().equal(signatureTypes),

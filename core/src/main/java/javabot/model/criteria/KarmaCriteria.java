@@ -75,11 +75,11 @@ public class KarmaCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Karma, java.util.Date> updated() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Karma, org.joda.time.DateTime> updated() {
     return new TypeSafeFieldEnd<>(query, query.criteria("updated"));
   }
 
-  public KarmaCriteria updated(java.util.Date value) {
+  public KarmaCriteria updated(org.joda.time.DateTime value) {
     new TypeSafeFieldEnd<>(query, query.criteria("updated")).equal(value);
     return this;
   }

@@ -31,6 +31,7 @@ public class FactoidDaoTest extends BaseServiceTest {
 
   @Test
   public void testLastUsed() {
+    factoidDao.delete("cheeser", "testing last used");
     final Factoid factoid = factoidDao.addFactoid("cheeser", "testing last used", "'sup?");
     Assert.assertNotNull(factoid.getLastUsed(), "Should have recorded a date");
     final Factoid factoid1 = factoidDao.getFactoid("testing last used");

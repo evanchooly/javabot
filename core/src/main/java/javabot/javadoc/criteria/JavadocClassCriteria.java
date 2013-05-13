@@ -236,26 +236,26 @@ public class JavadocClassCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocClass, java.lang.String> upperPackage() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("upperPackage"));
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocClass, java.lang.String> upperPackageName() {
+    return new TypeSafeFieldEnd<>(query, query.criteria("upperPackageName"));
   }
 
-  public JavadocClassCriteria upperPackage(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("upperPackage")).equal(value);
+  public JavadocClassCriteria upperPackageName(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("upperPackageName")).equal(value);
     return this;
   }
 
-  public JavadocClassCriteria orderByUpperPackage() {
-    return orderByUpperPackage(true);
+  public JavadocClassCriteria orderByUpperPackageName() {
+    return orderByUpperPackageName(true);
   }
 
-  public JavadocClassCriteria orderByUpperPackage(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "upperPackage");
+  public JavadocClassCriteria orderByUpperPackageName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "upperPackageName");
     return this;
   }
 
-  public JavadocClassCriteria distinctUpperPackage() {
-    ((QueryImpl) query).getCollection().distinct("upperPackage");
+  public JavadocClassCriteria distinctUpperPackageName() {
+    ((QueryImpl) query).getCollection().distinct("upperPackageName");
     return this;
   }
 

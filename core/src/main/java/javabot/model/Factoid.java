@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.Date;
 
 import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
@@ -14,6 +13,7 @@ import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.PrePersist;
 import javabot.operations.TellSubject;
 import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +32,8 @@ public class Factoid implements Serializable, Persistent {
   private String value;
   private String userName;
   private String upperUserName;
-  private Date updated;
-  private Date lastUsed;
+  private DateTime updated;
+  private DateTime lastUsed;
   private Boolean locked;
 
   public ObjectId getId() {
@@ -68,19 +68,19 @@ public class Factoid implements Serializable, Persistent {
     userName = creator;
   }
 
-  public Date getUpdated() {
+  public DateTime getUpdated() {
     return updated;
   }
 
-  public void setUpdated(final Date date) {
+  public void setUpdated(final DateTime date) {
     updated = date;
   }
 
-  public Date getLastUsed() {
+  public DateTime getLastUsed() {
     return lastUsed;
   }
 
-  public void setLastUsed(final Date used) {
+  public void setLastUsed(final DateTime used) {
     lastUsed = used;
   }
 

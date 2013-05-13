@@ -29,11 +29,11 @@ public class ShunCriteria {
     return query.and(criteria);
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Shun, java.util.Date> expiry() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Shun, org.joda.time.DateTime> expiry() {
     return new TypeSafeFieldEnd<>(query, query.criteria("expiry"));
   }
 
-  public ShunCriteria expiry(java.util.Date value) {
+  public ShunCriteria expiry(org.joda.time.DateTime value) {
     new TypeSafeFieldEnd<>(query, query.criteria("expiry")).equal(value);
     return this;
   }

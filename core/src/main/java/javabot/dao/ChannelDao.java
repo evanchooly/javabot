@@ -1,7 +1,6 @@
 package javabot.dao;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +13,7 @@ import javabot.model.Channel;
 import javabot.model.criteria.ChannelCriteria;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,7 +123,7 @@ public class ChannelDao extends BaseDao<Channel> {
   }
 
   public void save(final Channel channel) {
-    channel.setUpdated(new Date());
+    channel.setUpdated(new DateTime());
     super.save(channel);
   }
 

@@ -29,11 +29,11 @@ public class ChangeCriteria {
     return query.and(criteria);
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Change, java.util.Date> changeDate() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Change, org.joda.time.DateTime> changeDate() {
     return new TypeSafeFieldEnd<>(query, query.criteria("changeDate"));
   }
 
-  public ChangeCriteria changeDate(java.util.Date value) {
+  public ChangeCriteria changeDate(org.joda.time.DateTime value) {
     new TypeSafeFieldEnd<>(query, query.criteria("changeDate")).equal(value);
     return this;
   }

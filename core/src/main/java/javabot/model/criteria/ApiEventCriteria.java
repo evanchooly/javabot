@@ -52,11 +52,11 @@ public class ApiEventCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, java.util.Date> completed() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, org.joda.time.DateTime> completed() {
     return new TypeSafeFieldEnd<>(query, query.criteria("completed"));
   }
 
-  public ApiEventCriteria completed(java.util.Date value) {
+  public ApiEventCriteria completed(org.joda.time.DateTime value) {
     new TypeSafeFieldEnd<>(query, query.criteria("completed")).equal(value);
     return this;
   }
@@ -213,11 +213,11 @@ public class ApiEventCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, java.util.Date> requestedOn() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, org.joda.time.DateTime> requestedOn() {
     return new TypeSafeFieldEnd<>(query, query.criteria("requestedOn"));
   }
 
-  public ApiEventCriteria requestedOn(java.util.Date value) {
+  public ApiEventCriteria requestedOn(org.joda.time.DateTime value) {
     new TypeSafeFieldEnd<>(query, query.criteria("requestedOn")).equal(value);
     return this;
   }

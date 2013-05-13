@@ -12,19 +12,23 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
+import com.google.code.morphia.Datastore;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
+import com.mongodb.WriteConcern;
 import javabot.JavabotModule;
 import javabot.dao.ApiDao;
 import javabot.dao.JavadocClassDao;
@@ -42,6 +46,7 @@ import javabot.model.Logs;
 import javabot.model.NickRegistration;
 import javabot.model.Shun;
 import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
 
 public class Migrator {
   private Properties props;
@@ -50,6 +55,9 @@ public class Migrator {
 
   @Inject
   private Mongo mongo;
+
+  @Inject
+  private Datastore ds;
 
   @Inject
   private LogsDao logsDao;
@@ -66,7 +74,7 @@ public class Migrator {
     Change log = new Change();
     log.setId(mapId("changes", resultSet.getLong("id")));
     log.setMessage(resultSet.getString("message"));
-    log.setChangeDate(resultSet.getDate("changedate"));
+    log.setChangeDate(new DateTime(resultSet.getTimestamp("changedate").getTime()));
     logsDao.save(log);
   }
 
@@ -76,7 +84,7 @@ public class Migrator {
     channel.setKey(resultSet.getString("key"));
     channel.setLogged(resultSet.getBoolean("logged"));
     channel.setName(resultSet.getString("name"));
-    channel.setUpdated(resultSet.getDate("updated"));
+    channel.setUpdated(new DateTime(resultSet.getTimestamp("updated").getTime()));
     logsDao.save(channel);
   }
 
@@ -96,7 +104,7 @@ public class Migrator {
         config.setTrigger(resultSet.getString("trigger"));
         config.setUrl(resultSet.getString("url"));
       }
-    } catch(Exception e) {
+    } catch (Exception e) {
       e.printStackTrace();
       System.exit(-1);
     }
@@ -114,9 +122,9 @@ public class Migrator {
   private void factoids(final ResultSet resultSet) throws SQLException {
     Factoid factoid = new Factoid();
     factoid.setId(mapId("factoids", resultSet.getLong("id")));
-    factoid.setLastUsed(resultSet.getDate("lastused"));
+    factoid.setLastUsed(new DateTime(resultSet.getDate("lastused")));
     factoid.setName(resultSet.getString("name"));
-    factoid.setUpdated(resultSet.getDate("updated"));
+    factoid.setUpdated(new DateTime(resultSet.getDate("updated")));
     factoid.setUserName(resultSet.getString("username"));
     factoid.setValue(resultSet.getString("value"));
     factoid.setLocked(resultSet.getBoolean("locked"));
@@ -127,21 +135,24 @@ public class Migrator {
     Karma karma = new Karma();
     karma.setId(mapId("karma", resultSet.getLong("id")));
     karma.setName(resultSet.getString("name"));
-    karma.setUpdated(resultSet.getDate("updated"));
+    karma.setUpdated(new DateTime(resultSet.getDate("updated")));
     karma.setUserName(resultSet.getString("username"));
     karma.setValue(resultSet.getInt("value"));
     logsDao.save(karma);
   }
 
   private void logs(ResultSet resultSet) throws SQLException {
-    Logs log = new Logs();
-    log.setId(mapId("logs", resultSet.getLong("id")));
-    log.setChannel(resultSet.getString("channel"));
-    log.setMessage(resultSet.getString("message"));
-    log.setNick(resultSet.getString("nick"));
-    log.setType(Logs.Type.values()[resultSet.getInt("type")]);
-    log.setUpdated(resultSet.getDate("updated"));
-    logsDao.save(log);
+    DateTime date = new DateTime(resultSet.getTimestamp("updated").getTime());
+    if (date.isAfter(DateTime.now().minusWeeks(6))) {
+      Logs log = new Logs();
+      log.setId(mapId("logs", resultSet.getLong("id")));
+      log.setChannel(resultSet.getString("channel"));
+      log.setMessage(resultSet.getString("message"));
+      log.setNick(resultSet.getString("nick"));
+      log.setType(Logs.Type.values()[resultSet.getInt("type")]);
+      log.setUpdated(date);
+      logsDao.save(log);
+    }
   }
 
   private void registrations(final ResultSet resultSet) throws SQLException {
@@ -157,7 +168,7 @@ public class Migrator {
   private void shun(final ResultSet resultSet) throws SQLException {
     Shun shun = new Shun();
     shun.setId(mapId("shun", resultSet.getLong("id")));
-    shun.setExpiry(resultSet.getDate("expiry"));
+    shun.setExpiry(new DateTime(resultSet.getDate("expiry")));
     shun.setNick(resultSet.getString("nick"));
     logsDao.save(shun);
   }
@@ -198,7 +209,7 @@ public class Migrator {
     method.setLongUrl(resultSet.getString("longurl"));
     method.setShortUrl(resultSet.getString("shorturl"));
     method.setLongSignatureTypes(resultSet.getString("longsignaturestripped"));
-    method.setMethodName(resultSet.getString("methodname"));
+    method.setName(resultSet.getString("methodname"));
     method.setParamCount(resultSet.getInt("paramcount"));
     method.setShortSignatureTypes(resultSet.getString("shortsignaturestripped"));
     method.setDirectUrl(resultSet.getString("directurl"));
@@ -228,6 +239,12 @@ public class Migrator {
   private void migrate() throws SQLException {
     validateProperties();
     db = mongo.getDB(props.getProperty("database.name"));
+    Set<String> collectionNames = db.getCollectionNames();
+    for (String name : collectionNames) {
+      if (!"system.indexes".equals(name)) {
+        db.getCollection(name).remove(new BasicDBList(), WriteConcern.FSYNCED);
+      }
+    }
     ExecutorService executorService = Executors.newFixedThreadPool(5);
     connection = DriverManager.getConnection(props.getProperty("jdbc.url"),
         props.getProperty("jdbc.user"), props.getProperty("jdbc.password"));
@@ -242,11 +259,11 @@ public class Migrator {
           channel(resultSet);
         }
       });
-//      executorService.submit(new TableIterator("logs") {
-//        public void callOut(final ResultSet resultSet) throws SQLException {
-//          logs(resultSet);
-//        }
-//      });
+      executorService.submit(new TableIterator("logs") {
+        public void callOut(final ResultSet resultSet) throws SQLException {
+          logs(resultSet);
+        }
+      });
       executorService.submit(new TableIterator("factoids") {
         public void callOut(final ResultSet resultSet) throws SQLException {
           factoids(resultSet);
@@ -289,7 +306,7 @@ public class Migrator {
 
   private ObjectId lookupId(final String table, final long id) {
     DBCollection collection = db.getCollection(table + "IDs");
-    collection.ensureIndex(new BasicDBObject(table + "_id", "1"));
+    collection.ensureIndex(new BasicDBObject(table + "_id", 1));
     DBObject object = collection.findOne(new BasicDBObject(table + "_id", id));
     return object != null ? (ObjectId) object.get("_id") : null;
   }
@@ -337,7 +354,9 @@ public class Migrator {
   }
 
   private abstract class TableIterator implements Callable<Object> {
-    private static final int BATCH = 1000;
+    private static final int BATCH = 10000;
+
+    private static final String COUNT = "select count(*) from %s";
 
     private static final String SELECT = "select * from %s limit " + BATCH + " offset %s";
 
@@ -356,31 +375,47 @@ public class Migrator {
 
     @Override
     public Object call() throws Exception {
-      try {
-        System.out.println("Migrating " + table);
-        int start = 0;
-        int count = -1;
-        while (count != 0) {
-          count = 0;
-          System.out.printf("Grabbing next %s from %s\n", BATCH, table);
-          try (Statement statement = connection.createStatement();
-               ResultSet resultSet = statement.executeQuery(String.format(select, table, start))) {
-            while (resultSet.next()) {
-              count++;
-              callOut(resultSet);
-            }
-          } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage(), e);
-          }
-          start += count;
+      System.out.println("Migrating " + table);
+      int count = 0;
+      int total = 0;
+      DateTime begin = DateTime.now();
+      try (Statement statement = connection.createStatement();
+           ResultSet resultSet = statement.executeQuery(String.format(COUNT, table))) {
+        while (resultSet.next()) {
+          total = resultSet.getInt(1);
         }
-        System.out.println("Finished migrating " + table);
-        return null;
-      } catch (Throwable e) {
+      } catch (Exception e) {
         e.printStackTrace();
-        return null;
+        throw new RuntimeException(e.getMessage(), e);
       }
+      while (count < total) {
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(String.format(select, table, count))) {
+          while (resultSet.next()) {
+            count++;
+            callOut(resultSet);
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+          throw new RuntimeException(e.getMessage(), e);
+        }
+        DateTime current = DateTime.now();
+        long duration = current.getMillis() - begin.getMillis();
+        int rate = (int) (count / duration) + 1;
+        int remaining = (total - count) / rate;
+        DateTime done = current.plusMillis(remaining);
+        System.out.printf("Imported %d of %d (%.2f%%) from %s.  Estimated completion time: %s\n", count, total,
+            100.0 * count / total, table, done.toString("HH:mm:ss"));
+      }
+      System.out.printf("Finished migrating %s. %s%n", table, new DateTime().toString("HH:mm:ss"));
+      if (total != countResults()) {
+        throw new RuntimeException("Failed to migrate all records for " + table);
+      }
+      return null;
+    }
+
+    protected final long countResults() {
+      return db.getCollection(table).count();
     }
 
     public abstract void callOut(final ResultSet resultSet) throws SQLException;

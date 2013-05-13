@@ -15,6 +15,9 @@ import com.google.inject.name.Names;
 import com.mongodb.Mongo;
 import com.mongodb.MongoURI;
 import com.mongodb.WriteConcern;
+import javabot.dao.util.DateTimeConverter;
+import javabot.javadoc.JavadocClass;
+import javabot.model.Factoid;
 
 public class JavabotModule extends AbstractModule {
   private Properties properties;
@@ -34,9 +37,17 @@ public class JavabotModule extends AbstractModule {
   public Datastore datastore(Mongo mongo) throws UnknownHostException {
     String dbName = properties.getProperty("database.name");
     Morphia morphia = new Morphia();
+    morphia.mapPackage(JavadocClass.class.getPackage().getName());
+    morphia.mapPackage(Factoid.class.getPackage().getName());
+    morphia.getMapper().getConverters().addConverter(DateTimeConverter.class);
     Datastore datastore = morphia.createDatastore(mongo, dbName);
     datastore.setDefaultWriteConcern(WriteConcern.SAFE);
-    datastore.ensureIndexes();
+    try {
+      datastore.ensureIndexes();
+    } catch (Exception e) {
+      e.printStackTrace();
+      System.exit(-1);
+    }
     return datastore;
   }
 

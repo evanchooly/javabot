@@ -40,12 +40,15 @@ public class GetFactoidOperationTest extends BaseOperationTest {
   @AfterClass
   public void deleteFactoids() {
     delete("api");
+    delete("stupid");
     delete("replyTest");
     delete("seeTest");
     delete("noReply");
     delete("replace $1");
     delete("url $+");
     delete("camel $C");
+    delete("camel $^");
+    delete("camel $+");
     delete("hey");
     delete("coin");
     delete("hug $1");

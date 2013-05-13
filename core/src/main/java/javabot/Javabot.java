@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +49,7 @@ import javabot.operations.StandardOperation;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -157,7 +157,7 @@ public class Javabot {
         event.setState(State.FAILED);
         log.error(e.getMessage(), e);
       }
-      event.setCompleted(new Date());
+      event.setCompleted(new DateTime());
       eventDao.save(event);
     }
   }

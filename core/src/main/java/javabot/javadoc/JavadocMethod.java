@@ -13,8 +13,8 @@ import org.bson.types.ObjectId;
 @Entity("methods")
 @SPI(Persistent.class)
 @Indexes({
-    @Index("clazzId, name"),
-    @Index("apiName"),
+    @Index("javadocClass, upperName"),
+    @Index("api"),
 })
 public class JavadocMethod extends JavadocElement {
   @Id
@@ -24,8 +24,8 @@ public class JavadocMethod extends JavadocElement {
   @Reference
   private JavadocClass javadocClass;
 
-  private String methodName;
-  private String upperMethodName;
+  private String name;
+  private String upperName;
   private String longSignatureTypes;
   private String shortSignatureTypes;
   private Integer paramCount;
@@ -35,11 +35,11 @@ public class JavadocMethod extends JavadocElement {
 
   public JavadocMethod(final JavadocClass parent, final String name, final int count,
       final String longArgs, final String shortArgs) {
-    methodName = name;
+    this.name = name;
     paramCount = count;
     longSignatureTypes = longArgs;
     shortSignatureTypes = shortArgs;
-    final String url = parent.getDirectUrl() + "#" + methodName + "(" + longArgs + ")";
+    final String url = parent.getDirectUrl() + "#" + this.name + "(" + longArgs + ")";
     setLongUrl(url);
     setDirectUrl(url);
 
@@ -72,15 +72,15 @@ public class JavadocMethod extends JavadocElement {
   }
 
   public String getShortSignature() {
-    return methodName + "(" + shortSignatureTypes + ")";
+    return name + "(" + shortSignatureTypes + ")";
   }
 
-  public String getMethodName() {
-    return methodName;
+  public String getName() {
+    return name;
   }
 
-  public void setMethodName(final String name) {
-    methodName = name;
+  public void setName(final String name) {
+    this.name = name;
   }
 
   public String getLongSignatureTypes() {
@@ -107,17 +107,17 @@ public class JavadocMethod extends JavadocElement {
     paramCount = count;
   }
 
-  public String getUpperMethodName() {
-    return upperMethodName;
+  public String getUpperName() {
+    return upperName;
   }
 
-  public void setUpperMethodName(final String upperMethodName) {
-    this.upperMethodName = upperMethodName;
+  public void setUpperName(final String upperName) {
+    this.upperName = upperName;
   }
 
   @PrePersist
   public void uppers() {
-    upperMethodName = methodName.toUpperCase();
+    upperName = name.toUpperCase();
   }
 
   @Override
