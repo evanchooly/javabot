@@ -1,7 +1,5 @@
 package javabot.model;
 
-import java.io.Serializable;
-
 import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
@@ -15,7 +13,7 @@ import org.joda.time.DateTime;
     @Index(value = "channel, updated, nick", name = "Logs")
 })
 @SPI(Persistent.class)
-public class Logs implements Serializable, Persistent {
+public class Logs implements Persistent {
   @Id
   private ObjectId id;
 

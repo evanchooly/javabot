@@ -27,9 +27,10 @@ public class FactoidDao extends BaseDao<Factoid> {
 
   public void save(final Persistent persistent) {
     Factoid factoid = (Factoid) persistent;
+    Factoid old = find(persistent.getId());
     super.save(persistent);
-    changeDao.logChange(String.format("%s changed '%s' to '%s'",
-        factoid.getUserName(), factoid.getName(), factoid.getValue()));
+    changeDao.logChange(String.format("%s changed '%s' from '%s' to '%s'",
+        factoid.getUserName(), factoid.getName(), old.getValue(), factoid.getValue()));
   }
 
   public boolean hasFactoid(final String key) {

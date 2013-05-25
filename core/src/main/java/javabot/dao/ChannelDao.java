@@ -1,9 +1,7 @@
 package javabot.dao;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.QueryImpl;
@@ -14,25 +12,9 @@ import javabot.model.criteria.ChannelCriteria;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @SuppressWarnings({"ConstantNamingConvention"})
 public class ChannelDao extends BaseDao<Channel> {
-  String BY_NAME = "Channel.byName";
-
-  String ALL = "Channel.all";
-
-  String CONFIGURED_CHANNELS = "Channel.configure";
-
-  String STATISTICS = "Channel.stats";
-
-  String LOGGED_CHANNELS = "Channel.loggedChannels";
-
-  private static final Logger log = LoggerFactory.getLogger(ChannelDao.class);
-
-  private final Map<String, Boolean> logCache = new HashMap<String, Boolean>();
-
   public ChannelDao() {
     super(Channel.class);
   }
@@ -71,17 +53,8 @@ public class ChannelDao extends BaseDao<Channel> {
   }
 
   public boolean isLogged(final String channel) {
-    Boolean logged = logCache.get(channel);
-    if (logged == null) {
-      final Channel chan = get(channel);
-      if (chan != null) {
-        logged = chan.getLogged();
-        logCache.put(channel, logged);
-      } else {
-        logged = Boolean.FALSE;
-      }
-    }
-    return logged;
+    final Channel chan = get(channel);
+    return chan != null ? chan.getLogged() : Boolean.FALSE;
   }
 
   public Channel get(final String name) {

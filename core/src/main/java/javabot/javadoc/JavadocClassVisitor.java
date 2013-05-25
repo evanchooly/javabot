@@ -6,14 +6,14 @@ import javax.inject.Inject;
 
 import javabot.dao.ApiDao;
 import javabot.dao.JavadocClassDao;
-import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.commons.EmptyVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JavadocClassVisitor extends ClassVisitor {
+public class JavadocClassVisitor extends EmptyVisitor {
   private static final Logger log = LoggerFactory.getLogger(JavadocClassVisitor.class);
   @Inject
   private JavadocClassDao dao;
@@ -33,10 +33,6 @@ public class JavadocClassVisitor extends ClassVisitor {
     PRIMITIVES.put('J', "long");
     PRIMITIVES.put('S', "short");
     PRIMITIVES.put('Z', "boolean");
-  }
-
-  public JavadocClassVisitor() {
-    super(Opcodes.ASM4);
   }
 
   @Override

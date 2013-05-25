@@ -6,11 +6,13 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
 import com.antwerkz.maven.SPI;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Index;
 import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.PrePersist;
+import javabot.json.Views.PUBLIC;
 import javabot.operations.TellSubject;
 import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
@@ -32,6 +34,7 @@ public class Factoid implements Serializable, Persistent {
   private String value;
   private String userName;
   private String upperUserName;
+  @JsonView(PUBLIC.class)
   private DateTime updated;
   private DateTime lastUsed;
   private Boolean locked;

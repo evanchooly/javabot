@@ -7,6 +7,12 @@ import com.google.code.morphia.query.Criteria;
 import com.google.code.morphia.query.CriteriaContainer;
 import com.google.code.morphia.query.Query;
 import com.google.code.morphia.query.QueryImpl;
+import com.google.code.morphia.query.UpdateOperations;
+import com.google.code.morphia.query.UpdateResults;
+import com.mongodb.WriteConcern;
+import com.mongodb.WriteResult;
+import java.util.List;
+
 
 public class ApiEventCriteria {
   private Query<javabot.model.ApiEvent> query;
@@ -19,6 +25,14 @@ public class ApiEventCriteria {
   public ApiEventCriteria(Datastore ds) {
     this.ds = ds;
     query = ds.find(javabot.model.ApiEvent.class);
+  }
+
+  public WriteResult delete() {
+     return ds.delete(query());
+  }
+
+  public WriteResult delete(WriteConcern wc) {
+     return ds.delete(query(), wc);
   }
 
   public CriteriaContainer or(Criteria... criteria) {
@@ -280,5 +294,683 @@ public class ApiEventCriteria {
   public ApiEventCriteria distinctType() {
     ((QueryImpl) query).getCollection().distinct("type");
     return this;
+  }
+
+  public ApiEventUpdater getUpdater() {
+    return new ApiEventUpdater();
+  }
+
+  public class ApiEventUpdater {
+    UpdateOperations<javabot.model.ApiEvent> updateOperations;
+
+    public ApiEventUpdater() {
+      updateOperations = ds.createUpdateOperations(javabot.model.ApiEvent.class);
+    }
+
+    public UpdateResults<javabot.model.ApiEvent> update() {
+      return ds.update(query(), updateOperations, false);
+    }
+
+    public UpdateResults<javabot.model.ApiEvent> update(WriteConcern wc) {
+      return ds.update(query(), updateOperations, false, wc);
+    }
+
+    public UpdateResults<javabot.model.ApiEvent> upsert() {
+      return ds.update(query(), updateOperations, true);
+    }
+
+    public UpdateResults<javabot.model.ApiEvent> upsert(WriteConcern wc) {
+      return ds.update(query(), updateOperations, true, wc);
+    }
+
+    public ApiEventUpdater baseUrl(java.lang.String value) {
+      updateOperations.set("baseUrl", value);
+      return this;
+    }
+
+    public ApiEventUpdater unsetBaseUrl(java.lang.String value) {
+      updateOperations.unset("baseUrl");
+      return this;
+    }
+
+    public ApiEventUpdater addBaseUrl(java.lang.String value) {
+      updateOperations.add("baseUrl", value);
+      return this;
+    }
+
+    public ApiEventUpdater addBaseUrl(String fieldExpr, java.lang.String value, boolean addDups) {
+      updateOperations.add("baseUrl", value, addDups);
+      return this;
+    }
+
+    public ApiEventUpdater addAllToBaseUrl(List<java.lang.String> values, boolean addDups) {
+      updateOperations.addAll("baseUrl", values, addDups);
+      return this;
+    }
+  
+    public ApiEventUpdater removeFirstBaseUrl() {
+      updateOperations.removeFirst("baseUrl");
+      return this;
+    }
+  
+    public ApiEventUpdater removeLastBaseUrl() {
+      updateOperations.removeLast("baseUrl");
+      return this;
+    }
+  
+    public ApiEventUpdater removeFromBaseUrl(java.lang.String value) {
+      updateOperations.removeAll("baseUrl", value);
+      return this;
+    }
+
+    public ApiEventUpdater removeAllFromBaseUrl(List<java.lang.String> values) {
+      updateOperations.removeAll("baseUrl", values);
+      return this;
+    }
+ 
+    public ApiEventUpdater decBaseUrl() {
+      updateOperations.dec("baseUrl");
+      return this;
+    }
+
+    public ApiEventUpdater incBaseUrl() {
+      updateOperations.inc("baseUrl");
+      return this;
+    }
+
+    public ApiEventUpdater incBaseUrl(Number value) {
+      updateOperations.inc("baseUrl", value);
+      return this;
+    }
+    public ApiEventUpdater completed(org.joda.time.DateTime value) {
+      updateOperations.set("completed", value);
+      return this;
+    }
+
+    public ApiEventUpdater unsetCompleted(org.joda.time.DateTime value) {
+      updateOperations.unset("completed");
+      return this;
+    }
+
+    public ApiEventUpdater addCompleted(org.joda.time.DateTime value) {
+      updateOperations.add("completed", value);
+      return this;
+    }
+
+    public ApiEventUpdater addCompleted(String fieldExpr, org.joda.time.DateTime value, boolean addDups) {
+      updateOperations.add("completed", value, addDups);
+      return this;
+    }
+
+    public ApiEventUpdater addAllToCompleted(List<org.joda.time.DateTime> values, boolean addDups) {
+      updateOperations.addAll("completed", values, addDups);
+      return this;
+    }
+  
+    public ApiEventUpdater removeFirstCompleted() {
+      updateOperations.removeFirst("completed");
+      return this;
+    }
+  
+    public ApiEventUpdater removeLastCompleted() {
+      updateOperations.removeLast("completed");
+      return this;
+    }
+  
+    public ApiEventUpdater removeFromCompleted(org.joda.time.DateTime value) {
+      updateOperations.removeAll("completed", value);
+      return this;
+    }
+
+    public ApiEventUpdater removeAllFromCompleted(List<org.joda.time.DateTime> values) {
+      updateOperations.removeAll("completed", values);
+      return this;
+    }
+ 
+    public ApiEventUpdater decCompleted() {
+      updateOperations.dec("completed");
+      return this;
+    }
+
+    public ApiEventUpdater incCompleted() {
+      updateOperations.inc("completed");
+      return this;
+    }
+
+    public ApiEventUpdater incCompleted(Number value) {
+      updateOperations.inc("completed", value);
+      return this;
+    }
+    public ApiEventUpdater file(java.lang.String value) {
+      updateOperations.set("file", value);
+      return this;
+    }
+
+    public ApiEventUpdater unsetFile(java.lang.String value) {
+      updateOperations.unset("file");
+      return this;
+    }
+
+    public ApiEventUpdater addFile(java.lang.String value) {
+      updateOperations.add("file", value);
+      return this;
+    }
+
+    public ApiEventUpdater addFile(String fieldExpr, java.lang.String value, boolean addDups) {
+      updateOperations.add("file", value, addDups);
+      return this;
+    }
+
+    public ApiEventUpdater addAllToFile(List<java.lang.String> values, boolean addDups) {
+      updateOperations.addAll("file", values, addDups);
+      return this;
+    }
+  
+    public ApiEventUpdater removeFirstFile() {
+      updateOperations.removeFirst("file");
+      return this;
+    }
+  
+    public ApiEventUpdater removeLastFile() {
+      updateOperations.removeLast("file");
+      return this;
+    }
+  
+    public ApiEventUpdater removeFromFile(java.lang.String value) {
+      updateOperations.removeAll("file", value);
+      return this;
+    }
+
+    public ApiEventUpdater removeAllFromFile(List<java.lang.String> values) {
+      updateOperations.removeAll("file", values);
+      return this;
+    }
+ 
+    public ApiEventUpdater decFile() {
+      updateOperations.dec("file");
+      return this;
+    }
+
+    public ApiEventUpdater incFile() {
+      updateOperations.inc("file");
+      return this;
+    }
+
+    public ApiEventUpdater incFile(Number value) {
+      updateOperations.inc("file", value);
+      return this;
+    }
+    public ApiEventUpdater id(org.bson.types.ObjectId value) {
+      updateOperations.set("id", value);
+      return this;
+    }
+
+    public ApiEventUpdater unsetId(org.bson.types.ObjectId value) {
+      updateOperations.unset("id");
+      return this;
+    }
+
+    public ApiEventUpdater addId(org.bson.types.ObjectId value) {
+      updateOperations.add("id", value);
+      return this;
+    }
+
+    public ApiEventUpdater addId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+      updateOperations.add("id", value, addDups);
+      return this;
+    }
+
+    public ApiEventUpdater addAllToId(List<org.bson.types.ObjectId> values, boolean addDups) {
+      updateOperations.addAll("id", values, addDups);
+      return this;
+    }
+  
+    public ApiEventUpdater removeFirstId() {
+      updateOperations.removeFirst("id");
+      return this;
+    }
+  
+    public ApiEventUpdater removeLastId() {
+      updateOperations.removeLast("id");
+      return this;
+    }
+  
+    public ApiEventUpdater removeFromId(org.bson.types.ObjectId value) {
+      updateOperations.removeAll("id", value);
+      return this;
+    }
+
+    public ApiEventUpdater removeAllFromId(List<org.bson.types.ObjectId> values) {
+      updateOperations.removeAll("id", values);
+      return this;
+    }
+ 
+    public ApiEventUpdater decId() {
+      updateOperations.dec("id");
+      return this;
+    }
+
+    public ApiEventUpdater incId() {
+      updateOperations.inc("id");
+      return this;
+    }
+
+    public ApiEventUpdater incId(Number value) {
+      updateOperations.inc("id", value);
+      return this;
+    }
+    public ApiEventUpdater name(java.lang.String value) {
+      updateOperations.set("name", value);
+      return this;
+    }
+
+    public ApiEventUpdater unsetName(java.lang.String value) {
+      updateOperations.unset("name");
+      return this;
+    }
+
+    public ApiEventUpdater addName(java.lang.String value) {
+      updateOperations.add("name", value);
+      return this;
+    }
+
+    public ApiEventUpdater addName(String fieldExpr, java.lang.String value, boolean addDups) {
+      updateOperations.add("name", value, addDups);
+      return this;
+    }
+
+    public ApiEventUpdater addAllToName(List<java.lang.String> values, boolean addDups) {
+      updateOperations.addAll("name", values, addDups);
+      return this;
+    }
+  
+    public ApiEventUpdater removeFirstName() {
+      updateOperations.removeFirst("name");
+      return this;
+    }
+  
+    public ApiEventUpdater removeLastName() {
+      updateOperations.removeLast("name");
+      return this;
+    }
+  
+    public ApiEventUpdater removeFromName(java.lang.String value) {
+      updateOperations.removeAll("name", value);
+      return this;
+    }
+
+    public ApiEventUpdater removeAllFromName(List<java.lang.String> values) {
+      updateOperations.removeAll("name", values);
+      return this;
+    }
+ 
+    public ApiEventUpdater decName() {
+      updateOperations.dec("name");
+      return this;
+    }
+
+    public ApiEventUpdater incName() {
+      updateOperations.inc("name");
+      return this;
+    }
+
+    public ApiEventUpdater incName(Number value) {
+      updateOperations.inc("name", value);
+      return this;
+    }
+    public ApiEventUpdater newApi(java.lang.Boolean value) {
+      updateOperations.set("newApi", value);
+      return this;
+    }
+
+    public ApiEventUpdater unsetNewApi(java.lang.Boolean value) {
+      updateOperations.unset("newApi");
+      return this;
+    }
+
+    public ApiEventUpdater addNewApi(java.lang.Boolean value) {
+      updateOperations.add("newApi", value);
+      return this;
+    }
+
+    public ApiEventUpdater addNewApi(String fieldExpr, java.lang.Boolean value, boolean addDups) {
+      updateOperations.add("newApi", value, addDups);
+      return this;
+    }
+
+    public ApiEventUpdater addAllToNewApi(List<java.lang.Boolean> values, boolean addDups) {
+      updateOperations.addAll("newApi", values, addDups);
+      return this;
+    }
+  
+    public ApiEventUpdater removeFirstNewApi() {
+      updateOperations.removeFirst("newApi");
+      return this;
+    }
+  
+    public ApiEventUpdater removeLastNewApi() {
+      updateOperations.removeLast("newApi");
+      return this;
+    }
+  
+    public ApiEventUpdater removeFromNewApi(java.lang.Boolean value) {
+      updateOperations.removeAll("newApi", value);
+      return this;
+    }
+
+    public ApiEventUpdater removeAllFromNewApi(List<java.lang.Boolean> values) {
+      updateOperations.removeAll("newApi", values);
+      return this;
+    }
+ 
+    public ApiEventUpdater decNewApi() {
+      updateOperations.dec("newApi");
+      return this;
+    }
+
+    public ApiEventUpdater incNewApi() {
+      updateOperations.inc("newApi");
+      return this;
+    }
+
+    public ApiEventUpdater incNewApi(Number value) {
+      updateOperations.inc("newApi", value);
+      return this;
+    }
+    public ApiEventUpdater packages(java.lang.String value) {
+      updateOperations.set("packages", value);
+      return this;
+    }
+
+    public ApiEventUpdater unsetPackages(java.lang.String value) {
+      updateOperations.unset("packages");
+      return this;
+    }
+
+    public ApiEventUpdater addPackages(java.lang.String value) {
+      updateOperations.add("packages", value);
+      return this;
+    }
+
+    public ApiEventUpdater addPackages(String fieldExpr, java.lang.String value, boolean addDups) {
+      updateOperations.add("packages", value, addDups);
+      return this;
+    }
+
+    public ApiEventUpdater addAllToPackages(List<java.lang.String> values, boolean addDups) {
+      updateOperations.addAll("packages", values, addDups);
+      return this;
+    }
+  
+    public ApiEventUpdater removeFirstPackages() {
+      updateOperations.removeFirst("packages");
+      return this;
+    }
+  
+    public ApiEventUpdater removeLastPackages() {
+      updateOperations.removeLast("packages");
+      return this;
+    }
+  
+    public ApiEventUpdater removeFromPackages(java.lang.String value) {
+      updateOperations.removeAll("packages", value);
+      return this;
+    }
+
+    public ApiEventUpdater removeAllFromPackages(List<java.lang.String> values) {
+      updateOperations.removeAll("packages", values);
+      return this;
+    }
+ 
+    public ApiEventUpdater decPackages() {
+      updateOperations.dec("packages");
+      return this;
+    }
+
+    public ApiEventUpdater incPackages() {
+      updateOperations.inc("packages");
+      return this;
+    }
+
+    public ApiEventUpdater incPackages(Number value) {
+      updateOperations.inc("packages", value);
+      return this;
+    }
+    public ApiEventUpdater requestedBy(java.lang.String value) {
+      updateOperations.set("requestedBy", value);
+      return this;
+    }
+
+    public ApiEventUpdater unsetRequestedBy(java.lang.String value) {
+      updateOperations.unset("requestedBy");
+      return this;
+    }
+
+    public ApiEventUpdater addRequestedBy(java.lang.String value) {
+      updateOperations.add("requestedBy", value);
+      return this;
+    }
+
+    public ApiEventUpdater addRequestedBy(String fieldExpr, java.lang.String value, boolean addDups) {
+      updateOperations.add("requestedBy", value, addDups);
+      return this;
+    }
+
+    public ApiEventUpdater addAllToRequestedBy(List<java.lang.String> values, boolean addDups) {
+      updateOperations.addAll("requestedBy", values, addDups);
+      return this;
+    }
+  
+    public ApiEventUpdater removeFirstRequestedBy() {
+      updateOperations.removeFirst("requestedBy");
+      return this;
+    }
+  
+    public ApiEventUpdater removeLastRequestedBy() {
+      updateOperations.removeLast("requestedBy");
+      return this;
+    }
+  
+    public ApiEventUpdater removeFromRequestedBy(java.lang.String value) {
+      updateOperations.removeAll("requestedBy", value);
+      return this;
+    }
+
+    public ApiEventUpdater removeAllFromRequestedBy(List<java.lang.String> values) {
+      updateOperations.removeAll("requestedBy", values);
+      return this;
+    }
+ 
+    public ApiEventUpdater decRequestedBy() {
+      updateOperations.dec("requestedBy");
+      return this;
+    }
+
+    public ApiEventUpdater incRequestedBy() {
+      updateOperations.inc("requestedBy");
+      return this;
+    }
+
+    public ApiEventUpdater incRequestedBy(Number value) {
+      updateOperations.inc("requestedBy", value);
+      return this;
+    }
+    public ApiEventUpdater requestedOn(org.joda.time.DateTime value) {
+      updateOperations.set("requestedOn", value);
+      return this;
+    }
+
+    public ApiEventUpdater unsetRequestedOn(org.joda.time.DateTime value) {
+      updateOperations.unset("requestedOn");
+      return this;
+    }
+
+    public ApiEventUpdater addRequestedOn(org.joda.time.DateTime value) {
+      updateOperations.add("requestedOn", value);
+      return this;
+    }
+
+    public ApiEventUpdater addRequestedOn(String fieldExpr, org.joda.time.DateTime value, boolean addDups) {
+      updateOperations.add("requestedOn", value, addDups);
+      return this;
+    }
+
+    public ApiEventUpdater addAllToRequestedOn(List<org.joda.time.DateTime> values, boolean addDups) {
+      updateOperations.addAll("requestedOn", values, addDups);
+      return this;
+    }
+  
+    public ApiEventUpdater removeFirstRequestedOn() {
+      updateOperations.removeFirst("requestedOn");
+      return this;
+    }
+  
+    public ApiEventUpdater removeLastRequestedOn() {
+      updateOperations.removeLast("requestedOn");
+      return this;
+    }
+  
+    public ApiEventUpdater removeFromRequestedOn(org.joda.time.DateTime value) {
+      updateOperations.removeAll("requestedOn", value);
+      return this;
+    }
+
+    public ApiEventUpdater removeAllFromRequestedOn(List<org.joda.time.DateTime> values) {
+      updateOperations.removeAll("requestedOn", values);
+      return this;
+    }
+ 
+    public ApiEventUpdater decRequestedOn() {
+      updateOperations.dec("requestedOn");
+      return this;
+    }
+
+    public ApiEventUpdater incRequestedOn() {
+      updateOperations.inc("requestedOn");
+      return this;
+    }
+
+    public ApiEventUpdater incRequestedOn(Number value) {
+      updateOperations.inc("requestedOn", value);
+      return this;
+    }
+    public ApiEventUpdater state(javabot.model.AdminEvent.State value) {
+      updateOperations.set("state", value);
+      return this;
+    }
+
+    public ApiEventUpdater unsetState(javabot.model.AdminEvent.State value) {
+      updateOperations.unset("state");
+      return this;
+    }
+
+    public ApiEventUpdater addState(javabot.model.AdminEvent.State value) {
+      updateOperations.add("state", value);
+      return this;
+    }
+
+    public ApiEventUpdater addState(String fieldExpr, javabot.model.AdminEvent.State value, boolean addDups) {
+      updateOperations.add("state", value, addDups);
+      return this;
+    }
+
+    public ApiEventUpdater addAllToState(List<javabot.model.AdminEvent.State> values, boolean addDups) {
+      updateOperations.addAll("state", values, addDups);
+      return this;
+    }
+  
+    public ApiEventUpdater removeFirstState() {
+      updateOperations.removeFirst("state");
+      return this;
+    }
+  
+    public ApiEventUpdater removeLastState() {
+      updateOperations.removeLast("state");
+      return this;
+    }
+  
+    public ApiEventUpdater removeFromState(javabot.model.AdminEvent.State value) {
+      updateOperations.removeAll("state", value);
+      return this;
+    }
+
+    public ApiEventUpdater removeAllFromState(List<javabot.model.AdminEvent.State> values) {
+      updateOperations.removeAll("state", values);
+      return this;
+    }
+ 
+    public ApiEventUpdater decState() {
+      updateOperations.dec("state");
+      return this;
+    }
+
+    public ApiEventUpdater incState() {
+      updateOperations.inc("state");
+      return this;
+    }
+
+    public ApiEventUpdater incState(Number value) {
+      updateOperations.inc("state", value);
+      return this;
+    }
+    public ApiEventUpdater type(javabot.model.EventType value) {
+      updateOperations.set("type", value);
+      return this;
+    }
+
+    public ApiEventUpdater unsetType(javabot.model.EventType value) {
+      updateOperations.unset("type");
+      return this;
+    }
+
+    public ApiEventUpdater addType(javabot.model.EventType value) {
+      updateOperations.add("type", value);
+      return this;
+    }
+
+    public ApiEventUpdater addType(String fieldExpr, javabot.model.EventType value, boolean addDups) {
+      updateOperations.add("type", value, addDups);
+      return this;
+    }
+
+    public ApiEventUpdater addAllToType(List<javabot.model.EventType> values, boolean addDups) {
+      updateOperations.addAll("type", values, addDups);
+      return this;
+    }
+  
+    public ApiEventUpdater removeFirstType() {
+      updateOperations.removeFirst("type");
+      return this;
+    }
+  
+    public ApiEventUpdater removeLastType() {
+      updateOperations.removeLast("type");
+      return this;
+    }
+  
+    public ApiEventUpdater removeFromType(javabot.model.EventType value) {
+      updateOperations.removeAll("type", value);
+      return this;
+    }
+
+    public ApiEventUpdater removeAllFromType(List<javabot.model.EventType> values) {
+      updateOperations.removeAll("type", values);
+      return this;
+    }
+ 
+    public ApiEventUpdater decType() {
+      updateOperations.dec("type");
+      return this;
+    }
+
+    public ApiEventUpdater incType() {
+      updateOperations.inc("type");
+      return this;
+    }
+
+    public ApiEventUpdater incType(Number value) {
+      updateOperations.inc("type", value);
+      return this;
+    }
   }
 }

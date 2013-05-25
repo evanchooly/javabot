@@ -8,15 +8,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import com.google.code.morphia.Datastore;
@@ -51,8 +47,6 @@ import org.joda.time.DateTime;
 public class Migrator {
   private Properties props;
 
-  private Connection connection;
-
   @Inject
   private Mongo mongo;
 
@@ -70,11 +64,19 @@ public class Migrator {
 
   private DB db;
 
+  public Migrator() {
+    validateProperties();
+  }
+
+  public Properties getProps() {
+    return props;
+  }
+
   private void changes(final ResultSet resultSet) throws SQLException {
     Change log = new Change();
     log.setId(mapId("changes", resultSet.getLong("id")));
     log.setMessage(resultSet.getString("message"));
-    log.setChangeDate(new DateTime(resultSet.getTimestamp("changedate").getTime()));
+    log.setChangeDate(extractDate(resultSet, "changedate"));
     logsDao.save(log);
   }
 
@@ -84,14 +86,15 @@ public class Migrator {
     channel.setKey(resultSet.getString("key"));
     channel.setLogged(resultSet.getBoolean("logged"));
     channel.setName(resultSet.getString("name"));
-    channel.setUpdated(new DateTime(resultSet.getTimestamp("updated").getTime()));
+    channel.setUpdated(extractDate(resultSet, "updated"));
     logsDao.save(channel);
   }
 
   private Object configuration() throws SQLException {
     System.out.println("Migrating configuration");
     Config config = new Config();
-    try (Statement statement = connection.createStatement();
+    try (Connection connection = getConnection();
+         Statement statement = connection.createStatement();
          ResultSet resultSet = statement.executeQuery("select * from configuration")) {
       if (resultSet.next()) {
         config.setId(new ObjectId());
@@ -108,7 +111,8 @@ public class Migrator {
       e.printStackTrace();
       System.exit(-1);
     }
-    try (Statement statement = connection.createStatement();
+    try (Connection connection = getConnection();
+         Statement statement = connection.createStatement();
          ResultSet resultSet = statement.executeQuery("select * from configuration_operations")) {
       while (resultSet.next()) {
         config.getOperations().add(resultSet.getString("element"));
@@ -122,9 +126,9 @@ public class Migrator {
   private void factoids(final ResultSet resultSet) throws SQLException {
     Factoid factoid = new Factoid();
     factoid.setId(mapId("factoids", resultSet.getLong("id")));
-    factoid.setLastUsed(new DateTime(resultSet.getDate("lastused")));
+    factoid.setLastUsed(extractDate(resultSet, "lastused"));
     factoid.setName(resultSet.getString("name"));
-    factoid.setUpdated(new DateTime(resultSet.getDate("updated")));
+    factoid.setUpdated(extractDate(resultSet, "updated"));
     factoid.setUserName(resultSet.getString("username"));
     factoid.setValue(resultSet.getString("value"));
     factoid.setLocked(resultSet.getBoolean("locked"));
@@ -135,24 +139,27 @@ public class Migrator {
     Karma karma = new Karma();
     karma.setId(mapId("karma", resultSet.getLong("id")));
     karma.setName(resultSet.getString("name"));
-    karma.setUpdated(new DateTime(resultSet.getDate("updated")));
+    karma.setUpdated(extractDate(resultSet, "updated"));
     karma.setUserName(resultSet.getString("username"));
     karma.setValue(resultSet.getInt("value"));
     logsDao.save(karma);
   }
 
-  private void logs(ResultSet resultSet) throws SQLException {
-    DateTime date = new DateTime(resultSet.getTimestamp("updated").getTime());
-    if (date.isAfter(DateTime.now().minusWeeks(6))) {
-      Logs log = new Logs();
-      log.setId(mapId("logs", resultSet.getLong("id")));
-      log.setChannel(resultSet.getString("channel"));
-      log.setMessage(resultSet.getString("message"));
-      log.setNick(resultSet.getString("nick"));
-      log.setType(Logs.Type.values()[resultSet.getInt("type")]);
-      log.setUpdated(date);
-      logsDao.save(log);
-    }
+  protected void logs(ResultSet resultSet) throws SQLException {
+    Logs log = new Logs();
+    log.setId(mapId("logs", resultSet.getLong("id")));
+    log.setChannel(resultSet.getString("channel"));
+    log.setMessage(resultSet.getString("message"));
+    log.setNick(resultSet.getString("nick"));
+    log.setType(Logs.Type.values()[resultSet.getInt("type")]);
+    log.setUpdated(extractDate(resultSet, "updated"));
+    logsDao.save(log);
+  }
+
+  private DateTime extractDate(final ResultSet resultSet, final String column) throws SQLException {
+    Timestamp timestamp = resultSet.getTimestamp(column);
+    return resultSet.wasNull() ? null : new DateTime(timestamp.getTime())
+        /*.withZoneRetainFields(DateTimeZone.forID("US/Eastern"))*/;
   }
 
   private void registrations(final ResultSet resultSet) throws SQLException {
@@ -168,25 +175,25 @@ public class Migrator {
   private void shun(final ResultSet resultSet) throws SQLException {
     Shun shun = new Shun();
     shun.setId(mapId("shun", resultSet.getLong("id")));
-    shun.setExpiry(new DateTime(resultSet.getDate("expiry")));
+    shun.setExpiry(extractDate(resultSet, "expiry"));
     shun.setNick(resultSet.getString("nick"));
     logsDao.save(shun);
   }
 
   private Object javadoc() throws Exception {
     System.out.println("Migrating javadoc");
-    new TableIterator("apis") {
+    new TableIterator(this, "apis") {
       public void callOut(final ResultSet resultSet) throws SQLException {
         apis(resultSet);
       }
     }.call();
-    new ClassIterator().call();
-    new TableIterator("methods") {
+    new ClassIterator(this, javadocClassDao, apiDao).call();
+    new TableIterator(this, "methods") {
       public void callOut(final ResultSet resultSet) throws SQLException {
         methods(resultSet);
       }
     }.call();
-    new TableIterator("fields") {
+    new TableIterator(this, "fields") {
       public void callOut(final ResultSet resultSet) throws SQLException {
         fields(resultSet);
       }
@@ -236,83 +243,70 @@ public class Migrator {
 
   }
 
-  private void migrate() throws SQLException {
-    validateProperties();
-    db = mongo.getDB(props.getProperty("database.name"));
-    Set<String> collectionNames = db.getCollectionNames();
+  public void migrate() throws SQLException {
+    Set<String> collectionNames = getDb().getCollectionNames();
     for (String name : collectionNames) {
       if (!"system.indexes".equals(name)) {
-        db.getCollection(name).remove(new BasicDBList(), WriteConcern.FSYNCED);
+        getDb().getCollection(name).remove(new BasicDBList(), WriteConcern.FSYNCED);
       }
     }
-    ExecutorService executorService = Executors.newFixedThreadPool(5);
-    connection = DriverManager.getConnection(props.getProperty("jdbc.url"),
-        props.getProperty("jdbc.user"), props.getProperty("jdbc.password"));
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
     try {
-      executorService.submit(new TableIterator("changes") {
+      new TableIterator(this, "changes") {
         public void callOut(final ResultSet resultSet) throws SQLException {
           changes(resultSet);
         }
-      });
-      executorService.submit(new TableIterator("channel") {
+      }.call();
+      new TableIterator(this, "channel") {
         public void callOut(final ResultSet resultSet) throws SQLException {
           channel(resultSet);
         }
-      });
-      executorService.submit(new TableIterator("logs") {
-        public void callOut(final ResultSet resultSet) throws SQLException {
-          logs(resultSet);
-        }
-      });
-      executorService.submit(new TableIterator("factoids") {
+      }.call();
+      new TableIterator(this, "factoids") {
         public void callOut(final ResultSet resultSet) throws SQLException {
           factoids(resultSet);
         }
-      });
-      executorService.submit(new TableIterator("karma") {
+      }.call();
+      new TableIterator(this, "karma") {
         public void callOut(final ResultSet resultSet) throws SQLException {
           karma(resultSet);
         }
-      });
-      executorService.submit(new TableIterator("registrations") {
+      }.call();
+      new TableIterator(this, "registrations") {
         public void callOut(final ResultSet resultSet) throws SQLException {
           registrations(resultSet);
         }
-      });
-      executorService.submit(new TableIterator("shun") {
+      }.call();
+      new TableIterator(this, "shun") {
         public void callOut(final ResultSet resultSet) throws SQLException {
           shun(resultSet);
         }
-      });
-      executorService.submit(new Callable<Object>() {
-        public Object call() throws SQLException {
-          return configuration();
+      }.call();
+      configuration();
+      javadoc();
+      new TableIterator(this, "logs", "select * from %s order by updated desc limit 100000 offset %s") {
+        public void callOut(final ResultSet resultSet) throws SQLException {
+          logs(resultSet);
         }
-      });
-      executorService.submit(new Callable<Object>() {
-        public Object call() throws Exception {
-          return javadoc();
-        }
-      });
-      executorService.shutdown();
-      executorService.awaitTermination(1, TimeUnit.HOURS);
-    } catch (InterruptedException e) {
+      }.call();
+    } catch (Exception e) {
       throw new RuntimeException(e.getMessage(), e);
-    } finally {
-      connection.close();
-      executorService.shutdownNow();
     }
   }
 
-  private ObjectId lookupId(final String table, final long id) {
-    DBCollection collection = db.getCollection(table + "IDs");
-    collection.ensureIndex(new BasicDBObject(table + "_id", 1));
+  public Connection getConnection() throws SQLException {
+    return DriverManager.getConnection(props.getProperty("jdbc.url"),
+        props.getProperty("jdbc.user"), props.getProperty("jdbc.password"));
+  }
+
+  protected ObjectId lookupId(final String table, final long id) {
+    DBCollection collection = getDb().getCollection(table + "IDs");
     DBObject object = collection.findOne(new BasicDBObject(table + "_id", id));
     return object != null ? (ObjectId) object.get("_id") : null;
   }
 
-  private ObjectId mapId(final String table, final long id) {
-    DBCollection collection = db.getCollection(table + "IDs");
+  protected ObjectId mapId(final String table, final long id) {
+    DBCollection collection = getDb().getCollection(table + "IDs");
     ObjectId mappedId = new ObjectId();
     BasicDBObject insert = new BasicDBObject(table + "_id", id);
     insert.put("_id", mappedId);
@@ -320,7 +314,14 @@ public class Migrator {
     return mappedId;
   }
 
-  public void validateProperties() {
+  public DB getDb() {
+    if (db == null) {
+      db = mongo.getDB(props.getProperty("database.name"));
+    }
+    return db;
+  }
+
+  public final void validateProperties() {
     props = new Properties();
     try {
       try (InputStream stream = getClass().getResourceAsStream("/javabot.properties")) {
@@ -353,144 +354,4 @@ public class Migrator {
     System.exit(0);
   }
 
-  private abstract class TableIterator implements Callable<Object> {
-    private static final int BATCH = 10000;
-
-    private static final String COUNT = "select count(*) from %s";
-
-    private static final String SELECT = "select * from %s limit " + BATCH + " offset %s";
-
-    protected String table;
-
-    private String select;
-
-    public TableIterator(final String table) {
-      this(table, SELECT);
-    }
-
-    public TableIterator(final String table, String select) {
-      this.table = table;
-      this.select = select;
-    }
-
-    @Override
-    public Object call() throws Exception {
-      System.out.println("Migrating " + table);
-      int count = 0;
-      int total = 0;
-      DateTime begin = DateTime.now();
-      try (Statement statement = connection.createStatement();
-           ResultSet resultSet = statement.executeQuery(String.format(COUNT, table))) {
-        while (resultSet.next()) {
-          total = resultSet.getInt(1);
-        }
-      } catch (Exception e) {
-        e.printStackTrace();
-        throw new RuntimeException(e.getMessage(), e);
-      }
-      while (count < total) {
-        try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(String.format(select, table, count))) {
-          while (resultSet.next()) {
-            count++;
-            callOut(resultSet);
-          }
-        } catch (Exception e) {
-          e.printStackTrace();
-          throw new RuntimeException(e.getMessage(), e);
-        }
-        DateTime current = DateTime.now();
-        long duration = current.getMillis() - begin.getMillis();
-        int rate = (int) (count / duration) + 1;
-        int remaining = (total - count) / rate;
-        DateTime done = current.plusMillis(remaining);
-        System.out.printf("Imported %d of %d (%.2f%%) from %s.  Estimated completion time: %s\n", count, total,
-            100.0 * count / total, table, done.toString("HH:mm:ss"));
-      }
-      System.out.printf("Finished migrating %s. %s%n", table, new DateTime().toString("HH:mm:ss"));
-      if (total != countResults()) {
-        throw new RuntimeException("Failed to migrate all records for " + table);
-      }
-      return null;
-    }
-
-    protected final long countResults() {
-      return db.getCollection(table).count();
-    }
-
-    public abstract void callOut(final ResultSet resultSet) throws SQLException;
-  }
-
-  private class ClassIterator extends TableIterator {
-    private final List<Long> deferredList = new ArrayList<>();
-
-    public ClassIterator() {
-      super("classes");
-    }
-
-    @Override
-    public Object call() throws Exception {
-      super.call();
-      while (!deferredList.isEmpty()) {
-        Iterator<Long> iterator = deferredList.iterator();
-        while (iterator.hasNext()) {
-          final Long aLong = iterator.next();
-          if (process(aLong)) {
-            iterator.remove();
-          }
-        }
-      }
-      return null;
-    }
-
-    private boolean process(Long id) {
-      try (Statement statement = connection.createStatement();
-           ResultSet resultSet = statement.executeQuery(String.format("select superclass_id from"
-               + " classes where id = " + id))) {
-        if (resultSet.next()) {
-          ObjectId parentId = lookupId("classes", resultSet.getLong("superclass_id"));
-          if (parentId != null) {
-            JavadocClass javadocClass = javadocClassDao.find(lookupId("classes", id));
-            javadocClass.setSuperClass(javadocClassDao.find(parentId));
-            javadocClassDao.save(javadocClass);
-            return true;
-          }
-        }
-      } catch (SQLException e) {
-        throw new RuntimeException(e.getMessage(), e);
-      }
-      return false;
-    }
-
-    public void callOut(final ResultSet resultSet) throws SQLException {
-      JavadocClass javadocClass = new JavadocClass();
-      long id = resultSet.getLong("id");
-      javadocClass.setId(mapId(table, id));
-      javadocClass.setLongUrl(resultSet.getString("longurl"));
-      javadocClass.setShortUrl(resultSet.getString("shorturl"));
-      javadocClass.setName(resultSet.getString("classname"));
-      javadocClass.setPackageName(resultSet.getString("packagename"));
-      setSuperClassId(resultSet, javadocClass, id);
-      ObjectId apiId = lookupId("apis", resultSet.getLong("api_id"));
-      javadocClass.setApi(apiDao.find(apiId));
-      javadocClassDao.save(javadocClass);
-    }
-
-    private void setSuperClassId(final ResultSet resultSet, final JavadocClass javadocClass, final long id)
-        throws SQLException {
-      long parentId = resultSet.getLong("superclass_id");
-      if (!resultSet.wasNull()) {
-        ObjectId objectId = lookupId(table, parentId);
-        if (objectId == null) {
-          defer(id);
-        } else {
-          javadocClass.setSuperClass(javadocClassDao.find(objectId));
-        }
-      }
-    }
-
-    private void defer(final Long id) {
-      deferredList.add(id);
-    }
-  }
 }
