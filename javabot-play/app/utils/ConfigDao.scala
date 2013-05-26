@@ -19,8 +19,7 @@ class ConfigDao extends javabot.dao.ConfigDao {
         eventType = EventType.ADD
       }
       if(eventType != null) {
-        var event = new OperationEvent(eventType, operation, AdminController.getTwitterContext.screenName)
-        save(event)
+        save(new OperationEvent(eventType, operation, AdminController.getTwitterContext.screenName))
       }
     })
   }

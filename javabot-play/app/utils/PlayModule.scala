@@ -11,12 +11,14 @@ import play.api.libs.Files
 import play.mvc.Http
 import java.io.File
 import security.OAuthDeadboltHandler
+import javabot.dao.util.DateTimeConverter
+import javabot.JavabotModule
 
-class PlayModule extends AbstractModule {
+class PlayModule extends JavabotModule {
   protected override def configure() {
     try {
       val props = new Properties()
-      var stream = Play.application.resourceAsStream("oauth.conf")
+      val stream = Play.application.resourceAsStream("oauth.conf")
       if (stream != null) {
         try {
           props.load(stream)
@@ -61,19 +63,6 @@ class PlayModule extends AbstractModule {
         Http.Context.current()
       }
     })
-  }
-
-  @Provides
-  @Named("operations")
-  def operations = {
-    ""
-  }
-
-  @Provides
-  def datastore = {
-    val mongo = new MongoClient
-    val morphia = new Morphia
-    morphia.createDatastore(mongo, "javabot")
   }
 
 //  @Provides

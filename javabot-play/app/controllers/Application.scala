@@ -1,8 +1,8 @@
 package controllers
 
-import java.net.URLEncoder
-import models.{ChangeForm, Page, FactoidForm}
-import org.joda.time.DateTime
+import java.net.{URLDecoder, URLEncoder}
+import models.{KarmaForm, ChangeForm, Page, FactoidForm}
+import org.joda.time.{DateTimeZone, DateTime}
 import org.joda.time.format.DateTimeFormat
 import play.api.data.Forms._
 import play.api.data.Forms.mapping
@@ -23,6 +23,13 @@ object Application extends Controller {
     mapping(
       "message" -> optional(text)
     )(ChangeForm.apply)(ChangeForm.unapply)
+  )
+
+  val karmaForm: Form[KarmaForm] = Form(
+    mapping(
+      "nick" -> optional(text)
+    )(KarmaForm.apply)(KarmaForm.unapply)
+
   )
 
   val PerPageCount = 50
@@ -57,11 +64,13 @@ object Application extends Controller {
     implicit request =>
 
       val page = request.getQueryString("page")
+      val form = karmaForm.bindFromRequest.fold(errors => errors.get, form => form)
       val pageNumber = page.getOrElse("0").toInt
       val pair = Injectables.karmaDao.find(pageNumber * PerPageCount, PerPageCount)
       val pageContent = Page(pair._2, pageNumber, pageNumber * PerPageCount, pair._1)
 
-      Ok(views.html.karma(Injectables.handler, Injectables.context, pageContent))
+      val fill = karmaForm.fill(form)
+      Ok(views.html.karma(Injectables.handler, Injectables.context, fill, pageContent))
   }
 
   def changes = Action {
@@ -83,6 +92,7 @@ object Application extends Controller {
       val pattern = "yyyy-MM-dd"
       val format = DateTimeFormat.forPattern(pattern)
 
+      val channelName = URLDecoder.decode(channel, "UTF-8")
       if ("today".equals(dateString)) {
         date = DateTime.now().withTimeAtStartOfDay()
       } else {
@@ -90,16 +100,18 @@ object Application extends Controller {
           date = DateTime.parse(dateString, format)
         } catch {
           case e: Exception => {
+            println("error!")
             date = DateTime.now().withTimeAtStartOfDay()
           }
         }
       }
 
+//      date = date.withZoneRetainFields(DateTimeZone.forID("US/Eastern"))
       val context = Injectables.context
-      context.logChannel(channel, date)
+      context.logChannel(channelName, date)
 
       val before = date.minusDays(1).toString(pattern)
       val after = date.plusDays(1).toString(pattern)
-      Ok(views.html.logs(Injectables.handler, context, channel, date.toString(pattern), before, after))
+      Ok(views.html.logs(Injectables.handler, context, channelName, date.toString(pattern), before, after))
   }
 }

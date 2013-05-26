@@ -5,6 +5,7 @@ import javabot.dao.ChannelDao
 import javabot.model.Logs
 import javax.inject.Inject
 import org.joda.time.DateTime
+import java.net.URLDecoder
 
 class Context {
 
@@ -50,6 +51,6 @@ class Context {
 
   def logChannel(name: String,  date: DateTime) {
     channel = name
-    logs = logsDao.findByChannel(name, date, showAll)
+    logs = logsDao.findByChannel(channel, date, showAll)
   }
 }

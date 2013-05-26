@@ -6,6 +6,7 @@ import java.util
 import org.joda.time.{DateTimeZone, DateTime}
 import javabot.model.criteria.LogsCriteria
 import scala.collection.JavaConversions._
+import java.net.URLDecoder
 
 class LogsDao extends javabot.dao.LogsDao {
 
@@ -14,15 +15,15 @@ class LogsDao extends javabot.dao.LogsDao {
     var list: List[Logs] = null
     if (channel.getLogged) {
       val start = (if (date == null) new DateTime(DateTimeZone.forID("US/Eastern")) else date).withTimeAtStartOfDay
+
       val tomorrow = start.plusDays(1)
       val criteria = new LogsCriteria(ds)
-      criteria.channel().equal(channelName)
-      println(start)
-      println(tomorrow)
+      criteria.channel(channelName)
       criteria.and(
-          criteria.updated().greaterThanOrEq(start),
-          criteria.updated().lessThanOrEq(tomorrow)
+          criteria.updated().lessThanOrEq(tomorrow),
+          criteria.updated().greaterThanOrEq(start)
       )
+
       list = criteria.query().asList().toList
     }
     list
@@ -31,7 +32,7 @@ class LogsDao extends javabot.dao.LogsDao {
   def findByChannel(name: String, date: DateTime, showAll: Boolean): List[Logs] = {
     val channel = channelDao.get(name)
     var logs: List[Logs] = null
-    if (showAll || channel.getLogged) {
+    if (channel != null && (showAll || channel.getLogged)) {
       dailyLog(name, date)
     } else {
       List.empty
