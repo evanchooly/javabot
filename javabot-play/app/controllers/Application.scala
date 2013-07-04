@@ -1,14 +1,14 @@
 package controllers
 
 import java.net.{URLDecoder, URLEncoder}
-import models.{KarmaForm, ChangeForm, Page, FactoidForm}
-import org.joda.time.{DateTimeZone, DateTime}
+import models.{AdminForm, KarmaForm, ChangeForm, Page, FactoidForm}
+import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import play.api.data.Forms._
 import play.api.data.Forms.mapping
 import play.api.data._
 import play.api.mvc._
-import utils.{FactoidDao, Injectables}
+import utils.Injectables
 
 object Application extends Controller {
   val factoidForm: Form[FactoidForm] = Form(
@@ -16,21 +16,24 @@ object Application extends Controller {
       "name" -> optional(text),
       "value" -> optional(text),
       "user" -> optional(text)
-    )(FactoidForm.apply)(FactoidForm.unapply)
-  )
+    )(FactoidForm.apply)(FactoidForm.unapply))
 
   val changeForm: Form[ChangeForm] = Form(
     mapping(
       "message" -> optional(text)
-    )(ChangeForm.apply)(ChangeForm.unapply)
-  )
+    )(ChangeForm.apply)(ChangeForm.unapply))
 
   val karmaForm: Form[KarmaForm] = Form(
     mapping(
       "nick" -> optional(text)
-    )(KarmaForm.apply)(KarmaForm.unapply)
+    )(KarmaForm.apply)(KarmaForm.unapply))
 
-  )
+  val adminForm: Form[AdminForm] = Form(
+    mapping(
+      "ircName" -> optional(text),
+      "hostName" -> optional(text),
+      "email" -> text
+    )(AdminForm.apply)(AdminForm.unapply))
 
   val PerPageCount = 50
 
@@ -43,7 +46,7 @@ object Application extends Controller {
 
   def index = Action {
     implicit request =>
-      Ok(views.html.index(Injectables.handler, Injectables.context))
+      Ok(views.html.index(Injectables.handler, Injectables.context(request)))
   }
 
   def factoids = Action {
@@ -57,7 +60,7 @@ object Application extends Controller {
       val content = Page(pair._2, pageNumber, pageNumber * PerPageCount, pair._1)
 
       val fill = factoidForm.fill(form)
-      Ok(views.html.factoids(Injectables.handler, Injectables.context, fill, content))
+      Ok(views.html.factoids(Injectables.handler, Injectables.context(request), fill, content))
   }
 
   def karma = Action {
@@ -70,21 +73,21 @@ object Application extends Controller {
       val pageContent = Page(pair._2, pageNumber, pageNumber * PerPageCount, pair._1)
 
       val fill = karmaForm.fill(form)
-      Ok(views.html.karma(Injectables.handler, Injectables.context, fill, pageContent))
+      Ok(views.html.karma(Injectables.handler, Injectables.context(request), fill, pageContent))
   }
 
   def changes = Action {
-      implicit request =>
-        val dao = Injectables.changeDao
-        val form = changeForm.bindFromRequest.fold(errors => errors.get, form => form)
+    implicit request =>
+      val dao = Injectables.changeDao
+      val form = changeForm.bindFromRequest.fold(errors => errors.get, form => form)
 
-        val page = request.getQueryString("page")
-        val pageNumber = page.getOrElse("0").toInt
-        val pair = dao.find(form, pageNumber * PerPageCount, PerPageCount)
-        val content = Page(pair._2, pageNumber, pageNumber * PerPageCount, pair._1)
+      val page = request.getQueryString("page")
+      val pageNumber = page.getOrElse("0").toInt
+      val pair = dao.find(form, pageNumber * PerPageCount, PerPageCount)
+      val content = Page(pair._2, pageNumber, pageNumber * PerPageCount, pair._1)
 
-        Ok(views.html.changes(Injectables.handler, Injectables.context, changeForm.fill(form), content))
-    }
+      Ok(views.html.changes(Injectables.handler, Injectables.context(request), changeForm.fill(form), content))
+  }
 
   def logs(channel: String, dateString: String) = Action {
     implicit request =>
@@ -106,8 +109,8 @@ object Application extends Controller {
         }
       }
 
-//      date = date.withZoneRetainFields(DateTimeZone.forID("US/Eastern"))
-      val context = Injectables.context
+      //      date = date.withZoneRetainFields(DateTimeZone.forID("US/Eastern"))
+      val context = Injectables.context(request)
       context.logChannel(channelName, date)
 
       val before = date.minusDays(1).toString(pattern)

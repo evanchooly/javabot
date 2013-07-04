@@ -13,34 +13,39 @@ import java.io.File
 import security.OAuthDeadboltHandler
 import javabot.dao.util.DateTimeConverter
 import javabot.JavabotModule
+import com.fasterxml.jackson.databind.{JsonNode, ObjectMapper}
+import com.fasterxml.jackson.core.TreeNode
 
 class PlayModule extends JavabotModule {
   protected override def configure() {
     try {
       val props = new Properties()
-      val stream = Play.application.resourceAsStream("oauth.conf")
+      val stream = Play.application.resourceAsStream("oauth.json")
       if (stream != null) {
         try {
+          val mapper = new ObjectMapper()
+          val parser = mapper.getFactory.createJsonParser(stream)
+          val tree: JsonNode = mapper.readTree(parser)
           props.load(stream)
           bind(classOf[String])
             .annotatedWith(Names.named("twitter.key"))
-            .toInstance(props.getProperty("twitter.key"))
+            .toInstance(tree.get("twitter").get("key").asText)
 
           bind(classOf[String])
             .annotatedWith(Names.named("twitter.secret"))
-            .toInstance(props.getProperty("twitter.secret"))
+            .toInstance(tree.get("twitter").get("secret").asText)
+
+          bind(classOf[String])
+            .annotatedWith(Names.named("google.key"))
+            .toInstance(tree.get("google").get("client_id").asText)
+
+          bind(classOf[String])
+            .annotatedWith(Names.named("google.secret"))
+            .toInstance(tree.get("google").get("client_secret").asText)
         } finally {
           stream.close()
         }
       }
-
-      val file: File = Play.application.getFile("conf/operations.list")
-
-      val operations = if(file.exists) Files.readFile(file).split('\n') else new Array[String](0)
-      bind(classOf[List[String]])
-        .annotatedWith(Names.named("operations"))
-        .toInstance(operations.toList)
-
     }
 
     // Bind Play request

@@ -19,7 +19,7 @@ class OAuthDeadboltHandler extends DeadboltHandler {
 
   override def getSubject[A](request: Request[A]): Option[Subject] = {
     val subject = for {
-      name <- request.session.get("user")
+      name <- request.session.get("userName")
       upper <- adminDao.getSubject(name)
     } yield upper
     subject

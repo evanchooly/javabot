@@ -159,7 +159,7 @@
             <dependency>
                 <groupId>com.google.code.morphia</groupId>
                 <artifactId>morphia</artifactId>
-                <version>0.99</version>
+                <version>0.101.0</version>
             </dependency>
 
             <dependency>

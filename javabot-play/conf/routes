@@ -13,12 +13,17 @@ GET     /logs/:name/:date           controllers.Application.logs(name: String, d
 # Admin urls
 GET     /login                      controllers.AdminController.login
 GET     /admin                      controllers.AdminController.index
-GET     /config                     controllers.AdminController.config
 GET     /javadoc                    controllers.AdminController.javadoc
+POST    /addAdmin                   controllers.AdminController.addAdmin
 GET     /addJavadoc                 controllers.AdminController.addJavadoc
 GET     /show/:name                 controllers.AdminController.showChannel(name)
 
 POST    /saveChannel                controllers.AdminController.saveChannel
+
+GET     /config                     controllers.AdminController.config
+POST    /saveConfig                 controllers.AdminController.saveConfig
+
+GET     /oauth2callback             org.pac4j.play.CallbackController.callback()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

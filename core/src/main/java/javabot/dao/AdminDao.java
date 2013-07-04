@@ -39,6 +39,7 @@ public class AdminDao extends BaseDao<Admin> {
     admin.setUserName(userName);
     admin.setHostName(hostName);
     admin.setUpdated(new DateTime());
+    admin.setBotOwner(findAll().isEmpty());
     save(admin);
   }
 }

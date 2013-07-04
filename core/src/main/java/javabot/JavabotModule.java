@@ -10,7 +10,6 @@ import com.google.code.morphia.Morphia;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
-import com.google.inject.name.Names;
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
@@ -24,11 +23,6 @@ public class JavabotModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    try {
-      Names.bindProperties(binder(), getProperties());
-    } catch (IOException e) {
-      throw new RuntimeException(e.getMessage(), e);
-    }
   }
 
   @Provides
@@ -57,7 +51,9 @@ public class JavabotModule extends AbstractModule {
     return datastore;
   }
 
-  private Properties getProperties() throws IOException {
+  @Provides
+  @Singleton
+  public Properties getProperties() throws IOException {
     try (InputStream stream = getClass().getClassLoader().getResourceAsStream("javabot.properties")) {
       properties = new Properties();
       properties.load(stream);

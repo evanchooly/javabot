@@ -20,7 +20,7 @@ public class Admin implements Serializable, Persistent {
   @Id
   private ObjectId id;
 
-  private Boolean botOwner;
+  private Boolean botOwner = false;
 
   private String hostName;
 

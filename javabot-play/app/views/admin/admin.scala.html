@@ -1,5 +1,27 @@
-@(handler: be.objectify.deadbolt.scala.DeadboltHandler, context: utils.Context, admins: java.util.List[javabot.model.Admin])(implicit request: Request[Any])
+@(handler: be.objectify.deadbolt.scala.DeadboltHandler, context: utils.Context, form: Form[models.AdminForm], admins: java.util.List[javabot.model.Admin])(implicit request: Request[Any])
+
+@import com.antwerkz.sofia.Sofia
 
 @main(handler, context) {
-
+    @helper.form(action = routes.AdminController.addAdmin()) {
+        <table class="form">
+            <tr class="topRow">
+                <td><label for="email">@Sofia.ircName()</label></td>
+                <td class="right"><input type="text" id="irc" name="ircName"></td>
+            </tr>
+            <tr class="topRow">
+                <td><label for="email">@Sofia.hostName()</label></td>
+                <td class="right"><input type="text" id="host" name="hostName"></td>
+            </tr>
+            <tr>
+                <td><label for="email">@Sofia.email()</label></td>
+                <td class="right"><input type="text" id="email" name="email"></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="form-submit right">
+                    <input type="submit" value="Submit me already">
+                </td>
+            </tr>
+        </table>
+    }
 }

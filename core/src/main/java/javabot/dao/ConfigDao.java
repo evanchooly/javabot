@@ -1,6 +1,7 @@
 package javabot.dao;
 
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
@@ -19,21 +20,27 @@ public class ConfigDao extends BaseDao<Config> {
   private ChannelDao channelDao;
   @Inject
   private AdminDao adminDao;
+  @Inject
+  private Properties properties;
 
   protected ConfigDao() {
     super(Config.class);
   }
 
   public Config get() {
-    return ds.createQuery(Config.class).get();
+    Config config = ds.createQuery(Config.class).get();
+    if(config == null) {
+      config = create();
+    }
+    return config;
   }
 
   public Config create() {
     final Config config = new Config();
-    config.setNick(System.getProperty("javabot.nick"));
-    config.setPassword(System.getProperty("javabot.password")); // optional
-    config.setServer(System.getProperty("javabot.server", "irc.freenode.org"));
-    config.setPort(Integer.parseInt(System.getProperty("javabot.port", "6667")));
+    config.setNick(properties.getProperty("javabot.nick"));
+    config.setPassword(properties.getProperty("javabot.password")); // optional
+    config.setServer(properties.getProperty("javabot.server", "irc.freenode.org"));
+    config.setPort(Integer.parseInt(properties.getProperty("javabot.port", "6667")));
     config.setTrigger("~");
     final List<BotOperation> it = BotOperation.list();
     final Set<String> list = new TreeSet<String>();

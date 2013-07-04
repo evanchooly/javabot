@@ -112,11 +112,11 @@ public class ConfigCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, java.util.Set<java.lang.String>> operations() {
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, java.util.List<java.lang.String>> operations() {
     return new TypeSafeFieldEnd<>(query, query.criteria("operations"));
   }
 
-  public ConfigCriteria operations(java.util.Set<java.lang.String> value) {
+  public ConfigCriteria operations(java.util.List<java.lang.String> value) {
     new TypeSafeFieldEnd<>(query, query.criteria("operations")).equal(value);
     return this;
   }
@@ -477,27 +477,27 @@ public class ConfigCriteria {
       updateOperations.inc("nick", value);
       return this;
     }
-    public ConfigUpdater operations(java.util.Set<java.lang.String> value) {
+    public ConfigUpdater operations(java.util.List<java.lang.String> value) {
       updateOperations.set("operations", value);
       return this;
     }
 
-    public ConfigUpdater unsetOperations(java.util.Set<java.lang.String> value) {
+    public ConfigUpdater unsetOperations(java.util.List<java.lang.String> value) {
       updateOperations.unset("operations");
       return this;
     }
 
-    public ConfigUpdater addOperations(java.util.Set<java.lang.String> value) {
+    public ConfigUpdater addOperations(java.util.List<java.lang.String> value) {
       updateOperations.add("operations", value);
       return this;
     }
 
-    public ConfigUpdater addOperations(String fieldExpr, java.util.Set<java.lang.String> value, boolean addDups) {
+    public ConfigUpdater addOperations(String fieldExpr, java.util.List<java.lang.String> value, boolean addDups) {
       updateOperations.add("operations", value, addDups);
       return this;
     }
 
-    public ConfigUpdater addAllToOperations(List<java.util.Set<java.lang.String>> values, boolean addDups) {
+    public ConfigUpdater addAllToOperations(List<java.util.List<java.lang.String>> values, boolean addDups) {
       updateOperations.addAll("operations", values, addDups);
       return this;
     }
@@ -512,12 +512,12 @@ public class ConfigCriteria {
       return this;
     }
   
-    public ConfigUpdater removeFromOperations(java.util.Set<java.lang.String> value) {
+    public ConfigUpdater removeFromOperations(java.util.List<java.lang.String> value) {
       updateOperations.removeAll("operations", value);
       return this;
     }
 
-    public ConfigUpdater removeAllFromOperations(List<java.util.Set<java.lang.String>> values) {
+    public ConfigUpdater removeAllFromOperations(List<java.util.List<java.lang.String>> values) {
       updateOperations.removeAll("operations", values);
       return this;
     }

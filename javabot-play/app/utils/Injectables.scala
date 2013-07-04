@@ -1,18 +1,24 @@
 package utils
 
-import com.google.inject.{Key, Stage, Guice, Injector}
-import security.OAuthDeadboltHandler
+import com.google.inject.{Stage, Guice, Injector}
+import java.io.File
 import javabot.dao.{ApiDao, ChannelDao}
-import javabot.model.NickRegistration
+import play.Play
+import play.api.libs.Files
+import play.api.mvc.{AnyContent, Request}
+import security.OAuthDeadboltHandler
 import twitter4j.TwitterFactory
-import com.google.inject.name.Names
 
 object Injectables {
   def changeDao = injector.getInstance(classOf[ChangeDao])
 
   def karmaDao = injector.getInstance(classOf[KarmaDao])
 
-  def context = injector.getInstance(classOf[Context])
+  def context(request: Request[AnyContent]): Context = {
+    val context: Context = injector.getInstance(classOf[Context])
+    context.request(request)
+    context
+  }
 
   def twitter = new TwitterFactory().getInstance
 
@@ -26,13 +32,16 @@ object Injectables {
 
   def adminDao = injector.getInstance(classOf[AdminDao])
 
-  def configDao =  injector.getInstance(classOf[ConfigDao])
+  def configDao = injector.getInstance(classOf[ConfigDao])
 
-  def logsDao =  injector.getInstance(classOf[LogsDao])
+  def logsDao = injector.getInstance(classOf[LogsDao])
 
-  def operations = injector.getInstance(Key.get(classOf[java.util.List[String]], Names.named("operations")))
+  def operations: List[String] = {
+    val file: File = Play.application.getFile("conf/operations.list")
+    (if (file.exists) Files.readFile(file).split('\n') else new Array[String](0)).toList
+  }
 
-  def config = configDao.findAll.get(0)
+  def config = configDao.get
 
   def admins = adminDao.findAll
 

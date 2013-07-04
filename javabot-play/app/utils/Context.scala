@@ -1,44 +1,44 @@
 package utils
 
-import java.util.Date
 import javabot.dao.ChannelDao
 import javabot.model.Logs
 import javax.inject.Inject
 import org.joda.time.DateTime
-import java.net.URLDecoder
+import play.api.mvc
+import play.api.mvc.AnyContent
 
 class Context {
 
   @Inject
-  private var factoidDao: FactoidDao = null
+  var factoidDao: FactoidDao = null
   @Inject
-  private var channelDao:ChannelDao = null
+  var channelDao: ChannelDao = null
   @Inject
-  private var adminDao:AdminDao = null
+  var adminDao: AdminDao = null
   @Inject
-  private var logsDao:LogsDao = null
+  var logsDao: LogsDao = null
 
-  var logs : List[Logs] = null
+  var logs: List[Logs] = null
 
-  @Inject
-  private var twitterContext: TwitterContext = null
+  private var request: mvc.Request[AnyContent] = null
 
-  var today = new Date
+  def request(request: mvc.Request[AnyContent]) {
+    this.request = request
+  }
+
+  var today = new DateTime
 
   var channel: String = null
 
   def factoidCount = factoidDao.count()
 
   def showAll: Boolean = {
-    var showAll = false
-    twitterContext = controllers.AdminController.getTwitterContext
-    if(twitterContext != null) {
-      if(twitterContext.screenName != null) {
-        val admin = adminDao.getAdmin(twitterContext.screenName)
-        showAll = admin != null && admin.getBotOwner
-      }
-    }
-    showAll
+    val userName = request.session.get("userName")
+
+    userName.exists(name => {
+      val admin = adminDao.getAdmin(name)
+      admin != null && admin.getBotOwner
+    })
   }
 
   def channels = {
@@ -49,7 +49,7 @@ class Context {
     logs
   }
 
-  def logChannel(name: String,  date: DateTime) {
+  def logChannel(name: String, date: DateTime) {
     channel = name
     logs = logsDao.findByChannel(channel, date, showAll)
   }
