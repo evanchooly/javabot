@@ -12,13 +12,12 @@ import javabot.model.Config;
 import javabot.model.Logs;
 import javabot.model.Persistent;
 import javabot.operations.BotOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * Created Jun 21, 2007
- *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
- */
 public class ConfigDao extends BaseDao<Config> {
+  private static final Logger LOG = LoggerFactory.getLogger(ConfigDao.class);
+
   String GET_CONFIG = "Config.get";
 
   @Inject
@@ -87,8 +86,7 @@ public class ConfigDao extends BaseDao<Config> {
     try {
       collection.ensureIndex(new BasicDBObject("updated", 1), keys);
     } catch (Exception e) {
-      e.printStackTrace();
-      throw new RuntimeException(e.getMessage(), e);
+      LOG.error(e.getMessage(), e);
     }
   }
 
