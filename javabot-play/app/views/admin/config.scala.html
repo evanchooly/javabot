@@ -1,5 +1,6 @@
 @(handler: be.objectify.deadbolt.scala.DeadboltHandler, context: utils.Context,
-    config: javabot.model.Config, operations: List[String])(implicit request: Request[Any])
+    configInfo: models.ConfigInfo, currentOps: java.util.List[String],
+	operations: List[String])(implicit request: Request[Any])
 
 @import com.antwerkz.sofia.Sofia
 
@@ -9,14 +10,13 @@
         <tr>
             <td class="top">@Sofia.webUrl()</td>
             <td class="top right">
-                <input type="hidden" id="id" name="id" value="@config.getId()"/>
-                <input type="text" id="url" name="url" value="@config.getUrl()"/>
+                <input type="text" id="url" name="url" value="@configInfo.url"/>
             </td>
             <td class="top right" rowspan="12">
                 <ul>
                     @for(operation <- operations) {
                         <li><input type="checkbox" id="@{operation}" name="operations" value="@{operation}"
-                            @if(config.getOperations.contains(operation)){ checked="true" }/>@{operation} </li>
+                            @if(currentOps.contains(operation)){ checked="true" }/>@{operation} </li>
                     }
                 </ul>
             </td>
@@ -26,7 +26,7 @@
                 @Sofia.ircServer()
             </td>
             <td class="top">
-                <input type="text" id="server" name="server" value="@config.getServer()"/>
+                <input type="text" id="server" name="server" value="@configInfo.server"/>
             </td>
         </tr>
         <tr>
@@ -34,7 +34,7 @@
                 @Sofia.ircPort()
             </td>
             <td class="right">
-                <input type="text" id="port" name="port" value="@config.getPort()"/>
+                <input type="text" id="port" name="port" value="@configInfo.port"/>
             </td>
         </tr>
         <tr>
@@ -42,7 +42,7 @@
                 @Sofia.ircHistory()
             </td>
             <td class="right">
-                <input type="text" id="historyLength" name="historyLength" value="@config.getHistoryLength()"/>
+                <input type="text" id="historyLength" name="historyLength" value="@configInfo.historyLength"/>
             </td>
         </tr>
         <tr>
@@ -50,7 +50,7 @@
                 @Sofia.ircTrigger()
             </td>
             <td class="right">
-                <input type="text" id="trigger" name="trigger" value="@config.getTrigger()"/>
+                <input type="text" id="trigger" name="trigger" value="@configInfo.trigger"/>
             </td>
         </tr>
         <tr>
@@ -58,7 +58,7 @@
                 @Sofia.ircNick()
             </td>
             <td class="right">
-                <input type="text" id="nick" name="nick" value="@config.getNick()"/>
+                <input type="text" id="nick" name="nick" value="@configInfo.nick"/>
             </td>
         </tr>
         <tr>
@@ -66,7 +66,7 @@
                 @Sofia.ircPassword()
             </td>
             <td class="right">
-                <input type="password" id="password" name="password" value="@config.getPassword()"/>
+                <input type="password" id="password" name="password" value="@configInfo.password"/>
             </td>
         </tr>
         <tr>

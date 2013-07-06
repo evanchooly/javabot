@@ -31,7 +31,7 @@ public class Config implements Serializable, Persistent {
 
   private Integer schemaVersion;
 
-  private List<String> operations = new ArrayList<String>();
+  private List<String> operations = new ArrayList<>();
 
   public Config() {
   }

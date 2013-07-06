@@ -1,22 +1,33 @@
 package utils
 
-import controllers.AdminController
-import javabot.model.{Admin, OperationEvent, EventType}
 import java.util
-import javax.inject.{Named, Inject}
+import javabot.model.{Admin, OperationEvent, EventType}
+import models.ConfigInfo
 
 class ConfigDao extends javabot.dao.ConfigDao {
 
-  def updateOperations(admin: Admin, old: util.List[String], updated: util.List[String]) {
+  def save(admin: Admin, info: ConfigInfo) {
+    var url = info.url
+    while (url.endsWith("/")) {
+      url = url.substring(0, url.length - 1)
+    }
+    val old = get
+    old.setServer(info.server)
+    old.setHistoryLength(info.historyLength)
+    old.setNick(info.nick)
+    old.setPassword(info.password)
+    old.setPort(info.port)
+    old.setTrigger(info.trigger)
+    old.setUrl(url)
+    save(old)
+
+  }
+  def updateOperations(admin: Admin, old: util.List[String], updated: List[String]) {
     Injectables.operations.foreach(operation => {
-      var eventType: EventType = null
       if(old.contains(operation) && !updated.contains(operation)) {
-        eventType = EventType.DELETE
+        save(new OperationEvent(EventType.DELETE, operation, admin.getUserName))
       } else if (!old.contains(operation) && updated.contains(operation)) {
-        eventType = EventType.ADD
-      }
-      if(eventType != null) {
-        save(new OperationEvent(eventType, operation, admin.getUserName))
+        save(new OperationEvent(EventType.ADD, operation, admin.getUserName))
       }
     })
   }

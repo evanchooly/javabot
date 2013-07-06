@@ -4,7 +4,7 @@ import be.objectify.deadbolt.scala.DeadboltActions
 import com.google.inject.Inject
 import javabot.dao.ChannelDao
 import javabot.model.{Config, Factoid, Channel, ApiEvent, Admin}
-import models.{AdminForm, ChannelInfo}
+import models.{ConfigInfo, AdminForm, ChannelInfo}
 import org.bson.types.ObjectId
 import org.pac4j.play.scala.ScalaController
 import play.api.data.Forms._
@@ -33,19 +33,16 @@ object AdminController extends ScalaController with DeadboltActions {
       "logged" -> boolean
     )(ChannelInfo.apply)(ChannelInfo.unapply))
 
-  val configForm: Form[Config] = Form(
+  val configForm: Form[ConfigInfo] = Form(
     mapping(
-      "id" -> of[ObjectId],
       "server" -> text,
       "url" -> text,
       "port" -> number,
       "historyLength" -> number,
       "trigger" -> text,
       "nick" -> text,
-      "password" -> text,
-      "operations" -> list(text)
-    )(fromForm)
-      (toForm))
+      "password" -> text
+    )(ConfigInfo.apply)(ConfigInfo.unapply))
 
 
   def toForm: (Config) => Some[(ObjectId, String, String, Int, Int, String, String, String, List[String])] = {
@@ -80,7 +77,7 @@ object AdminController extends ScalaController with DeadboltActions {
       Action {
         implicit request =>
           val config: Config = Injectables.config
-          Ok(views.html.admin.config(Injectables.handler, Injectables.context(request), config,
+          Ok(views.html.admin.config(Injectables.handler, Injectables.context(request), configInfo, config.getOperations,
             Injectables.operations))
       }
   }
@@ -89,7 +86,7 @@ object AdminController extends ScalaController with DeadboltActions {
     Action {
       implicit request =>
         Ok(views.html.admin.config(Injectables.handler, Injectables.context(request),
-          Injectables.config, Injectables.operations))
+          configInfo, Injectables.config.getOperations, Injectables.operations))
     }
   }
 
@@ -102,24 +99,18 @@ object AdminController extends ScalaController with DeadboltActions {
           implicit request =>
             val configDao = Injectables.configDao
             val adminDao = Injectables.adminDao
-            val all = configDao.findAll
-            val old = all.get(0)
+            val admin = adminDao.getAdmin(request.session.get("userName").get)
 
-            val form: Form[Config] = configForm.bindFromRequest()
+            val form: Form[ConfigInfo] = configForm.bindFromRequest()
 
-            val config: Config = form.fold(errors => errors.get, form => form)
+            form.fold(
+              errors => BadRequest(views.html.admin.config(Injectables.handler, Injectables.context(request),
+                errors.get, configDao.get.getOperations, Injectables.operations)),
+              configInfo => {
+                configDao.save(admin, configInfo)
+                Redirect("/")
+              })
 
-            if (!old.getOperations.equals(config.getOperations)) {
-              val admin = adminDao.getAdmin(request.session.get("userName").get)
-              configDao.updateOperations(admin, old.getOperations, config.getOperations)
-            }
-            var url = config.getUrl
-            while (url.endsWith("/")) {
-              url = url.substring(0, url.length - 1)
-            }
-            config.setUrl(url)
-            configDao.save(config)
-            Redirect("/index")
         }
       }
   }
@@ -229,10 +220,15 @@ object AdminController extends ScalaController with DeadboltActions {
     implicit request =>
       val channelInfo = channelForm.bindFromRequest.get
       save(channelInfo)
-      Ok(views.html.admin.config(Injectables.handler, Injectables.context(request), Injectables.config,
-        Injectables.operations))
+      Ok(views.html.admin.config(Injectables.handler, Injectables.context(request), configInfo,
+        Injectables.config.getOperations, Injectables.operations))
   }
 
+  def configInfo: ConfigInfo = {
+    val config: Config = Injectables.config
+    ConfigInfo(config.getServer, config.getUrl, config.getPort, config.getHistoryLength, config.getTrigger,
+      config.getNick, config.getPassword)
+  }
   def save(channelInfo: ChannelInfo) {
     val dao: ChannelDao = Injectables.channelDao
     val channel = if (channelInfo.id == null) {
