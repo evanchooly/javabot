@@ -81,7 +81,7 @@ public class Javabot {
 
   Config config;
 
-  private Map<String, BotOperation> operations;
+  private Map<String, BotOperation> allOperations;
 
   private String host;
 
@@ -113,9 +113,6 @@ public class Javabot {
   public void start() {
     setUpThreads();
     config = configDao.get();
-    if (config == null) {
-      config = configDao.create();
-    }
     loadOperations(config);
     loadConfig();
     applyUpgradeScripts();
@@ -146,7 +143,7 @@ public class Javabot {
 
   protected void processAdminEvents() {
     AdminEvent event = eventDao.findUnprocessed();
-    if(event != null) {
+    if (event != null) {
       try {
         event.setState(State.PROCESSING);
         eventDao.save(event);
@@ -295,25 +292,19 @@ public class Javabot {
 
   @SuppressWarnings({"unchecked"})
   protected final void loadOperations(final Config config) {
-    operations = new TreeMap<>();
+    allOperations = new TreeMap<>();
     for (final BotOperation op : BotOperation.list()) {
       injector.injectMembers(op);
       op.setBot(this);
-      operations.put(op.getName(), op);
+      allOperations.put(op.getName(), op);
     }
     try {
       for (final String name : config.getOperations()) {
         enableOperation(name);
-        activeOperations.add(operations.get(name));
       }
     } catch (Exception e) {
       log.error(e.getMessage(), e);
       throw new RuntimeException(e.getMessage(), e);
-    }
-    if (config.getOperations().isEmpty()) {
-      for (final BotOperation operation : operations.values()) {
-        enableOperation(operation.getName());
-      }
     }
     addDefaultOperations(ServiceLoader.load(AdminCommand.class));
     addDefaultOperations(ServiceLoader.load(StandardOperation.class));
@@ -330,11 +321,8 @@ public class Javabot {
 
   public boolean disableOperation(final String name) {
     boolean disabled = false;
-    if (operations.get(name) != null) {
-      activeOperations.remove(operations.get(name));
-      final Config c = configDao.get();
-      c.getOperations().remove(name);
-      configDao.save(c);
+    if (allOperations.get(name) != null) {
+      activeOperations.remove(allOperations.get(name));
       disabled = true;
     }
     return disabled;
@@ -342,15 +330,10 @@ public class Javabot {
 
   public boolean enableOperation(final String name) {
     boolean enabled = false;
-    final Config c = configDao.get();
-    if (operations.get(name) != null) {
-      activeOperations.add(operations.get(name));
-      c.getOperations().add(name);
+    if (allOperations.get(name) != null) {
+      activeOperations.add(allOperations.get(name));
       enabled = true;
-    } else {
-      c.getOperations().remove(name);
     }
-    configDao.save(c);
     return enabled;
   }
 
@@ -358,7 +341,7 @@ public class Javabot {
     return host;
   }
 
-  public List<BotOperation> getOperations() {
+  public List<BotOperation> getAllOperations() {
     final List<BotOperation> ops = new ArrayList<>(activeOperations);
     ops.addAll(standard);
     return ops;
@@ -426,7 +409,7 @@ public class Javabot {
   }
 
   public List<Message> getResponses(final String channel, final IrcUser sender, final String message) {
-    final Iterator<BotOperation> iterator = getOperations().iterator();
+    final Iterator<BotOperation> iterator = getAllOperations().iterator();
     final List<Message> responses = new ArrayList<>();
     final IrcEvent event = new IrcEvent(channel, sender, message);
     while (responses.isEmpty() && iterator.hasNext()) {
@@ -444,7 +427,7 @@ public class Javabot {
   }
 
   public List<Message> getChannelResponses(final String channel, final IrcUser sender, final String message) {
-    final Iterator<BotOperation> iterator = getOperations().iterator();
+    final Iterator<BotOperation> iterator = getAllOperations().iterator();
     final List<Message> responses = new ArrayList<>();
     while (responses.isEmpty() && iterator.hasNext()) {
       responses.addAll(iterator.next()

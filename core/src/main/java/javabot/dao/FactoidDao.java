@@ -16,8 +16,10 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings({"ConstantNamingConvention"})
 public class FactoidDao extends BaseDao<Factoid> {
   private static final Logger log = LoggerFactory.getLogger(FactoidDao.class);
+
   @Inject
   private ChangeDao changeDao;
+
   @Inject
   private ConfigDao dao;
 
@@ -29,8 +31,13 @@ public class FactoidDao extends BaseDao<Factoid> {
     Factoid factoid = (Factoid) persistent;
     Factoid old = find(persistent.getId());
     super.save(persistent);
-    changeDao.logChange(String.format("%s changed '%s' from '%s' to '%s'",
-        factoid.getUserName(), factoid.getName(), old.getValue(), factoid.getValue()));
+    if (old != null) {
+      changeDao.logChange(String.format("%s changed '%s' from '%s' to '%s'",
+          factoid.getUserName(), factoid.getName(), old.getValue(), factoid.getValue()));
+    } else {
+      changeDao.logChange(String.format("%s added '%s' with '%s'", factoid.getUserName(), factoid.getName(),
+          factoid.getValue()));
+    }
   }
 
   public boolean hasFactoid(final String key) {

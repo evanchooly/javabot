@@ -1,8 +1,8 @@
 package javabot.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
@@ -31,14 +31,14 @@ public class Config implements Serializable, Persistent {
 
   private Integer schemaVersion;
 
-  private List<String> operations = new ArrayList<>();
+  private Set<String> operations = new TreeSet<>();
 
   public Config() {
   }
 
   public Config(final ObjectId id, final String server, final String url, final Integer port,
       final Integer historyLength, final String trigger, final String nick, final String password,
-      final List<String> operations) {
+      final Set<String> operations) {
     this.id = id;
     this.historyLength = historyLength;
     this.nick = nick;
@@ -66,11 +66,11 @@ public class Config implements Serializable, Persistent {
     nick = botName;
   }
 
-  public List<String> getOperations() {
+  public Set<String> getOperations() {
     return operations;
   }
 
-  public void setOperations(final List<String> list) {
+  public void setOperations(final Set<String> list) {
     operations = list;
   }
 

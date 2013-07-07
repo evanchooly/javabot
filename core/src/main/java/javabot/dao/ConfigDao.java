@@ -1,11 +1,10 @@
 package javabot.dao;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
+import com.google.code.morphia.query.Query;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import javabot.model.Config;
@@ -18,8 +17,6 @@ import org.slf4j.LoggerFactory;
 public class ConfigDao extends BaseDao<Config> {
   private static final Logger LOG = LoggerFactory.getLogger(ConfigDao.class);
 
-  String GET_CONFIG = "Config.get";
-
   @Inject
   private ChannelDao channelDao;
 
@@ -29,12 +26,17 @@ public class ConfigDao extends BaseDao<Config> {
   @Inject
   private Properties properties;
 
+  private Query<Config> query;
+
   protected ConfigDao() {
     super(Config.class);
   }
 
   public Config get() {
-    Config config = ds.createQuery(Config.class).get();
+    if(query == null) {
+      query = ds.createQuery(Config.class);
+    }
+    Config config = query.get();
     if (config == null) {
       config = create();
     }
@@ -48,12 +50,9 @@ public class ConfigDao extends BaseDao<Config> {
     config.setServer(properties.getProperty("javabot.server", "irc.freenode.org"));
     config.setPort(Integer.parseInt(properties.getProperty("javabot.port", "6667")));
     config.setTrigger("~");
-    final List<BotOperation> it = BotOperation.list();
-    final List<String> list = new ArrayList<>();
-    for (final BotOperation operation : it) {
-      list.add(operation.getName());
+    for (final BotOperation operation : BotOperation.list()) {
+      config.getOperations().add(operation.getName());
     }
-    config.setOperations(list);
     updateHistoryIndex(config.getHistoryLength());
     save(config);
     return config;

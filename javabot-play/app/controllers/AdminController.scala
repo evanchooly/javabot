@@ -13,6 +13,7 @@ import play.api.mvc._
 import scala.collection.JavaConversions._
 import utils.Implicits._
 import utils.{FactoidDao, AdminDao, Injectables}
+import play.api.data.validation.Constraints._
 
 object AdminController extends ScalaController with DeadboltActions {
   @Inject
@@ -38,24 +39,12 @@ object AdminController extends ScalaController with DeadboltActions {
       "server" -> text,
       "url" -> text,
       "port" -> number,
-      "historyLength" -> number,
+      "historyLength" -> number
+              .verifying("History length must be greater than zero", length => length > 0),
       "trigger" -> text,
       "nick" -> text,
       "password" -> text
     )(ConfigInfo.apply)(ConfigInfo.unapply))
-
-
-  def toForm: (Config) => Some[(ObjectId, String, String, Int, Int, String, String, String, List[String])] = {
-    (config: Config) =>
-      Some(config.getId, config.getServer, config.getUrl, config.getPort,
-      config.getHistoryLength, config.getTrigger, config.getNick, config.getPassword,
-      config.getOperations.toList)
-  }
-
-  def fromForm: (ObjectId, String, String, Int, Int, String, String, String, List[String]) => Config = {
-    (id, server, url, port, historyLength, trigger, nick, password, operations) =>
-      new Config(id, server, url, port, historyLength, trigger, nick, password, operations)
-  }
 
   def login = RequiresAuthentication("Google2Client") {
     profile =>
@@ -77,7 +66,7 @@ object AdminController extends ScalaController with DeadboltActions {
       Action {
         implicit request =>
           val config: Config = Injectables.config
-          Ok(views.html.admin.config(Injectables.handler, Injectables.context(request), configInfo, config.getOperations,
+          Ok(views.html.admin.config(Injectables.handler, Injectables.context(request), buildConfigForm, config.getOperations,
             Injectables.operations))
       }
   }
@@ -86,7 +75,7 @@ object AdminController extends ScalaController with DeadboltActions {
     Action {
       implicit request =>
         Ok(views.html.admin.config(Injectables.handler, Injectables.context(request),
-          configInfo, Injectables.config.getOperations, Injectables.operations))
+          buildConfigForm, Injectables.config.getOperations, Injectables.operations))
     }
   }
 
@@ -104,8 +93,10 @@ object AdminController extends ScalaController with DeadboltActions {
             val form: Form[ConfigInfo] = configForm.bindFromRequest()
 
             form.fold(
-              errors => BadRequest(views.html.admin.config(Injectables.handler, Injectables.context(request),
-                errors.get, configDao.get.getOperations, Injectables.operations)),
+              errors => {
+                BadRequest(views.html.admin.config(Injectables.handler, Injectables.context(request),
+                  errors, configDao.get.getOperations, Injectables.operations))
+              },
               configInfo => {
                 configDao.save(admin, configInfo)
                 Redirect("/")
@@ -220,20 +211,25 @@ object AdminController extends ScalaController with DeadboltActions {
     implicit request =>
       val channelInfo = channelForm.bindFromRequest.get
       save(channelInfo)
-      Ok(views.html.admin.config(Injectables.handler, Injectables.context(request), configInfo,
+      Ok(views.html.admin.config(Injectables.handler, Injectables.context(request), buildConfigForm,
         Injectables.config.getOperations, Injectables.operations))
   }
 
-  def configInfo: ConfigInfo = {
+  def buildConfigForm = {
     val config: Config = Injectables.config
-    ConfigInfo(config.getServer, config.getUrl, config.getPort, config.getHistoryLength, config.getTrigger,
+    val info: ConfigInfo = ConfigInfo(config.getServer, config.getUrl, config.getPort, config.getHistoryLength,
+      config.getTrigger,
       config.getNick, config.getPassword)
+    configForm.fill(info)
   }
+
   def save(channelInfo: ChannelInfo) {
     val dao: ChannelDao = Injectables.channelDao
     val channel = if (channelInfo.id == null) {
       dao.find(channelInfo.id)
-    } else new Channel
+    } else {
+      new Channel
+    }
     channel.setName(channelInfo.name)
     channel.setLogged(channelInfo.logged)
     channel.setKey(channelInfo.key)
