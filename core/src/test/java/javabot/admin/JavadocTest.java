@@ -38,7 +38,6 @@ public class JavadocTest extends BaseOperationTest {
 
   @Test
   public void addApi() throws IOException {
-    getJavabot();
     dropTestApi();
     addTestApi(downloadZip());
   }
@@ -57,7 +56,6 @@ public class JavadocTest extends BaseOperationTest {
       eventDao.save(event);
       waitForEvent(event, "adding " + API_NAME, new Duration(30, TimeUnit.MINUTES));
     }
-
     List<Message> messages = getJavabot().getMessages();
     Assert.assertNotEquals(javadocClassDao.getClass("java.lang", "Integer").length, 0);
   }
@@ -72,11 +70,8 @@ public class JavadocTest extends BaseOperationTest {
     event.setRequestedBy(BaseTest.TEST_USER.getNick());
     eventDao.save(event);
     waitForEvent(event, "adding " + API_NAME, new Duration(30, TimeUnit.MINUTES));
-
-    List<Message> messages = getJavabot().getMessages();
-
+    getJavabot().getMessages();
     Assert.assertTrue(javadocClassDao.getClass("javax.servlet.http", "HttpServletRequest").length != 0);
-
   }
 
   private File downloadZip() throws IOException {

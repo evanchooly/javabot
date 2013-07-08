@@ -31,6 +31,7 @@ public class ChannelEventTest extends BaseTest {
   @Test
   public void addChannel() throws InterruptedException {
     getJavabot();
+    channelDao.delete(channelDao.get("##testChannel"));
     String name = "##testChannel";
     ChannelEvent event = new ChannelEvent(name, EventType.ADD, "testng");
     dao.save(event);

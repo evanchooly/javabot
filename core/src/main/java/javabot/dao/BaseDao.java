@@ -47,7 +47,9 @@ public class BaseDao<T extends Persistent> {
   }
 
   public void delete(final Persistent object) {
-    ds.delete(object);
+    if(object != null) {
+      ds.delete(object);
+    }
   }
 
   public void delete(final ObjectId id) {
