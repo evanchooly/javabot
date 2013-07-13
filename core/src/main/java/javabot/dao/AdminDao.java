@@ -1,12 +1,19 @@
 package javabot.dao;
 
 import java.util.List;
+import javax.inject.Inject;
 
 import javabot.model.Admin;
+import javabot.model.Config;
+import javabot.model.EventType;
+import javabot.model.OperationEvent;
 import javabot.model.criteria.AdminCriteria;
 import org.joda.time.DateTime;
 
 public class AdminDao extends BaseDao<Admin> {
+  @Inject
+  private ConfigDao configDao;
+
   public AdminDao() {
     super(Admin.class);
   }
@@ -41,5 +48,31 @@ public class AdminDao extends BaseDao<Admin> {
     admin.setUpdated(new DateTime());
     admin.setBotOwner(findAll().isEmpty());
     save(admin);
+  }
+
+  public void enableOperation(String name, String userName) {
+    Admin admin = getAdmin(userName);
+    OperationEvent event = new OperationEvent();
+    event.setOperation(name);
+    event.setRequestedOn(DateTime.now());
+    event.setType(EventType.ADD);
+    event.setRequestedBy(admin.getUserName());
+    save(event);
+    Config config = configDao.get();
+    config.getOperations().add(name);
+    configDao.save(config);
+  }
+
+  public void disableOperation(String name, String userName) {
+    Admin admin = getAdmin(userName);
+    OperationEvent event = new OperationEvent();
+    event.setOperation(name);
+    event.setRequestedOn(DateTime.now());
+    event.setType(EventType.DELETE);
+    event.setRequestedBy(admin.getUserName());
+    save(event);
+    Config config = configDao.get();
+    config.getOperations().remove(name);
+    configDao.save(config);
   }
 }

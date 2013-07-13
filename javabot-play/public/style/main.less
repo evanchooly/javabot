@@ -1,6 +1,6 @@
 @lightblue: #2153AA;
 @fontfamily: verdana, arial, sans-serif;
-@border: 1 pxsolid #C1DAD7;
+@border: 1px solid #C1DAD7;
 @left-margin: 15%;
 @content-margin: 100% - @left-margin + 2%;
 @h3size: 14px;
@@ -43,15 +43,35 @@ a {
     //        color: #FF0000;
     text-decoration: underline;
   }
+  &.current {
+    font: bold;
+    color: red;
+    font-size: larger;
+    font-style: italic;
+  }
+  &.inactive {
+    display: none;
+  }
+
+  &.locklink {
+    background: @unlockedImage no-repeat left center;
+    padding: 15px;
+  }
+
+  &.locked {
+    background: @lockedImage no-repeat left center;
+  }
+
 }
 
-a.locklink {
-  background: @unlockedImage no-repeat left center;
-  padding: 15px;
+
+.alert {
+  font-size: large;
+  font-weight: bold;
 }
 
-a.locked {
-  background: @lockedImage no-repeat left center;
+.alert-error {
+  color: red;
 }
 
 #page_wrapper {
@@ -192,10 +212,6 @@ a.locked {
   }
 }
 
-table {
-  color: #4f6b72;
-}
-
 th {
   font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
   border-bottom: @border;
@@ -246,6 +262,10 @@ td {
     border-top: @border;
   }
 
+  &.operations {
+    border: none;
+  }
+
   &.server {
     font-weight: normal;
     font-style: italic;
@@ -269,13 +289,11 @@ td {
     background: #F5FAFA;
     color: #797268;
   }
-}
 
-table {
-  border-collapse: collapse;
-  //    min-width: 100%;
-  width: 80%;
-  max-width: 100%;
+  &.button {
+    width: 30px;
+  }
+
 }
 
 .pagination-container {
@@ -305,24 +323,33 @@ table {
   }
 }
 
-a.current {
-  font: bold;
-  color: red;
-  font-size: larger;
-  font-style: italic;
-}
-
-table.form {
-  width: inherit;
-}
-
 .form-submit {
   text-align: center;
 }
 
-table.plain {
-  margin-left: 3em;
+table {
+  color: #4f6b72;
+  border-collapse: collapse;
+  //    min-width: 100%;
+  width: 80%;
+  max-width: 100%;
+
+  &.form {
+    width: inherit;
+    float: left;
+    margin-right: 3em;
+  }
+
+  &.plain {
+    margin-left: 3em;
+  }
+
+  &.operations {
+    width: 30%;
+
+  }
 }
+
 
 .plain {
   td {

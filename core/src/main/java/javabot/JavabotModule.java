@@ -46,7 +46,6 @@ public class JavabotModule extends AbstractModule {
       datastore.ensureIndexes();
     } catch (Exception e) {
       e.printStackTrace();
-      System.exit(-1);
     }
     return datastore;
   }

@@ -1,10 +1,8 @@
 package controllers
 
 import be.objectify.deadbolt.scala.DeadboltActions
-import com.google.inject.Inject
 import javabot.dao.ChannelDao
-import javabot.model.{Config, Factoid, Channel, ApiEvent, Admin}
-import models.{ConfigInfo, AdminForm, ChannelInfo}
+import javabot.model._
 import org.bson.types.ObjectId
 import org.pac4j.play.scala.ScalaController
 import play.api.data.Forms._
@@ -13,11 +11,12 @@ import play.api.mvc._
 import scala.collection.JavaConversions._
 import utils.Implicits._
 import utils.{FactoidDao, AdminDao, Injectables}
-import play.api.data.validation.Constraints._
+import models.ConfigInfo
+import models.AdminForm
+import models.ChannelInfo
+import org.joda.time.DateTime
 
 object AdminController extends ScalaController with DeadboltActions {
-  @Inject
-  var channelDao: ChannelDao = null
 
   val adminForm: Form[AdminForm] = Form(
     mapping(
@@ -25,7 +24,6 @@ object AdminController extends ScalaController with DeadboltActions {
       "hostName" -> optional(text),
       "email" -> text
     )(AdminForm.apply)(AdminForm.unapply))
-
   val channelForm: Form[ChannelInfo] = Form(
     mapping(
       "id" -> of[ObjectId],
@@ -33,14 +31,13 @@ object AdminController extends ScalaController with DeadboltActions {
       "key" -> text,
       "logged" -> boolean
     )(ChannelInfo.apply)(ChannelInfo.unapply))
-
   val configForm: Form[ConfigInfo] = Form(
     mapping(
       "server" -> text,
       "url" -> text,
       "port" -> number,
       "historyLength" -> number
-              .verifying("History length must be greater than zero", length => length > 0),
+        .verifying("History length must be greater than zero", length => length > 0),
       "trigger" -> text,
       "nick" -> text,
       "password" -> text
@@ -66,8 +63,8 @@ object AdminController extends ScalaController with DeadboltActions {
       Action {
         implicit request =>
           val config: Config = Injectables.config
-          Ok(views.html.admin.config(Injectables.handler, Injectables.context(request), buildConfigForm, config.getOperations,
-            Injectables.operations))
+          Ok(views.html.admin.config(Injectables.handler, Injectables.context(request), buildConfigForm,
+            config.getOperations.toSet, Injectables.operations))
       }
   }
 
@@ -75,7 +72,7 @@ object AdminController extends ScalaController with DeadboltActions {
     Action {
       implicit request =>
         Ok(views.html.admin.config(Injectables.handler, Injectables.context(request),
-          buildConfigForm, Injectables.config.getOperations, Injectables.operations))
+          buildConfigForm, Injectables.config.getOperations.toSet, Injectables.operations))
     }
   }
 
@@ -95,13 +92,39 @@ object AdminController extends ScalaController with DeadboltActions {
             form.fold(
               errors => {
                 BadRequest(views.html.admin.config(Injectables.handler, Injectables.context(request),
-                  errors, configDao.get.getOperations, Injectables.operations))
+                  errors, configDao.get.getOperations.toSet, Injectables.operations))
               },
               configInfo => {
                 configDao.save(admin, configInfo)
-                Redirect("/")
+                Redirect(routes.Application.index())
               })
 
+        }
+      }
+  }
+
+  def enableOperation(name: String) = RequiresAuthentication("Google2Client") {
+    profile =>
+      Restrict(Array("botAdmin"), Injectables.handler) {
+        Action {
+          implicit request =>
+            val dao: AdminDao = Injectables.adminDao
+            dao.enableOperation(name, dao.getAdmin(request.session.get("userName").get).getUserName)
+
+            Redirect(routes.AdminController.config())
+        }
+      }
+  }
+
+  def disableOperation(name: String) = RequiresAuthentication("Google2Client") {
+    profile =>
+      Restrict(Array("botAdmin"), Injectables.handler) {
+        Action {
+          implicit request =>
+            val dao: AdminDao = Injectables.adminDao
+            dao.disableOperation(name, dao.getAdmin(request.session.get("userName").get).getUserName)
+
+            Redirect(routes.AdminController.config())
         }
       }
   }
@@ -111,7 +134,8 @@ object AdminController extends ScalaController with DeadboltActions {
   def javadoc = Restrict(Array("botAdmin"), Injectables.handler) {
     Action {
       implicit request =>
-        Ok(views.html.admin.javadoc(Injectables.handler, Injectables.context(request), Injectables.apiDao.findAll))
+        Ok(
+          views.html.admin.javadoc(Injectables.handler, Injectables.context(request), Injectables.apiDao.findAll))
     }
   }
 
@@ -128,7 +152,8 @@ object AdminController extends ScalaController with DeadboltActions {
           apiDao.save(new ApiEvent(apiDao.find(name) == null, AdminController.getTwitterContext.screenName, name,
             packages, baseUrl, savedFile))
       */
-        Ok(views.html.admin.javadoc(Injectables.handler, Injectables.context(request), Injectables.apiDao.findAll))
+        Ok(
+          views.html.admin.javadoc(Injectables.handler, Injectables.context(request), Injectables.apiDao.findAll))
     }
   }
 
@@ -187,7 +212,8 @@ object AdminController extends ScalaController with DeadboltActions {
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
   def addChannel() = Action {
     implicit request =>
-      Ok(views.html.admin.editChannel(Injectables.handler, Injectables.context(request), channelForm.fill(new Channel)))
+      Ok(views.html.admin
+        .editChannel(Injectables.handler, Injectables.context(request), channelForm.fill(new Channel)))
   }
 
   //  @Get("/showChannel")
@@ -195,7 +221,8 @@ object AdminController extends ScalaController with DeadboltActions {
   def showChannel(name: String = null) = Action {
     implicit request =>
       val channel: Channel = Injectables.channelDao.get(name)
-      Ok(views.html.admin.editChannel(Injectables.handler, Injectables.context(request), channelForm.fill(channel)))
+      Ok(views.html.admin
+        .editChannel(Injectables.handler, Injectables.context(request), channelForm.fill(channel)))
   }
 
   //  @Get("/editChannel")
@@ -212,7 +239,7 @@ object AdminController extends ScalaController with DeadboltActions {
       val channelInfo = channelForm.bindFromRequest.get
       save(channelInfo)
       Ok(views.html.admin.config(Injectables.handler, Injectables.context(request), buildConfigForm,
-        Injectables.config.getOperations, Injectables.operations))
+        Injectables.config.getOperations.toSet, Injectables.operations))
   }
 
   def buildConfigForm = {

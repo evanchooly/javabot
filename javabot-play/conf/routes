@@ -21,6 +21,10 @@ GET     /show/:name                 controllers.AdminController.showChannel(name
 POST    /saveChannel                controllers.AdminController.saveChannel
 
 GET     /config                     controllers.AdminController.config
+
+GET     /enableOperation/:name      controllers.AdminController.enableOperation(name)
+GET     /disableOperation/:name     controllers.AdminController.disableOperation(name)
+
 POST    /saveConfig                 controllers.AdminController.saveConfig
 
 GET     /oauth2callback             org.pac4j.play.CallbackController.callback()
@@ -29,4 +33,3 @@ GET     /oauth2callback             org.pac4j.play.CallbackController.callback()
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 GET     /webjars/*file              controllers.WebJarAssets.at(file)
-

@@ -29,5 +29,4 @@ object ApplicationBuild extends Build {
     resolvers += Resolver.url("Objectify Play Snapshot Repository", url("http://schaloner.github.com/snapshots/"))(Resolver.ivyStylePatterns),
     resolvers += "Sonatype snapshots repository" at "https://oss.sonatype.org/content/repositories/public/"
   )
-
 }
