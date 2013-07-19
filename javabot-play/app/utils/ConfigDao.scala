@@ -3,6 +3,10 @@ package utils
 import java.util
 import javabot.model.{Admin, OperationEvent, EventType}
 import models.ConfigInfo
+import com.google.inject.Inject
+import java.io.File
+import play.Play
+import play.api.libs.Files
 
 class ConfigDao extends javabot.dao.ConfigDao {
 
@@ -22,8 +26,14 @@ class ConfigDao extends javabot.dao.ConfigDao {
     save(old)
 
   }
+
+  def operations: List[String] = {
+    val file: File = Play.application.getFile("conf/operations.list")
+    (if (file.exists) Files.readFile(file).split('\n') else new Array[String](0)).toList
+  }
+
   def updateOperations(admin: Admin, old: util.List[String], updated: List[String]) {
-    Injectables.operations.foreach(operation => {
+    operations.foreach(operation => {
       if(old.contains(operation) && !updated.contains(operation)) {
         save(new OperationEvent(EventType.DELETE, operation, admin.getUserName))
       } else if (!old.contains(operation) && updated.contains(operation)) {

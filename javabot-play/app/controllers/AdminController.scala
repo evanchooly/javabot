@@ -1,7 +1,7 @@
 package controllers
 
 import be.objectify.deadbolt.scala.DeadboltActions
-import javabot.dao.ChannelDao
+import javabot.dao.{ApiDao, ChannelDao}
 import javabot.model._
 import org.bson.types.ObjectId
 import org.pac4j.play.scala.ScalaController
@@ -10,13 +10,18 @@ import play.api.data._
 import play.api.mvc._
 import scala.collection.JavaConversions._
 import utils.Implicits._
-import utils.{FactoidDao, AdminDao, Injectables}
+import utils.{FactoidDao, AdminDao, ConfigDao, Context, Injectables}
 import models.ConfigInfo
 import models.AdminForm
 import models.ChannelInfo
-import org.joda.time.DateTime
+import javax.inject.Inject
+import play.api.mvc
+import com.google.inject.Provider
+import security.OAuthDeadboltHandler
 
-object AdminController extends ScalaController with DeadboltActions {
+class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoidDao: FactoidDao, apiDao: ApiDao,
+                                channelDao: ChannelDao, contextProvider: Provider[Context], injectables: Injectables,
+                                handler: OAuthDeadboltHandler) extends ScalaController with DeadboltActions {
 
   val adminForm: Form[AdminForm] = Form(
     mapping(
@@ -43,56 +48,54 @@ object AdminController extends ScalaController with DeadboltActions {
       "password" -> text
     )(ConfigInfo.apply)(ConfigInfo.unapply))
 
+  def fillContext(request: mvc.Request[AnyContent]) = {
+    val context = contextProvider.get
+    context.request(request)
+    context
+  }
+
   def login = RequiresAuthentication("Google2Client") {
     profile =>
       Action {
         implicit request =>
-          val dao: utils.AdminDao = Injectables.adminDao
+          val dao: utils.AdminDao = adminDao
           if (dao.findAll().isEmpty) {
             dao.create("", profile.getEmail, "")
           }
-          Application.index(request).withSession(
-            "userName" -> profile.getEmail
-          )
+          Ok(views.html.admin.admin(handler, fillContext(request), adminForm.bindFromRequest(), adminDao.findAll()))
+            .withSession("userName" -> profile.getEmail)
       }
   }
 
-  //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
   def index = RequiresAuthentication("Google2Client") {
     profile =>
       Action {
         implicit request =>
-          val config: Config = Injectables.config
-          Ok(views.html.admin.config(Injectables.handler, Injectables.context(request), buildConfigForm,
-            config.getOperations.toSet, Injectables.operations))
+          Ok(views.html.admin.admin(handler, fillContext(request), adminForm.bindFromRequest(), adminDao.findAll()))
       }
   }
 
-  def config = Restrict(Array("botAdmin"), Injectables.handler) {
+  def showConfig = Restrict(Array("botAdmin"), handler) {
     Action {
       implicit request =>
-        Ok(views.html.admin.config(Injectables.handler, Injectables.context(request),
-          buildConfigForm, Injectables.config.getOperations.toSet, Injectables.operations))
+        Ok(views.html.admin.config(handler, fillContext(request),
+          buildConfigForm, configDao.get.getOperations.toSet, configDao.operations))
     }
   }
 
-  //  @Get("/saveConfig")
-  //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
   def saveConfig = RequiresAuthentication("Google2Client") {
     profile =>
-      Restrict(Array("botAdmin"), Injectables.handler) {
+      Restrict(Array("botAdmin"), handler) {
         Action {
           implicit request =>
-            val configDao = Injectables.configDao
-            val adminDao = Injectables.adminDao
             val admin = adminDao.getAdmin(request.session.get("userName").get)
 
             val form: Form[ConfigInfo] = configForm.bindFromRequest()
 
             form.fold(
               errors => {
-                BadRequest(views.html.admin.config(Injectables.handler, Injectables.context(request),
-                  errors, configDao.get.getOperations.toSet, Injectables.operations))
+                BadRequest(views.html.admin.config(handler, fillContext(request),
+                  errors, configDao.get.getOperations.toSet, configDao.operations))
               },
               configInfo => {
                 configDao.save(admin, configInfo)
@@ -105,62 +108,61 @@ object AdminController extends ScalaController with DeadboltActions {
 
   def enableOperation(name: String) = RequiresAuthentication("Google2Client") {
     profile =>
-      Restrict(Array("botAdmin"), Injectables.handler) {
+      Restrict(Array("botAdmin"), handler) {
         Action {
           implicit request =>
-            val dao: AdminDao = Injectables.adminDao
+            val dao: AdminDao = adminDao
             dao.enableOperation(name, dao.getAdmin(request.session.get("userName").get).getUserName)
 
-            Redirect(routes.AdminController.config())
+            Redirect(routes.AdminController.showConfig())
         }
       }
   }
 
   def disableOperation(name: String) = RequiresAuthentication("Google2Client") {
     profile =>
-      Restrict(Array("botAdmin"), Injectables.handler) {
+      Restrict(Array("botAdmin"), handler) {
         Action {
           implicit request =>
-            val dao: AdminDao = Injectables.adminDao
+            val dao: AdminDao = adminDao
             dao.disableOperation(name, dao.getAdmin(request.session.get("userName").get).getUserName)
 
-            Redirect(routes.AdminController.config())
+            Redirect(routes.AdminController.showConfig())
         }
       }
   }
 
   //  @Get("/javadoc")
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
-  def javadoc = Restrict(Array("botAdmin"), Injectables.handler) {
+  def javadoc = Restrict(Array("botAdmin"), handler) {
     Action {
       implicit request =>
         Ok(
-          views.html.admin.javadoc(Injectables.handler, Injectables.context(request), Injectables.apiDao.findAll))
+          views.html.admin.javadoc(handler, fillContext(request), apiDao.findAll))
     }
   }
 
   //  @Post("/addJavadoc")
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
   /*(name: String, packages: String, baseUrl: String, file: File)*/
-  def addJavadoc() = Restrict(Array("botAdmin"), Injectables.handler) {
+  def addJavadoc() = Restrict(Array("botAdmin"), handler) {
     Action {
       implicit request =>
       /*
           val savedFile: File = File.createTempFile("javadoc", ".jar")
           Files.copyFile(file, savedFile)
-          val apiDao: ApiDao = Injectables.apiDao
+          val apiDao: ApiDao = apiDao
           apiDao.save(new ApiEvent(apiDao.find(name) == null, AdminController.getTwitterContext.screenName, name,
             packages, baseUrl, savedFile))
       */
         Ok(
-          views.html.admin.javadoc(Injectables.handler, Injectables.context(request), Injectables.apiDao.findAll))
+          views.html.admin.javadoc(handler, fillContext(request), apiDao.findAll))
     }
   }
 
   //  @Get("/deleteApi")
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
   def deleteApi(id: ObjectId) = {
-    val apiDao = Injectables.apiDao
     val event = new ApiEvent(apiDao.find(id).getName, "")
     apiDao.save(event)
     javadoc
@@ -168,17 +170,17 @@ object AdminController extends ScalaController with DeadboltActions {
 
   //  @Post("/addAdmin")
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
-  def addAdmin() = Restrict(Array("botAdmin"), Injectables.handler) {
+  def addAdmin() = Restrict(Array("botAdmin"), handler) {
     Action {
       implicit request =>
       //    if (!email.isEmpty) {
-      //      val dao: AdminDao = Injectables.adminDao
+      //      val dao: AdminDao = adminDao
       //      dao.save(new Admin(ircName, hostName, email, getTwitterContext.screenName))
       //    }
         println("addAdmin")
         adminForm.bindFromRequest.fold(
-          errors => BadRequest(views.html.admin.admin(Injectables.handler, Injectables.context(request), errors,
-            Injectables.adminDao.findAll())),
+          errors => BadRequest(views.html.admin.admin(handler, fillContext(request), errors,
+            adminDao.findAll())),
           adminInfo => {
             save(adminInfo)
             Redirect("/index")
@@ -190,7 +192,7 @@ object AdminController extends ScalaController with DeadboltActions {
   //  @Get("/deleteAdmin")
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
   def deleteAdmin(id: ObjectId) {
-    val dao: AdminDao = Injectables.adminDao
+    val dao: AdminDao = adminDao
     val admin = dao.find(id)
     if (admin != null && !admin.getBotOwner) {
       dao.delete(admin)
@@ -201,7 +203,7 @@ object AdminController extends ScalaController with DeadboltActions {
   //  @Post("/updateAdmin")
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
   def updateAdmin(userName: String, ircName: String) {
-    val dao = Injectables.adminDao
+    val dao = adminDao
     val admin = dao.getAdmin(userName)
     admin.setIrcName(ircName)
     dao.save(admin)
@@ -213,23 +215,23 @@ object AdminController extends ScalaController with DeadboltActions {
   def addChannel() = Action {
     implicit request =>
       Ok(views.html.admin
-        .editChannel(Injectables.handler, Injectables.context(request), channelForm.fill(new Channel)))
+        .editChannel(handler, fillContext(request), channelForm.fill(new Channel)))
   }
 
   //  @Get("/showChannel")
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
   def showChannel(name: String = null) = Action {
     implicit request =>
-      val channel: Channel = Injectables.channelDao.get(name)
+      val channel = channelDao.get(name)
       Ok(views.html.admin
-        .editChannel(Injectables.handler, Injectables.context(request), channelForm.fill(channel)))
+        .editChannel(handler, fillContext(request), channelForm.fill(channel)))
   }
 
   //  @Get("/editChannel")
   def editChannel(channel: Channel) = Action {
     implicit request =>
       val fill: Form[ChannelInfo] = channelForm.fill(channel)
-      Ok(views.html.admin.editChannel(Injectables.handler, Injectables.context(request), fill))
+      Ok(views.html.admin.editChannel(handler, fillContext(request), fill))
   }
 
   //  @Get("/saveChannel")
@@ -238,12 +240,12 @@ object AdminController extends ScalaController with DeadboltActions {
     implicit request =>
       val channelInfo = channelForm.bindFromRequest.get
       save(channelInfo)
-      Ok(views.html.admin.config(Injectables.handler, Injectables.context(request), buildConfigForm,
-        Injectables.config.getOperations.toSet, Injectables.operations))
+      Ok(views.html.admin.config(handler, fillContext(request), buildConfigForm,
+        configDao.get.getOperations.toSet, configDao.operations))
   }
 
   def buildConfigForm = {
-    val config: Config = Injectables.config
+    val config: Config = configDao.get
     val info: ConfigInfo = ConfigInfo(config.getServer, config.getUrl, config.getPort, config.getHistoryLength,
       config.getTrigger,
       config.getNick, config.getPassword)
@@ -251,16 +253,15 @@ object AdminController extends ScalaController with DeadboltActions {
   }
 
   def save(channelInfo: ChannelInfo) {
-    val dao: ChannelDao = Injectables.channelDao
     val channel = if (channelInfo.id == null) {
-      dao.find(channelInfo.id)
+      channelDao.find(channelInfo.id)
     } else {
       new Channel
     }
     channel.setName(channelInfo.name)
     channel.setLogged(channelInfo.logged)
     channel.setKey(channelInfo.key)
-    dao.save(channel)
+    channelDao.save(channel)
   }
 
   def save(form: AdminForm) {
@@ -268,17 +269,16 @@ object AdminController extends ScalaController with DeadboltActions {
     admin.setIrcName(form.ircName.getOrElse(""))
     admin.setHostName(form.hostName.getOrElse(""))
     admin.setUserName(form.email)
-    Injectables.adminDao.save(admin)
+    adminDao.save(admin)
   }
 
   //  @Get("/toggleLock")
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
   def toggleLock(id: ObjectId) = Action {
     implicit request =>
-      val dao: FactoidDao = Injectables.factoidDao
-      val factoid: Factoid = dao.find(id)
+      val factoid: Factoid = factoidDao.find(id)
       factoid.setLocked(!factoid.getLocked)
-      dao.save(factoid)
+      factoidDao.save(factoid)
       request.body.asText.map {
         text =>
           Ok(factoid.getLocked.toString)

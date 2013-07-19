@@ -7,9 +7,12 @@ import play.Play
 import play.api.libs.Files
 import play.api.mvc.{AnyContent, Request}
 import security.OAuthDeadboltHandler
-import twitter4j.TwitterFactory
+import javax.inject.Inject
 
-object Injectables {
+class Injectables @Inject()(configDao: ConfigDao) {
+/*
+  val injector: Injector = Guice.createInjector(Stage.PRODUCTION, new PlayModule)
+
   def changeDao = injector.getInstance(classOf[ChangeDao])
 
   def karmaDao = injector.getInstance(classOf[KarmaDao])
@@ -20,7 +23,7 @@ object Injectables {
     context
   }
 
-  def twitter = new TwitterFactory().getInstance
+//  def twitter = new TwitterFactory().getInstance
 
   def apiDao = injector.getInstance(classOf[ApiDao])
 
@@ -36,16 +39,10 @@ object Injectables {
 
   def logsDao = injector.getInstance(classOf[LogsDao])
 
-  def operations: List[String] = {
-    val file: File = Play.application.getFile("conf/operations.list")
-    (if (file.exists) Files.readFile(file).split('\n') else new Array[String](0)).toList
-  }
 
-  def config = configDao.get
+
 
   def admins = adminDao.findAll
-
-  def injector: Injector = {
-    Guice.createInjector(Stage.PRODUCTION, new PlayModule)
-  }
+  def config = configDao.get
+*/
 }

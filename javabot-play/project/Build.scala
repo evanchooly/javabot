@@ -27,6 +27,9 @@ object ApplicationBuild extends Build {
     resolvers += "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
     resolvers += Resolver.url("Objectify Play Repository", url("http://schaloner.github.com/releases/"))(Resolver.ivyStylePatterns),
     resolvers += Resolver.url("Objectify Play Snapshot Repository", url("http://schaloner.github.com/snapshots/"))(Resolver.ivyStylePatterns),
-    resolvers += "Sonatype snapshots repository" at "https://oss.sonatype.org/content/repositories/public/"
+    resolvers += "Sonatype snapshots repository" at "https://oss.sonatype.org/content/repositories/public/",
+    routesImport ++= Seq("controllers.Binders._", "org.bson.types.ObjectId")
+
+
   )
 }
