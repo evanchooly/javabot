@@ -10,7 +10,7 @@ import play.api.data._
 import play.api.mvc._
 import scala.collection.JavaConversions._
 import utils.Implicits._
-import utils.{FactoidDao, AdminDao, ConfigDao, Context, Injectables}
+import utils.{FactoidDao, AdminDao, ConfigDao, Context}
 import models.ConfigInfo
 import models.AdminForm
 import models.ChannelInfo
@@ -20,7 +20,7 @@ import com.google.inject.Provider
 import security.OAuthDeadboltHandler
 
 class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoidDao: FactoidDao, apiDao: ApiDao,
-                                channelDao: ChannelDao, contextProvider: Provider[Context], injectables: Injectables,
+                                channelDao: ChannelDao, contextProvider: Provider[Context],
                                 handler: OAuthDeadboltHandler) extends ScalaController with DeadboltActions {
 
   val adminForm: Form[AdminForm] = Form(
