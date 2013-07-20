@@ -39,13 +39,6 @@ class Application @Inject()(adminDao: AdminDao, handler: OAuthDeadboltHandler, c
       "nick" -> optional(text)
     )(KarmaForm.apply)(KarmaForm.unapply))
 
-  val adminForm: Form[AdminForm] = Form(
-    mapping(
-      "ircName" -> optional(text),
-      "hostName" -> optional(text),
-      "email" -> text
-    )(AdminForm.apply)(AdminForm.unapply))
-
   val PerPageCount = 50
 
   def index = Action {

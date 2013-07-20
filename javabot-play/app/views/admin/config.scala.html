@@ -85,12 +85,12 @@
                         <td class="top button">
                             <a title="Enable" @{if(!currentOps.contains(operation)) "class=active" else "class=inactive"}
                                 href="@{routes.AdminController.enableOperation(operation)}">
-                            <img src="@routes.Assets.at("/images/boomy/add24.png")"></a>
+                            <img src="@routes.Assets.at("/images/boomy/add24.png")" alt="Enable"></a>
                         </td>
                         <td class="top right button">
                             <a title="Disable" @{if(currentOps.contains(operation)) "class=active" else "class=inactive"}
                                 href="@{routes.AdminController.disableOperation(operation)}">
-                            <img src="@routes.Assets.at("/images/boomy/delete24.png")"></a>
+                            <img src="@routes.Assets.at("/images/boomy/delete24.png")" alt="Disable></a>
                         </td>
                     </tr>
                 }

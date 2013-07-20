@@ -69,9 +69,4 @@ class PlayModule extends JavabotModule {
       }
     })
   }
-
-//  @Provides
-//  def handler = {
-//    new OAuthDeadboltHandler
-//  }
 }

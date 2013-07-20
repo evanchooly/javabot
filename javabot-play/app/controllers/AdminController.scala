@@ -25,7 +25,7 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
 
   val adminForm: Form[AdminForm] = Form(
     mapping(
-      "ircName" -> optional(text),
+      "ircName" -> text,
       "hostName" -> optional(text),
       "email" -> text
     )(AdminForm.apply)(AdminForm.unapply))
@@ -111,8 +111,7 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
       Restrict(Array("botAdmin"), handler) {
         Action {
           implicit request =>
-            val dao: AdminDao = adminDao
-            dao.enableOperation(name, dao.getAdmin(request.session.get("userName").get).getUserName)
+            adminDao.enableOperation(name, adminDao.getAdmin(request.session.get("userName").get).getUserName)
 
             Redirect(routes.AdminController.showConfig())
         }
@@ -168,36 +167,41 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
     javadoc
   }
 
-  //  @Post("/addAdmin")
-  //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
-  def addAdmin() = Restrict(Array("botAdmin"), handler) {
-    Action {
-      implicit request =>
-      //    if (!email.isEmpty) {
-      //      val dao: AdminDao = adminDao
-      //      dao.save(new Admin(ircName, hostName, email, getTwitterContext.screenName))
-      //    }
-        println("addAdmin")
-        adminForm.bindFromRequest.fold(
-          errors => BadRequest(views.html.admin.admin(handler, fillContext(request), errors,
-            adminDao.findAll())),
-          adminInfo => {
-            save(adminInfo)
-            Redirect("/index")
-          })
+  def addAdmin() = RequiresAuthentication("Google2Client") {
+    profile => {}
+      Restrict(Array("botAdmin"), handler) {
+        Action {
+          implicit request => {
+            println("addAdmin")
+            adminForm.bindFromRequest.fold(
+              errors => BadRequest(views.html.admin.admin(handler, fillContext(request), errors,
+                adminDao.findAll())),
+              adminInfo => {
+                save(adminInfo)
+                Redirect(routes.AdminController.index())
+              })
 
-    }
+          }
+        }
+      }
   }
 
   //  @Get("/deleteAdmin")
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
-  def deleteAdmin(id: ObjectId) {
-    val dao: AdminDao = adminDao
-    val admin = dao.find(id)
-    if (admin != null && !admin.getBotOwner) {
-      dao.delete(admin)
-    }
-    index
+  def deleteAdmin(id: ObjectId) = RequiresAuthentication("Google2Client") {
+    profile => {}
+      Restrict(Array("botAdmin"), handler) {
+        Action {
+          implicit request => {
+            val dao: AdminDao = adminDao
+            val admin = dao.find(id)
+            if (admin != null && !admin.getBotOwner) {
+              dao.delete(admin)
+            }
+            Redirect(routes.AdminController.index())
+          }
+        }
+      }
   }
 
   //  @Post("/updateAdmin")
@@ -266,7 +270,7 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
 
   def save(form: AdminForm) {
     val admin = new Admin
-    admin.setIrcName(form.ircName.getOrElse(""))
+    admin.setIrcName(form.ircName)
     admin.setHostName(form.hostName.getOrElse(""))
     admin.setUserName(form.email)
     adminDao.save(admin)

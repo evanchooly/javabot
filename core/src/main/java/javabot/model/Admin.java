@@ -30,7 +30,7 @@ public class Admin implements Serializable, Persistent {
 
   private String addedBy;
 
-  private DateTime updated;
+  private DateTime updated = DateTime.now();
 
   @Override
   public ObjectId getId() {
