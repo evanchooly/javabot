@@ -164,7 +164,7 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
           jar =>
             val form = apiForm.bindFromRequest().get
             val savedFile = File.createTempFile(form.name + "javadoc", ".jar")
-            jar.ref.moveTo(savedFile, true)
+            jar.ref.moveTo(savedFile, replace = true)
             apiDao.save(new ApiEvent(apiDao.find(form.name) == null, getAdmin(request.session).getUserName,
               form.name, form.packages.getOrElse(""), form.baseUrl, savedFile))
             Redirect(routes.AdminController.javadoc())
