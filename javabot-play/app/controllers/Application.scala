@@ -8,7 +8,7 @@ import play.api.data.Forms.mapping
 import play.api.data._
 import play.api.mvc._
 import utils._
-import javax.inject.Inject
+import javax.inject.{Singleton, Inject}
 import javabot.dao.AdminDao
 import security.OAuthDeadboltHandler
 import com.google.inject.Provider
@@ -19,6 +19,7 @@ import models.AdminForm
 import models.FactoidForm
 import models.KarmaForm
 
+@Singleton
 class Application @Inject()(adminDao: AdminDao, handler: OAuthDeadboltHandler, contextProvider: Provider[Context],
                             factoidDao: FactoidDao, changeDao: ChangeDao, karmaDao: KarmaDao) extends Controller {
 

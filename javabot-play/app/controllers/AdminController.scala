@@ -11,14 +11,14 @@ import play.api.mvc._
 import scala.collection.JavaConversions._
 import utils.Implicits._
 import utils.{FactoidDao, AdminDao, ConfigDao, Context}
-import models.ConfigInfo
-import models.AdminForm
-import models.ChannelInfo
-import javax.inject.Inject
+import models.{ApiForm, ConfigInfo, AdminForm, ChannelInfo}
 import play.api.mvc
 import com.google.inject.Provider
 import security.OAuthDeadboltHandler
+import java.io.File
+import javax.inject.{Singleton, Inject}
 
+@Singleton
 class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoidDao: FactoidDao, apiDao: ApiDao,
                                 channelDao: ChannelDao, contextProvider: Provider[Context],
                                 handler: OAuthDeadboltHandler) extends ScalaController with DeadboltActions {
@@ -29,6 +29,12 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
       "hostName" -> optional(text),
       "email" -> text
     )(AdminForm.apply)(AdminForm.unapply))
+  val apiForm: Form[ApiForm] = Form(
+    mapping(
+      "name" -> text,
+      "packages" -> optional(text),
+      "baseUrl" -> text
+    )(ApiForm.apply)(ApiForm.unapply))
   val channelForm: Form[ChannelInfo] = Form(
     mapping(
       "id" -> of[ObjectId],
@@ -111,7 +117,7 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
       Restrict(Array("botAdmin"), handler) {
         Action {
           implicit request =>
-            adminDao.enableOperation(name, adminDao.getAdmin(request.session.get("userName").get).getUserName)
+            adminDao.enableOperation(name, getAdmin(request.session).getUserName)
 
             Redirect(routes.AdminController.showConfig())
         }
@@ -123,59 +129,71 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
       Restrict(Array("botAdmin"), handler) {
         Action {
           implicit request =>
-            val dao: AdminDao = adminDao
-            dao.disableOperation(name, dao.getAdmin(request.session.get("userName").get).getUserName)
+            adminDao.disableOperation(name, getAdmin(request.session).getUserName)
 
             Redirect(routes.AdminController.showConfig())
         }
       }
   }
 
-  //  @Get("/javadoc")
-  //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
-  def javadoc = Restrict(Array("botAdmin"), handler) {
-    Action {
-      implicit request =>
-        Ok(
-          views.html.admin.javadoc(handler, fillContext(request), apiDao.findAll))
-    }
+  def getAdmin(session: Session): Admin = {
+    adminDao.getAdmin(session.get("userName").get)
   }
 
-  //  @Post("/addJavadoc")
-  //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
-  /*(name: String, packages: String, baseUrl: String, file: File)*/
-  def addJavadoc() = Restrict(Array("botAdmin"), handler) {
-    Action {
-      implicit request =>
-      /*
-          val savedFile: File = File.createTempFile("javadoc", ".jar")
-          Files.copyFile(file, savedFile)
-          val apiDao: ApiDao = apiDao
-          apiDao.save(new ApiEvent(apiDao.find(name) == null, AdminController.getTwitterContext.screenName, name,
-            packages, baseUrl, savedFile))
-      */
-        Ok(
-          views.html.admin.javadoc(handler, fillContext(request), apiDao.findAll))
-    }
-  }
-
-  //  @Get("/deleteApi")
-  //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
-  def deleteApi(id: ObjectId) = {
-    val event = new ApiEvent(apiDao.find(id).getName, "")
-    apiDao.save(event)
-    javadoc
-  }
-
-  def addAdmin() = RequiresAuthentication("Google2Client") {
-    profile => {}
+  def javadoc = RequiresAuthentication("Google2Client") {
+    profile =>
       Restrict(Array("botAdmin"), handler) {
         Action {
           implicit request => {
-            println("addAdmin")
+            Ok(views.html.admin.javadoc(handler, fillContext(request), apiDao.findAll))
+          }
+        }
+      }
+  }
+
+  def FileUploadAction[A](bp: BodyParser[A])(f: Request[A] => Result): Action[A] = {
+    Action(bp) { request =>
+      f(request)
+    }
+  }
+
+  def addApi = Restrict(Array("botAdmin"), handler) {
+    FileUploadAction(parse.multipartFormData) {
+      implicit request => {
+        val map: Option[mvc.SimpleResult[mvc.Results.EmptyContent]] = request.body.file("file").map {
+          jar =>
+            val form = apiForm.bindFromRequest().get
+            val savedFile = File.createTempFile(form.name + "javadoc", ".jar")
+            jar.ref.moveTo(savedFile, true)
+            apiDao.save(new ApiEvent(apiDao.find(form.name) == null, getAdmin(request.session).getUserName,
+              form.name, form.packages.getOrElse(""), form.baseUrl, savedFile))
+            Redirect(routes.AdminController.javadoc())
+        }
+        map.get
+      }
+    }
+  }
+
+  def deleteApi(id: ObjectId) = RequiresAuthentication("Google2Client") {
+    profile =>
+      Restrict(Array("botAdmin"), handler) {
+        Action {
+          implicit request => {
+            val event = new ApiEvent(apiDao.find(id).getName, getAdmin(request.session).getUserName)
+            apiDao.save(event)
+            Redirect(routes.AdminController.javadoc())
+          }
+        }
+      }
+  }
+
+  def addAdmin() = RequiresAuthentication("Google2Client") {
+    profile =>
+      Restrict(Array("botAdmin"), handler) {
+        Action {
+          implicit request => {
             adminForm.bindFromRequest.fold(
-              errors => BadRequest(views.html.admin.admin(handler, fillContext(request), errors,
-                adminDao.findAll())),
+              errors => BadRequest(views.html.admin.admin(handler, fillContext(request), errors, adminDao.findAll())),
               adminInfo => {
                 save(adminInfo)
                 Redirect(routes.AdminController.index())
@@ -189,14 +207,13 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
   //  @Get("/deleteAdmin")
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
   def deleteAdmin(id: ObjectId) = RequiresAuthentication("Google2Client") {
-    profile => {}
+    profile =>
       Restrict(Array("botAdmin"), handler) {
         Action {
           implicit request => {
-            val dao: AdminDao = adminDao
-            val admin = dao.find(id)
+            val admin = adminDao.find(id)
             if (admin != null && !admin.getBotOwner) {
-              dao.delete(admin)
+              adminDao.delete(admin)
             }
             Redirect(routes.AdminController.index())
           }

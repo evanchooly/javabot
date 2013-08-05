@@ -7,8 +7,9 @@ import org.pac4j.play.Config
 import play.GlobalSettings
 import utils.PlayModule
 import org.pac4j.oauth.client.Google2Client
-import play.mvc.PathBindable
-import org.bson.types.ObjectId
+import play.mvc.Action
+import play.mvc.Http.{Context, Request}
+import java.lang.reflect.Method
 
 class Global extends GlobalSettings {
 
@@ -27,5 +28,11 @@ class Global extends GlobalSettings {
     // Config.setProfileTimeout(60)
   }
 
-
+  override def onRequest(p1: Request, p2: Method) = {
+    new Action.Simple() {
+      def call(ctx: Context): play.mvc.Result = {
+        delegate.call(ctx)
+      }
+    }
+  }
 }

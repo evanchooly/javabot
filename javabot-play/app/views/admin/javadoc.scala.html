@@ -5,7 +5,7 @@
 
 @main(handler, context) {
 <table>
-    @helper.form(action = routes.AdminController.addJavadoc()) {
+    @helper.form(action = routes.AdminController.addApi(), 'enctype -> "multipart/form-data") {
         <tr>
             <td class="left top">
                 <input type="text" name="name"/>
@@ -18,7 +18,7 @@
                 <input type="file" id="file" name="file"/>
             </td>
             <td class="right top">
-                <input type="image" src="public/images/boomy/add32.png" alt="Add"/>
+                <input type="image" src="@routes.Assets.at("images/boomy/add24.png")" alt="Add"/>
             </td>
         </tr>
     }
@@ -30,11 +30,12 @@
     </tr>
     @for(api <- apis) {
         <tr>
-            <td>${api.name}</td>
-            <td>${api.packages}</td>
-            <td>${api.baseUrl}</td>
-            <td class="right"><a
-                    href="@{routes.AdminController.deleteApi(api.getId)}"><img src="public/images/boomy/delete32.png"</a> </td>
+            <td>@{api.getName}</td>
+            <td>@{api.getPackages}</td>
+            <td>@{api.getBaseUrl}</td>
+            <td class="right"><a href="@{routes.AdminController.deleteApi(api.getId)}">
+                <img src="@routes.Assets.at("images/boomy/delete24.png")" alt="Delete"/></a>
+            </td>
         </tr>
     }
 
