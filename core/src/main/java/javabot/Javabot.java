@@ -215,7 +215,7 @@ public class Javabot {
   public static void validateProperties() {
     final Properties props = new Properties();
     try {
-      try (InputStream stream = Javabot.class.getResourceAsStream("/javabot.properties")) {
+      try (InputStream stream = new FileInputStream("javabot.properties")) {
         props.load(stream);
       } catch (FileNotFoundException e) {
         throw new RuntimeException("Please define a javabot.properties file to configure the bot");
@@ -223,22 +223,27 @@ public class Javabot {
     } catch (IOException e) {
       throw new RuntimeException(e.getMessage(), e);
     }
-    check(props, "javabot.server");
-    check(props, "javabot.port");
-    check(props, "database.host");
-    check(props, "database.port");
-    check(props, "database.name");
-    check(props, "javabot.nick");
-    check(props, "javabot.password");
-    check(props, "javabot.admin.nick");
-    check(props, "javabot.admin.hostmask");
+    boolean valid = check(props, "javabot.server");
+    valid &= check(props, "javabot.port");
+    valid &= check(props, "database.host");
+    valid &= check(props, "database.port");
+    valid &= check(props, "database.name");
+    valid &= check(props, "javabot.nick");
+    valid &= check(props, "javabot.password");
+    valid &= check(props, "javabot.admin.nick");
+    valid &= check(props, "javabot.admin.hostmask");
+    if(!valid) {
+      throw new RuntimeException("Missing configuration parameters");
+    }
     System.getProperties().putAll(props);
   }
 
-  static void check(final Properties props, final String key) {
+  static boolean check(final Properties props, final String key) {
     if (props.get(key) == null) {
-      throw new RuntimeException(String.format("Please specify the property %s in javabot.properties", key));
+      System.out.printf("Please specify the property %s in javabot.properties\n", key);
+      return false;
     }
+    return true;
   }
 
   protected final void applyUpgradeScripts() {

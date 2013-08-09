@@ -60,11 +60,13 @@ public abstract class TableIterator implements Callable<Object> {
       try (Connection connection = migrator.getConnection();
            Statement statement = connection.createStatement();
            ResultSet resultSet = statement.executeQuery(String.format(select, table, count))) {
+        long start = System.currentTimeMillis();
         while (resultSet.next()) {
           count++;
           callOut(resultSet);
           if (count % 10000 == 0) {
-            logProgress(count, total, begin);
+            logProgress(count, total, begin, start);
+            start = System.currentTimeMillis();
           }
         }
       } catch (Exception e) {
@@ -81,14 +83,14 @@ public abstract class TableIterator implements Callable<Object> {
     return null;
   }
 
-  private void logProgress(final long count, final long total, final DateTime begin) {
+  private void logProgress(final long count, final long total, final DateTime begin, final long start) {
     DateTime current = DateTime.now();
     long duration = current.getMillis() - begin.getMillis();
     int rate = (int) (count / (duration + 1));
     int remaining = (int) ((total - count) / (rate + 1));
     DateTime done = current.plusMillis(remaining);
-    System.out.printf("Imported %d of %d (%.2f%%) from %s.  Estimated completion time: %s\n", count, total,
-        100.0 * count / total, table, done.toString("HH:mm:ss"));
+    System.out.printf("Imported %d of %d (%.2f%%) from %s at %s records/s.  Estimated completion time: %s\n", count, total,
+        100.0 * count / total, table, (System.currentTimeMillis() - start)/10000.0, done.toString("HH:mm:ss"));
   }
 
   protected final long countResults() {

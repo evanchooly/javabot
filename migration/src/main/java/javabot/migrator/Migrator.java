@@ -1,5 +1,6 @@
 package javabot.migrator;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -324,7 +325,7 @@ public class Migrator {
   public final void validateProperties() {
     props = new Properties();
     try {
-      try (InputStream stream = getClass().getResourceAsStream("/javabot.properties")) {
+      try (InputStream stream = new FileInputStream("javabot.properties")) {
         props.load(stream);
       } catch (FileNotFoundException e) {
         throw new RuntimeException("Please define a javabot.properties file to configure the bot");
