@@ -12,8 +12,6 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
 import com.google.code.morphia.Datastore;
@@ -159,8 +157,7 @@ public class Migrator {
 
   private DateTime extractDate(final ResultSet resultSet, final String column) throws SQLException {
     Timestamp timestamp = resultSet.getTimestamp(column);
-    return resultSet.wasNull() ? null : new DateTime(timestamp.getTime())
-        /*.withZoneRetainFields(DateTimeZone.forID("US/Eastern"))*/;
+    return resultSet.wasNull() ? null : new DateTime(timestamp.getTime());
   }
 
   private void registrations(final ResultSet resultSet) throws SQLException {
@@ -245,13 +242,7 @@ public class Migrator {
   }
 
   public void migrate() throws SQLException {
-    Set<String> collectionNames = getDb().getCollectionNames();
-    for (String name : collectionNames) {
-      if (!"system.indexes".equals(name)) {
-        getDb().getCollection(name).remove(new BasicDBList(), WriteConcern.FSYNCED);
-      }
-    }
-    ExecutorService executorService = Executors.newSingleThreadExecutor();
+    clearCollections();
     try {
       new TableIterator(this, "changes") {
         public void callOut(final ResultSet resultSet) throws SQLException {
@@ -292,6 +283,15 @@ public class Migrator {
       }.call();
     } catch (Exception e) {
       throw new RuntimeException(e.getMessage(), e);
+    }
+  }
+
+  private void clearCollections() {
+    Set<String> collectionNames = getDb().getCollectionNames();
+    for (String name : collectionNames) {
+      if (!"system.indexes".equals(name)) {
+        getDb().getCollection(name).remove(new BasicDBList(), WriteConcern.FSYNCED);
+      }
     }
   }
 
