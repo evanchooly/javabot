@@ -107,12 +107,10 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- The configuration of maven-assembly-plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.2.2</version>
-                <!-- The configuration of the plugin -->
                 <executions>
                     <execution>
                         <id>process</id>
@@ -121,7 +119,6 @@
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                            <!-- Specifies the configuration file of the assembly plugin -->
                             <descriptors>
                                 <descriptor>src/main/assembly/assembly.xml</descriptor>
                             </descriptors>
