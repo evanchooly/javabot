@@ -64,7 +64,7 @@ public abstract class TableIterator implements Callable<Object> {
           count++;
           migrate(resultSet);
           if (count % 10000 == 0) {
-            logProgress(count, total, initialTime);
+            logProgress(initialTime, total, count);
           }
         }
       } catch (Exception e) {
@@ -81,7 +81,7 @@ public abstract class TableIterator implements Callable<Object> {
     return null;
   }
 
-  private void logProgress(final long count, final long total, final DateTime begin) {
+  private void logProgress(final DateTime begin, final long total, final long count) {
 
     long duration = (DateTime.now().getMillis() - begin.getMillis()) / 1000;
 
