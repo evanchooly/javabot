@@ -17,13 +17,11 @@ import javax.inject.Inject;
 import com.google.code.morphia.Datastore;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
-import com.mongodb.WriteConcern;
 import javabot.JavabotModule;
 import javabot.dao.ApiDao;
 import javabot.dao.JavadocClassDao;
@@ -73,7 +71,7 @@ public class Migrator {
 
   private void changes(final ResultSet resultSet) throws SQLException {
     Change log = new Change();
-    log.setId(mapId("changes", resultSet.getLong("id")));
+//    log.setId(mapId("changes", resultSet.getLong("id")));
     log.setMessage(resultSet.getString("message"));
     log.setChangeDate(extractDate(resultSet, "changedate"));
     logsDao.save(log);
@@ -81,7 +79,7 @@ public class Migrator {
 
   private void channel(final ResultSet resultSet) throws SQLException {
     Channel channel = new Channel();
-    channel.setId(mapId("changes", resultSet.getLong("id")));
+//    channel.setId(mapId("changes", resultSet.getLong("id")));
     channel.setKey(resultSet.getString("key"));
     channel.setLogged(resultSet.getBoolean("logged"));
     channel.setName(resultSet.getString("name"));
@@ -118,13 +116,13 @@ public class Migrator {
       }
     }
     logsDao.save(config);
-    System.out.println("Finished migrating configuration");
+    System.out.println(" * Finished migrating configuration\n");
     return null;
   }
 
   private void factoids(final ResultSet resultSet) throws SQLException {
     Factoid factoid = new Factoid();
-    factoid.setId(mapId("factoids", resultSet.getLong("id")));
+//    factoid.setId(mapId("factoids", resultSet.getLong("id")));
     factoid.setLastUsed(extractDate(resultSet, "lastused"));
     factoid.setName(resultSet.getString("name"));
     factoid.setUpdated(extractDate(resultSet, "updated"));
@@ -136,7 +134,7 @@ public class Migrator {
 
   private void karma(final ResultSet resultSet) throws SQLException {
     Karma karma = new Karma();
-    karma.setId(mapId("karma", resultSet.getLong("id")));
+//    karma.setId(mapId("karma", resultSet.getLong("id")));
     karma.setName(resultSet.getString("name"));
     karma.setUpdated(extractDate(resultSet, "updated"));
     karma.setUserName(resultSet.getString("username"));
@@ -146,7 +144,7 @@ public class Migrator {
 
   protected void logs(ResultSet resultSet) throws SQLException {
     Logs log = new Logs();
-    log.setId(mapId("logs", resultSet.getLong("id")));
+//    log.setId(mapId("logs", resultSet.getLong("id")));
     log.setChannel(resultSet.getString("channel"));
     log.setMessage(resultSet.getString("message"));
     log.setNick(resultSet.getString("nick"));
@@ -162,7 +160,7 @@ public class Migrator {
 
   private void registrations(final ResultSet resultSet) throws SQLException {
     NickRegistration reg = new NickRegistration();
-    reg.setId(mapId("registrations", resultSet.getLong("id")));
+//    reg.setId(mapId("registrations", resultSet.getLong("id")));
     reg.setHost(resultSet.getString("host"));
     reg.setNick(resultSet.getString("nick"));
     reg.setTwitterName(resultSet.getString("twittername"));
@@ -172,27 +170,26 @@ public class Migrator {
 
   private void shun(final ResultSet resultSet) throws SQLException {
     Shun shun = new Shun();
-    shun.setId(mapId("shun", resultSet.getLong("id")));
+//    shun.setId(mapId("shun", resultSet.getLong("id")));
     shun.setExpiry(extractDate(resultSet, "expiry"));
     shun.setNick(resultSet.getString("nick"));
     logsDao.save(shun);
   }
 
   private Object javadoc() throws Exception {
-    System.out.println("Migrating javadoc");
     new TableIterator(this, "apis") {
-      public void callOut(final ResultSet resultSet) throws SQLException {
+      public void migrate(final ResultSet resultSet) throws SQLException {
         apis(resultSet);
       }
     }.call();
     new ClassIterator(this, javadocClassDao, apiDao).call();
     new TableIterator(this, "methods") {
-      public void callOut(final ResultSet resultSet) throws SQLException {
+      public void migrate(final ResultSet resultSet) throws SQLException {
         methods(resultSet);
       }
     }.call();
     new TableIterator(this, "fields") {
-      public void callOut(final ResultSet resultSet) throws SQLException {
+      public void migrate(final ResultSet resultSet) throws SQLException {
         fields(resultSet);
       }
     }.call();
@@ -238,46 +235,45 @@ public class Migrator {
     field.setJavadocClass(javadocClass);
     field.setApi(javadocClass.getApi());
     javadocClassDao.save(field);
-
   }
 
   public void migrate() throws SQLException {
     clearCollections();
     try {
       new TableIterator(this, "changes") {
-        public void callOut(final ResultSet resultSet) throws SQLException {
+        public void migrate(final ResultSet resultSet) throws SQLException {
           changes(resultSet);
         }
       }.call();
       new TableIterator(this, "channel") {
-        public void callOut(final ResultSet resultSet) throws SQLException {
+        public void migrate(final ResultSet resultSet) throws SQLException {
           channel(resultSet);
         }
       }.call();
       new TableIterator(this, "factoids") {
-        public void callOut(final ResultSet resultSet) throws SQLException {
+        public void migrate(final ResultSet resultSet) throws SQLException {
           factoids(resultSet);
         }
       }.call();
       new TableIterator(this, "karma") {
-        public void callOut(final ResultSet resultSet) throws SQLException {
+        public void migrate(final ResultSet resultSet) throws SQLException {
           karma(resultSet);
         }
       }.call();
       new TableIterator(this, "registrations") {
-        public void callOut(final ResultSet resultSet) throws SQLException {
+        public void migrate(final ResultSet resultSet) throws SQLException {
           registrations(resultSet);
         }
       }.call();
       new TableIterator(this, "shun") {
-        public void callOut(final ResultSet resultSet) throws SQLException {
+        public void migrate(final ResultSet resultSet) throws SQLException {
           shun(resultSet);
         }
       }.call();
       configuration();
       javadoc();
       new TableIterator(this, "logs", "select * from %s order by updated desc limit 100000 offset %s") {
-        public void callOut(final ResultSet resultSet) throws SQLException {
+        public void migrate(final ResultSet resultSet) throws SQLException {
           logs(resultSet);
         }
       }.call();
@@ -290,7 +286,8 @@ public class Migrator {
     Set<String> collectionNames = getDb().getCollectionNames();
     for (String name : collectionNames) {
       if (!"system.indexes".equals(name)) {
-        getDb().getCollection(name).remove(new BasicDBList(), WriteConcern.FSYNCED);
+        System.out.println("Removing " + name);
+        getDb().getCollection(name).drop();
       }
     }
   }
@@ -336,6 +333,7 @@ public class Migrator {
     check(props, "database.host");
     check(props, "database.port");
     check(props, "database.name");
+    check(props, "jdbc.url");
     System.getProperties().putAll(props);
   }
 

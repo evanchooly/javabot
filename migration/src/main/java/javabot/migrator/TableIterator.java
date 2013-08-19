@@ -30,7 +30,7 @@ public abstract class TableIterator implements Callable<Object> {
     this(migrator, table, SELECT);
   }
 
-  public TableIterator(final Migrator migrator, final String table, String select) throws SQLException {
+  public TableIterator(final Migrator migrator, final String table, String select) {
     this.migrator = migrator;
     this.table = table;
     this.select = select;
@@ -44,7 +44,6 @@ public abstract class TableIterator implements Callable<Object> {
     System.out.println("Migrating " + table);
     long count = 0;
     long total = 0;
-    DateTime begin = DateTime.now();
     try (Connection connection = migrator.getConnection();
          Statement statement = connection.createStatement();
          ResultSet resultSet = statement.executeQuery(String.format(COUNT, table))) {
@@ -55,18 +54,17 @@ public abstract class TableIterator implements Callable<Object> {
       e.printStackTrace();
       throw new RuntimeException(e.getMessage(), e);
     }
-    System.out.printf("Found %d items to migrate.\n", total);
+    System.out.printf(" - Found %d items to migrate.\n", total);
+    DateTime initialTime = DateTime.now();
     while (count < total) {
       try (Connection connection = migrator.getConnection();
            Statement statement = connection.createStatement();
            ResultSet resultSet = statement.executeQuery(String.format(select, table, count))) {
-        long start = System.currentTimeMillis();
         while (resultSet.next()) {
           count++;
-          callOut(resultSet);
+          migrate(resultSet);
           if (count % 10000 == 0) {
-            logProgress(count, total, begin, start);
-            start = System.currentTimeMillis();
+            logProgress(count, total, initialTime);
           }
         }
       } catch (Exception e) {
@@ -74,7 +72,7 @@ public abstract class TableIterator implements Callable<Object> {
         throw new RuntimeException(e.getMessage(), e);
       }
     }
-    System.out.printf("Finished migrating %s. %s%n", table, new DateTime().toString("HH:mm:ss"));
+    System.out.printf(" * Finished migrating %s. %s%n%n", table, new DateTime().toString("HH:mm:ss"));
     count = countResults();
     if (total != count) {
       throw new RuntimeException(String.format("Failed to migrate all records for %s.  Expected %d but got %d",
@@ -83,19 +81,21 @@ public abstract class TableIterator implements Callable<Object> {
     return null;
   }
 
-  private void logProgress(final long count, final long total, final DateTime begin, final long start) {
-    DateTime current = DateTime.now();
-    long duration = current.getMillis() - begin.getMillis();
-    int rate = (int) (count / (duration + 1));
-    int remaining = (int) ((total - count) / (rate + 1));
-    DateTime done = current.plusMillis(remaining);
-    System.out.printf("Imported %d of %d (%.2f%%) from %s at %s records/s.  Estimated completion time: %s\n", count, total,
-        100.0 * count / total, table, (System.currentTimeMillis() - start)/10000.0, done.toString("HH:mm:ss"));
+  private void logProgress(final long count, final long total, final DateTime begin) {
+
+    long duration = (DateTime.now().getMillis() - begin.getMillis()) / 1000;
+
+    double rate = duration != 0 ? 1.0 * count / duration : 0;
+
+    long remainingTime = rate != 0 ? (long) ((total - count) / rate) : 0;
+
+    System.out.printf(" - Imported %d of %d (%.2f%%) from %s at %.2f records/s.  Estimated completion time: %s\n", count,
+        total, 100.0 * count / total, table, rate, DateTime.now().plusSeconds((int) remainingTime).toString("HH:mm:ss"));
   }
 
   protected final long countResults() {
     return db.getCollection(table).count();
   }
 
-  public abstract void callOut(final ResultSet resultSet) throws SQLException;
+  public abstract void migrate(final ResultSet resultSet) throws SQLException;
 }

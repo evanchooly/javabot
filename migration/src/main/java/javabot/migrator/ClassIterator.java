@@ -63,7 +63,7 @@ public class ClassIterator extends TableIterator {
     return false;
   }
 
-  public void callOut(final ResultSet resultSet) throws SQLException {
+  public void migrate(final ResultSet resultSet) throws SQLException {
     JavadocClass javadocClass = new JavadocClass();
     long id = resultSet.getLong("id");
     javadocClass.setId(migrator.mapId(table, id));
