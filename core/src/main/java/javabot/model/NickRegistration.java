@@ -2,18 +2,16 @@ package javabot.model;
 
 import java.io.Serializable;
 import java.util.UUID;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
 import javabot.IrcUser;
+import org.bson.types.ObjectId;
 
-@Entity
-@Table(name = "registrations")
+@Entity("registrations")
 public class NickRegistration implements Serializable, Persistent {
-  private Long id;
+  @Id
+  private ObjectId id;
   private String url;
   private String nick;
   private String host;
@@ -29,13 +27,11 @@ public class NickRegistration implements Serializable, Persistent {
     host = sender.getHost();
   }
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  public Long getId() {
+  public ObjectId getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(ObjectId id) {
     this.id = id;
   }
 

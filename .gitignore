@@ -1,7 +1,9 @@
 idea-files
 target
-core/src/main/resources/javabot.properties
+javabot.properties
 web-play/conf/oauth.conf
+javabot-play/conf/oauth.*
+javabot-play/conf/javabot.properties
 play.war
 .idea
 *.iml

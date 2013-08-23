@@ -1,39 +1,46 @@
 package javabot.model;
 
 import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.inject.Inject;
 
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Index;
+import com.google.code.morphia.annotations.Indexes;
+import com.google.code.morphia.annotations.Transient;
 import javabot.Javabot;
 import javabot.dao.EventDao;
+import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
 
-@Entity
-@Table(name = "events")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(length = 255)
-@NamedQueries({
-  @NamedQuery(name = EventDao.FIND_ALL, query = "select a from javabot.model.AdminEvent a where" +
-    " a.processed = false order by a.requestedOn ASC")
+@Entity("events")
+@Indexes({
+    @Index("state, requestedOn")
 })
 public class AdminEvent implements Serializable, Persistent {
-  private Long id;
+  public enum State {
+    NEW,
+    PROCESSING,
+    COMPLETED,
+    FAILED
+  }
+
+  @Inject
+  @Transient
+  private EventDao eventDao;
+
+  @Id
+  private ObjectId id;
+
   private String requestedBy;
-  private Date requestedOn;
-  private Boolean processed;
-  @Enumerated(EnumType.STRING)
-  public EventType type;
+
+  private DateTime requestedOn;
+
+  private DateTime completed;
+
+  private State state = State.NEW;
+
+  private EventType type;
 
   protected AdminEvent() {
   }
@@ -41,23 +48,27 @@ public class AdminEvent implements Serializable, Persistent {
   public AdminEvent(EventType type, String requestedBy) {
     this.type = type;
     this.requestedBy = requestedBy;
-    requestedOn = new Date();
-    processed = false;
+    requestedOn = new DateTime();
   }
 
-  @Id
-  @GeneratedValue
   @Override
-  public Long getId() {
+  public ObjectId getId() {
     return id;
   }
 
   @Override
-  public void setId(Long id) {
+  public void setId(ObjectId id) {
     this.id = id;
   }
 
-  @Enumerated(EnumType.STRING)
+  public void setCompleted(final DateTime completed) {
+    this.completed = completed;
+  }
+
+  public DateTime getCompleted() {
+    return completed;
+  }
+
   public EventType getType() {
     return type;
   }
@@ -66,12 +77,12 @@ public class AdminEvent implements Serializable, Persistent {
     this.type = type;
   }
 
-  public Boolean getProcessed() {
-    return processed;
+  public State getState() {
+    return state;
   }
 
-  public void setProcessed(Boolean processed) {
-    this.processed = processed;
+  public void setState(final State state) {
+    this.state = state;
   }
 
   public String getRequestedBy() {
@@ -82,12 +93,11 @@ public class AdminEvent implements Serializable, Persistent {
     this.requestedBy = requestedBy;
   }
 
-  @Temporal(TemporalType.TIMESTAMP)
-  public Date getRequestedOn() {
+  public DateTime getRequestedOn() {
     return requestedOn;
   }
 
-  public void setRequestedOn(Date requestedOn) {
+  public void setRequestedOn(DateTime requestedOn) {
     this.requestedOn = requestedOn;
   }
 
@@ -103,8 +113,6 @@ public class AdminEvent implements Serializable, Persistent {
         update(bot);
         break;
     }
-    setProcessed(true);
-    bot.getApplicationContext().getBean(EventDao.class).save(this);
   }
 
   public void add(Javabot bot) {

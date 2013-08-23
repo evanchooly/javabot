@@ -1,27 +1,47 @@
 package javabot.dao;
 
 import java.util.List;
+import javax.inject.Inject;
 
+import com.google.code.morphia.query.Query;
 import javabot.dao.util.QueryParam;
 import javabot.model.Karma;
-import org.springframework.transaction.annotation.Transactional;
+import javabot.model.criteria.KarmaCriteria;
+import org.joda.time.DateTime;
 
-public interface KarmaDao extends BaseDao {
-    String ALL = "Karma.all";
-    String COUNT = "Karma.count";
-    String BY_NAME = "Karma.byName";
+public class KarmaDao extends BaseDao<Karma> {
+  @Inject
+  private ChangeDao changeDao;
 
-    @Transactional
-    Karma find(String nick);
+  public KarmaDao() {
+    super(Karma.class);
 
-    Karma find(Long id);
+  }
 
-    List<Karma> findAll();
+  public List<Karma> getKarmas(QueryParam qp) {
+    Query<Karma> query = ds.createQuery(Karma.class);
+    if (qp.hasSort()) {
+      query.order(qp.getSort() + (qp.isSortAsc() ? " 1" : " -1"));
+    }
+    query.offset(qp.getFirst());
+    query.limit(qp.getCount());
+    return query.asList();
+  }
 
-    List<Karma> getKarmas(QueryParam qp);
+  public void save(Karma karma) {
+    karma.setUpdated(new DateTime());
+    super.save(karma);
+    changeDao.logChange(String.format("%s changed '%s' to '%d'", karma.getUserName(), karma.getName(),
+        karma.getValue()));
+  }
 
-    Long getCount();
+  public Karma find(String name) {
+    KarmaCriteria criteria = new KarmaCriteria(ds);
+    criteria.upperName().equal(name.toUpperCase());
+    return criteria.query().get();
+  }
 
-    @Transactional
-    void save(Karma karma);
+  public Long getCount() {
+    return ds.createQuery(Karma.class).countAll();
+  }
 }

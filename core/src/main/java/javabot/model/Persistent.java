@@ -1,12 +1,9 @@
 package javabot.model;
 
-/**
- * Created Jul 6, 2007
- *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
- */
-public interface Persistent {
-    Long getId();
+import org.bson.types.ObjectId;
 
-    void setId(Long id);
+public interface Persistent {
+    ObjectId getId();
+
+    void setId(ObjectId id);
 }

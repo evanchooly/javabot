@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>javabot</groupId>
+    <groupId>com.antwerkz.javabot</groupId>
     <artifactId>javabot</artifactId>
-    <version>4.0.1</version>
+    <version>5.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>javabot</name>
@@ -14,20 +14,13 @@
         <module>spi-apt</module>
         <module>apt-tools</module>
         <module>core</module>
-        <module>web</module>
+        <module>migration</module>
     </modules>
 
     <build>
         <defaultGoal>package</defaultGoal>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <source>1.7</source>
-                        <target>1.7</target>
-                    </configuration>
-                </plugin>
                 <plugin>
                     <groupId>com.antwerkz.sofia</groupId>
                     <artifactId>sofia-maven</artifactId>
@@ -36,41 +29,25 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.1</version>
+                    <version>2.4</version>
                 </plugin>
             </plugins>
         </pluginManagement>
-    </build>
 
-    <repositories>
-        <repository>
-            <id>glassfish</id>
-            <name>glassfish</name>
-            <url>http://download.java.net/maven/2</url>
-        </repository>
-        <repository>
-            <id>repository.jboss.org</id>
-            <name>JBoss Maven Repository</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
-        </repository>
-        <repository>
-            <id>JBoss</id>
-            <name>jboss-maven2-release-repository</name>
-            <url>https://oss.sonatype.org/content/repositories/JBoss</url>
-        </repository>
-        <repository>
-            <id>antwerkz</id>
-            <url>http://antwerkz.com/</url>
-        </repository>
-        <repository>
-            <id>maven.annotation.rg</id>
-            <url>http://maven-annotation-plugin.googlecode.com/svn/trunk/mavenrepo</url>
-        </repository>
-        <repository>
-            <id>jfrog</id>
-            <url>http://www.jfrog.org/artifactory/plugins-releases</url>
-        </repository>
-    </repositories>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <compilerArgument>-proc:none</compilerArgument>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencyManagement>
         <dependencies>
@@ -78,16 +55,17 @@
                 <groupId>com.antwerkz.maven</groupId>
                 <artifactId>spi-apt</artifactId>
                 <version>1.0-SNAPSHOT</version>
+                <scope>compile</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.antwerkz.sofia</groupId>
-                <artifactId>maven</artifactId>
-                <version>0.3</version>
+                <artifactId>sofia-core</artifactId>
+                <version>${sofia.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>javabot</groupId>
+                <groupId>com.antwerkz.javabot</groupId>
                 <artifactId>apt-tools</artifactId>
                 <version>${project.version}</version>
                 <scope>compile</scope>
@@ -96,7 +74,7 @@
             <dependency>
                 <groupId>pircbot</groupId>
                 <artifactId>pircbot</artifactId>
-                <version>1.4.6</version>
+                <version>1.5.0</version>
             </dependency>
 
             <dependency>
@@ -106,33 +84,21 @@
             </dependency>
 
             <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-orm</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.6.4</version>
+                <version>${slf4j.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
-                <version>1.6.4</version>
+                <version>${slf4j.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>nekohtml</groupId>
+                <groupId>net.sourceforge.nekohtml</groupId>
                 <artifactId>nekohtml</artifactId>
-                <version>1.9.6.2</version>
+                <version>1.9.18</version>
             </dependency>
 
             <dependency>
@@ -150,56 +116,20 @@
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
-                <version>2.4</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.opensymphony.quartz</groupId>
-                <artifactId>quartz</artifactId>
-                <version>1.6.1</version>
+                <version>2.6</version>
             </dependency>
 
             <!-- Database drivers -->
             <dependency>
-                <groupId>c3p0</groupId>
-                <artifactId>c3p0</artifactId>
-                <version>0.9.1.2</version>
-            </dependency>
-
-            <dependency>
-                <groupId>hsqldb</groupId>
-                <artifactId>hsqldb</artifactId>
-                <version>1.8.0.7</version>
-            </dependency>
-
-            <dependency>
                 <groupId>postgresql</groupId>
                 <artifactId>postgresql</artifactId>
-                <version>9.0-801.jdbc4</version>
+                <version>9.1-902.jdbc4</version>
             </dependency>
 
             <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>3.4.0.GA</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate</artifactId>
-                <version>3.2.7.ga</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernate.java-persistence</groupId>
-                <artifactId>jpa-api</artifactId>
-                <version>2.0-cr-1</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-jpamodelgen</artifactId>
-                <version>1.0.0.Final</version>
+                <groupId>com.google.code.morphia</groupId>
+                <artifactId>morphia</artifactId>
+                <version>0.102</version>
             </dependency>
 
             <dependency>
@@ -212,40 +142,44 @@
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
-                <version>6.4</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.easymock</groupId>
-                <artifactId>easymockclassextension</artifactId>
-                <version>2.4</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.unitils</groupId>
-                <artifactId>unitils</artifactId>
-                <version>2.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>jetty</artifactId>
-                <version>6.1.12</version>
+                <version>6.8.5</version>
             </dependency>
 
             <dependency>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.5.2</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.google.inject</groupId>
+                <artifactId>guice</artifactId>
+                <version>${guice.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.inject.extensions</groupId>
+                <artifactId>guice-persist</artifactId>
+                <version>${guice.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongo-java-driver</artifactId>
+                <version>2.11.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>2.2</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <properties>
-        <camel.version>2.3.0</camel.version>
-        <spring.version>3.0.5.RELEASE</spring.version>
-        <irclib.version>2.0-SNAPSHOT</irclib.version>
-         <sofia.version>0.13</sofia.version>
+        <guice.version>3.0</guice.version>
+        <sofia.version>0.13</sofia.version>
+        <slf4j.version>1.7.4</slf4j.version>
     </properties>
 </project>

@@ -3,8 +3,10 @@ package javabot.operations;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
+import javax.inject.Inject;
 
 import com.antwerkz.maven.SPI;
+import com.google.inject.Injector;
 import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -19,34 +21,34 @@ import org.slf4j.LoggerFactory;
  */
 @SPI({AdminCommand.class})
 public class ListAdminCommands extends AdminCommand {
-    private static final Logger log = LoggerFactory.getLogger(ListAdminCommands.class);
-    private static final String ADMIN_PREFIX = "admin ";
+  @Inject
+  private Injector injector;
 
-    @Override
-    public List<Message> execute(Javabot bot, IrcEvent event) {
-        final List<Message> responses = new ArrayList<Message>();
-        final StringBuilder builder = new StringBuilder();
+  private static final String ADMIN_PREFIX = "admin ";
 
-        for (final AdminCommand AdminCommand : listCommands()) {
-            if (builder.length() != 0) {
-                builder.append(", ");
-            }
-            final String name = AdminCommand.getClass().getSimpleName();
-            builder.append(name.substring(0, 1).toLowerCase()).append(name.substring(1));
-        }
-        responses.add(new Message(event.getChannel(), event,
-                event.getSender() + ", I know of the following commands: " + builder));
-
-        return responses;
+  @Override
+  public List<Message> execute(Javabot bot, IrcEvent event) {
+    final List<Message> responses = new ArrayList<>();
+    final StringBuilder builder = new StringBuilder();
+    for (final AdminCommand AdminCommand : listCommands()) {
+      if (builder.length() != 0) {
+        builder.append(", ");
+      }
+      final String name = AdminCommand.getClass().getSimpleName();
+      builder.append(name.substring(0, 1).toLowerCase()).append(name.substring(1));
     }
+    responses.add(new Message(event.getChannel(), event,
+        event.getSender() + ", I know of the following commands: " + builder));
+    return responses;
+  }
 
-    public List<AdminCommand> listCommands() {
-        final ServiceLoader<AdminCommand> loader = ServiceLoader.load(AdminCommand.class);
-        final List<AdminCommand> list = new ArrayList<AdminCommand>();
-        for (final AdminCommand AdminCommand : loader) {
-            getBot().inject(AdminCommand);
-            list.add(AdminCommand);
-        }
-        return list;
+  public List<AdminCommand> listCommands() {
+    final ServiceLoader<AdminCommand> loader = ServiceLoader.load(AdminCommand.class);
+    final List<AdminCommand> list = new ArrayList<>();
+    for (final AdminCommand command : loader) {
+      injector.injectMembers(command);
+      list.add(command);
     }
+    return list;
+  }
 }

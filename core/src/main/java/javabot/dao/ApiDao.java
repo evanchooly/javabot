@@ -1,19 +1,32 @@
 package javabot.dao;
 
 import java.util.List;
+import javax.inject.Inject;
 
-import javabot.javadoc.Api;
+import javabot.javadoc.JavadocApi;
+import javabot.javadoc.criteria.JavadocApiCriteria;
 
-/**
- * Created Oct 29, 2008
- *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
- */
-public interface ApiDao extends BaseDao {
-    String FIND_BY_NAME = "Javadoc.findByName";
-    String FIND_ALL = "Javadoc.findAll";
+public class ApiDao extends BaseDao<JavadocApi> {
+  @Inject
+  public JavadocClassDao classDao;
 
-    Api find(String name);
+  protected ApiDao() {
+    super(JavadocApi.class);
+  }
 
-    List<Api> findAll();
+  public JavadocApi find(final String name) {
+    JavadocApiCriteria criteria = new JavadocApiCriteria(ds);
+    criteria.upperName().equal(name.toUpperCase());
+    return criteria.query().get();
+  }
+
+  public void delete(final JavadocApi api) {
+    classDao.deleteFor(api);
+    super.delete(api);
+  }
+
+  @Override
+  public List<JavadocApi> findAll() {
+    return ds.createQuery(JavadocApi.class).order("name").asList();
+  }
 }

@@ -1,59 +1,61 @@
 package javabot.model;
 
 import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 
 import com.antwerkz.maven.SPI;
-import javabot.dao.ShunDao;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Index;
+import com.google.code.morphia.annotations.Indexed;
+import com.google.code.morphia.annotations.Indexes;
+import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
 
-@Entity
-@Table(name = "shun", uniqueConstraints = @UniqueConstraint(columnNames = {"nick"}))
-@NamedQueries({
-    @NamedQuery(name = ShunDao.BY_NAME, query = "select s from Shun s where s.nick = :nick"),
-    @NamedQuery(name = ShunDao.CLEANUP, query = "delete from Shun s where s.expiry <= :now")
-})
+@Entity("shun")
 @SPI(Persistent.class)
+@Indexes({
+    @Index("upperNick")
+})
 public class Shun implements Serializable, Persistent {
-    private Long id;
-    private String nick;
-    private Date expiry;
+  @Id
+  private ObjectId id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() {
-        return id;
-    }
+  @Indexed(unique = true)
+  private String nick;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  private String upperNick;
 
-    @Column(unique = true)
-    public String getNick() {
-        return nick;
-    }
+  private DateTime expiry;
 
-    public void setNick(String nick) {
-        this.nick = nick;
-    }
+  public ObjectId getId() {
+    return id;
+  }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date getExpiry() {
-        return expiry;
-    }
+  public void setId(ObjectId id) {
+    this.id = id;
+  }
 
-    public void setExpiry(Date updated) {
-        this.expiry = updated;
-    }
+  public String getNick() {
+    return nick;
+  }
+
+  public void setNick(String nick) {
+    this.nick = nick;
+  }
+
+  public DateTime getExpiry() {
+    return expiry;
+  }
+
+  public void setExpiry(DateTime updated) {
+    this.expiry = updated;
+  }
+
+  public String getUpperNick() {
+    return upperNick;
+  }
+
+  public void setUpperNick(final String upperNick) {
+    this.upperNick = upperNick;
+  }
 }

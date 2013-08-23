@@ -3,43 +3,58 @@ package javabot.model;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
 
 import com.antwerkz.maven.SPI;
-import javabot.dao.ConfigDao;
-import org.hibernate.annotations.CollectionOfElements;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
+import org.bson.types.ObjectId;
 
-@Entity
-@Table(name = "configuration")
-@NamedQueries({
-  @NamedQuery(name = ConfigDao.GET_CONFIG, query = "select c from Config c")
-})
+@Entity("configuration")
 @SPI(Persistent.class)
 public class Config implements Serializable, Persistent {
-  private Long id;
-  private String server = "irc.freenode.org";
-  private String url;
-  private Integer port = 6667;
-  private Integer historyLength = 6;
-  private String trigger = "~";
-  private String nick;
-  private String password;
-  private Integer schemaVersion;
-  private Set<String> operations = new TreeSet<String>();
-
   @Id
-  @GeneratedValue
-  public Long getId() {
+  private ObjectId id;
+
+  private String server = "irc.freenode.org";
+
+  private String url;
+
+  private Integer port = 6667;
+
+  private Integer historyLength = 6;
+
+  private String trigger = "~";
+
+  private String nick;
+
+  private String password;
+
+  private Integer schemaVersion;
+
+  private Set<String> operations = new TreeSet<>();
+
+  public Config() {
+  }
+
+  public Config(final ObjectId id, final String server, final String url, final Integer port,
+      final Integer historyLength, final String trigger, final String nick, final String password,
+      final Set<String> operations) {
+    this.id = id;
+    this.historyLength = historyLength;
+    this.nick = nick;
+    this.operations = operations;
+    this.password = password;
+    this.port = port;
+    this.server = server;
+    this.trigger = trigger;
+    this.url = url;
+  }
+
+  public ObjectId getId() {
     return id;
   }
 
-  public void setId(final Long configId) {
+  public void setId(final ObjectId configId) {
     id = configId;
   }
 
@@ -51,8 +66,6 @@ public class Config implements Serializable, Persistent {
     nick = botName;
   }
 
-  @SuppressWarnings({"JpaModelErrorInspection", "JpaAttributeTypeInspection"})
-  @CollectionOfElements(fetch = FetchType.EAGER)
   public Set<String> getOperations() {
     return operations;
   }

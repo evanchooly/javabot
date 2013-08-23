@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -23,11 +24,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import javax.persistence.NoResultException;
+import javax.inject.Inject;
 
 import ca.grimoire.maven.ArtifactDescription;
 import ca.grimoire.maven.NoArtifactException;
 import ca.grimoire.maven.ResourceProvider;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import javabot.commands.AdminCommand;
 import javabot.dao.AdminDao;
 import javabot.dao.ChannelDao;
@@ -37,6 +40,7 @@ import javabot.dao.LogsDao;
 import javabot.dao.ShunDao;
 import javabot.database.UpgradeScript;
 import javabot.model.AdminEvent;
+import javabot.model.AdminEvent.State;
 import javabot.model.Channel;
 import javabot.model.Config;
 import javabot.model.Logs;
@@ -44,58 +48,74 @@ import javabot.operations.BotOperation;
 import javabot.operations.OperationComparator;
 import javabot.operations.StandardOperation;
 import org.jibble.pircbot.IrcException;
+import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class Javabot implements ApplicationContextAware {
-  public static final Logger log = LoggerFactory.getLogger(Javabot.class);
-  public static final int THROTTLE_TIME = 5 * 1000;
-  private ApplicationContext context;
-  Config config;
-  private Map<String, BotOperation> operations;
-  private String host;
-  String nick;
-  private String password;
-  private String[] startStrings;
-  ExecutorService executors;
-  private final ScheduledExecutorService eventHandler = Executors.newScheduledThreadPool(1,
-    new JavabotThreadFactory(true, "javabot-event-handler"));
-  private final List<BotOperation> standard = new ArrayList<BotOperation>();
-  private final List<String> ignores = new ArrayList<String>();
-  private final Set<BotOperation> activeOperations = new TreeSet<BotOperation>(new OperationComparator());
-  private int port;
-  @Autowired
+public class Javabot {
+  @Inject
   ChannelDao channelDao;
-  @Autowired
+
+  @Inject
   private ConfigDao configDao;
-  @Autowired
+
+  @Inject
   LogsDao logsDao;
-  @Autowired
+
+  @Inject
   private ShunDao shunDao;
-  @Autowired
+
+  @Inject
   private EventDao eventDao;
-  @Autowired
+
+  @Inject
   AdminDao adminDao;
+
+  @Inject
+  private Injector injector;
+
+  public static final Logger log = LoggerFactory.getLogger(Javabot.class);
+
+  public static final int THROTTLE_TIME = 5 * 1000;
+
+  Config config;
+
+  private Map<String, BotOperation> allOperations;
+
+  private String host;
+
+  String nick;
+
+  private String password;
+
+  private String[] startStrings;
+
+  ExecutorService executors;
+
+  private final ScheduledExecutorService eventHandler = Executors.newScheduledThreadPool(1,
+      new JavabotThreadFactory(true, "javabot-event-handler"));
+
+  private final List<BotOperation> standard = new ArrayList<>();
+
+  private final List<String> ignores = new ArrayList<>();
+
+  private final Set<BotOperation> activeOperations = new TreeSet<>(new OperationComparator());
+
+  private int port;
+
   private BlockingQueue<Runnable> queue;
+
   protected MyPircBot pircBot;
   private boolean reconnecting = false;
 
-  public Javabot(final ApplicationContext applicationContext) {
-    context = applicationContext;
+  private boolean reconnecting = false;
+
+  public void start() {
     setUpThreads();
-    inject(this);
-    try {
-      config = configDao.get();
-    } catch (NoResultException e) {
-      config = configDao.create();
-    }
+    config = configDao.get();
     loadOperations(config);
     loadConfig();
     applyUpgradeScripts();
@@ -105,9 +125,9 @@ public class Javabot implements ApplicationContextAware {
   }
 
   private void setUpThreads() {
-    queue = new ArrayBlockingQueue<Runnable>(50);
+    queue = new ArrayBlockingQueue<>(50);
     executors = new ThreadPoolExecutor(5, 10, 10L, TimeUnit.SECONDS, queue,
-      new JavabotThreadFactory(true, "javabot-handler-thread-"));
+        new JavabotThreadFactory(true, "javabot-handler-thread-"));
     final Thread hook = new Thread(new Runnable() {
       @Override
       public void run() {
@@ -125,13 +145,19 @@ public class Javabot implements ApplicationContextAware {
   }
 
   protected void processAdminEvents() {
-    for (AdminEvent event : eventDao.findUnprocessed()) {
+    AdminEvent event = eventDao.findUnprocessed();
+    if (event != null) {
       try {
+        event.setState(State.PROCESSING);
+        eventDao.save(event);
+        injector.injectMembers(event);
         event.handle(this);
+        event.setState(State.COMPLETED);
       } catch (Exception e) {
+        event.setState(State.FAILED);
         log.error(e.getMessage(), e);
       }
-      event.setProcessed(true);
+      event.setCompleted(new DateTime());
       eventDao.save(event);
     }
   }
@@ -151,16 +177,6 @@ public class Javabot implements ApplicationContextAware {
     }
   }
 
-  public ApplicationContext getApplicationContext() {
-    return context;
-  }
-
-  @Override
-  public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
-    context = applicationContext;
-  }
-
-  @SuppressWarnings({"StringContatenationInLoop"})
   public void connect() {
     while (!pircBot.isConnected()) {
       try {
@@ -201,38 +217,42 @@ public class Javabot implements ApplicationContextAware {
 
   public static void validateProperties() {
     final Properties props = new Properties();
-    try (InputStream stream = Javabot.class.getResourceAsStream("/javabot.properties")) {
-      props.load(stream);
+    try {
+      try (InputStream stream = new FileInputStream("javabot.properties")) {
+        props.load(stream);
+      } catch (FileNotFoundException e) {
+        throw new RuntimeException("Please define a javabot.properties file to configure the bot");
+      }
     } catch (IOException e) {
       throw new RuntimeException("Please define a javabot.properties file to configure the bot");
     }
-    check(props, "javabot.server");
-    check(props, "javabot.port");
-    check(props, "jdbc.url");
-    check(props, "jdbc.username");
-    check(props, "jdbc.password");
-    check(props, "jdbc.driver");
-    check(props, "hibernate.dialect");
-    check(props, "javabot.nick");
-    check(props, "javabot.password");
-    check(props, "javabot.admin.nick");
-    check(props, "javabot.admin.hostmask");
+    boolean valid = check(props, "javabot.server");
+    valid &= check(props, "javabot.port");
+    valid &= check(props, "database.host");
+    valid &= check(props, "database.port");
+    valid &= check(props, "database.name");
+    valid &= check(props, "javabot.nick");
+    valid &= check(props, "javabot.password");
+    valid &= check(props, "javabot.admin.nick");
+    valid &= check(props, "javabot.admin.hostmask");
+    if(!valid) {
+      throw new RuntimeException("Missing configuration parameters");
+    }
     System.getProperties().putAll(props);
   }
 
-  static void check(final Properties props, final String key) {
+  static boolean check(final Properties props, final String key) {
     if (props.get(key) == null) {
-      throw new RuntimeException(String.format("Please specify the property %s in javabot.properties", key));
+      System.out.printf("Please specify the property %s in javabot.properties\n", key);
+      return false;
     }
-  }
-
-  public final void inject(final Object object) {
-    context.getAutowireCapableBeanFactory().autowireBean(object);
+    return true;
   }
 
   protected final void applyUpgradeScripts() {
     for (final UpgradeScript script : UpgradeScript.loadScripts()) {
-      script.execute(this);
+      injector.injectMembers(script);
+      script.execute();
     }
   }
 
@@ -280,25 +300,19 @@ public class Javabot implements ApplicationContextAware {
 
   @SuppressWarnings({"unchecked"})
   protected final void loadOperations(final Config config) {
-    operations = new TreeMap<String, BotOperation>();
+    allOperations = new TreeMap<>();
     for (final BotOperation op : BotOperation.list()) {
-      inject(op);
+      injector.injectMembers(op);
       op.setBot(this);
-      operations.put(op.getName(), op);
+      allOperations.put(op.getName(), op);
     }
     try {
       for (final String name : config.getOperations()) {
         enableOperation(name);
-        activeOperations.add(operations.get(name));
       }
     } catch (Exception e) {
       log.error(e.getMessage(), e);
       throw new RuntimeException(e.getMessage(), e);
-    }
-    if (config.getOperations().isEmpty()) {
-      for (final BotOperation operation : operations.values()) {
-        enableOperation(operation.getName());
-      }
     }
     addDefaultOperations(ServiceLoader.load(AdminCommand.class));
     addDefaultOperations(ServiceLoader.load(StandardOperation.class));
@@ -307,7 +321,7 @@ public class Javabot implements ApplicationContextAware {
 
   private void addDefaultOperations(final ServiceLoader<? extends BotOperation> loader) {
     for (final BotOperation operation : loader) {
-      inject(operation);
+      injector.injectMembers(operation);
       operation.setBot(this);
       standard.add(operation);
     }
@@ -315,11 +329,8 @@ public class Javabot implements ApplicationContextAware {
 
   public boolean disableOperation(final String name) {
     boolean disabled = false;
-    if (operations.get(name) != null) {
-      activeOperations.remove(operations.get(name));
-      final Config c = configDao.get();
-      c.getOperations().remove(name);
-      configDao.save(c);
+    if (allOperations.get(name) != null) {
+      activeOperations.remove(allOperations.get(name));
       disabled = true;
     }
     return disabled;
@@ -327,15 +338,10 @@ public class Javabot implements ApplicationContextAware {
 
   public boolean enableOperation(final String name) {
     boolean enabled = false;
-    final Config c = configDao.get();
-    if (operations.get(name) != null) {
-      activeOperations.add(operations.get(name));
-      c.getOperations().add(name);
+    if (allOperations.get(name) != null) {
+      activeOperations.add(allOperations.get(name));
       enabled = true;
-    } else {
-      c.getOperations().remove(name);
     }
-    configDao.save(c);
     return enabled;
   }
 
@@ -343,10 +349,10 @@ public class Javabot implements ApplicationContextAware {
     return host;
   }
 
-  public Iterator<BotOperation> getOperations() {
-    final List<BotOperation> ops = new ArrayList<BotOperation>(activeOperations);
+  public List<BotOperation> getAllOperations() {
+    final List<BotOperation> ops = new ArrayList<>(activeOperations);
     ops.addAll(standard);
-    return ops.iterator();
+    return ops;
   }
 
   public String[] getStartStrings() {
@@ -360,7 +366,7 @@ public class Javabot implements ApplicationContextAware {
       final String channel = event.getChannel();
       logsDao.logMessage(Logs.Type.MESSAGE, sender.getNick(), channel, message);
       if (isValidSender(sender.getNick())) {
-        final List<Message> responses = new ArrayList<Message>();
+        final List<Message> responses = new ArrayList<>();
         for (final String startString : startStrings) {
           if (responses != null && message.startsWith(startString)) {
             String content = message.substring(startString.length()).trim();
@@ -411,8 +417,8 @@ public class Javabot implements ApplicationContextAware {
   }
 
   public List<Message> getResponses(final String channel, final IrcUser sender, final String message) {
-    final Iterator<BotOperation> iterator = getOperations();
-    final List<Message> responses = new ArrayList<Message>();
+    final Iterator<BotOperation> iterator = getAllOperations().iterator();
+    final List<Message> responses = new ArrayList<>();
     final IrcEvent event = new IrcEvent(channel, sender, message);
     while (responses.isEmpty() && iterator.hasNext()) {
       responses.addAll(iterator.next().handleMessage(event));
@@ -429,11 +435,11 @@ public class Javabot implements ApplicationContextAware {
   }
 
   public List<Message> getChannelResponses(final String channel, final IrcUser sender, final String message) {
-    final Iterator<BotOperation> iterator = getOperations();
-    final List<Message> responses = new ArrayList<Message>();
+    final Iterator<BotOperation> iterator = getAllOperations().iterator();
+    final List<Message> responses = new ArrayList<>();
     while (responses.isEmpty() && iterator.hasNext()) {
       responses.addAll(iterator.next()
-        .handleChannelMessage(new IrcEvent(channel, sender, message)));
+          .handleChannelMessage(new IrcEvent(channel, sender, message)));
     }
     return responses;
   }
@@ -461,11 +467,7 @@ public class Javabot implements ApplicationContextAware {
   }
 
   protected boolean isValidSender(final String sender) {
-    return !ignores.contains(sender) && !isShunnedSender(sender);
-  }
-
-  private boolean isShunnedSender(final String sender) {
-    return shunDao.isShunned(sender);
+    return !ignores.contains(sender) && !shunDao.isShunned(sender);
   }
 
   @SuppressWarnings({"EmptyCatchBlock"})
@@ -496,11 +498,13 @@ public class Javabot implements ApplicationContextAware {
   }
 
   public static void main(final String[] args) {
+    Injector injector = Guice.createInjector(new JavabotModule());
     if (log.isInfoEnabled()) {
       log.info("Starting Javabot");
     }
     validateProperties();
-    new Javabot(new ClassPathXmlApplicationContext("classpath:applicationContext.xml"));
+    Javabot bot = injector.getInstance(Javabot.class);
+    bot.start();
   }
 
   public void setReconnecting(final boolean reconnecting) {

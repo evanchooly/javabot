@@ -1,12 +1,19 @@
 package javabot.model;
 
-import javax.persistence.Entity;
-
+import com.google.code.morphia.annotations.Entity;
 import javabot.Javabot;
 
-@Entity
+@Entity("events")
 public class OperationEvent extends AdminEvent {
   private String operation;
+
+  public OperationEvent() {
+  }
+
+  public OperationEvent(EventType type, String operation, String requestedBy) {
+    super(type, requestedBy);
+    this.operation = operation;
+  }
 
   public String getOperation() {
     return operation;

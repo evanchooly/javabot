@@ -1,42 +1,105 @@
 package javabot.admin;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.inject.Inject;
+
+import com.jayway.awaitility.Duration;
+import javabot.BaseTest;
+import javabot.Message;
 import javabot.dao.ApiDao;
-import javabot.dao.ClazzDao;
-import javabot.javadoc.Api;
+import javabot.dao.JavadocClassDao;
+import javabot.model.ApiEvent;
+import javabot.model.EventType;
 import javabot.operations.BaseOperationTest;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Test
 public class JavadocTest extends BaseOperationTest {
-    @Autowired
-    private ApiDao dao;
-    @Autowired
-    private ClazzDao clazzDao;
-    private static final String API_NAME = "Servlet";
-    private static final String ZIP_LOCATION = "http://repo1.maven.org/maven2/javax/servlet/servlet-api/2.3/servlet-api-2.3.jar";
-    private static final String API_URL_STRING = "http://java.sun.com/products/servlet/2.3/javadoc/";
+  @Inject
+  private ApiDao apiDao;
 
-    @Test
-    public void reprocessNonExistentApi() {
-        final Api api = dao.find(API_NAME);
-        if (api != null) {
-            dao.delete(api);
+  @Inject
+  private JavadocClassDao javadocClassDao;
+
+  private static final String API_NAME = "Servlet";
+
+  private static final String ZIP_LOCATION
+      = "http://search.maven.org/remotecontent?filepath=javax/servlet/javax.servlet-api/3.0.1/javax.servlet-api-3.0.1.jar";
+
+  private static final String API_URL_STRING = "http://tomcat.apache.org/tomcat-7.0-doc/servletapi/";
+
+  @Test
+  public void addApi() throws IOException {
+    dropTestApi();
+    addTestApi(downloadZip());
+  }
+
+  @Test
+  public void addJdk() {
+    getJavabot();
+    if (apiDao.find("JDK") == null) {
+      ApiEvent event = new ApiEvent();
+      event.setName("JDK");
+      event.setType(EventType.ADD);
+      event.setBaseUrl("http://docs.oracle.com/javase/7/docs/api");
+      event.setPackages("java,javax,org.w3c,org.xml");
+      event.setFile(new File(System.getProperty("java.home"), "lib/rt.jar").getAbsolutePath());
+      event.setRequestedBy(BaseTest.TEST_USER.getNick());
+      eventDao.save(event);
+      waitForEvent(event, "adding " + API_NAME, new Duration(30, TimeUnit.MINUTES));
+    }
+    List<Message> messages = getJavabot().getMessages();
+    Assert.assertNotEquals(javadocClassDao.getClass("java.lang", "Integer").length, 0);
+  }
+
+  private void addTestApi(final File file) {
+    ApiEvent event = new ApiEvent();
+    event.setName(API_NAME);
+    event.setType(EventType.ADD);
+    event.setBaseUrl(API_URL_STRING);
+    event.setPackages("javax");
+    event.setFile(file.getAbsolutePath());
+    event.setRequestedBy(BaseTest.TEST_USER.getNick());
+    eventDao.save(event);
+    waitForEvent(event, "adding " + API_NAME, new Duration(30, TimeUnit.MINUTES));
+    getJavabot().getMessages();
+    Assert.assertTrue(javadocClassDao.getClass("javax.servlet.http", "HttpServletRequest").length != 0);
+  }
+
+  private File downloadZip() throws IOException {
+    File file = new File("/tmp/javax.servlet-api-3.0.1.jar");
+    if (!file.exists()) {
+      try (InputStream inputStream = new URL(ZIP_LOCATION).openStream();
+           OutputStream fos = new FileOutputStream(file)) {
+        byte[] bytes = new byte[8192];
+        int read;
+        while ((read = inputStream.read(bytes)) != -1) {
+          fos.write(bytes, 0, read);
         }
-        testMessage("~admin reprocessApi --name=" + API_NAME, "I don't know anything about " + API_NAME);
+      }
     }
+    return file;
+  }
 
-    @Test(dependsOnMethods = "reprocessNonExistentApi")
-    public void processApi() {
-        scanForResponse("~admin addApi"
-            + " --name=" + API_NAME
-            + " --url=" + API_URL_STRING
-            + " --zip=" + ZIP_LOCATION
-            + " --packages=javax", "done adding javadoc for " + API_NAME);
-    }
+  private void dropTestApi() {
+    getJavabot();
+    final ApiEvent event = new ApiEvent();
+    event.setName(API_NAME);
+    event.setType(EventType.DELETE);
+    eventDao.save(event);
+    waitForEvent(event, "dropping " + API_NAME, Duration.FIVE_MINUTES);
+  }
 
-    @Test(dependsOnMethods = "processApi")
-    public void dropApi() {
-        scanForResponse("~admin dropApi --name=" + API_NAME, "done removing javadoc for " + API_NAME);
-    }
+  @Test(dependsOnMethods = "addApi")
+  public void dropApi() {
+    dropTestApi();
+  }
 }

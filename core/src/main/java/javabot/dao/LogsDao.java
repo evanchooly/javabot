@@ -1,25 +1,53 @@
 package javabot.dao;
 
-import java.util.Date;
-import java.util.List;
+import javax.inject.Inject;
 
-import javabot.model.Logs;
 import javabot.Seen;
-import org.springframework.transaction.annotation.Transactional;
+import javabot.model.Channel;
+import javabot.model.Logs;
+import javabot.model.criteria.LogsCriteria;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public interface LogsDao extends BaseDao {
-    String TODAY = "Logs.today";
-    String COUNT_LOGGED = "Logs.countLogged";
-    String SEEN = "Logs.seen";
+public class LogsDao extends BaseDao<Logs> {
+  public static final String TODAY = "Logs.today";
+  public static final String COUNT_LOGGED = "Logs.countLogged";
+  public static final String SEEN = "Logs.seen";
+  public static final Logger log = LoggerFactory.getLogger(LogsDao.class);
+  @Inject
+  public ConfigDao dao;
+  @Inject
+  public ChannelDao channelDao;
 
-    void logMessage(Logs.Type type, String nick, String channel, String message);
+  public LogsDao() {
+    super(Logs.class);
+  }
 
-    List<Logs> dailyLog(String channel, Date date);
+  public void logMessage(final Logs.Type type, final String nick, final String channel,
+      final String message) {
+    final Channel chan = channel != null ? channelDao.get(channel) : null;
+    final Logs logMessage = new Logs();
+    logMessage.setType(type);
+    logMessage.setNick(nick);
+    if (channel != null) {
+      logMessage.setChannel(channel.toLowerCase());
+    }
+    logMessage.setMessage(message);
+    logMessage.setUpdated(new DateTime());
+    save(logMessage);
+  }
 
-    Seen getSeen(String nick, String channel);
+  public boolean isSeen(final String nick, final String channel) {
+    return getSeen(nick, channel) != null;
+  }
 
-    boolean isSeen(String nick, String channel);
+  public Seen getSeen(final String nick, final String channel) {
+    LogsCriteria criteria = new LogsCriteria(ds);
+    criteria.upperNick().equal(nick.toUpperCase());
+    criteria.channel().equal(channel);
+    Logs logs = criteria.query().get();
+    return new Seen(logs.getChannel(), logs.getMessage(), logs.getNick(), logs.getUpdated());
+  }
 
-    @Transactional
-    void pruneHistory();
 }

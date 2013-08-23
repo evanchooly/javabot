@@ -1,126 +1,115 @@
 package javabot.model;
 
-import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-
 import com.antwerkz.maven.SPI;
-import javabot.dao.LogsDao;
-import org.hibernate.annotations.Index;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Index;
+import com.google.code.morphia.annotations.Indexes;
+import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
 
-@Entity
-@Table(name = "logs")
-@NamedQueries({
-    @NamedQuery(name = LogsDao.TODAY,
-//        query = "select s from Logs s join s.channel c WHERE s.channel=:channel AND c.logged AND (s.updated between :today and"
-        query = "select s from Logs s WHERE s.channel=:channel AND (s.updated between :today and"
-            + " :tomorrow) and s.channel in (select c.name from Channel c where c.name=:channel and c.logged is true ) order by s.updated"),
-    @NamedQuery(name = LogsDao.COUNT_LOGGED, query = "select count(s) from Logs s where s.channel like '#%'"),
-    @NamedQuery(name = LogsDao.SEEN,
-        query = "select new javabot.Seen(l.nick, l.message, l.channel, l.updated) from Logs l where"
-            + " lower(l.nick) = :nick AND l.channel = :channel order by l.updated desc")
+@Entity("logs")
+@Indexes({
+    @Index(value = "channel, updated, nick", name = "Logs")
 })
 @SPI(Persistent.class)
-public class Logs implements Serializable, Persistent {
-    private Long id;
-    private String nick;
-    private String channel;
-    private String message;
-    private Date updated;
+public class Logs implements Persistent {
+  @Id
+  private ObjectId id;
 
-    public enum Type {
-        ACTION,
-        BAN,
-        DISCONNECTED,
-        ERROR,
-        INVITE,
-        JOIN,
-        PART,
-        KICK,
-        MESSAGE,
-        QUIT,
-        REGISTERED, TOPIC, NICK,
-    }
+  private String nick;
 
-    @Enumerated(EnumType.STRING)
-    private Type type;
+  private String upperNick;
 
-    @Id
-    @GeneratedValue
-    public Long getId() {
-        return id;
-    }
+  private String channel;
 
-    public void setId(final Long logsId) {
-        id = logsId;
-    }
+  private String message;
 
-    public String getNick() {
-        return nick;
-    }
+  private DateTime updated;
 
-    public void setNick(final String user) {
-        nick = user;
-    }
+  public enum Type {
+    ACTION,
+    BAN,
+    DISCONNECTED,
+    ERROR,
+    INVITE,
+    JOIN,
+    PART,
+    KICK,
+    MESSAGE,
+    QUIT,
+    REGISTERED,
+    TOPIC,
+    NICK,
+  }
 
-    public String getChannel() {
-        return channel;
-    }
+  private Type type;
 
-    public void setChannel(final String chanName) {
-        channel = chanName;
-    }
+  public ObjectId getId() {
+    return id;
+  }
 
-    @Column(length = 4000)
-    public String getMessage() {
-        return message;
-    }
+  public void setId(final ObjectId logsId) {
+    id = logsId;
+  }
 
-    public void setMessage(final String logMessage) {
-        message = logMessage;
-    }
+  public String getNick() {
+    return nick;
+  }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Index(name = "Logs", columnNames = {"channel", "updated", "nick"})
-    public Date getUpdated() {
-        return updated;
-    }
+  public void setNick(final String user) {
+    nick = user;
+  }
 
-    public void setUpdated(final Date date) {
-        updated = date;
-    }
+  public String getChannel() {
+    return channel;
+  }
 
-    public Type getType() {
-        return type;
-    }
+  public void setChannel(final String chanName) {
+    channel = chanName;
+  }
 
-    public void setType(final Type value) {
-        type = value;
-    }
+  public String getMessage() {
+    return message;
+  }
 
-    @Transient
-    public boolean isAction() {
-        return message != null && Type.ACTION == getType();
-    }
+  public void setMessage(final String logMessage) {
+    message = logMessage;
+  }
 
-    @Transient
-    public boolean isKick() {
-        return message != null && Type.KICK == getType();
-    }
+  public DateTime getUpdated() {
+    return updated;
+  }
 
-    @Transient
-    public boolean isServerMessage() {
-        return message != null && Type.JOIN == getType() || Type.PART == getType() || Type.QUIT == getType();
-    }
+  public void setUpdated(final DateTime date) {
+    updated = date;
+  }
+
+  public Type getType() {
+    return type;
+  }
+
+  public void setType(final Type value) {
+    type = value;
+  }
+
+  public boolean isAction() {
+    return message != null && Type.ACTION == getType();
+  }
+
+  public boolean isKick() {
+    return message != null && Type.KICK == getType();
+  }
+
+  public boolean isServerMessage() {
+    return message != null && Type.JOIN == getType() || Type.PART == getType() || Type.QUIT == getType();
+  }
+
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder("Logs{");
+    sb.append("id=").append(id);
+    sb.append('}');
+    return sb.toString();
+  }
 }

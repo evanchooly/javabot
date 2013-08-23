@@ -1,82 +1,113 @@
 package javabot.model;
 
+import java.io.File;
 import java.io.StringWriter;
-import javax.persistence.Entity;
+import javax.inject.Inject;
 
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Transient;
 import javabot.IrcEvent;
 import javabot.IrcUser;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.AdminDao;
 import javabot.dao.ApiDao;
-import javabot.javadoc.Api;
+import javabot.javadoc.JavadocApi;
 import javabot.javadoc.JavadocParser;
 
-@Entity
+@Entity("events")
 public class ApiEvent extends AdminEvent {
-    public String name;
-    public String packages;
-    public String baseUrl;
-    public String file;
+  public String name;
+  public String packages;
+  public Boolean newApi;
+  public String baseUrl;
+  public String file;
 
-    public String getName() {
-        return name;
-    }
+  @Inject
+  @Transient
+  private JavadocParser parser;
+  @Inject
+  @Transient
+  private ApiDao apiDao;
+  @Inject
+  @Transient
+  private AdminDao adminDao;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public ApiEvent() {
+  }
 
-    public String getBaseUrl() {
-        return baseUrl;
-    }
+  public ApiEvent(boolean newApi, String requestedBy, String name, String packages, String baseUrl, File file) {
+    this.newApi = newApi;
+    setRequestedBy(requestedBy);
+    this.name = name;
+    this.packages = packages;
+    this.baseUrl = baseUrl;
+    this.file = file.getAbsolutePath();
+  }
 
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
+  public ApiEvent(String name, String requestedBy) {
+     super(EventType.DELETE, requestedBy);
+     this.name = name;
+   }
 
-    public String getFile() {
-        return file;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setFile(String file) {
-        this.file = file;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public String getPackages() {
-        return packages;
-    }
+  public String getBaseUrl() {
+    return baseUrl;
+  }
 
-    public void setPackages(String packages) {
-        this.packages = packages;
-    }
+  public void setBaseUrl(String baseUrl) {
+    this.baseUrl = baseUrl;
+  }
 
-    public void update(Javabot bot) {
-        delete(bot);
-        add(bot);
-    }
+  public String getFile() {
+    return file;
+  }
 
-    public void delete(Javabot bot) {
-        ApiDao dao = bot.getApplicationContext().getBean(ApiDao.class);
-        Api api = dao.find(name);
-        dao.delete(api);
-    }
+  public void setFile(String file) {
+    this.file = file;
+  }
 
-    public void add(final Javabot bot) {
-        final JavadocParser parser = new JavadocParser();
-        bot.getApplicationContext().getAutowireCapableBeanFactory().autowireBean(parser);
-        ApiDao dao = bot.getApplicationContext().getBean(ApiDao.class);
-        Api api = new Api(name, baseUrl, packages);
-        dao.save(api);
-        final Admin admin = bot.getApplicationContext().getBean(AdminDao.class).getAdmin(getRequestedBy());
-        final IrcUser user = new IrcUser(admin.getIrcName(), admin.getIrcName(), admin.getHostName());
-        final IrcEvent event = new IrcEvent(admin.getIrcName(), user, null);
-        parser.parse(api, file, new StringWriter() {
-            @Override
-            public void write(final String line) {
-                event.setMessage(line);
-                bot.postMessage(new Message(user, event, line));
-            }
-        });
+  public String getPackages() {
+    return packages;
+  }
+
+  public void setPackages(String packages) {
+    this.packages = packages;
+  }
+
+  public void update(Javabot bot) {
+    delete(bot);
+    add(bot);
+  }
+
+  public void delete(Javabot bot) {
+    JavadocApi api = apiDao.find(name);
+    if(api != null) {
+      apiDao.delete(api);
     }
+  }
+
+  public void add(final Javabot bot) {
+    JavadocApi api = new JavadocApi(name, baseUrl, packages);
+    apiDao.save(api);
+
+    final Admin admin = adminDao.getAdmin(getRequestedBy());
+    final IrcUser user = new IrcUser(admin.getIrcName(), admin.getIrcName(), admin.getHostName());
+    final IrcEvent event = new IrcEvent(admin.getIrcName(), user, null);
+
+    parser.parse(api, file, new StringWriter() {
+      @Override
+      public void write(final String line) {
+        event.setMessage(line);
+        bot.postMessage(new Message(user, event, line));
+      }
+    });
+  }
 }

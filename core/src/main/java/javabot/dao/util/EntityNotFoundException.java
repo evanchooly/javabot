@@ -1,7 +1,9 @@
 package javabot.dao.util;
 
-public class EntityNotFoundException extends javax.persistence.EntityNotFoundException {
-    public EntityNotFoundException(Class clazz, Long id) {
+import org.bson.types.ObjectId;
+
+public class EntityNotFoundException extends RuntimeException {
+    public EntityNotFoundException(Class clazz, ObjectId id) {
         super("An object of type " + clazz + " with ID " + id + " does not exist.");
     }
 

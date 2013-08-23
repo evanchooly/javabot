@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ServiceLoader;
+import javax.inject.Inject;
 
 import javabot.IrcEvent;
 import javabot.IrcUser;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.AdminDao;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class BotOperation {
   private Javabot bot;
-  @Autowired
+  @Inject
   private AdminDao dao;
 
   public Javabot getBot() {

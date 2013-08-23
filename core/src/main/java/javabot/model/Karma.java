@@ -1,77 +1,77 @@
 package javabot.model;
 
 import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import com.antwerkz.maven.SPI;
-import javabot.dao.KarmaDao;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Index;
+import com.google.code.morphia.annotations.Indexes;
+import com.google.code.morphia.annotations.PrePersist;
+import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
 
-@Entity
-@Table(name = "karma")
-@NamedQueries({
-    @NamedQuery(name= KarmaDao.ALL, query= "from Karma k order by k.name"),
-    @NamedQuery(name= KarmaDao.COUNT, query= "select count(*) from Karma"),
-    @NamedQuery(name= KarmaDao.BY_NAME, query="from Karma k where k.name = :name")
-})
+@Entity("karma")
 @SPI(Persistent.class)
+@Indexes({
+    @Index("upperName")
+})
 public class Karma implements Serializable, Persistent {
-    private Long id;
-    private String name;
-    private Integer value = 0;
-    private String userName;
-    private Date updated;
+  @Id
+  private ObjectId id;
 
-    @Id
-    @GeneratedValue
-    public Long getId() {
-        return id;
-    }
+  private String name;
 
-    public void setId(Long karmId) {
-        id = karmId;
-    }
+  private String upperName;
 
-    public String getName() {
-        return name;
-    }
+  private Integer value = 0;
 
-    public void setName(String karmaName) {
-        name = karmaName;
-    }
+  private String userName;
 
-    @Column
-    public Integer getValue() {
-        return value;
-    }
+  private DateTime updated;
 
-    public void setValue(Integer karmaValue) {
-        value = karmaValue;
-    }
+  public ObjectId getId() {
+    return id;
+  }
 
-    @Column(length = 100)
-    public String getUserName() {
-        return userName;
-    }
+  public void setId(ObjectId karmaId) {
+    id = karmaId;
+  }
 
-    public void setUserName(String usrName) {
-        userName = usrName;
-    }
+  public String getName() {
+    return name;
+  }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date getUpdated() {
-        return updated;
-    }
+  public void setName(String karmaName) {
+    name = karmaName;
+  }
 
-    public void setUpdated(Date date) {
-        updated = date;
-    }
+  public Integer getValue() {
+    return value;
+  }
+
+  public void setValue(Integer karmaValue) {
+    value = karmaValue;
+  }
+
+  public String getUserName() {
+    return userName;
+  }
+
+  public void setUserName(String usrName) {
+    userName = usrName;
+  }
+
+  public DateTime getUpdated() {
+    return updated;
+  }
+
+  public void setUpdated(DateTime date) {
+    updated = date;
+  }
+
+  @PrePersist
+  public void uppers() {
+    upperName = name.toUpperCase();
+  }
 }

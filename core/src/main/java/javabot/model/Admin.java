@@ -1,44 +1,44 @@
 package javabot.model;
 
 import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
 
 import com.antwerkz.maven.SPI;
-import javabot.dao.AdminDao;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Index;
+import com.google.code.morphia.annotations.Indexes;
+import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
 
-@Entity
-@Table(name = "admin")
-@NamedQueries({
-  @NamedQuery(name = AdminDao.FIND, query = "select a from Admin a where a.userName = :userName "),
-  @NamedQuery(name = AdminDao.FIND_WITH_HOST, query = "select a from Admin a where a.ircName = :ircName "
-    + "and a.hostName = :hostName"),
-  @NamedQuery(name = AdminDao.FIND_ALL, query = "select a from Admin a order by a.ircName")
-})
+@Entity("admin")
 @SPI(Persistent.class)
+@Indexes({
+    @Index(value = "userName", unique = true),
+    @Index("ircName, hostName")
+} )
 public class Admin implements Serializable, Persistent {
-  private Long id;
-  private Boolean botOwner;
-  private String hostName;
-  private String userName;
-  private String ircName;
-  private String addedBy;
-  private Date updated;
-
   @Id
+  private ObjectId id;
+
+  private Boolean botOwner = false;
+
+  private String hostName;
+
+  private String userName;
+
+  private String ircName;
+
+  private String addedBy;
+
+  private DateTime updated = DateTime.now();
+
   @Override
-  @GeneratedValue
-  public Long getId() {
+  public ObjectId getId() {
     return id;
   }
 
   @Override
-  public void setId(Long adminId) {
+  public void setId(ObjectId adminId) {
     id = adminId;
   }
 
@@ -58,11 +58,11 @@ public class Admin implements Serializable, Persistent {
     userName = adminName;
   }
 
-  public Date getUpdated() {
+  public DateTime getUpdated() {
     return updated;
   }
 
-  public void setUpdated(Date date) {
+  public void setUpdated(DateTime date) {
     updated = date;
   }
 
