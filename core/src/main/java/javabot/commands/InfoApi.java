@@ -20,6 +20,7 @@ import javabot.javadoc.JavadocApi;
 public class InfoApi extends AdminCommand {
   @Inject
   private ApiDao dao;
+
   @Param
   String name;
 
@@ -30,9 +31,8 @@ public class InfoApi extends AdminCommand {
     final String destination = event.getChannel();
     final JavadocApi api = dao.find(name);
     if (api != null) {
-      responses.add(new Message(destination, event, String.format(
-          "The %s API can be found at %s.  I know about these packages from that API:  %s",
-          api.getName(), api.getBaseUrl(), api.getPackages() == null ? "*" : api.getPackages())));
+      responses.add(new Message(destination, event,
+          String.format("The %s API can be found at %s.", api.getName(), api.getBaseUrl())));
     } else {
       responses.add(new Message(destination, event, String.format(
           "I don't have javadoc for %s, %s", name, event.getSender())));

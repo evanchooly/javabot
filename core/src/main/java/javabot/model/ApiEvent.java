@@ -18,7 +18,6 @@ import javabot.javadoc.JavadocParser;
 @Entity("events")
 public class ApiEvent extends AdminEvent {
   public String name;
-  public String packages;
   public Boolean newApi;
   public String baseUrl;
   public String file;
@@ -36,11 +35,10 @@ public class ApiEvent extends AdminEvent {
   public ApiEvent() {
   }
 
-  public ApiEvent(boolean newApi, String requestedBy, String name, String packages, String baseUrl, File file) {
+  public ApiEvent(boolean newApi, String requestedBy, String name, String baseUrl, File file) {
     this.newApi = newApi;
     setRequestedBy(requestedBy);
     this.name = name;
-    this.packages = packages;
     this.baseUrl = baseUrl;
     this.file = file.getAbsolutePath();
   }
@@ -74,14 +72,6 @@ public class ApiEvent extends AdminEvent {
     this.file = file;
   }
 
-  public String getPackages() {
-    return packages;
-  }
-
-  public void setPackages(String packages) {
-    this.packages = packages;
-  }
-
   public void update(Javabot bot) {
     delete(bot);
     add(bot);
@@ -95,7 +85,7 @@ public class ApiEvent extends AdminEvent {
   }
 
   public void add(final Javabot bot) {
-    JavadocApi api = new JavadocApi(name, baseUrl, packages);
+    JavadocApi api = new JavadocApi(name, baseUrl);
     apiDao.save(api);
 
     final Admin admin = adminDao.getAdmin(getRequestedBy());

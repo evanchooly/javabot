@@ -32,7 +32,6 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
   val apiForm: Form[ApiForm] = Form(
     mapping(
       "name" -> text,
-      "packages" -> optional(text),
       "baseUrl" -> text
     )(ApiForm.apply)(ApiForm.unapply))
   val channelForm: Form[ChannelInfo] = Form(
@@ -166,7 +165,7 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
             val savedFile = File.createTempFile(form.name + "javadoc", ".jar")
             jar.ref.moveTo(savedFile, replace = true)
             apiDao.save(new ApiEvent(apiDao.find(form.name) == null, getAdmin(request.session).getUserName,
-              form.name, form.packages.getOrElse(""), form.baseUrl, savedFile))
+              form.name, form.baseUrl, savedFile))
             Redirect(routes.AdminController.javadoc())
         }
         map.get
@@ -235,8 +234,7 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
   //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
   def addChannel() = Action {
     implicit request =>
-      Ok(views.html.admin
-        .editChannel(handler, fillContext(request), channelForm.fill(new Channel)))
+      Ok(views.html.admin.editChannel(handler, fillContext(request), channelForm.fill(new Channel)))
   }
 
   //  @Get("/showChannel")
@@ -244,8 +242,7 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
   def showChannel(name: String = null) = Action {
     implicit request =>
       val channel = channelDao.get(name)
-      Ok(views.html.admin
-        .editChannel(handler, fillContext(request), channelForm.fill(channel)))
+      Ok(views.html.admin.editChannel(handler, fillContext(request), channelForm.fill(channel)))
   }
 
   //  @Get("/editChannel")

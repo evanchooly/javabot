@@ -78,9 +78,8 @@ public class BaseTest {
 
   @AfterSuite
   public void shutdown() throws InterruptedException {
-    TestJavabot javabot = getJavabot();
-    if (javabot != null) {
-      javabot.shutdown();
+    if (bot != null) {
+      bot.shutdown();
     }
   }
 

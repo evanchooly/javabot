@@ -59,25 +59,23 @@ public class MyPircBot extends PircBot {
     }
   }
 
-    @Override
-    public void onDisconnect() {
-        System.out.println("MyPircBot.onDisconnect");
-        if (!javabot.executors.isShutdown()) {
-            try {
-                System.out.println("trying to reconnect");
-                javabot.setReconnecting(true);
-                javabot.connect();
-            } catch (Exception e) {
-                Javabot.log.error(e.getMessage(), e);
-                throw new RuntimeException(e.getMessage(), e);
-            }
-        }
+  @Override
+  public void onDisconnect() {
+    System.out.println("MyPircBot.onDisconnect");
+    if (!javabot.executors.isShutdown()) {
+      try {
+        System.out.println("trying to reconnect");
+        javabot.setReconnecting(true);
+        javabot.connect();
+      } catch (Exception e) {
+        Javabot.log.error(e.getMessage(), e);
+        throw new RuntimeException(e.getMessage(), e);
+      }
     }
   }
 
   @Override
-  public void onPrivateMessage(final String sender, final String login, final String hostname,
-      final String message) {
+  public void onPrivateMessage(final String sender, final String login, final String hostname, final String message) {
     if (javabot.adminDao.isAdmin(sender, hostname) || javabot.isOnSameChannelAs(sender)) {
       javabot.executors.execute(new Runnable() {
         @Override

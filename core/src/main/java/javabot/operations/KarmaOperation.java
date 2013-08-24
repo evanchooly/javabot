@@ -5,7 +5,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.antwerkz.maven.SPI;
-import com.google.inject.persist.Transactional;
 import javabot.IrcEvent;
 import javabot.IrcUser;
 import javabot.Javabot;
@@ -39,7 +38,6 @@ public class KarmaOperation extends BotOperation {
   }
 
   @Override
-  @Transactional
   public List<Message> handleMessage(final IrcEvent event) {
     final List<Message> responses = new ArrayList<>();
     responses.addAll(readKarma(event));

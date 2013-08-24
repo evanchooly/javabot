@@ -201,7 +201,6 @@ public class Migrator {
     api.setId(mapId("apis", resultSet.getLong("id")));
     api.setBaseUrl(resultSet.getString("baseurl"));
     api.setName(resultSet.getString("name"));
-    api.setPackages(resultSet.getString("packages"));
     logsDao.save(api);
   }
 

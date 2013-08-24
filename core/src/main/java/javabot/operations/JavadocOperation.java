@@ -6,7 +6,6 @@ import javax.inject.Inject;
 
 import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
-import com.google.inject.persist.Transactional;
 import javabot.IrcEvent;
 import javabot.Message;
 import javabot.dao.ApiDao;
@@ -25,7 +24,6 @@ public class JavadocOperation extends BotOperation {
   private static final int RESULT_LIMIT = 5;
 
   @Override
-  @Transactional
   public List<Message> handleMessage(final IrcEvent event) {
     final String message = event.getMessage();
     final List<Message> responses = new ArrayList<>();

@@ -121,12 +121,6 @@
 
             <!-- Database drivers -->
             <dependency>
-                <groupId>postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>9.1-902.jdbc4</version>
-            </dependency>
-
-            <dependency>
                 <groupId>com.google.code.morphia</groupId>
                 <artifactId>morphia</artifactId>
                 <version>0.102</version>
@@ -154,12 +148,6 @@
             <dependency>
                 <groupId>com.google.inject</groupId>
                 <artifactId>guice</artifactId>
-                <version>${guice.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.inject.extensions</groupId>
-                <artifactId>guice-persist</artifactId>
                 <version>${guice.version}</version>
             </dependency>
 

@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
-import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -47,7 +46,6 @@ import javabot.model.Logs;
 import javabot.operations.BotOperation;
 import javabot.operations.OperationComparator;
 import javabot.operations.StandardOperation;
-import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
@@ -109,7 +107,6 @@ public class Javabot {
   private BlockingQueue<Runnable> queue;
 
   protected MyPircBot pircBot;
-  private boolean reconnecting = false;
 
   private boolean reconnecting = false;
 
@@ -343,10 +340,6 @@ public class Javabot {
       enabled = true;
     }
     return enabled;
-  }
-
-  public String getHost() {
-    return host;
   }
 
   public List<BotOperation> getAllOperations() {

@@ -32,17 +32,14 @@ public class JavadocApi implements Persistent {
 
   private String baseUrl;
 
-  private String packages;
-
   public static final List<String> JDK_JARS = Arrays.asList("rt.jar", "jce.jar");
 
   public JavadocApi() {
   }
 
-  public JavadocApi(final String apiName, final String url, final String pkgs) {
+  public JavadocApi(final String apiName, final String url) {
     name = apiName;
     baseUrl = url.endsWith("/") ? url : url + "/";
-    packages = pkgs;
   }
 
   public ObjectId getId() {
@@ -67,14 +64,6 @@ public class JavadocApi implements Persistent {
 
   public void setBaseUrl(final String baseUrl) {
     this.baseUrl = baseUrl;
-  }
-
-  public String getPackages() {
-    return packages;
-  }
-
-  public void setPackages(final String packages) {
-    this.packages = packages;
   }
 
   @PrePersist

@@ -112,29 +112,6 @@ public class JavadocApiCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocApi, java.lang.String> packages() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("packages"));
-  }
-
-  public JavadocApiCriteria packages(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("packages")).equal(value);
-    return this;
-  }
-
-  public JavadocApiCriteria orderByPackages() {
-    return orderByPackages(true);
-  }
-
-  public JavadocApiCriteria orderByPackages(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "packages");
-    return this;
-  }
-
-  public JavadocApiCriteria distinctPackages() {
-    ((QueryImpl) query).getCollection().distinct("packages");
-    return this;
-  }
-
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocApi, java.lang.String> upperName() {
     return new TypeSafeFieldEnd<>(query, query.criteria("upperName"));
   }
@@ -360,65 +337,6 @@ public class JavadocApiCriteria {
 
     public JavadocApiUpdater incName(Number value) {
       updateOperations.inc("name", value);
-      return this;
-    }
-    public JavadocApiUpdater packages(java.lang.String value) {
-      updateOperations.set("packages", value);
-      return this;
-    }
-
-    public JavadocApiUpdater unsetPackages(java.lang.String value) {
-      updateOperations.unset("packages");
-      return this;
-    }
-
-    public JavadocApiUpdater addPackages(java.lang.String value) {
-      updateOperations.add("packages", value);
-      return this;
-    }
-
-    public JavadocApiUpdater addPackages(String fieldExpr, java.lang.String value, boolean addDups) {
-      updateOperations.add("packages", value, addDups);
-      return this;
-    }
-
-    public JavadocApiUpdater addAllToPackages(List<java.lang.String> values, boolean addDups) {
-      updateOperations.addAll("packages", values, addDups);
-      return this;
-    }
-  
-    public JavadocApiUpdater removeFirstPackages() {
-      updateOperations.removeFirst("packages");
-      return this;
-    }
-  
-    public JavadocApiUpdater removeLastPackages() {
-      updateOperations.removeLast("packages");
-      return this;
-    }
-  
-    public JavadocApiUpdater removeFromPackages(java.lang.String value) {
-      updateOperations.removeAll("packages", value);
-      return this;
-    }
-
-    public JavadocApiUpdater removeAllFromPackages(List<java.lang.String> values) {
-      updateOperations.removeAll("packages", values);
-      return this;
-    }
- 
-    public JavadocApiUpdater decPackages() {
-      updateOperations.dec("packages");
-      return this;
-    }
-
-    public JavadocApiUpdater incPackages() {
-      updateOperations.inc("packages");
-      return this;
-    }
-
-    public JavadocApiUpdater incPackages(Number value) {
-      updateOperations.inc("packages", value);
       return this;
     }
     public JavadocApiUpdater upperName(java.lang.String value) {

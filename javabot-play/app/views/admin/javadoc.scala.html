@@ -11,9 +11,6 @@
                 <input type="text" name="name"/>
             </td>
             <td class="top">
-                <input type="text" name="packages"/>
-            </td>
-            <td class="top">
                 <input type="text" name="baseUrl" width="30"/>
                 <input type="file" id="file" name="file"/>
             </td>
@@ -24,14 +21,12 @@
     }
     <tr>
         <th>Name</th>
-        <th>Packages</th>
         <th>Base URL</th>
         <th class="right">&nbsp;</th>
     </tr>
     @for(api <- apis) {
         <tr>
             <td>@{api.getName}</td>
-            <td>@{api.getPackages}</td>
             <td>@{api.getBaseUrl}</td>
             <td class="right"><a href="@{routes.AdminController.deleteApi(api.getId)}">
                 <img src="@routes.Assets.at("images/boomy/delete24.png")" alt="Delete"/></a>

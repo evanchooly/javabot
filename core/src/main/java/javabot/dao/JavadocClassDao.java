@@ -65,7 +65,7 @@ public class JavadocClassDao extends BaseDao<JavadocClass> {
       if (javadocClass != null) {
         methods.addAll(getMethods(methodName, signatureTypes, javadocClass));
         JavadocClass superClass = javadocClass.getSuperClass();
-        if(superClass != null) {
+        if (superClass != null) {
           list.add(find(superClass.getId()));
         }
       }
@@ -118,16 +118,16 @@ public class JavadocClassDao extends BaseDao<JavadocClass> {
   }
 
   public void deleteFor(final JavadocApi api) {
-    JavadocFieldCriteria fields = new JavadocFieldCriteria(ds);
-    fields.api(api);
-    ds.delete(fields.query());
-
-    JavadocMethodCriteria methods = new JavadocMethodCriteria(ds);
-    methods.api(api);
-    ds.delete(methods.query());
-
-    JavadocClassCriteria classes = new JavadocClassCriteria(ds);
-    classes.api(api);
-    ds.delete(classes.query());
+    if (api != null) {
+      ds.delete(new JavadocFieldCriteria(ds)
+          .api(api)
+          .query());
+      ds.delete(new JavadocMethodCriteria(ds)
+          .api(api)
+          .query());
+      ds.delete(new JavadocClassCriteria(ds)
+          .api(api)
+          .query());
+    }
   }
 }

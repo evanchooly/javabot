@@ -181,29 +181,6 @@ public class ApiEventCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, java.lang.String> packages() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("packages"));
-  }
-
-  public ApiEventCriteria packages(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("packages")).equal(value);
-    return this;
-  }
-
-  public ApiEventCriteria orderByPackages() {
-    return orderByPackages(true);
-  }
-
-  public ApiEventCriteria orderByPackages(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "packages");
-    return this;
-  }
-
-  public ApiEventCriteria distinctPackages() {
-    ((QueryImpl) query).getCollection().distinct("packages");
-    return this;
-  }
-
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, java.lang.String> requestedBy() {
     return new TypeSafeFieldEnd<>(query, query.criteria("requestedBy"));
   }
@@ -675,65 +652,6 @@ public class ApiEventCriteria {
 
     public ApiEventUpdater incNewApi(Number value) {
       updateOperations.inc("newApi", value);
-      return this;
-    }
-    public ApiEventUpdater packages(java.lang.String value) {
-      updateOperations.set("packages", value);
-      return this;
-    }
-
-    public ApiEventUpdater unsetPackages(java.lang.String value) {
-      updateOperations.unset("packages");
-      return this;
-    }
-
-    public ApiEventUpdater addPackages(java.lang.String value) {
-      updateOperations.add("packages", value);
-      return this;
-    }
-
-    public ApiEventUpdater addPackages(String fieldExpr, java.lang.String value, boolean addDups) {
-      updateOperations.add("packages", value, addDups);
-      return this;
-    }
-
-    public ApiEventUpdater addAllToPackages(List<java.lang.String> values, boolean addDups) {
-      updateOperations.addAll("packages", values, addDups);
-      return this;
-    }
-  
-    public ApiEventUpdater removeFirstPackages() {
-      updateOperations.removeFirst("packages");
-      return this;
-    }
-  
-    public ApiEventUpdater removeLastPackages() {
-      updateOperations.removeLast("packages");
-      return this;
-    }
-  
-    public ApiEventUpdater removeFromPackages(java.lang.String value) {
-      updateOperations.removeAll("packages", value);
-      return this;
-    }
-
-    public ApiEventUpdater removeAllFromPackages(List<java.lang.String> values) {
-      updateOperations.removeAll("packages", values);
-      return this;
-    }
- 
-    public ApiEventUpdater decPackages() {
-      updateOperations.dec("packages");
-      return this;
-    }
-
-    public ApiEventUpdater incPackages() {
-      updateOperations.inc("packages");
-      return this;
-    }
-
-    public ApiEventUpdater incPackages(Number value) {
-      updateOperations.inc("packages", value);
       return this;
     }
     public ApiEventUpdater requestedBy(java.lang.String value) {

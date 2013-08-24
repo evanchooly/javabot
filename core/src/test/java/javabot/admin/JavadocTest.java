@@ -15,6 +15,7 @@ import javabot.BaseTest;
 import javabot.Message;
 import javabot.dao.ApiDao;
 import javabot.dao.JavadocClassDao;
+import javabot.javadoc.JavadocApi;
 import javabot.model.ApiEvent;
 import javabot.model.EventType;
 import javabot.operations.BaseOperationTest;
@@ -36,7 +37,7 @@ public class JavadocTest extends BaseOperationTest {
 
   private static final String API_URL_STRING = "http://tomcat.apache.org/tomcat-7.0-doc/servletapi/";
 
-  @Test
+  @Test//(enabled = false)
   public void addApi() throws IOException {
     dropTestApi();
     addTestApi(downloadZip());
@@ -45,19 +46,19 @@ public class JavadocTest extends BaseOperationTest {
   @Test
   public void addJdk() {
     getJavabot();
-    if (apiDao.find("JDK") == null) {
+    JavadocApi api = apiDao.find("JDK");
+    if (api == null) {
       ApiEvent event = new ApiEvent();
       event.setName("JDK");
       event.setType(EventType.ADD);
       event.setBaseUrl("http://docs.oracle.com/javase/7/docs/api");
-      event.setPackages("java,javax,org.w3c,org.xml");
       event.setFile(new File(System.getProperty("java.home"), "lib/rt.jar").getAbsolutePath());
       event.setRequestedBy(BaseTest.TEST_USER.getNick());
       eventDao.save(event);
       waitForEvent(event, "adding " + API_NAME, new Duration(30, TimeUnit.MINUTES));
+      List<Message> messages = getJavabot().getMessages();
     }
-    List<Message> messages = getJavabot().getMessages();
-    Assert.assertNotEquals(javadocClassDao.getClass("java.lang", "Integer").length, 0);
+    Assert.assertEquals(javadocClassDao.getClass("java.lang", "Integer").length, 1);
   }
 
   private void addTestApi(final File file) {
@@ -65,7 +66,6 @@ public class JavadocTest extends BaseOperationTest {
     event.setName(API_NAME);
     event.setType(EventType.ADD);
     event.setBaseUrl(API_URL_STRING);
-    event.setPackages("javax");
     event.setFile(file.getAbsolutePath());
     event.setRequestedBy(BaseTest.TEST_USER.getNick());
     eventDao.save(event);
@@ -98,7 +98,7 @@ public class JavadocTest extends BaseOperationTest {
     waitForEvent(event, "dropping " + API_NAME, Duration.FIVE_MINUTES);
   }
 
-  @Test(dependsOnMethods = "addApi")
+  @Test(dependsOnMethods = "addApi", enabled = false)
   public void dropApi() {
     dropTestApi();
   }

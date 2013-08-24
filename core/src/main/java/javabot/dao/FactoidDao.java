@@ -4,7 +4,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.google.code.morphia.query.Query;
-import com.google.inject.persist.Transactional;
 import javabot.dao.util.QueryParam;
 import javabot.model.Factoid;
 import javabot.model.Persistent;
@@ -46,7 +45,6 @@ public class FactoidDao extends BaseDao<Factoid> {
     return criteria.query().get() != null;
   }
 
-  @Transactional
   public Factoid addFactoid(final String sender, final String key, final String value) {
     final Factoid factoid = new Factoid();
     factoid.setId(factoid.getId());

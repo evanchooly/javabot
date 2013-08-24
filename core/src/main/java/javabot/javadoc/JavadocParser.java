@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -17,10 +15,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
-import com.google.inject.Injector;
-import com.google.inject.persist.Transactional;
 import javabot.JavabotThreadFactory;
 import javabot.dao.ApiDao;
 import javabot.dao.JavadocClassDao;
@@ -39,20 +36,13 @@ public class JavadocParser {
   private JavadocClassDao dao;
 
   @Inject
-  private Injector injector;
+  private Provider<JavadocClassVisitor> provider;
 
-  private final BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
-
-  private final ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 30, 30, TimeUnit.SECONDS, workQueue,
-      new JavabotThreadFactory(false, "javadoc-thread-"));
 
   private JavadocApi api;
 
-  private List<String> packages;
-
   private final Map<String, List<JavadocClass>> deferred = new HashMap<>();
 
-  @Transactional
   public void parse(final JavadocApi classApi, String location, final Writer writer) {
     api = classApi;
     try {
@@ -60,24 +50,31 @@ public class JavadocParser {
       if (!tmpDir.exists()) {
         new File(System.getProperty("java.io.tmpdir"));
       }
+
+      BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
+      ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 30, 30, TimeUnit.SECONDS, workQueue,
+       new JavabotThreadFactory(false, "javadoc-thread-"));
       executor.prestartCoreThread();
+
       File file = new File(location);
       try (JarFile jarFile = new JarFile(file)) {
         for (final Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements(); ) {
           final JarEntry entry = entries.nextElement();
           if (entry.getName().endsWith(".class")) {
-            workQueue.offer(new Runnable() {
+            boolean offer = workQueue.offer(new Runnable() {
               @Override
               public void run() {
                 try {
-                  JavadocClassVisitor visitor = injector.getInstance(JavadocClassVisitor.class);
-                  new ClassReader(jarFile.getInputStream(entry)).accept(visitor, 0);
+                  new ClassReader(jarFile.getInputStream(entry)).accept(provider.get(), 0);
                 } catch (Exception e) {
                   log.error(e.getMessage(), e);
                   throw new RuntimeException(e.getMessage(), e);
                 }
               }
             }, 1, TimeUnit.MINUTES);
+            if(!offer) {
+              writer.write("Failed to class to queue: " + entry);
+            }
           }
         }
         while (!workQueue.isEmpty()) {
@@ -92,29 +89,10 @@ public class JavadocParser {
         writer.write(String.format("Finished importing %s.  %s!", api.getName(),
             workQueue.isEmpty() ? "SUCCESS" : "FAILURE"));
       }
-    } catch (IOException e) {
-      log.debug(e.getMessage(), e);
-      throw new RuntimeException(e.getMessage(), e);
-    } catch (InterruptedException e) {
+    } catch (IOException | InterruptedException e) {
       log.error(e.getMessage(), e);
-      throw new RuntimeException(e.getMessage());
+      throw new RuntimeException(e.getMessage(), e);
     }
-  }
-
-  public boolean acceptPackage(final String pkg) {
-    if (packages == null) {
-      packages = api.getPackages() == null ? Collections.<String>emptyList()
-          : Arrays.asList(api.getPackages().split(","));
-    }
-    if (packages.isEmpty()) {
-      return true;
-    }
-    for (String name : packages) {
-      if (pkg.startsWith(name)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   public JavadocClass getOrQueue(final JavadocApi api, final String pkg, final String name,

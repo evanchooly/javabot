@@ -19,9 +19,10 @@ public class JavadocClassVisitor extends EmptyVisitor {
   private JavadocClassDao dao;
   @Inject
   private ApiDao apiDao;
-  private JavadocClass javadocClass;
   @Inject
   private JavadocParser parser;
+
+  private JavadocClass javadocClass;
   private static final Map<Character, String> PRIMITIVES = new HashMap<>();
 
   static {
@@ -40,7 +41,7 @@ public class JavadocClassVisitor extends EmptyVisitor {
       final String superName, final String[] interfaces) {
     try {
       final String pkg = getPackage(name);
-      if (parser.acceptPackage(pkg) && isPublic(access)) {
+      if (isPublic(access)) {
         final String className = name.substring(name.lastIndexOf("/") + 1).replace('$', '.');
         javadocClass = parser.getOrCreate(parser.getApi(), pkg, className);
         if (superName != null) {
