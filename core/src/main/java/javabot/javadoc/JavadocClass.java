@@ -9,27 +9,26 @@ import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Index;
 import com.google.code.morphia.annotations.Indexes;
 import com.google.code.morphia.annotations.PrePersist;
-import com.google.code.morphia.annotations.Reference;
 import javabot.model.Persistent;
 import org.bson.types.ObjectId;
 
 @Entity(value = "classes")
 @SPI(Persistent.class)
 @Indexes({
+    @Index("apiId"),
     @Index(value = "upperName"),
-    @Index(value = "upperPackageName, upperName")
+    @Index(value = "upperPackageName, upperName"),
+    @Index(value = "apiId, upperPackageName, upperName"),
 })
 public class JavadocClass extends JavadocElement {
   @Id
   private ObjectId id;
-  @Reference
-  private JavadocApi api;
+
   private String packageName;
   private String upperPackageName;
   private String name;
   private String upperName;
-  @Reference
-  private JavadocClass superClass;
+  private ObjectId superClassId;
   private List<JavadocMethod> methods = new ArrayList<>();
   private List<JavadocField> fields = new ArrayList<>();
 
@@ -37,9 +36,9 @@ public class JavadocClass extends JavadocElement {
   }
 
   public JavadocClass(final JavadocApi api, final String pkg, final String name) {
-    this.api = api;
     packageName = pkg;
     this.name = name;
+    setApiId(api.getId());
     setDirectUrl(api.getBaseUrl() + pkg.replace('.', '/') + "/" + name + ".html");
     setLongUrl(api.getBaseUrl() + "index.html?" + pkg.replace('.', '/') + "/" + name + ".html");
   }
@@ -50,14 +49,6 @@ public class JavadocClass extends JavadocElement {
 
   public void setId(final ObjectId classId) {
     id = classId;
-  }
-
-  public JavadocApi getApi() {
-    return api;
-  }
-
-  public void setApi(final JavadocApi api) {
-    this.api = api;
   }
 
   public String getPackageName() {
@@ -76,12 +67,16 @@ public class JavadocClass extends JavadocElement {
     this.name = name;
   }
 
-  public JavadocClass getSuperClass() {
-    return superClass;
+  public ObjectId getSuperClassId() {
+    return superClassId;
   }
 
-  public void setSuperClass(final JavadocClass javadocClass) {
-    superClass = javadocClass;
+  public void setSuperClassId(final ObjectId javadocClassId) {
+    superClassId = javadocClassId;
+  }
+
+  public void setSuperClassId(final JavadocClass javadocClass) {
+    superClassId = javadocClass.getId();
   }
 
   public String getUpperName() {

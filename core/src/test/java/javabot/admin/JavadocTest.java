@@ -6,13 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import com.jayway.awaitility.Duration;
 import javabot.BaseTest;
-import javabot.Message;
 import javabot.dao.ApiDao;
 import javabot.dao.JavadocClassDao;
 import javabot.javadoc.JavadocApi;
@@ -37,7 +35,7 @@ public class JavadocTest extends BaseOperationTest {
 
   private static final String API_URL_STRING = "http://tomcat.apache.org/tomcat-7.0-doc/servletapi/";
 
-  @Test//(enabled = false)
+  @Test
   public void addApi() throws IOException {
     dropTestApi();
     addTestApi(downloadZip());
@@ -56,9 +54,10 @@ public class JavadocTest extends BaseOperationTest {
       event.setRequestedBy(BaseTest.TEST_USER.getNick());
       eventDao.save(event);
       waitForEvent(event, "adding " + API_NAME, new Duration(30, TimeUnit.MINUTES));
-      List<Message> messages = getJavabot().getMessages();
+      getJavabot().getMessages();
+      api = apiDao.find("JDK");
     }
-    Assert.assertEquals(javadocClassDao.getClass("java.lang", "Integer").length, 1);
+    Assert.assertEquals(javadocClassDao.getClass(api, "java.lang", "Integer").length, 1);
   }
 
   private void addTestApi(final File file) {
@@ -71,7 +70,10 @@ public class JavadocTest extends BaseOperationTest {
     eventDao.save(event);
     waitForEvent(event, "adding " + API_NAME, new Duration(30, TimeUnit.MINUTES));
     getJavabot().getMessages();
-    Assert.assertTrue(javadocClassDao.getClass("javax.servlet.http", "HttpServletRequest").length != 0);
+    Assert.assertTrue(javadocClassDao.getClass(
+        apiDao.find(API_NAME), "javax.servlet.http", "HttpServletRequest").length != 0);
+    scanForResponse("~javadoc HttpServlet", "javax.servlet.http.HttpServlet");
+    scanForResponse("~javadoc HttpServlet.doGet(*)", "javax.servlet.http.HttpServlet.doGet");
   }
 
   private File downloadZip() throws IOException {
@@ -96,10 +98,5 @@ public class JavadocTest extends BaseOperationTest {
     event.setType(EventType.DELETE);
     eventDao.save(event);
     waitForEvent(event, "dropping " + API_NAME, Duration.FIVE_MINUTES);
-  }
-
-  @Test(dependsOnMethods = "addApi", enabled = false)
-  public void dropApi() {
-    dropTestApi();
   }
 }

@@ -43,6 +43,29 @@ public class JavadocFieldCriteria {
     return query.and(criteria);
   }
 
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, org.bson.types.ObjectId> apiId() {
+    return new TypeSafeFieldEnd<>(query, query.criteria("apiId"));
+  }
+
+  public JavadocFieldCriteria apiId(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("apiId")).equal(value);
+    return this;
+  }
+
+  public JavadocFieldCriteria orderByApiId() {
+    return orderByApiId(true);
+  }
+
+  public JavadocFieldCriteria orderByApiId(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "apiId");
+    return this;
+  }
+
+  public JavadocFieldCriteria distinctApiId() {
+    ((QueryImpl) query).getCollection().distinct("apiId");
+    return this;
+  }
+
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, java.lang.String> directUrl() {
     return new TypeSafeFieldEnd<>(query, query.criteria("directUrl"));
   }
@@ -89,6 +112,29 @@ public class JavadocFieldCriteria {
     return this;
   }
 
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, org.bson.types.ObjectId> javadocClassId() {
+    return new TypeSafeFieldEnd<>(query, query.criteria("javadocClassId"));
+  }
+
+  public JavadocFieldCriteria javadocClassId(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("javadocClassId")).equal(value);
+    return this;
+  }
+
+  public JavadocFieldCriteria orderByJavadocClassId() {
+    return orderByJavadocClassId(true);
+  }
+
+  public JavadocFieldCriteria orderByJavadocClassId(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "javadocClassId");
+    return this;
+  }
+
+  public JavadocFieldCriteria distinctJavadocClassId() {
+    ((QueryImpl) query).getCollection().distinct("javadocClassId");
+    return this;
+  }
+
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, java.lang.String> longUrl() {
     return new TypeSafeFieldEnd<>(query, query.criteria("longUrl"));
   }
@@ -132,6 +178,29 @@ public class JavadocFieldCriteria {
 
   public JavadocFieldCriteria distinctName() {
     ((QueryImpl) query).getCollection().distinct("name");
+    return this;
+  }
+
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, java.lang.String> parentClassName() {
+    return new TypeSafeFieldEnd<>(query, query.criteria("parentClassName"));
+  }
+
+  public JavadocFieldCriteria parentClassName(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("parentClassName")).equal(value);
+    return this;
+  }
+
+  public JavadocFieldCriteria orderByParentClassName() {
+    return orderByParentClassName(true);
+  }
+
+  public JavadocFieldCriteria orderByParentClassName(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "parentClassName");
+    return this;
+  }
+
+  public JavadocFieldCriteria distinctParentClassName() {
+    ((QueryImpl) query).getCollection().distinct("parentClassName");
     return this;
   }
 
@@ -204,16 +273,6 @@ public class JavadocFieldCriteria {
     return this;
   }
 
-  public JavadocFieldCriteria api(javabot.javadoc.JavadocApi reference) {
-    query.filter("api = ", reference);
-    return this;
-  }
-
-  public JavadocFieldCriteria javadocClass(javabot.javadoc.JavadocClass reference) {
-    query.filter("javadocClass = ", reference);
-    return this;
-  }
-
   public JavadocFieldUpdater getUpdater() {
     return new JavadocFieldUpdater();
   }
@@ -241,6 +300,65 @@ public class JavadocFieldCriteria {
       return ds.update(query(), updateOperations, true, wc);
     }
 
+    public JavadocFieldUpdater apiId(org.bson.types.ObjectId value) {
+      updateOperations.set("apiId", value);
+      return this;
+    }
+
+    public JavadocFieldUpdater unsetApiId(org.bson.types.ObjectId value) {
+      updateOperations.unset("apiId");
+      return this;
+    }
+
+    public JavadocFieldUpdater addApiId(org.bson.types.ObjectId value) {
+      updateOperations.add("apiId", value);
+      return this;
+    }
+
+    public JavadocFieldUpdater addApiId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+      updateOperations.add("apiId", value, addDups);
+      return this;
+    }
+
+    public JavadocFieldUpdater addAllToApiId(List<org.bson.types.ObjectId> values, boolean addDups) {
+      updateOperations.addAll("apiId", values, addDups);
+      return this;
+    }
+  
+    public JavadocFieldUpdater removeFirstApiId() {
+      updateOperations.removeFirst("apiId");
+      return this;
+    }
+  
+    public JavadocFieldUpdater removeLastApiId() {
+      updateOperations.removeLast("apiId");
+      return this;
+    }
+  
+    public JavadocFieldUpdater removeFromApiId(org.bson.types.ObjectId value) {
+      updateOperations.removeAll("apiId", value);
+      return this;
+    }
+
+    public JavadocFieldUpdater removeAllFromApiId(List<org.bson.types.ObjectId> values) {
+      updateOperations.removeAll("apiId", values);
+      return this;
+    }
+ 
+    public JavadocFieldUpdater decApiId() {
+      updateOperations.dec("apiId");
+      return this;
+    }
+
+    public JavadocFieldUpdater incApiId() {
+      updateOperations.inc("apiId");
+      return this;
+    }
+
+    public JavadocFieldUpdater incApiId(Number value) {
+      updateOperations.inc("apiId", value);
+      return this;
+    }
     public JavadocFieldUpdater directUrl(java.lang.String value) {
       updateOperations.set("directUrl", value);
       return this;
@@ -359,6 +477,65 @@ public class JavadocFieldCriteria {
       updateOperations.inc("id", value);
       return this;
     }
+    public JavadocFieldUpdater javadocClassId(org.bson.types.ObjectId value) {
+      updateOperations.set("javadocClassId", value);
+      return this;
+    }
+
+    public JavadocFieldUpdater unsetJavadocClassId(org.bson.types.ObjectId value) {
+      updateOperations.unset("javadocClassId");
+      return this;
+    }
+
+    public JavadocFieldUpdater addJavadocClassId(org.bson.types.ObjectId value) {
+      updateOperations.add("javadocClassId", value);
+      return this;
+    }
+
+    public JavadocFieldUpdater addJavadocClassId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+      updateOperations.add("javadocClassId", value, addDups);
+      return this;
+    }
+
+    public JavadocFieldUpdater addAllToJavadocClassId(List<org.bson.types.ObjectId> values, boolean addDups) {
+      updateOperations.addAll("javadocClassId", values, addDups);
+      return this;
+    }
+  
+    public JavadocFieldUpdater removeFirstJavadocClassId() {
+      updateOperations.removeFirst("javadocClassId");
+      return this;
+    }
+  
+    public JavadocFieldUpdater removeLastJavadocClassId() {
+      updateOperations.removeLast("javadocClassId");
+      return this;
+    }
+  
+    public JavadocFieldUpdater removeFromJavadocClassId(org.bson.types.ObjectId value) {
+      updateOperations.removeAll("javadocClassId", value);
+      return this;
+    }
+
+    public JavadocFieldUpdater removeAllFromJavadocClassId(List<org.bson.types.ObjectId> values) {
+      updateOperations.removeAll("javadocClassId", values);
+      return this;
+    }
+ 
+    public JavadocFieldUpdater decJavadocClassId() {
+      updateOperations.dec("javadocClassId");
+      return this;
+    }
+
+    public JavadocFieldUpdater incJavadocClassId() {
+      updateOperations.inc("javadocClassId");
+      return this;
+    }
+
+    public JavadocFieldUpdater incJavadocClassId(Number value) {
+      updateOperations.inc("javadocClassId", value);
+      return this;
+    }
     public JavadocFieldUpdater longUrl(java.lang.String value) {
       updateOperations.set("longUrl", value);
       return this;
@@ -475,6 +652,65 @@ public class JavadocFieldCriteria {
 
     public JavadocFieldUpdater incName(Number value) {
       updateOperations.inc("name", value);
+      return this;
+    }
+    public JavadocFieldUpdater parentClassName(java.lang.String value) {
+      updateOperations.set("parentClassName", value);
+      return this;
+    }
+
+    public JavadocFieldUpdater unsetParentClassName(java.lang.String value) {
+      updateOperations.unset("parentClassName");
+      return this;
+    }
+
+    public JavadocFieldUpdater addParentClassName(java.lang.String value) {
+      updateOperations.add("parentClassName", value);
+      return this;
+    }
+
+    public JavadocFieldUpdater addParentClassName(String fieldExpr, java.lang.String value, boolean addDups) {
+      updateOperations.add("parentClassName", value, addDups);
+      return this;
+    }
+
+    public JavadocFieldUpdater addAllToParentClassName(List<java.lang.String> values, boolean addDups) {
+      updateOperations.addAll("parentClassName", values, addDups);
+      return this;
+    }
+  
+    public JavadocFieldUpdater removeFirstParentClassName() {
+      updateOperations.removeFirst("parentClassName");
+      return this;
+    }
+  
+    public JavadocFieldUpdater removeLastParentClassName() {
+      updateOperations.removeLast("parentClassName");
+      return this;
+    }
+  
+    public JavadocFieldUpdater removeFromParentClassName(java.lang.String value) {
+      updateOperations.removeAll("parentClassName", value);
+      return this;
+    }
+
+    public JavadocFieldUpdater removeAllFromParentClassName(List<java.lang.String> values) {
+      updateOperations.removeAll("parentClassName", values);
+      return this;
+    }
+ 
+    public JavadocFieldUpdater decParentClassName() {
+      updateOperations.dec("parentClassName");
+      return this;
+    }
+
+    public JavadocFieldUpdater incParentClassName() {
+      updateOperations.inc("parentClassName");
+      return this;
+    }
+
+    public JavadocFieldUpdater incParentClassName(Number value) {
+      updateOperations.inc("parentClassName", value);
       return this;
     }
     public JavadocFieldUpdater shortUrl(java.lang.String value) {

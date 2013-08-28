@@ -102,7 +102,7 @@ public class JavadocOperation extends BotOperation {
       } else {
         final List<JavadocField> list = dao.getField(api, className, fieldName);
         for (final JavadocField field : list) {
-          urls.add(field.getDisplayUrl(field.toString(), dao));
+          urls.add(field.getDisplayUrl(field.toString(), apiDao));
         }
       }
     }
@@ -110,7 +110,7 @@ public class JavadocOperation extends BotOperation {
 
   private void findClasses(JavadocApi api, final List<String> urls, final String key) {
     for (final JavadocClass javadocClass : dao.getClass(api, key)) {
-      urls.add(javadocClass.getDisplayUrl(javadocClass.toString(), dao));
+      urls.add(javadocClass.getDisplayUrl(javadocClass.toString(), apiDao));
     }
   }
 
@@ -122,7 +122,7 @@ public class JavadocOperation extends BotOperation {
       final String methodName = key.substring(finalIndex + 1, openIndex);
       final String signatureTypes = key.substring(openIndex + 1, closeIndex);
       for (final JavadocMethod method : dao.getMethods(api, className, methodName, signatureTypes)) {
-        urls.add(method.getDisplayUrl(method.toString(), dao));
+        urls.add(method.getDisplayUrl(method.toString(), apiDao));
       }
     }
   }

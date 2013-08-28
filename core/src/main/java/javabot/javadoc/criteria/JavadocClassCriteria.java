@@ -43,6 +43,29 @@ public class JavadocClassCriteria {
     return query.and(criteria);
   }
 
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocClass, org.bson.types.ObjectId> apiId() {
+    return new TypeSafeFieldEnd<>(query, query.criteria("apiId"));
+  }
+
+  public JavadocClassCriteria apiId(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("apiId")).equal(value);
+    return this;
+  }
+
+  public JavadocClassCriteria orderByApiId() {
+    return orderByApiId(true);
+  }
+
+  public JavadocClassCriteria orderByApiId(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "apiId");
+    return this;
+  }
+
+  public JavadocClassCriteria distinctApiId() {
+    ((QueryImpl) query).getCollection().distinct("apiId");
+    return this;
+  }
+
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocClass, java.lang.String> directUrl() {
     return new TypeSafeFieldEnd<>(query, query.criteria("directUrl"));
   }
@@ -227,6 +250,29 @@ public class JavadocClassCriteria {
     return this;
   }
 
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocClass, org.bson.types.ObjectId> superClassId() {
+    return new TypeSafeFieldEnd<>(query, query.criteria("superClassId"));
+  }
+
+  public JavadocClassCriteria superClassId(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("superClassId")).equal(value);
+    return this;
+  }
+
+  public JavadocClassCriteria orderBySuperClassId() {
+    return orderBySuperClassId(true);
+  }
+
+  public JavadocClassCriteria orderBySuperClassId(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "superClassId");
+    return this;
+  }
+
+  public JavadocClassCriteria distinctSuperClassId() {
+    ((QueryImpl) query).getCollection().distinct("superClassId");
+    return this;
+  }
+
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocClass, java.lang.String> upperName() {
     return new TypeSafeFieldEnd<>(query, query.criteria("upperName"));
   }
@@ -273,16 +319,6 @@ public class JavadocClassCriteria {
     return this;
   }
 
-  public JavadocClassCriteria api(javabot.javadoc.JavadocApi reference) {
-    query.filter("api = ", reference);
-    return this;
-  }
-
-  public JavadocClassCriteria superClass(javabot.javadoc.JavadocClass reference) {
-    query.filter("superClass = ", reference);
-    return this;
-  }
-
   public JavadocClassUpdater getUpdater() {
     return new JavadocClassUpdater();
   }
@@ -310,6 +346,65 @@ public class JavadocClassCriteria {
       return ds.update(query(), updateOperations, true, wc);
     }
 
+    public JavadocClassUpdater apiId(org.bson.types.ObjectId value) {
+      updateOperations.set("apiId", value);
+      return this;
+    }
+
+    public JavadocClassUpdater unsetApiId(org.bson.types.ObjectId value) {
+      updateOperations.unset("apiId");
+      return this;
+    }
+
+    public JavadocClassUpdater addApiId(org.bson.types.ObjectId value) {
+      updateOperations.add("apiId", value);
+      return this;
+    }
+
+    public JavadocClassUpdater addApiId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+      updateOperations.add("apiId", value, addDups);
+      return this;
+    }
+
+    public JavadocClassUpdater addAllToApiId(List<org.bson.types.ObjectId> values, boolean addDups) {
+      updateOperations.addAll("apiId", values, addDups);
+      return this;
+    }
+  
+    public JavadocClassUpdater removeFirstApiId() {
+      updateOperations.removeFirst("apiId");
+      return this;
+    }
+  
+    public JavadocClassUpdater removeLastApiId() {
+      updateOperations.removeLast("apiId");
+      return this;
+    }
+  
+    public JavadocClassUpdater removeFromApiId(org.bson.types.ObjectId value) {
+      updateOperations.removeAll("apiId", value);
+      return this;
+    }
+
+    public JavadocClassUpdater removeAllFromApiId(List<org.bson.types.ObjectId> values) {
+      updateOperations.removeAll("apiId", values);
+      return this;
+    }
+ 
+    public JavadocClassUpdater decApiId() {
+      updateOperations.dec("apiId");
+      return this;
+    }
+
+    public JavadocClassUpdater incApiId() {
+      updateOperations.inc("apiId");
+      return this;
+    }
+
+    public JavadocClassUpdater incApiId(Number value) {
+      updateOperations.inc("apiId", value);
+      return this;
+    }
     public JavadocClassUpdater directUrl(java.lang.String value) {
       updateOperations.set("directUrl", value);
       return this;
@@ -780,6 +875,65 @@ public class JavadocClassCriteria {
 
     public JavadocClassUpdater incShortUrl(Number value) {
       updateOperations.inc("shortUrl", value);
+      return this;
+    }
+    public JavadocClassUpdater superClassId(org.bson.types.ObjectId value) {
+      updateOperations.set("superClassId", value);
+      return this;
+    }
+
+    public JavadocClassUpdater unsetSuperClassId(org.bson.types.ObjectId value) {
+      updateOperations.unset("superClassId");
+      return this;
+    }
+
+    public JavadocClassUpdater addSuperClassId(org.bson.types.ObjectId value) {
+      updateOperations.add("superClassId", value);
+      return this;
+    }
+
+    public JavadocClassUpdater addSuperClassId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+      updateOperations.add("superClassId", value, addDups);
+      return this;
+    }
+
+    public JavadocClassUpdater addAllToSuperClassId(List<org.bson.types.ObjectId> values, boolean addDups) {
+      updateOperations.addAll("superClassId", values, addDups);
+      return this;
+    }
+  
+    public JavadocClassUpdater removeFirstSuperClassId() {
+      updateOperations.removeFirst("superClassId");
+      return this;
+    }
+  
+    public JavadocClassUpdater removeLastSuperClassId() {
+      updateOperations.removeLast("superClassId");
+      return this;
+    }
+  
+    public JavadocClassUpdater removeFromSuperClassId(org.bson.types.ObjectId value) {
+      updateOperations.removeAll("superClassId", value);
+      return this;
+    }
+
+    public JavadocClassUpdater removeAllFromSuperClassId(List<org.bson.types.ObjectId> values) {
+      updateOperations.removeAll("superClassId", values);
+      return this;
+    }
+ 
+    public JavadocClassUpdater decSuperClassId() {
+      updateOperations.dec("superClassId");
+      return this;
+    }
+
+    public JavadocClassUpdater incSuperClassId() {
+      updateOperations.inc("superClassId");
+      return this;
+    }
+
+    public JavadocClassUpdater incSuperClassId(Number value) {
+      updateOperations.inc("superClassId", value);
       return this;
     }
     public JavadocClassUpdater upperName(java.lang.String value) {

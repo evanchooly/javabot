@@ -71,7 +71,6 @@ public class Migrator {
 
   private void changes(final ResultSet resultSet) throws SQLException {
     Change log = new Change();
-//    log.setId(mapId("changes", resultSet.getLong("id")));
     log.setMessage(resultSet.getString("message"));
     log.setChangeDate(extractDate(resultSet, "changedate"));
     logsDao.save(log);
@@ -79,7 +78,6 @@ public class Migrator {
 
   private void channel(final ResultSet resultSet) throws SQLException {
     Channel channel = new Channel();
-//    channel.setId(mapId("changes", resultSet.getLong("id")));
     channel.setKey(resultSet.getString("key"));
     channel.setLogged(resultSet.getBoolean("logged"));
     channel.setName(resultSet.getString("name"));
@@ -122,7 +120,6 @@ public class Migrator {
 
   private void factoids(final ResultSet resultSet) throws SQLException {
     Factoid factoid = new Factoid();
-//    factoid.setId(mapId("factoids", resultSet.getLong("id")));
     factoid.setLastUsed(extractDate(resultSet, "lastused"));
     factoid.setName(resultSet.getString("name"));
     factoid.setUpdated(extractDate(resultSet, "updated"));
@@ -134,7 +131,6 @@ public class Migrator {
 
   private void karma(final ResultSet resultSet) throws SQLException {
     Karma karma = new Karma();
-//    karma.setId(mapId("karma", resultSet.getLong("id")));
     karma.setName(resultSet.getString("name"));
     karma.setUpdated(extractDate(resultSet, "updated"));
     karma.setUserName(resultSet.getString("username"));
@@ -144,7 +140,6 @@ public class Migrator {
 
   protected void logs(ResultSet resultSet) throws SQLException {
     Logs log = new Logs();
-//    log.setId(mapId("logs", resultSet.getLong("id")));
     log.setChannel(resultSet.getString("channel"));
     log.setMessage(resultSet.getString("message"));
     log.setNick(resultSet.getString("nick"));
@@ -160,7 +155,6 @@ public class Migrator {
 
   private void registrations(final ResultSet resultSet) throws SQLException {
     NickRegistration reg = new NickRegistration();
-//    reg.setId(mapId("registrations", resultSet.getLong("id")));
     reg.setHost(resultSet.getString("host"));
     reg.setNick(resultSet.getString("nick"));
     reg.setTwitterName(resultSet.getString("twittername"));
@@ -170,7 +164,6 @@ public class Migrator {
 
   private void shun(final ResultSet resultSet) throws SQLException {
     Shun shun = new Shun();
-//    shun.setId(mapId("shun", resultSet.getLong("id")));
     shun.setExpiry(extractDate(resultSet, "expiry"));
     shun.setNick(resultSet.getString("nick"));
     logsDao.save(shun);
@@ -216,8 +209,8 @@ public class Migrator {
     method.setDirectUrl(resultSet.getString("directurl"));
     ObjectId classId = lookupId("classes", resultSet.getLong("clazz_id"));
     JavadocClass javadocClass = javadocClassDao.find(classId);
-    method.setJavadocClass(javadocClass);
-    method.setApi(javadocClass.getApi());
+    method.setJavadocClassId(javadocClass);
+    method.setApiId(javadocClass.getApiId());
     javadocClassDao.save(method);
   }
 
@@ -231,8 +224,8 @@ public class Migrator {
     field.setType(resultSet.getString("type"));
     ObjectId classId = lookupId("classes", resultSet.getLong("clazz_id"));
     JavadocClass javadocClass = javadocClassDao.find(classId);
-    field.setJavadocClass(javadocClass);
-    field.setApi(javadocClass.getApi());
+    field.setJavadocClassId(javadocClass);
+    field.setApiId(javadocClass.getApiId());
     javadocClassDao.save(field);
   }
 
@@ -279,6 +272,8 @@ public class Migrator {
     } catch (Exception e) {
       throw new RuntimeException(e.getMessage(), e);
     }
+    System.out.println("Recreating indexes");
+    ds.ensureIndexes(true);
   }
 
   private void clearCollections() {

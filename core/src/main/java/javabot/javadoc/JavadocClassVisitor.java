@@ -15,14 +15,16 @@ import org.slf4j.LoggerFactory;
 
 public class JavadocClassVisitor extends EmptyVisitor {
   private static final Logger log = LoggerFactory.getLogger(JavadocClassVisitor.class);
+
   @Inject
   private JavadocClassDao dao;
+
   @Inject
   private ApiDao apiDao;
+
   @Inject
   private JavadocParser parser;
 
-  private JavadocClass javadocClass;
   private static final Map<Character, String> PRIMITIVES = new HashMap<>();
 
   static {
@@ -36,20 +38,24 @@ public class JavadocClassVisitor extends EmptyVisitor {
     PRIMITIVES.put('Z', "boolean");
   }
 
+  private String pkg;
+
+  private String className;
+
   @Override
   public void visit(final int version, final int access, final String name, final String signature,
       final String superName, final String[] interfaces) {
     try {
-      final String pkg = getPackage(name);
+      pkg = getPackage(name);
       if (isPublic(access)) {
-        final String className = name.substring(name.lastIndexOf("/") + 1).replace('$', '.');
-        javadocClass = parser.getOrCreate(parser.getApi(), pkg, className);
+        className = name.substring(name.lastIndexOf("/") + 1).replace('$', '.');
+        JavadocClass javadocClass = parser.getOrCreate(parser.getApi(), pkg, className);
         if (superName != null) {
           String superPkg = getPackage(superName);
           String parentName = superName.substring(superName.lastIndexOf("/") + 1);
           final JavadocClass parent = parser.getOrQueue(parser.getApi(), superPkg, parentName, javadocClass);
-          if(parent != null) {
-            javadocClass.setSuperClass(parent);
+          if (parent != null) {
+            javadocClass.setSuperClassId(parent);
           }
           dao.save(javadocClass);
         }
@@ -64,6 +70,14 @@ public class JavadocClassVisitor extends EmptyVisitor {
     return (access & Opcodes.ACC_PUBLIC) == Opcodes.ACC_PUBLIC;
   }
 
+  private boolean isPrivate(final int access) {
+    return (access & Opcodes.ACC_PRIVATE) == Opcodes.ACC_PRIVATE;
+  }
+
+  protected boolean isProtected(final int access) {
+    return (access & Opcodes.ACC_PROTECTED) == Opcodes.ACC_PROTECTED;
+  }
+
   private String getPackage(final String name) {
     return name.contains("/")
         ? name.substring(0, name.lastIndexOf("/")).replace('/', '.')
@@ -73,26 +87,39 @@ public class JavadocClassVisitor extends EmptyVisitor {
   @Override
   public FieldVisitor visitField(final int access, final String name, final String desc, final String signature,
       final Object value) {
-    if (javadocClass != null && isPublic(access)) {
-      StringBuilder longTypes = new StringBuilder();
-      processParam(name, desc, signature, longTypes, new StringBuilder(), desc);
-      final String type = longTypes.toString();
-      final JavadocField field = new JavadocField(javadocClass, name, type);
-      dao.save(field);
+    if (className != null) {
+      JavadocClass javadocClass = getJavadocClass(pkg, className);
+      if (javadocClass != null && isPublic(access)) {
+        StringBuilder longTypes = new StringBuilder();
+        processParam(name, desc, signature, longTypes, new StringBuilder(), desc);
+        dao.save(new JavadocField(javadocClass, name, longTypes.toString()));
+      }
     }
     return null;
+  }
+
+  private JavadocClass getJavadocClass(final String pkg, final String className) {
+    JavadocClass[] classes = dao.getClass(parser.getApi(), this.pkg, this.className);
+    if (classes.length == 1) {
+      return classes[0];
+    }
+    throw new RuntimeException(String.format("Wrong number of classes (%d) found for %s.%s", classes.length,
+        this.pkg, this.className));
   }
 
   @Override
   public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature,
       final String[] exceptions) {
-    if (javadocClass != null && isPublic(access)) {
-      String params = desc.substring(1, desc.lastIndexOf(")"));
-      StringBuilder longTypes = new StringBuilder();
-      StringBuilder shortTypes = new StringBuilder();
-      int count = processParam(name, desc, signature, longTypes, shortTypes, params);
-      dao.save(new JavadocMethod(javadocClass,
-          "<init>".equals(name) ? javadocClass.getName() : name, count, longTypes.toString(), shortTypes.toString()));
+    if (className != null) {
+      JavadocClass javadocClass = getJavadocClass(pkg, className);
+      if (javadocClass != null && (isPublic(access) || isProtected(access))) {
+        String params = desc.substring(1, desc.lastIndexOf(")"));
+        StringBuilder longTypes = new StringBuilder();
+        StringBuilder shortTypes = new StringBuilder();
+        int count = processParam(name, desc, signature, longTypes, shortTypes, params);
+        dao.save(new JavadocMethod(javadocClass, "<init>".equals(name) ? javadocClass.getName() : name,
+            count, longTypes.toString(), shortTypes.toString()));
+      }
     }
     return null;
   }
@@ -117,7 +144,7 @@ public class JavadocClassVisitor extends EmptyVisitor {
         arg = arg.substring(1);
       }
       if (base == null) {
-        log.debug("javadocClass = " + javadocClass);
+        log.debug("javadocClass = " + getJavadocClass(pkg, className));
         log.debug("name = " + name);
         log.debug("desc = " + desc);
         log.debug("signature = " + signature);

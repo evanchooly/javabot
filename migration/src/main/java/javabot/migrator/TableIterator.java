@@ -51,7 +51,6 @@ public abstract class TableIterator implements Callable<Object> {
         total = resultSet.getLong(1);
       }
     } catch (Exception e) {
-      e.printStackTrace();
       throw new RuntimeException(e.getMessage(), e);
     }
     System.out.printf(" - Found %d items to migrate.\n", total);
@@ -68,12 +67,12 @@ public abstract class TableIterator implements Callable<Object> {
           }
         }
       } catch (Exception e) {
-        e.printStackTrace();
         throw new RuntimeException(e.getMessage(), e);
       }
     }
     System.out.printf(" * Finished migrating %s. %s%n%n", table, new DateTime().toString("HH:mm:ss"));
     count = countResults();
+
     if (total != count) {
       throw new RuntimeException(String.format("Failed to migrate all records for %s.  Expected %d but got %d",
           table, total, count));

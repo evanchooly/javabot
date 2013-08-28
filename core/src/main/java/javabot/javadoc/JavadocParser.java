@@ -38,7 +38,6 @@ public class JavadocParser {
   @Inject
   private Provider<JavadocClassVisitor> provider;
 
-
   private JavadocApi api;
 
   private final Map<String, List<JavadocClass>> deferred = new HashMap<>();
@@ -50,12 +49,10 @@ public class JavadocParser {
       if (!tmpDir.exists()) {
         new File(System.getProperty("java.io.tmpdir"));
       }
-
       BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
       ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 30, 30, TimeUnit.SECONDS, workQueue,
-       new JavabotThreadFactory(false, "javadoc-thread-"));
+          new JavabotThreadFactory(false, "javadoc-thread-"));
       executor.prestartCoreThread();
-
       File file = new File(location);
       try (JarFile jarFile = new JarFile(file)) {
         for (final Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements(); ) {
@@ -67,12 +64,11 @@ public class JavadocParser {
                 try {
                   new ClassReader(jarFile.getInputStream(entry)).accept(provider.get(), 0);
                 } catch (Exception e) {
-                  log.error(e.getMessage(), e);
                   throw new RuntimeException(e.getMessage(), e);
                 }
               }
             }, 1, TimeUnit.MINUTES);
-            if(!offer) {
+            if (!offer) {
               writer.write("Failed to class to queue: " + entry);
             }
           }
@@ -96,14 +92,9 @@ public class JavadocParser {
   }
 
   public JavadocClass getOrQueue(final JavadocApi api, final String pkg, final String name,
-      final JavadocClass newJavadocClass) {
+      final JavadocClass newClass) {
     synchronized (deferred) {
-      JavadocClass parent = null;
-      for (JavadocClass javadocClass : dao.getClass(pkg, name)) {
-        if (javadocClass.getApi().equals(api)) {
-          parent = javadocClass;
-        }
-      }
+      JavadocClass parent = getJavadocClass(api, pkg, name);
       if (parent == null) {
         final String fqcn = pkg + "." + name;
         List<JavadocClass> list = deferred.get(fqcn);
@@ -111,7 +102,7 @@ public class JavadocParser {
           list = new ArrayList<>();
           deferred.put(fqcn, list);
         }
-        list.add(newJavadocClass);
+        list.add(newClass);
       }
       return parent;
     }
@@ -119,12 +110,7 @@ public class JavadocParser {
 
   public JavadocClass getOrCreate(final JavadocApi api, final String pkg, final String name) {
     synchronized (deferred) {
-      JavadocClass cls = null;
-      for (JavadocClass javadocClass : dao.getClass(pkg, name)) {
-        if (javadocClass.getApi().equals(api)) {
-          cls = javadocClass;
-        }
-      }
+      JavadocClass cls = getJavadocClass(api, pkg, name);
       if (cls == null) {
         cls = new JavadocClass(api, pkg, name);
         dao.save(cls);
@@ -132,13 +118,23 @@ public class JavadocParser {
       final List<JavadocClass> list = deferred.get(pkg + "." + name);
       if (list != null) {
         for (JavadocClass subclass : list) {
-          subclass.setSuperClass(cls.getSuperClass());
+          subclass.setSuperClassId(cls.getSuperClassId());
           dao.save(subclass);
         }
         deferred.remove(pkg + "." + name);
       }
       return cls;
     }
+  }
+
+  private JavadocClass getJavadocClass(final JavadocApi api, final String pkg, final String name) {
+    JavadocClass cls = null;
+    for (JavadocClass javadocClass : dao.getClass(api, pkg, name)) {
+      if (javadocClass.getApiId().equals(api)) {
+        cls = javadocClass;
+      }
+    }
+    return cls;
   }
 
   public JavadocApi getApi() {

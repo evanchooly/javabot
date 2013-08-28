@@ -1,28 +1,24 @@
 package javabot.migrator;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Properties;
 import javax.inject.Inject;
 
 import com.google.code.morphia.Datastore;
-import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import javabot.JavabotModule;
 import javabot.dao.ChannelDao;
 import javabot.dao.LogsDao;
+import javabot.javadoc.criteria.JavadocClassCriteria;
 import javabot.model.Channel;
 import javabot.model.Logs;
 import javabot.model.criteria.LogsCriteria;
 import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.testng.Assert;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -44,23 +40,20 @@ public class MigratorTest {
   @Test
   public void verify() throws SQLException {
 //    migrator.migrate();
-    DBCollection collection = migrator.getDb().getCollection("logsIDs");
+    DBCollection collection = migrator.getDb().getCollection("classesIDs");
     long count = 0;
     DateTime begin = DateTime.now();
     try (Connection connection = migrator.getConnection();
          Statement statement = connection.createStatement();
-         ResultSet resultSet = statement.executeQuery("select id from logs")) {
+         ResultSet resultSet = statement.executeQuery("select id from classes")) {
       while (resultSet.next()) {
         count++;
-        LogsCriteria criteria = new LogsCriteria(ds);
         long id = resultSet.getLong("id");
-        ObjectId objectId = migrator.lookupId("logs", id);
+        ObjectId objectId = migrator.lookupId("classes", id);
+
+        JavadocClassCriteria criteria = new JavadocClassCriteria(ds);
         criteria.id(objectId);
-        Assert.assertNotNull(criteria.query().get(),
-            String.format("Looking for %d => %s", id, objectId));
-        if (count % 10000 == 0) {
-          logProgress(count, 4579597, begin);
-        }
+        Assert.assertNotNull(criteria.query().get(), String.format("Looking for %d => %s", id, objectId));
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -78,22 +71,12 @@ public class MigratorTest {
         100.0 * count / total, done.toString("HH:mm:ss"));
   }
 
-  @Test
+  @Test(dependsOnMethods = {"verify"})
   public void logs() {
-    Properties props = migrator.getProps();
-    ds.getCollection(Logs.class).remove(new BasicDBObject());
-    String select = "select * from logs where message='read that book.'";
-    try (Connection connection = DriverManager.getConnection(props.getProperty("jdbc.url"),
-        props.getProperty("jdbc.user"), props.getProperty("jdbc.password"));
-         Statement statement = connection.createStatement();
-         ResultSet resultSet = statement.executeQuery(select)) {
-      if (resultSet.next()) {
-        migrator.logs(resultSet);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new RuntimeException(e.getMessage(), e);
-    }
+    LogsCriteria criteria = new LogsCriteria(ds);
+    criteria.message().contains("read that book");
+    Assert.assertNotNull(criteria.query().get());
+/*
     String dateString = "2013-05-10";
     DateTime date;
     String pattern = "yyyy-MM-dd";
@@ -110,6 +93,7 @@ public class MigratorTest {
       }
     }
     scan(channelName, date);
+*/
   }
 
   private void scan(final String channelName, final DateTime date2) {
@@ -124,7 +108,6 @@ public class MigratorTest {
   private List<Logs> dailyLog(String channelName, DateTime date) {
     Channel channel = channelDao.get(channelName);
     List<Logs> list = null;
-    System.out.println("dailyLog() date = " + date);
     if (channel.getLogged()) {
       DateTime start = (date == null
           ? new DateTime(DateTimeZone.forID("US/Eastern"))
@@ -133,13 +116,10 @@ public class MigratorTest {
       DateTime tomorrow = start.plusDays(1);
       LogsCriteria criteria = new LogsCriteria(ds);
       criteria.channel().equal(channelName);
-      System.out.println("start = " + start);
-      System.out.println("tomorrow = " + tomorrow);
       criteria.and(
           criteria.updated().greaterThanOrEq(start),
           criteria.updated().lessThanOrEq(tomorrow)
       );
-      System.out.println("query = " + criteria.query());
       list = criteria.query().asList();
     }
     return list;

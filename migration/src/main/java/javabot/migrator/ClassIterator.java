@@ -52,7 +52,7 @@ public class ClassIterator extends TableIterator {
         ObjectId parentId = migrator.lookupId("classes", resultSet.getLong("superclass_id"));
         if (parentId != null) {
           JavadocClass javadocClass = javadocClassDao.find(migrator.lookupId("classes", id));
-          javadocClass.setSuperClass(javadocClassDao.find(parentId));
+          javadocClass.setSuperClassId(javadocClassDao.find(parentId));
           javadocClassDao.save(javadocClass);
           return true;
         }
@@ -85,7 +85,7 @@ public class ClassIterator extends TableIterator {
       if (objectId == null) {
         defer(id);
       } else {
-        javadocClass.setSuperClass(javadocClassDao.find(objectId));
+        javadocClass.setSuperClassId(javadocClassDao.find(objectId));
       }
     }
   }
