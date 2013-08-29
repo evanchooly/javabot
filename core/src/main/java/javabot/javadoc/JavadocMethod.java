@@ -61,6 +61,7 @@ public class JavadocMethod extends JavadocElement {
 
   public void setJavadocClassId(final JavadocClass javadocClass) {
     this.javadocClassId = javadocClass.getId();
+    parentClassName = javadocClass.toString();
   }
 
   public void setId(final ObjectId methodId) {

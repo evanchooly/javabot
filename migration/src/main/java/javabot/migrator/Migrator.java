@@ -27,9 +27,6 @@ import javabot.dao.ApiDao;
 import javabot.dao.JavadocClassDao;
 import javabot.dao.LogsDao;
 import javabot.javadoc.JavadocApi;
-import javabot.javadoc.JavadocClass;
-import javabot.javadoc.JavadocField;
-import javabot.javadoc.JavadocMethod;
 import javabot.model.Change;
 import javabot.model.Channel;
 import javabot.model.Config;
@@ -176,16 +173,8 @@ public class Migrator {
       }
     }.call();
     new ClassIterator(this, javadocClassDao, apiDao).call();
-    new TableIterator(this, "methods") {
-      public void migrate(final ResultSet resultSet) throws SQLException {
-        methods(resultSet);
-      }
-    }.call();
-    new TableIterator(this, "fields") {
-      public void migrate(final ResultSet resultSet) throws SQLException {
-        fields(resultSet);
-      }
-    }.call();
+    new MethodIterator(this, javadocClassDao).call();
+    new FieldIterator(this, javadocClassDao).call();
     return null;
   }
 
@@ -195,38 +184,6 @@ public class Migrator {
     api.setBaseUrl(resultSet.getString("baseurl"));
     api.setName(resultSet.getString("name"));
     logsDao.save(api);
-  }
-
-  private void methods(final ResultSet resultSet) throws SQLException {
-    JavadocMethod method = new JavadocMethod();
-    method.setId(mapId("methods", resultSet.getLong("id")));
-    method.setLongUrl(resultSet.getString("longurl"));
-    method.setShortUrl(resultSet.getString("shorturl"));
-    method.setLongSignatureTypes(resultSet.getString("longsignaturestripped"));
-    method.setName(resultSet.getString("methodname"));
-    method.setParamCount(resultSet.getInt("paramcount"));
-    method.setShortSignatureTypes(resultSet.getString("shortsignaturestripped"));
-    method.setDirectUrl(resultSet.getString("directurl"));
-    ObjectId classId = lookupId("classes", resultSet.getLong("clazz_id"));
-    JavadocClass javadocClass = javadocClassDao.find(classId);
-    method.setJavadocClassId(javadocClass);
-    method.setApiId(javadocClass.getApiId());
-    javadocClassDao.save(method);
-  }
-
-  private void fields(final ResultSet resultSet) throws SQLException {
-    JavadocField field = new JavadocField();
-    field.setId(mapId("fields", resultSet.getLong("id")));
-    field.setDirectUrl(resultSet.getString("directurl"));
-    field.setLongUrl(resultSet.getString("longurl"));
-    field.setShortUrl(resultSet.getString("shorturl"));
-    field.setName(resultSet.getString("name"));
-    field.setType(resultSet.getString("type"));
-    ObjectId classId = lookupId("classes", resultSet.getLong("clazz_id"));
-    JavadocClass javadocClass = javadocClassDao.find(classId);
-    field.setJavadocClassId(javadocClass);
-    field.setApiId(javadocClass.getApiId());
-    javadocClassDao.save(field);
   }
 
   public void migrate() throws SQLException {

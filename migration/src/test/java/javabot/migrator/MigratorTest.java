@@ -39,7 +39,7 @@ public class MigratorTest {
 
   @Test
   public void verify() throws SQLException {
-//    migrator.migrate();
+    migrator.migrate();
     DBCollection collection = migrator.getDb().getCollection("classesIDs");
     long count = 0;
     DateTime begin = DateTime.now();
@@ -76,24 +76,6 @@ public class MigratorTest {
     LogsCriteria criteria = new LogsCriteria(ds);
     criteria.message().contains("read that book");
     Assert.assertNotNull(criteria.query().get());
-/*
-    String dateString = "2013-05-10";
-    DateTime date;
-    String pattern = "yyyy-MM-dd";
-    DateTimeFormatter format = DateTimeFormat.forPattern(pattern);
-    String channelName = "##java";
-    if ("today".equals(dateString)) {
-      date = DateTime.now().withTimeAtStartOfDay();
-    } else {
-      try {
-        date = DateTime.parse(dateString, format);
-      } catch (Exception e) {
-        System.out.println("error!");
-        date = DateTime.now().withTimeAtStartOfDay();
-      }
-    }
-    scan(channelName, date);
-*/
   }
 
   private void scan(final String channelName, final DateTime date2) {
