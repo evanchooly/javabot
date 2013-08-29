@@ -79,6 +79,8 @@ public class JavadocTest extends BaseOperationTest {
         apiDao.find(API_NAME), "javax.servlet.http", "HttpServletRequest").length != 0);
     scanForResponse("~javadoc HttpServlet", "javax.servlet.http.HttpServlet");
     scanForResponse("~javadoc HttpServlet.doGet(*)", "javax.servlet.http.HttpServlet.doGet");
+    scanForResponse("~javadoc HttpServletRequest", "javax.servlet.http.HttpServletRequest");
+    scanForResponse("~javadoc HttpServletRequest.getMethod()", "javax.servlet.http.HttpServletRequest.getMethod");
   }
 
   private File downloadZip() throws IOException {
