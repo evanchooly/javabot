@@ -15,7 +15,8 @@ public class JavadocOperationTest extends BaseOperationTest {
   private JavadocClassDao javadocClassDao;
 
   public void constructors() {
-    scanForResponse("~javadoc String(char[])", "[JDK: java.lang.String.split(String)]");
+    scanForResponse("~javadoc java.lang.String(char[])", "[JDK: java.lang.String.String(char[])]");
+    scanForResponse("~javadoc String(char[])", "[JDK: java.lang.String.String(char[])]");
   }
 
   public void methods() {

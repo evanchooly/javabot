@@ -45,6 +45,11 @@ public class JavadocTest extends BaseOperationTest {
   public void addJdk() {
     getJavabot();
     JavadocApi api = apiDao.find("JDK");
+    if(Boolean.valueOf(System.getProperty("dropJDK", "false"))) {
+      System.out.println("Dropping JDK API");
+      apiDao.delete(api);
+      api = null;
+    }
     if (api == null) {
       ApiEvent event = new ApiEvent();
       event.setName("JDK");

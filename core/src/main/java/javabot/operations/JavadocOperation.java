@@ -19,8 +19,10 @@ import javabot.javadoc.JavadocMethod;
 public class JavadocOperation extends BotOperation {
   @Inject
   private ApiDao apiDao;
+
   @Inject
   private JavadocClassDao dao;
+
   private static final int RESULT_LIMIT = 5;
 
   @Override
@@ -66,15 +68,15 @@ public class JavadocOperation extends BotOperation {
   }
 
   private StringBuilder buildResponse(IrcEvent event, List<Message> responses, List<String> urls,
-    StringBuilder urlMessage, String destination) {
+      StringBuilder urlMessage, String destination) {
     for (int index = 0; index < urls.size(); index++) {
       if ((urlMessage + urls.get(index)).length() > 400) {
         responses.add(new Message(destination, event, urlMessage.toString()));
         urlMessage = new StringBuilder();
       }
       urlMessage
-        .append(index == 0 ? "" : "; ")
-        .append(urls.get(index));
+          .append(index == 0 ? "" : "; ")
+          .append(urls.get(index));
     }
     return urlMessage;
   }
@@ -115,15 +117,31 @@ public class JavadocOperation extends BotOperation {
   }
 
   private void parseMethodRequest(final List<String> urls, JavadocApi api, final String key, final int openIndex) {
-    final int finalIndex = key.lastIndexOf('.', openIndex);
     final int closeIndex = key.indexOf(')');
     if (closeIndex != -1) {
-      String className = key.substring(0, finalIndex);
-      final String methodName = key.substring(finalIndex + 1, openIndex);
-      final String signatureTypes = key.substring(openIndex + 1, closeIndex);
-      for (final JavadocMethod method : dao.getMethods(api, className, methodName, signatureTypes)) {
-        urls.add(method.getDisplayUrl(method.toString(), apiDao));
+      int finalIndex = key.lastIndexOf('.', openIndex);
+      String methodName;
+      String className;
+      if (finalIndex == -1) {
+        methodName = key.substring(0, openIndex);
+        className = methodName;
+      } else {
+        methodName = key.substring(finalIndex + 1, openIndex);
+        className = key.substring(0, finalIndex);
       }
+      final String signatureTypes = key.substring(openIndex + 1, closeIndex);
+      final List<String> list = new ArrayList<>();
+      for (final JavadocMethod method : dao.getMethods(api, className, methodName, signatureTypes)) {
+        list.add(method.getDisplayUrl(method.toString(), apiDao));
+      }
+      if(list.isEmpty()) {
+        className = methodName;
+        for (final JavadocMethod method : dao.getMethods(api, className, methodName, signatureTypes)) {
+          list.add(method.getDisplayUrl(method.toString(), apiDao));
+        }
+      }
+
+      urls.addAll(list);
     }
   }
 
@@ -136,6 +154,6 @@ public class JavadocOperation extends BotOperation {
       String.format("%s(%s)", builder.append(api.getName()), api.getBaseUrl());
     }
     responses.add(new Message(event.getChannel(), event, event.getSender()
-      + ", I know of the following APIs: " + builder));
+        + ", I know of the following APIs: " + builder));
   }
 }
