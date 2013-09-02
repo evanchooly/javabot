@@ -1,15 +1,19 @@
 package javabot.javadoc;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
 import javabot.dao.ApiDao;
 import javabot.dao.JavadocClassDao;
+import javabot.javadoc.JavadocSignatureVisitor.JavadocType;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.EmptyVisitor;
+import org.objectweb.asm.signature.SignatureReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,10 +74,6 @@ public class JavadocClassVisitor extends EmptyVisitor {
     return (access & Opcodes.ACC_PUBLIC) == Opcodes.ACC_PUBLIC;
   }
 
-  private boolean isPrivate(final int access) {
-    return (access & Opcodes.ACC_PRIVATE) == Opcodes.ACC_PRIVATE;
-  }
-
   protected boolean isProtected(final int access) {
     return (access & Opcodes.ACC_PROTECTED) == Opcodes.ACC_PROTECTED;
   }
@@ -88,35 +88,35 @@ public class JavadocClassVisitor extends EmptyVisitor {
   public FieldVisitor visitField(final int access, final String name, final String desc, final String signature,
       final Object value) {
     if (className != null) {
-      JavadocClass javadocClass = getJavadocClass(pkg, className);
+      JavadocClass javadocClass = getJavadocClass();
       if (javadocClass != null && isPublic(access)) {
         StringBuilder longTypes = new StringBuilder();
-        processParam(name, desc, signature, longTypes, new StringBuilder(), desc);
+        processParam(desc, signature, longTypes, new StringBuilder(), desc, name);
         dao.save(new JavadocField(javadocClass, name, longTypes.toString()));
       }
     }
     return null;
   }
 
-  private JavadocClass getJavadocClass(final String pkg, final String className) {
-    JavadocClass[] classes = dao.getClass(parser.getApi(), this.pkg, this.className);
+  private JavadocClass getJavadocClass() {
+    JavadocClass[] classes = dao.getClass(parser.getApi(), pkg, className);
     if (classes.length == 1) {
       return classes[0];
     }
     throw new RuntimeException(String.format("Wrong number of classes (%d) found for %s.%s", classes.length,
-        this.pkg, this.className));
+        pkg, className));
   }
 
   @Override
   public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature,
       final String[] exceptions) {
     if (className != null) {
-      JavadocClass javadocClass = getJavadocClass(pkg, className);
+      JavadocClass javadocClass = getJavadocClass();
       if (javadocClass != null && (isPublic(access) || isProtected(access))) {
         String params = desc.substring(1, desc.lastIndexOf(")"));
         StringBuilder longTypes = new StringBuilder();
         StringBuilder shortTypes = new StringBuilder();
-        int count = processParam(name, desc, signature, longTypes, shortTypes, params);
+        int count = processParam(desc, signature, longTypes, shortTypes, params, name);
         dao.save(new JavadocMethod(javadocClass, "<init>".equals(name) ? javadocClass.getName() : name,
             count, longTypes.toString(), shortTypes.toString()));
       }
@@ -124,34 +124,24 @@ public class JavadocClassVisitor extends EmptyVisitor {
     return null;
   }
 
-  private int processParam(final String name, final String desc, final String signature,
-      final StringBuilder longTypes, final StringBuilder shortTypes, final String param) {
-    String arg = param;
-    int count = 0;
-    while (!arg.isEmpty()) {
-      StringBuilder type = new StringBuilder("");
-      while (arg.startsWith("[")) {
-        type.append("[]");
-        arg = arg.substring(1);
-      }
-      String base;
-      if (arg.startsWith("L")) {
-        final int index = arg.indexOf(";");
-        base = convertToClassName(arg.substring(1, index));
-        arg = arg.substring(index + 1);
+  private int processParam(final String desc, final String signature,
+      final StringBuilder longTypes, final StringBuilder shortTypes, final String param, final String name) {
+    int count;
+    List<JavadocType> types = new ArrayList<>();
+    if (name.equals("createContextualProxy")) {
+      if (signature != null) {
+        types = extractTypes(className, name, signature);
       } else {
-        base = PRIMITIVES.get(arg.charAt(0));
-        arg = arg.substring(1);
+        types = extractTypes(className, name, param);
       }
-      if (base == null) {
-        log.debug("javadocClass = " + getJavadocClass(pkg, className));
-        log.debug("name = " + name);
-        log.debug("desc = " + desc);
-        log.debug("signature = " + signature);
-        throw new RuntimeException("I don't know what " + arg + " is");
-      }
-      update(longTypes, shortTypes, type.insert(0, base).toString());
-      count++;
+      System.out.println("####### signature = " + signature);
+      System.out.println("####### param = " + param);
+      System.out.println("####### types = " + types);
+      System.out.println();
+    }
+    count = types.size();
+    for (JavadocType type : types) {
+      update(longTypes, shortTypes, type.toString());
     }
     return count;
   }
@@ -169,24 +159,22 @@ public class JavadocClassVisitor extends EmptyVisitor {
     builder.append(arg);
   }
 
-  public static String[] calculateNameAndPackage(final String href) {
-    String clsName = href;
+  public static String[] calculateNameAndPackage(final String value) {
+    String clsName = value;
     while (clsName.contains(".") && Character.isLowerCase(clsName.charAt(0))) {
       clsName = clsName.substring(clsName.indexOf(".") + 1);
     }
-    String pkgName = href.equals(clsName) ? null : href.substring(0, href.indexOf(clsName) - 1);
+    String pkgName = value.equals(clsName) ? null : value.substring(0, value.indexOf(clsName) - 1);
     return new String[]{pkgName, clsName};
   }
 
-  private String convertToClassName(final String param) {
-    String name = param;
-    if (name.startsWith("L")) {
-      name = name.substring(1);
+  static List<JavadocType> extractTypes(final String className, final String methodName, final String signature) {
+    SignatureReader reader = new SignatureReader(signature);
+    JavadocSignatureVisitor v = new JavadocSignatureVisitor(className, methodName, signature);
+    if (!signature.isEmpty()) {
+      reader.accept(v);
     }
-    if (name.startsWith("[L")) {
-      name = name.substring(2);
-    }
-    name = name.replace('/', '.');
-    return name;
+    return v.getTypes();
   }
+
 }

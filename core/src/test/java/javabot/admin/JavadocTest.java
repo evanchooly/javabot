@@ -28,24 +28,51 @@ public class JavadocTest extends BaseOperationTest {
   @Inject
   private JavadocClassDao javadocClassDao;
 
-  private static final String API_NAME = "Servlet";
-
-  private static final String ZIP_LOCATION
-      = "http://search.maven.org/remotecontent?filepath=javax/servlet/javax.servlet-api/3.0.1/javax.servlet-api-3.0.1.jar";
-
-  private static final String API_URL_STRING = "http://tomcat.apache.org/tomcat-7.0-doc/servletapi/";
+  @Test
+  public void addServletApi() throws IOException {
+    String apiName = "Servlet";
+    dropServletApi(apiName);
+    addTestApi(downloadZip("javax.servlet-api-3.0.1.jar",
+        "http://search.maven.org/remotecontent?filepath=javax/servlet/javax.servlet-api/3.0.1/javax.servlet-api-3.0.1.jar"),
+        "Servlet", "http://tomcat.apache.org/tomcat-7.0-doc/servletapi/");
+    Assert.assertTrue(javadocClassDao.getClass(
+        apiDao.find(apiName), "javax.servlet.http", "HttpServletRequest").length != 0);
+    scanForResponse("~javadoc HttpServlet", "javax.servlet.http.HttpServlet");
+    scanForResponse("~javadoc HttpServlet.doGet(*)", "javax.servlet.http.HttpServlet.doGet");
+    scanForResponse("~javadoc HttpServletRequest", "javax.servlet.http.HttpServletRequest");
+    scanForResponse("~javadoc HttpServletRequest.getMethod()", "javax.servlet.http.HttpServletRequest.getMethod");
+  }
 
   @Test
-  public void addApi() throws IOException {
-    dropTestApi();
-    addTestApi(downloadZip());
+  public void addEEApi() throws IOException {
+    String apiName = "JavaEE7";
+    dropServletApi(apiName);
+    addTestApi(downloadZip("javaee-api-7.0.jar",
+        "http://search.maven.org/remotecontent?filepath=javax/javaee-api/7.0/javaee-api-7.0.jar"),
+        apiName, "http://docs.oracle.com/javaee/7/api/");
+    scanForResponse("~javadoc Annotated", "javax.enterprise.inject.spi.Annotated");
+    scanForResponse("~javadoc Annotated.getAnnotation(*)", "javax.enterprise.inject.spi.Annotated.getAnnotation");
+
+    scanForResponse("~javadoc ContextService", "javax.enterprise.concurrent.ContextService");
+    scanForResponse("~javadoc ContextService.createContextualProxy(*)",
+        "createContextualProxy(java.lang.Object,Class<java.lang.Object>)");
+    scanForResponse("~javadoc ContextService.createContextualProxy(*)",
+        "createContextualProxy(java.lang.Object,java.util.Map<java.lang.String,java.lang.String>,java.lang.Class<java.lang.Object>)");
+    scanForResponse("~javadoc ContextService.createContextualProxy(*)",
+        "createContextualProxy(T,java.lang.Class<T>)");
+    scanForResponse("~javadoc ContextService.createContextualProxy(*)",
+        "createContextualProxy(T,java.util.Map<java.lang.String,java.lang.String>,java.lang.Class<T>)");
+
+    scanForResponse("~javadoc PartitionPlan", "[JavaEE7: javax.batch.api.partition.PartitionPlan]");
+    scanForResponse("~javadoc PartitionPlan.setPartitionProperties(Properties[])",
+        "javax.batch.api.partition.PartitionPlan.setPartitionProperties(Properties[])");
   }
 
   @Test
   public void addJdk() {
     getJavabot();
     JavadocApi api = apiDao.find("JDK");
-    if(Boolean.valueOf(System.getProperty("dropJDK", "false"))) {
+    if (Boolean.valueOf(System.getProperty("dropJDK", "false"))) {
       System.out.println("Dropping JDK API");
       apiDao.delete(api);
       api = null;
@@ -58,35 +85,29 @@ public class JavadocTest extends BaseOperationTest {
       event.setFile(new File(System.getProperty("java.home"), "lib/rt.jar").getAbsolutePath());
       event.setRequestedBy(BaseTest.TEST_USER.getNick());
       eventDao.save(event);
-      waitForEvent(event, "adding " + API_NAME, new Duration(30, TimeUnit.MINUTES));
+      waitForEvent(event, "adding JDK", new Duration(30, TimeUnit.MINUTES));
       getJavabot().getMessages();
       api = apiDao.find("JDK");
     }
     Assert.assertEquals(javadocClassDao.getClass(api, "java.lang", "Integer").length, 1);
   }
 
-  private void addTestApi(final File file) {
+  private void addTestApi(final File file, final String apiName, final String apiUrlString) {
     ApiEvent event = new ApiEvent();
-    event.setName(API_NAME);
+    event.setName(apiName);
     event.setType(EventType.ADD);
-    event.setBaseUrl(API_URL_STRING);
+    event.setBaseUrl(apiUrlString);
     event.setFile(file.getAbsolutePath());
     event.setRequestedBy(BaseTest.TEST_USER.getNick());
     eventDao.save(event);
-    waitForEvent(event, "adding " + API_NAME, new Duration(30, TimeUnit.MINUTES));
+    waitForEvent(event, "adding " + apiName, new Duration(30, TimeUnit.MINUTES));
     getJavabot().getMessages();
-    Assert.assertTrue(javadocClassDao.getClass(
-        apiDao.find(API_NAME), "javax.servlet.http", "HttpServletRequest").length != 0);
-    scanForResponse("~javadoc HttpServlet", "javax.servlet.http.HttpServlet");
-    scanForResponse("~javadoc HttpServlet.doGet(*)", "javax.servlet.http.HttpServlet.doGet");
-    scanForResponse("~javadoc HttpServletRequest", "javax.servlet.http.HttpServletRequest");
-    scanForResponse("~javadoc HttpServletRequest.getMethod()", "javax.servlet.http.HttpServletRequest.getMethod");
   }
 
-  private File downloadZip() throws IOException {
-    File file = new File("/tmp/javax.servlet-api-3.0.1.jar");
+  private File downloadZip(final String fileName, final String zipURL) throws IOException {
+    File file = new File("/tmp/" + fileName);
     if (!file.exists()) {
-      try (InputStream inputStream = new URL(ZIP_LOCATION).openStream();
+      try (InputStream inputStream = new URL(zipURL).openStream();
            OutputStream fos = new FileOutputStream(file)) {
         byte[] bytes = new byte[8192];
         int read;
@@ -98,12 +119,12 @@ public class JavadocTest extends BaseOperationTest {
     return file;
   }
 
-  private void dropTestApi() {
+  private void dropServletApi(final String apiName) {
     getJavabot();
     final ApiEvent event = new ApiEvent();
-    event.setName(API_NAME);
+    event.setName(apiName);
     event.setType(EventType.DELETE);
     eventDao.save(event);
-    waitForEvent(event, "dropping " + API_NAME, Duration.FIVE_MINUTES);
+    waitForEvent(event, "dropping " + apiName, Duration.FIVE_MINUTES);
   }
 }
