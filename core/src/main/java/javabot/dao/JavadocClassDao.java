@@ -6,6 +6,7 @@ import java.util.List;
 
 import javabot.javadoc.JavadocApi;
 import javabot.javadoc.JavadocClass;
+import javabot.javadoc.JavadocClassVisitor;
 import javabot.javadoc.JavadocField;
 import javabot.javadoc.JavadocMethod;
 import javabot.javadoc.criteria.JavadocClassCriteria;
@@ -20,7 +21,7 @@ public class JavadocClassDao extends BaseDao<JavadocClass> {
 
   @SuppressWarnings({"unchecked"})
   public List<JavadocClass> getClass(final JavadocApi api, final String name) {
-    final String[] strings = calculateNameAndPackage(name);
+    final String[] strings = JavadocClassVisitor.calculateNameAndPackage(name);
     final String pkgName = strings[0];
     JavadocClassCriteria criteria = new JavadocClassCriteria(ds);
     criteria.upperName().equal(strings[1].toUpperCase());
@@ -115,15 +116,6 @@ public class JavadocClassDao extends BaseDao<JavadocClass> {
 
   public long countMethods() {
     return ds.getCount(JavadocMethod.class);
-  }
-
-  private String[] calculateNameAndPackage(final String name) {
-    String clsName = name;
-    while (clsName.contains(".") && Character.isLowerCase(clsName.charAt(0))) {
-      clsName = clsName.substring(clsName.indexOf(".") + 1);
-    }
-    String pkgName = name.equals(clsName) ? null : name.substring(0, name.indexOf(clsName) - 1);
-    return new String[]{pkgName, clsName};
   }
 
   public void deleteFor(final JavadocApi api) {

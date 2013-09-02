@@ -38,7 +38,11 @@ class JavadocSignatureVisitor implements SignatureVisitor {
 
   private Stack<String> stack = new Stack<>();
 
-  public JavadocSignatureVisitor(final String className, final String name, final String signature) {
+  private boolean varargs;
+
+  public JavadocSignatureVisitor(final String className, final String name, final String signature,
+      final boolean varargs) {
+    this.varargs = varargs;
     if (trace) {
       System.out.println("\n\n*** JavadocSignatureVisitor.JavadocSignatureVisitor");
     }
@@ -131,6 +135,10 @@ class JavadocSignatureVisitor implements SignatureVisitor {
   @Override
   public SignatureVisitor visitArrayType() {
     push("JavadocSignatureVisitor.visitArrayType");
+    if(type == null) {
+      type = new JavadocType();
+      types.add(type);
+    }
     type.setArray(true);
 //    if(1==1) throw new RuntimeException("JavadocSignatureVisitor.visitArrayType");
     return this;
@@ -203,6 +211,9 @@ class JavadocSignatureVisitor implements SignatureVisitor {
   }
 
   public List<JavadocType> getTypes() {
+    if (varargs && !types.isEmpty()) {
+      types.get(types.size() - 1).setVarargs(true);
+    }
     return types;
   }
 
@@ -212,6 +223,8 @@ class JavadocSignatureVisitor implements SignatureVisitor {
     private List<String> typeVariables = new ArrayList<>();
 
     private boolean array;
+
+    private boolean varargs;
 
     public JavadocType() {
     }
@@ -244,22 +257,12 @@ class JavadocSignatureVisitor implements SignatureVisitor {
       return array;
     }
 
-    public String toString2() {
-      final StringBuilder sb = new StringBuilder("JavadocType{");
-      sb.append("array=").append(array);
-      sb.append(", name='").append(name).append('\'');
-      sb.append(", typeVariables=").append(typeVariables);
-      sb.append('}');
-      return sb.toString();
-    }
-
     @Override
     public String toString() {
-      System.out.println(toString2());
       if (name == null && typeVariables.size() == 1) {
         return typeVariables.get(0);
       }
-      StringBuilder builder = null;
+      StringBuilder builder;
       try {
         builder = new StringBuilder(name);
       } catch (NullPointerException e) {
@@ -270,7 +273,7 @@ class JavadocSignatureVisitor implements SignatureVisitor {
         if (generics.length() != 0) {
           generics.append(", ");
         }
-        generics.append(typeVariable);
+        generics.append(JavadocClassVisitor.calculateNameAndPackage(typeVariable)[1]);
       }
       if (generics.length() != 0) {
         builder.append("<")
@@ -278,9 +281,17 @@ class JavadocSignatureVisitor implements SignatureVisitor {
             .append(">");
       }
       if (isArray()) {
-        builder.append("[]");
+        if(varargs) {
+          builder.append("...");
+        } else {
+          builder.append("[]");
+        }
       }
       return builder.toString();
+    }
+
+    public void setVarargs(final boolean varargs) {
+      this.varargs = varargs;
     }
   }
 }

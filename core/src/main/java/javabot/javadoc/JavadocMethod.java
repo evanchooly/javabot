@@ -1,5 +1,7 @@
 package javabot.javadoc;
 
+import java.util.List;
+
 import com.antwerkz.maven.SPI;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
@@ -33,18 +35,40 @@ public class JavadocMethod extends JavadocElement {
   }
 
   public JavadocMethod(final JavadocClass parent, final String name, final int count,
-      final String longArgs, final String shortArgs) {
+      final List<String> longArgs, final List<String> shortArgs) {
     this.name = name;
     paramCount = count;
-    longSignatureTypes = longArgs;
-    shortSignatureTypes = shortArgs;
-    final String url = parent.getDirectUrl() + "#" + this.name + "(" + longArgs + ")";
+    longSignatureTypes = join(longArgs, ", ");
+    shortSignatureTypes = join(shortArgs, ", ");
+    final String url = buildUrl(parent, longArgs);
     setLongUrl(url);
     setDirectUrl(url);
 
     javadocClassId = parent.getId();
     setApiId(parent.getApiId());
     parentClassName = parent.toString();
+  }
+
+  private String join(final List<String> list, final String delim) {
+    StringBuilder joined = new StringBuilder();
+    for (String item : list) {
+      if(joined.length() != 0) {
+        joined.append(delim);
+      }
+      joined.append(item);
+    }
+    return joined.toString();
+  }
+
+  private String buildUrl(final JavadocClass parent, final List<String> longArgs) {
+    StringBuilder url = new StringBuilder();
+    for (String arg : longArgs) {
+      if(url.length() != 0) {
+        url.append(", ");
+      }
+      url.append(arg.replaceAll("<.*", ""));
+    }
+    return parent.getDirectUrl() + "#" + this.name + "(" + url + ")";
   }
 
   public ObjectId getId() {

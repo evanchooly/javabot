@@ -54,14 +54,12 @@ public class JavadocTest extends BaseOperationTest {
     scanForResponse("~javadoc Annotated.getAnnotation(*)", "javax.enterprise.inject.spi.Annotated.getAnnotation");
 
     scanForResponse("~javadoc ContextService", "javax.enterprise.concurrent.ContextService");
+    scanForResponse("~javadoc ContextService.createContextualProxy(*)", "createContextualProxy(Object, Class...)");
     scanForResponse("~javadoc ContextService.createContextualProxy(*)",
-        "createContextualProxy(java.lang.Object,Class<java.lang.Object>)");
+        "createContextualProxy(Object, Map<String, String>, Class...)");
+    scanForResponse("~javadoc ContextService.createContextualProxy(*)", "createContextualProxy(T, Class<T>)");
     scanForResponse("~javadoc ContextService.createContextualProxy(*)",
-        "createContextualProxy(java.lang.Object,java.util.Map<java.lang.String,java.lang.String>,java.lang.Class<java.lang.Object>)");
-    scanForResponse("~javadoc ContextService.createContextualProxy(*)",
-        "createContextualProxy(T,java.lang.Class<T>)");
-    scanForResponse("~javadoc ContextService.createContextualProxy(*)",
-        "createContextualProxy(T,java.util.Map<java.lang.String,java.lang.String>,java.lang.Class<T>)");
+        "createContextualProxy(T, Map<String, String>, Class<T>)");
 
     scanForResponse("~javadoc PartitionPlan", "[JavaEE7: javax.batch.api.partition.PartitionPlan]");
     scanForResponse("~javadoc PartitionPlan.setPartitionProperties(Properties[])",

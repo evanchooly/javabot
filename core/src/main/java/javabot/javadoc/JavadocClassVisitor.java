@@ -90,9 +90,13 @@ public class JavadocClassVisitor extends EmptyVisitor {
     if (className != null) {
       JavadocClass javadocClass = getJavadocClass();
       if (javadocClass != null && isPublic(access)) {
-        StringBuilder longTypes = new StringBuilder();
-        processParam(desc, signature, longTypes, new StringBuilder(), desc, name);
-        dao.save(new JavadocField(javadocClass, name, longTypes.toString()));
+        boolean isEnum = (access & Opcodes.ACC_ENUM) == Opcodes.ACC_ENUM;
+        List<JavadocType> types = extractTypes(className, "", desc, false);
+        try {
+          dao.save(new JavadocField(javadocClass, name, types.get(0).toString()));
+        } catch (IndexOutOfBoundsException e) {
+          throw new RuntimeException(e.getMessage(), e);
+        }
       }
     }
     return null;
@@ -114,30 +118,25 @@ public class JavadocClassVisitor extends EmptyVisitor {
       JavadocClass javadocClass = getJavadocClass();
       if (javadocClass != null && (isPublic(access) || isProtected(access))) {
         String params = desc.substring(1, desc.lastIndexOf(")"));
-        StringBuilder longTypes = new StringBuilder();
-        StringBuilder shortTypes = new StringBuilder();
-        int count = processParam(desc, signature, longTypes, shortTypes, params, name);
+        List<String> longTypes = new ArrayList<>();
+        List<String> shortTypes = new ArrayList<>();
+        int count = processParam(access, desc, signature, longTypes, shortTypes, params, name);
         dao.save(new JavadocMethod(javadocClass, "<init>".equals(name) ? javadocClass.getName() : name,
-            count, longTypes.toString(), shortTypes.toString()));
+            count, longTypes, shortTypes));
       }
     }
     return null;
   }
 
-  private int processParam(final String desc, final String signature,
-      final StringBuilder longTypes, final StringBuilder shortTypes, final String param, final String name) {
+  private int processParam(final int access, final String desc, final String signature,
+      final List<String> longTypes, final List<String> shortTypes, final String param, final String name) {
     int count;
     List<JavadocType> types = new ArrayList<>();
-    if (name.equals("createContextualProxy")) {
-      if (signature != null) {
-        types = extractTypes(className, name, signature);
-      } else {
-        types = extractTypes(className, name, param);
-      }
-      System.out.println("####### signature = " + signature);
-      System.out.println("####### param = " + param);
-      System.out.println("####### types = " + types);
-      System.out.println();
+    boolean varargs = (access & Opcodes.ACC_VARARGS) == Opcodes.ACC_VARARGS;
+    if (signature != null) {
+      types = extractTypes(className, name, signature, varargs);
+    } else {
+      types = extractTypes(className, name, param, varargs);
     }
     count = types.size();
     for (JavadocType type : types) {
@@ -146,10 +145,9 @@ public class JavadocClassVisitor extends EmptyVisitor {
     return count;
   }
 
-  private void update(final StringBuilder longTypes, final StringBuilder shortTypes, final String arg) {
-    String shortName = calculateNameAndPackage(arg)[1];
-    append(longTypes, arg, ",");
-    append(shortTypes, shortName, ",");
+  private void update(final List<String> longTypes, final List<String> shortTypes, final String arg) {
+    longTypes.add(arg);
+    shortTypes.add(calculateNameAndPackage(arg)[1]);
   }
 
   private void append(final StringBuilder builder, final String arg, final String delim) {
@@ -168,9 +166,10 @@ public class JavadocClassVisitor extends EmptyVisitor {
     return new String[]{pkgName, clsName};
   }
 
-  static List<JavadocType> extractTypes(final String className, final String methodName, final String signature) {
+  static List<JavadocType> extractTypes(final String className, final String methodName, final String signature,
+      final boolean varargs) {
     SignatureReader reader = new SignatureReader(signature);
-    JavadocSignatureVisitor v = new JavadocSignatureVisitor(className, methodName, signature);
+    JavadocSignatureVisitor v = new JavadocSignatureVisitor(className, methodName, signature, varargs);
     if (!signature.isEmpty()) {
       reader.accept(v);
     }
