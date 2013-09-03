@@ -104,9 +104,6 @@ class JavadocSignatureVisitor implements SignatureVisitor {
   public SignatureVisitor visitExceptionType() {
     push("JavadocSignatureVisitor.visitExceptionType");
     type = new JavadocType();
-    if (1 == 1) {
-      throw new RuntimeException("JavadocSignatureVisitor.visitExceptionType");
-    }
     return this;
   }
 
@@ -158,9 +155,6 @@ class JavadocSignatureVisitor implements SignatureVisitor {
   public void visitInnerClassType(final String innerClassType) {
     if (trace) {
       System.out.println("JavadocSignatureVisitor.visitInnerClassType(" + innerClassType + ")");
-    }
-    if (1 == 1) {
-      throw new RuntimeException("JavadocSignatureVisitor.visitInnerClassType");
     }
   }
 

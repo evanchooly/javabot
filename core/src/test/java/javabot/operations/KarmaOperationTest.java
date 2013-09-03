@@ -27,12 +27,15 @@ public class KarmaOperationTest extends BaseOperationTest {
     testMessage("~testjavabot--", "Rest those fingers, Tex");
     testMessage("~testjavabot--", "Rest those fingers, Tex");
     testMessage("~testjavabot--", "Rest those fingers, Tex");
+    System.out.println("Sleeping 7s...");
     Thread.sleep(7000);
     testMessage("~testjavabot++",
         String.format("testjavabot has a karma level of %d, %s", ++value, BaseTest.TEST_USER));
+    System.out.println("Sleeping 7s...");
     Thread.sleep(7000);
     testMessage("~testjavabot--",
         String.format("testjavabot has a karma level of %d, %s", --value, BaseTest.TEST_USER));
+    System.out.println("Sleeping 7s...");
     Thread.sleep(7000);
     testMessage("~testjavabot--", String.format("testjavabot has a karma level of %d, %s", --value,
         BaseTest.TEST_USER));

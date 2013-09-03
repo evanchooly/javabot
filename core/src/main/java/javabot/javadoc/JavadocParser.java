@@ -49,26 +49,18 @@ public class JavadocParser {
       if (!tmpDir.exists()) {
         new File(System.getProperty("java.io.tmpdir"));
       }
+
       BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
       ThreadPoolExecutor executor = new ThreadPoolExecutor(20, 30, 30, TimeUnit.SECONDS, workQueue,
           new JavabotThreadFactory(false, "javadoc-thread-"));
       executor.prestartCoreThread();
-      File file = new File(location);
+      final File file = new File(location);
+      final boolean deleteFile = !"JDK".equals(api.getName());
       try (JarFile jarFile = new JarFile(file)) {
         for (final Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements(); ) {
           final JarEntry entry = entries.nextElement();
           if (entry.getName().endsWith(".class")) {
-            boolean offer = workQueue.offer(new Runnable() {
-              @Override
-              public void run() {
-                try {
-                  new ClassReader(jarFile.getInputStream(entry)).accept(provider.get(), 0);
-                } catch (Exception e) {
-                  throw new RuntimeException(e.getMessage(), e);
-                }
-              }
-            }, 1, TimeUnit.MINUTES);
-            if (!offer) {
+            if (!workQueue.offer(new JavadocClassReader(jarFile, entry), 1, TimeUnit.MINUTES)) {
               writer.write("Failed to class to queue: " + entry);
             }
           }
@@ -78,13 +70,15 @@ public class JavadocParser {
               workQueue.size()));
           Thread.sleep(5000);
         }
-        executor.shutdown();
-        executor.awaitTermination(1, TimeUnit.HOURS);
       } finally {
-        file.delete();
-        writer.write(String.format("Finished importing %s.  %s!", api.getName(),
-            workQueue.isEmpty() ? "SUCCESS" : "FAILURE"));
+        if (deleteFile) {
+          file.delete();
+        }
       }
+      writer.write(String.format("Finished importing %s.  %s!", api.getName(),
+          workQueue.isEmpty() ? "SUCCESS" : "FAILURE"));
+      executor.shutdown();
+      executor.awaitTermination(1, TimeUnit.HOURS);
     } catch (IOException | InterruptedException e) {
       log.error(e.getMessage(), e);
       throw new RuntimeException(e.getMessage(), e);
@@ -130,7 +124,7 @@ public class JavadocParser {
   private JavadocClass getJavadocClass(final JavadocApi api, final String pkg, final String name) {
     JavadocClass cls = null;
     for (JavadocClass javadocClass : dao.getClass(api, pkg, name)) {
-      if (javadocClass.getApiId().equals(api)) {
+      if (javadocClass.getApiId().equals(api.getId())) {
         cls = javadocClass;
       }
     }
@@ -139,5 +133,25 @@ public class JavadocParser {
 
   public JavadocApi getApi() {
     return api;
+  }
+
+  private class JavadocClassReader implements Runnable {
+    private final JarFile jarFile;
+
+    private final JarEntry entry;
+
+    public JavadocClassReader(final JarFile jarFile, final JarEntry entry) {
+      this.jarFile = jarFile;
+      this.entry = entry;
+    }
+
+    @Override
+    public void run() {
+      try {
+        new ClassReader(jarFile.getInputStream(entry)).accept(provider.get(), 0);
+      } catch (Exception e) {
+        throw new RuntimeException(e.getMessage(), e);
+      }
+    }
   }
 }

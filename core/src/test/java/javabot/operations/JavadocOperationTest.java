@@ -32,12 +32,12 @@ public class JavadocOperationTest extends BaseOperationTest {
   }
 
   public void format() {
-    scanForResponse("~javadoc String.format(*)", "[JDK: java.lang.String.format(Locale,String,Object[])]");
+    scanForResponse("~javadoc String.format(*)", "[JDK: java.lang.String.format(Locale, String, Object...)]");
   }
 
   @Test
   public void doFinal() {
-    scanForResponse("~javadoc Cipher.doFinal(*)",
+    scanForResponse("~javadoc String.valueOf(*)",
         BaseTest.TEST_USER + ", too many results found.  Please see your private messages for results");
   }
 

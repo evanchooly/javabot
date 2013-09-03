@@ -90,10 +90,9 @@ public class JavadocClassVisitor extends EmptyVisitor {
     if (className != null) {
       JavadocClass javadocClass = getJavadocClass();
       if (javadocClass != null && isPublic(access)) {
-        boolean isEnum = (access & Opcodes.ACC_ENUM) == Opcodes.ACC_ENUM;
-        List<JavadocType> types = extractTypes(className, "", desc, false);
         try {
-          dao.save(new JavadocField(javadocClass, name, types.get(0).toString()));
+          JavadocType javadocType = extractTypes(className, "", desc, false).get(0);
+          dao.save(new JavadocField(javadocClass, name, javadocType.toString()));
         } catch (IndexOutOfBoundsException e) {
           throw new RuntimeException(e.getMessage(), e);
         }
@@ -117,44 +116,24 @@ public class JavadocClassVisitor extends EmptyVisitor {
     if (className != null) {
       JavadocClass javadocClass = getJavadocClass();
       if (javadocClass != null && (isPublic(access) || isProtected(access))) {
-        String params = desc.substring(1, desc.lastIndexOf(")"));
+        List<JavadocType> types = extractTypes(className, name, signature != null ? signature : desc,
+            (access & Opcodes.ACC_VARARGS) == Opcodes.ACC_VARARGS);
+
         List<String> longTypes = new ArrayList<>();
         List<String> shortTypes = new ArrayList<>();
-        int count = processParam(access, desc, signature, longTypes, shortTypes, params, name);
+        for (JavadocType type : types) {
+          update(longTypes, shortTypes, type.toString());
+        }
         dao.save(new JavadocMethod(javadocClass, "<init>".equals(name) ? javadocClass.getName() : name,
-            count, longTypes, shortTypes));
+            types.size(), longTypes, shortTypes));
       }
     }
     return null;
   }
 
-  private int processParam(final int access, final String desc, final String signature,
-      final List<String> longTypes, final List<String> shortTypes, final String param, final String name) {
-    int count;
-    List<JavadocType> types = new ArrayList<>();
-    boolean varargs = (access & Opcodes.ACC_VARARGS) == Opcodes.ACC_VARARGS;
-    if (signature != null) {
-      types = extractTypes(className, name, signature, varargs);
-    } else {
-      types = extractTypes(className, name, param, varargs);
-    }
-    count = types.size();
-    for (JavadocType type : types) {
-      update(longTypes, shortTypes, type.toString());
-    }
-    return count;
-  }
-
   private void update(final List<String> longTypes, final List<String> shortTypes, final String arg) {
     longTypes.add(arg);
     shortTypes.add(calculateNameAndPackage(arg)[1]);
-  }
-
-  private void append(final StringBuilder builder, final String arg, final String delim) {
-    if (builder.length() != 0) {
-      builder.append(delim);
-    }
-    builder.append(arg);
   }
 
   public static String[] calculateNameAndPackage(final String value) {
