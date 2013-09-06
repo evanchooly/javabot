@@ -11,7 +11,7 @@ import com.google.code.morphia.annotations.Indexes;
 import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 
-@Entity("shun")
+@Entity("shuns")
 @SPI(Persistent.class)
 @Indexes({
     @Index("upperNick")

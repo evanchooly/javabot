@@ -7,6 +7,7 @@ import org.bson.types.ObjectId
 import org.pac4j.play.scala.ScalaController
 import play.api.data.Forms._
 import play.api.data._
+
 import play.api.mvc._
 import scala.collection.JavaConversions._
 import utils.Implicits._
@@ -17,6 +18,7 @@ import com.google.inject.Provider
 import security.OAuthDeadboltHandler
 import java.io.File
 import javax.inject.{Singleton, Inject}
+import javabot.javadoc.JavadocApi
 
 @Singleton
 class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoidDao: FactoidDao, apiDao: ApiDao,
@@ -32,7 +34,8 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
   val apiForm: Form[ApiForm] = Form(
     mapping(
       "name" -> text,
-      "baseUrl" -> text
+      "baseUrl" -> text,
+      "downloadUrl" -> text
     )(ApiForm.apply)(ApiForm.unapply))
   val channelForm: Form[ChannelInfo] = Form(
     mapping(
@@ -61,31 +64,39 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
 
   def login = RequiresAuthentication("Google2Client") {
     profile =>
-      Action {
-        implicit request =>
-          val dao: utils.AdminDao = adminDao
-          if (dao.findAll().isEmpty) {
-            dao.create("", profile.getEmail, "")
-          }
-          Ok(views.html.admin.admin(handler, fillContext(request), adminForm.bindFromRequest(), adminDao.findAll()))
-            .withSession("userName" -> profile.getEmail)
+      Restrict(Array("botAdmin"), handler) {
+        Action {
+          implicit request =>
+            println("login")
+            if (adminDao.findAll().isEmpty) {
+              print("creating new admin")
+              adminDao.create("", profile.getEmail, "")
+            }
+            Ok(views.html.admin.admin(handler, fillContext(request), adminForm.bindFromRequest(), adminDao.findAll()))
+              .withSession("userName" -> profile.getEmail)
+        }
       }
   }
 
   def index = RequiresAuthentication("Google2Client") {
     profile =>
-      Action {
-        implicit request =>
-          Ok(views.html.admin.admin(handler, fillContext(request), adminForm.bindFromRequest(), adminDao.findAll()))
+      Restrict(Array("botAdmin"), handler) {
+        Action {
+          implicit request =>
+            Ok(views.html.admin.admin(handler, fillContext(request), adminForm.bindFromRequest(), adminDao.findAll()))
+        }
       }
   }
 
-  def showConfig = Restrict(Array("botAdmin"), handler) {
-    Action {
-      implicit request =>
-        Ok(views.html.admin.config(handler, fillContext(request),
-          buildConfigForm, configDao.get.getOperations.toSet, configDao.operations))
-    }
+  def showConfig = RequiresAuthentication("Google2Client") {
+    profile =>
+      Restrict(Array("botAdmin"), handler) {
+        Action {
+          implicit request =>
+            Ok(views.html.admin.config(handler, fillContext(request),
+              buildConfigForm, configDao.get.getOperations.toSet, configDao.operations))
+        }
+      }
   }
 
   def saveConfig = RequiresAuthentication("Google2Client") {
@@ -151,12 +162,26 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
   }
 
   def FileUploadAction[A](bp: BodyParser[A])(f: Request[A] => Result): Action[A] = {
-    Action(bp) { request =>
-      f(request)
+    Action(bp) {
+      request =>
+        f(request)
     }
   }
 
-  def addApi = Restrict(Array("botAdmin"), handler) {
+  def addApi = RequiresAuthentication("Google2Client") {
+    profile =>
+      Restrict(Array("botAdmin"), handler) {
+        Action {
+          implicit request => {
+            val form = apiForm.bindFromRequest().get
+            apiDao.save(new ApiEvent(getAdmin(request.session).getUserName, form.name, form.baseUrl, form.downloadUrl))
+            Redirect(routes.AdminController.javadoc())
+          }
+        }
+      }
+  }
+
+  def addApi2 = Restrict(Array("botAdmin"), handler) {
     FileUploadAction(parse.multipartFormData) {
       implicit request => {
         val map: Option[mvc.SimpleResult[mvc.Results.EmptyContent]] = request.body.file("file").map {
@@ -164,8 +189,8 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
             val form = apiForm.bindFromRequest().get
             val savedFile = File.createTempFile(form.name + "javadoc", ".jar")
             jar.ref.moveTo(savedFile, replace = true)
-            apiDao.save(new ApiEvent(apiDao.find(form.name) == null, getAdmin(request.session).getUserName,
-              form.name, form.baseUrl, savedFile))
+//            apiDao.save(new ApiEvent(apiDao.find(form.name) == null, getAdmin(request.session).getUserName,
+//              form.name, form.baseUrl, savedFile))
             Redirect(routes.AdminController.javadoc())
         }
         map.get
@@ -178,8 +203,19 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
       Restrict(Array("botAdmin"), handler) {
         Action {
           implicit request => {
-            val event = new ApiEvent(apiDao.find(id).getName, getAdmin(request.session).getUserName)
-            apiDao.save(event)
+            apiDao.save(new ApiEvent(EventType.DELETE, getAdmin(request.session).getUserName, id))
+            Redirect(routes.AdminController.javadoc())
+          }
+        }
+      }
+  }
+
+  def reloadApi(id: ObjectId) = RequiresAuthentication("Google2Client") {
+    profile =>
+      Restrict(Array("botAdmin"), handler) {
+        Action {
+          implicit request => {
+            apiDao.save(new ApiEvent(EventType.RELOAD, getAdmin(request.session).getUserName, id))
             Redirect(routes.AdminController.javadoc())
           }
         }
@@ -197,7 +233,6 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
                 save(adminInfo)
                 Redirect(routes.AdminController.index())
               })
-
           }
         }
       }

@@ -25,7 +25,7 @@ class Global extends GlobalSettings {
 
     Config.setClients(new Clients("http://localhost:9000/oauth2callback", new Google2Client(key, secret)))
     // for test purposes : profile timeout = 60 seconds
-    // Config.setProfileTimeout(60)
+    Config.setProfileTimeout(60)
   }
 
   override def onRequest(p1: Request, p2: Method) = {

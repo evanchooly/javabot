@@ -1,7 +1,12 @@
 package javabot.model;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
+import java.net.URL;
 import javax.inject.Inject;
 
 import com.google.code.morphia.annotations.Entity;
@@ -14,20 +19,26 @@ import javabot.dao.AdminDao;
 import javabot.dao.ApiDao;
 import javabot.javadoc.JavadocApi;
 import javabot.javadoc.JavadocParser;
+import org.bson.types.ObjectId;
 
 @Entity("events")
 public class ApiEvent extends AdminEvent {
+  private ObjectId apiId;
+
   public String name;
-  public Boolean newApi;
+
   public String baseUrl;
-  public String file;
+
+  public String downloadUrl;
 
   @Inject
   @Transient
   private JavadocParser parser;
+
   @Inject
   @Transient
   private ApiDao apiDao;
+
   @Inject
   @Transient
   private AdminDao adminDao;
@@ -35,18 +46,31 @@ public class ApiEvent extends AdminEvent {
   public ApiEvent() {
   }
 
-  public ApiEvent(boolean newApi, String requestedBy, String name, String baseUrl, File file) {
-    this.newApi = newApi;
+  public ApiEvent(String requestedBy, String name, String baseUrl, String downloadUrl) {
+    super(EventType.ADD, requestedBy);
     setRequestedBy(requestedBy);
     this.name = name;
     this.baseUrl = baseUrl;
-    this.file = file.getAbsolutePath();
+    this.downloadUrl = downloadUrl;
   }
 
-  public ApiEvent(String name, String requestedBy) {
-     super(EventType.DELETE, requestedBy);
-     this.name = name;
-   }
+  public ApiEvent(EventType type, String requestedBy, ObjectId apiId) {
+    super(type, requestedBy);
+    this.apiId = apiId;
+  }
+
+  public ApiEvent(EventType type, String requestedBy, String name) {
+    super(type, requestedBy);
+    this.name = name;
+  }
+
+  public ObjectId getApiId() {
+    return apiId;
+  }
+
+  public void setApiId(final ObjectId apiId) {
+    this.apiId = apiId;
+  }
 
   public String getName() {
     return name;
@@ -64,12 +88,12 @@ public class ApiEvent extends AdminEvent {
     this.baseUrl = baseUrl;
   }
 
-  public String getFile() {
-    return file;
+  public String getDownloadUrl() {
+    return downloadUrl;
   }
 
-  public void setFile(String file) {
-    this.file = file;
+  public void setDownloadUrl(String downloadUrl) {
+    this.downloadUrl = downloadUrl;
   }
 
   public void update(Javabot bot) {
@@ -79,25 +103,55 @@ public class ApiEvent extends AdminEvent {
 
   public void delete(Javabot bot) {
     JavadocApi api = apiDao.find(name);
-    if(api != null) {
+    if (api != null) {
       apiDao.delete(api);
     }
   }
 
   public void add(final Javabot bot) {
-    JavadocApi api = new JavadocApi(name, baseUrl);
+    JavadocApi api = new JavadocApi(name, baseUrl, downloadUrl);
     apiDao.save(api);
+    process(bot, api);
+  }
 
+  public void reload(final Javabot bot) {
+    JavadocApi api = apiDao.find(apiId);
+    apiDao.delete(apiId);
+    api.setId(null);
+    apiDao.save(api);
+    process(bot, api);
+  }
+
+  private void process(final Javabot bot, final JavadocApi api) {
     final Admin admin = adminDao.getAdmin(getRequestedBy());
     final IrcUser user = new IrcUser(admin.getIrcName(), admin.getIrcName(), admin.getHostName());
     final IrcEvent event = new IrcEvent(admin.getIrcName(), user, null);
+    try {
+      File file = downloadZip(api.getName() + ".jar", api.getDownloadUrl());
+      parser.parse(api, file.getAbsolutePath(), new StringWriter() {
+        @Override
+        public void write(final String line) {
+          event.setMessage(line);
+          bot.postMessage(new Message(user, event, line));
+        }
+      });
+    } catch (IOException e) {
+      throw new RuntimeException(e.getMessage(), e);
+    }
+  }
 
-    parser.parse(api, file, new StringWriter() {
-      @Override
-      public void write(final String line) {
-        event.setMessage(line);
-        bot.postMessage(new Message(user, event, line));
+  private File downloadZip(final String fileName, final String zipURL) throws IOException {
+    File file = new File("/tmp/" + fileName);
+    if (!file.exists()) {
+      try (InputStream inputStream = new URL(zipURL).openStream();
+           OutputStream fos = new FileOutputStream(file)) {
+        byte[] bytes = new byte[8192];
+        int read;
+        while ((read = inputStream.read(bytes)) != -1) {
+          fos.write(bytes, 0, read);
+        }
       }
-    });
+    }
+    return file;
   }
 }

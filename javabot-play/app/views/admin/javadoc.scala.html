@@ -12,7 +12,7 @@
             </td>
             <td class="top">
                 <input type="text" name="baseUrl" width="30"/>
-                <input type="file" id="file" name="file"/>
+                URL: <input type="text" name="downloadUrl" size="50"/>
             </td>
             <td class="right top">
                 <input type="image" src="@routes.Assets.at("images/boomy/add24.png")" alt="Add"/>
@@ -28,8 +28,13 @@
         <tr>
             <td>@{api.getName}</td>
             <td>@{api.getBaseUrl}</td>
-            <td class="right"><a href="@{routes.AdminController.deleteApi(api.getId)}">
-                <img src="@routes.Assets.at("images/boomy/delete24.png")" alt="Delete"/></a>
+            <td class="right">
+                <a href="@{routes.AdminController.reloadApi(api.getId)}">
+                    <img src="@routes.Assets.at("images/boomy/refresh24.png")" alt="Refresh"/>
+                </a>
+                <a href="@{routes.AdminController.deleteApi(api.getId)}">
+                    <img src="@routes.Assets.at("images/boomy/delete24.png")" alt="Delete"/>
+                </a>
             </td>
         </tr>
     }

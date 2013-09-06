@@ -1,4 +1,4 @@
 package models
 
-case class ApiForm(name: String, baseUrl: String) {
+case class ApiForm(name: String, baseUrl: String, downloadUrl: String) {
 }

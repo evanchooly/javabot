@@ -10,7 +10,7 @@ import com.google.code.morphia.annotations.Indexes;
 import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 
-@Entity("admin")
+@Entity("admins")
 @SPI(Persistent.class)
 @Indexes({
     @Index(value = "userName", unique = true),

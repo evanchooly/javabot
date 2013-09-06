@@ -18,6 +18,7 @@ POST    /addAdmin                   @controllers.AdminController.addAdmin
 POST    /addApi                     @controllers.AdminController.addApi
 GET     /show/:name                 @controllers.AdminController.showChannel(name)
 GET     /deleteApi/:id              @controllers.AdminController.deleteApi(id: org.bson.types.ObjectId)
+GET     /reloadApi/:id              @controllers.AdminController.reloadApi(id: org.bson.types.ObjectId)
 GET     /deleteAdmin/:id            @controllers.AdminController.deleteAdmin(id: org.bson.types.ObjectId)
 
 POST    /saveChannel                @controllers.AdminController.saveChannel

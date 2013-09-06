@@ -7,7 +7,7 @@ import javabot.dao.ApiDao;
 import javabot.dao.JavadocClassDao;
 import org.testng.annotations.Test;
 
-@Test(dependsOnMethods = {"javabot.admin.JavadocTest.addJdk"})
+@Test(dependsOnMethods = {"jdk"})
 public class JavadocOperationTest extends BaseOperationTest {
   @Inject
   private ApiDao apiDao;

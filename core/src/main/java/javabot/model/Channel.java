@@ -17,7 +17,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Entity("channel")
+@Entity("channels")
 @SPI(Persistent.class)
 @Indexes({
     @Index(value = "upperName", unique = true, dropDups = true)

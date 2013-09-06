@@ -66,6 +66,29 @@ public class JavadocApiCriteria {
     return this;
   }
 
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocApi, java.lang.String> downloadUrl() {
+    return new TypeSafeFieldEnd<>(query, query.criteria("downloadUrl"));
+  }
+
+  public JavadocApiCriteria downloadUrl(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("downloadUrl")).equal(value);
+    return this;
+  }
+
+  public JavadocApiCriteria orderByDownloadUrl() {
+    return orderByDownloadUrl(true);
+  }
+
+  public JavadocApiCriteria orderByDownloadUrl(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "downloadUrl");
+    return this;
+  }
+
+  public JavadocApiCriteria distinctDownloadUrl() {
+    ((QueryImpl) query).getCollection().distinct("downloadUrl");
+    return this;
+  }
+
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocApi, org.bson.types.ObjectId> id() {
     return new TypeSafeFieldEnd<>(query, query.criteria("id"));
   }
@@ -219,6 +242,65 @@ public class JavadocApiCriteria {
 
     public JavadocApiUpdater incBaseUrl(Number value) {
       updateOperations.inc("baseUrl", value);
+      return this;
+    }
+    public JavadocApiUpdater downloadUrl(java.lang.String value) {
+      updateOperations.set("downloadUrl", value);
+      return this;
+    }
+
+    public JavadocApiUpdater unsetDownloadUrl(java.lang.String value) {
+      updateOperations.unset("downloadUrl");
+      return this;
+    }
+
+    public JavadocApiUpdater addDownloadUrl(java.lang.String value) {
+      updateOperations.add("downloadUrl", value);
+      return this;
+    }
+
+    public JavadocApiUpdater addDownloadUrl(String fieldExpr, java.lang.String value, boolean addDups) {
+      updateOperations.add("downloadUrl", value, addDups);
+      return this;
+    }
+
+    public JavadocApiUpdater addAllToDownloadUrl(List<java.lang.String> values, boolean addDups) {
+      updateOperations.addAll("downloadUrl", values, addDups);
+      return this;
+    }
+  
+    public JavadocApiUpdater removeFirstDownloadUrl() {
+      updateOperations.removeFirst("downloadUrl");
+      return this;
+    }
+  
+    public JavadocApiUpdater removeLastDownloadUrl() {
+      updateOperations.removeLast("downloadUrl");
+      return this;
+    }
+  
+    public JavadocApiUpdater removeFromDownloadUrl(java.lang.String value) {
+      updateOperations.removeAll("downloadUrl", value);
+      return this;
+    }
+
+    public JavadocApiUpdater removeAllFromDownloadUrl(List<java.lang.String> values) {
+      updateOperations.removeAll("downloadUrl", values);
+      return this;
+    }
+ 
+    public JavadocApiUpdater decDownloadUrl() {
+      updateOperations.dec("downloadUrl");
+      return this;
+    }
+
+    public JavadocApiUpdater incDownloadUrl() {
+      updateOperations.inc("downloadUrl");
+      return this;
+    }
+
+    public JavadocApiUpdater incDownloadUrl(Number value) {
+      updateOperations.inc("downloadUrl", value);
       return this;
     }
     public JavadocApiUpdater id(org.bson.types.ObjectId value) {

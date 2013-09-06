@@ -112,6 +112,9 @@ public class AdminEvent implements Serializable, Persistent {
       case UPDATE:
         update(bot);
         break;
+      case RELOAD:
+        reload(bot);
+        break;
     }
   }
 
@@ -122,5 +125,8 @@ public class AdminEvent implements Serializable, Persistent {
   }
 
   public void update(Javabot bot) {
+  }
+
+  public void reload(Javabot bot) {
   }
 }

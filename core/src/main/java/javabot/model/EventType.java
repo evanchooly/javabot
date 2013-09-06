@@ -1,7 +1,8 @@
 package javabot.model;
 
 public enum EventType {
-    ADD,
-    DELETE,
-    UPDATE
+  ADD,
+  DELETE,
+  UPDATE,
+  RELOAD
 }

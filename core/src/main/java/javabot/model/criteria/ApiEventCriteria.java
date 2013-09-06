@@ -43,6 +43,29 @@ public class ApiEventCriteria {
     return query.and(criteria);
   }
 
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, org.bson.types.ObjectId> apiId() {
+    return new TypeSafeFieldEnd<>(query, query.criteria("apiId"));
+  }
+
+  public ApiEventCriteria apiId(org.bson.types.ObjectId value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("apiId")).equal(value);
+    return this;
+  }
+
+  public ApiEventCriteria orderByApiId() {
+    return orderByApiId(true);
+  }
+
+  public ApiEventCriteria orderByApiId(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "apiId");
+    return this;
+  }
+
+  public ApiEventCriteria distinctApiId() {
+    ((QueryImpl) query).getCollection().distinct("apiId");
+    return this;
+  }
+
   public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, java.lang.String> baseUrl() {
     return new TypeSafeFieldEnd<>(query, query.criteria("baseUrl"));
   }
@@ -89,26 +112,26 @@ public class ApiEventCriteria {
     return this;
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, java.lang.String> file() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("file"));
+  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, java.lang.String> downloadUrl() {
+    return new TypeSafeFieldEnd<>(query, query.criteria("downloadUrl"));
   }
 
-  public ApiEventCriteria file(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("file")).equal(value);
+  public ApiEventCriteria downloadUrl(java.lang.String value) {
+    new TypeSafeFieldEnd<>(query, query.criteria("downloadUrl")).equal(value);
     return this;
   }
 
-  public ApiEventCriteria orderByFile() {
-    return orderByFile(true);
+  public ApiEventCriteria orderByDownloadUrl() {
+    return orderByDownloadUrl(true);
   }
 
-  public ApiEventCriteria orderByFile(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "file");
+  public ApiEventCriteria orderByDownloadUrl(boolean ascending) {
+    query.order((!ascending ? "-" : "") + "downloadUrl");
     return this;
   }
 
-  public ApiEventCriteria distinctFile() {
-    ((QueryImpl) query).getCollection().distinct("file");
+  public ApiEventCriteria distinctDownloadUrl() {
+    ((QueryImpl) query).getCollection().distinct("downloadUrl");
     return this;
   }
 
@@ -155,29 +178,6 @@ public class ApiEventCriteria {
 
   public ApiEventCriteria distinctName() {
     ((QueryImpl) query).getCollection().distinct("name");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, java.lang.Boolean> newApi() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("newApi"));
-  }
-
-  public ApiEventCriteria newApi(java.lang.Boolean value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("newApi")).equal(value);
-    return this;
-  }
-
-  public ApiEventCriteria orderByNewApi() {
-    return orderByNewApi(true);
-  }
-
-  public ApiEventCriteria orderByNewApi(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "newApi");
-    return this;
-  }
-
-  public ApiEventCriteria distinctNewApi() {
-    ((QueryImpl) query).getCollection().distinct("newApi");
     return this;
   }
 
@@ -300,6 +300,65 @@ public class ApiEventCriteria {
       return ds.update(query(), updateOperations, true, wc);
     }
 
+    public ApiEventUpdater apiId(org.bson.types.ObjectId value) {
+      updateOperations.set("apiId", value);
+      return this;
+    }
+
+    public ApiEventUpdater unsetApiId(org.bson.types.ObjectId value) {
+      updateOperations.unset("apiId");
+      return this;
+    }
+
+    public ApiEventUpdater addApiId(org.bson.types.ObjectId value) {
+      updateOperations.add("apiId", value);
+      return this;
+    }
+
+    public ApiEventUpdater addApiId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+      updateOperations.add("apiId", value, addDups);
+      return this;
+    }
+
+    public ApiEventUpdater addAllToApiId(List<org.bson.types.ObjectId> values, boolean addDups) {
+      updateOperations.addAll("apiId", values, addDups);
+      return this;
+    }
+  
+    public ApiEventUpdater removeFirstApiId() {
+      updateOperations.removeFirst("apiId");
+      return this;
+    }
+  
+    public ApiEventUpdater removeLastApiId() {
+      updateOperations.removeLast("apiId");
+      return this;
+    }
+  
+    public ApiEventUpdater removeFromApiId(org.bson.types.ObjectId value) {
+      updateOperations.removeAll("apiId", value);
+      return this;
+    }
+
+    public ApiEventUpdater removeAllFromApiId(List<org.bson.types.ObjectId> values) {
+      updateOperations.removeAll("apiId", values);
+      return this;
+    }
+ 
+    public ApiEventUpdater decApiId() {
+      updateOperations.dec("apiId");
+      return this;
+    }
+
+    public ApiEventUpdater incApiId() {
+      updateOperations.inc("apiId");
+      return this;
+    }
+
+    public ApiEventUpdater incApiId(Number value) {
+      updateOperations.inc("apiId", value);
+      return this;
+    }
     public ApiEventUpdater baseUrl(java.lang.String value) {
       updateOperations.set("baseUrl", value);
       return this;
@@ -418,63 +477,63 @@ public class ApiEventCriteria {
       updateOperations.inc("completed", value);
       return this;
     }
-    public ApiEventUpdater file(java.lang.String value) {
-      updateOperations.set("file", value);
+    public ApiEventUpdater downloadUrl(java.lang.String value) {
+      updateOperations.set("downloadUrl", value);
       return this;
     }
 
-    public ApiEventUpdater unsetFile(java.lang.String value) {
-      updateOperations.unset("file");
+    public ApiEventUpdater unsetDownloadUrl(java.lang.String value) {
+      updateOperations.unset("downloadUrl");
       return this;
     }
 
-    public ApiEventUpdater addFile(java.lang.String value) {
-      updateOperations.add("file", value);
+    public ApiEventUpdater addDownloadUrl(java.lang.String value) {
+      updateOperations.add("downloadUrl", value);
       return this;
     }
 
-    public ApiEventUpdater addFile(String fieldExpr, java.lang.String value, boolean addDups) {
-      updateOperations.add("file", value, addDups);
+    public ApiEventUpdater addDownloadUrl(String fieldExpr, java.lang.String value, boolean addDups) {
+      updateOperations.add("downloadUrl", value, addDups);
       return this;
     }
 
-    public ApiEventUpdater addAllToFile(List<java.lang.String> values, boolean addDups) {
-      updateOperations.addAll("file", values, addDups);
+    public ApiEventUpdater addAllToDownloadUrl(List<java.lang.String> values, boolean addDups) {
+      updateOperations.addAll("downloadUrl", values, addDups);
       return this;
     }
   
-    public ApiEventUpdater removeFirstFile() {
-      updateOperations.removeFirst("file");
+    public ApiEventUpdater removeFirstDownloadUrl() {
+      updateOperations.removeFirst("downloadUrl");
       return this;
     }
   
-    public ApiEventUpdater removeLastFile() {
-      updateOperations.removeLast("file");
+    public ApiEventUpdater removeLastDownloadUrl() {
+      updateOperations.removeLast("downloadUrl");
       return this;
     }
   
-    public ApiEventUpdater removeFromFile(java.lang.String value) {
-      updateOperations.removeAll("file", value);
+    public ApiEventUpdater removeFromDownloadUrl(java.lang.String value) {
+      updateOperations.removeAll("downloadUrl", value);
       return this;
     }
 
-    public ApiEventUpdater removeAllFromFile(List<java.lang.String> values) {
-      updateOperations.removeAll("file", values);
+    public ApiEventUpdater removeAllFromDownloadUrl(List<java.lang.String> values) {
+      updateOperations.removeAll("downloadUrl", values);
       return this;
     }
  
-    public ApiEventUpdater decFile() {
-      updateOperations.dec("file");
+    public ApiEventUpdater decDownloadUrl() {
+      updateOperations.dec("downloadUrl");
       return this;
     }
 
-    public ApiEventUpdater incFile() {
-      updateOperations.inc("file");
+    public ApiEventUpdater incDownloadUrl() {
+      updateOperations.inc("downloadUrl");
       return this;
     }
 
-    public ApiEventUpdater incFile(Number value) {
-      updateOperations.inc("file", value);
+    public ApiEventUpdater incDownloadUrl(Number value) {
+      updateOperations.inc("downloadUrl", value);
       return this;
     }
     public ApiEventUpdater id(org.bson.types.ObjectId value) {
@@ -593,65 +652,6 @@ public class ApiEventCriteria {
 
     public ApiEventUpdater incName(Number value) {
       updateOperations.inc("name", value);
-      return this;
-    }
-    public ApiEventUpdater newApi(java.lang.Boolean value) {
-      updateOperations.set("newApi", value);
-      return this;
-    }
-
-    public ApiEventUpdater unsetNewApi(java.lang.Boolean value) {
-      updateOperations.unset("newApi");
-      return this;
-    }
-
-    public ApiEventUpdater addNewApi(java.lang.Boolean value) {
-      updateOperations.add("newApi", value);
-      return this;
-    }
-
-    public ApiEventUpdater addNewApi(String fieldExpr, java.lang.Boolean value, boolean addDups) {
-      updateOperations.add("newApi", value, addDups);
-      return this;
-    }
-
-    public ApiEventUpdater addAllToNewApi(List<java.lang.Boolean> values, boolean addDups) {
-      updateOperations.addAll("newApi", values, addDups);
-      return this;
-    }
-  
-    public ApiEventUpdater removeFirstNewApi() {
-      updateOperations.removeFirst("newApi");
-      return this;
-    }
-  
-    public ApiEventUpdater removeLastNewApi() {
-      updateOperations.removeLast("newApi");
-      return this;
-    }
-  
-    public ApiEventUpdater removeFromNewApi(java.lang.Boolean value) {
-      updateOperations.removeAll("newApi", value);
-      return this;
-    }
-
-    public ApiEventUpdater removeAllFromNewApi(List<java.lang.Boolean> values) {
-      updateOperations.removeAll("newApi", values);
-      return this;
-    }
- 
-    public ApiEventUpdater decNewApi() {
-      updateOperations.dec("newApi");
-      return this;
-    }
-
-    public ApiEventUpdater incNewApi() {
-      updateOperations.inc("newApi");
-      return this;
-    }
-
-    public ApiEventUpdater incNewApi(Number value) {
-      updateOperations.inc("newApi", value);
       return this;
     }
     public ApiEventUpdater requestedBy(java.lang.String value) {
