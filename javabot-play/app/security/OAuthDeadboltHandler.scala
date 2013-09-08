@@ -17,11 +17,10 @@ class OAuthDeadboltHandler @Inject()(adminDao: AdminDao, contextProvider: Provid
   def beforeAuthCheck[A](request: Request[A]) = Option.empty[Result]
 
   override def getSubject[A](request: Request[A]): Option[Subject] = {
-    val subject = for {
+    for {
       name <- request.session.get("userName")
-      upper <- adminDao.getSubject(name)
-    } yield upper
-    subject
+      subject <- adminDao.getSubject(name)
+    } yield subject
   }
 
   def onAuthFailure[A](request: Request[A]): Result = {

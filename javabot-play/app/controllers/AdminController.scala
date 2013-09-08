@@ -64,17 +64,15 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
 
   def login = RequiresAuthentication("Google2Client") {
     profile =>
-      Restrict(Array("botAdmin"), handler) {
-        Action {
-          implicit request =>
-            println("login")
-            if (adminDao.findAll().isEmpty) {
-              print("creating new admin")
-              adminDao.create("", profile.getEmail, "")
-            }
-            Ok(views.html.admin.admin(handler, fillContext(request), adminForm.bindFromRequest(), adminDao.findAll()))
-              .withSession("userName" -> profile.getEmail)
-        }
+      Action {
+        implicit request =>
+          println("login")
+          if (adminDao.findAll().isEmpty) {
+            print("creating new admin")
+            adminDao.create("", profile.getEmail, "")
+          }
+          Ok(views.html.admin.admin(handler, fillContext(request), adminForm.bindFromRequest(), adminDao.findAll()))
+            .withSession("userName" -> profile.getEmail)
       }
   }
 
