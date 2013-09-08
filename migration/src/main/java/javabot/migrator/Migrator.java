@@ -167,7 +167,7 @@ public class Migrator {
   }
 
   private Object javadoc() throws Exception {
-    new TableIterator(this, "apis") {
+    new TableIterator(this, "apis", JavadocApi.class) {
       public void migrate(final ResultSet resultSet) throws SQLException {
         apis(resultSet);
       }
@@ -189,39 +189,39 @@ public class Migrator {
   public void migrate() throws SQLException {
     clearCollections();
     try {
-      new TableIterator(this, "changes") {
+      new TableIterator(this, "changes", Change.class) {
         public void migrate(final ResultSet resultSet) throws SQLException {
           changes(resultSet);
         }
       }.call();
-      new TableIterator(this, "channel") {
+      new TableIterator(this, "channel", Channel.class) {
         public void migrate(final ResultSet resultSet) throws SQLException {
           channel(resultSet);
         }
       }.call();
-      new TableIterator(this, "factoids") {
+      new TableIterator(this, "factoids", Factoid.class ) {
         public void migrate(final ResultSet resultSet) throws SQLException {
           factoids(resultSet);
         }
       }.call();
-      new TableIterator(this, "karma") {
+      new TableIterator(this, "karma",Karma.class ) {
         public void migrate(final ResultSet resultSet) throws SQLException {
           karma(resultSet);
         }
       }.call();
-      new TableIterator(this, "registrations") {
+      new TableIterator(this, "registrations",NickRegistration.class ) {
         public void migrate(final ResultSet resultSet) throws SQLException {
           registrations(resultSet);
         }
       }.call();
-      new TableIterator(this, "shun") {
+      new TableIterator(this, "shun",Shun.class ) {
         public void migrate(final ResultSet resultSet) throws SQLException {
           shun(resultSet);
         }
       }.call();
       configuration();
       javadoc();
-      new TableIterator(this, "logs", "select * from %s order by updated desc limit 100000 offset %s") {
+      new TableIterator(this, "logs", "select * from %s order by updated desc limit 100000 offset %s", Logs.class ) {
         public void migrate(final ResultSet resultSet) throws SQLException {
           logs(resultSet);
         }
@@ -237,6 +237,15 @@ public class Migrator {
     Set<String> collectionNames = getDb().getCollectionNames();
     for (String name : collectionNames) {
       if (!"system.indexes".equals(name)) {
+        System.out.println("Removing " + name);
+        getDb().getCollection(name).drop();
+      }
+    }
+  }
+  private void cleanUpCollections() {
+    Set<String> collectionNames = getDb().getCollectionNames();
+    for (String name : collectionNames) {
+      if (name.endsWith("IDs")) {
         System.out.println("Removing " + name);
         getDb().getCollection(name).drop();
       }
@@ -304,4 +313,7 @@ public class Migrator {
     System.exit(0);
   }
 
+  public Datastore getDs() {
+    return ds;
+  }
 }

@@ -24,19 +24,24 @@ public abstract class TableIterator implements Callable<Object> {
 
   private String select;
 
+  private Class klass;
+
   private DB db;
 
-  public TableIterator(final Migrator migrator, final String table) throws SQLException {
-    this(migrator, table, SELECT);
+  private DBCollection collection;
+
+  public TableIterator(final Migrator migrator, final String table, final Class klass) throws SQLException {
+    this(migrator, table, SELECT, klass);
   }
 
-  public TableIterator(final Migrator migrator, final String table, String select) {
+  public TableIterator(final Migrator migrator, final String table, String select, final Class klass) {
     this.migrator = migrator;
     this.table = table;
     this.select = select;
+    this.klass = klass;
     db = migrator.getDb();
-    DBCollection collection = db.getCollection(table + "IDs");
-    collection.ensureIndex(new BasicDBObject(table + "_id", 1));
+    db.getCollection(table + "IDs").ensureIndex(new BasicDBObject(table + "_id", 1));
+    collection = migrator.getDs().getCollection(klass);
   }
 
   @Override
@@ -93,7 +98,7 @@ public abstract class TableIterator implements Callable<Object> {
   }
 
   protected final long countResults() {
-    return db.getCollection(table).count();
+    return collection.count();
   }
 
   public abstract void migrate(final ResultSet resultSet) throws SQLException;

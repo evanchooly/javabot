@@ -12,7 +12,7 @@ public class FieldIterator extends TableIterator {
   private final JavadocClassDao javadocClassDao;
 
   public FieldIterator(final Migrator migrator, final JavadocClassDao javadocClassDao) throws SQLException {
-    super(migrator, "fields");
+    super(migrator, "fields", JavadocField.class);
     this.javadocClassDao = javadocClassDao;
   }
 

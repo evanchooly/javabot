@@ -14,7 +14,7 @@ class MethodIterator extends TableIterator {
   private final JavadocClassDao javadocClassDao;
 
   public MethodIterator(final Migrator migrator, final JavadocClassDao javadocClassDao) throws SQLException {
-    super(migrator, "methods");
+    super(migrator, "methods", JavadocMethod.class);
     this.migrator = migrator;
     this.javadocClassDao = javadocClassDao;
   }

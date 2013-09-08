@@ -22,7 +22,7 @@ public class ClassIterator extends TableIterator {
 
   public ClassIterator(final Migrator migrator, final JavadocClassDao javadocClassDao, final ApiDao apiDao)
       throws SQLException {
-    super(migrator, "classes");
+    super(migrator, "classes", JavadocClass.class);
     this.javadocClassDao = javadocClassDao;
     this.apiDao = apiDao;
   }
