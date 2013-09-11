@@ -10,6 +10,7 @@ import org.pac4j.oauth.client.Google2Client
 import play.mvc.Action
 import play.mvc.Http.{Context, Request}
 import java.lang.reflect.Method
+import play.api.Play
 
 class Global extends GlobalSettings {
 

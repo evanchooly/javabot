@@ -231,6 +231,7 @@ public class Migrator {
     }
     System.out.println("Recreating indexes");
     ds.ensureIndexes(true);
+    cleanUpCollections();
   }
 
   private void clearCollections() {
