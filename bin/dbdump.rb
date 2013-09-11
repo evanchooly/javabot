@@ -1,7 +1,7 @@
 #! /usr/local/bin/ruby
 
 require 'date'
-require 'FileUtils'
+require 'fileutils'
 
 @backupDir = DateTime.now.strftime("%Y-%m-%d-%H%M")
 @backupRoot = File.absolute_path("#{Dir.home}/backup/javabot/")
