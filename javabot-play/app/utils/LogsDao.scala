@@ -10,10 +10,10 @@ import java.net.URLDecoder
 
 class LogsDao extends javabot.dao.LogsDao {
 
-  private def dailyLog(channelName: String, date: DateTime): List[Logs] = {
+  private def dailyLog(channelName: String, date: DateTime, logged: Boolean): List[Logs] = {
     val channel = channelDao.get(channelName)
     var list: List[Logs] = null
-    if (channel.getLogged) {
+    if (logged) {
       val start = (if (date == null) new DateTime(DateTimeZone.forID("US/Eastern")) else date).withTimeAtStartOfDay
 
       val tomorrow = start.plusDays(1)
@@ -33,7 +33,7 @@ class LogsDao extends javabot.dao.LogsDao {
     val channel = channelDao.get(name)
     var logs: List[Logs] = null
     if (channel != null && (showAll || channel.getLogged)) {
-      dailyLog(name, date)
+      dailyLog(name, date, showAll || channel.getLogged)
     } else {
       List.empty
     }

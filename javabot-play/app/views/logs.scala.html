@@ -4,6 +4,7 @@
 @import java.net.URLEncoder
 @import be.objectify.deadbolt.scala.views.html._
 @import be.objectify.deadbolt.core.utils.TemplateUtils._
+@import javabot.model.Logs.Type._
 
 @main(handler, context) {
     <table class="mytable">
@@ -38,19 +39,18 @@
         </tr>
         @context.logs.map { log =>
             <tr>
-                @if(log.isAction()) {
-                    <td colspan="2">@{log.getMessage}</td>
+                @{
+                    log.getType match {
+                        case ACTION => <td colspan="2">{log.getNick} {log.getMessage}</td>
+                        case KICK => <td class="kick" colspan="2">*** {log.getNick} {log.getMessage}</td>
+                        case JOIN | PART | QUIT => <td class="server" colspan="2">*** {log.getNick} {log.getMessage}</td>
+                        case _ => {
+                                <td class="nick">{log.getNick}</td>
+                                <td>{log.getMessage}</td>
+                        }
+                    }
                 }
-                @if(log.isKick()) {
-                    <td class="kick" colspan="2">*** @{log.getNick} @{log.getMessage}</td>
-                }
-                @if(log.isServerMessage()) {
-                    <td class="server" colspan="2">*** @{log.getNick} @{log.getMessage}</td>
-                } else {
-                    <td class="nick">@{log.getNick}</td>
-                    <td>@{log.getMessage}</td>
-                }
-                <td class="time right">[@{log.getUpdated.toString("hh:mm")}]</td>
+            <td class="time right">[@{log.getUpdated.toString("hh:mm")}]</td>
             </tr>
         }
     </table>

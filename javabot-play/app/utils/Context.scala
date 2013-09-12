@@ -7,16 +7,7 @@ import org.joda.time.DateTime
 import play.api.mvc
 import play.api.mvc.AnyContent
 
-class Context {
-
-  @Inject
-  var factoidDao: FactoidDao = null
-  @Inject
-  var channelDao: ChannelDao = null
-  @Inject
-  var adminDao: AdminDao = null
-  @Inject
-  var logsDao: LogsDao = null
+class Context @Inject()(factoidDao: FactoidDao, channelDao: ChannelDao, adminDao: AdminDao, logsDao: LogsDao) {
 
   var logs: List[Logs] = null
 
