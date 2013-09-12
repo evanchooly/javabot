@@ -22,7 +22,8 @@ def export(*collections)
 
 def cleanup
   count=7
-  entries = Dir.entries(@backupRoot)
+  entries = %x( ls #{@backupRoot} ).split
+  puts entries
   entries.reverse.each_with_index { |dir, index|
     if index > 6 and dir != '.' and dir != '..'
       puts "Removing expired backup #{dir}"
@@ -55,4 +56,8 @@ backup 'shun'
 
 export 'schema', 'apis', 'classes', 'methods', 'factoids'
 
+puts %x( rm -f #{@backupRoot}/current )
+
 cleanup
+
+puts %x( ln -svf #{@dir} #{@backupRoot}/current )
