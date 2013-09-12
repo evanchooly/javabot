@@ -23,7 +23,6 @@ def export(*collections)
 def cleanup
   count=7
   entries = %x( ls #{@backupRoot} ).split
-  puts entries
   entries.reverse.each_with_index { |dir, index|
     if index > 6 and dir != '.' and dir != '..'
       puts "Removing expired backup #{dir}"
