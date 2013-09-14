@@ -42,7 +42,7 @@ public class UnixCommandOperation extends BotOperation {
         final String channel = event.getChannel();
         final String[] split = message.split(" ");
         final List<Message> responses = new ArrayList<Message>();
-        if (commands.contains(split[0]) && split.length < 3) {
+        if (split.length != 0 && split.length < 3 && commands.contains(split[0])) {
             responses.add(new Message(channel, event,
                 String.format("%s: wrong window, %s", event.getSender(), getInsult())));
         }

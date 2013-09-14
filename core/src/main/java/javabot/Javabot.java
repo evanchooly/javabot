@@ -363,10 +363,12 @@ public class Javabot {
         for (final String startString : startStrings) {
           if (responses != null && message.startsWith(startString)) {
             String content = message.substring(startString.length()).trim();
-            while (content.charAt(0) == ':' || content.charAt(0) == ',') {
+            while (!content.isEmpty() && (content.charAt(0) == ':' || content.charAt(0) == ',')) {
               content = content.substring(1).trim();
             }
-            responses.addAll(getResponses(channel, sender, content));
+            if (!content.isEmpty()) {
+              responses.addAll(getResponses(channel, sender, content));
+            }
           }
         }
         if (responses.isEmpty()) {
