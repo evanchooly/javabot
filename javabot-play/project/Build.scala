@@ -5,7 +5,7 @@ import play.Project._
 object ApplicationBuild extends Build {
 
   val appName         = "javabot"
-  val appVersion      = "5.1.0-SNAPSHOT"
+  val appVersion      = "5.0.1"
 
   val appDependencies = Seq(
     "org.webjars" % "webjars-play" % "2.1.0-1",
