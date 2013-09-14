@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -16,6 +15,8 @@ import javabot.model.Factoid;
  */
 @SPI(BotOperation.class)
 public class InfoOperation extends BotOperation {
+  public static final String INFO_DATE_FORMAT = "MM-dd-yyyy' at 'K:mm a, z";
+
   @Inject
   private FactoidDao dao;
 
@@ -30,7 +31,8 @@ public class InfoOperation extends BotOperation {
       if (factoid != null) {
         responses.add(new Message(channel, event,
             String.format("%s%s was added by: %s on %s and has a literal value of: %s", key,
-                factoid.getLocked() ? "*" : "", factoid.getUserName(), formatDate(factoid), factoid.getValue())));
+                factoid.getLocked() ? "*" : "", factoid.getUserName(),
+                factoid.getUpdated().toString(INFO_DATE_FORMAT), factoid.getValue())));
       } else {
         responses.add(new Message(channel, event, "I have no factoid called \"" + key + "\""));
       }
@@ -38,7 +40,4 @@ public class InfoOperation extends BotOperation {
     return responses;
   }
 
-  private String formatDate(final Factoid factoid) {
-    return new SimpleDateFormat("MM-dd-yyyy' at 'K:mm a, z").format(factoid.getUpdated());
-  }
 }
