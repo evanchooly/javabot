@@ -47,7 +47,7 @@ public class LogsDao extends BaseDao<Logs> {
     criteria.upperNick().equal(nick.toUpperCase());
     criteria.channel().equal(channel);
     Logs logs = criteria.query().get();
-    return new Seen(logs.getChannel(), logs.getMessage(), logs.getNick(), logs.getUpdated());
+    return logs != null ? new Seen(logs.getChannel(), logs.getMessage(), logs.getNick(), logs.getUpdated()) : null;
   }
 
 }
