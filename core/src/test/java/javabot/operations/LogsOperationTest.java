@@ -1,13 +1,13 @@
 package javabot.operations;
 
-import java.util.List;
-import java.util.UUID;
-
 import javabot.IrcEvent;
 import javabot.IrcUser;
 import javabot.Message;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author StanAccy
@@ -45,5 +45,31 @@ public class LogsOperationTest extends BaseOperationTest {
     int listSize = list.size();
     Assert.assertEquals(listSize, 1);
     Assert.assertEquals(list.get(listSize - 1).getMessage().contains(uuid), true);
+  }
+
+  @Test
+  public void testGetLimitHandlesEmptyArgForSpecificNick() throws Exception {
+    int limit = LogsOperation.getLimit(false, "");
+    Assert.assertEquals(limit, 50);
+  }
+  @Test
+  public void testGetLimitHandlesEmptyArgForAllNicks() throws Exception {
+    int limit = LogsOperation.getLimit(true, "");
+    Assert.assertEquals(limit, 200);
+  }
+  @Test
+  public void testGetLimitHandlesArgForSpecificNick() throws Exception {
+    int limit = LogsOperation.getLimit(false, "42");
+    Assert.assertEquals(limit, 42);
+  }
+  @Test
+  public void testGetLimitHandlesArgForAllNicks() throws Exception {
+    int limit = LogsOperation.getLimit(true, "113");
+    Assert.assertEquals(limit, 113);
+  }
+  @Test
+  public void testGetLimitHandlesNullArgForAllNicks() throws Exception {
+    int limit = LogsOperation.getLimit(true, null);
+    Assert.assertEquals(limit, 200);
   }
 }
