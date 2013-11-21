@@ -1,13 +1,13 @@
 package javabot.operations;
 
-import javax.inject.Inject;
-
 import javabot.BaseTest;
 import javabot.dao.ApiDao;
 import javabot.dao.JavadocClassDao;
 import org.testng.annotations.Test;
 
-@Test(dependsOnMethods = {"jdk"})
+import javax.inject.Inject;
+
+@Test//(dependsOnMethods = {"jdk"})
 public class JavadocOperationTest extends BaseOperationTest {
   @Inject
   private ApiDao apiDao;
