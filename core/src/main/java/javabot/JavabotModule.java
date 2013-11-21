@@ -1,11 +1,5 @@
 package javabot;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-import javax.inject.Singleton;
-
 import com.google.code.morphia.Datastore;
 import com.google.code.morphia.Morphia;
 import com.google.inject.AbstractModule;
@@ -17,6 +11,12 @@ import com.mongodb.WriteConcern;
 import javabot.dao.util.DateTimeConverter;
 import javabot.javadoc.JavadocClass;
 import javabot.model.Factoid;
+
+import javax.inject.Singleton;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 public class JavabotModule extends AbstractModule {
   private Properties properties;
@@ -67,8 +67,8 @@ public class JavabotModule extends AbstractModule {
     if (mongoClient == null || !mongoClient.getConnector().isOpen()) {
       getProperties();
       try {
-        String host = properties.getProperty("database.host");
-        int port = Integer.parseInt(properties.getProperty("database.port"));
+        String host = properties.getProperty("database.host", "localhost");
+        int port = Integer.parseInt(properties.getProperty("database.port", "27107"));
         mongoClient = new MongoClient(host, MongoClientOptions.builder()
             .autoConnectRetry(true)
             .connectTimeout(2000)

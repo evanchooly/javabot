@@ -1,19 +1,5 @@
 package javabot.migrator;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.util.Properties;
-import java.util.Set;
-import javax.inject.Inject;
-
 import com.google.code.morphia.Datastore;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -37,6 +23,20 @@ import javabot.model.NickRegistration;
 import javabot.model.Shun;
 import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
+
+import javax.inject.Inject;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.Properties;
+import java.util.Set;
 
 public class Migrator {
   private Properties props;
@@ -291,8 +291,6 @@ public class Migrator {
     } catch (IOException e) {
       throw new RuntimeException(e.getMessage(), e);
     }
-    check(props, "database.host");
-    check(props, "database.port");
     check(props, "database.name");
     check(props, "jdbc.url");
     System.getProperties().putAll(props);
