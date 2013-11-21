@@ -14,7 +14,7 @@
         <module>spi-apt</module>
         <module>apt-tools</module>
         <module>core</module>
-        <!-- <module>migration</module> -->
+        <module>migration</module>
     </modules>
 
     <build>
