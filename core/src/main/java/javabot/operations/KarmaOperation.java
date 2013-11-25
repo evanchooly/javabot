@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 @SPI(BotOperation.class)
 public class KarmaOperation extends BotOperation {
+    @SuppressWarnings("UnusedDeclaration")
     private static final Logger log = LoggerFactory.getLogger(KarmaOperation.class);
     private static final Throttler<KarmaInfo> throttler = new Throttler<>(100, Javabot.THROTTLE_TIME);
     @Inject
