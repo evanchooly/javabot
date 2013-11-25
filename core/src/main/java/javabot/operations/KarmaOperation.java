@@ -14,12 +14,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
-import java.util.Random;
 
+@SuppressWarnings("UnusedDeclaration")
 @SPI(BotOperation.class)
 public class KarmaOperation extends BotOperation {
+    @SuppressWarnings("UnusedDeclaration")
     private static final Logger log = LoggerFactory.getLogger(KarmaOperation.class);
     private static final Throttler<KarmaInfo> throttler = new Throttler<>(100, Javabot.THROTTLE_TIME);
     @Inject
@@ -29,7 +29,7 @@ public class KarmaOperation extends BotOperation {
     public List<Message> handleMessage(final IrcEvent event) {
         final List<Message> responses = new ArrayList<>();
         responses.addAll(readKarma(event));
-        final String[] changeOwnKarmaMessages=new String[]{
+        final String[] changeOwnKarmaMessages = new String[]{
                 "Changing one's own karma is not permitted.",
                 "You can only improve your karma through the recognition of others.",
                 "Stop blowing your own horn, %s",
@@ -65,7 +65,7 @@ public class KarmaOperation extends BotOperation {
                 } else {
                     throttler.addThrottleItem(new KarmaInfo(sender, nick));
                     if (nick.equalsIgnoreCase(sender.getNick())) {
-                        if (increment == true) {
+                        if (increment) {
                             responses.add(new Message(channel, event,
                                     formatMessage(sender.getNick(), changeOwnKarmaMessages)));
                         }
