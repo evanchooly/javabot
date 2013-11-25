@@ -1,9 +1,6 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.ServiceLoader;
+import java.util.*;
 import javax.inject.Inject;
 
 import javabot.IrcEvent;
@@ -60,4 +57,9 @@ public abstract class BotOperation {
     return dao.isAdmin(sender.getNick(), sender.getHost());
   }
 
+    protected String formatMessage(String nick, String... messages) {
+        Random random=new Random();
+        String format=messages[random.nextInt(messages.length)];
+        return String.format(format, nick);
+    }
 }

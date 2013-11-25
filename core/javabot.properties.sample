@@ -2,11 +2,15 @@ javabot.server=irc.freenode.org
 javabot.port=6667
 
 database.name=javabot
+# database.host=localhost
+# database.port=27017
 
 javabot.nick=
 javabot.password=
 javabot.admin.nick=
 javabot.admin.hostmask=
+# javabot.admin.nick=foo
+# javabot.admin.hostmask=foo@bar.com
 
 ### Needed only to migrate from RDBMS to mongo
 jdbc.url=jdbc:postgresql:javabot
