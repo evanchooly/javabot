@@ -9,6 +9,7 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.inject.Provides;
 import javabot.operations.locator.JCPJSRLocator;
 import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Document;
@@ -85,6 +86,9 @@ public class JCPJSRLocatorImpl implements JCPJSRLocator {
         final Map<String, String> inputs = new HashMap<String, String>();
         inputs.put("jsr", Integer.toString(jsr));
         final Map<String, String> outputs = locate(inputs);
+        if(outputs.get("title")==null) {
+            return "";
+        }
         return "'" + outputs.get("title") + "' can be found at " + outputs.get("url");
     }
 }
