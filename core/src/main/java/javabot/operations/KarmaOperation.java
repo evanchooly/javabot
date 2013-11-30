@@ -45,8 +45,8 @@ public class KarmaOperation extends BotOperation {
             try {
                 nick = message.substring(0, operationPointer).trim().toLowerCase();
             } catch (StringIndexOutOfBoundsException e) {
-                System.out.println("message = " + message);
-                throw e;
+                log.info("message = " + message, e);
+                return responses;
             }
             if (!channel.startsWith("#")) {
                 responses.add(new Message(channel, event, "Sorry, karma changes are not allowed in private messages."));
