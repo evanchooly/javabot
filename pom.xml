@@ -123,7 +123,7 @@
             <dependency>
                 <groupId>com.google.code.morphia</groupId>
                 <artifactId>morphia</artifactId>
-                <version>0.102</version>
+                <version>0.104</version>
             </dependency>
 
             <dependency>

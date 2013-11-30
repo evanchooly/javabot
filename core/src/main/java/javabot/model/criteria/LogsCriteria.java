@@ -154,7 +154,7 @@ public class LogsCriteria {
   }
 
   public LogsCriteria distinctType() {
-    ((QueryImpl) query).getCollection().distinct("type");
+    query.getCollection().distinct("type");
     return this;
   }
 
