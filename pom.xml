@@ -14,7 +14,6 @@
         <module>spi-apt</module>
         <module>apt-tools</module>
         <module>core</module>
-        <module>migration</module>
     </modules>
 
     <build>
@@ -74,7 +73,7 @@
             <dependency>
                 <groupId>pircbot</groupId>
                 <artifactId>pircbot</artifactId>
-                <version>1.5.0</version>
+                <version>[1.5.0,)</version>
             </dependency>
 
             <dependency>
@@ -98,7 +97,7 @@
             <dependency>
                 <groupId>net.sourceforge.nekohtml</groupId>
                 <artifactId>nekohtml</artifactId>
-                <version>1.9.18</version>
+                <version>[1.9.18,)</version>
             </dependency>
 
             <dependency>
@@ -136,7 +135,7 @@
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
-                <version>6.8.5</version>
+                <version>[6.8.5,)</version>
             </dependency>
 
             <dependency>
@@ -169,5 +168,18 @@
         <guice.version>3.0</guice.version>
         <sofia.version>0.13</sofia.version>
         <slf4j.version>1.7.4</slf4j.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>migration</id>
+            <modules>
+                <module>spi-apt</module>
+                <module>apt-tools</module>
+                <module>core</module>
+                <module>migration</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>
