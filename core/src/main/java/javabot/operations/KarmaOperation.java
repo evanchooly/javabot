@@ -1,5 +1,9 @@
 package javabot.operations;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+
 import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
 import javabot.IrcUser;
@@ -11,12 +15,6 @@ import javabot.operations.throttle.ThrottleItem;
 import javabot.operations.throttle.Throttler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Formatter;
-import java.util.List;
-import java.util.Random;
 
 @SPI(BotOperation.class)
 public class KarmaOperation extends BotOperation {
@@ -30,10 +28,7 @@ public class KarmaOperation extends BotOperation {
         final List<Message> responses = new ArrayList<>();
         responses.addAll(readKarma(event));
         final String[] changeOwnKarmaMessages=new String[]{
-                "Changing one's own karma is not permitted.",
-                "You can only improve your karma through the recognition of others.",
-                "Stop blowing your own horn, %s",
-                "The way to be kind to yourself is to be kind to OTHERS, %s"
+                "You can't increment your own karma.",
         };
         if (responses.isEmpty()) {
             String message = event.getMessage();
@@ -59,15 +54,14 @@ public class KarmaOperation extends BotOperation {
             if (!channel.startsWith("#")) {
                 responses.add(new Message(channel, event, "Sorry, karma changes are not allowed in private messages."));
             }
-            if (responses.size() == 0) {
+            if (responses.isEmpty()) {
                 if (throttler.isThrottled(new KarmaInfo(sender, nick))) {
                     responses.add(new Message(channel, event, "Rest those fingers, Tex"));
                 } else {
                     throttler.addThrottleItem(new KarmaInfo(sender, nick));
                     if (nick.equalsIgnoreCase(sender.getNick())) {
-                        if (increment == true) {
-                            responses.add(new Message(channel, event,
-                                    formatMessage(sender.getNick(), changeOwnKarmaMessages)));
+                        if (increment) {
+                            responses.add(new Message(channel, event, "You can't increment your own karma."));
                         }
                         increment = false;
                     }
