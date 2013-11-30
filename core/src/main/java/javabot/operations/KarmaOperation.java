@@ -27,9 +27,6 @@ public class KarmaOperation extends BotOperation {
     public List<Message> handleMessage(final IrcEvent event) {
         final List<Message> responses = new ArrayList<>();
         responses.addAll(readKarma(event));
-        final String[] changeOwnKarmaMessages=new String[]{
-                "You can't increment your own karma.",
-        };
         if (responses.isEmpty()) {
             String message = event.getMessage();
             final IrcUser sender = event.getSender();
