@@ -1,302 +1,120 @@
 package javabot.model.criteria;
 
-import com.antwerkz.critter.TypeSafeFieldEnd;
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.query.Criteria;
-import com.google.code.morphia.query.CriteriaContainer;
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryImpl;
-import com.google.code.morphia.query.UpdateOperations;
-import com.google.code.morphia.query.UpdateResults;
-import com.mongodb.WriteConcern;
-import com.mongodb.WriteResult;
-import java.util.List;
+import javabot.model.ApiEvent;
 
+public class ApiEventCriteria extends com.antwerkz.critter.criteria.BaseCriteria<ApiEvent> {
+  private String prefix = "";
 
-public class ApiEventCriteria {
-  private Query<javabot.model.ApiEvent> query;
-  private Datastore ds;
-
-  public Query<javabot.model.ApiEvent> query() {
-    return query;
+  public ApiEventCriteria(org.mongodb.morphia.Datastore ds) {
+    super(ds, ApiEvent.class);
   }
 
-  public ApiEventCriteria(Datastore ds) {
-    this.ds = ds;
-    query = ds.find(javabot.model.ApiEvent.class);
+
+  public com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, org.bson.types.ObjectId> apiId() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, org.bson.types.ObjectId>(this, query, prefix + "apiId");
   }
 
-  public WriteResult delete() {
-     return ds.delete(query());
+  public org.mongodb.morphia.query.Criteria apiId(org.bson.types.ObjectId value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, org.bson.types.ObjectId>(this, query, prefix + "apiId").equal(value);
   }
 
-  public WriteResult delete(WriteConcern wc) {
-     return ds.delete(query(), wc);
+  public com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, java.lang.String> baseUrl() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, java.lang.String>(this, query, prefix + "baseUrl");
   }
 
-  public CriteriaContainer or(Criteria... criteria) {
-    return query.or(criteria);
+  public org.mongodb.morphia.query.Criteria baseUrl(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, java.lang.String>(this, query, prefix + "baseUrl").equal(value);
   }
 
-  public CriteriaContainer and(Criteria... criteria) {
-    return query.and(criteria);
+  public com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, org.joda.time.DateTime> completed() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, org.joda.time.DateTime>(this, query, prefix + "completed");
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, org.bson.types.ObjectId> apiId() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("apiId"));
+  public org.mongodb.morphia.query.Criteria completed(org.joda.time.DateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, org.joda.time.DateTime>(this, query, prefix + "completed").equal(value);
   }
 
-  public ApiEventCriteria apiId(org.bson.types.ObjectId value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("apiId")).equal(value);
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, java.lang.String> downloadUrl() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, java.lang.String>(this, query, prefix + "downloadUrl");
   }
 
-  public ApiEventCriteria orderByApiId() {
-    return orderByApiId(true);
+  public org.mongodb.morphia.query.Criteria downloadUrl(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, java.lang.String>(this, query, prefix + "downloadUrl").equal(value);
   }
 
-  public ApiEventCriteria orderByApiId(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "apiId");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, org.bson.types.ObjectId> id() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, org.bson.types.ObjectId>(this, query, prefix + "id");
   }
 
-  public ApiEventCriteria distinctApiId() {
-    ((QueryImpl) query).getCollection().distinct("apiId");
-    return this;
+  public org.mongodb.morphia.query.Criteria id(org.bson.types.ObjectId value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, org.bson.types.ObjectId>(this, query, prefix + "id").equal(value);
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, java.lang.String> baseUrl() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("baseUrl"));
+  public com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, java.lang.String> name() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, java.lang.String>(this, query, prefix + "name");
   }
 
-  public ApiEventCriteria baseUrl(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("baseUrl")).equal(value);
-    return this;
+  public org.mongodb.morphia.query.Criteria name(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, java.lang.String>(this, query, prefix + "name").equal(value);
   }
 
-  public ApiEventCriteria orderByBaseUrl() {
-    return orderByBaseUrl(true);
+  public com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, java.lang.String> requestedBy() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, java.lang.String>(this, query, prefix + "requestedBy");
   }
 
-  public ApiEventCriteria orderByBaseUrl(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "baseUrl");
-    return this;
+  public org.mongodb.morphia.query.Criteria requestedBy(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, java.lang.String>(this, query, prefix + "requestedBy").equal(value);
   }
 
-  public ApiEventCriteria distinctBaseUrl() {
-    ((QueryImpl) query).getCollection().distinct("baseUrl");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, org.joda.time.DateTime> requestedOn() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, org.joda.time.DateTime>(this, query, prefix + "requestedOn");
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, org.joda.time.DateTime> completed() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("completed"));
+  public org.mongodb.morphia.query.Criteria requestedOn(org.joda.time.DateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, org.joda.time.DateTime>(this, query, prefix + "requestedOn").equal(value);
   }
 
-  public ApiEventCriteria completed(org.joda.time.DateTime value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("completed")).equal(value);
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, javabot.model.AdminEvent.State> state() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, javabot.model.AdminEvent.State>(this, query, prefix + "state");
   }
 
-  public ApiEventCriteria orderByCompleted() {
-    return orderByCompleted(true);
+  public org.mongodb.morphia.query.Criteria state(javabot.model.AdminEvent.State value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, javabot.model.AdminEvent.State>(this, query, prefix + "state").equal(value);
   }
 
-  public ApiEventCriteria orderByCompleted(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "completed");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, javabot.model.EventType> type() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, javabot.model.EventType>(this, query, prefix + "type");
   }
 
-  public ApiEventCriteria distinctCompleted() {
-    ((QueryImpl) query).getCollection().distinct("completed");
-    return this;
+  public org.mongodb.morphia.query.Criteria type(javabot.model.EventType value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ApiEventCriteria, ApiEvent, javabot.model.EventType>(this, query, prefix + "type").equal(value);
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, java.lang.String> downloadUrl() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("downloadUrl"));
-  }
-
-  public ApiEventCriteria downloadUrl(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("downloadUrl")).equal(value);
-    return this;
-  }
-
-  public ApiEventCriteria orderByDownloadUrl() {
-    return orderByDownloadUrl(true);
-  }
-
-  public ApiEventCriteria orderByDownloadUrl(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "downloadUrl");
-    return this;
-  }
-
-  public ApiEventCriteria distinctDownloadUrl() {
-    ((QueryImpl) query).getCollection().distinct("downloadUrl");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, org.bson.types.ObjectId> id() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("id"));
-  }
-
-  public ApiEventCriteria id(org.bson.types.ObjectId value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
-    return this;
-  }
-
-  public ApiEventCriteria orderById() {
-    return orderById(true);
-  }
-
-  public ApiEventCriteria orderById(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "id");
-    return this;
-  }
-
-  public ApiEventCriteria distinctId() {
-    ((QueryImpl) query).getCollection().distinct("id");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, java.lang.String> name() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("name"));
-  }
-
-  public ApiEventCriteria name(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("name")).equal(value);
-    return this;
-  }
-
-  public ApiEventCriteria orderByName() {
-    return orderByName(true);
-  }
-
-  public ApiEventCriteria orderByName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "name");
-    return this;
-  }
-
-  public ApiEventCriteria distinctName() {
-    ((QueryImpl) query).getCollection().distinct("name");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, java.lang.String> requestedBy() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("requestedBy"));
-  }
-
-  public ApiEventCriteria requestedBy(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("requestedBy")).equal(value);
-    return this;
-  }
-
-  public ApiEventCriteria orderByRequestedBy() {
-    return orderByRequestedBy(true);
-  }
-
-  public ApiEventCriteria orderByRequestedBy(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "requestedBy");
-    return this;
-  }
-
-  public ApiEventCriteria distinctRequestedBy() {
-    ((QueryImpl) query).getCollection().distinct("requestedBy");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, org.joda.time.DateTime> requestedOn() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("requestedOn"));
-  }
-
-  public ApiEventCriteria requestedOn(org.joda.time.DateTime value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("requestedOn")).equal(value);
-    return this;
-  }
-
-  public ApiEventCriteria orderByRequestedOn() {
-    return orderByRequestedOn(true);
-  }
-
-  public ApiEventCriteria orderByRequestedOn(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "requestedOn");
-    return this;
-  }
-
-  public ApiEventCriteria distinctRequestedOn() {
-    ((QueryImpl) query).getCollection().distinct("requestedOn");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, javabot.model.AdminEvent.State> state() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("state"));
-  }
-
-  public ApiEventCriteria state(javabot.model.AdminEvent.State value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("state")).equal(value);
-    return this;
-  }
-
-  public ApiEventCriteria orderByState() {
-    return orderByState(true);
-  }
-
-  public ApiEventCriteria orderByState(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "state");
-    return this;
-  }
-
-  public ApiEventCriteria distinctState() {
-    ((QueryImpl) query).getCollection().distinct("state");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ApiEvent, javabot.model.EventType> type() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("type"));
-  }
-
-  public ApiEventCriteria type(javabot.model.EventType value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("type")).equal(value);
-    return this;
-  }
-
-  public ApiEventCriteria orderByType() {
-    return orderByType(true);
-  }
-
-  public ApiEventCriteria orderByType(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "type");
-    return this;
-  }
-
-  public ApiEventCriteria distinctType() {
-    ((QueryImpl) query).getCollection().distinct("type");
-    return this;
-  }
 
   public ApiEventUpdater getUpdater() {
     return new ApiEventUpdater();
   }
 
   public class ApiEventUpdater {
-    UpdateOperations<javabot.model.ApiEvent> updateOperations;
+    org.mongodb.morphia.query.UpdateOperations<ApiEvent> updateOperations;
 
     public ApiEventUpdater() {
-      updateOperations = ds.createUpdateOperations(javabot.model.ApiEvent.class);
+      updateOperations = ds.createUpdateOperations(ApiEvent.class);
     }
 
-    public UpdateResults<javabot.model.ApiEvent> update() {
+    public org.mongodb.morphia.query.UpdateResults<ApiEvent> update() {
       return ds.update(query(), updateOperations, false);
     }
 
-    public UpdateResults<javabot.model.ApiEvent> update(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<ApiEvent> update(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, false, wc);
     }
 
-    public UpdateResults<javabot.model.ApiEvent> upsert() {
+    public org.mongodb.morphia.query.UpdateResults<ApiEvent> upsert() {
       return ds.update(query(), updateOperations, true);
     }
 
-    public UpdateResults<javabot.model.ApiEvent> upsert(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<ApiEvent> upsert(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, true, wc);
     }
 
@@ -315,12 +133,12 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater addApiId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+    public ApiEventUpdater addApiId(org.bson.types.ObjectId value, boolean addDups) {
       updateOperations.add("apiId", value, addDups);
       return this;
     }
 
-    public ApiEventUpdater addAllToApiId(List<org.bson.types.ObjectId> values, boolean addDups) {
+    public ApiEventUpdater addAllToApiId(java.util.List<org.bson.types.ObjectId> values, boolean addDups) {
       updateOperations.addAll("apiId", values, addDups);
       return this;
     }
@@ -340,7 +158,7 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater removeAllFromApiId(List<org.bson.types.ObjectId> values) {
+    public ApiEventUpdater removeAllFromApiId(java.util.List<org.bson.types.ObjectId> values) {
       updateOperations.removeAll("apiId", values);
       return this;
     }
@@ -374,12 +192,12 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater addBaseUrl(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ApiEventUpdater addBaseUrl(java.lang.String value, boolean addDups) {
       updateOperations.add("baseUrl", value, addDups);
       return this;
     }
 
-    public ApiEventUpdater addAllToBaseUrl(List<java.lang.String> values, boolean addDups) {
+    public ApiEventUpdater addAllToBaseUrl(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("baseUrl", values, addDups);
       return this;
     }
@@ -399,7 +217,7 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater removeAllFromBaseUrl(List<java.lang.String> values) {
+    public ApiEventUpdater removeAllFromBaseUrl(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("baseUrl", values);
       return this;
     }
@@ -433,12 +251,12 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater addCompleted(String fieldExpr, org.joda.time.DateTime value, boolean addDups) {
+    public ApiEventUpdater addCompleted(org.joda.time.DateTime value, boolean addDups) {
       updateOperations.add("completed", value, addDups);
       return this;
     }
 
-    public ApiEventUpdater addAllToCompleted(List<org.joda.time.DateTime> values, boolean addDups) {
+    public ApiEventUpdater addAllToCompleted(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
       updateOperations.addAll("completed", values, addDups);
       return this;
     }
@@ -458,7 +276,7 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater removeAllFromCompleted(List<org.joda.time.DateTime> values) {
+    public ApiEventUpdater removeAllFromCompleted(java.util.List<org.joda.time.DateTime> values) {
       updateOperations.removeAll("completed", values);
       return this;
     }
@@ -492,12 +310,12 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater addDownloadUrl(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ApiEventUpdater addDownloadUrl(java.lang.String value, boolean addDups) {
       updateOperations.add("downloadUrl", value, addDups);
       return this;
     }
 
-    public ApiEventUpdater addAllToDownloadUrl(List<java.lang.String> values, boolean addDups) {
+    public ApiEventUpdater addAllToDownloadUrl(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("downloadUrl", values, addDups);
       return this;
     }
@@ -517,7 +335,7 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater removeAllFromDownloadUrl(List<java.lang.String> values) {
+    public ApiEventUpdater removeAllFromDownloadUrl(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("downloadUrl", values);
       return this;
     }
@@ -551,12 +369,12 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater addId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+    public ApiEventUpdater addId(org.bson.types.ObjectId value, boolean addDups) {
       updateOperations.add("id", value, addDups);
       return this;
     }
 
-    public ApiEventUpdater addAllToId(List<org.bson.types.ObjectId> values, boolean addDups) {
+    public ApiEventUpdater addAllToId(java.util.List<org.bson.types.ObjectId> values, boolean addDups) {
       updateOperations.addAll("id", values, addDups);
       return this;
     }
@@ -576,7 +394,7 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater removeAllFromId(List<org.bson.types.ObjectId> values) {
+    public ApiEventUpdater removeAllFromId(java.util.List<org.bson.types.ObjectId> values) {
       updateOperations.removeAll("id", values);
       return this;
     }
@@ -610,12 +428,12 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater addName(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ApiEventUpdater addName(java.lang.String value, boolean addDups) {
       updateOperations.add("name", value, addDups);
       return this;
     }
 
-    public ApiEventUpdater addAllToName(List<java.lang.String> values, boolean addDups) {
+    public ApiEventUpdater addAllToName(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("name", values, addDups);
       return this;
     }
@@ -635,7 +453,7 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater removeAllFromName(List<java.lang.String> values) {
+    public ApiEventUpdater removeAllFromName(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("name", values);
       return this;
     }
@@ -669,12 +487,12 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater addRequestedBy(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ApiEventUpdater addRequestedBy(java.lang.String value, boolean addDups) {
       updateOperations.add("requestedBy", value, addDups);
       return this;
     }
 
-    public ApiEventUpdater addAllToRequestedBy(List<java.lang.String> values, boolean addDups) {
+    public ApiEventUpdater addAllToRequestedBy(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("requestedBy", values, addDups);
       return this;
     }
@@ -694,7 +512,7 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater removeAllFromRequestedBy(List<java.lang.String> values) {
+    public ApiEventUpdater removeAllFromRequestedBy(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("requestedBy", values);
       return this;
     }
@@ -728,12 +546,12 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater addRequestedOn(String fieldExpr, org.joda.time.DateTime value, boolean addDups) {
+    public ApiEventUpdater addRequestedOn(org.joda.time.DateTime value, boolean addDups) {
       updateOperations.add("requestedOn", value, addDups);
       return this;
     }
 
-    public ApiEventUpdater addAllToRequestedOn(List<org.joda.time.DateTime> values, boolean addDups) {
+    public ApiEventUpdater addAllToRequestedOn(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
       updateOperations.addAll("requestedOn", values, addDups);
       return this;
     }
@@ -753,7 +571,7 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater removeAllFromRequestedOn(List<org.joda.time.DateTime> values) {
+    public ApiEventUpdater removeAllFromRequestedOn(java.util.List<org.joda.time.DateTime> values) {
       updateOperations.removeAll("requestedOn", values);
       return this;
     }
@@ -787,12 +605,12 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater addState(String fieldExpr, javabot.model.AdminEvent.State value, boolean addDups) {
+    public ApiEventUpdater addState(javabot.model.AdminEvent.State value, boolean addDups) {
       updateOperations.add("state", value, addDups);
       return this;
     }
 
-    public ApiEventUpdater addAllToState(List<javabot.model.AdminEvent.State> values, boolean addDups) {
+    public ApiEventUpdater addAllToState(java.util.List<javabot.model.AdminEvent.State> values, boolean addDups) {
       updateOperations.addAll("state", values, addDups);
       return this;
     }
@@ -812,7 +630,7 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater removeAllFromState(List<javabot.model.AdminEvent.State> values) {
+    public ApiEventUpdater removeAllFromState(java.util.List<javabot.model.AdminEvent.State> values) {
       updateOperations.removeAll("state", values);
       return this;
     }
@@ -846,12 +664,12 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater addType(String fieldExpr, javabot.model.EventType value, boolean addDups) {
+    public ApiEventUpdater addType(javabot.model.EventType value, boolean addDups) {
       updateOperations.add("type", value, addDups);
       return this;
     }
 
-    public ApiEventUpdater addAllToType(List<javabot.model.EventType> values, boolean addDups) {
+    public ApiEventUpdater addAllToType(java.util.List<javabot.model.EventType> values, boolean addDups) {
       updateOperations.addAll("type", values, addDups);
       return this;
     }
@@ -871,7 +689,7 @@ public class ApiEventCriteria {
       return this;
     }
 
-    public ApiEventUpdater removeAllFromType(List<javabot.model.EventType> values) {
+    public ApiEventUpdater removeAllFromType(java.util.List<javabot.model.EventType> values) {
       updateOperations.removeAll("type", values);
       return this;
     }

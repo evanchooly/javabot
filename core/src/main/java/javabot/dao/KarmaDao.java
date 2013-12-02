@@ -3,7 +3,7 @@ package javabot.dao;
 import java.util.List;
 import javax.inject.Inject;
 
-import com.google.code.morphia.query.Query;
+import org.mongodb.morphia.query.Query;
 import javabot.dao.util.QueryParam;
 import javabot.model.Karma;
 import javabot.model.criteria.KarmaCriteria;

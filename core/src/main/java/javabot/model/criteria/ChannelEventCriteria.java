@@ -1,279 +1,112 @@
 package javabot.model.criteria;
 
-import com.antwerkz.critter.TypeSafeFieldEnd;
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.query.Criteria;
-import com.google.code.morphia.query.CriteriaContainer;
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryImpl;
-import com.google.code.morphia.query.UpdateOperations;
-import com.google.code.morphia.query.UpdateResults;
-import com.mongodb.WriteConcern;
-import com.mongodb.WriteResult;
-import java.util.List;
+import javabot.model.ChannelEvent;
 
+public class ChannelEventCriteria extends com.antwerkz.critter.criteria.BaseCriteria<ChannelEvent> {
+  private String prefix = "";
 
-public class ChannelEventCriteria {
-  private Query<javabot.model.ChannelEvent> query;
-  private Datastore ds;
-
-  public Query<javabot.model.ChannelEvent> query() {
-    return query;
+  public ChannelEventCriteria(org.mongodb.morphia.Datastore ds) {
+    super(ds, ChannelEvent.class);
   }
 
-  public ChannelEventCriteria(Datastore ds) {
-    this.ds = ds;
-    query = ds.find(javabot.model.ChannelEvent.class);
+
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, java.lang.String> channel() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, java.lang.String>(this, query, prefix + "channel");
   }
 
-  public WriteResult delete() {
-     return ds.delete(query());
+  public org.mongodb.morphia.query.Criteria channel(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, java.lang.String>(this, query, prefix + "channel").equal(value);
   }
 
-  public WriteResult delete(WriteConcern wc) {
-     return ds.delete(query(), wc);
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, org.joda.time.DateTime> completed() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, org.joda.time.DateTime>(this, query, prefix + "completed");
   }
 
-  public CriteriaContainer or(Criteria... criteria) {
-    return query.or(criteria);
+  public org.mongodb.morphia.query.Criteria completed(org.joda.time.DateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, org.joda.time.DateTime>(this, query, prefix + "completed").equal(value);
   }
 
-  public CriteriaContainer and(Criteria... criteria) {
-    return query.and(criteria);
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, org.bson.types.ObjectId> id() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, org.bson.types.ObjectId>(this, query, prefix + "id");
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, java.lang.String> channel() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("channel"));
+  public org.mongodb.morphia.query.Criteria id(org.bson.types.ObjectId value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, org.bson.types.ObjectId>(this, query, prefix + "id").equal(value);
   }
 
-  public ChannelEventCriteria channel(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("channel")).equal(value);
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, java.lang.String> key() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, java.lang.String>(this, query, prefix + "key");
   }
 
-  public ChannelEventCriteria orderByChannel() {
-    return orderByChannel(true);
+  public org.mongodb.morphia.query.Criteria key(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, java.lang.String>(this, query, prefix + "key").equal(value);
   }
 
-  public ChannelEventCriteria orderByChannel(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "channel");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, java.lang.Boolean> logged() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, java.lang.Boolean>(this, query, prefix + "logged");
   }
 
-  public ChannelEventCriteria distinctChannel() {
-    ((QueryImpl) query).getCollection().distinct("channel");
-    return this;
+  public org.mongodb.morphia.query.Criteria logged(java.lang.Boolean value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, java.lang.Boolean>(this, query, prefix + "logged").equal(value);
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, org.joda.time.DateTime> completed() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("completed"));
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, java.lang.String> requestedBy() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, java.lang.String>(this, query, prefix + "requestedBy");
   }
 
-  public ChannelEventCriteria completed(org.joda.time.DateTime value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("completed")).equal(value);
-    return this;
+  public org.mongodb.morphia.query.Criteria requestedBy(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, java.lang.String>(this, query, prefix + "requestedBy").equal(value);
   }
 
-  public ChannelEventCriteria orderByCompleted() {
-    return orderByCompleted(true);
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, org.joda.time.DateTime> requestedOn() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, org.joda.time.DateTime>(this, query, prefix + "requestedOn");
   }
 
-  public ChannelEventCriteria orderByCompleted(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "completed");
-    return this;
+  public org.mongodb.morphia.query.Criteria requestedOn(org.joda.time.DateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, org.joda.time.DateTime>(this, query, prefix + "requestedOn").equal(value);
   }
 
-  public ChannelEventCriteria distinctCompleted() {
-    ((QueryImpl) query).getCollection().distinct("completed");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, javabot.model.AdminEvent.State> state() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, javabot.model.AdminEvent.State>(this, query, prefix + "state");
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, org.bson.types.ObjectId> id() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("id"));
+  public org.mongodb.morphia.query.Criteria state(javabot.model.AdminEvent.State value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, javabot.model.AdminEvent.State>(this, query, prefix + "state").equal(value);
   }
 
-  public ChannelEventCriteria id(org.bson.types.ObjectId value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, javabot.model.EventType> type() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, javabot.model.EventType>(this, query, prefix + "type");
   }
 
-  public ChannelEventCriteria orderById() {
-    return orderById(true);
+  public org.mongodb.morphia.query.Criteria type(javabot.model.EventType value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelEventCriteria, ChannelEvent, javabot.model.EventType>(this, query, prefix + "type").equal(value);
   }
 
-  public ChannelEventCriteria orderById(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "id");
-    return this;
-  }
-
-  public ChannelEventCriteria distinctId() {
-    ((QueryImpl) query).getCollection().distinct("id");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, java.lang.String> key() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("key"));
-  }
-
-  public ChannelEventCriteria key(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("key")).equal(value);
-    return this;
-  }
-
-  public ChannelEventCriteria orderByKey() {
-    return orderByKey(true);
-  }
-
-  public ChannelEventCriteria orderByKey(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "key");
-    return this;
-  }
-
-  public ChannelEventCriteria distinctKey() {
-    ((QueryImpl) query).getCollection().distinct("key");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, java.lang.Boolean> logged() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("logged"));
-  }
-
-  public ChannelEventCriteria logged(java.lang.Boolean value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("logged")).equal(value);
-    return this;
-  }
-
-  public ChannelEventCriteria orderByLogged() {
-    return orderByLogged(true);
-  }
-
-  public ChannelEventCriteria orderByLogged(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "logged");
-    return this;
-  }
-
-  public ChannelEventCriteria distinctLogged() {
-    ((QueryImpl) query).getCollection().distinct("logged");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, java.lang.String> requestedBy() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("requestedBy"));
-  }
-
-  public ChannelEventCriteria requestedBy(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("requestedBy")).equal(value);
-    return this;
-  }
-
-  public ChannelEventCriteria orderByRequestedBy() {
-    return orderByRequestedBy(true);
-  }
-
-  public ChannelEventCriteria orderByRequestedBy(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "requestedBy");
-    return this;
-  }
-
-  public ChannelEventCriteria distinctRequestedBy() {
-    ((QueryImpl) query).getCollection().distinct("requestedBy");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, org.joda.time.DateTime> requestedOn() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("requestedOn"));
-  }
-
-  public ChannelEventCriteria requestedOn(org.joda.time.DateTime value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("requestedOn")).equal(value);
-    return this;
-  }
-
-  public ChannelEventCriteria orderByRequestedOn() {
-    return orderByRequestedOn(true);
-  }
-
-  public ChannelEventCriteria orderByRequestedOn(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "requestedOn");
-    return this;
-  }
-
-  public ChannelEventCriteria distinctRequestedOn() {
-    ((QueryImpl) query).getCollection().distinct("requestedOn");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, javabot.model.AdminEvent.State> state() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("state"));
-  }
-
-  public ChannelEventCriteria state(javabot.model.AdminEvent.State value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("state")).equal(value);
-    return this;
-  }
-
-  public ChannelEventCriteria orderByState() {
-    return orderByState(true);
-  }
-
-  public ChannelEventCriteria orderByState(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "state");
-    return this;
-  }
-
-  public ChannelEventCriteria distinctState() {
-    ((QueryImpl) query).getCollection().distinct("state");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.ChannelEvent, javabot.model.EventType> type() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("type"));
-  }
-
-  public ChannelEventCriteria type(javabot.model.EventType value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("type")).equal(value);
-    return this;
-  }
-
-  public ChannelEventCriteria orderByType() {
-    return orderByType(true);
-  }
-
-  public ChannelEventCriteria orderByType(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "type");
-    return this;
-  }
-
-  public ChannelEventCriteria distinctType() {
-    ((QueryImpl) query).getCollection().distinct("type");
-    return this;
-  }
 
   public ChannelEventUpdater getUpdater() {
     return new ChannelEventUpdater();
   }
 
   public class ChannelEventUpdater {
-    UpdateOperations<javabot.model.ChannelEvent> updateOperations;
+    org.mongodb.morphia.query.UpdateOperations<ChannelEvent> updateOperations;
 
     public ChannelEventUpdater() {
-      updateOperations = ds.createUpdateOperations(javabot.model.ChannelEvent.class);
+      updateOperations = ds.createUpdateOperations(ChannelEvent.class);
     }
 
-    public UpdateResults<javabot.model.ChannelEvent> update() {
+    public org.mongodb.morphia.query.UpdateResults<ChannelEvent> update() {
       return ds.update(query(), updateOperations, false);
     }
 
-    public UpdateResults<javabot.model.ChannelEvent> update(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<ChannelEvent> update(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, false, wc);
     }
 
-    public UpdateResults<javabot.model.ChannelEvent> upsert() {
+    public org.mongodb.morphia.query.UpdateResults<ChannelEvent> upsert() {
       return ds.update(query(), updateOperations, true);
     }
 
-    public UpdateResults<javabot.model.ChannelEvent> upsert(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<ChannelEvent> upsert(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, true, wc);
     }
 
@@ -292,12 +125,12 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater addChannel(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ChannelEventUpdater addChannel(java.lang.String value, boolean addDups) {
       updateOperations.add("channel", value, addDups);
       return this;
     }
 
-    public ChannelEventUpdater addAllToChannel(List<java.lang.String> values, boolean addDups) {
+    public ChannelEventUpdater addAllToChannel(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("channel", values, addDups);
       return this;
     }
@@ -317,7 +150,7 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater removeAllFromChannel(List<java.lang.String> values) {
+    public ChannelEventUpdater removeAllFromChannel(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("channel", values);
       return this;
     }
@@ -351,12 +184,12 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater addCompleted(String fieldExpr, org.joda.time.DateTime value, boolean addDups) {
+    public ChannelEventUpdater addCompleted(org.joda.time.DateTime value, boolean addDups) {
       updateOperations.add("completed", value, addDups);
       return this;
     }
 
-    public ChannelEventUpdater addAllToCompleted(List<org.joda.time.DateTime> values, boolean addDups) {
+    public ChannelEventUpdater addAllToCompleted(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
       updateOperations.addAll("completed", values, addDups);
       return this;
     }
@@ -376,7 +209,7 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater removeAllFromCompleted(List<org.joda.time.DateTime> values) {
+    public ChannelEventUpdater removeAllFromCompleted(java.util.List<org.joda.time.DateTime> values) {
       updateOperations.removeAll("completed", values);
       return this;
     }
@@ -410,12 +243,12 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater addId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+    public ChannelEventUpdater addId(org.bson.types.ObjectId value, boolean addDups) {
       updateOperations.add("id", value, addDups);
       return this;
     }
 
-    public ChannelEventUpdater addAllToId(List<org.bson.types.ObjectId> values, boolean addDups) {
+    public ChannelEventUpdater addAllToId(java.util.List<org.bson.types.ObjectId> values, boolean addDups) {
       updateOperations.addAll("id", values, addDups);
       return this;
     }
@@ -435,7 +268,7 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater removeAllFromId(List<org.bson.types.ObjectId> values) {
+    public ChannelEventUpdater removeAllFromId(java.util.List<org.bson.types.ObjectId> values) {
       updateOperations.removeAll("id", values);
       return this;
     }
@@ -469,12 +302,12 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater addKey(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ChannelEventUpdater addKey(java.lang.String value, boolean addDups) {
       updateOperations.add("key", value, addDups);
       return this;
     }
 
-    public ChannelEventUpdater addAllToKey(List<java.lang.String> values, boolean addDups) {
+    public ChannelEventUpdater addAllToKey(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("key", values, addDups);
       return this;
     }
@@ -494,7 +327,7 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater removeAllFromKey(List<java.lang.String> values) {
+    public ChannelEventUpdater removeAllFromKey(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("key", values);
       return this;
     }
@@ -528,12 +361,12 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater addLogged(String fieldExpr, java.lang.Boolean value, boolean addDups) {
+    public ChannelEventUpdater addLogged(java.lang.Boolean value, boolean addDups) {
       updateOperations.add("logged", value, addDups);
       return this;
     }
 
-    public ChannelEventUpdater addAllToLogged(List<java.lang.Boolean> values, boolean addDups) {
+    public ChannelEventUpdater addAllToLogged(java.util.List<java.lang.Boolean> values, boolean addDups) {
       updateOperations.addAll("logged", values, addDups);
       return this;
     }
@@ -553,7 +386,7 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater removeAllFromLogged(List<java.lang.Boolean> values) {
+    public ChannelEventUpdater removeAllFromLogged(java.util.List<java.lang.Boolean> values) {
       updateOperations.removeAll("logged", values);
       return this;
     }
@@ -587,12 +420,12 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater addRequestedBy(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ChannelEventUpdater addRequestedBy(java.lang.String value, boolean addDups) {
       updateOperations.add("requestedBy", value, addDups);
       return this;
     }
 
-    public ChannelEventUpdater addAllToRequestedBy(List<java.lang.String> values, boolean addDups) {
+    public ChannelEventUpdater addAllToRequestedBy(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("requestedBy", values, addDups);
       return this;
     }
@@ -612,7 +445,7 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater removeAllFromRequestedBy(List<java.lang.String> values) {
+    public ChannelEventUpdater removeAllFromRequestedBy(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("requestedBy", values);
       return this;
     }
@@ -646,12 +479,12 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater addRequestedOn(String fieldExpr, org.joda.time.DateTime value, boolean addDups) {
+    public ChannelEventUpdater addRequestedOn(org.joda.time.DateTime value, boolean addDups) {
       updateOperations.add("requestedOn", value, addDups);
       return this;
     }
 
-    public ChannelEventUpdater addAllToRequestedOn(List<org.joda.time.DateTime> values, boolean addDups) {
+    public ChannelEventUpdater addAllToRequestedOn(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
       updateOperations.addAll("requestedOn", values, addDups);
       return this;
     }
@@ -671,7 +504,7 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater removeAllFromRequestedOn(List<org.joda.time.DateTime> values) {
+    public ChannelEventUpdater removeAllFromRequestedOn(java.util.List<org.joda.time.DateTime> values) {
       updateOperations.removeAll("requestedOn", values);
       return this;
     }
@@ -705,12 +538,12 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater addState(String fieldExpr, javabot.model.AdminEvent.State value, boolean addDups) {
+    public ChannelEventUpdater addState(javabot.model.AdminEvent.State value, boolean addDups) {
       updateOperations.add("state", value, addDups);
       return this;
     }
 
-    public ChannelEventUpdater addAllToState(List<javabot.model.AdminEvent.State> values, boolean addDups) {
+    public ChannelEventUpdater addAllToState(java.util.List<javabot.model.AdminEvent.State> values, boolean addDups) {
       updateOperations.addAll("state", values, addDups);
       return this;
     }
@@ -730,7 +563,7 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater removeAllFromState(List<javabot.model.AdminEvent.State> values) {
+    public ChannelEventUpdater removeAllFromState(java.util.List<javabot.model.AdminEvent.State> values) {
       updateOperations.removeAll("state", values);
       return this;
     }
@@ -764,12 +597,12 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater addType(String fieldExpr, javabot.model.EventType value, boolean addDups) {
+    public ChannelEventUpdater addType(javabot.model.EventType value, boolean addDups) {
       updateOperations.add("type", value, addDups);
       return this;
     }
 
-    public ChannelEventUpdater addAllToType(List<javabot.model.EventType> values, boolean addDups) {
+    public ChannelEventUpdater addAllToType(java.util.List<javabot.model.EventType> values, boolean addDups) {
       updateOperations.addAll("type", values, addDups);
       return this;
     }
@@ -789,7 +622,7 @@ public class ChannelEventCriteria {
       return this;
     }
 
-    public ChannelEventUpdater removeAllFromType(List<javabot.model.EventType> values) {
+    public ChannelEventUpdater removeAllFromType(java.util.List<javabot.model.EventType> values) {
       updateOperations.removeAll("type", values);
       return this;
     }

@@ -1,210 +1,88 @@
 package javabot.model.criteria;
 
-import com.antwerkz.critter.TypeSafeFieldEnd;
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.query.Criteria;
-import com.google.code.morphia.query.CriteriaContainer;
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryImpl;
-import com.google.code.morphia.query.UpdateOperations;
-import com.google.code.morphia.query.UpdateResults;
-import com.mongodb.WriteConcern;
-import com.mongodb.WriteResult;
-import java.util.List;
+import javabot.model.Karma;
 
+public class KarmaCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Karma> {
+  private String prefix = "";
 
-public class KarmaCriteria {
-  private Query<javabot.model.Karma> query;
-  private Datastore ds;
-
-  public Query<javabot.model.Karma> query() {
-    return query;
+  public KarmaCriteria(org.mongodb.morphia.Datastore ds) {
+    super(ds, Karma.class);
   }
 
-  public KarmaCriteria(Datastore ds) {
-    this.ds = ds;
-    query = ds.find(javabot.model.Karma.class);
+
+  public com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, org.bson.types.ObjectId> id() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, org.bson.types.ObjectId>(this, query, prefix + "id");
   }
 
-  public WriteResult delete() {
-     return ds.delete(query());
+  public org.mongodb.morphia.query.Criteria id(org.bson.types.ObjectId value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, org.bson.types.ObjectId>(this, query, prefix + "id").equal(value);
   }
 
-  public WriteResult delete(WriteConcern wc) {
-     return ds.delete(query(), wc);
+  public com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.lang.String> name() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.lang.String>(this, query, prefix + "name");
   }
 
-  public CriteriaContainer or(Criteria... criteria) {
-    return query.or(criteria);
+  public org.mongodb.morphia.query.Criteria name(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.lang.String>(this, query, prefix + "name").equal(value);
   }
 
-  public CriteriaContainer and(Criteria... criteria) {
-    return query.and(criteria);
+  public com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, org.joda.time.DateTime> updated() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, org.joda.time.DateTime>(this, query, prefix + "updated");
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Karma, org.bson.types.ObjectId> id() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("id"));
+  public org.mongodb.morphia.query.Criteria updated(org.joda.time.DateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, org.joda.time.DateTime>(this, query, prefix + "updated").equal(value);
   }
 
-  public KarmaCriteria id(org.bson.types.ObjectId value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.lang.String> upperName() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.lang.String>(this, query, prefix + "upperName");
   }
 
-  public KarmaCriteria orderById() {
-    return orderById(true);
+  public org.mongodb.morphia.query.Criteria upperName(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.lang.String>(this, query, prefix + "upperName").equal(value);
   }
 
-  public KarmaCriteria orderById(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "id");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.lang.String> userName() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.lang.String>(this, query, prefix + "userName");
   }
 
-  public KarmaCriteria distinctId() {
-    ((QueryImpl) query).getCollection().distinct("id");
-    return this;
+  public org.mongodb.morphia.query.Criteria userName(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.lang.String>(this, query, prefix + "userName").equal(value);
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Karma, java.lang.String> name() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("name"));
+  public com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.lang.Integer> value() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.lang.Integer>(this, query, prefix + "value");
   }
 
-  public KarmaCriteria name(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("name")).equal(value);
-    return this;
+  public org.mongodb.morphia.query.Criteria value(java.lang.Integer value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.lang.Integer>(this, query, prefix + "value").equal(value);
   }
 
-  public KarmaCriteria orderByName() {
-    return orderByName(true);
-  }
-
-  public KarmaCriteria orderByName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "name");
-    return this;
-  }
-
-  public KarmaCriteria distinctName() {
-    ((QueryImpl) query).getCollection().distinct("name");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Karma, org.joda.time.DateTime> updated() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("updated"));
-  }
-
-  public KarmaCriteria updated(org.joda.time.DateTime value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("updated")).equal(value);
-    return this;
-  }
-
-  public KarmaCriteria orderByUpdated() {
-    return orderByUpdated(true);
-  }
-
-  public KarmaCriteria orderByUpdated(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "updated");
-    return this;
-  }
-
-  public KarmaCriteria distinctUpdated() {
-    ((QueryImpl) query).getCollection().distinct("updated");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Karma, java.lang.String> upperName() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("upperName"));
-  }
-
-  public KarmaCriteria upperName(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("upperName")).equal(value);
-    return this;
-  }
-
-  public KarmaCriteria orderByUpperName() {
-    return orderByUpperName(true);
-  }
-
-  public KarmaCriteria orderByUpperName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "upperName");
-    return this;
-  }
-
-  public KarmaCriteria distinctUpperName() {
-    ((QueryImpl) query).getCollection().distinct("upperName");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Karma, java.lang.String> userName() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("userName"));
-  }
-
-  public KarmaCriteria userName(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("userName")).equal(value);
-    return this;
-  }
-
-  public KarmaCriteria orderByUserName() {
-    return orderByUserName(true);
-  }
-
-  public KarmaCriteria orderByUserName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "userName");
-    return this;
-  }
-
-  public KarmaCriteria distinctUserName() {
-    ((QueryImpl) query).getCollection().distinct("userName");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Karma, java.lang.Integer> value() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("value"));
-  }
-
-  public KarmaCriteria value(java.lang.Integer value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("value")).equal(value);
-    return this;
-  }
-
-  public KarmaCriteria orderByValue() {
-    return orderByValue(true);
-  }
-
-  public KarmaCriteria orderByValue(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "value");
-    return this;
-  }
-
-  public KarmaCriteria distinctValue() {
-    ((QueryImpl) query).getCollection().distinct("value");
-    return this;
-  }
 
   public KarmaUpdater getUpdater() {
     return new KarmaUpdater();
   }
 
   public class KarmaUpdater {
-    UpdateOperations<javabot.model.Karma> updateOperations;
+    org.mongodb.morphia.query.UpdateOperations<Karma> updateOperations;
 
     public KarmaUpdater() {
-      updateOperations = ds.createUpdateOperations(javabot.model.Karma.class);
+      updateOperations = ds.createUpdateOperations(Karma.class);
     }
 
-    public UpdateResults<javabot.model.Karma> update() {
+    public org.mongodb.morphia.query.UpdateResults<Karma> update() {
       return ds.update(query(), updateOperations, false);
     }
 
-    public UpdateResults<javabot.model.Karma> update(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<Karma> update(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, false, wc);
     }
 
-    public UpdateResults<javabot.model.Karma> upsert() {
+    public org.mongodb.morphia.query.UpdateResults<Karma> upsert() {
       return ds.update(query(), updateOperations, true);
     }
 
-    public UpdateResults<javabot.model.Karma> upsert(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<Karma> upsert(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, true, wc);
     }
 
@@ -223,12 +101,12 @@ public class KarmaCriteria {
       return this;
     }
 
-    public KarmaUpdater addId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+    public KarmaUpdater addId(org.bson.types.ObjectId value, boolean addDups) {
       updateOperations.add("id", value, addDups);
       return this;
     }
 
-    public KarmaUpdater addAllToId(List<org.bson.types.ObjectId> values, boolean addDups) {
+    public KarmaUpdater addAllToId(java.util.List<org.bson.types.ObjectId> values, boolean addDups) {
       updateOperations.addAll("id", values, addDups);
       return this;
     }
@@ -248,7 +126,7 @@ public class KarmaCriteria {
       return this;
     }
 
-    public KarmaUpdater removeAllFromId(List<org.bson.types.ObjectId> values) {
+    public KarmaUpdater removeAllFromId(java.util.List<org.bson.types.ObjectId> values) {
       updateOperations.removeAll("id", values);
       return this;
     }
@@ -282,12 +160,12 @@ public class KarmaCriteria {
       return this;
     }
 
-    public KarmaUpdater addName(String fieldExpr, java.lang.String value, boolean addDups) {
+    public KarmaUpdater addName(java.lang.String value, boolean addDups) {
       updateOperations.add("name", value, addDups);
       return this;
     }
 
-    public KarmaUpdater addAllToName(List<java.lang.String> values, boolean addDups) {
+    public KarmaUpdater addAllToName(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("name", values, addDups);
       return this;
     }
@@ -307,7 +185,7 @@ public class KarmaCriteria {
       return this;
     }
 
-    public KarmaUpdater removeAllFromName(List<java.lang.String> values) {
+    public KarmaUpdater removeAllFromName(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("name", values);
       return this;
     }
@@ -341,12 +219,12 @@ public class KarmaCriteria {
       return this;
     }
 
-    public KarmaUpdater addUpdated(String fieldExpr, org.joda.time.DateTime value, boolean addDups) {
+    public KarmaUpdater addUpdated(org.joda.time.DateTime value, boolean addDups) {
       updateOperations.add("updated", value, addDups);
       return this;
     }
 
-    public KarmaUpdater addAllToUpdated(List<org.joda.time.DateTime> values, boolean addDups) {
+    public KarmaUpdater addAllToUpdated(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
       updateOperations.addAll("updated", values, addDups);
       return this;
     }
@@ -366,7 +244,7 @@ public class KarmaCriteria {
       return this;
     }
 
-    public KarmaUpdater removeAllFromUpdated(List<org.joda.time.DateTime> values) {
+    public KarmaUpdater removeAllFromUpdated(java.util.List<org.joda.time.DateTime> values) {
       updateOperations.removeAll("updated", values);
       return this;
     }
@@ -400,12 +278,12 @@ public class KarmaCriteria {
       return this;
     }
 
-    public KarmaUpdater addUpperName(String fieldExpr, java.lang.String value, boolean addDups) {
+    public KarmaUpdater addUpperName(java.lang.String value, boolean addDups) {
       updateOperations.add("upperName", value, addDups);
       return this;
     }
 
-    public KarmaUpdater addAllToUpperName(List<java.lang.String> values, boolean addDups) {
+    public KarmaUpdater addAllToUpperName(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("upperName", values, addDups);
       return this;
     }
@@ -425,7 +303,7 @@ public class KarmaCriteria {
       return this;
     }
 
-    public KarmaUpdater removeAllFromUpperName(List<java.lang.String> values) {
+    public KarmaUpdater removeAllFromUpperName(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("upperName", values);
       return this;
     }
@@ -459,12 +337,12 @@ public class KarmaCriteria {
       return this;
     }
 
-    public KarmaUpdater addUserName(String fieldExpr, java.lang.String value, boolean addDups) {
+    public KarmaUpdater addUserName(java.lang.String value, boolean addDups) {
       updateOperations.add("userName", value, addDups);
       return this;
     }
 
-    public KarmaUpdater addAllToUserName(List<java.lang.String> values, boolean addDups) {
+    public KarmaUpdater addAllToUserName(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("userName", values, addDups);
       return this;
     }
@@ -484,7 +362,7 @@ public class KarmaCriteria {
       return this;
     }
 
-    public KarmaUpdater removeAllFromUserName(List<java.lang.String> values) {
+    public KarmaUpdater removeAllFromUserName(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("userName", values);
       return this;
     }
@@ -518,12 +396,12 @@ public class KarmaCriteria {
       return this;
     }
 
-    public KarmaUpdater addValue(String fieldExpr, java.lang.Integer value, boolean addDups) {
+    public KarmaUpdater addValue(java.lang.Integer value, boolean addDups) {
       updateOperations.add("value", value, addDups);
       return this;
     }
 
-    public KarmaUpdater addAllToValue(List<java.lang.Integer> values, boolean addDups) {
+    public KarmaUpdater addAllToValue(java.util.List<java.lang.Integer> values, boolean addDups) {
       updateOperations.addAll("value", values, addDups);
       return this;
     }
@@ -543,7 +421,7 @@ public class KarmaCriteria {
       return this;
     }
 
-    public KarmaUpdater removeAllFromValue(List<java.lang.Integer> values) {
+    public KarmaUpdater removeAllFromValue(java.util.List<java.lang.Integer> values) {
       updateOperations.removeAll("value", values);
       return this;
     }

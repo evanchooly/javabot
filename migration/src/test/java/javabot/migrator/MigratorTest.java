@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.List;
 import javax.inject.Inject;
 
-import com.google.code.morphia.Datastore;
+import org.mongodb.morphia.Datastore;
 import com.mongodb.DBCollection;
 import javabot.JavabotModule;
 import javabot.dao.ChannelDao;

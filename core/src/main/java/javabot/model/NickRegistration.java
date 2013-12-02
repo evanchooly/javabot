@@ -3,8 +3,8 @@ package javabot.model;
 import java.io.Serializable;
 import java.util.UUID;
 
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
 import javabot.IrcUser;
 import org.bson.types.ObjectId;
 

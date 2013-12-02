@@ -4,7 +4,7 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
-import com.google.code.morphia.query.Query;
+import org.mongodb.morphia.query.Query;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import javabot.model.Config;

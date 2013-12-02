@@ -5,8 +5,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.antwerkz.maven.SPI;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
 import org.bson.types.ObjectId;
 
 @Entity("configuration")

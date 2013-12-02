@@ -1,233 +1,96 @@
 package javabot.model.criteria;
 
-import com.antwerkz.critter.TypeSafeFieldEnd;
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.query.Criteria;
-import com.google.code.morphia.query.CriteriaContainer;
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryImpl;
-import com.google.code.morphia.query.UpdateOperations;
-import com.google.code.morphia.query.UpdateResults;
-import com.mongodb.WriteConcern;
-import com.mongodb.WriteResult;
-import java.util.List;
+import javabot.model.Logs;
 
+public class LogsCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Logs> {
+  private String prefix = "";
 
-public class LogsCriteria {
-  private Query<javabot.model.Logs> query;
-  private Datastore ds;
-
-  public Query<javabot.model.Logs> query() {
-    return query;
+  public LogsCriteria(org.mongodb.morphia.Datastore ds) {
+    super(ds, Logs.class);
   }
 
-  public LogsCriteria(Datastore ds) {
-    this.ds = ds;
-    query = ds.find(javabot.model.Logs.class);
+
+  public com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, java.lang.String> channel() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, java.lang.String>(this, query, prefix + "channel");
   }
 
-  public WriteResult delete() {
-     return ds.delete(query());
+  public org.mongodb.morphia.query.Criteria channel(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, java.lang.String>(this, query, prefix + "channel").equal(value);
   }
 
-  public WriteResult delete(WriteConcern wc) {
-     return ds.delete(query(), wc);
+  public com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, org.bson.types.ObjectId> id() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, org.bson.types.ObjectId>(this, query, prefix + "id");
   }
 
-  public CriteriaContainer or(Criteria... criteria) {
-    return query.or(criteria);
+  public org.mongodb.morphia.query.Criteria id(org.bson.types.ObjectId value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, org.bson.types.ObjectId>(this, query, prefix + "id").equal(value);
   }
 
-  public CriteriaContainer and(Criteria... criteria) {
-    return query.and(criteria);
+  public com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, java.lang.String> message() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, java.lang.String>(this, query, prefix + "message");
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Logs, java.lang.String> channel() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("channel"));
+  public org.mongodb.morphia.query.Criteria message(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, java.lang.String>(this, query, prefix + "message").equal(value);
   }
 
-  public LogsCriteria channel(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("channel")).equal(value);
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, java.lang.String> nick() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, java.lang.String>(this, query, prefix + "nick");
   }
 
-  public LogsCriteria orderByChannel() {
-    return orderByChannel(true);
+  public org.mongodb.morphia.query.Criteria nick(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, java.lang.String>(this, query, prefix + "nick").equal(value);
   }
 
-  public LogsCriteria orderByChannel(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "channel");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, javabot.model.Logs.Type> type() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, javabot.model.Logs.Type>(this, query, prefix + "type");
   }
 
-  public LogsCriteria distinctChannel() {
-    ((QueryImpl) query).getCollection().distinct("channel");
-    return this;
+  public org.mongodb.morphia.query.Criteria type(javabot.model.Logs.Type value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, javabot.model.Logs.Type>(this, query, prefix + "type").equal(value);
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Logs, org.bson.types.ObjectId> id() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("id"));
+  public com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, org.joda.time.DateTime> updated() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, org.joda.time.DateTime>(this, query, prefix + "updated");
   }
 
-  public LogsCriteria id(org.bson.types.ObjectId value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
-    return this;
+  public org.mongodb.morphia.query.Criteria updated(org.joda.time.DateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, org.joda.time.DateTime>(this, query, prefix + "updated").equal(value);
   }
 
-  public LogsCriteria orderById() {
-    return orderById(true);
+  public com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, java.lang.String> upperNick() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, java.lang.String>(this, query, prefix + "upperNick");
   }
 
-  public LogsCriteria orderById(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "id");
-    return this;
+  public org.mongodb.morphia.query.Criteria upperNick(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, java.lang.String>(this, query, prefix + "upperNick").equal(value);
   }
 
-  public LogsCriteria distinctId() {
-    ((QueryImpl) query).getCollection().distinct("id");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Logs, java.lang.String> message() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("message"));
-  }
-
-  public LogsCriteria message(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("message")).equal(value);
-    return this;
-  }
-
-  public LogsCriteria orderByMessage() {
-    return orderByMessage(true);
-  }
-
-  public LogsCriteria orderByMessage(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "message");
-    return this;
-  }
-
-  public LogsCriteria distinctMessage() {
-    ((QueryImpl) query).getCollection().distinct("message");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Logs, java.lang.String> nick() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("nick"));
-  }
-
-  public LogsCriteria nick(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("nick")).equal(value);
-    return this;
-  }
-
-  public LogsCriteria orderByNick() {
-    return orderByNick(true);
-  }
-
-  public LogsCriteria orderByNick(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "nick");
-    return this;
-  }
-
-  public LogsCriteria distinctNick() {
-    ((QueryImpl) query).getCollection().distinct("nick");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Logs, javabot.model.Logs.Type> type() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("type"));
-  }
-
-  public LogsCriteria type(javabot.model.Logs.Type value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("type")).equal(value);
-    return this;
-  }
-
-  public LogsCriteria orderByType() {
-    return orderByType(true);
-  }
-
-  public LogsCriteria orderByType(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "type");
-    return this;
-  }
-
-  public LogsCriteria distinctType() {
-    ((QueryImpl) query).getCollection().distinct("type");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Logs, org.joda.time.DateTime> updated() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("updated"));
-  }
-
-  public LogsCriteria updated(org.joda.time.DateTime value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("updated")).equal(value);
-    return this;
-  }
-
-  public LogsCriteria orderByUpdated() {
-    return orderByUpdated(true);
-  }
-
-  public LogsCriteria orderByUpdated(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "updated");
-    return this;
-  }
-
-  public LogsCriteria distinctUpdated() {
-    ((QueryImpl) query).getCollection().distinct("updated");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Logs, java.lang.String> upperNick() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("upperNick"));
-  }
-
-  public LogsCriteria upperNick(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("upperNick")).equal(value);
-    return this;
-  }
-
-  public LogsCriteria orderByUpperNick() {
-    return orderByUpperNick(true);
-  }
-
-  public LogsCriteria orderByUpperNick(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "upperNick");
-    return this;
-  }
-
-  public LogsCriteria distinctUpperNick() {
-    ((QueryImpl) query).getCollection().distinct("upperNick");
-    return this;
-  }
 
   public LogsUpdater getUpdater() {
     return new LogsUpdater();
   }
 
   public class LogsUpdater {
-    UpdateOperations<javabot.model.Logs> updateOperations;
+    org.mongodb.morphia.query.UpdateOperations<Logs> updateOperations;
 
     public LogsUpdater() {
-      updateOperations = ds.createUpdateOperations(javabot.model.Logs.class);
+      updateOperations = ds.createUpdateOperations(Logs.class);
     }
 
-    public UpdateResults<javabot.model.Logs> update() {
+    public org.mongodb.morphia.query.UpdateResults<Logs> update() {
       return ds.update(query(), updateOperations, false);
     }
 
-    public UpdateResults<javabot.model.Logs> update(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<Logs> update(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, false, wc);
     }
 
-    public UpdateResults<javabot.model.Logs> upsert() {
+    public org.mongodb.morphia.query.UpdateResults<Logs> upsert() {
       return ds.update(query(), updateOperations, true);
     }
 
-    public UpdateResults<javabot.model.Logs> upsert(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<Logs> upsert(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, true, wc);
     }
 
@@ -246,12 +109,12 @@ public class LogsCriteria {
       return this;
     }
 
-    public LogsUpdater addChannel(String fieldExpr, java.lang.String value, boolean addDups) {
+    public LogsUpdater addChannel(java.lang.String value, boolean addDups) {
       updateOperations.add("channel", value, addDups);
       return this;
     }
 
-    public LogsUpdater addAllToChannel(List<java.lang.String> values, boolean addDups) {
+    public LogsUpdater addAllToChannel(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("channel", values, addDups);
       return this;
     }
@@ -271,7 +134,7 @@ public class LogsCriteria {
       return this;
     }
 
-    public LogsUpdater removeAllFromChannel(List<java.lang.String> values) {
+    public LogsUpdater removeAllFromChannel(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("channel", values);
       return this;
     }
@@ -305,12 +168,12 @@ public class LogsCriteria {
       return this;
     }
 
-    public LogsUpdater addId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+    public LogsUpdater addId(org.bson.types.ObjectId value, boolean addDups) {
       updateOperations.add("id", value, addDups);
       return this;
     }
 
-    public LogsUpdater addAllToId(List<org.bson.types.ObjectId> values, boolean addDups) {
+    public LogsUpdater addAllToId(java.util.List<org.bson.types.ObjectId> values, boolean addDups) {
       updateOperations.addAll("id", values, addDups);
       return this;
     }
@@ -330,7 +193,7 @@ public class LogsCriteria {
       return this;
     }
 
-    public LogsUpdater removeAllFromId(List<org.bson.types.ObjectId> values) {
+    public LogsUpdater removeAllFromId(java.util.List<org.bson.types.ObjectId> values) {
       updateOperations.removeAll("id", values);
       return this;
     }
@@ -364,12 +227,12 @@ public class LogsCriteria {
       return this;
     }
 
-    public LogsUpdater addMessage(String fieldExpr, java.lang.String value, boolean addDups) {
+    public LogsUpdater addMessage(java.lang.String value, boolean addDups) {
       updateOperations.add("message", value, addDups);
       return this;
     }
 
-    public LogsUpdater addAllToMessage(List<java.lang.String> values, boolean addDups) {
+    public LogsUpdater addAllToMessage(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("message", values, addDups);
       return this;
     }
@@ -389,7 +252,7 @@ public class LogsCriteria {
       return this;
     }
 
-    public LogsUpdater removeAllFromMessage(List<java.lang.String> values) {
+    public LogsUpdater removeAllFromMessage(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("message", values);
       return this;
     }
@@ -423,12 +286,12 @@ public class LogsCriteria {
       return this;
     }
 
-    public LogsUpdater addNick(String fieldExpr, java.lang.String value, boolean addDups) {
+    public LogsUpdater addNick(java.lang.String value, boolean addDups) {
       updateOperations.add("nick", value, addDups);
       return this;
     }
 
-    public LogsUpdater addAllToNick(List<java.lang.String> values, boolean addDups) {
+    public LogsUpdater addAllToNick(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("nick", values, addDups);
       return this;
     }
@@ -448,7 +311,7 @@ public class LogsCriteria {
       return this;
     }
 
-    public LogsUpdater removeAllFromNick(List<java.lang.String> values) {
+    public LogsUpdater removeAllFromNick(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("nick", values);
       return this;
     }
@@ -482,12 +345,12 @@ public class LogsCriteria {
       return this;
     }
 
-    public LogsUpdater addType(String fieldExpr, javabot.model.Logs.Type value, boolean addDups) {
+    public LogsUpdater addType(javabot.model.Logs.Type value, boolean addDups) {
       updateOperations.add("type", value, addDups);
       return this;
     }
 
-    public LogsUpdater addAllToType(List<javabot.model.Logs.Type> values, boolean addDups) {
+    public LogsUpdater addAllToType(java.util.List<javabot.model.Logs.Type> values, boolean addDups) {
       updateOperations.addAll("type", values, addDups);
       return this;
     }
@@ -507,7 +370,7 @@ public class LogsCriteria {
       return this;
     }
 
-    public LogsUpdater removeAllFromType(List<javabot.model.Logs.Type> values) {
+    public LogsUpdater removeAllFromType(java.util.List<javabot.model.Logs.Type> values) {
       updateOperations.removeAll("type", values);
       return this;
     }
@@ -541,12 +404,12 @@ public class LogsCriteria {
       return this;
     }
 
-    public LogsUpdater addUpdated(String fieldExpr, org.joda.time.DateTime value, boolean addDups) {
+    public LogsUpdater addUpdated(org.joda.time.DateTime value, boolean addDups) {
       updateOperations.add("updated", value, addDups);
       return this;
     }
 
-    public LogsUpdater addAllToUpdated(List<org.joda.time.DateTime> values, boolean addDups) {
+    public LogsUpdater addAllToUpdated(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
       updateOperations.addAll("updated", values, addDups);
       return this;
     }
@@ -566,7 +429,7 @@ public class LogsCriteria {
       return this;
     }
 
-    public LogsUpdater removeAllFromUpdated(List<org.joda.time.DateTime> values) {
+    public LogsUpdater removeAllFromUpdated(java.util.List<org.joda.time.DateTime> values) {
       updateOperations.removeAll("updated", values);
       return this;
     }
@@ -600,12 +463,12 @@ public class LogsCriteria {
       return this;
     }
 
-    public LogsUpdater addUpperNick(String fieldExpr, java.lang.String value, boolean addDups) {
+    public LogsUpdater addUpperNick(java.lang.String value, boolean addDups) {
       updateOperations.add("upperNick", value, addDups);
       return this;
     }
 
-    public LogsUpdater addAllToUpperNick(List<java.lang.String> values, boolean addDups) {
+    public LogsUpdater addAllToUpperNick(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("upperNick", values, addDups);
       return this;
     }
@@ -625,7 +488,7 @@ public class LogsCriteria {
       return this;
     }
 
-    public LogsUpdater removeAllFromUpperNick(List<java.lang.String> values) {
+    public LogsUpdater removeAllFromUpperNick(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("upperNick", values);
       return this;
     }

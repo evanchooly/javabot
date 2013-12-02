@@ -2,9 +2,9 @@ package javabot.dao.util;
 
 import java.util.Date;
 
-import com.google.code.morphia.converters.DateConverter;
-import com.google.code.morphia.mapping.MappedField;
-import com.google.code.morphia.mapping.MappingException;
+import org.mongodb.morphia.converters.DateConverter;
+import org.mongodb.morphia.mapping.MappedField;
+import org.mongodb.morphia.mapping.MappingException;
 import org.joda.time.DateTime;
 
 public class DateTimeConverter extends DateConverter {

@@ -1,164 +1,72 @@
 package javabot.model.criteria;
 
-import com.antwerkz.critter.TypeSafeFieldEnd;
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.query.Criteria;
-import com.google.code.morphia.query.CriteriaContainer;
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryImpl;
-import com.google.code.morphia.query.UpdateOperations;
-import com.google.code.morphia.query.UpdateResults;
-import com.mongodb.WriteConcern;
-import com.mongodb.WriteResult;
-import java.util.List;
+import javabot.model.Shun;
 
+public class ShunCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Shun> {
+  private String prefix = "";
 
-public class ShunCriteria {
-  private Query<javabot.model.Shun> query;
-  private Datastore ds;
-
-  public Query<javabot.model.Shun> query() {
-    return query;
+  public ShunCriteria(org.mongodb.morphia.Datastore ds) {
+    super(ds, Shun.class);
   }
 
-  public ShunCriteria(Datastore ds) {
-    this.ds = ds;
-    query = ds.find(javabot.model.Shun.class);
+
+  public com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, org.joda.time.DateTime> expiry() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, org.joda.time.DateTime>(this, query, prefix + "expiry");
   }
 
-  public WriteResult delete() {
-     return ds.delete(query());
+  public org.mongodb.morphia.query.Criteria expiry(org.joda.time.DateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, org.joda.time.DateTime>(this, query, prefix + "expiry").equal(value);
   }
 
-  public WriteResult delete(WriteConcern wc) {
-     return ds.delete(query(), wc);
+  public com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, org.bson.types.ObjectId> id() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, org.bson.types.ObjectId>(this, query, prefix + "id");
   }
 
-  public CriteriaContainer or(Criteria... criteria) {
-    return query.or(criteria);
+  public org.mongodb.morphia.query.Criteria id(org.bson.types.ObjectId value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, org.bson.types.ObjectId>(this, query, prefix + "id").equal(value);
   }
 
-  public CriteriaContainer and(Criteria... criteria) {
-    return query.and(criteria);
+  public com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, java.lang.String> nick() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, java.lang.String>(this, query, prefix + "nick");
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Shun, org.joda.time.DateTime> expiry() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("expiry"));
+  public org.mongodb.morphia.query.Criteria nick(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, java.lang.String>(this, query, prefix + "nick").equal(value);
   }
 
-  public ShunCriteria expiry(org.joda.time.DateTime value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("expiry")).equal(value);
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, java.lang.String> upperNick() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, java.lang.String>(this, query, prefix + "upperNick");
   }
 
-  public ShunCriteria orderByExpiry() {
-    return orderByExpiry(true);
+  public org.mongodb.morphia.query.Criteria upperNick(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, java.lang.String>(this, query, prefix + "upperNick").equal(value);
   }
 
-  public ShunCriteria orderByExpiry(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "expiry");
-    return this;
-  }
-
-  public ShunCriteria distinctExpiry() {
-    ((QueryImpl) query).getCollection().distinct("expiry");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Shun, org.bson.types.ObjectId> id() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("id"));
-  }
-
-  public ShunCriteria id(org.bson.types.ObjectId value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
-    return this;
-  }
-
-  public ShunCriteria orderById() {
-    return orderById(true);
-  }
-
-  public ShunCriteria orderById(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "id");
-    return this;
-  }
-
-  public ShunCriteria distinctId() {
-    ((QueryImpl) query).getCollection().distinct("id");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Shun, java.lang.String> nick() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("nick"));
-  }
-
-  public ShunCriteria nick(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("nick")).equal(value);
-    return this;
-  }
-
-  public ShunCriteria orderByNick() {
-    return orderByNick(true);
-  }
-
-  public ShunCriteria orderByNick(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "nick");
-    return this;
-  }
-
-  public ShunCriteria distinctNick() {
-    ((QueryImpl) query).getCollection().distinct("nick");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Shun, java.lang.String> upperNick() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("upperNick"));
-  }
-
-  public ShunCriteria upperNick(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("upperNick")).equal(value);
-    return this;
-  }
-
-  public ShunCriteria orderByUpperNick() {
-    return orderByUpperNick(true);
-  }
-
-  public ShunCriteria orderByUpperNick(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "upperNick");
-    return this;
-  }
-
-  public ShunCriteria distinctUpperNick() {
-    ((QueryImpl) query).getCollection().distinct("upperNick");
-    return this;
-  }
 
   public ShunUpdater getUpdater() {
     return new ShunUpdater();
   }
 
   public class ShunUpdater {
-    UpdateOperations<javabot.model.Shun> updateOperations;
+    org.mongodb.morphia.query.UpdateOperations<Shun> updateOperations;
 
     public ShunUpdater() {
-      updateOperations = ds.createUpdateOperations(javabot.model.Shun.class);
+      updateOperations = ds.createUpdateOperations(Shun.class);
     }
 
-    public UpdateResults<javabot.model.Shun> update() {
+    public org.mongodb.morphia.query.UpdateResults<Shun> update() {
       return ds.update(query(), updateOperations, false);
     }
 
-    public UpdateResults<javabot.model.Shun> update(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<Shun> update(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, false, wc);
     }
 
-    public UpdateResults<javabot.model.Shun> upsert() {
+    public org.mongodb.morphia.query.UpdateResults<Shun> upsert() {
       return ds.update(query(), updateOperations, true);
     }
 
-    public UpdateResults<javabot.model.Shun> upsert(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<Shun> upsert(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, true, wc);
     }
 
@@ -177,12 +85,12 @@ public class ShunCriteria {
       return this;
     }
 
-    public ShunUpdater addExpiry(String fieldExpr, org.joda.time.DateTime value, boolean addDups) {
+    public ShunUpdater addExpiry(org.joda.time.DateTime value, boolean addDups) {
       updateOperations.add("expiry", value, addDups);
       return this;
     }
 
-    public ShunUpdater addAllToExpiry(List<org.joda.time.DateTime> values, boolean addDups) {
+    public ShunUpdater addAllToExpiry(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
       updateOperations.addAll("expiry", values, addDups);
       return this;
     }
@@ -202,7 +110,7 @@ public class ShunCriteria {
       return this;
     }
 
-    public ShunUpdater removeAllFromExpiry(List<org.joda.time.DateTime> values) {
+    public ShunUpdater removeAllFromExpiry(java.util.List<org.joda.time.DateTime> values) {
       updateOperations.removeAll("expiry", values);
       return this;
     }
@@ -236,12 +144,12 @@ public class ShunCriteria {
       return this;
     }
 
-    public ShunUpdater addId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+    public ShunUpdater addId(org.bson.types.ObjectId value, boolean addDups) {
       updateOperations.add("id", value, addDups);
       return this;
     }
 
-    public ShunUpdater addAllToId(List<org.bson.types.ObjectId> values, boolean addDups) {
+    public ShunUpdater addAllToId(java.util.List<org.bson.types.ObjectId> values, boolean addDups) {
       updateOperations.addAll("id", values, addDups);
       return this;
     }
@@ -261,7 +169,7 @@ public class ShunCriteria {
       return this;
     }
 
-    public ShunUpdater removeAllFromId(List<org.bson.types.ObjectId> values) {
+    public ShunUpdater removeAllFromId(java.util.List<org.bson.types.ObjectId> values) {
       updateOperations.removeAll("id", values);
       return this;
     }
@@ -295,12 +203,12 @@ public class ShunCriteria {
       return this;
     }
 
-    public ShunUpdater addNick(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ShunUpdater addNick(java.lang.String value, boolean addDups) {
       updateOperations.add("nick", value, addDups);
       return this;
     }
 
-    public ShunUpdater addAllToNick(List<java.lang.String> values, boolean addDups) {
+    public ShunUpdater addAllToNick(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("nick", values, addDups);
       return this;
     }
@@ -320,7 +228,7 @@ public class ShunCriteria {
       return this;
     }
 
-    public ShunUpdater removeAllFromNick(List<java.lang.String> values) {
+    public ShunUpdater removeAllFromNick(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("nick", values);
       return this;
     }
@@ -354,12 +262,12 @@ public class ShunCriteria {
       return this;
     }
 
-    public ShunUpdater addUpperNick(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ShunUpdater addUpperNick(java.lang.String value, boolean addDups) {
       updateOperations.add("upperNick", value, addDups);
       return this;
     }
 
-    public ShunUpdater addAllToUpperNick(List<java.lang.String> values, boolean addDups) {
+    public ShunUpdater addAllToUpperNick(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("upperNick", values, addDups);
       return this;
     }
@@ -379,7 +287,7 @@ public class ShunCriteria {
       return this;
     }
 
-    public ShunUpdater removeAllFromUpperNick(List<java.lang.String> values) {
+    public ShunUpdater removeAllFromUpperNick(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("upperNick", values);
       return this;
     }

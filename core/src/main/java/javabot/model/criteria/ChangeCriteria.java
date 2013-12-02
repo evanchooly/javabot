@@ -1,141 +1,64 @@
 package javabot.model.criteria;
 
-import com.antwerkz.critter.TypeSafeFieldEnd;
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.query.Criteria;
-import com.google.code.morphia.query.CriteriaContainer;
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryImpl;
-import com.google.code.morphia.query.UpdateOperations;
-import com.google.code.morphia.query.UpdateResults;
-import com.mongodb.WriteConcern;
-import com.mongodb.WriteResult;
-import java.util.List;
+import javabot.model.Change;
 
+public class ChangeCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Change> {
+  private String prefix = "";
 
-public class ChangeCriteria {
-  private Query<javabot.model.Change> query;
-  private Datastore ds;
-
-  public Query<javabot.model.Change> query() {
-    return query;
+  public ChangeCriteria(org.mongodb.morphia.Datastore ds) {
+    super(ds, Change.class);
   }
 
-  public ChangeCriteria(Datastore ds) {
-    this.ds = ds;
-    query = ds.find(javabot.model.Change.class);
+
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChangeCriteria, Change, org.joda.time.DateTime> changeDate() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChangeCriteria, Change, org.joda.time.DateTime>(this, query, prefix + "changeDate");
   }
 
-  public WriteResult delete() {
-     return ds.delete(query());
+  public org.mongodb.morphia.query.Criteria changeDate(org.joda.time.DateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChangeCriteria, Change, org.joda.time.DateTime>(this, query, prefix + "changeDate").equal(value);
   }
 
-  public WriteResult delete(WriteConcern wc) {
-     return ds.delete(query(), wc);
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChangeCriteria, Change, org.bson.types.ObjectId> id() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChangeCriteria, Change, org.bson.types.ObjectId>(this, query, prefix + "id");
   }
 
-  public CriteriaContainer or(Criteria... criteria) {
-    return query.or(criteria);
+  public org.mongodb.morphia.query.Criteria id(org.bson.types.ObjectId value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChangeCriteria, Change, org.bson.types.ObjectId>(this, query, prefix + "id").equal(value);
   }
 
-  public CriteriaContainer and(Criteria... criteria) {
-    return query.and(criteria);
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChangeCriteria, Change, java.lang.String> message() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChangeCriteria, Change, java.lang.String>(this, query, prefix + "message");
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Change, org.joda.time.DateTime> changeDate() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("changeDate"));
+  public org.mongodb.morphia.query.Criteria message(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChangeCriteria, Change, java.lang.String>(this, query, prefix + "message").equal(value);
   }
 
-  public ChangeCriteria changeDate(org.joda.time.DateTime value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("changeDate")).equal(value);
-    return this;
-  }
-
-  public ChangeCriteria orderByChangeDate() {
-    return orderByChangeDate(true);
-  }
-
-  public ChangeCriteria orderByChangeDate(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "changeDate");
-    return this;
-  }
-
-  public ChangeCriteria distinctChangeDate() {
-    ((QueryImpl) query).getCollection().distinct("changeDate");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Change, org.bson.types.ObjectId> id() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("id"));
-  }
-
-  public ChangeCriteria id(org.bson.types.ObjectId value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
-    return this;
-  }
-
-  public ChangeCriteria orderById() {
-    return orderById(true);
-  }
-
-  public ChangeCriteria orderById(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "id");
-    return this;
-  }
-
-  public ChangeCriteria distinctId() {
-    ((QueryImpl) query).getCollection().distinct("id");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Change, java.lang.String> message() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("message"));
-  }
-
-  public ChangeCriteria message(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("message")).equal(value);
-    return this;
-  }
-
-  public ChangeCriteria orderByMessage() {
-    return orderByMessage(true);
-  }
-
-  public ChangeCriteria orderByMessage(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "message");
-    return this;
-  }
-
-  public ChangeCriteria distinctMessage() {
-    ((QueryImpl) query).getCollection().distinct("message");
-    return this;
-  }
 
   public ChangeUpdater getUpdater() {
     return new ChangeUpdater();
   }
 
   public class ChangeUpdater {
-    UpdateOperations<javabot.model.Change> updateOperations;
+    org.mongodb.morphia.query.UpdateOperations<Change> updateOperations;
 
     public ChangeUpdater() {
-      updateOperations = ds.createUpdateOperations(javabot.model.Change.class);
+      updateOperations = ds.createUpdateOperations(Change.class);
     }
 
-    public UpdateResults<javabot.model.Change> update() {
+    public org.mongodb.morphia.query.UpdateResults<Change> update() {
       return ds.update(query(), updateOperations, false);
     }
 
-    public UpdateResults<javabot.model.Change> update(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<Change> update(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, false, wc);
     }
 
-    public UpdateResults<javabot.model.Change> upsert() {
+    public org.mongodb.morphia.query.UpdateResults<Change> upsert() {
       return ds.update(query(), updateOperations, true);
     }
 
-    public UpdateResults<javabot.model.Change> upsert(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<Change> upsert(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, true, wc);
     }
 
@@ -154,12 +77,12 @@ public class ChangeCriteria {
       return this;
     }
 
-    public ChangeUpdater addChangeDate(String fieldExpr, org.joda.time.DateTime value, boolean addDups) {
+    public ChangeUpdater addChangeDate(org.joda.time.DateTime value, boolean addDups) {
       updateOperations.add("changeDate", value, addDups);
       return this;
     }
 
-    public ChangeUpdater addAllToChangeDate(List<org.joda.time.DateTime> values, boolean addDups) {
+    public ChangeUpdater addAllToChangeDate(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
       updateOperations.addAll("changeDate", values, addDups);
       return this;
     }
@@ -179,7 +102,7 @@ public class ChangeCriteria {
       return this;
     }
 
-    public ChangeUpdater removeAllFromChangeDate(List<org.joda.time.DateTime> values) {
+    public ChangeUpdater removeAllFromChangeDate(java.util.List<org.joda.time.DateTime> values) {
       updateOperations.removeAll("changeDate", values);
       return this;
     }
@@ -213,12 +136,12 @@ public class ChangeCriteria {
       return this;
     }
 
-    public ChangeUpdater addId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+    public ChangeUpdater addId(org.bson.types.ObjectId value, boolean addDups) {
       updateOperations.add("id", value, addDups);
       return this;
     }
 
-    public ChangeUpdater addAllToId(List<org.bson.types.ObjectId> values, boolean addDups) {
+    public ChangeUpdater addAllToId(java.util.List<org.bson.types.ObjectId> values, boolean addDups) {
       updateOperations.addAll("id", values, addDups);
       return this;
     }
@@ -238,7 +161,7 @@ public class ChangeCriteria {
       return this;
     }
 
-    public ChangeUpdater removeAllFromId(List<org.bson.types.ObjectId> values) {
+    public ChangeUpdater removeAllFromId(java.util.List<org.bson.types.ObjectId> values) {
       updateOperations.removeAll("id", values);
       return this;
     }
@@ -272,12 +195,12 @@ public class ChangeCriteria {
       return this;
     }
 
-    public ChangeUpdater addMessage(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ChangeUpdater addMessage(java.lang.String value, boolean addDups) {
       updateOperations.add("message", value, addDups);
       return this;
     }
 
-    public ChangeUpdater addAllToMessage(List<java.lang.String> values, boolean addDups) {
+    public ChangeUpdater addAllToMessage(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("message", values, addDups);
       return this;
     }
@@ -297,7 +220,7 @@ public class ChangeCriteria {
       return this;
     }
 
-    public ChangeUpdater removeAllFromMessage(List<java.lang.String> values) {
+    public ChangeUpdater removeAllFromMessage(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("message", values);
       return this;
     }

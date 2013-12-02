@@ -31,19 +31,14 @@ public class KarmaOperation extends BotOperation {
             String message = event.getMessage();
             final IrcUser sender = event.getSender();
             final String channel = event.getChannel();
-            int operationPointer = message.indexOf("++");
-            boolean increment = true;
-            if (operationPointer == -1) {
-                operationPointer = message.indexOf("--");
-                increment = false;
-                if (operationPointer == -1) {
-                    // no karma inc/dec, move on
-                    return responses;
-                }
+            boolean increment = message.endsWith("++");
+            boolean decrement = !increment && message.endsWith("--");
+            if (!(increment || decrement) || message.length() <= 2) {
+                return responses;
             }
             final String nick;
             try {
-                nick = message.substring(0, operationPointer).trim().toLowerCase();
+                nick = message.substring(0, message.length() - 2).trim().toLowerCase();
             } catch (StringIndexOutOfBoundsException e) {
                 log.info("message = " + message, e);
                 return responses;
@@ -61,6 +56,7 @@ public class KarmaOperation extends BotOperation {
                             responses.add(new Message(channel, event, "You can't increment your own karma."));
                         }
                         increment = false;
+                        decrement = true;
                     }
                     Karma karma = dao.find(nick);
                     if (karma == null) {

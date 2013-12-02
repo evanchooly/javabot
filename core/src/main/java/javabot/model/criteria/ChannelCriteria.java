@@ -1,210 +1,88 @@
 package javabot.model.criteria;
 
-import com.antwerkz.critter.TypeSafeFieldEnd;
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.query.Criteria;
-import com.google.code.morphia.query.CriteriaContainer;
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryImpl;
-import com.google.code.morphia.query.UpdateOperations;
-import com.google.code.morphia.query.UpdateResults;
-import com.mongodb.WriteConcern;
-import com.mongodb.WriteResult;
-import java.util.List;
+import javabot.model.Channel;
 
+public class ChannelCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Channel> {
+  private String prefix = "";
 
-public class ChannelCriteria {
-  private Query<javabot.model.Channel> query;
-  private Datastore ds;
-
-  public Query<javabot.model.Channel> query() {
-    return query;
+  public ChannelCriteria(org.mongodb.morphia.Datastore ds) {
+    super(ds, Channel.class);
   }
 
-  public ChannelCriteria(Datastore ds) {
-    this.ds = ds;
-    query = ds.find(javabot.model.Channel.class);
+
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, org.bson.types.ObjectId> id() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, org.bson.types.ObjectId>(this, query, prefix + "id");
   }
 
-  public WriteResult delete() {
-     return ds.delete(query());
+  public org.mongodb.morphia.query.Criteria id(org.bson.types.ObjectId value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, org.bson.types.ObjectId>(this, query, prefix + "id").equal(value);
   }
 
-  public WriteResult delete(WriteConcern wc) {
-     return ds.delete(query(), wc);
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.lang.String> key() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.lang.String>(this, query, prefix + "key");
   }
 
-  public CriteriaContainer or(Criteria... criteria) {
-    return query.or(criteria);
+  public org.mongodb.morphia.query.Criteria key(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.lang.String>(this, query, prefix + "key").equal(value);
   }
 
-  public CriteriaContainer and(Criteria... criteria) {
-    return query.and(criteria);
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.lang.Boolean> logged() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.lang.Boolean>(this, query, prefix + "logged");
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Channel, org.bson.types.ObjectId> id() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("id"));
+  public org.mongodb.morphia.query.Criteria logged(java.lang.Boolean value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.lang.Boolean>(this, query, prefix + "logged").equal(value);
   }
 
-  public ChannelCriteria id(org.bson.types.ObjectId value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.lang.String> name() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.lang.String>(this, query, prefix + "name");
   }
 
-  public ChannelCriteria orderById() {
-    return orderById(true);
+  public org.mongodb.morphia.query.Criteria name(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.lang.String>(this, query, prefix + "name").equal(value);
   }
 
-  public ChannelCriteria orderById(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "id");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, org.joda.time.DateTime> updated() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, org.joda.time.DateTime>(this, query, prefix + "updated");
   }
 
-  public ChannelCriteria distinctId() {
-    ((QueryImpl) query).getCollection().distinct("id");
-    return this;
+  public org.mongodb.morphia.query.Criteria updated(org.joda.time.DateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, org.joda.time.DateTime>(this, query, prefix + "updated").equal(value);
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Channel, java.lang.String> key() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("key"));
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.lang.String> upperName() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.lang.String>(this, query, prefix + "upperName");
   }
 
-  public ChannelCriteria key(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("key")).equal(value);
-    return this;
+  public org.mongodb.morphia.query.Criteria upperName(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.lang.String>(this, query, prefix + "upperName").equal(value);
   }
 
-  public ChannelCriteria orderByKey() {
-    return orderByKey(true);
-  }
-
-  public ChannelCriteria orderByKey(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "key");
-    return this;
-  }
-
-  public ChannelCriteria distinctKey() {
-    ((QueryImpl) query).getCollection().distinct("key");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Channel, java.lang.Boolean> logged() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("logged"));
-  }
-
-  public ChannelCriteria logged(java.lang.Boolean value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("logged")).equal(value);
-    return this;
-  }
-
-  public ChannelCriteria orderByLogged() {
-    return orderByLogged(true);
-  }
-
-  public ChannelCriteria orderByLogged(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "logged");
-    return this;
-  }
-
-  public ChannelCriteria distinctLogged() {
-    ((QueryImpl) query).getCollection().distinct("logged");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Channel, java.lang.String> name() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("name"));
-  }
-
-  public ChannelCriteria name(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("name")).equal(value);
-    return this;
-  }
-
-  public ChannelCriteria orderByName() {
-    return orderByName(true);
-  }
-
-  public ChannelCriteria orderByName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "name");
-    return this;
-  }
-
-  public ChannelCriteria distinctName() {
-    ((QueryImpl) query).getCollection().distinct("name");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Channel, org.joda.time.DateTime> updated() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("updated"));
-  }
-
-  public ChannelCriteria updated(org.joda.time.DateTime value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("updated")).equal(value);
-    return this;
-  }
-
-  public ChannelCriteria orderByUpdated() {
-    return orderByUpdated(true);
-  }
-
-  public ChannelCriteria orderByUpdated(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "updated");
-    return this;
-  }
-
-  public ChannelCriteria distinctUpdated() {
-    ((QueryImpl) query).getCollection().distinct("updated");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Channel, java.lang.String> upperName() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("upperName"));
-  }
-
-  public ChannelCriteria upperName(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("upperName")).equal(value);
-    return this;
-  }
-
-  public ChannelCriteria orderByUpperName() {
-    return orderByUpperName(true);
-  }
-
-  public ChannelCriteria orderByUpperName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "upperName");
-    return this;
-  }
-
-  public ChannelCriteria distinctUpperName() {
-    ((QueryImpl) query).getCollection().distinct("upperName");
-    return this;
-  }
 
   public ChannelUpdater getUpdater() {
     return new ChannelUpdater();
   }
 
   public class ChannelUpdater {
-    UpdateOperations<javabot.model.Channel> updateOperations;
+    org.mongodb.morphia.query.UpdateOperations<Channel> updateOperations;
 
     public ChannelUpdater() {
-      updateOperations = ds.createUpdateOperations(javabot.model.Channel.class);
+      updateOperations = ds.createUpdateOperations(Channel.class);
     }
 
-    public UpdateResults<javabot.model.Channel> update() {
+    public org.mongodb.morphia.query.UpdateResults<Channel> update() {
       return ds.update(query(), updateOperations, false);
     }
 
-    public UpdateResults<javabot.model.Channel> update(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<Channel> update(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, false, wc);
     }
 
-    public UpdateResults<javabot.model.Channel> upsert() {
+    public org.mongodb.morphia.query.UpdateResults<Channel> upsert() {
       return ds.update(query(), updateOperations, true);
     }
 
-    public UpdateResults<javabot.model.Channel> upsert(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<Channel> upsert(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, true, wc);
     }
 
@@ -223,12 +101,12 @@ public class ChannelCriteria {
       return this;
     }
 
-    public ChannelUpdater addId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+    public ChannelUpdater addId(org.bson.types.ObjectId value, boolean addDups) {
       updateOperations.add("id", value, addDups);
       return this;
     }
 
-    public ChannelUpdater addAllToId(List<org.bson.types.ObjectId> values, boolean addDups) {
+    public ChannelUpdater addAllToId(java.util.List<org.bson.types.ObjectId> values, boolean addDups) {
       updateOperations.addAll("id", values, addDups);
       return this;
     }
@@ -248,7 +126,7 @@ public class ChannelCriteria {
       return this;
     }
 
-    public ChannelUpdater removeAllFromId(List<org.bson.types.ObjectId> values) {
+    public ChannelUpdater removeAllFromId(java.util.List<org.bson.types.ObjectId> values) {
       updateOperations.removeAll("id", values);
       return this;
     }
@@ -282,12 +160,12 @@ public class ChannelCriteria {
       return this;
     }
 
-    public ChannelUpdater addKey(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ChannelUpdater addKey(java.lang.String value, boolean addDups) {
       updateOperations.add("key", value, addDups);
       return this;
     }
 
-    public ChannelUpdater addAllToKey(List<java.lang.String> values, boolean addDups) {
+    public ChannelUpdater addAllToKey(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("key", values, addDups);
       return this;
     }
@@ -307,7 +185,7 @@ public class ChannelCriteria {
       return this;
     }
 
-    public ChannelUpdater removeAllFromKey(List<java.lang.String> values) {
+    public ChannelUpdater removeAllFromKey(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("key", values);
       return this;
     }
@@ -341,12 +219,12 @@ public class ChannelCriteria {
       return this;
     }
 
-    public ChannelUpdater addLogged(String fieldExpr, java.lang.Boolean value, boolean addDups) {
+    public ChannelUpdater addLogged(java.lang.Boolean value, boolean addDups) {
       updateOperations.add("logged", value, addDups);
       return this;
     }
 
-    public ChannelUpdater addAllToLogged(List<java.lang.Boolean> values, boolean addDups) {
+    public ChannelUpdater addAllToLogged(java.util.List<java.lang.Boolean> values, boolean addDups) {
       updateOperations.addAll("logged", values, addDups);
       return this;
     }
@@ -366,7 +244,7 @@ public class ChannelCriteria {
       return this;
     }
 
-    public ChannelUpdater removeAllFromLogged(List<java.lang.Boolean> values) {
+    public ChannelUpdater removeAllFromLogged(java.util.List<java.lang.Boolean> values) {
       updateOperations.removeAll("logged", values);
       return this;
     }
@@ -400,12 +278,12 @@ public class ChannelCriteria {
       return this;
     }
 
-    public ChannelUpdater addName(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ChannelUpdater addName(java.lang.String value, boolean addDups) {
       updateOperations.add("name", value, addDups);
       return this;
     }
 
-    public ChannelUpdater addAllToName(List<java.lang.String> values, boolean addDups) {
+    public ChannelUpdater addAllToName(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("name", values, addDups);
       return this;
     }
@@ -425,7 +303,7 @@ public class ChannelCriteria {
       return this;
     }
 
-    public ChannelUpdater removeAllFromName(List<java.lang.String> values) {
+    public ChannelUpdater removeAllFromName(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("name", values);
       return this;
     }
@@ -459,12 +337,12 @@ public class ChannelCriteria {
       return this;
     }
 
-    public ChannelUpdater addUpdated(String fieldExpr, org.joda.time.DateTime value, boolean addDups) {
+    public ChannelUpdater addUpdated(org.joda.time.DateTime value, boolean addDups) {
       updateOperations.add("updated", value, addDups);
       return this;
     }
 
-    public ChannelUpdater addAllToUpdated(List<org.joda.time.DateTime> values, boolean addDups) {
+    public ChannelUpdater addAllToUpdated(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
       updateOperations.addAll("updated", values, addDups);
       return this;
     }
@@ -484,7 +362,7 @@ public class ChannelCriteria {
       return this;
     }
 
-    public ChannelUpdater removeAllFromUpdated(List<org.joda.time.DateTime> values) {
+    public ChannelUpdater removeAllFromUpdated(java.util.List<org.joda.time.DateTime> values) {
       updateOperations.removeAll("updated", values);
       return this;
     }
@@ -518,12 +396,12 @@ public class ChannelCriteria {
       return this;
     }
 
-    public ChannelUpdater addUpperName(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ChannelUpdater addUpperName(java.lang.String value, boolean addDups) {
       updateOperations.add("upperName", value, addDups);
       return this;
     }
 
-    public ChannelUpdater addAllToUpperName(List<java.lang.String> values, boolean addDups) {
+    public ChannelUpdater addAllToUpperName(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("upperName", values, addDups);
       return this;
     }
@@ -543,7 +421,7 @@ public class ChannelCriteria {
       return this;
     }
 
-    public ChannelUpdater removeAllFromUpperName(List<java.lang.String> values) {
+    public ChannelUpdater removeAllFromUpperName(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("upperName", values);
       return this;
     }
