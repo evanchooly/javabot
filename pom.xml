@@ -94,12 +94,12 @@
                 <version>${slf4j.version}</version>
             </dependency>
 
-            <dependency>
+            <!--<dependency>
                 <groupId>net.sourceforge.nekohtml</groupId>
                 <artifactId>nekohtml</artifactId>
                 <version>1.9.18</version>
             </dependency>
-
+                -->
             <dependency>
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
