@@ -2,8 +2,8 @@ package javabot.dao;
 
 import java.util.List;
 
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.query.Query;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.Query;
 import com.google.inject.Inject;
 import javabot.dao.util.EntityNotFoundException;
 import javabot.model.Persistent;

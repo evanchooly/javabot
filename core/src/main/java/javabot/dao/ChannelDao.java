@@ -3,8 +3,8 @@ package javabot.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryImpl;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.QueryImpl;
 import javabot.Activity;
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;

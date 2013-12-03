@@ -1,5 +1,8 @@
 package javabot.operations;
 
+import java.util.Date;
+import javax.inject.Inject;
+
 import javabot.BaseTest;
 import javabot.IrcUser;
 import javabot.dao.ChangeDao;
@@ -7,9 +10,6 @@ import javabot.dao.KarmaDao;
 import javabot.model.Karma;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import javax.inject.Inject;
-import java.util.Date;
 
 @Test(groups = {"operations"})
 public class KarmaOperationTest extends BaseOperationTest {
@@ -56,6 +56,7 @@ public class KarmaOperationTest extends BaseOperationTest {
         karmaDao.delete(karmaDao.find(target).getId());
     }
 
+    @Test(enabled = false)  //  this feature breaks the admin operations
     public void noncontiguousNameAddKarmaWithComment() {
         final String target = "foo " + new Date().getTime();
         final int karma = getKarma(new IrcUser(target, target, "localhost")) + 1;

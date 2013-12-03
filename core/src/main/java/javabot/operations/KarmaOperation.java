@@ -1,5 +1,9 @@
 package javabot.operations;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+
 import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
 import javabot.IrcUser;
@@ -39,27 +43,22 @@ public class KarmaOperation extends BotOperation {
             String message = event.getMessage();
             final IrcUser sender = event.getSender();
             final String channel = event.getChannel();
-            int operationPointer = message.indexOf("++");
-            boolean increment = true;
-            if (operationPointer == -1) {
-                operationPointer = message.indexOf("--");
-                increment = false;
-                if (operationPointer == -1) {
-                    // no karma inc/dec, move on
-                    return responses;
-                }
+            boolean increment = message.endsWith("++");
+            boolean decrement = !increment && message.endsWith("--");
+            if (!(increment || decrement) || message.length() <= 2) {
+                return responses;
             }
             final String nick;
             try {
-                nick = message.substring(0, operationPointer).trim().toLowerCase();
+                nick = message.substring(0, message.length() - 2).trim().toLowerCase();
             } catch (StringIndexOutOfBoundsException e) {
-                System.out.println("message = " + message);
-                throw e;
+                log.info("message = " + message, e);
+                return responses;
             }
             if (!channel.startsWith("#")) {
                 responses.add(new Message(channel, event, "Sorry, karma changes are not allowed in private messages."));
             }
-            if (responses.size() == 0) {
+            if (responses.isEmpty()) {
                 if (throttler.isThrottled(new KarmaInfo(sender, nick))) {
                     responses.add(new Message(channel, event, "Rest those fingers, Tex"));
                 } else {
@@ -70,6 +69,7 @@ public class KarmaOperation extends BotOperation {
                                     formatMessage(sender.getNick(), changeOwnKarmaMessages)));
                         }
                         increment = false;
+                        decrement = true;
                     }
                     Karma karma = dao.find(nick);
                     if (karma == null) {

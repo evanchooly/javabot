@@ -1,279 +1,112 @@
 package javabot.model.criteria;
 
-import com.antwerkz.critter.TypeSafeFieldEnd;
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.query.Criteria;
-import com.google.code.morphia.query.CriteriaContainer;
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryImpl;
-import com.google.code.morphia.query.UpdateOperations;
-import com.google.code.morphia.query.UpdateResults;
-import com.mongodb.WriteConcern;
-import com.mongodb.WriteResult;
-import java.util.List;
+import javabot.model.Factoid;
 
+public class FactoidCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Factoid> {
+  private String prefix = "";
 
-public class FactoidCriteria {
-  private Query<javabot.model.Factoid> query;
-  private Datastore ds;
-
-  public Query<javabot.model.Factoid> query() {
-    return query;
+  public FactoidCriteria(org.mongodb.morphia.Datastore ds) {
+    super(ds, Factoid.class);
   }
 
-  public FactoidCriteria(Datastore ds) {
-    this.ds = ds;
-    query = ds.find(javabot.model.Factoid.class);
+
+  public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, org.bson.types.ObjectId> id() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, org.bson.types.ObjectId>(this, query, prefix + "id");
   }
 
-  public WriteResult delete() {
-     return ds.delete(query());
+  public org.mongodb.morphia.query.Criteria id(org.bson.types.ObjectId value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, org.bson.types.ObjectId>(this, query, prefix + "id").equal(value);
   }
 
-  public WriteResult delete(WriteConcern wc) {
-     return ds.delete(query(), wc);
+  public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, org.joda.time.DateTime> lastUsed() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, org.joda.time.DateTime>(this, query, prefix + "lastUsed");
   }
 
-  public CriteriaContainer or(Criteria... criteria) {
-    return query.or(criteria);
+  public org.mongodb.morphia.query.Criteria lastUsed(org.joda.time.DateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, org.joda.time.DateTime>(this, query, prefix + "lastUsed").equal(value);
   }
 
-  public CriteriaContainer and(Criteria... criteria) {
-    return query.and(criteria);
+  public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.Boolean> locked() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.Boolean>(this, query, prefix + "locked");
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Factoid, org.bson.types.ObjectId> id() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("id"));
+  public org.mongodb.morphia.query.Criteria locked(java.lang.Boolean value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.Boolean>(this, query, prefix + "locked").equal(value);
   }
 
-  public FactoidCriteria id(org.bson.types.ObjectId value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String> name() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String>(this, query, prefix + "name");
   }
 
-  public FactoidCriteria orderById() {
-    return orderById(true);
+  public org.mongodb.morphia.query.Criteria name(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String>(this, query, prefix + "name").equal(value);
   }
 
-  public FactoidCriteria orderById(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "id");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, org.joda.time.DateTime> updated() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, org.joda.time.DateTime>(this, query, prefix + "updated");
   }
 
-  public FactoidCriteria distinctId() {
-    ((QueryImpl) query).getCollection().distinct("id");
-    return this;
+  public org.mongodb.morphia.query.Criteria updated(org.joda.time.DateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, org.joda.time.DateTime>(this, query, prefix + "updated").equal(value);
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Factoid, org.joda.time.DateTime> lastUsed() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("lastUsed"));
+  public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String> upperName() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String>(this, query, prefix + "upperName");
   }
 
-  public FactoidCriteria lastUsed(org.joda.time.DateTime value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("lastUsed")).equal(value);
-    return this;
+  public org.mongodb.morphia.query.Criteria upperName(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String>(this, query, prefix + "upperName").equal(value);
   }
 
-  public FactoidCriteria orderByLastUsed() {
-    return orderByLastUsed(true);
+  public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String> upperUserName() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String>(this, query, prefix + "upperUserName");
   }
 
-  public FactoidCriteria orderByLastUsed(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "lastUsed");
-    return this;
+  public org.mongodb.morphia.query.Criteria upperUserName(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String>(this, query, prefix + "upperUserName").equal(value);
   }
 
-  public FactoidCriteria distinctLastUsed() {
-    ((QueryImpl) query).getCollection().distinct("lastUsed");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String> userName() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String>(this, query, prefix + "userName");
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Factoid, java.lang.Boolean> locked() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("locked"));
+  public org.mongodb.morphia.query.Criteria userName(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String>(this, query, prefix + "userName").equal(value);
   }
 
-  public FactoidCriteria locked(java.lang.Boolean value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("locked")).equal(value);
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String> value() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String>(this, query, prefix + "value");
   }
 
-  public FactoidCriteria orderByLocked() {
-    return orderByLocked(true);
+  public org.mongodb.morphia.query.Criteria value(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String>(this, query, prefix + "value").equal(value);
   }
 
-  public FactoidCriteria orderByLocked(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "locked");
-    return this;
-  }
-
-  public FactoidCriteria distinctLocked() {
-    ((QueryImpl) query).getCollection().distinct("locked");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Factoid, java.lang.String> name() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("name"));
-  }
-
-  public FactoidCriteria name(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("name")).equal(value);
-    return this;
-  }
-
-  public FactoidCriteria orderByName() {
-    return orderByName(true);
-  }
-
-  public FactoidCriteria orderByName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "name");
-    return this;
-  }
-
-  public FactoidCriteria distinctName() {
-    ((QueryImpl) query).getCollection().distinct("name");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Factoid, org.joda.time.DateTime> updated() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("updated"));
-  }
-
-  public FactoidCriteria updated(org.joda.time.DateTime value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("updated")).equal(value);
-    return this;
-  }
-
-  public FactoidCriteria orderByUpdated() {
-    return orderByUpdated(true);
-  }
-
-  public FactoidCriteria orderByUpdated(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "updated");
-    return this;
-  }
-
-  public FactoidCriteria distinctUpdated() {
-    ((QueryImpl) query).getCollection().distinct("updated");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Factoid, java.lang.String> upperName() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("upperName"));
-  }
-
-  public FactoidCriteria upperName(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("upperName")).equal(value);
-    return this;
-  }
-
-  public FactoidCriteria orderByUpperName() {
-    return orderByUpperName(true);
-  }
-
-  public FactoidCriteria orderByUpperName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "upperName");
-    return this;
-  }
-
-  public FactoidCriteria distinctUpperName() {
-    ((QueryImpl) query).getCollection().distinct("upperName");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Factoid, java.lang.String> upperUserName() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("upperUserName"));
-  }
-
-  public FactoidCriteria upperUserName(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("upperUserName")).equal(value);
-    return this;
-  }
-
-  public FactoidCriteria orderByUpperUserName() {
-    return orderByUpperUserName(true);
-  }
-
-  public FactoidCriteria orderByUpperUserName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "upperUserName");
-    return this;
-  }
-
-  public FactoidCriteria distinctUpperUserName() {
-    ((QueryImpl) query).getCollection().distinct("upperUserName");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Factoid, java.lang.String> userName() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("userName"));
-  }
-
-  public FactoidCriteria userName(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("userName")).equal(value);
-    return this;
-  }
-
-  public FactoidCriteria orderByUserName() {
-    return orderByUserName(true);
-  }
-
-  public FactoidCriteria orderByUserName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "userName");
-    return this;
-  }
-
-  public FactoidCriteria distinctUserName() {
-    ((QueryImpl) query).getCollection().distinct("userName");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Factoid, java.lang.String> value() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("value"));
-  }
-
-  public FactoidCriteria value(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("value")).equal(value);
-    return this;
-  }
-
-  public FactoidCriteria orderByValue() {
-    return orderByValue(true);
-  }
-
-  public FactoidCriteria orderByValue(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "value");
-    return this;
-  }
-
-  public FactoidCriteria distinctValue() {
-    ((QueryImpl) query).getCollection().distinct("value");
-    return this;
-  }
 
   public FactoidUpdater getUpdater() {
     return new FactoidUpdater();
   }
 
   public class FactoidUpdater {
-    UpdateOperations<javabot.model.Factoid> updateOperations;
+    org.mongodb.morphia.query.UpdateOperations<Factoid> updateOperations;
 
     public FactoidUpdater() {
-      updateOperations = ds.createUpdateOperations(javabot.model.Factoid.class);
+      updateOperations = ds.createUpdateOperations(Factoid.class);
     }
 
-    public UpdateResults<javabot.model.Factoid> update() {
+    public org.mongodb.morphia.query.UpdateResults<Factoid> update() {
       return ds.update(query(), updateOperations, false);
     }
 
-    public UpdateResults<javabot.model.Factoid> update(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<Factoid> update(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, false, wc);
     }
 
-    public UpdateResults<javabot.model.Factoid> upsert() {
+    public org.mongodb.morphia.query.UpdateResults<Factoid> upsert() {
       return ds.update(query(), updateOperations, true);
     }
 
-    public UpdateResults<javabot.model.Factoid> upsert(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<Factoid> upsert(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, true, wc);
     }
 
@@ -292,12 +125,12 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater addId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+    public FactoidUpdater addId(org.bson.types.ObjectId value, boolean addDups) {
       updateOperations.add("id", value, addDups);
       return this;
     }
 
-    public FactoidUpdater addAllToId(List<org.bson.types.ObjectId> values, boolean addDups) {
+    public FactoidUpdater addAllToId(java.util.List<org.bson.types.ObjectId> values, boolean addDups) {
       updateOperations.addAll("id", values, addDups);
       return this;
     }
@@ -317,7 +150,7 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater removeAllFromId(List<org.bson.types.ObjectId> values) {
+    public FactoidUpdater removeAllFromId(java.util.List<org.bson.types.ObjectId> values) {
       updateOperations.removeAll("id", values);
       return this;
     }
@@ -351,12 +184,12 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater addLastUsed(String fieldExpr, org.joda.time.DateTime value, boolean addDups) {
+    public FactoidUpdater addLastUsed(org.joda.time.DateTime value, boolean addDups) {
       updateOperations.add("lastUsed", value, addDups);
       return this;
     }
 
-    public FactoidUpdater addAllToLastUsed(List<org.joda.time.DateTime> values, boolean addDups) {
+    public FactoidUpdater addAllToLastUsed(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
       updateOperations.addAll("lastUsed", values, addDups);
       return this;
     }
@@ -376,7 +209,7 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater removeAllFromLastUsed(List<org.joda.time.DateTime> values) {
+    public FactoidUpdater removeAllFromLastUsed(java.util.List<org.joda.time.DateTime> values) {
       updateOperations.removeAll("lastUsed", values);
       return this;
     }
@@ -410,12 +243,12 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater addLocked(String fieldExpr, java.lang.Boolean value, boolean addDups) {
+    public FactoidUpdater addLocked(java.lang.Boolean value, boolean addDups) {
       updateOperations.add("locked", value, addDups);
       return this;
     }
 
-    public FactoidUpdater addAllToLocked(List<java.lang.Boolean> values, boolean addDups) {
+    public FactoidUpdater addAllToLocked(java.util.List<java.lang.Boolean> values, boolean addDups) {
       updateOperations.addAll("locked", values, addDups);
       return this;
     }
@@ -435,7 +268,7 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater removeAllFromLocked(List<java.lang.Boolean> values) {
+    public FactoidUpdater removeAllFromLocked(java.util.List<java.lang.Boolean> values) {
       updateOperations.removeAll("locked", values);
       return this;
     }
@@ -469,12 +302,12 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater addName(String fieldExpr, java.lang.String value, boolean addDups) {
+    public FactoidUpdater addName(java.lang.String value, boolean addDups) {
       updateOperations.add("name", value, addDups);
       return this;
     }
 
-    public FactoidUpdater addAllToName(List<java.lang.String> values, boolean addDups) {
+    public FactoidUpdater addAllToName(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("name", values, addDups);
       return this;
     }
@@ -494,7 +327,7 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater removeAllFromName(List<java.lang.String> values) {
+    public FactoidUpdater removeAllFromName(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("name", values);
       return this;
     }
@@ -528,12 +361,12 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater addUpdated(String fieldExpr, org.joda.time.DateTime value, boolean addDups) {
+    public FactoidUpdater addUpdated(org.joda.time.DateTime value, boolean addDups) {
       updateOperations.add("updated", value, addDups);
       return this;
     }
 
-    public FactoidUpdater addAllToUpdated(List<org.joda.time.DateTime> values, boolean addDups) {
+    public FactoidUpdater addAllToUpdated(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
       updateOperations.addAll("updated", values, addDups);
       return this;
     }
@@ -553,7 +386,7 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater removeAllFromUpdated(List<org.joda.time.DateTime> values) {
+    public FactoidUpdater removeAllFromUpdated(java.util.List<org.joda.time.DateTime> values) {
       updateOperations.removeAll("updated", values);
       return this;
     }
@@ -587,12 +420,12 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater addUpperName(String fieldExpr, java.lang.String value, boolean addDups) {
+    public FactoidUpdater addUpperName(java.lang.String value, boolean addDups) {
       updateOperations.add("upperName", value, addDups);
       return this;
     }
 
-    public FactoidUpdater addAllToUpperName(List<java.lang.String> values, boolean addDups) {
+    public FactoidUpdater addAllToUpperName(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("upperName", values, addDups);
       return this;
     }
@@ -612,7 +445,7 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater removeAllFromUpperName(List<java.lang.String> values) {
+    public FactoidUpdater removeAllFromUpperName(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("upperName", values);
       return this;
     }
@@ -646,12 +479,12 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater addUpperUserName(String fieldExpr, java.lang.String value, boolean addDups) {
+    public FactoidUpdater addUpperUserName(java.lang.String value, boolean addDups) {
       updateOperations.add("upperUserName", value, addDups);
       return this;
     }
 
-    public FactoidUpdater addAllToUpperUserName(List<java.lang.String> values, boolean addDups) {
+    public FactoidUpdater addAllToUpperUserName(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("upperUserName", values, addDups);
       return this;
     }
@@ -671,7 +504,7 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater removeAllFromUpperUserName(List<java.lang.String> values) {
+    public FactoidUpdater removeAllFromUpperUserName(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("upperUserName", values);
       return this;
     }
@@ -705,12 +538,12 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater addUserName(String fieldExpr, java.lang.String value, boolean addDups) {
+    public FactoidUpdater addUserName(java.lang.String value, boolean addDups) {
       updateOperations.add("userName", value, addDups);
       return this;
     }
 
-    public FactoidUpdater addAllToUserName(List<java.lang.String> values, boolean addDups) {
+    public FactoidUpdater addAllToUserName(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("userName", values, addDups);
       return this;
     }
@@ -730,7 +563,7 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater removeAllFromUserName(List<java.lang.String> values) {
+    public FactoidUpdater removeAllFromUserName(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("userName", values);
       return this;
     }
@@ -764,12 +597,12 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater addValue(String fieldExpr, java.lang.String value, boolean addDups) {
+    public FactoidUpdater addValue(java.lang.String value, boolean addDups) {
       updateOperations.add("value", value, addDups);
       return this;
     }
 
-    public FactoidUpdater addAllToValue(List<java.lang.String> values, boolean addDups) {
+    public FactoidUpdater addAllToValue(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("value", values, addDups);
       return this;
     }
@@ -789,7 +622,7 @@ public class FactoidCriteria {
       return this;
     }
 
-    public FactoidUpdater removeAllFromValue(List<java.lang.String> values) {
+    public FactoidUpdater removeAllFromValue(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("value", values);
       return this;
     }

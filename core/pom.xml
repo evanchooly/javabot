@@ -153,8 +153,7 @@
         <dependency>
             <groupId>com.antwerkz.critter</groupId>
             <artifactId>critter</artifactId>
-            <version>1.2.0</version>
-            <scope>compile</scope>
+            <version>1.2.4</version>
         </dependency>
 
         <dependency>
@@ -226,7 +225,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.google.code.morphia</groupId>
+            <groupId>org.mongodb.morphia</groupId>
             <artifactId>morphia</artifactId>
         </dependency>
 

@@ -27,9 +27,8 @@ public class AdminOperationTest extends BaseOperationTest {
         disabled.add(opName);
         sendMessage("~admin disableOperation --name=" + opName);
         final BotOperation operation = findOperation(opName);
-        Assert
-            .assertTrue(
-                operation == null || operation instanceof AdminCommand || operation instanceof StandardOperation);
+        Assert.assertTrue(
+            operation == null || operation instanceof AdminCommand || operation instanceof StandardOperation);
       }
     } finally {
       for (String name : disabled) {

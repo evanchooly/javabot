@@ -1,233 +1,96 @@
 package javabot.model.criteria;
 
-import com.antwerkz.critter.TypeSafeFieldEnd;
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.query.Criteria;
-import com.google.code.morphia.query.CriteriaContainer;
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryImpl;
-import com.google.code.morphia.query.UpdateOperations;
-import com.google.code.morphia.query.UpdateResults;
-import com.mongodb.WriteConcern;
-import com.mongodb.WriteResult;
-import java.util.List;
+import javabot.model.Admin;
 
+public class AdminCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Admin> {
+  private String prefix = "";
 
-public class AdminCriteria {
-  private Query<javabot.model.Admin> query;
-  private Datastore ds;
-
-  public Query<javabot.model.Admin> query() {
-    return query;
+  public AdminCriteria(org.mongodb.morphia.Datastore ds) {
+    super(ds, Admin.class);
   }
 
-  public AdminCriteria(Datastore ds) {
-    this.ds = ds;
-    query = ds.find(javabot.model.Admin.class);
+
+  public com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String> addedBy() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String>(this, query, prefix + "addedBy");
   }
 
-  public WriteResult delete() {
-     return ds.delete(query());
+  public org.mongodb.morphia.query.Criteria addedBy(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String>(this, query, prefix + "addedBy").equal(value);
   }
 
-  public WriteResult delete(WriteConcern wc) {
-     return ds.delete(query(), wc);
+  public com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.Boolean> botOwner() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.Boolean>(this, query, prefix + "botOwner");
   }
 
-  public CriteriaContainer or(Criteria... criteria) {
-    return query.or(criteria);
+  public org.mongodb.morphia.query.Criteria botOwner(java.lang.Boolean value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.Boolean>(this, query, prefix + "botOwner").equal(value);
   }
 
-  public CriteriaContainer and(Criteria... criteria) {
-    return query.and(criteria);
+  public com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String> hostName() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String>(this, query, prefix + "hostName");
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Admin, java.lang.String> addedBy() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("addedBy"));
+  public org.mongodb.morphia.query.Criteria hostName(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String>(this, query, prefix + "hostName").equal(value);
   }
 
-  public AdminCriteria addedBy(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("addedBy")).equal(value);
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, org.bson.types.ObjectId> id() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, org.bson.types.ObjectId>(this, query, prefix + "id");
   }
 
-  public AdminCriteria orderByAddedBy() {
-    return orderByAddedBy(true);
+  public org.mongodb.morphia.query.Criteria id(org.bson.types.ObjectId value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, org.bson.types.ObjectId>(this, query, prefix + "id").equal(value);
   }
 
-  public AdminCriteria orderByAddedBy(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "addedBy");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String> ircName() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String>(this, query, prefix + "ircName");
   }
 
-  public AdminCriteria distinctAddedBy() {
-    ((QueryImpl) query).getCollection().distinct("addedBy");
-    return this;
+  public org.mongodb.morphia.query.Criteria ircName(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String>(this, query, prefix + "ircName").equal(value);
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Admin, java.lang.Boolean> botOwner() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("botOwner"));
+  public com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, org.joda.time.DateTime> updated() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, org.joda.time.DateTime>(this, query, prefix + "updated");
   }
 
-  public AdminCriteria botOwner(java.lang.Boolean value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("botOwner")).equal(value);
-    return this;
+  public org.mongodb.morphia.query.Criteria updated(org.joda.time.DateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, org.joda.time.DateTime>(this, query, prefix + "updated").equal(value);
   }
 
-  public AdminCriteria orderByBotOwner() {
-    return orderByBotOwner(true);
+  public com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String> userName() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String>(this, query, prefix + "userName");
   }
 
-  public AdminCriteria orderByBotOwner(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "botOwner");
-    return this;
+  public org.mongodb.morphia.query.Criteria userName(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String>(this, query, prefix + "userName").equal(value);
   }
 
-  public AdminCriteria distinctBotOwner() {
-    ((QueryImpl) query).getCollection().distinct("botOwner");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Admin, java.lang.String> hostName() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("hostName"));
-  }
-
-  public AdminCriteria hostName(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("hostName")).equal(value);
-    return this;
-  }
-
-  public AdminCriteria orderByHostName() {
-    return orderByHostName(true);
-  }
-
-  public AdminCriteria orderByHostName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "hostName");
-    return this;
-  }
-
-  public AdminCriteria distinctHostName() {
-    ((QueryImpl) query).getCollection().distinct("hostName");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Admin, org.bson.types.ObjectId> id() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("id"));
-  }
-
-  public AdminCriteria id(org.bson.types.ObjectId value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
-    return this;
-  }
-
-  public AdminCriteria orderById() {
-    return orderById(true);
-  }
-
-  public AdminCriteria orderById(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "id");
-    return this;
-  }
-
-  public AdminCriteria distinctId() {
-    ((QueryImpl) query).getCollection().distinct("id");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Admin, java.lang.String> ircName() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("ircName"));
-  }
-
-  public AdminCriteria ircName(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("ircName")).equal(value);
-    return this;
-  }
-
-  public AdminCriteria orderByIrcName() {
-    return orderByIrcName(true);
-  }
-
-  public AdminCriteria orderByIrcName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "ircName");
-    return this;
-  }
-
-  public AdminCriteria distinctIrcName() {
-    ((QueryImpl) query).getCollection().distinct("ircName");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Admin, org.joda.time.DateTime> updated() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("updated"));
-  }
-
-  public AdminCriteria updated(org.joda.time.DateTime value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("updated")).equal(value);
-    return this;
-  }
-
-  public AdminCriteria orderByUpdated() {
-    return orderByUpdated(true);
-  }
-
-  public AdminCriteria orderByUpdated(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "updated");
-    return this;
-  }
-
-  public AdminCriteria distinctUpdated() {
-    ((QueryImpl) query).getCollection().distinct("updated");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Admin, java.lang.String> userName() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("userName"));
-  }
-
-  public AdminCriteria userName(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("userName")).equal(value);
-    return this;
-  }
-
-  public AdminCriteria orderByUserName() {
-    return orderByUserName(true);
-  }
-
-  public AdminCriteria orderByUserName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "userName");
-    return this;
-  }
-
-  public AdminCriteria distinctUserName() {
-    ((QueryImpl) query).getCollection().distinct("userName");
-    return this;
-  }
 
   public AdminUpdater getUpdater() {
     return new AdminUpdater();
   }
 
   public class AdminUpdater {
-    UpdateOperations<javabot.model.Admin> updateOperations;
+    org.mongodb.morphia.query.UpdateOperations<Admin> updateOperations;
 
     public AdminUpdater() {
-      updateOperations = ds.createUpdateOperations(javabot.model.Admin.class);
+      updateOperations = ds.createUpdateOperations(Admin.class);
     }
 
-    public UpdateResults<javabot.model.Admin> update() {
+    public org.mongodb.morphia.query.UpdateResults<Admin> update() {
       return ds.update(query(), updateOperations, false);
     }
 
-    public UpdateResults<javabot.model.Admin> update(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<Admin> update(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, false, wc);
     }
 
-    public UpdateResults<javabot.model.Admin> upsert() {
+    public org.mongodb.morphia.query.UpdateResults<Admin> upsert() {
       return ds.update(query(), updateOperations, true);
     }
 
-    public UpdateResults<javabot.model.Admin> upsert(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<Admin> upsert(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, true, wc);
     }
 
@@ -246,12 +109,12 @@ public class AdminCriteria {
       return this;
     }
 
-    public AdminUpdater addAddedBy(String fieldExpr, java.lang.String value, boolean addDups) {
+    public AdminUpdater addAddedBy(java.lang.String value, boolean addDups) {
       updateOperations.add("addedBy", value, addDups);
       return this;
     }
 
-    public AdminUpdater addAllToAddedBy(List<java.lang.String> values, boolean addDups) {
+    public AdminUpdater addAllToAddedBy(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("addedBy", values, addDups);
       return this;
     }
@@ -271,7 +134,7 @@ public class AdminCriteria {
       return this;
     }
 
-    public AdminUpdater removeAllFromAddedBy(List<java.lang.String> values) {
+    public AdminUpdater removeAllFromAddedBy(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("addedBy", values);
       return this;
     }
@@ -305,12 +168,12 @@ public class AdminCriteria {
       return this;
     }
 
-    public AdminUpdater addBotOwner(String fieldExpr, java.lang.Boolean value, boolean addDups) {
+    public AdminUpdater addBotOwner(java.lang.Boolean value, boolean addDups) {
       updateOperations.add("botOwner", value, addDups);
       return this;
     }
 
-    public AdminUpdater addAllToBotOwner(List<java.lang.Boolean> values, boolean addDups) {
+    public AdminUpdater addAllToBotOwner(java.util.List<java.lang.Boolean> values, boolean addDups) {
       updateOperations.addAll("botOwner", values, addDups);
       return this;
     }
@@ -330,7 +193,7 @@ public class AdminCriteria {
       return this;
     }
 
-    public AdminUpdater removeAllFromBotOwner(List<java.lang.Boolean> values) {
+    public AdminUpdater removeAllFromBotOwner(java.util.List<java.lang.Boolean> values) {
       updateOperations.removeAll("botOwner", values);
       return this;
     }
@@ -364,12 +227,12 @@ public class AdminCriteria {
       return this;
     }
 
-    public AdminUpdater addHostName(String fieldExpr, java.lang.String value, boolean addDups) {
+    public AdminUpdater addHostName(java.lang.String value, boolean addDups) {
       updateOperations.add("hostName", value, addDups);
       return this;
     }
 
-    public AdminUpdater addAllToHostName(List<java.lang.String> values, boolean addDups) {
+    public AdminUpdater addAllToHostName(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("hostName", values, addDups);
       return this;
     }
@@ -389,7 +252,7 @@ public class AdminCriteria {
       return this;
     }
 
-    public AdminUpdater removeAllFromHostName(List<java.lang.String> values) {
+    public AdminUpdater removeAllFromHostName(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("hostName", values);
       return this;
     }
@@ -423,12 +286,12 @@ public class AdminCriteria {
       return this;
     }
 
-    public AdminUpdater addId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+    public AdminUpdater addId(org.bson.types.ObjectId value, boolean addDups) {
       updateOperations.add("id", value, addDups);
       return this;
     }
 
-    public AdminUpdater addAllToId(List<org.bson.types.ObjectId> values, boolean addDups) {
+    public AdminUpdater addAllToId(java.util.List<org.bson.types.ObjectId> values, boolean addDups) {
       updateOperations.addAll("id", values, addDups);
       return this;
     }
@@ -448,7 +311,7 @@ public class AdminCriteria {
       return this;
     }
 
-    public AdminUpdater removeAllFromId(List<org.bson.types.ObjectId> values) {
+    public AdminUpdater removeAllFromId(java.util.List<org.bson.types.ObjectId> values) {
       updateOperations.removeAll("id", values);
       return this;
     }
@@ -482,12 +345,12 @@ public class AdminCriteria {
       return this;
     }
 
-    public AdminUpdater addIrcName(String fieldExpr, java.lang.String value, boolean addDups) {
+    public AdminUpdater addIrcName(java.lang.String value, boolean addDups) {
       updateOperations.add("ircName", value, addDups);
       return this;
     }
 
-    public AdminUpdater addAllToIrcName(List<java.lang.String> values, boolean addDups) {
+    public AdminUpdater addAllToIrcName(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("ircName", values, addDups);
       return this;
     }
@@ -507,7 +370,7 @@ public class AdminCriteria {
       return this;
     }
 
-    public AdminUpdater removeAllFromIrcName(List<java.lang.String> values) {
+    public AdminUpdater removeAllFromIrcName(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("ircName", values);
       return this;
     }
@@ -541,12 +404,12 @@ public class AdminCriteria {
       return this;
     }
 
-    public AdminUpdater addUpdated(String fieldExpr, org.joda.time.DateTime value, boolean addDups) {
+    public AdminUpdater addUpdated(org.joda.time.DateTime value, boolean addDups) {
       updateOperations.add("updated", value, addDups);
       return this;
     }
 
-    public AdminUpdater addAllToUpdated(List<org.joda.time.DateTime> values, boolean addDups) {
+    public AdminUpdater addAllToUpdated(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
       updateOperations.addAll("updated", values, addDups);
       return this;
     }
@@ -566,7 +429,7 @@ public class AdminCriteria {
       return this;
     }
 
-    public AdminUpdater removeAllFromUpdated(List<org.joda.time.DateTime> values) {
+    public AdminUpdater removeAllFromUpdated(java.util.List<org.joda.time.DateTime> values) {
       updateOperations.removeAll("updated", values);
       return this;
     }
@@ -600,12 +463,12 @@ public class AdminCriteria {
       return this;
     }
 
-    public AdminUpdater addUserName(String fieldExpr, java.lang.String value, boolean addDups) {
+    public AdminUpdater addUserName(java.lang.String value, boolean addDups) {
       updateOperations.add("userName", value, addDups);
       return this;
     }
 
-    public AdminUpdater addAllToUserName(List<java.lang.String> values, boolean addDups) {
+    public AdminUpdater addAllToUserName(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("userName", values, addDups);
       return this;
     }
@@ -625,7 +488,7 @@ public class AdminCriteria {
       return this;
     }
 
-    public AdminUpdater removeAllFromUserName(List<java.lang.String> values) {
+    public AdminUpdater removeAllFromUserName(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("userName", values);
       return this;
     }

@@ -6,7 +6,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.antwerkz.maven.SPI;
-import com.google.code.morphia.Datastore;
+import org.mongodb.morphia.Datastore;
 import javabot.IrcEvent;
 import javabot.IrcUser;
 import javabot.Message;
@@ -37,7 +37,7 @@ public class LogsOperation extends BotOperation {
       final String nickname = message.substring(KEYWORD_LOGS.length()).trim();
       LogsCriteria criteria = new LogsCriteria(ds);
       criteria.channel(event.getChannel());
-      criteria.orderByUpdated(false);
+      criteria.updated().order(false);
       IrcUser sender = event.getSender();
       if (nickname.isEmpty()) {
         criteria.query().limit(200);

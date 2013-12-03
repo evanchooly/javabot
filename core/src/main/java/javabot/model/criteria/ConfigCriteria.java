@@ -1,302 +1,120 @@
 package javabot.model.criteria;
 
-import com.antwerkz.critter.TypeSafeFieldEnd;
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.query.Criteria;
-import com.google.code.morphia.query.CriteriaContainer;
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryImpl;
-import com.google.code.morphia.query.UpdateOperations;
-import com.google.code.morphia.query.UpdateResults;
-import com.mongodb.WriteConcern;
-import com.mongodb.WriteResult;
-import java.util.List;
+import javabot.model.Config;
 
+public class ConfigCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Config> {
+  private String prefix = "";
 
-public class ConfigCriteria {
-  private Query<javabot.model.Config> query;
-  private Datastore ds;
-
-  public Query<javabot.model.Config> query() {
-    return query;
+  public ConfigCriteria(org.mongodb.morphia.Datastore ds) {
+    super(ds, Config.class);
   }
 
-  public ConfigCriteria(Datastore ds) {
-    this.ds = ds;
-    query = ds.find(javabot.model.Config.class);
+
+  public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Integer> historyLength() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Integer>(this, query, prefix + "historyLength");
   }
 
-  public WriteResult delete() {
-     return ds.delete(query());
+  public org.mongodb.morphia.query.Criteria historyLength(java.lang.Integer value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Integer>(this, query, prefix + "historyLength").equal(value);
   }
 
-  public WriteResult delete(WriteConcern wc) {
-     return ds.delete(query(), wc);
+  public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, org.bson.types.ObjectId> id() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, org.bson.types.ObjectId>(this, query, prefix + "id");
   }
 
-  public CriteriaContainer or(Criteria... criteria) {
-    return query.or(criteria);
+  public org.mongodb.morphia.query.Criteria id(org.bson.types.ObjectId value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, org.bson.types.ObjectId>(this, query, prefix + "id").equal(value);
   }
 
-  public CriteriaContainer and(Criteria... criteria) {
-    return query.and(criteria);
+  public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String> nick() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String>(this, query, prefix + "nick");
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, java.lang.Integer> historyLength() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("historyLength"));
+  public org.mongodb.morphia.query.Criteria nick(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String>(this, query, prefix + "nick").equal(value);
   }
 
-  public ConfigCriteria historyLength(java.lang.Integer value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("historyLength")).equal(value);
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.util.Set<java.lang.String>> operations() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.util.Set<java.lang.String>>(this, query, prefix + "operations");
   }
 
-  public ConfigCriteria orderByHistoryLength() {
-    return orderByHistoryLength(true);
+  public org.mongodb.morphia.query.Criteria operations(java.util.Set<java.lang.String> value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.util.Set<java.lang.String>>(this, query, prefix + "operations").equal(value);
   }
 
-  public ConfigCriteria orderByHistoryLength(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "historyLength");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String> password() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String>(this, query, prefix + "password");
   }
 
-  public ConfigCriteria distinctHistoryLength() {
-    ((QueryImpl) query).getCollection().distinct("historyLength");
-    return this;
+  public org.mongodb.morphia.query.Criteria password(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String>(this, query, prefix + "password").equal(value);
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, org.bson.types.ObjectId> id() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("id"));
+  public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Integer> port() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Integer>(this, query, prefix + "port");
   }
 
-  public ConfigCriteria id(org.bson.types.ObjectId value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
-    return this;
+  public org.mongodb.morphia.query.Criteria port(java.lang.Integer value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Integer>(this, query, prefix + "port").equal(value);
   }
 
-  public ConfigCriteria orderById() {
-    return orderById(true);
+  public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Integer> schemaVersion() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Integer>(this, query, prefix + "schemaVersion");
   }
 
-  public ConfigCriteria orderById(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "id");
-    return this;
+  public org.mongodb.morphia.query.Criteria schemaVersion(java.lang.Integer value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Integer>(this, query, prefix + "schemaVersion").equal(value);
   }
 
-  public ConfigCriteria distinctId() {
-    ((QueryImpl) query).getCollection().distinct("id");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String> server() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String>(this, query, prefix + "server");
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, java.lang.String> nick() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("nick"));
+  public org.mongodb.morphia.query.Criteria server(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String>(this, query, prefix + "server").equal(value);
   }
 
-  public ConfigCriteria nick(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("nick")).equal(value);
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String> trigger() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String>(this, query, prefix + "trigger");
   }
 
-  public ConfigCriteria orderByNick() {
-    return orderByNick(true);
+  public org.mongodb.morphia.query.Criteria trigger(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String>(this, query, prefix + "trigger").equal(value);
   }
 
-  public ConfigCriteria orderByNick(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "nick");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String> url() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String>(this, query, prefix + "url");
   }
 
-  public ConfigCriteria distinctNick() {
-    ((QueryImpl) query).getCollection().distinct("nick");
-    return this;
+  public org.mongodb.morphia.query.Criteria url(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String>(this, query, prefix + "url").equal(value);
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, java.util.Set<java.lang.String>> operations() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("operations"));
-  }
-
-  public ConfigCriteria operations(java.util.Set<java.lang.String> value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("operations")).equal(value);
-    return this;
-  }
-
-  public ConfigCriteria orderByOperations() {
-    return orderByOperations(true);
-  }
-
-  public ConfigCriteria orderByOperations(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "operations");
-    return this;
-  }
-
-  public ConfigCriteria distinctOperations() {
-    ((QueryImpl) query).getCollection().distinct("operations");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, java.lang.String> password() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("password"));
-  }
-
-  public ConfigCriteria password(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("password")).equal(value);
-    return this;
-  }
-
-  public ConfigCriteria orderByPassword() {
-    return orderByPassword(true);
-  }
-
-  public ConfigCriteria orderByPassword(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "password");
-    return this;
-  }
-
-  public ConfigCriteria distinctPassword() {
-    ((QueryImpl) query).getCollection().distinct("password");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, java.lang.Integer> port() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("port"));
-  }
-
-  public ConfigCriteria port(java.lang.Integer value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("port")).equal(value);
-    return this;
-  }
-
-  public ConfigCriteria orderByPort() {
-    return orderByPort(true);
-  }
-
-  public ConfigCriteria orderByPort(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "port");
-    return this;
-  }
-
-  public ConfigCriteria distinctPort() {
-    ((QueryImpl) query).getCollection().distinct("port");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, java.lang.Integer> schemaVersion() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("schemaVersion"));
-  }
-
-  public ConfigCriteria schemaVersion(java.lang.Integer value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("schemaVersion")).equal(value);
-    return this;
-  }
-
-  public ConfigCriteria orderBySchemaVersion() {
-    return orderBySchemaVersion(true);
-  }
-
-  public ConfigCriteria orderBySchemaVersion(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "schemaVersion");
-    return this;
-  }
-
-  public ConfigCriteria distinctSchemaVersion() {
-    ((QueryImpl) query).getCollection().distinct("schemaVersion");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, java.lang.String> server() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("server"));
-  }
-
-  public ConfigCriteria server(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("server")).equal(value);
-    return this;
-  }
-
-  public ConfigCriteria orderByServer() {
-    return orderByServer(true);
-  }
-
-  public ConfigCriteria orderByServer(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "server");
-    return this;
-  }
-
-  public ConfigCriteria distinctServer() {
-    ((QueryImpl) query).getCollection().distinct("server");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, java.lang.String> trigger() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("trigger"));
-  }
-
-  public ConfigCriteria trigger(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("trigger")).equal(value);
-    return this;
-  }
-
-  public ConfigCriteria orderByTrigger() {
-    return orderByTrigger(true);
-  }
-
-  public ConfigCriteria orderByTrigger(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "trigger");
-    return this;
-  }
-
-  public ConfigCriteria distinctTrigger() {
-    ((QueryImpl) query).getCollection().distinct("trigger");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.model.Config, java.lang.String> url() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("url"));
-  }
-
-  public ConfigCriteria url(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("url")).equal(value);
-    return this;
-  }
-
-  public ConfigCriteria orderByUrl() {
-    return orderByUrl(true);
-  }
-
-  public ConfigCriteria orderByUrl(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "url");
-    return this;
-  }
-
-  public ConfigCriteria distinctUrl() {
-    ((QueryImpl) query).getCollection().distinct("url");
-    return this;
-  }
 
   public ConfigUpdater getUpdater() {
     return new ConfigUpdater();
   }
 
   public class ConfigUpdater {
-    UpdateOperations<javabot.model.Config> updateOperations;
+    org.mongodb.morphia.query.UpdateOperations<Config> updateOperations;
 
     public ConfigUpdater() {
-      updateOperations = ds.createUpdateOperations(javabot.model.Config.class);
+      updateOperations = ds.createUpdateOperations(Config.class);
     }
 
-    public UpdateResults<javabot.model.Config> update() {
+    public org.mongodb.morphia.query.UpdateResults<Config> update() {
       return ds.update(query(), updateOperations, false);
     }
 
-    public UpdateResults<javabot.model.Config> update(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<Config> update(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, false, wc);
     }
 
-    public UpdateResults<javabot.model.Config> upsert() {
+    public org.mongodb.morphia.query.UpdateResults<Config> upsert() {
       return ds.update(query(), updateOperations, true);
     }
 
-    public UpdateResults<javabot.model.Config> upsert(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<Config> upsert(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, true, wc);
     }
 
@@ -315,12 +133,12 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater addHistoryLength(String fieldExpr, java.lang.Integer value, boolean addDups) {
+    public ConfigUpdater addHistoryLength(java.lang.Integer value, boolean addDups) {
       updateOperations.add("historyLength", value, addDups);
       return this;
     }
 
-    public ConfigUpdater addAllToHistoryLength(List<java.lang.Integer> values, boolean addDups) {
+    public ConfigUpdater addAllToHistoryLength(java.util.List<java.lang.Integer> values, boolean addDups) {
       updateOperations.addAll("historyLength", values, addDups);
       return this;
     }
@@ -340,7 +158,7 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater removeAllFromHistoryLength(List<java.lang.Integer> values) {
+    public ConfigUpdater removeAllFromHistoryLength(java.util.List<java.lang.Integer> values) {
       updateOperations.removeAll("historyLength", values);
       return this;
     }
@@ -374,12 +192,12 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater addId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+    public ConfigUpdater addId(org.bson.types.ObjectId value, boolean addDups) {
       updateOperations.add("id", value, addDups);
       return this;
     }
 
-    public ConfigUpdater addAllToId(List<org.bson.types.ObjectId> values, boolean addDups) {
+    public ConfigUpdater addAllToId(java.util.List<org.bson.types.ObjectId> values, boolean addDups) {
       updateOperations.addAll("id", values, addDups);
       return this;
     }
@@ -399,7 +217,7 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater removeAllFromId(List<org.bson.types.ObjectId> values) {
+    public ConfigUpdater removeAllFromId(java.util.List<org.bson.types.ObjectId> values) {
       updateOperations.removeAll("id", values);
       return this;
     }
@@ -433,12 +251,12 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater addNick(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ConfigUpdater addNick(java.lang.String value, boolean addDups) {
       updateOperations.add("nick", value, addDups);
       return this;
     }
 
-    public ConfigUpdater addAllToNick(List<java.lang.String> values, boolean addDups) {
+    public ConfigUpdater addAllToNick(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("nick", values, addDups);
       return this;
     }
@@ -458,7 +276,7 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater removeAllFromNick(List<java.lang.String> values) {
+    public ConfigUpdater removeAllFromNick(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("nick", values);
       return this;
     }
@@ -492,12 +310,12 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater addOperations(String fieldExpr, java.util.Set<java.lang.String> value, boolean addDups) {
+    public ConfigUpdater addOperations(java.util.Set<java.lang.String> value, boolean addDups) {
       updateOperations.add("operations", value, addDups);
       return this;
     }
 
-    public ConfigUpdater addAllToOperations(List<java.util.Set<java.lang.String>> values, boolean addDups) {
+    public ConfigUpdater addAllToOperations(java.util.List<java.util.Set<java.lang.String>> values, boolean addDups) {
       updateOperations.addAll("operations", values, addDups);
       return this;
     }
@@ -517,7 +335,7 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater removeAllFromOperations(List<java.util.Set<java.lang.String>> values) {
+    public ConfigUpdater removeAllFromOperations(java.util.List<java.util.Set<java.lang.String>> values) {
       updateOperations.removeAll("operations", values);
       return this;
     }
@@ -551,12 +369,12 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater addPassword(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ConfigUpdater addPassword(java.lang.String value, boolean addDups) {
       updateOperations.add("password", value, addDups);
       return this;
     }
 
-    public ConfigUpdater addAllToPassword(List<java.lang.String> values, boolean addDups) {
+    public ConfigUpdater addAllToPassword(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("password", values, addDups);
       return this;
     }
@@ -576,7 +394,7 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater removeAllFromPassword(List<java.lang.String> values) {
+    public ConfigUpdater removeAllFromPassword(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("password", values);
       return this;
     }
@@ -610,12 +428,12 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater addPort(String fieldExpr, java.lang.Integer value, boolean addDups) {
+    public ConfigUpdater addPort(java.lang.Integer value, boolean addDups) {
       updateOperations.add("port", value, addDups);
       return this;
     }
 
-    public ConfigUpdater addAllToPort(List<java.lang.Integer> values, boolean addDups) {
+    public ConfigUpdater addAllToPort(java.util.List<java.lang.Integer> values, boolean addDups) {
       updateOperations.addAll("port", values, addDups);
       return this;
     }
@@ -635,7 +453,7 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater removeAllFromPort(List<java.lang.Integer> values) {
+    public ConfigUpdater removeAllFromPort(java.util.List<java.lang.Integer> values) {
       updateOperations.removeAll("port", values);
       return this;
     }
@@ -669,12 +487,12 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater addSchemaVersion(String fieldExpr, java.lang.Integer value, boolean addDups) {
+    public ConfigUpdater addSchemaVersion(java.lang.Integer value, boolean addDups) {
       updateOperations.add("schemaVersion", value, addDups);
       return this;
     }
 
-    public ConfigUpdater addAllToSchemaVersion(List<java.lang.Integer> values, boolean addDups) {
+    public ConfigUpdater addAllToSchemaVersion(java.util.List<java.lang.Integer> values, boolean addDups) {
       updateOperations.addAll("schemaVersion", values, addDups);
       return this;
     }
@@ -694,7 +512,7 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater removeAllFromSchemaVersion(List<java.lang.Integer> values) {
+    public ConfigUpdater removeAllFromSchemaVersion(java.util.List<java.lang.Integer> values) {
       updateOperations.removeAll("schemaVersion", values);
       return this;
     }
@@ -728,12 +546,12 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater addServer(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ConfigUpdater addServer(java.lang.String value, boolean addDups) {
       updateOperations.add("server", value, addDups);
       return this;
     }
 
-    public ConfigUpdater addAllToServer(List<java.lang.String> values, boolean addDups) {
+    public ConfigUpdater addAllToServer(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("server", values, addDups);
       return this;
     }
@@ -753,7 +571,7 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater removeAllFromServer(List<java.lang.String> values) {
+    public ConfigUpdater removeAllFromServer(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("server", values);
       return this;
     }
@@ -787,12 +605,12 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater addTrigger(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ConfigUpdater addTrigger(java.lang.String value, boolean addDups) {
       updateOperations.add("trigger", value, addDups);
       return this;
     }
 
-    public ConfigUpdater addAllToTrigger(List<java.lang.String> values, boolean addDups) {
+    public ConfigUpdater addAllToTrigger(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("trigger", values, addDups);
       return this;
     }
@@ -812,7 +630,7 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater removeAllFromTrigger(List<java.lang.String> values) {
+    public ConfigUpdater removeAllFromTrigger(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("trigger", values);
       return this;
     }
@@ -846,12 +664,12 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater addUrl(String fieldExpr, java.lang.String value, boolean addDups) {
+    public ConfigUpdater addUrl(java.lang.String value, boolean addDups) {
       updateOperations.add("url", value, addDups);
       return this;
     }
 
-    public ConfigUpdater addAllToUrl(List<java.lang.String> values, boolean addDups) {
+    public ConfigUpdater addAllToUrl(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("url", values, addDups);
       return this;
     }
@@ -871,7 +689,7 @@ public class ConfigCriteria {
       return this;
     }
 
-    public ConfigUpdater removeAllFromUrl(List<java.lang.String> values) {
+    public ConfigUpdater removeAllFromUrl(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("url", values);
       return this;
     }

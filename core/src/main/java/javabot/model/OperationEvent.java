@@ -1,6 +1,6 @@
 package javabot.model;
 
-import com.google.code.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Entity;
 import javabot.Javabot;
 
 @Entity("events")

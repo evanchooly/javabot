@@ -1,6 +1,6 @@
 package javabot.migrator;
 
-import com.google.code.morphia.Datastore;
+import org.mongodb.morphia.Datastore;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.mongodb.BasicDBObject;

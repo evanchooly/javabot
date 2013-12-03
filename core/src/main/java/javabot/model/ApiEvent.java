@@ -9,8 +9,8 @@ import java.io.StringWriter;
 import java.net.URL;
 import javax.inject.Inject;
 
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Transient;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Transient;
 import javabot.IrcEvent;
 import javabot.IrcUser;
 import javabot.Javabot;

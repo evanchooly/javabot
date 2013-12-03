@@ -2,7 +2,7 @@ package javabot.dao;
 
 import java.util.List;
 
-import com.google.code.morphia.query.Query;
+import org.mongodb.morphia.query.Query;
 import javabot.model.Change;
 import javabot.model.criteria.ChangeCriteria;
 import org.joda.time.DateTime;
@@ -54,7 +54,7 @@ public class ChangeDao extends BaseDao<Change> {
     if (filter.getChangeDate() != null) {
       criteria.changeDate().equal(filter.getChangeDate());
     }
-    criteria.orderByChangeDate(false);
+    criteria.changeDate().order(false);
     return criteria.query();
   }
 }

@@ -19,7 +19,7 @@
             <artifactId>spi-apt</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.code.morphia</groupId>
+            <groupId>org.mongodb.morphia</groupId>
             <artifactId>morphia</artifactId>
         </dependency>
         <dependency>

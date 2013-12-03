@@ -1,302 +1,120 @@
 package javabot.javadoc.criteria;
 
-import com.antwerkz.critter.TypeSafeFieldEnd;
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.query.Criteria;
-import com.google.code.morphia.query.CriteriaContainer;
-import com.google.code.morphia.query.Query;
-import com.google.code.morphia.query.QueryImpl;
-import com.google.code.morphia.query.UpdateOperations;
-import com.google.code.morphia.query.UpdateResults;
-import com.mongodb.WriteConcern;
-import com.mongodb.WriteResult;
-import java.util.List;
+import javabot.javadoc.JavadocField;
 
+public class JavadocFieldCriteria extends com.antwerkz.critter.criteria.BaseCriteria<JavadocField> {
+  private String prefix = "";
 
-public class JavadocFieldCriteria {
-  private Query<javabot.javadoc.JavadocField> query;
-  private Datastore ds;
-
-  public Query<javabot.javadoc.JavadocField> query() {
-    return query;
+  public JavadocFieldCriteria(org.mongodb.morphia.Datastore ds) {
+    super(ds, JavadocField.class);
   }
 
-  public JavadocFieldCriteria(Datastore ds) {
-    this.ds = ds;
-    query = ds.find(javabot.javadoc.JavadocField.class);
+
+  public com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, org.bson.types.ObjectId> apiId() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, org.bson.types.ObjectId>(this, query, prefix + "apiId");
   }
 
-  public WriteResult delete() {
-     return ds.delete(query());
+  public org.mongodb.morphia.query.Criteria apiId(org.bson.types.ObjectId value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, org.bson.types.ObjectId>(this, query, prefix + "apiId").equal(value);
   }
 
-  public WriteResult delete(WriteConcern wc) {
-     return ds.delete(query(), wc);
+  public com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String> directUrl() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String>(this, query, prefix + "directUrl");
   }
 
-  public CriteriaContainer or(Criteria... criteria) {
-    return query.or(criteria);
+  public org.mongodb.morphia.query.Criteria directUrl(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String>(this, query, prefix + "directUrl").equal(value);
   }
 
-  public CriteriaContainer and(Criteria... criteria) {
-    return query.and(criteria);
+  public com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, org.bson.types.ObjectId> id() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, org.bson.types.ObjectId>(this, query, prefix + "id");
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, org.bson.types.ObjectId> apiId() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("apiId"));
+  public org.mongodb.morphia.query.Criteria id(org.bson.types.ObjectId value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, org.bson.types.ObjectId>(this, query, prefix + "id").equal(value);
   }
 
-  public JavadocFieldCriteria apiId(org.bson.types.ObjectId value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("apiId")).equal(value);
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, org.bson.types.ObjectId> javadocClassId() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, org.bson.types.ObjectId>(this, query, prefix + "javadocClassId");
   }
 
-  public JavadocFieldCriteria orderByApiId() {
-    return orderByApiId(true);
+  public org.mongodb.morphia.query.Criteria javadocClassId(org.bson.types.ObjectId value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, org.bson.types.ObjectId>(this, query, prefix + "javadocClassId").equal(value);
   }
 
-  public JavadocFieldCriteria orderByApiId(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "apiId");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String> longUrl() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String>(this, query, prefix + "longUrl");
   }
 
-  public JavadocFieldCriteria distinctApiId() {
-    ((QueryImpl) query).getCollection().distinct("apiId");
-    return this;
+  public org.mongodb.morphia.query.Criteria longUrl(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String>(this, query, prefix + "longUrl").equal(value);
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, java.lang.String> directUrl() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("directUrl"));
+  public com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String> name() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String>(this, query, prefix + "name");
   }
 
-  public JavadocFieldCriteria directUrl(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("directUrl")).equal(value);
-    return this;
+  public org.mongodb.morphia.query.Criteria name(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String>(this, query, prefix + "name").equal(value);
   }
 
-  public JavadocFieldCriteria orderByDirectUrl() {
-    return orderByDirectUrl(true);
+  public com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String> parentClassName() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String>(this, query, prefix + "parentClassName");
   }
 
-  public JavadocFieldCriteria orderByDirectUrl(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "directUrl");
-    return this;
+  public org.mongodb.morphia.query.Criteria parentClassName(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String>(this, query, prefix + "parentClassName").equal(value);
   }
 
-  public JavadocFieldCriteria distinctDirectUrl() {
-    ((QueryImpl) query).getCollection().distinct("directUrl");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String> shortUrl() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String>(this, query, prefix + "shortUrl");
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, org.bson.types.ObjectId> id() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("id"));
+  public org.mongodb.morphia.query.Criteria shortUrl(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String>(this, query, prefix + "shortUrl").equal(value);
   }
 
-  public JavadocFieldCriteria id(org.bson.types.ObjectId value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("id")).equal(value);
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String> type() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String>(this, query, prefix + "type");
   }
 
-  public JavadocFieldCriteria orderById() {
-    return orderById(true);
+  public org.mongodb.morphia.query.Criteria type(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String>(this, query, prefix + "type").equal(value);
   }
 
-  public JavadocFieldCriteria orderById(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "id");
-    return this;
+  public com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String> upperName() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String>(this, query, prefix + "upperName");
   }
 
-  public JavadocFieldCriteria distinctId() {
-    ((QueryImpl) query).getCollection().distinct("id");
-    return this;
+  public org.mongodb.morphia.query.Criteria upperName(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, java.lang.String>(this, query, prefix + "upperName").equal(value);
   }
 
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, org.bson.types.ObjectId> javadocClassId() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("javadocClassId"));
-  }
-
-  public JavadocFieldCriteria javadocClassId(org.bson.types.ObjectId value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("javadocClassId")).equal(value);
-    return this;
-  }
-
-  public JavadocFieldCriteria orderByJavadocClassId() {
-    return orderByJavadocClassId(true);
-  }
-
-  public JavadocFieldCriteria orderByJavadocClassId(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "javadocClassId");
-    return this;
-  }
-
-  public JavadocFieldCriteria distinctJavadocClassId() {
-    ((QueryImpl) query).getCollection().distinct("javadocClassId");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, java.lang.String> longUrl() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("longUrl"));
-  }
-
-  public JavadocFieldCriteria longUrl(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("longUrl")).equal(value);
-    return this;
-  }
-
-  public JavadocFieldCriteria orderByLongUrl() {
-    return orderByLongUrl(true);
-  }
-
-  public JavadocFieldCriteria orderByLongUrl(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "longUrl");
-    return this;
-  }
-
-  public JavadocFieldCriteria distinctLongUrl() {
-    ((QueryImpl) query).getCollection().distinct("longUrl");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, java.lang.String> name() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("name"));
-  }
-
-  public JavadocFieldCriteria name(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("name")).equal(value);
-    return this;
-  }
-
-  public JavadocFieldCriteria orderByName() {
-    return orderByName(true);
-  }
-
-  public JavadocFieldCriteria orderByName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "name");
-    return this;
-  }
-
-  public JavadocFieldCriteria distinctName() {
-    ((QueryImpl) query).getCollection().distinct("name");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, java.lang.String> parentClassName() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("parentClassName"));
-  }
-
-  public JavadocFieldCriteria parentClassName(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("parentClassName")).equal(value);
-    return this;
-  }
-
-  public JavadocFieldCriteria orderByParentClassName() {
-    return orderByParentClassName(true);
-  }
-
-  public JavadocFieldCriteria orderByParentClassName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "parentClassName");
-    return this;
-  }
-
-  public JavadocFieldCriteria distinctParentClassName() {
-    ((QueryImpl) query).getCollection().distinct("parentClassName");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, java.lang.String> shortUrl() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("shortUrl"));
-  }
-
-  public JavadocFieldCriteria shortUrl(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("shortUrl")).equal(value);
-    return this;
-  }
-
-  public JavadocFieldCriteria orderByShortUrl() {
-    return orderByShortUrl(true);
-  }
-
-  public JavadocFieldCriteria orderByShortUrl(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "shortUrl");
-    return this;
-  }
-
-  public JavadocFieldCriteria distinctShortUrl() {
-    ((QueryImpl) query).getCollection().distinct("shortUrl");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, java.lang.String> type() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("type"));
-  }
-
-  public JavadocFieldCriteria type(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("type")).equal(value);
-    return this;
-  }
-
-  public JavadocFieldCriteria orderByType() {
-    return orderByType(true);
-  }
-
-  public JavadocFieldCriteria orderByType(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "type");
-    return this;
-  }
-
-  public JavadocFieldCriteria distinctType() {
-    ((QueryImpl) query).getCollection().distinct("type");
-    return this;
-  }
-
-  public TypeSafeFieldEnd<? extends CriteriaContainer, javabot.javadoc.JavadocField, java.lang.String> upperName() {
-    return new TypeSafeFieldEnd<>(query, query.criteria("upperName"));
-  }
-
-  public JavadocFieldCriteria upperName(java.lang.String value) {
-    new TypeSafeFieldEnd<>(query, query.criteria("upperName")).equal(value);
-    return this;
-  }
-
-  public JavadocFieldCriteria orderByUpperName() {
-    return orderByUpperName(true);
-  }
-
-  public JavadocFieldCriteria orderByUpperName(boolean ascending) {
-    query.order((!ascending ? "-" : "") + "upperName");
-    return this;
-  }
-
-  public JavadocFieldCriteria distinctUpperName() {
-    ((QueryImpl) query).getCollection().distinct("upperName");
-    return this;
-  }
 
   public JavadocFieldUpdater getUpdater() {
     return new JavadocFieldUpdater();
   }
 
   public class JavadocFieldUpdater {
-    UpdateOperations<javabot.javadoc.JavadocField> updateOperations;
+    org.mongodb.morphia.query.UpdateOperations<JavadocField> updateOperations;
 
     public JavadocFieldUpdater() {
-      updateOperations = ds.createUpdateOperations(javabot.javadoc.JavadocField.class);
+      updateOperations = ds.createUpdateOperations(JavadocField.class);
     }
 
-    public UpdateResults<javabot.javadoc.JavadocField> update() {
+    public org.mongodb.morphia.query.UpdateResults<JavadocField> update() {
       return ds.update(query(), updateOperations, false);
     }
 
-    public UpdateResults<javabot.javadoc.JavadocField> update(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<JavadocField> update(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, false, wc);
     }
 
-    public UpdateResults<javabot.javadoc.JavadocField> upsert() {
+    public org.mongodb.morphia.query.UpdateResults<JavadocField> upsert() {
       return ds.update(query(), updateOperations, true);
     }
 
-    public UpdateResults<javabot.javadoc.JavadocField> upsert(WriteConcern wc) {
+    public org.mongodb.morphia.query.UpdateResults<JavadocField> upsert(com.mongodb.WriteConcern wc) {
       return ds.update(query(), updateOperations, true, wc);
     }
 
@@ -315,12 +133,12 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater addApiId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+    public JavadocFieldUpdater addApiId(org.bson.types.ObjectId value, boolean addDups) {
       updateOperations.add("apiId", value, addDups);
       return this;
     }
 
-    public JavadocFieldUpdater addAllToApiId(List<org.bson.types.ObjectId> values, boolean addDups) {
+    public JavadocFieldUpdater addAllToApiId(java.util.List<org.bson.types.ObjectId> values, boolean addDups) {
       updateOperations.addAll("apiId", values, addDups);
       return this;
     }
@@ -340,7 +158,7 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater removeAllFromApiId(List<org.bson.types.ObjectId> values) {
+    public JavadocFieldUpdater removeAllFromApiId(java.util.List<org.bson.types.ObjectId> values) {
       updateOperations.removeAll("apiId", values);
       return this;
     }
@@ -374,12 +192,12 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater addDirectUrl(String fieldExpr, java.lang.String value, boolean addDups) {
+    public JavadocFieldUpdater addDirectUrl(java.lang.String value, boolean addDups) {
       updateOperations.add("directUrl", value, addDups);
       return this;
     }
 
-    public JavadocFieldUpdater addAllToDirectUrl(List<java.lang.String> values, boolean addDups) {
+    public JavadocFieldUpdater addAllToDirectUrl(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("directUrl", values, addDups);
       return this;
     }
@@ -399,7 +217,7 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater removeAllFromDirectUrl(List<java.lang.String> values) {
+    public JavadocFieldUpdater removeAllFromDirectUrl(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("directUrl", values);
       return this;
     }
@@ -433,12 +251,12 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater addId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+    public JavadocFieldUpdater addId(org.bson.types.ObjectId value, boolean addDups) {
       updateOperations.add("id", value, addDups);
       return this;
     }
 
-    public JavadocFieldUpdater addAllToId(List<org.bson.types.ObjectId> values, boolean addDups) {
+    public JavadocFieldUpdater addAllToId(java.util.List<org.bson.types.ObjectId> values, boolean addDups) {
       updateOperations.addAll("id", values, addDups);
       return this;
     }
@@ -458,7 +276,7 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater removeAllFromId(List<org.bson.types.ObjectId> values) {
+    public JavadocFieldUpdater removeAllFromId(java.util.List<org.bson.types.ObjectId> values) {
       updateOperations.removeAll("id", values);
       return this;
     }
@@ -492,12 +310,12 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater addJavadocClassId(String fieldExpr, org.bson.types.ObjectId value, boolean addDups) {
+    public JavadocFieldUpdater addJavadocClassId(org.bson.types.ObjectId value, boolean addDups) {
       updateOperations.add("javadocClassId", value, addDups);
       return this;
     }
 
-    public JavadocFieldUpdater addAllToJavadocClassId(List<org.bson.types.ObjectId> values, boolean addDups) {
+    public JavadocFieldUpdater addAllToJavadocClassId(java.util.List<org.bson.types.ObjectId> values, boolean addDups) {
       updateOperations.addAll("javadocClassId", values, addDups);
       return this;
     }
@@ -517,7 +335,7 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater removeAllFromJavadocClassId(List<org.bson.types.ObjectId> values) {
+    public JavadocFieldUpdater removeAllFromJavadocClassId(java.util.List<org.bson.types.ObjectId> values) {
       updateOperations.removeAll("javadocClassId", values);
       return this;
     }
@@ -551,12 +369,12 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater addLongUrl(String fieldExpr, java.lang.String value, boolean addDups) {
+    public JavadocFieldUpdater addLongUrl(java.lang.String value, boolean addDups) {
       updateOperations.add("longUrl", value, addDups);
       return this;
     }
 
-    public JavadocFieldUpdater addAllToLongUrl(List<java.lang.String> values, boolean addDups) {
+    public JavadocFieldUpdater addAllToLongUrl(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("longUrl", values, addDups);
       return this;
     }
@@ -576,7 +394,7 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater removeAllFromLongUrl(List<java.lang.String> values) {
+    public JavadocFieldUpdater removeAllFromLongUrl(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("longUrl", values);
       return this;
     }
@@ -610,12 +428,12 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater addName(String fieldExpr, java.lang.String value, boolean addDups) {
+    public JavadocFieldUpdater addName(java.lang.String value, boolean addDups) {
       updateOperations.add("name", value, addDups);
       return this;
     }
 
-    public JavadocFieldUpdater addAllToName(List<java.lang.String> values, boolean addDups) {
+    public JavadocFieldUpdater addAllToName(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("name", values, addDups);
       return this;
     }
@@ -635,7 +453,7 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater removeAllFromName(List<java.lang.String> values) {
+    public JavadocFieldUpdater removeAllFromName(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("name", values);
       return this;
     }
@@ -669,12 +487,12 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater addParentClassName(String fieldExpr, java.lang.String value, boolean addDups) {
+    public JavadocFieldUpdater addParentClassName(java.lang.String value, boolean addDups) {
       updateOperations.add("parentClassName", value, addDups);
       return this;
     }
 
-    public JavadocFieldUpdater addAllToParentClassName(List<java.lang.String> values, boolean addDups) {
+    public JavadocFieldUpdater addAllToParentClassName(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("parentClassName", values, addDups);
       return this;
     }
@@ -694,7 +512,7 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater removeAllFromParentClassName(List<java.lang.String> values) {
+    public JavadocFieldUpdater removeAllFromParentClassName(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("parentClassName", values);
       return this;
     }
@@ -728,12 +546,12 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater addShortUrl(String fieldExpr, java.lang.String value, boolean addDups) {
+    public JavadocFieldUpdater addShortUrl(java.lang.String value, boolean addDups) {
       updateOperations.add("shortUrl", value, addDups);
       return this;
     }
 
-    public JavadocFieldUpdater addAllToShortUrl(List<java.lang.String> values, boolean addDups) {
+    public JavadocFieldUpdater addAllToShortUrl(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("shortUrl", values, addDups);
       return this;
     }
@@ -753,7 +571,7 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater removeAllFromShortUrl(List<java.lang.String> values) {
+    public JavadocFieldUpdater removeAllFromShortUrl(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("shortUrl", values);
       return this;
     }
@@ -787,12 +605,12 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater addType(String fieldExpr, java.lang.String value, boolean addDups) {
+    public JavadocFieldUpdater addType(java.lang.String value, boolean addDups) {
       updateOperations.add("type", value, addDups);
       return this;
     }
 
-    public JavadocFieldUpdater addAllToType(List<java.lang.String> values, boolean addDups) {
+    public JavadocFieldUpdater addAllToType(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("type", values, addDups);
       return this;
     }
@@ -812,7 +630,7 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater removeAllFromType(List<java.lang.String> values) {
+    public JavadocFieldUpdater removeAllFromType(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("type", values);
       return this;
     }
@@ -846,12 +664,12 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater addUpperName(String fieldExpr, java.lang.String value, boolean addDups) {
+    public JavadocFieldUpdater addUpperName(java.lang.String value, boolean addDups) {
       updateOperations.add("upperName", value, addDups);
       return this;
     }
 
-    public JavadocFieldUpdater addAllToUpperName(List<java.lang.String> values, boolean addDups) {
+    public JavadocFieldUpdater addAllToUpperName(java.util.List<java.lang.String> values, boolean addDups) {
       updateOperations.addAll("upperName", values, addDups);
       return this;
     }
@@ -871,7 +689,7 @@ public class JavadocFieldCriteria {
       return this;
     }
 
-    public JavadocFieldUpdater removeAllFromUpperName(List<java.lang.String> values) {
+    public JavadocFieldUpdater removeAllFromUpperName(java.util.List<java.lang.String> values) {
       updateOperations.removeAll("upperName", values);
       return this;
     }
