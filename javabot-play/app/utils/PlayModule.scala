@@ -1,20 +1,12 @@
 package utils
 
-import com.google.code.morphia.Morphia
 import com.google.inject.name.Names
-import com.google.inject.{Provides, AbstractModule, Provider}
-import com.mongodb.MongoClient
+import com.google.inject.Provider
 import java.util.Properties
-import javax.inject.Named
 import play.Play
-import play.api.libs.Files
 import play.mvc.Http
-import java.io.File
-import security.OAuthDeadboltHandler
-import javabot.dao.util.DateTimeConverter
 import javabot.JavabotModule
 import com.fasterxml.jackson.databind.{JsonNode, ObjectMapper}
-import com.fasterxml.jackson.core.TreeNode
 
 class PlayModule extends JavabotModule {
   protected override def configure() {

@@ -9,7 +9,7 @@ class ChangeDao extends javabot.dao.ChangeDao {
   def find(form: ChangeForm, start: Int, count: Int): (Long, Seq[Change]) = {
     val criteria = new ChangeCriteria(ds)
     form.message.map( message => criteria.message().contains(message))
-    criteria.orderByChangeDate()
+    criteria.changeDate().order(false)
 
     val query = criteria.query()
     val total = ds.getCount(query)
