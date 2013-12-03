@@ -66,6 +66,32 @@ public class KarmaOperationTest extends BaseOperationTest {
         karmaDao.delete(karmaDao.find(target).getId());
     }
 
+    public void shortNameAddKarma() {
+        final String target="a"; // shortest possible name
+        final int karma = getKarma(new IrcUser(target, target, "localhost")) + 1;
+        testMessage("~" + target + "++", target + " has a karma level of " + karma + ", " + BaseTest.TEST_USER);
+        final String message = BaseTest.TEST_USER + " changed '" + target + "' to '" + karma + "'";
+        Assert.assertTrue(changeDao.findLog(message));
+        karmaDao.delete(karmaDao.find(target).getId());
+    }
+
+    public void noNameAddKarma() {
+        final String target=""; // no name
+        final int karma = getKarma(new IrcUser(target, target, "localhost")) + 1;
+        testMessage("~" + target + "++", BaseTest.TEST_USER+", what does that even *mean*?");
+        final String message = BaseTest.TEST_USER + " changed '" + target + "' to '" + karma + "'";
+        Assert.assertFalse(changeDao.findLog(message));
+    }
+
+    public void noNameSubKarma() {
+        final String target=""; // no name
+        final int karma = getKarma(new IrcUser(target, target, "localhost")) -1;
+        testMessage("~" + target + "--", BaseTest.TEST_USER+", what does that even *mean*?");
+        final String message = BaseTest.TEST_USER + " changed '" + target + "' to '" + karma + "'";
+        Assert.assertFalse(changeDao.findLog(message));
+    }
+
+
     public void logNew() {
         final String target = new Date().getTime() + "";
         final int karma = getKarma(new IrcUser(target, target, "localhost")) + 1;
