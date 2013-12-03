@@ -1,7 +1,6 @@
 package utils
 
 import be.objectify.deadbolt.core.models.{Permission, Role, Subject}
-import java.util.Collections
 import java.util
 import javabot.model.Admin
 

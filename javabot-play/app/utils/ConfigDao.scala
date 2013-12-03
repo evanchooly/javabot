@@ -3,7 +3,6 @@ package utils
 import java.util
 import javabot.model.{Admin, OperationEvent, EventType}
 import models.ConfigInfo
-import com.google.inject.Inject
 import java.io.File
 import play.Play
 import play.api.libs.Files
