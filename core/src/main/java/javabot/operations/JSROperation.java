@@ -9,6 +9,7 @@ import javabot.IrcEvent;
 import javabot.Message;
 import javabot.operations.locator.JCPJSRLocator;
 
+@SuppressWarnings("UnusedDeclaration")
 @SPI(BotOperation.class)
 public class JSROperation extends BotOperation {
     @Inject
