@@ -2,7 +2,6 @@ package javabot.operations;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 
 import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
@@ -60,7 +59,7 @@ public class KarmaOperation extends BotOperation {
             if (!channel.startsWith("#")) {
                 responses.add(new Message(channel, event, "Sorry, karma changes are not allowed in private messages."));
             }
-            if (responses.isEmpty()) {
+            if (responses.size() == 0) {
                 if (throttler.isThrottled(new KarmaInfo(sender, nick))) {
                     responses.add(new Message(channel, event, "Rest those fingers, Tex"));
                 } else {
