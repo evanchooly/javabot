@@ -5,7 +5,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Test
-public class JCPJSFLocatorImplTest {
+public class JCPJSFLocatorTest {
     public void jsr315() {
         final JCPJSRLocator locator = new JCPJSRLocator();
         Assert.assertEquals(locator.findInformation(315),
