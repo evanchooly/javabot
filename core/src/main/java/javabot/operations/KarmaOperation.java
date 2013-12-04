@@ -1,5 +1,9 @@
 package javabot.operations;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+
 import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
 import javabot.IrcUser;
