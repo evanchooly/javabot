@@ -56,7 +56,30 @@ public class KarmaOperationTest extends BaseOperationTest {
         karmaDao.delete(karmaDao.find(target).getId());
     }
 
-    @Test(enabled = false)  //  this feature breaks the admin operations
+    public void karmaLooksLikeParam() {
+        final String target = "foo " + new Date().getTime();
+        final int karma = getKarma(new IrcUser(target, target, "localhost")) - 1;
+        testMessage("~" + target + "--bar=as", target + " has a karma level of " + karma + ", " + BaseTest.TEST_USER);
+        final String message = BaseTest.TEST_USER + " changed '" + target + "' to '" + karma + "'";
+        Assert.assertTrue(changeDao.findLog(message));
+        karmaDao.delete(karmaDao.find(target).getId());
+    }
+
+    public void karmaLooksLikeParamShort() {
+        testMessage("~--bar=as", BaseTest.TEST_USER+", what does that even *mean*?");
+        testMessage("~ --bar=af", BaseTest.TEST_USER+", what does that even *mean*?");
+    }
+
+    public void noncontiguousNameAddKarmaTrailingSpace() {
+        final String target = "foo " + new Date().getTime();
+        final int karma = getKarma(new IrcUser(target, target, "localhost")) + 1;
+        testMessage("~" + target + " ++", target + " has a karma level of " + karma + ", " + BaseTest.TEST_USER);
+        final String message = BaseTest.TEST_USER + " changed '" + target + "' to '" + karma + "'";
+        Assert.assertTrue(changeDao.findLog(message));
+        karmaDao.delete(karmaDao.find(target).getId());
+    }
+
+    @Test
     public void noncontiguousNameAddKarmaWithComment() {
         final String target = "foo " + new Date().getTime();
         final int karma = getKarma(new IrcUser(target, target, "localhost")) + 1;
