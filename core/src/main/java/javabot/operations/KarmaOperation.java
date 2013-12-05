@@ -24,7 +24,7 @@ public class KarmaOperation extends BotOperation {
     @SuppressWarnings("UnusedDeclaration")
     private static final Logger log = LoggerFactory.getLogger(KarmaOperation.class);
     private static final Throttler<KarmaInfo> throttler = new Throttler<>(100, Javabot.THROTTLE_TIME);
-    private static Pattern optionPattern = Pattern.compile("\\s--\\p{Alpha}[\\p{Alnum}]*=");
+    private static final Pattern optionPattern = Pattern.compile("\\s--\\p{Alpha}[\\p{Alnum}]*=");
     @Inject
     private KarmaDao dao;
 
@@ -79,7 +79,7 @@ public class KarmaOperation extends BotOperation {
             if (!channel.startsWith("#")) {
                 responses.add(new Message(channel, event, "Sorry, karma changes are not allowed in private messages."));
             }
-            if (responses.size() == 0) {
+            if (responses.isEmpty()) {
                 if (throttler.isThrottled(new KarmaInfo(sender, nick))) {
                     responses.add(new Message(channel, event, "Rest those fingers, Tex"));
                 } else {

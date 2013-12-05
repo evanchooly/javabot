@@ -14,7 +14,7 @@ public class URLTitleOperationTest extends BaseOperationTest {
                 {"http://enigmastation.com/", "http://enigmastation.com/: Enigmastation.com — Joseph Ottinger's blog"},
                 {"Have you tried to http://google.com", "http://google.com: Google"},
                 {"http://varietyofsound.wordpress.com has a lot of VSTs", "http://varietyofsound.wordpress.com: Variety Of Sound"}
-        };
+        }; 
     }
 
     @Test(dataProvider = "urls")

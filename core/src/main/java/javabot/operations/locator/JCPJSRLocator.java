@@ -1,5 +1,8 @@
 package javabot.operations.locator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -10,11 +13,9 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class JCPJSRLocator {
     public Map<String, String> locate(final Map<String, String> inputs) {
@@ -32,7 +33,7 @@ public class JCPJSRLocator {
             if (entity != null) {
                 try {
                     String data = EntityUtils.toString(entity);
-                    org.jsoup.nodes.Document doc = Jsoup.parse(data);
+                    Document doc = Jsoup.parse(data);
                     Element title = doc.select("div.header1").first();
                     StringBuilder titleText = new StringBuilder();
                     String separator = "";
