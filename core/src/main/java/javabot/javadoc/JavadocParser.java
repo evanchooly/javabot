@@ -75,10 +75,10 @@ public class JavadocParser {
           file.delete();
         }
       }
-      writer.write(String.format("Finished importing %s.  %s!", api.getName(),
-          workQueue.isEmpty() ? "SUCCESS" : "FAILURE"));
       executor.shutdown();
       executor.awaitTermination(1, TimeUnit.HOURS);
+      writer.write(String.format("Finished importing %s.  %s!", api.getName(),
+          workQueue.isEmpty() ? "SUCCESS" : "FAILURE"));
     } catch (IOException | InterruptedException e) {
       log.error(e.getMessage(), e);
       throw new RuntimeException(e.getMessage(), e);

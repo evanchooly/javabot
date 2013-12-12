@@ -96,7 +96,7 @@ public class JavadocTest extends BaseOperationTest {
     ApiEvent event = new ApiEvent(BaseTest.TEST_USER.getNick(), apiName, apiUrlString, downloadUrlString);
     eventDao.save(event);
     waitForEvent(event, "adding " + apiName, new Duration(30, TimeUnit.MINUTES));
-    getJavabot().getMessages();
+    drainMessages();
   }
 
   private void dropApi(final String apiName) {
@@ -104,5 +104,6 @@ public class JavadocTest extends BaseOperationTest {
     final ApiEvent event = new ApiEvent(EventType.DELETE, BaseTest.TEST_USER.getNick(), apiName);
     eventDao.save(event);
     waitForEvent(event, "dropping " + apiName, Duration.FIVE_MINUTES);
+    drainMessages();
   }
 }

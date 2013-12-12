@@ -2,8 +2,11 @@ package javabot.admin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
+import com.jayway.awaitility.Awaitility;
 import javabot.Message;
 import javabot.commands.AdminCommand;
 import javabot.dao.ConfigDao;
@@ -48,11 +51,23 @@ public class AdminOperationTest extends BaseOperationTest {
 
   @Test(dependsOnMethods = {"disableOperations"})
   public void enableOperations() {
+    List<Message> messages = getJavabot().getMessages();
+    for (Message message : messages) {
+      System.out.println("message = " + message);
+    }
     final String message = sendMessage("~admin listOperations").get(1).getMessage();
     for (final String name : message.split(",")) {
       final String opName = name.trim().split(" ")[0];
       sendMessage("~admin enableOperation --name=" + opName);
-      Assert.assertTrue(findOperation(opName) != null, "Looking for " + opName);
+      Awaitility.await("~admin enableOperation --name=" + opName)
+          .atMost(60, TimeUnit.SECONDS)
+          .until(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+              return findOperation(opName) != null;
+            }
+          });
+      getJavabot().getMessages();
     }
   }
 }

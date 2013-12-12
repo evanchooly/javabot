@@ -12,11 +12,8 @@ import org.testng.Assert;
 public abstract class BaseOperationTest extends BaseTest {
   protected void scanForResponse(final String message, final String target) {
     final List<Message> list = sendMessage(message);
-    StringBuilder returned = new StringBuilder();
     boolean found = false;
     for (final Message response : list) {
-      returned.append(response.getMessage())
-        .append("\n");
       found |= response.getMessage().contains(target);
     }
     Assert.assertTrue(found, String.format("Did not find \n'%s' in \n'%s'", target, list));

@@ -2,6 +2,7 @@ package javabot;
 
 import java.util.EnumSet;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import com.google.inject.Injector;
@@ -20,7 +21,9 @@ import org.testng.annotations.Guice;
 @SuppressWarnings({"StaticNonFinalField"})
 public class BaseTest {
   protected static final String TEST_BOT = "jbtestbot";
+
   public static final IrcUser TEST_USER = new IrcUser("jbtestuser", "jbtestuser", "localhost");
+
   public EnumSet<State> done = EnumSet.of(State.COMPLETED, State.FAILED);
 
   @Inject
@@ -28,17 +31,36 @@ public class BaseTest {
 
   @Inject
   private AdminDao adminDao;
+
   @Inject
   private ChannelDao channelDao;
+
   @Inject
   private Injector injector;
 
   public final String ok;
+
   protected TestJavabot bot;
+
+  static {
+    Javabot.setPropertiesFile("test-javabot.properties");
+  }
 
   public BaseTest() {
     final String nick = BaseTest.TEST_USER.getNick();
     ok = "OK, " + nick.substring(0, Math.min(nick.length(), 16)) + ".";
+  }
+
+  public void drainMessages() {
+    Awaitility.await("Draining Messages")
+        .atMost(1, TimeUnit.HOURS)
+        .pollInterval(5, TimeUnit.SECONDS)
+        .until(new Callable<Boolean>() {
+          @Override
+          public Boolean call() throws Exception {
+            return getJavabot().getMessages().isEmpty() ;
+          }
+        });
   }
 
   protected TestJavabot createBot() {
@@ -86,6 +108,7 @@ public class BaseTest {
   protected void waitForEvent(final AdminEvent event, final String alias, final Duration timeout) {
     Awaitility.await(alias)
         .atMost(timeout)
+        .pollInterval(5, TimeUnit.SECONDS)
         .until(new Callable<Boolean>() {
           @Override
           public Boolean call() throws Exception {

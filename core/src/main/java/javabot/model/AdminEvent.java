@@ -118,6 +118,18 @@ public class AdminEvent implements Serializable, Persistent {
     }
   }
 
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder("AdminEvent{");
+    sb.append("id=").append(id);
+    sb.append(", requestedOn=").append(requestedOn);
+    sb.append(", completed=").append(completed);
+    sb.append(", state=").append(state);
+    sb.append(", type=").append(type);
+    sb.append('}');
+    return sb.toString();
+  }
+
   public void add(Javabot bot) {
   }
 

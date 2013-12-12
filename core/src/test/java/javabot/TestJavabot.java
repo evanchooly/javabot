@@ -9,7 +9,7 @@ import javabot.dao.AdminDao;
 public class TestJavabot extends Javabot {
   @Inject
   private AdminDao adminDao;
-  private final List<Message> messages = new ArrayList<>();
+  private List<Message> messages = new ArrayList<>();
 
   @Override
   protected void createIrcBot() {
@@ -22,8 +22,8 @@ public class TestJavabot extends Javabot {
   }
 
   public List<Message> getMessages() {
-    final List<Message> list = new ArrayList<>(messages);
-    messages.clear();
+    final List<Message> list = messages;
+    messages = new ArrayList<>();
     return list;
   }
 
@@ -53,6 +53,7 @@ public class TestJavabot extends Javabot {
   @Override
   public void postMessage(final Message message) {
     logMessage(message);
+    log.info(message.toString());
     messages.add(message);
   }
 

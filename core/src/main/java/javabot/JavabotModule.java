@@ -1,7 +1,11 @@
 package javabot;
 
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Morphia;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import javax.inject.Singleton;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.mongodb.Mongo;
@@ -11,12 +15,8 @@ import com.mongodb.WriteConcern;
 import javabot.dao.util.DateTimeConverter;
 import javabot.javadoc.JavadocClass;
 import javabot.model.Factoid;
-
-import javax.inject.Singleton;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
 
 public class JavabotModule extends AbstractModule {
   private Properties properties;
@@ -84,7 +84,7 @@ public class JavabotModule extends AbstractModule {
   @Provides
   @Singleton
   public Properties getProperties() throws IOException {
-    try (InputStream stream = new FileInputStream("javabot.properties")) {
+    try (InputStream stream = new FileInputStream(Javabot.getPropertiesFile())) {
       properties = new Properties();
       properties.load(stream);
       return properties;

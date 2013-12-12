@@ -1,5 +1,30 @@
 package javabot;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import javax.inject.Inject;
+
 import ca.grimoire.maven.ArtifactDescription;
 import ca.grimoire.maven.NoArtifactException;
 import ca.grimoire.maven.ResourceProvider;
@@ -28,32 +53,9 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.UUID;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 public class Javabot {
+  private static String propertiesName = "javabot.properties";
+
   @Inject
   ChannelDao channelDao;
 
@@ -215,7 +217,7 @@ public class Javabot {
   public static void validateProperties() {
     final Properties props = new Properties();
     try {
-      try (InputStream stream = new FileInputStream("javabot.properties")) {
+      try (InputStream stream = new FileInputStream(getPropertiesFile())) {
         props.load(stream);
       } catch (FileNotFoundException e) {
         throw new RuntimeException("Please define a javabot.properties file to configure the bot");
@@ -234,6 +236,14 @@ public class Javabot {
       throw new RuntimeException("Missing configuration parameters");
     }
     System.getProperties().putAll(props);
+  }
+
+  public static String getPropertiesFile() {
+    return propertiesName;
+  }
+
+  public static void setPropertiesFile(final String name) {
+    propertiesName = name;
   }
 
   static boolean check(final Properties props, final String key) {

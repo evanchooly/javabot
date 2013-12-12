@@ -154,4 +154,15 @@ public class ApiEvent extends AdminEvent {
     }
     return file;
   }
+
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder("ApiEvent{");
+    sb.append("name='").append(name).append('\'');
+    sb.append(", state=").append(getState());
+    sb.append(", completed=").append(getCompleted());
+    sb.append(", type=").append(getType());
+    sb.append('}');
+    return sb.toString();
+  }
 }
