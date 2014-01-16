@@ -169,11 +169,18 @@ public class Weather {
             result.append(replaceDegrees(windChill));
             result.append(dotWithSpaces);
         }
+        result.append("humidity at ");
         result.append(humidity);
         result.append(dotWithSpaces);
         result.append(condition);
         result.append(dotWithSpaces);
-        result.append(wind);
+        if (StringUtils.trimToEmpty(this.wind).equals("")) {
+            result.append("Wind ");
+            //lowercase the first char since we are prepending with an uppercase word
+            //for instance "wind" might be "From the West at..."  We'd want that do be "from the West at..."
+            result.append(this.wind.substring(0,1).toLowerCase());
+            result.append(this.wind.substring(1));
+        }
         return result.toString();
     }
 
