@@ -29,7 +29,7 @@ public class WeatherOperation extends BotOperation {
       final Weather result = weatherDao.getWeatherFor(place);
       if (result == null) {
         responses.add(new Message(event.getChannel(), event,
-            "The weather operation currently supports only places on Earth; thank you come again." + place));
+            "We cannot locate " +  place + ". The weather operation only supports places on Earth; thank you come again."));
       } else {
         responses.add(new Message(event.getChannel(), event, result.toString()));
       }

@@ -21,30 +21,13 @@ public class WeatherOperationTest extends BaseOperationTest {
 
     @Test
     public void cityNotFound() throws Exception {
-        scanForResponse("~weather lajdlfjlasjdf", "only places on Earth");
+        scanForResponse("~weather lajdlfjlasjdf", "only supports places on Earth");
     }
 
     @Test
     public void cityWithSpaces() throws Exception {
         super.scanForResponse("~weather New York", "Weather for");
 
-    }
-
-    @Test(enabled = false)
-    public void weatherFromGoogle() throws Exception {
-        super.scanForResponse("~weather using google for New York", "Weather for");
-    }
-
-    @Test
-    public void weatherFromWeatherUnderground() throws Exception {
-        super.scanForResponse("~weather using wu for Winnipeg", "Weather for");
-    }
-
-    @Test
-    public void weatherFromUnknown() throws Exception {
-        //the weather service should still return something because it will just default to
-        //trying all weather services until it gets a result
-        super.scanForResponse("~weather using somethingelse for Winnipeg", "Weather for");
     }
 
 }
