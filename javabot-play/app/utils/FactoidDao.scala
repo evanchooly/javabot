@@ -8,9 +8,9 @@ import javabot.model.criteria.FactoidCriteria
 class FactoidDao extends javabot.dao.FactoidDao {
   def find(form: FactoidForm, start: Int, count: Int): (Long, Seq[Factoid]) = {
     val criteria = new FactoidCriteria(ds)
-    form.name.map( name => criteria.name().contains(name))
-    form.value.map( value => criteria.value().contains(value))
-    form.user.map( user => criteria.userName().contains(user))
+    form.name.map( name => criteria.upperName().containsIgnoreCase(name))
+    form.value.map( value => criteria.value().containsIgnoreCase(value))
+    form.user.map( user => criteria.userName().containsIgnoreCase(user))
 
     criteria.name().order()
 

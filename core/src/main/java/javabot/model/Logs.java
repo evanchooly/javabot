@@ -1,16 +1,18 @@
 package javabot.model;
 
 import com.antwerkz.maven.SPI;
+import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
-import org.bson.types.ObjectId;
-import org.joda.time.DateTime;
+import org.mongodb.morphia.annotations.PrePersist;
 
-@Entity("logs")
+@Entity(value = "logs", noClassnameStored = true)
 @Indexes({
-    @Index(value = "channel, updated, nick", name = "Logs")
+    @Index(value = "channel, updated, nick", name = "Logs"),
+    @Index(value = "channel, updated, upperNick", name = "seen")
 })
 @SPI(Persistent.class)
 public class Logs implements Persistent {
@@ -61,6 +63,14 @@ public class Logs implements Persistent {
     nick = user;
   }
 
+  public String getUpperNick() {
+    return upperNick;
+  }
+
+  public void setUpperNick(final String upperNick) {
+    this.upperNick = upperNick;
+  }
+
   public String getChannel() {
     return channel;
   }
@@ -103,6 +113,11 @@ public class Logs implements Persistent {
 
   public boolean isServerMessage() {
     return message != null && Type.JOIN == getType() || Type.PART == getType() || Type.QUIT == getType();
+  }
+
+  @PrePersist
+  public void upperNick() {
+    upperNick = nick.toUpperCase();
   }
 
   @Override
