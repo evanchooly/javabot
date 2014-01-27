@@ -180,12 +180,15 @@ public class Javabot {
     while (!pircBot.isConnected()) {
       try {
         connectAndId();
-      } catch (Exception exception) {
+      } catch (IrcException exception) {
         queue.clear();
-        pircBot.disconnect();
         log.error(exception.getMessage(), exception);
+      } catch (IOException e) {
+        pircBot.disconnect();
+        log.error(e.getMessage(), e);
+        throw new RuntimeException(e.getMessage(), e);
       }
-      sleep(1000);
+      sleep(10000);
     }
     final List<Channel> channelList = channelDao.getChannels();
     for (final Channel channel : channelList) {
@@ -206,7 +209,7 @@ public class Javabot {
       sleep(3000);
       reconnecting = false;
       nick = oldNick;
-      pircBot.disconnect();
+      pircBot.changeNick(nick);
     } else {
       pircBot.connect(host, port);
       pircBot.sendRawLine("PRIVMSG NickServ :identify " + getNickPassword());
