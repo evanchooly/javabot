@@ -42,11 +42,8 @@ public class BaseTest {
 
   protected TestJavabot bot;
 
-  static {
-    Javabot.setPropertiesFile("test-javabot.properties");
-  }
-
   public BaseTest() {
+    Javabot.setPropertiesFile("test-javabot.properties");
     final String nick = BaseTest.TEST_USER.getNick();
     ok = "OK, " + nick.substring(0, Math.min(nick.length(), 16)) + ".";
   }
