@@ -127,7 +127,7 @@ public class AddFactoidOperation extends StandardOperation {
                                           final int is, final String key) {
         final String newValue = message.substring(is + 4);
         logDao.logMessage(Type.MESSAGE, event.getSender().getNick(), event.getChannel(),
-                          Sofia.factoidChanged(event.getSender(), key, factoid.getValue(), newValue));
+                          Sofia.factoidChanged(event.getSender(), key, factoid.getValue(), newValue, event.getChannel()));
         factoid.setValue(newValue);
         factoid.setUpdated(new DateTime());
         factoid.setUserName(event.getSender().getNick());
