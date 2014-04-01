@@ -92,7 +92,7 @@ public class AddFactoidOperation extends StandardOperation {
             if (!channel.startsWith("#") && !isAdminUser(event)) {
                 responses.add(new Message(channel, event, "Sorry, factoid changes are not allowed in private messages."));
             } else {
-                log.info(format("adding factoid because of '%s' with message '%s' from channel '%s' and user '%s'", event, message, 
+                log.error(format("adding factoid because of '%s' with message '%s' from channel '%s' and user '%s'", event, message, 
                                 channel, sender));
                 String key = message.substring(0, message.indexOf(" is "));
                 key = key.toLowerCase();
