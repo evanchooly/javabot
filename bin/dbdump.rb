@@ -24,7 +24,7 @@ def cleanup
   count=7
   entries = %x( ls #{@backupRoot} ).split
   entries.reverse.each_with_index { |dir, index|
-    if index > 6 and dir != '.' and dir != '..'
+    if index > 13 and dir != '.' and dir != '..'
       puts "Removing expired backup #{dir}"
       FileUtils.remove_dir(@backupRoot + '/' + dir)
     end
