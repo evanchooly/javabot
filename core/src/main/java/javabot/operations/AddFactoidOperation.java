@@ -11,13 +11,19 @@ import javabot.dao.LogsDao;
 import javabot.model.Factoid;
 import javabot.model.Logs.Type;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.String.format;
+
 @SPI(StandardOperation.class)
 public class AddFactoidOperation extends StandardOperation {
+    public static final Logger log = LoggerFactory.getLogger(AddFactoidOperation.class);
+    
     @Inject
     private FactoidDao factoidDao;
     @Inject
@@ -67,7 +73,7 @@ public class AddFactoidOperation extends StandardOperation {
                             responses.add(updateExistingFactoid(event, message, factoid, is, key));
                         } else {
                             logDao.logMessage(Type.MESSAGE, event.getSender().getNick(), event.getChannel(),
-                                              String.format(Sofia.changingLockedFactoid(event.getSender(), key)));
+                                              format(Sofia.changingLockedFactoid(event.getSender(), key)));
                             responses.add(new Message(event.getChannel(), event, Sofia.factoidLocked(event.getSender())));
                         }
                     } else {
@@ -86,6 +92,8 @@ public class AddFactoidOperation extends StandardOperation {
             if (!channel.startsWith("#") && !isAdminUser(event)) {
                 responses.add(new Message(channel, event, "Sorry, factoid changes are not allowed in private messages."));
             } else {
+                log.info(format("adding factoid because of '%s' with message '%s' from channel '%s' and user '%s'", event, message, 
+                                channel, sender));
                 String key = message.substring(0, message.indexOf(" is "));
                 key = key.toLowerCase();
                 while (key.endsWith(".") || key.endsWith("?") || key.endsWith("!")) {
