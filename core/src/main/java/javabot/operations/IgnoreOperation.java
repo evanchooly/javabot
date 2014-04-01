@@ -18,7 +18,7 @@ public class IgnoreOperation extends BotOperation {
         Javabot bot = getBot();
         final String[] parts = message.split(" ");
         final List<Message> responses = new ArrayList<Message>();
-        if (message.startsWith("info ")) {
+        if (message.startsWith("ignore ")) {
             bot.addIgnore(parts[1]);
               responses.add(new Message(event.getChannel(), event, format("I am now ignoring %s", parts[1])));
         }
