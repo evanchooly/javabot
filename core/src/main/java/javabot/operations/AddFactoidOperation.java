@@ -83,29 +83,33 @@ public class AddFactoidOperation extends StandardOperation {
                                      final IrcUser sender) {
         final List<Message> responses = new ArrayList<>();
         if (message.toLowerCase().contains(" is ")) {
-            String key = message.substring(0, message.indexOf(" is "));
-            key = key.toLowerCase();
-            while (key.endsWith(".") || key.endsWith("?") || key.endsWith("!")) {
-                key = key.substring(0, key.length() - 1);
-            }
-            final int index = message.indexOf(" is ");
-            String value = null;
-            if (index != -1) {
-                value = message.substring(index + 4, message.length());
-            }
-            if (key.trim().isEmpty()) {
-                responses.add(new Message(channel, event, Sofia.invalidFactoidName()));
-            } else if (value == null || value.trim().isEmpty()) {
-                responses.add(new Message(channel, event, Sofia.invalidFactoidValue()));
-            } else if (factoidDao.hasFactoid(key)) {
-                responses.add(
-                                 new Message(channel, event, Sofia.factoidExists(key, sender)));
+            if (!channel.startsWith("#") && !isAdminUser(event)) {
+                responses.add(new Message(channel, event, "Sorry, factoid changes are not allowed in private messages."));
             } else {
-                if (value.startsWith("<see>")) {
-                    value = value.toLowerCase();
+                String key = message.substring(0, message.indexOf(" is "));
+                key = key.toLowerCase();
+                while (key.endsWith(".") || key.endsWith("?") || key.endsWith("!")) {
+                    key = key.substring(0, key.length() - 1);
                 }
-                factoidDao.addFactoid(sender.getNick(), key, value);
-                responses.add(new Message(channel, event, Sofia.ok(sender)));
+                final int index = message.indexOf(" is ");
+                String value = null;
+                if (index != -1) {
+                    value = message.substring(index + 4, message.length());
+                }
+                if (key.trim().isEmpty()) {
+                    responses.add(new Message(channel, event, Sofia.invalidFactoidName()));
+                } else if (value == null || value.trim().isEmpty()) {
+                    responses.add(new Message(channel, event, Sofia.invalidFactoidValue()));
+                } else if (factoidDao.hasFactoid(key)) {
+                    responses.add(
+                                     new Message(channel, event, Sofia.factoidExists(key, sender)));
+                } else {
+                    if (value.startsWith("<see>")) {
+                        value = value.toLowerCase();
+                    }
+                    factoidDao.addFactoid(sender.getNick(), key, value);
+                    responses.add(new Message(channel, event, Sofia.ok(sender)));
+                }
             }
         }
         return responses;
