@@ -1,11 +1,5 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.inject.Inject;
-
 import com.antwerkz.maven.SPI;
 import javabot.Action;
 import javabot.IrcEvent;
@@ -18,6 +12,12 @@ import javabot.model.Factoid;
 import javabot.operations.throttle.Throttler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @SPI(StandardOperation.class)
 public class GetFactoidOperation extends StandardOperation {
@@ -45,7 +45,7 @@ public class GetFactoidOperation extends StandardOperation {
   }
 
   private Message getFactoid(final TellSubject subject, final String toFind, final IrcUser sender,
-      final String chadnnel, final IrcEvent event, final Set<String> backtrack) {
+      final String channel, final IrcEvent event, final Set<String> backtrack) {
     String message = toFind;
     if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
       message = message.substring(0, message.length() - 1);

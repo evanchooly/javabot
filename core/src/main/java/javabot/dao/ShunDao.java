@@ -31,7 +31,7 @@ public class ShunDao extends BaseDao<Shun> {
     Shun shun = getShun(nick);
     if (shun == null) {
       shun = new Shun();
-      shun.setNick(nick);
+      shun.setNick(nick.toUpperCase());
       shun.setExpiry(until);
       save(shun);
     }

@@ -128,7 +128,7 @@
             <dependency>
                 <groupId>org.mongodb.morphia</groupId>
                 <artifactId>morphia</artifactId>
-                <version>0.105</version>
+                <version>0.107</version>
             </dependency>
 
             <dependency>
