@@ -7,10 +7,6 @@ import org.pac4j.play.Config
 import play.GlobalSettings
 import utils.PlayModule
 import org.pac4j.oauth.client.Google2Client
-import play.mvc.Action
-import play.mvc.Http.{Context, Request}
-import java.lang.reflect.Method
-import play.api.Play
 
 class Global extends GlobalSettings {
 
@@ -27,13 +23,5 @@ class Global extends GlobalSettings {
     Config.setClients(new Clients("http://evanchooly.com/oauth2callback", new Google2Client(key, secret)))
     // for test purposes : profile timeout = 60 seconds
     Config.setProfileTimeout(60)
-  }
-
-  override def onRequest(p1: Request, p2: Method) = {
-    new Action.Simple() {
-      def call(ctx: Context): play.mvc.Result = {
-        delegate.call(ctx)
-      }
-    }
   }
 }

@@ -1,7 +1,7 @@
 package security
 
 import be.objectify.deadbolt.scala.{DynamicResourceHandler, DeadboltHandler}
-import play.api.mvc.{Request, Result, Results}
+import play.api.mvc.{SimpleResult, Request, Result, Results}
 import be.objectify.deadbolt.core.models.Subject
 
 import models.Admin
@@ -10,11 +10,12 @@ import java.io.Serializable
 import scala.None
 import javax.inject.{Singleton, Inject}
 import com.google.inject.Provider
+import scala.concurrent.Future
 
 @Singleton
 class OAuthDeadboltHandler @Inject()(adminDao: AdminDao, contextProvider: Provider[Context]) extends DeadboltHandler {
 
-  def beforeAuthCheck[A](request: Request[A]) = Option.empty[Result]
+  def beforeAuthCheck[A](request: Request[A]) = Option.empty[Future[SimpleResult]]
 
   override def getSubject[A](request: Request[A]): Option[Subject] = {
     for {
@@ -24,7 +25,7 @@ class OAuthDeadboltHandler @Inject()(adminDao: AdminDao, contextProvider: Provid
   }
 
   def onAuthFailure[A](request: Request[A]): Result = {
-    play.api.mvc.Results.Unauthorized("who are you anyway?")
+    Results.Forbidden("who are you anyway?")
 //    Results.Forbidden(views.html.accessFailed(this, contextProvider.get()))
   }
 

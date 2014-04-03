@@ -18,7 +18,6 @@ import com.google.inject.Provider
 import security.OAuthDeadboltHandler
 import java.io.File
 import javax.inject.{Singleton, Inject}
-import javabot.javadoc.JavadocApi
 
 @Singleton
 class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoidDao: FactoidDao, apiDao: ApiDao,
@@ -182,7 +181,7 @@ class AdminController @Inject()(configDao: ConfigDao, adminDao: AdminDao, factoi
   def addApi2 = Restrict(Array("botAdmin"), handler) {
     FileUploadAction(parse.multipartFormData) {
       implicit request => {
-        val map: Option[mvc.SimpleResult[mvc.Results.EmptyContent]] = request.body.file("file").map {
+        val map: Option[mvc.SimpleResult] = request.body.file("file").map {
           jar =>
             val form = apiForm.bindFromRequest().get
             val savedFile = File.createTempFile(form.name + "javadoc", ".jar")
