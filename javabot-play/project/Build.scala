@@ -10,7 +10,7 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     "org.webjars" %% "webjars-play" % "2.2.1-2",
     "org.webjars" % "bootstrap" % "3.1.0",
-    "org.webjars" % "jquery" % "1.9.1",
+    "org.webjars" % "jquery" % "2.1.0-2",
     "org.webjars" % "less" % "1.7.0",
     "com.antwerkz.javabot" % "core" % version changing(),
     "be.objectify" %% "deadbolt-scala" % "2.2-RC2",
