@@ -1,7 +1,7 @@
 idea-files
 target
 javabot.properties
-web-play/conf/oauth.conf
+web/conf/oauth.*
 javabot-play/conf/oauth.*
 javabot-play/conf/javabot.properties
 play.war

@@ -1,0 +1,56 @@
+@(handler: be.objectify.deadbolt.java.DeadboltHandler, context: utils.Context, form: Form[javabot.model.Karma],
+    page: Page[javabot.model.Karma])
+
+@import java.net.URLEncoder
+@import be.objectify.deadbolt.java.views.html._
+@import be.objectify.deadbolt.core.utils.TemplateUtils._
+@import scala.collection.JavaConversions._
+
+@main(handler, context) {
+    <table class="karma zebra-striped">
+        <tr>
+            <td class="right top" colspan="4">
+                <div id="pagination" class="pagination">
+                   <ul>
+                       @if(page.prev) {
+                           <li class="prev">
+                               <a href="@Encodings.encodeForm(routes.Application.karma() + "?page=" + page, form.data)">&larr; Previous</a>
+                           </li>
+                       } else {
+                           <li class="prev disabled">
+                               <a>&larr; Previous</a>
+                           </li>
+                       }
+
+                       <li class="current">
+                           Displaying @(page.offset + 1) to @(page.offset + page.items.size) of @page.total
+                       </li>
+                       @if(page.next) {
+                           <li class="next">
+                               <a href="@Encodings.encodeForm(routes.Application.karma() + "?page=" + page, form.data)">Next &rarr;</a>
+                           </li>
+                       } else {
+                           <li class="next disabled">
+                               <a>Next &rarr;</a>
+                           </li>
+                       }
+                   </ul>
+               </div>
+            </td>
+        </tr>
+        <tr>
+            <th>Nick</th>
+            <th>Karma</th>
+            <th>Last Donor</th>
+            <th class="right">Date</th>
+        </tr>
+        @for(karma <- page.items) {
+            <tr>
+                <td>@karma.getName</td>
+                <td>@karma.getValue</td>
+                <td>@karma.getUserName</td>
+                <td class="right">@{karma.getUpdated.toString("yyyy.MM.dd hh:mm")}</td>
+            </tr>
+        }
+    </table>
+}

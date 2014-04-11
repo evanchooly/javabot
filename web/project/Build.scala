@@ -13,14 +13,14 @@ object ApplicationBuild extends Build {
     "org.webjars" % "jquery" % "2.1.0-2",
     "org.webjars" % "less" % "1.7.0",
     "com.antwerkz.javabot" % "core" % version changing(),
-    "be.objectify" %% "deadbolt-scala" % "2.2-RC2",
+    "be.objectify" %% "deadbolt-java" % "2.2-RC4",
     "com.google.inject" % "guice" % "3.0",
     "com.google.inject.extensions" % "guice-servlet" % "3.0",
     "com.google.inject.extensions" % "guice-multibindings" % "3.0",
     "org.twitter4j" % "twitter4j-core" % "3.0.3",
     "org.mongodb.morphia" % "morphia-logging-slf4j" % "0.105",
-    "org.pac4j" % "play-pac4j_scala2.10" % "1.1.0",
-    "org.pac4j" % "pac4j-oauth" % "1.4.0",
+    "org.pac4j" % "play-pac4j_java" % "1.2.0",
+    "org.pac4j" % "pac4j-oauth" % "1.5.0",
     "com.codiform" % "moo" % "1.3"
   )
 
