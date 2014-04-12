@@ -4,8 +4,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
-import be.objectify.deadbolt.java.actions.Group;
-import be.objectify.deadbolt.java.actions.Restrict;
+import be.objectify.deadbolt.java.actions.Unrestricted;
 import javabot.dao.ApiDao;
 import javabot.dao.ChannelDao;
 import javabot.dao.FactoidDao;
@@ -16,10 +15,11 @@ import javabot.model.Config;
 import javabot.model.EventType;
 import models.Admin;
 import org.bson.types.ObjectId;
+import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.play.java.JavaController;
-import org.pac4j.play.java.RequiresAuthentication;
 import play.data.Form;
 import play.mvc.Http;
+import play.mvc.Http.Request;
 import play.mvc.Result;
 import security.OAuthDeadboltHandler;
 import utils.AdminDao;
@@ -28,8 +28,8 @@ import utils.Context;
 import views.html.admin.config;
 
 @Singleton
-@Restrict({@Group("botAdmin")})
-@RequiresAuthentication(clientName = "Google2Client")
+//@Restrict({@Group("botAdmin")})
+//@RequiresAuthentication(clientName = "Google2Client")
 public class AdminController extends JavaController {
   @Inject
   private ConfigDao configDao;
@@ -49,16 +49,32 @@ public class AdminController extends JavaController {
   @Inject
   private Provider<Context> contextProvider;
 
+  @Inject
+  private OAuthDeadboltHandler handler;
+
   private javabot.model.Admin getAdmin() {
     return adminDao.getAdmin(Http.Context.current().session().get("userName"));
   }
 
+  @Unrestricted
   public Result login() {
-    return null;
+    CommonProfile profile = getUserProfile();
+    Request request = Http.Context.current().request();
+    System.out.println("login");
+    if (adminDao.findAll().isEmpty()) {
+      System.out.println("creating new admin");
+      adminDao.create("", profile.getEmail(), "");
+    }
+    return ok(
+        views.html.admin.admin.apply(handler, contextProvider.get(), Form.form(Admin.class).bindFromRequest(request),
+            adminDao.findAll()));
   }
 
   public Result index() {
-    return null;
+    Request request = Http.Context.current().request();
+    return ok(views.html.admin.admin.apply(handler, contextProvider.get(),
+        Form.form(Admin.class).bindFromRequest(request), adminDao.findAll()));
+
   }
 
   public Result showConfig() {
@@ -74,21 +90,21 @@ public class AdminController extends JavaController {
   }
 
   public Result addAdmin() {
-    Form<Admin> adminForm = Form.form(Admin.class);
-    Admin admin = adminForm.bindFromRequest().get();
+    Form<javabot.model.Admin> adminForm = Form.form(javabot.model.Admin.class);
+    Form<javabot.model.Admin> form = adminForm.bindFromRequest();
+    System.out.println("form = " + form);
+    javabot.model.Admin admin = form.get();
+    System.out.println("admin = " + admin);
     adminDao.save(admin);
-    return ok(routes.AdminController.index().method());
+    return redirect(routes.AdminController.index());
   }
 
-  //  @Get("/deleteAdmin")
-  //  @Restrict(JavabotRoleHolder.BOT_ADMIN)
-  public Result deleteAdmin(String id) /*= RequiresAuthentication("Google2Client")*/ {
-//    javabot.model.Admin admin = adminDao.find(id);
-//    if (admin != null && !admin.getBotOwner) {
-//      adminDao.delete(admin);
-//    }
-//    return new ok(routes.AdminController.index().method());
-    return null;
+  public Result deleteAdmin(String id) {
+    javabot.model.Admin admin = adminDao.find(new ObjectId(id));
+    if (admin != null && !admin.getBotOwner()) {
+      adminDao.delete(admin);
+    }
+    return redirect(routes.AdminController.index());
   }
 
   public Result saveConfig() {
@@ -96,7 +112,7 @@ public class AdminController extends JavaController {
     Form<Config> configForm = Form.form(Config.class).bindFromRequest();
     if (configForm.hasErrors()) {
       return badRequest(config.apply(new OAuthDeadboltHandler(), contextProvider.get(),
-                                configForm, configDao.get().getOperations(), configDao.operations()));
+          configForm, configDao.get().getOperations(), configDao.operations()));
     } else {
       configDao.save(admin, configForm.get());
       return ok(routes.Application.index().method());

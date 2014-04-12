@@ -1,4 +1,5 @@
-@(handler: be.objectify.deadbolt.java.DeadboltHandler, context: utils.Context, form: Form[models.Admin], admins: java.util.List[javabot.model.Admin])
+@(handler: be.objectify.deadbolt.java.DeadboltHandler, context: utils.Context, form: play.data.Form[models.Admin],
+    admins: java.util.List[javabot.model.Admin])
 
 @import com.antwerkz.sofia.Sofia
 
@@ -6,16 +7,16 @@
     @helper.form(action = routes.AdminController.addAdmin()) {
         <table class="form">
             <tr class="topRow">
-                <td><label for="email">@Sofia.ircName()</label></td>
+                <td><label for="irc">@Sofia.ircName()</label></td>
                 <td class="right"><input type="text" id="irc" name="ircName"></td>
             </tr>
             <tr class="topRow">
-                <td><label for="email">@Sofia.hostName()</label></td>
+                <td><label for="host">@Sofia.hostName()</label></td>
                 <td class="right"><input type="text" id="host" name="hostName"></td>
             </tr>
             <tr>
-                <td><label for="email">@Sofia.email()</label></td>
-                <td class="right"><input type="text" id="email" name="email"></td>
+                <td><label for="userName">User Name</label></td>
+                <td class="right"><input type="text" id="userName" name="userName"></td>
             </tr>
             <tr>
                 <td colspan="2" class="form-submit right">

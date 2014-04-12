@@ -8,7 +8,10 @@ import be.objectify.deadbolt.core.models.Role;
 import be.objectify.deadbolt.core.models.Subject;
 
 public class Admin extends javabot.model.Admin implements Subject {
-  public Admin( String ircName,  String hostName,  String  email, String  addedBy) {
+  public Admin() {
+  }
+
+  public Admin(String ircName, String hostName, String email, String addedBy) {
     setIrcName(ircName);
     setHostName(hostName);
     setAddedBy(addedBy);
@@ -28,4 +31,5 @@ public class Admin extends javabot.model.Admin implements Subject {
   public String getIdentifier() {
     return getIrcName();
   }
+
 }
