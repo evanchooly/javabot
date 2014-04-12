@@ -39,21 +39,22 @@ end
 
 prep
 
-backup 'admin'
+backup 'admins'
 backup 'apis'
 backup 'changes'
-backup 'channel'
+backup 'channels'
 backup 'classes'
 backup 'configuration'
-backup 'configuration_operations'
+backup 'events'
 backup 'factoids'
 backup 'fields'
 backup 'karma'
 backup 'logs'
 backup 'methods'
-backup 'shun'
+backup 'registrations'
+backup 'shuns'
 
-export 'schema', 'apis', 'classes', 'methods', 'factoids'
+export 'apis', 'classes', 'methods', 'fields', 'factoids'
 
 puts %x( rm -f #{@backupRoot}/current )
 

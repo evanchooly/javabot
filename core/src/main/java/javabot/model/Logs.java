@@ -11,7 +11,6 @@ import org.mongodb.morphia.annotations.PrePersist;
 
 @Entity(value = "logs", noClassnameStored = true)
 @Indexes({
-    @Index(value = "channel, updated, nick", name = "Logs"),
     @Index(value = "channel, updated, upperNick", name = "seen")
 })
 @SPI(Persistent.class)

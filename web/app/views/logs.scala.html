@@ -1,5 +1,5 @@
 @(handler: be.objectify.deadbolt.java.DeadboltHandler, context: utils.Context, channel: String, date: String,
-    before: String, after: String)(implicit request: Request[Any])
+    before: String, after: String)
 
 @import java.net.URLEncoder
 @import be.objectify.deadbolt.java.views.html._
@@ -38,7 +38,7 @@
             <th>Message</th>
             <th class="right">Date</th>
         </tr>
-        @context.logs.map { log =>
+        @for( log <- context.logs) {
             <tr>
                 @{
                     log.getType match {

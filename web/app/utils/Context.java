@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import javabot.dao.ChannelDao;
 import javabot.dao.FactoidDao;
-import javabot.dao.LogsDao;
 import javabot.model.Admin;
 import javabot.model.Logs;
 import org.joda.time.DateTime;
@@ -25,8 +24,6 @@ public class Context {
   private LogsDao logsDao;
 
   public List<Logs> logs;
-
-  private DateTime today = new DateTime();
 
   public String channel;
 
@@ -53,7 +50,7 @@ public class Context {
 
   public void logChannel(String name, DateTime date) {
     channel = name;
-//    logs = logsDao.findByChannel(channel, date, showAll)
+    logs = logsDao.findByChannel(channel, date, showAll());
   }
 }
 
