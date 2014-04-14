@@ -9,6 +9,7 @@ import org.pac4j.core.client.Clients;
 import org.pac4j.oauth.client.Google2Client;
 import org.pac4j.play.Config;
 import play.GlobalSettings;
+import security.OAuthDeadboltHandler;
 import utils.PlayModule;
 
 public class Global extends GlobalSettings {
@@ -27,6 +28,7 @@ public class Global extends GlobalSettings {
       protected void configure() {
         super.configure();
         bind(play.api.Application.class).toInstance(app.getWrappedApplication());
+        requestStaticInjection(OAuthDeadboltHandler.class);
       }
     });
     String key = injector.getInstance(Key.get(String.class, Names.named("google.key")));

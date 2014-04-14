@@ -12,6 +12,7 @@ import javabot.model.Admin;
 public class AdminDao extends javabot.dao.AdminDao {
   public Subject getSubject(String userName) {
     Admin admin = getAdmin(userName);
+    System.out.println("admin = " + admin);
     return admin != null ? new JavabotSubject(admin) : null;
   }
 

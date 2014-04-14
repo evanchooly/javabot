@@ -89,4 +89,18 @@ public class Admin implements Serializable, Persistent {
   public void setHostName(String hostName) {
     this.hostName = hostName;
   }
+
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder("Admin{");
+    sb.append("id=").append(id);
+    sb.append(", botOwner=").append(botOwner);
+    sb.append(", hostName='").append(hostName).append('\'');
+    sb.append(", userName='").append(userName).append('\'');
+    sb.append(", ircName='").append(ircName).append('\'');
+    sb.append(", addedBy='").append(addedBy).append('\'');
+    sb.append(", updated=").append(updated);
+    sb.append('}');
+    return sb.toString();
+  }
 }

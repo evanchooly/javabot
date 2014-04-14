@@ -48,6 +48,7 @@
                 <h3><a href="@{routes.AdminController.login}">Login</a></h3>
             </div>
             }
+            @restrict(List(as("botAdmin"))) {
             <div>
                 <h3>Admin</h3>
                 <ul>
@@ -56,8 +57,7 @@
                     <li><a href="@{routes.AdminController.javadoc}">Javadoc</a></li>
                 </ul>
             </div>
-            <!--@restrict(List(as("botAdmin"))) {-->
-            <!--}-->
+            }
             <h3>
                 <table>
                     <tr>

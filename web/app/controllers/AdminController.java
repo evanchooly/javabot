@@ -4,6 +4,8 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
+import be.objectify.deadbolt.java.actions.Group;
+import be.objectify.deadbolt.java.actions.Restrict;
 import be.objectify.deadbolt.java.actions.Unrestricted;
 import javabot.dao.ApiDao;
 import javabot.dao.ChannelDao;
@@ -17,9 +19,11 @@ import models.Admin;
 import org.bson.types.ObjectId;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.play.java.JavaController;
+import org.pac4j.play.java.RequiresAuthentication;
 import play.data.Form;
 import play.mvc.Http;
 import play.mvc.Http.Request;
+import play.mvc.Http.Session;
 import play.mvc.Result;
 import security.OAuthDeadboltHandler;
 import utils.AdminDao;
@@ -28,8 +32,8 @@ import utils.Context;
 import views.html.admin.config;
 
 @Singleton
-//@Restrict({@Group("botAdmin")})
-//@RequiresAuthentication(clientName = "Google2Client")
+@Restrict(value = {@Group("botAdmin")}/*, handlerKey = "security.OAuthDeadboltHandler"*/)
+@RequiresAuthentication(clientName = "Google2Client")
 public class AdminController extends JavaController {
   @Inject
   private ConfigDao configDao;
@@ -53,6 +57,12 @@ public class AdminController extends JavaController {
   private OAuthDeadboltHandler handler;
 
   private javabot.model.Admin getAdmin() {
+    /*
+      System.out.println("AdminController.getAdmin");
+    String email = getUserProfile().getEmail();
+    System.out.println("email = " + email);
+    return adminDao.getAdmin(email);
+     */
     return adminDao.getAdmin(Http.Context.current().session().get("userName"));
   }
 
@@ -65,9 +75,9 @@ public class AdminController extends JavaController {
       System.out.println("creating new admin");
       adminDao.create("", profile.getEmail(), "");
     }
-    return ok(
-        views.html.admin.admin.apply(handler, contextProvider.get(), Form.form(Admin.class).bindFromRequest(request),
-            adminDao.findAll()));
+    Session session = Http.Context.current().session();
+    session.put("userName", profile.getEmail());
+    return redirect(routes.AdminController.index());
   }
 
   public Result index() {
