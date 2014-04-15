@@ -1,18 +1,20 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import javax.inject.Inject;
-
 import com.antwerkz.maven.SPI;
 import org.mongodb.morphia.Datastore;
 import javabot.IrcEvent;
 import javabot.IrcUser;
 import javabot.Message;
+import javabot.commands.Param;
 import javabot.dao.LogsDao;
 import javabot.model.Logs;
 import javabot.model.criteria.LogsCriteria;
+import org.joda.time.DateTime;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Gets logs for channel, optionally filtered by a nickname
@@ -29,6 +31,11 @@ public class LogsOperation extends BotOperation {
   @Inject
   private Datastore ds;
 
+  @Param(defaultValue = "", required = false)
+  String limit;
+  @Param(defaultValue = "24", required = false)
+  String hours;
+
   @Override
   public List<Message> handleMessage(final IrcEvent event) {
     final String message = event.getMessage();
@@ -39,12 +46,13 @@ public class LogsOperation extends BotOperation {
       criteria.channel(event.getChannel());
       criteria.updated().order(false);
       IrcUser sender = event.getSender();
-      if (nickname.isEmpty()) {
-        criteria.query().limit(200);
-      } else {
+      int numLogLines = getLimit(nickname.isEmpty(), limit);
+      criteria.query().limit(numLogLines);
+      if (!nickname.isEmpty()) {
         criteria.nick(nickname);
-        criteria.query().limit(50);
       }
+      int hoursBack = getHoursBack();
+      criteria.updated().greaterThan(DateTime.now().minusHours(hoursBack));
       for (Logs logs : criteria.query().fetch()) {
         responses.add(new Message(sender, event,
             String.format("%s <%s> %s", logs.getUpdated().toString("HH:mm"), logs.getNick(), logs.getMessage())));
@@ -59,5 +67,27 @@ public class LogsOperation extends BotOperation {
       Collections.reverse(responses);
     }
     return responses;
+  }
+
+  private int getHoursBack() {
+    try {
+      return Integer.parseInt(hours);
+    } catch (NumberFormatException ignored) {
+      // NOP
+    }
+
+    return 24;
+  }
+
+  static int getLimit(boolean isAllUsers, String limit) {
+    try {
+      return Integer.parseInt(limit);
+    } catch (NumberFormatException ignored) {
+      // NOP
+    }
+    if (isAllUsers) {
+      return 100;
+    }
+    return 25;
   }
 }
