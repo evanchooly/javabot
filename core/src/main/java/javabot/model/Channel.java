@@ -34,7 +34,7 @@ public class Channel implements Serializable, Persistent {
   @JsonView(SYSTEM.class)
   private String upperName;
 
-  @JsonView(SYSTEM.class)
+  @JsonView(PUBLIC.class)
   private String key;
 
   @JsonView(PUBLIC.class)

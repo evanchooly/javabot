@@ -10,12 +10,18 @@ import javabot.BaseTest;
 import javabot.dao.ApiDao;
 import javabot.javadoc.JavadocApi;
 import javabot.model.ApiEvent;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 @Test//(dependsOnMethods = {"jdk"})
 public class JavadocOperationTest extends BaseOperationTest {
   @Inject
   private ApiDao apiDao;
+
+  @BeforeTest
+  public void getBot() {
+    getJavabot();
+  }
 
   public void jdk() throws MalformedURLException {
     JavadocApi api = apiDao.find("JDK");

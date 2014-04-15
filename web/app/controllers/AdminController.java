@@ -57,12 +57,6 @@ public class AdminController extends JavaController {
   private OAuthDeadboltHandler handler;
 
   private javabot.model.Admin getAdmin() {
-    /*
-      System.out.println("AdminController.getAdmin");
-    String email = getUserProfile().getEmail();
-    System.out.println("email = " + email);
-    return adminDao.getAdmin(email);
-     */
     return adminDao.getAdmin(Http.Context.current().session().get("userName"));
   }
 
@@ -77,7 +71,7 @@ public class AdminController extends JavaController {
     }
     Session session = Http.Context.current().session();
     session.put("userName", profile.getEmail());
-    return redirect(routes.AdminController.index());
+    return found(routes.AdminController.index());
   }
 
   public Result index() {
@@ -88,25 +82,25 @@ public class AdminController extends JavaController {
   }
 
   public Result showConfig() {
-    return null;
+    return ok(views.html.admin.config.apply(handler, contextProvider.get(),
+        Form.form(Config.class), configDao.get().getOperations(), configDao.operations()));
+
   }
 
   public Result javadoc() {
-    return null;
+    return ok(views.html.admin.javadoc.apply(handler, contextProvider.get(), apiDao.findAll()));
   }
 
   public Result showChannel(String name) {
-    return null;
+    Channel channel = channelDao.get(name);
+    return ok(views.html.admin.editChannel.apply(handler, contextProvider.get(),
+        Form.form(Channel.class).fill(channel)));
   }
 
   public Result addAdmin() {
-    Form<javabot.model.Admin> adminForm = Form.form(javabot.model.Admin.class);
-    Form<javabot.model.Admin> form = adminForm.bindFromRequest();
-    System.out.println("form = " + form);
-    javabot.model.Admin admin = form.get();
-    System.out.println("admin = " + admin);
-    adminDao.save(admin);
-    return redirect(routes.AdminController.index());
+    Form<javabot.model.Admin> form = Form.form(javabot.model.Admin.class).bindFromRequest();
+    adminDao.save(form.get());
+    return found(routes.AdminController.index());
   }
 
   public Result deleteAdmin(String id) {
@@ -114,7 +108,7 @@ public class AdminController extends JavaController {
     if (admin != null && !admin.getBotOwner()) {
       adminDao.delete(admin);
     }
-    return redirect(routes.AdminController.index());
+    return found(routes.AdminController.index());
   }
 
   public Result saveConfig() {
@@ -131,28 +125,28 @@ public class AdminController extends JavaController {
 
   public Result enableOperation(String name) {
     adminDao.enableOperation(name, adminDao.getAdmin(Http.Context.current().session().get("userName")).getUserName());
-    return ok(routes.AdminController.showConfig().method());
+    return found(routes.AdminController.showConfig());
   }
 
   public Result disableOperation(String name) {
     adminDao.disableOperation(name, getAdmin().getUserName());
-    return ok(routes.AdminController.showConfig().method());
+    return found(routes.AdminController.showConfig());
   }
 
   public Result reloadApi(String id) {
     apiDao.save(new ApiEvent(EventType.RELOAD, getAdmin().getUserName(), new ObjectId(id)));
-    return ok(routes.AdminController.javadoc().method());
+    return found(routes.AdminController.javadoc());
   }
 
   public Result addApi() {
     JavadocApi api = Form.form(JavadocApi.class).bindFromRequest().get();
     apiDao.save(new ApiEvent(getAdmin().getUserName(), api.getName(), api.getBaseUrl(), api.getDownloadUrl()));
-    return ok(routes.AdminController.javadoc().method());
+    return found(routes.AdminController.javadoc());
   }
 
   public Result deleteApi(String id) {
     apiDao.save(new ApiEvent(EventType.DELETE, getAdmin().getUserName(), new ObjectId(id)));
-    return ok(routes.AdminController.javadoc().method());
+    return found(routes.AdminController.javadoc());
   }
 
   public Result saveChannel() {

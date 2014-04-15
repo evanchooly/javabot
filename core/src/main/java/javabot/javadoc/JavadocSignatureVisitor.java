@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.signature.SignatureVisitor;
 
-class JavadocSignatureVisitor implements SignatureVisitor {
+class JavadocSignatureVisitor extends SignatureVisitor {
   private static final Map<Character, String> PRIMITIVES = new HashMap<>();
 
   boolean trace = !true;
@@ -42,6 +43,7 @@ class JavadocSignatureVisitor implements SignatureVisitor {
 
   public JavadocSignatureVisitor(final String className, final String name, final String signature,
       final boolean varargs) {
+    super(Opcodes.ASM5);
     this.varargs = varargs;
     if (trace) {
       System.out.println("\n\n*** JavadocSignatureVisitor.JavadocSignatureVisitor");

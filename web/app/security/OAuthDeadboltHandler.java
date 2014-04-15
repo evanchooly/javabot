@@ -43,17 +43,7 @@ public class OAuthDeadboltHandler extends AbstractDeadboltHandler {
 
   @Override
   public Subject getSubject(final Context context) {
-/*
-    CommonProfile profile = getUserProfile();
-    System.out.println("profile = " + profile);
-    System.out.println("adminDao = " + adminDao);
-    return profile != null ? adminDao.getSubject(profile.getEmail()) : null;
-*/
-    Session session = context.session();
-    System.out.println("session.get(\"userName\") = " + session.get("userName"));
-    String userName = session.get("userName");
-    System.out.println("adminDao.findAll() = " + adminDao.findAll());
-    Subject subject = adminDao.getSubject(userName);
-    return userName != null ? subject : null;
+    String userName = context.session().get("userName");
+    return userName != null ? adminDao.getSubject(userName) : null;
   }
 }

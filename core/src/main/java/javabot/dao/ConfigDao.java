@@ -83,7 +83,7 @@ public class ConfigDao extends BaseDao<Config> {
     keys.put("expireAfterSeconds", TimeUnit.DAYS.toSeconds(historyLength * 31));
     keys.put("background", Boolean.TRUE);
     try {
-      collection.ensureIndex(new BasicDBObject("updated", 1), keys);
+      collection.createIndex(new BasicDBObject("updated", 1), keys);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }

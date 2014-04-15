@@ -27,14 +27,14 @@ public abstract class AdminCommand extends BotOperation {
   @Override
   public final List<Message> handleMessage(final IrcEvent event) {
     String message = event.getMessage();
-    final List<Message> responses = new ArrayList<Message>();
+    final List<Message> responses = new ArrayList<>();
     if (message.toLowerCase().startsWith("admin ")) {
       if (isAdminUser(event)) {
         message = message.substring(6);
         final String[] split = message.split(" ");
         if (canHandle(split[0])) {
           try {
-            parse(new ArrayList<String>(Arrays.asList(split)));
+            parse(new ArrayList<>(Arrays.asList(split)));
             responses.addAll(execute(getBot(), event));
           } catch (ParseException e) {
             log.error(e.getMessage(), e);

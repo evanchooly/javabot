@@ -64,13 +64,12 @@ public class JavabotModule extends AbstractModule {
   @Provides
   @Singleton
   public Mongo getMongo() throws IOException {
-    if (mongoClient == null || !mongoClient.getConnector().isOpen()) {
+    if (mongoClient == null) {
       getProperties();
       try {
         String host = properties.getProperty("database.host", "localhost");
         int port = Integer.parseInt(properties.getProperty("database.port", "27107"));
         mongoClient = new MongoClient(host, MongoClientOptions.builder()
-            .autoConnectRetry(true)
             .connectTimeout(2000)
             .build());
       } catch (RuntimeException e) {

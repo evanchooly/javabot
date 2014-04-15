@@ -9,15 +9,15 @@ import javax.inject.Inject;
 import javabot.dao.ApiDao;
 import javabot.dao.JavadocClassDao;
 import javabot.javadoc.JavadocSignatureVisitor.JavadocType;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.commons.EmptyVisitor;
 import org.objectweb.asm.signature.SignatureReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JavadocClassVisitor extends EmptyVisitor {
+public class JavadocClassVisitor extends ClassVisitor {
   private static final Logger log = LoggerFactory.getLogger(JavadocClassVisitor.class);
 
   @Inject
@@ -45,6 +45,10 @@ public class JavadocClassVisitor extends EmptyVisitor {
   private String pkg;
 
   private String className;
+
+  public JavadocClassVisitor() {
+    super(Opcodes.ASM5);
+  }
 
   @Override
   public void visit(final int version, final int access, final String name, final String signature,
