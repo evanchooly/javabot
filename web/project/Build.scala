@@ -18,7 +18,7 @@ object ApplicationBuild extends Build {
     "com.google.inject.extensions" % "guice-servlet" % "3.0",
     "com.google.inject.extensions" % "guice-multibindings" % "3.0",
     "org.twitter4j" % "twitter4j-core" % "3.0.3",
-    "org.mongodb.morphia" % "morphia-logging-slf4j" % "0.105",
+    "org.mongodb.morphia" % "morphia-logging-slf4j" % "0.107",
     "org.pac4j" % "play-pac4j_java" % "1.2.0",
     "org.pac4j" % "pac4j-oauth" % "1.5.0",
     "com.codiform" % "moo" % "1.3"
