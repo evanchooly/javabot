@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import javax.inject.Inject;
 
@@ -51,7 +52,15 @@ public class ApiEvent extends AdminEvent {
     setRequestedBy(requestedBy);
     this.name = name;
     this.baseUrl = baseUrl;
-    this.downloadUrl = downloadUrl;
+    if(name.equals("JDK")) {
+      try {
+        this.downloadUrl = new File(System.getProperty("java.home"), "lib/rt.jar").toURI().toURL().toString();
+      } catch (MalformedURLException e) {
+        throw new IllegalArgumentException(e.getMessage(), e);
+      }
+    } else {
+      this.downloadUrl = downloadUrl;
+    }
   }
 
   public ApiEvent(EventType type, String requestedBy, ObjectId apiId) {

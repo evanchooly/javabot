@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -27,7 +26,7 @@ public class JavadocOperationTest extends BaseOperationTest {
     JavadocApi api = apiDao.find("JDK");
     if (api == null) {
       ApiEvent event = new ApiEvent(BaseTest.TEST_USER.getNick(), "JDK", "http://docs.oracle.com/javase/7/docs/api",
-          new File(System.getProperty("java.home"), "lib/rt.jar").toURI().toURL().toString());
+          null);
       eventDao.save(event);
       waitForEvent(event, "adding JDK", new Duration(30, TimeUnit.MINUTES));
     }
