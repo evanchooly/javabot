@@ -157,6 +157,11 @@
                                     <shadedPattern>javabot.org.objectweb.asm</shadedPattern>
                                 </relocation>
                             </relocations>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.ow2.asm:*</include>
+                                </includes>
+                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
