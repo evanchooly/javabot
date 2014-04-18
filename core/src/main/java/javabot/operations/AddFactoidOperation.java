@@ -1,7 +1,12 @@
 package javabot.operations;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+
 import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
+import static java.lang.String.format;
 import javabot.IrcEvent;
 import javabot.IrcUser;
 import javabot.Message;
@@ -13,12 +18,6 @@ import javabot.model.Logs.Type;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.lang.String.format;
 
 @SPI(StandardOperation.class)
 public class AddFactoidOperation extends StandardOperation {
@@ -66,7 +65,7 @@ public class AddFactoidOperation extends StandardOperation {
                 String key = message.substring(0, is);
                 key = key.replaceAll("^\\s+", "");
                 final Factoid factoid = factoidDao.getFactoid(key);
-                boolean admin = adminDao.isAdmin(event.getSender().getUserName(), event.getSender().getHost());
+                boolean admin = isAdminUser(event);
                 if (factoid != null) {
                     if (factoid.getLocked()) {
                         if (admin) {
