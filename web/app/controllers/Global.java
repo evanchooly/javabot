@@ -13,7 +13,6 @@ import security.OAuthDeadboltHandler;
 import utils.PlayModule;
 
 public class Global extends GlobalSettings {
-
   private Injector injector;
 
   @Override
@@ -33,9 +32,11 @@ public class Global extends GlobalSettings {
     });
     String key = injector.getInstance(Key.get(String.class, Names.named("google.key")));
     String secret = injector.getInstance(Key.get(String.class, Names.named("google.secret")));
-
-    Config.setClients(new Clients("http://evanchooly.com/oauth2callback", new Google2Client(key, secret)));
-//    Config.setClients(new Clients("http://localhost:9000/oauth2callback", new Google2Client(key, secret)));
+    if (app.isDev()) {
+      Config.setClients(new Clients("http://localhost:9000/oauth2callback", new Google2Client(key, secret)));
+    } else {
+      Config.setClients(new Clients("http://evanchooly.com/oauth2callback", new Google2Client(key, secret)));
+    }
     // for test purposes : profile timeout = 60 seconds
     Config.setProfileTimeout(60);
   }

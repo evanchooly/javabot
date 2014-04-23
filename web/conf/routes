@@ -16,7 +16,7 @@ GET     /admin                      @controllers.AdminController.index
 GET     /javadoc                    @controllers.AdminController.javadoc
 POST    /addAdmin                   @controllers.AdminController.addAdmin
 POST    /addApi                     @controllers.AdminController.addApi
-GET     /show/:name                 @controllers.AdminController.showChannel(name)
+GET     /show/:name                 @controllers.AdminController.showChannel(name: String)
 GET     /deleteApi/:id              @controllers.AdminController.deleteApi(id: String)
 GET     /reloadApi/:id              @controllers.AdminController.reloadApi(id: String)
 GET     /deleteAdmin/:id            @controllers.AdminController.deleteAdmin(id: String)

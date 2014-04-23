@@ -93,8 +93,13 @@ public class AdminController extends JavaController {
 
   public Result showChannel(String name) {
     Channel channel = channelDao.get(name);
-    return ok(views.html.admin.editChannel.apply(handler, contextProvider.get(),
-        Form.form(Channel.class).fill(channel)));
+    Form<Channel> form = Form.form(Channel.class);
+    if(channel == null) {
+      channel = new Channel();
+      channel.setName(name);
+    }
+    form = form.fill(channel);
+    return ok(views.html.admin.editChannel.apply(handler, contextProvider.get(), form));
   }
 
   public Result addAdmin() {
@@ -150,8 +155,9 @@ public class AdminController extends JavaController {
   }
 
   public Result saveChannel() {
-    Channel channelInfo = Form.form(Channel.class).bindFromRequest().get();
-    channelDao.save(channelInfo);
+    Channel channel = Form.form(Channel.class).bindFromRequest().get();
+    System.out.println("channel = " + channel);
+    channelDao.save(channel);
     return ok(config.apply(new OAuthDeadboltHandler(), contextProvider.get(), buildConfigForm(),
         configDao.get().getOperations(), configDao.operations()));
   }

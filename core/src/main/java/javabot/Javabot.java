@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +28,6 @@ import javax.inject.Inject;
 
 import ca.grimoire.maven.ArtifactDescription;
 import ca.grimoire.maven.NoArtifactException;
-import ca.grimoire.maven.ResourceProvider;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javabot.commands.AdminCommand;
@@ -40,7 +40,6 @@ import javabot.dao.ShunDao;
 import javabot.database.UpgradeScript;
 import javabot.model.AdminEvent;
 import javabot.model.AdminEvent.State;
-import javabot.model.Channel;
 import javabot.model.Config;
 import javabot.model.Logs;
 import javabot.operations.BotOperation;
@@ -95,7 +94,7 @@ public class Javabot {
 
   ExecutorService executors;
 
-  private final ScheduledExecutorService eventHandler = Executors.newScheduledThreadPool(1,
+  private final ScheduledExecutorService eventHandler = Executors.newScheduledThreadPool(2,
       new JavabotThreadFactory(true, "javabot-event-handler"));
 
   private final List<BotOperation> standard = new ArrayList<>();
@@ -127,20 +126,11 @@ public class Javabot {
     queue = new ArrayBlockingQueue<>(50);
     executors = new ThreadPoolExecutor(5, 10, 10L, TimeUnit.SECONDS, queue,
         new JavabotThreadFactory(true, "javabot-handler-thread-"));
-    final Thread hook = new Thread(new Runnable() {
-      @Override
-      public void run() {
-        shutdown();
-      }
-    });
+    final Thread hook = new Thread(this::shutdown);
     hook.setDaemon(false);
     Runtime.getRuntime().addShutdownHook(hook);
-    eventHandler.scheduleAtFixedRate(new Runnable() {
-      @Override
-      public void run() {
-        processAdminEvents();
-      }
-    }, 5, 5, TimeUnit.SECONDS);
+    eventHandler.scheduleAtFixedRate(this::processAdminEvents, 5, 5, TimeUnit.SECONDS);
+    eventHandler.scheduleAtFixedRate(this::joinChannels, 5, 5, TimeUnit.SECONDS);
   }
 
   protected void processAdminEvents() {
@@ -158,6 +148,16 @@ public class Javabot {
       }
       event.setCompleted(new DateTime());
       eventDao.save(event);
+    }
+  }
+
+  private void joinChannels() {
+    if (pircBot.isConnected() && !reconnecting) {
+      List<String> joined = Arrays.asList(pircBot.getChannels());
+      channelDao.getChannels().stream().filter(channel -> !joined.contains(channel.getName())).forEach(channel -> {
+        channel.join(this);
+        sleep(1000);
+      });
     }
   }
 
@@ -188,12 +188,6 @@ public class Javabot {
         log.error(e.getMessage(), e);
         throw new RuntimeException(e.getMessage(), e);
       }
-      sleep(10000);
-    }
-    final List<Channel> channelList = channelDao.getChannels();
-    for (final Channel channel : channelList) {
-      channel.join(this);
-      sleep(1000);
     }
   }
 
@@ -235,7 +229,7 @@ public class Javabot {
     valid &= check(props, "javabot.password");
     valid &= check(props, "javabot.admin.nick");
     valid &= check(props, "javabot.admin.hostmask");
-    if(!valid) {
+    if (!valid) {
       throw new RuntimeException("Missing configuration parameters");
     }
     System.getProperties().putAll(props);
@@ -273,14 +267,11 @@ public class Javabot {
       try {
         final File file = new File("target/maven-archiver/pom.properties");
         if (file.exists()) {
-          description = ArtifactDescription.locate("javabot", "core", new ResourceProvider() {
-            @Override
-            public InputStream getResourceAsStream(final String resource) {
-              try {
-                return new FileInputStream(file);
-              } catch (FileNotFoundException e) {
-                throw new RuntimeException(e.getMessage(), e);
-              }
+          description = ArtifactDescription.locate("javabot", "core", resource -> {
+            try {
+              return new FileInputStream(file);
+            } catch (FileNotFoundException e) {
+              throw new RuntimeException(e.getMessage(), e);
             }
           });
           return description.getVersion();
@@ -315,9 +306,7 @@ public class Javabot {
       allOperations.put(op.getName(), op);
     }
     try {
-      for (final String name : config.getOperations()) {
-        enableOperation(name);
-      }
+      config.getOperations().forEach(this::enableOperation);
     } catch (Exception e) {
       log.error(e.getMessage(), e);
       throw new RuntimeException(e.getMessage(), e);
@@ -372,7 +361,7 @@ public class Javabot {
       if (isValidSender(sender.getNick())) {
         final List<Message> responses = new ArrayList<>();
         for (final String startString : startStrings) {
-          if (responses != null && message.startsWith(startString)) {
+          if (message.startsWith(startString)) {
             String content = message.substring(startString.length()).trim();
             while (!content.isEmpty() && (content.charAt(0) == ':' || content.charAt(0) == ',')) {
               content = content.substring(1).trim();

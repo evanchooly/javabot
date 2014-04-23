@@ -21,14 +21,9 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>com.antwerkz.sofia</groupId>
-                    <artifactId>sofia-maven</artifactId>
-                    <version>${sofia.version}</version>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>2.4.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -40,8 +35,8 @@
                 <version>2.5.1</version>
                 <inherited>true</inherited>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <compilerArgument>-proc:none</compilerArgument>
                 </configuration>
             </plugin>
@@ -50,26 +45,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.antwerkz.maven</groupId>
-                <artifactId>spi-apt</artifactId>
-                <version>1.0-SNAPSHOT</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.antwerkz.sofia</groupId>
-                <artifactId>sofia-core</artifactId>
-                <version>${sofia.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.antwerkz.javabot</groupId>
-                <artifactId>apt-tools</artifactId>
-                <version>${project.version}</version>
-                <scope>compile</scope>
-            </dependency>
-
             <dependency>
                 <groupId>pircbot</groupId>
                 <artifactId>pircbot</artifactId>
@@ -141,7 +116,7 @@
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
-                <version>6.8.5</version>
+                <version>6.8.7</version>
             </dependency>
 
             <dependency>
@@ -173,6 +148,7 @@
     <properties>
         <guice.version>3.0</guice.version>
         <sofia.version>0.13</sofia.version>
+        <critter.version>1.2.5</critter.version>
         <slf4j.version>1.7.4</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

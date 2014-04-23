@@ -3,30 +3,34 @@
 
 @import helper._
 
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.render) }
+
 @main(handler, context) {
     @helper.form(action = routes.AdminController.saveChannel) {
         <table class="form">
             <tr>
                 <td class="top">Name</td>
                 <td class="top right">
-                    @if(channelForm("id") != null) {
-                        <input type="hidden" name="channel.id" value='@channelForm("id")'/>
+                    @if(channelForm("id").value() != null) {
+                        <input type="hidden" name="channel.id" value='@channelForm("id").valueOr("")'/>
                     }
-                    <input type="text" name="channel.name" value='@channelForm("name")'
-                    @if(channelForm("id") != null){ disabled }/>
+
+                    <input type="text" name="channel.name" value='@channelForm("name").valueOr("")'
+                        @if(channelForm("id").value() != null){ disabled }
+                    />
                     <span class="error">#{error 'channel.name' /}</span>
                 </td>
             </tr>
             <tr>
                 <td>Key (optional)</td>
-                <td class="right"><input type="text" name="channel.key" value="${channel?.key}"/></td>
+                <td class="right"><input type="text" name="channel.key" value='@channelForm("key").valueOr("")'/></td>
             </tr>
             <tr>
                 <td>Logged?</td>
                 <td class="right">
                     <select name="channel.logged">
-                        <option value="true" title="yes">yes</option>
-                        <option value="false" title="no">no</option>
+                        <option value="true" title="yes" @if(channelForm("logged").value() == "true"){ selected }>yes</option>
+                        <option value="false" title="no" @if(channelForm("logged").value() == "false"){ selected }>no</option>
                     </select>
                 </td>
             </tr>
