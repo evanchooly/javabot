@@ -22,7 +22,7 @@ public class Config implements Serializable, Persistent {
 
   private Integer port = 6667;
 
-  private Integer historyLength = 6;
+  private Integer historyLength = 12;
 
   private String trigger = "~";
 

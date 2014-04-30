@@ -74,12 +74,12 @@ public class ConfigCriteria extends com.antwerkz.critter.criteria.BaseCriteria<C
     return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String>(this, query, prefix + "server").equal(value);
   }
 
-  public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Long> throttleThreshold() {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Long>(this, query, prefix + "throttleThreshold");
+  public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Integer> throttleThreshold() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Integer>(this, query, prefix + "throttleThreshold");
   }
 
-  public org.mongodb.morphia.query.Criteria throttleThreshold(java.lang.Long value) {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Long>(this, query, prefix + "throttleThreshold").equal(value);
+  public org.mongodb.morphia.query.Criteria throttleThreshold(java.lang.Integer value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Integer>(this, query, prefix + "throttleThreshold").equal(value);
   }
 
   public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String> trigger() {
@@ -598,27 +598,27 @@ public class ConfigCriteria extends com.antwerkz.critter.criteria.BaseCriteria<C
       updateOperations.inc("server", value);
       return this;
     }
-    public ConfigUpdater throttleThreshold(java.lang.Long value) {
+    public ConfigUpdater throttleThreshold(java.lang.Integer value) {
       updateOperations.set("throttleThreshold", value);
       return this;
     }
 
-    public ConfigUpdater unsetThrottleThreshold(java.lang.Long value) {
+    public ConfigUpdater unsetThrottleThreshold(java.lang.Integer value) {
       updateOperations.unset("throttleThreshold");
       return this;
     }
 
-    public ConfigUpdater addThrottleThreshold(java.lang.Long value) {
+    public ConfigUpdater addThrottleThreshold(java.lang.Integer value) {
       updateOperations.add("throttleThreshold", value);
       return this;
     }
 
-    public ConfigUpdater addThrottleThreshold(java.lang.Long value, boolean addDups) {
+    public ConfigUpdater addThrottleThreshold(java.lang.Integer value, boolean addDups) {
       updateOperations.add("throttleThreshold", value, addDups);
       return this;
     }
 
-    public ConfigUpdater addAllToThrottleThreshold(java.util.List<java.lang.Long> values, boolean addDups) {
+    public ConfigUpdater addAllToThrottleThreshold(java.util.List<java.lang.Integer> values, boolean addDups) {
       updateOperations.addAll("throttleThreshold", values, addDups);
       return this;
     }
@@ -633,12 +633,12 @@ public class ConfigCriteria extends com.antwerkz.critter.criteria.BaseCriteria<C
       return this;
     }
   
-    public ConfigUpdater removeFromThrottleThreshold(java.lang.Long value) {
+    public ConfigUpdater removeFromThrottleThreshold(java.lang.Integer value) {
       updateOperations.removeAll("throttleThreshold", value);
       return this;
     }
 
-    public ConfigUpdater removeAllFromThrottleThreshold(java.util.List<java.lang.Long> values) {
+    public ConfigUpdater removeAllFromThrottleThreshold(java.util.List<java.lang.Integer> values) {
       updateOperations.removeAll("throttleThreshold", values);
       return this;
     }
