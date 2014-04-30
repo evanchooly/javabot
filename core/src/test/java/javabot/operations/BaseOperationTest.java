@@ -5,7 +5,7 @@ import java.util.List;
 
 import javabot.BaseTest;
 import javabot.IrcEvent;
-import javabot.IrcUser;
+import javabot.model.IrcUser;
 import javabot.Message;
 import org.testng.Assert;
 

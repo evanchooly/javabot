@@ -5,9 +5,10 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.antwerkz.maven.SPI;
+import static java.lang.String.format;
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
-import org.bson.types.ObjectId;
 
 @Entity("configuration")
 @SPI(Persistent.class)
@@ -32,6 +33,8 @@ public class Config implements Serializable, Persistent {
   private Integer schemaVersion;
 
   private Set<String> operations = new TreeSet<>();
+
+  private Integer throttleThreshold = 5;
 
   public Config() {
   }
@@ -122,6 +125,14 @@ public class Config implements Serializable, Persistent {
     this.schemaVersion = schemaVersion;
   }
 
+  public Integer getThrottleThreshold() {
+    return throttleThreshold;
+  }
+
+  public void setThrottleThreshold(final Integer throttleThreshold) {
+    this.throttleThreshold = throttleThreshold;
+  }
+
   public String getUrl() {
     return url;
   }
@@ -132,19 +143,10 @@ public class Config implements Serializable, Persistent {
 
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder();
-    sb.append("Config");
-    sb.append("{historyLength=").append(historyLength);
-    sb.append(", id=").append(id);
-    sb.append(", url='").append(url).append('\'');
-    sb.append(", server='").append(server).append('\'');
-    sb.append(", port=").append(port);
-    sb.append(", trigger='").append(trigger).append('\'');
-    sb.append(", nick='").append(nick).append('\'');
-    sb.append(", password='").append(password).append('\'');
-    sb.append(", schemaVersion=").append(schemaVersion);
-    sb.append(", operations=").append(operations);
-    sb.append('}');
-    return sb.toString();
+    return format(
+        "Config{id=%s, server='%s', url='%s', port=%d, historyLength=%d, trigger='%s', nick='%s', password='%s', "
+            + "schemaVersion=%d, operations=%s, throttleThreshold=%d}", id, server, url, port, historyLength, trigger,
+        nick, password, schemaVersion, operations, throttleThreshold
+    );
   }
 }

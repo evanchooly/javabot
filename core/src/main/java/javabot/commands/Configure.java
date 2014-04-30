@@ -1,12 +1,12 @@
 package javabot.commands;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
 import com.antwerkz.maven.SPI;
+import static java.lang.String.format;
 import javabot.IrcEvent;
 import javabot.Javabot;
 import javabot.Message;
@@ -39,11 +39,8 @@ public class Configure extends AdminCommand {
           set.invoke(config, type.equals(String.class) ? value.trim() : Integer.parseInt(value));
           dao.save(config);
           bot.loadConfig();
-        } catch (IllegalAccessException e) {
-          responses.add(new Message(event.getSender(), event, e.getMessage()));
-        } catch (InvocationTargetException e) {
-          responses.add(new Message(event.getSender(), event, e.getMessage()));
-        } catch (NumberFormatException e) {
+          responses.add(new Message(event.getSender(), event, format("Setting %s to %s", property, value)));
+        } catch (ReflectiveOperationException | NumberFormatException e) {
           responses.add(new Message(event.getSender(), event, e.getMessage()));
         }
       } catch (NoSuchMethodException e) {

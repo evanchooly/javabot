@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Transient;
 import javabot.IrcEvent;
-import javabot.IrcUser;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.AdminDao;

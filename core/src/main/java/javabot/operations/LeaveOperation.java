@@ -6,7 +6,7 @@ import java.util.List;
 import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
 import javabot.Message;
-import javabot.IrcUser;
+import javabot.model.IrcUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

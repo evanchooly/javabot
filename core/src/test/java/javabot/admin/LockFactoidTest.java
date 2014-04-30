@@ -1,6 +1,6 @@
 package javabot.admin;
 
-import javabot.IrcUser;
+import javabot.model.IrcUser;
 import javabot.operations.BaseOperationTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

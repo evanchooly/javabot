@@ -1,5 +1,7 @@
 package javabot;
 
+import javabot.model.IrcUser;
+
 public class Message {
   private final String destination;
 

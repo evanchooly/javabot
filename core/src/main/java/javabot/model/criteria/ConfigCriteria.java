@@ -74,6 +74,14 @@ public class ConfigCriteria extends com.antwerkz.critter.criteria.BaseCriteria<C
     return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String>(this, query, prefix + "server").equal(value);
   }
 
+  public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Long> throttleThreshold() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Long>(this, query, prefix + "throttleThreshold");
+  }
+
+  public org.mongodb.morphia.query.Criteria throttleThreshold(java.lang.Long value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Long>(this, query, prefix + "throttleThreshold").equal(value);
+  }
+
   public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String> trigger() {
     return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String>(this, query, prefix + "trigger");
   }
@@ -588,6 +596,65 @@ public class ConfigCriteria extends com.antwerkz.critter.criteria.BaseCriteria<C
 
     public ConfigUpdater incServer(Number value) {
       updateOperations.inc("server", value);
+      return this;
+    }
+    public ConfigUpdater throttleThreshold(java.lang.Long value) {
+      updateOperations.set("throttleThreshold", value);
+      return this;
+    }
+
+    public ConfigUpdater unsetThrottleThreshold(java.lang.Long value) {
+      updateOperations.unset("throttleThreshold");
+      return this;
+    }
+
+    public ConfigUpdater addThrottleThreshold(java.lang.Long value) {
+      updateOperations.add("throttleThreshold", value);
+      return this;
+    }
+
+    public ConfigUpdater addThrottleThreshold(java.lang.Long value, boolean addDups) {
+      updateOperations.add("throttleThreshold", value, addDups);
+      return this;
+    }
+
+    public ConfigUpdater addAllToThrottleThreshold(java.util.List<java.lang.Long> values, boolean addDups) {
+      updateOperations.addAll("throttleThreshold", values, addDups);
+      return this;
+    }
+  
+    public ConfigUpdater removeFirstThrottleThreshold() {
+      updateOperations.removeFirst("throttleThreshold");
+      return this;
+    }
+  
+    public ConfigUpdater removeLastThrottleThreshold() {
+      updateOperations.removeLast("throttleThreshold");
+      return this;
+    }
+  
+    public ConfigUpdater removeFromThrottleThreshold(java.lang.Long value) {
+      updateOperations.removeAll("throttleThreshold", value);
+      return this;
+    }
+
+    public ConfigUpdater removeAllFromThrottleThreshold(java.util.List<java.lang.Long> values) {
+      updateOperations.removeAll("throttleThreshold", values);
+      return this;
+    }
+ 
+    public ConfigUpdater decThrottleThreshold() {
+      updateOperations.dec("throttleThreshold");
+      return this;
+    }
+
+    public ConfigUpdater incThrottleThreshold() {
+      updateOperations.inc("throttleThreshold");
+      return this;
+    }
+
+    public ConfigUpdater incThrottleThreshold(Number value) {
+      updateOperations.inc("throttleThreshold", value);
       return this;
     }
     public ConfigUpdater trigger(java.lang.String value) {

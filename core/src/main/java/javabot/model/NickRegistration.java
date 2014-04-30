@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
-import javabot.IrcUser;
 import org.bson.types.ObjectId;
 
 @Entity("registrations")

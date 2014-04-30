@@ -1,17 +1,26 @@
 package javabot;
 
+import javax.inject.Inject;
+
+import com.google.inject.Injector;
 import javabot.model.Channel;
+import javabot.model.IrcUser;
 import javabot.model.Logs;
+import javabot.operations.throttle.Throttler;
 import org.jibble.pircbot.PircBot;
 
 public class MyPircBot extends PircBot {
   private final Javabot javabot;
 
-  public MyPircBot(final Javabot javabot) {
+  @Inject
+  private Throttler throttler;
+
+  public MyPircBot(final Javabot javabot, final Injector injector) {
     this.javabot = javabot;
     setVersion(javabot.loadVersion());
     setName(javabot.config.getNick());
     setLogin(javabot.config.getNick());
+    injector.injectMembers(this);
   }
 
   public void log(final String string) {
@@ -27,12 +36,8 @@ public class MyPircBot extends PircBot {
   @Override
   public void onMessage(final String channel, final String sender, final String login, final String hostname,
       final String message) {
-    javabot.executors.execute(new Runnable() {
-      @Override
-      public void run() {
-        javabot.processMessage(new IrcEvent(channel, javabot.getUser(sender, login, hostname), message));
-      }
-    });
+    javabot.executors.execute(
+        () -> javabot.processMessage(new IrcEvent(channel, javabot.getUser(sender, login, hostname), message)));
   }
 
   @Override
@@ -77,12 +82,11 @@ public class MyPircBot extends PircBot {
   @Override
   public void onPrivateMessage(final String sender, final String login, final String hostname, final String message) {
     if (javabot.adminDao.isAdmin(sender, hostname) || javabot.isOnSameChannelAs(sender)) {
-      javabot.executors.execute(new Runnable() {
-        @Override
-        public void run() {
-          javabot.logsDao.logMessage(Logs.Type.MESSAGE, sender, sender, message);
-          for (final Message response : javabot.getResponses(sender, javabot.getUser(sender, login, hostname),
-              message)) {
+      javabot.executors.execute(() -> {
+        javabot.logsDao.logMessage(Logs.Type.MESSAGE, sender, sender, message);
+        IrcUser user = javabot.getUser(sender, login, hostname);
+        if (!throttler.isThrottled(user)) {
+          for (final Message response : javabot.getResponses(sender, user, message)) {
             response.send(javabot);
           }
         }

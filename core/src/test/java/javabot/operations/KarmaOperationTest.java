@@ -4,7 +4,7 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import javabot.BaseTest;
-import javabot.IrcUser;
+import javabot.model.IrcUser;
 import javabot.dao.ChangeDao;
 import javabot.dao.KarmaDao;
 import javabot.model.Karma;

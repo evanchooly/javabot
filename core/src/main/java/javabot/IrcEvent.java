@@ -1,5 +1,7 @@
 package javabot;
 
+import javabot.model.IrcUser;
+
 public class IrcEvent {
     private final String channel;
     private final IrcUser sender;

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javabot.IrcEvent;
-import javabot.IrcUser;
+import javabot.model.IrcUser;
 import javabot.Message;
 import org.testng.Assert;
 import org.testng.annotations.Test;

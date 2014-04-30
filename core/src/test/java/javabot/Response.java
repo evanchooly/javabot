@@ -1,5 +1,7 @@
 package javabot;
 
+import javabot.model.IrcUser;
+
 /**
  * Created Jan 27, 2009
 *

@@ -14,6 +14,7 @@ import javabot.dao.EventDao;
 import javabot.model.AdminEvent;
 import javabot.model.AdminEvent.State;
 import javabot.model.Channel;
+import javabot.model.IrcUser;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.Guice;
 

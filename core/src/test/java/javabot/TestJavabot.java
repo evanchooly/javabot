@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import javabot.dao.AdminDao;
+import javabot.model.IrcUser;
 
 public class TestJavabot extends Javabot {
   @Inject
@@ -13,7 +14,7 @@ public class TestJavabot extends Javabot {
 
   @Override
   protected void createIrcBot() {
-    pircBot = new MyPircBot(this) {
+    pircBot = new MyPircBot(this, injector) {
       @Override
       public String getNick() {
         return BaseTest.TEST_BOT;

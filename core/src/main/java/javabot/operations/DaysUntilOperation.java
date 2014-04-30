@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
-import javabot.IrcUser;
+import javabot.model.IrcUser;
 import javabot.Message;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;

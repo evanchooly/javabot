@@ -1,5 +1,8 @@
-package javabot;
+package javabot.model;
 
+import org.mongodb.morphia.annotations.Embedded;
+
+@Embedded
 public class IrcUser {
     private String nick;
     private String userName;

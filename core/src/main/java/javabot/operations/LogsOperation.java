@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import com.antwerkz.maven.SPI;
 import org.mongodb.morphia.Datastore;
 import javabot.IrcEvent;
-import javabot.IrcUser;
+import javabot.model.IrcUser;
 import javabot.Message;
 import javabot.dao.LogsDao;
 import javabot.model.Logs;

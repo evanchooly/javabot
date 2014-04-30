@@ -9,7 +9,6 @@ import be.objectify.deadbolt.java.actions.Restrict;
 import be.objectify.deadbolt.java.actions.Unrestricted;
 import javabot.dao.ApiDao;
 import javabot.dao.ChannelDao;
-import javabot.dao.FactoidDao;
 import javabot.javadoc.JavadocApi;
 import javabot.model.ApiEvent;
 import javabot.model.Channel;
@@ -42,9 +41,6 @@ public class AdminController extends JavaController {
   private AdminDao adminDao;
 
   @Inject
-  private FactoidDao factoidDao;
-
-  @Inject
   private ApiDao apiDao;
 
   @Inject
@@ -63,8 +59,6 @@ public class AdminController extends JavaController {
   @Unrestricted
   public Result login() {
     CommonProfile profile = getUserProfile();
-    Request request = Http.Context.current().request();
-    System.out.println("login");
     if (adminDao.findAll().isEmpty()) {
       System.out.println("creating new admin");
       adminDao.create("", profile.getEmail(), "");

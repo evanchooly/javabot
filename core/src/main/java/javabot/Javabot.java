@@ -41,10 +41,12 @@ import javabot.database.UpgradeScript;
 import javabot.model.AdminEvent;
 import javabot.model.AdminEvent.State;
 import javabot.model.Config;
+import javabot.model.IrcUser;
 import javabot.model.Logs;
 import javabot.operations.BotOperation;
 import javabot.operations.OperationComparator;
 import javabot.operations.StandardOperation;
+import javabot.operations.throttle.Throttler;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
@@ -74,7 +76,10 @@ public class Javabot {
   AdminDao adminDao;
 
   @Inject
-  private Injector injector;
+  private Throttler throttler;
+
+  @Inject
+  protected Injector injector;
 
   public static final Logger log = LoggerFactory.getLogger(Javabot.class);
 
@@ -162,7 +167,7 @@ public class Javabot {
   }
 
   protected void createIrcBot() {
-    pircBot = new MyPircBot(this);
+    pircBot = new MyPircBot(this, injector);
   }
 
   public void shutdown() {
@@ -362,12 +367,16 @@ public class Javabot {
         final List<Message> responses = new ArrayList<>();
         for (final String startString : startStrings) {
           if (message.startsWith(startString)) {
-            String content = message.substring(startString.length()).trim();
-            while (!content.isEmpty() && (content.charAt(0) == ':' || content.charAt(0) == ',')) {
-              content = content.substring(1).trim();
-            }
-            if (!content.isEmpty()) {
-              responses.addAll(getResponses(channel, sender, content));
+            if(throttler.isThrottled(sender)) {
+              responses.add(new Message(sender, new IrcEvent(channel, sender, message), "Slow your roll, son."));
+            } else {
+              String content = message.substring(startString.length()).trim();
+              while (!content.isEmpty() && (content.charAt(0) == ':' || content.charAt(0) == ',')) {
+                content = content.substring(1).trim();
+              }
+              if (!content.isEmpty()) {
+                responses.addAll(getResponses(channel, sender, content));
+              }
             }
           }
         }
@@ -416,7 +425,10 @@ public class Javabot {
     final List<Message> responses = new ArrayList<>();
     final IrcEvent event = new IrcEvent(channel, sender, message);
     while (responses.isEmpty() && iterator.hasNext()) {
-      responses.addAll(iterator.next().handleMessage(event));
+      List<Message> list = iterator.next().handleMessage(event);
+      if(!list.isEmpty()) {
+        responses.addAll(list);
+      }
     }
     return responses;
   }
@@ -433,8 +445,14 @@ public class Javabot {
     final Iterator<BotOperation> iterator = getAllOperations().iterator();
     final List<Message> responses = new ArrayList<>();
     while (responses.isEmpty() && iterator.hasNext()) {
-      responses.addAll(iterator.next()
-          .handleChannelMessage(new IrcEvent(channel, sender, message)));
+      List<Message> list = iterator.next().handleChannelMessage(new IrcEvent(channel, sender, message));
+      if(!list.isEmpty()) {
+        if(throttler.isThrottled(sender)) {
+          responses.add(new Message(sender, new IrcEvent(channel, sender, message), "Slow your roll, son."));
+        } else {
+          responses.addAll(list);
+        }
+      }
     }
     return responses;
   }
