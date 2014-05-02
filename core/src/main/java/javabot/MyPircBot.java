@@ -81,12 +81,21 @@ public class MyPircBot extends PircBot {
 
   @Override
   public void onPrivateMessage(final String sender, final String login, final String hostname, final String message) {
+    String startStringForPm= "";
+    for (final String startString : javabot.getStartStrings()) {
+      if (message.startsWith(startString)) {
+        startStringForPm = startString;
+      }
+    }
+
+    final String content = javabot.extractContentFromMessage(message,startStringForPm);
+
     if (javabot.adminDao.isAdmin(sender, hostname) || javabot.isOnSameChannelAs(sender)) {
       javabot.executors.execute(() -> {
         javabot.logsDao.logMessage(Logs.Type.MESSAGE, sender, sender, message);
         IrcUser user = javabot.getUser(sender, login, hostname);
         if (!throttler.isThrottled(user)) {
-          for (final Message response : javabot.getResponses(sender, user, message)) {
+          for (final Message response : javabot.getResponses(sender, user, content)) {
             response.send(javabot);
           }
         }

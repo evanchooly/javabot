@@ -29,7 +29,7 @@ public class AddChannel extends AdminCommand {
 
   @Override
   public List<Message> execute(final Javabot bot, final IrcEvent event) {
-    final List<Message> responses = new ArrayList<Message>();
+    final List<Message> responses = new ArrayList<>();
     if (channel.startsWith("#")) {
       Channel chan = dao.get(channel);
       final Boolean isLogged = Boolean.valueOf(logged);
