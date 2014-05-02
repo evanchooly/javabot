@@ -370,10 +370,7 @@ public class Javabot {
             if(throttler.isThrottled(sender)) {
               responses.add(new Message(sender, new IrcEvent(channel, sender, message), "Slow your roll, son."));
             } else {
-              String content = message.substring(startString.length()).trim();
-              while (!content.isEmpty() && (content.charAt(0) == ':' || content.charAt(0) == ',')) {
-                content = content.substring(1).trim();
-              }
+              String content = extractContentFromMessage(message, startString);
               if (!content.isEmpty()) {
                 responses.addAll(getResponses(channel, sender, content));
               }
@@ -395,6 +392,14 @@ public class Javabot {
       log.error(e.getMessage(), e);
       throw new RuntimeException(e.getMessage(), e);
     }
+  }
+
+  String extractContentFromMessage(String message, String startString) {
+    String content = message.substring(startString.length()).trim();
+    while (!content.isEmpty() && (content.charAt(0) == ':' || content.charAt(0) == ',')) {
+      content = content.substring(1).trim();
+    }
+    return content;
   }
 
   public void addIgnore(final String sender) {
@@ -459,7 +464,7 @@ public class Javabot {
 
   public boolean isOnSameChannelAs(final String user) {
     for (final String channel : pircBot.getChannels()) {
-      if (userIsOnChannel(user, channel)) {
+        if (userIsOnChannel(user, channel)) {
         return true;
       }
     }
