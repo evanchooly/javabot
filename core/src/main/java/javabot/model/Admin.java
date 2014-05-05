@@ -1,14 +1,14 @@
 package javabot.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import com.antwerkz.maven.SPI;
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
-import org.bson.types.ObjectId;
-import org.joda.time.DateTime;
 
 @Entity("admins")
 @SPI(Persistent.class)
@@ -30,7 +30,7 @@ public class Admin implements Serializable, Persistent {
 
   private String addedBy;
 
-  private DateTime updated = DateTime.now();
+  private LocalDateTime updated = LocalDateTime.now();
 
   @Override
   public ObjectId getId() {
@@ -58,11 +58,11 @@ public class Admin implements Serializable, Persistent {
     userName = adminName;
   }
 
-  public DateTime getUpdated() {
+  public LocalDateTime getUpdated() {
     return updated;
   }
 
-  public void setUpdated(DateTime date) {
+  public void setUpdated(LocalDateTime date) {
     updated = date;
   }
 

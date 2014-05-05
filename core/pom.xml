@@ -86,6 +86,7 @@
                 </executions>
                 <configuration>
                     <loggingType>slf4j</loggingType>
+                    <outputDirectory>src/main/java</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -207,11 +208,6 @@
             <artifactId>apt-tools</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
         </dependency>
 
         <dependency>

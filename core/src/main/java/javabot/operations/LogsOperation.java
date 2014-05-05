@@ -1,18 +1,18 @@
 package javabot.operations;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 
 import com.antwerkz.maven.SPI;
-import org.mongodb.morphia.Datastore;
 import javabot.IrcEvent;
-import javabot.model.IrcUser;
 import javabot.Message;
-import javabot.dao.LogsDao;
+import javabot.model.IrcUser;
 import javabot.model.Logs;
 import javabot.model.criteria.LogsCriteria;
+import org.mongodb.morphia.Datastore;
 
 /**
  * Gets logs for channel, optionally filtered by a nickname
@@ -22,9 +22,6 @@ import javabot.model.criteria.LogsCriteria;
 @SPI(BotOperation.class)
 public class LogsOperation extends BotOperation {
   private static final String KEYWORD_LOGS = "logs";
-
-  @Inject
-  private LogsDao logsDao;
 
   @Inject
   private Datastore ds;
@@ -47,7 +44,9 @@ public class LogsOperation extends BotOperation {
       }
       for (Logs logs : criteria.query().fetch()) {
         responses.add(new Message(sender, event,
-            String.format("%s <%s> %s", logs.getUpdated().toString("HH:mm"), logs.getNick(), logs.getMessage())));
+            String.format("%s <%s> %s", logs.getUpdated().format(DateTimeFormatter.ofPattern("HH:mm")),
+                logs.getNick(), logs.getMessage())
+        ));
       }
       if (responses.isEmpty()) {
         if (nickname.isEmpty()) {

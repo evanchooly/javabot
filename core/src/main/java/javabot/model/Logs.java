@@ -1,8 +1,9 @@
 package javabot.model;
 
+import java.time.LocalDateTime;
+
 import com.antwerkz.maven.SPI;
 import org.bson.types.ObjectId;
-import org.joda.time.DateTime;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
@@ -26,7 +27,7 @@ public class Logs implements Persistent {
 
   private String message;
 
-  private DateTime updated;
+  private LocalDateTime updated;
 
   public enum Type {
     ACTION,
@@ -86,11 +87,11 @@ public class Logs implements Persistent {
     message = logMessage;
   }
 
-  public DateTime getUpdated() {
+  public LocalDateTime getUpdated() {
     return updated;
   }
 
-  public void setUpdated(final DateTime date) {
+  public void setUpdated(final LocalDateTime date) {
     updated = date;
   }
 

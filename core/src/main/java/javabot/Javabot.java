@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,9 +49,7 @@ import javabot.operations.OperationComparator;
 import javabot.operations.StandardOperation;
 import javabot.operations.throttle.Throttler;
 import org.jibble.pircbot.IrcException;
-import org.jibble.pircbot.PircBot;
 import org.jibble.pircbot.User;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,8 +81,6 @@ public class Javabot {
   protected Injector injector;
 
   public static final Logger log = LoggerFactory.getLogger(Javabot.class);
-
-  public static final int THROTTLE_TIME = 5 * 1000;
 
   Config config;
 
@@ -151,7 +148,7 @@ public class Javabot {
         event.setState(State.FAILED);
         log.error(e.getMessage(), e);
       }
-      event.setCompleted(new DateTime());
+      event.setCompleted(LocalDateTime.now());
       eventDao.save(event);
     }
   }
@@ -367,7 +364,7 @@ public class Javabot {
         final List<Message> responses = new ArrayList<>();
         for (final String startString : startStrings) {
           if (message.startsWith(startString)) {
-            if(throttler.isThrottled(sender)) {
+            if(throttler.isThrottled(sender, getPircBot())) {
               responses.add(new Message(sender, new IrcEvent(channel, sender, message), "Slow your roll, son."));
             } else {
               String content = message.substring(startString.length()).trim();
@@ -447,7 +444,7 @@ public class Javabot {
     while (responses.isEmpty() && iterator.hasNext()) {
       List<Message> list = iterator.next().handleChannelMessage(new IrcEvent(channel, sender, message));
       if(!list.isEmpty()) {
-        if(throttler.isThrottled(sender)) {
+        if(throttler.isThrottled(sender, getPircBot())) {
           responses.add(new Message(sender, new IrcEvent(channel, sender, message), "Slow your roll, son."));
         } else {
           responses.addAll(list);
@@ -491,7 +488,7 @@ public class Javabot {
     }
   }
 
-  public PircBot getPircBot() {
+  public MyPircBot getPircBot() {
     return pircBot;
   }
 

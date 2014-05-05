@@ -9,7 +9,7 @@ import java.util.concurrent.Callable;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import org.joda.time.DateTime;
+import java.time.LocalDateTime;
 
 public abstract class TableIterator implements Callable<Object> {
   public static final int BATCH = 10_000;
@@ -75,7 +75,7 @@ public abstract class TableIterator implements Callable<Object> {
         throw new RuntimeException(e.getMessage(), e);
       }
     }
-    System.out.printf(" * Finished migrating %s. %s%n%n", table, new DateTime().toString("HH:mm:ss"));
+    System.out.printf(" * Finished migrating %s. %s%n%n", table, LocalDateTime.now().toString("HH:mm:ss"));
     count = countResults();
 
     if (total != count) {

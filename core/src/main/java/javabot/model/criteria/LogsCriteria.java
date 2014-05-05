@@ -50,12 +50,12 @@ public class LogsCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Log
     return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, javabot.model.Logs.Type>(this, query, prefix + "type").equal(value);
   }
 
-  public com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, org.joda.time.DateTime> updated() {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, org.joda.time.DateTime>(this, query, prefix + "updated");
+  public com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, java.time.LocalDateTime> updated() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, java.time.LocalDateTime>(this, query, prefix + "updated");
   }
 
-  public org.mongodb.morphia.query.Criteria updated(org.joda.time.DateTime value) {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, org.joda.time.DateTime>(this, query, prefix + "updated").equal(value);
+  public org.mongodb.morphia.query.Criteria updated(java.time.LocalDateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, java.time.LocalDateTime>(this, query, prefix + "updated").equal(value);
   }
 
   public com.antwerkz.critter.TypeSafeFieldEnd<LogsCriteria, Logs, java.lang.String> upperNick() {
@@ -389,27 +389,27 @@ public class LogsCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Log
       updateOperations.inc("type", value);
       return this;
     }
-    public LogsUpdater updated(org.joda.time.DateTime value) {
+    public LogsUpdater updated(java.time.LocalDateTime value) {
       updateOperations.set("updated", value);
       return this;
     }
 
-    public LogsUpdater unsetUpdated(org.joda.time.DateTime value) {
+    public LogsUpdater unsetUpdated(java.time.LocalDateTime value) {
       updateOperations.unset("updated");
       return this;
     }
 
-    public LogsUpdater addUpdated(org.joda.time.DateTime value) {
+    public LogsUpdater addUpdated(java.time.LocalDateTime value) {
       updateOperations.add("updated", value);
       return this;
     }
 
-    public LogsUpdater addUpdated(org.joda.time.DateTime value, boolean addDups) {
+    public LogsUpdater addUpdated(java.time.LocalDateTime value, boolean addDups) {
       updateOperations.add("updated", value, addDups);
       return this;
     }
 
-    public LogsUpdater addAllToUpdated(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
+    public LogsUpdater addAllToUpdated(java.util.List<java.time.LocalDateTime> values, boolean addDups) {
       updateOperations.addAll("updated", values, addDups);
       return this;
     }
@@ -424,12 +424,12 @@ public class LogsCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Log
       return this;
     }
   
-    public LogsUpdater removeFromUpdated(org.joda.time.DateTime value) {
+    public LogsUpdater removeFromUpdated(java.time.LocalDateTime value) {
       updateOperations.removeAll("updated", value);
       return this;
     }
 
-    public LogsUpdater removeAllFromUpdated(java.util.List<org.joda.time.DateTime> values) {
+    public LogsUpdater removeAllFromUpdated(java.util.List<java.time.LocalDateTime> values) {
       updateOperations.removeAll("updated", values);
       return this;
     }

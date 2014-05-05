@@ -1,5 +1,7 @@
 package javabot.model.criteria;
 
+import java.time.LocalDateTime;
+
 import javabot.model.Admin;
 
 public class AdminCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Admin> {
@@ -50,12 +52,12 @@ public class AdminCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Ad
     return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String>(this, query, prefix + "ircName").equal(value);
   }
 
-  public com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, org.joda.time.DateTime> updated() {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, org.joda.time.DateTime>(this, query, prefix + "updated");
+  public com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, LocalDateTime> updated() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, LocalDateTime>(this, query, prefix + "updated");
   }
 
-  public org.mongodb.morphia.query.Criteria updated(org.joda.time.DateTime value) {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, org.joda.time.DateTime>(this, query, prefix + "updated").equal(value);
+  public org.mongodb.morphia.query.Criteria updated(java.time.LocalDateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.time.LocalDateTime>(this, query, prefix + "updated").equal(value);
   }
 
   public com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String> userName() {
@@ -389,27 +391,27 @@ public class AdminCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Ad
       updateOperations.inc("ircName", value);
       return this;
     }
-    public AdminUpdater updated(org.joda.time.DateTime value) {
+    public AdminUpdater updated(java.time.LocalDateTime value) {
       updateOperations.set("updated", value);
       return this;
     }
 
-    public AdminUpdater unsetUpdated(org.joda.time.DateTime value) {
+    public AdminUpdater unsetUpdated(java.time.LocalDateTime value) {
       updateOperations.unset("updated");
       return this;
     }
 
-    public AdminUpdater addUpdated(org.joda.time.DateTime value) {
+    public AdminUpdater addUpdated(java.time.LocalDateTime value) {
       updateOperations.add("updated", value);
       return this;
     }
 
-    public AdminUpdater addUpdated(org.joda.time.DateTime value, boolean addDups) {
+    public AdminUpdater addUpdated(java.time.LocalDateTime value, boolean addDups) {
       updateOperations.add("updated", value, addDups);
       return this;
     }
 
-    public AdminUpdater addAllToUpdated(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
+    public AdminUpdater addAllToUpdated(java.util.List<java.time.LocalDateTime> values, boolean addDups) {
       updateOperations.addAll("updated", values, addDups);
       return this;
     }
@@ -424,12 +426,12 @@ public class AdminCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Ad
       return this;
     }
   
-    public AdminUpdater removeFromUpdated(org.joda.time.DateTime value) {
+    public AdminUpdater removeFromUpdated(java.time.LocalDateTime value) {
       updateOperations.removeAll("updated", value);
       return this;
     }
 
-    public AdminUpdater removeAllFromUpdated(java.util.List<org.joda.time.DateTime> values) {
+    public AdminUpdater removeAllFromUpdated(java.util.List<java.time.LocalDateTime> values) {
       updateOperations.removeAll("updated", values);
       return this;
     }

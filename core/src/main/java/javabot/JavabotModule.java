@@ -12,7 +12,7 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.WriteConcern;
-import javabot.dao.util.DateTimeConverter;
+import javabot.dao.util.LocalDateTimeConverter;
 import javabot.javadoc.JavadocClass;
 import javabot.model.Factoid;
 import org.mongodb.morphia.Datastore;
@@ -56,7 +56,7 @@ public class JavabotModule extends AbstractModule {
       morphia = new Morphia();
       morphia.mapPackage(JavadocClass.class.getPackage().getName());
       morphia.mapPackage(Factoid.class.getPackage().getName());
-      morphia.getMapper().getConverters().addConverter(DateTimeConverter.class);
+      morphia.getMapper().getConverters().addConverter(LocalDateTimeConverter.class);
     }
     return morphia;
   }

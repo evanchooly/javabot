@@ -3,10 +3,10 @@ package javabot.model;
 import javax.inject.Inject;
 
 import com.antwerkz.sofia.Sofia;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Transient;
 import javabot.Javabot;
 import javabot.dao.ChannelDao;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Transient;
 
 @Entity("events")
 public class ChannelEvent extends AdminEvent {

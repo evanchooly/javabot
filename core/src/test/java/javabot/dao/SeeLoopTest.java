@@ -6,6 +6,8 @@ import javabot.BaseTest;
 import javabot.operations.BaseOperationTest;
 import javabot.operations.BotOperation;
 import javabot.operations.GetFactoidOperation;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 @Test(groups = {"operations"})
@@ -28,11 +30,13 @@ public class SeeLoopTest extends BaseOperationTest {
     deleteSees();
     testMessage("~see1 is <see>see2", ok);
     testMessage("~see2 is <see>see3", ok);
-    testMessage("~see3 is <see>see3", ok);
-    testMessage("~see1", "Loop detected for factoid '<see>see3'.");
+    testMessage("~see3 is <see>see1", ok);
+    testMessage("~see1", "Loop detected for factoid '<see>see2'.");
     deleteSees();
   }
 
+  @BeforeTest
+  @AfterTest
   private void deleteSees() {
     factoidDao.delete("test", "see1");
     factoidDao.delete("test", "see2");

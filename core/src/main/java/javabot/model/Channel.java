@@ -1,6 +1,7 @@
 package javabot.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import com.antwerkz.maven.SPI;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -13,7 +14,6 @@ import javabot.Javabot;
 import javabot.json.Views.PUBLIC;
 import javabot.json.Views.SYSTEM;
 import org.bson.types.ObjectId;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,7 @@ public class Channel implements Serializable, Persistent {
   private String key;
 
   @JsonView(PUBLIC.class)
-  private DateTime updated;
+  private LocalDateTime updated;
 
   @JsonView(PUBLIC.class)
   private Boolean logged = true;
@@ -51,11 +51,11 @@ public class Channel implements Serializable, Persistent {
     id = channelId;
   }
 
-  public DateTime getUpdated() {
+  public LocalDateTime getUpdated() {
     return updated;
   }
 
-  public void setUpdated(final DateTime date) {
+  public void setUpdated(final LocalDateTime date) {
     updated = date;
   }
 

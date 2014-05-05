@@ -42,12 +42,12 @@ public class ChannelCriteria extends com.antwerkz.critter.criteria.BaseCriteria<
     return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.lang.String>(this, query, prefix + "name").equal(value);
   }
 
-  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, org.joda.time.DateTime> updated() {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, org.joda.time.DateTime>(this, query, prefix + "updated");
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.time.LocalDateTime> updated() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.time.LocalDateTime>(this, query, prefix + "updated");
   }
 
-  public org.mongodb.morphia.query.Criteria updated(org.joda.time.DateTime value) {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, org.joda.time.DateTime>(this, query, prefix + "updated").equal(value);
+  public org.mongodb.morphia.query.Criteria updated(java.time.LocalDateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.time.LocalDateTime>(this, query, prefix + "updated").equal(value);
   }
 
   public com.antwerkz.critter.TypeSafeFieldEnd<ChannelCriteria, Channel, java.lang.String> upperName() {
@@ -322,27 +322,27 @@ public class ChannelCriteria extends com.antwerkz.critter.criteria.BaseCriteria<
       updateOperations.inc("name", value);
       return this;
     }
-    public ChannelUpdater updated(org.joda.time.DateTime value) {
+    public ChannelUpdater updated(java.time.LocalDateTime value) {
       updateOperations.set("updated", value);
       return this;
     }
 
-    public ChannelUpdater unsetUpdated(org.joda.time.DateTime value) {
+    public ChannelUpdater unsetUpdated(java.time.LocalDateTime value) {
       updateOperations.unset("updated");
       return this;
     }
 
-    public ChannelUpdater addUpdated(org.joda.time.DateTime value) {
+    public ChannelUpdater addUpdated(java.time.LocalDateTime value) {
       updateOperations.add("updated", value);
       return this;
     }
 
-    public ChannelUpdater addUpdated(org.joda.time.DateTime value, boolean addDups) {
+    public ChannelUpdater addUpdated(java.time.LocalDateTime value, boolean addDups) {
       updateOperations.add("updated", value, addDups);
       return this;
     }
 
-    public ChannelUpdater addAllToUpdated(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
+    public ChannelUpdater addAllToUpdated(java.util.List<java.time.LocalDateTime> values, boolean addDups) {
       updateOperations.addAll("updated", values, addDups);
       return this;
     }
@@ -357,12 +357,12 @@ public class ChannelCriteria extends com.antwerkz.critter.criteria.BaseCriteria<
       return this;
     }
   
-    public ChannelUpdater removeFromUpdated(org.joda.time.DateTime value) {
+    public ChannelUpdater removeFromUpdated(java.time.LocalDateTime value) {
       updateOperations.removeAll("updated", value);
       return this;
     }
 
-    public ChannelUpdater removeAllFromUpdated(java.util.List<org.joda.time.DateTime> values) {
+    public ChannelUpdater removeAllFromUpdated(java.util.List<java.time.LocalDateTime> values) {
       updateOperations.removeAll("updated", values);
       return this;
     }

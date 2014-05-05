@@ -18,12 +18,12 @@ public class FactoidCriteria extends com.antwerkz.critter.criteria.BaseCriteria<
     return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, org.bson.types.ObjectId>(this, query, prefix + "id").equal(value);
   }
 
-  public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, org.joda.time.DateTime> lastUsed() {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, org.joda.time.DateTime>(this, query, prefix + "lastUsed");
+  public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.time.LocalDateTime> lastUsed() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.time.LocalDateTime>(this, query, prefix + "lastUsed");
   }
 
-  public org.mongodb.morphia.query.Criteria lastUsed(org.joda.time.DateTime value) {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, org.joda.time.DateTime>(this, query, prefix + "lastUsed").equal(value);
+  public org.mongodb.morphia.query.Criteria lastUsed(java.time.LocalDateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.time.LocalDateTime>(this, query, prefix + "lastUsed").equal(value);
   }
 
   public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.Boolean> locked() {
@@ -42,12 +42,12 @@ public class FactoidCriteria extends com.antwerkz.critter.criteria.BaseCriteria<
     return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String>(this, query, prefix + "name").equal(value);
   }
 
-  public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, org.joda.time.DateTime> updated() {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, org.joda.time.DateTime>(this, query, prefix + "updated");
+  public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.time.LocalDateTime> updated() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.time.LocalDateTime>(this, query, prefix + "updated");
   }
 
-  public org.mongodb.morphia.query.Criteria updated(org.joda.time.DateTime value) {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, org.joda.time.DateTime>(this, query, prefix + "updated").equal(value);
+  public org.mongodb.morphia.query.Criteria updated(java.time.LocalDateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.time.LocalDateTime>(this, query, prefix + "updated").equal(value);
   }
 
   public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String> upperName() {
@@ -169,27 +169,27 @@ public class FactoidCriteria extends com.antwerkz.critter.criteria.BaseCriteria<
       updateOperations.inc("id", value);
       return this;
     }
-    public FactoidUpdater lastUsed(org.joda.time.DateTime value) {
+    public FactoidUpdater lastUsed(java.time.LocalDateTime value) {
       updateOperations.set("lastUsed", value);
       return this;
     }
 
-    public FactoidUpdater unsetLastUsed(org.joda.time.DateTime value) {
+    public FactoidUpdater unsetLastUsed(java.time.LocalDateTime value) {
       updateOperations.unset("lastUsed");
       return this;
     }
 
-    public FactoidUpdater addLastUsed(org.joda.time.DateTime value) {
+    public FactoidUpdater addLastUsed(java.time.LocalDateTime value) {
       updateOperations.add("lastUsed", value);
       return this;
     }
 
-    public FactoidUpdater addLastUsed(org.joda.time.DateTime value, boolean addDups) {
+    public FactoidUpdater addLastUsed(java.time.LocalDateTime value, boolean addDups) {
       updateOperations.add("lastUsed", value, addDups);
       return this;
     }
 
-    public FactoidUpdater addAllToLastUsed(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
+    public FactoidUpdater addAllToLastUsed(java.util.List<java.time.LocalDateTime> values, boolean addDups) {
       updateOperations.addAll("lastUsed", values, addDups);
       return this;
     }
@@ -204,12 +204,12 @@ public class FactoidCriteria extends com.antwerkz.critter.criteria.BaseCriteria<
       return this;
     }
   
-    public FactoidUpdater removeFromLastUsed(org.joda.time.DateTime value) {
+    public FactoidUpdater removeFromLastUsed(java.time.LocalDateTime value) {
       updateOperations.removeAll("lastUsed", value);
       return this;
     }
 
-    public FactoidUpdater removeAllFromLastUsed(java.util.List<org.joda.time.DateTime> values) {
+    public FactoidUpdater removeAllFromLastUsed(java.util.List<java.time.LocalDateTime> values) {
       updateOperations.removeAll("lastUsed", values);
       return this;
     }
@@ -346,27 +346,27 @@ public class FactoidCriteria extends com.antwerkz.critter.criteria.BaseCriteria<
       updateOperations.inc("name", value);
       return this;
     }
-    public FactoidUpdater updated(org.joda.time.DateTime value) {
+    public FactoidUpdater updated(java.time.LocalDateTime value) {
       updateOperations.set("updated", value);
       return this;
     }
 
-    public FactoidUpdater unsetUpdated(org.joda.time.DateTime value) {
+    public FactoidUpdater unsetUpdated(java.time.LocalDateTime value) {
       updateOperations.unset("updated");
       return this;
     }
 
-    public FactoidUpdater addUpdated(org.joda.time.DateTime value) {
+    public FactoidUpdater addUpdated(java.time.LocalDateTime value) {
       updateOperations.add("updated", value);
       return this;
     }
 
-    public FactoidUpdater addUpdated(org.joda.time.DateTime value, boolean addDups) {
+    public FactoidUpdater addUpdated(java.time.LocalDateTime value, boolean addDups) {
       updateOperations.add("updated", value, addDups);
       return this;
     }
 
-    public FactoidUpdater addAllToUpdated(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
+    public FactoidUpdater addAllToUpdated(java.util.List<java.time.LocalDateTime> values, boolean addDups) {
       updateOperations.addAll("updated", values, addDups);
       return this;
     }
@@ -381,12 +381,12 @@ public class FactoidCriteria extends com.antwerkz.critter.criteria.BaseCriteria<
       return this;
     }
   
-    public FactoidUpdater removeFromUpdated(org.joda.time.DateTime value) {
+    public FactoidUpdater removeFromUpdated(java.time.LocalDateTime value) {
       updateOperations.removeAll("updated", value);
       return this;
     }
 
-    public FactoidUpdater removeAllFromUpdated(java.util.List<org.joda.time.DateTime> values) {
+    public FactoidUpdater removeAllFromUpdated(java.util.List<java.time.LocalDateTime> values) {
       updateOperations.removeAll("updated", values);
       return this;
     }

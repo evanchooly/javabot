@@ -1,5 +1,6 @@
 package javabot.dao;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,6 @@ import javabot.model.Channel;
 import javabot.model.criteria.ChannelCriteria;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
-import org.joda.time.DateTime;
 
 @SuppressWarnings({"ConstantNamingConvention"})
 public class ChannelDao extends BaseDao<Channel> {
@@ -96,7 +96,7 @@ public class ChannelDao extends BaseDao<Channel> {
   }
 
   public void save(final Channel channel) {
-    channel.setUpdated(new DateTime());
+    channel.setUpdated(LocalDateTime.now());
     super.save(channel);
   }
 

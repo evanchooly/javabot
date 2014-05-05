@@ -1,8 +1,9 @@
 package javabot.dao;
 
+import java.time.LocalDateTime;
+
 import javabot.model.Shun;
 import javabot.model.criteria.ShunCriteria;
-import org.joda.time.DateTime;
 
 public class ShunDao extends BaseDao<Shun> {
 
@@ -23,11 +24,11 @@ public class ShunDao extends BaseDao<Shun> {
 
   private void expireShuns() {
     ShunCriteria criteria = new ShunCriteria(ds);
-    criteria.expiry().lessThan(new DateTime());
+    criteria.expiry().lessThan(LocalDateTime.now());
     ds.delete(criteria.query());
   }
 
-  public void addShun(final String nick, final DateTime until) {
+  public void addShun(final String nick, final LocalDateTime until) {
     Shun shun = getShun(nick);
     if (shun == null) {
       shun = new Shun();

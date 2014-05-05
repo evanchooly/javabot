@@ -10,12 +10,12 @@ public class OperationEventCriteria extends com.antwerkz.critter.criteria.BaseCr
   }
 
 
-  public com.antwerkz.critter.TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, org.joda.time.DateTime> completed() {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, org.joda.time.DateTime>(this, query, prefix + "completed");
+  public com.antwerkz.critter.TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, java.time.LocalDateTime> completed() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, java.time.LocalDateTime>(this, query, prefix + "completed");
   }
 
-  public org.mongodb.morphia.query.Criteria completed(org.joda.time.DateTime value) {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, org.joda.time.DateTime>(this, query, prefix + "completed").equal(value);
+  public org.mongodb.morphia.query.Criteria completed(java.time.LocalDateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, java.time.LocalDateTime>(this, query, prefix + "completed").equal(value);
   }
 
   public com.antwerkz.critter.TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, org.bson.types.ObjectId> id() {
@@ -42,12 +42,12 @@ public class OperationEventCriteria extends com.antwerkz.critter.criteria.BaseCr
     return new com.antwerkz.critter.TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, java.lang.String>(this, query, prefix + "requestedBy").equal(value);
   }
 
-  public com.antwerkz.critter.TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, org.joda.time.DateTime> requestedOn() {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, org.joda.time.DateTime>(this, query, prefix + "requestedOn");
+  public com.antwerkz.critter.TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, java.time.LocalDateTime> requestedOn() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, java.time.LocalDateTime>(this, query, prefix + "requestedOn");
   }
 
-  public org.mongodb.morphia.query.Criteria requestedOn(org.joda.time.DateTime value) {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, org.joda.time.DateTime>(this, query, prefix + "requestedOn").equal(value);
+  public org.mongodb.morphia.query.Criteria requestedOn(java.time.LocalDateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, java.time.LocalDateTime>(this, query, prefix + "requestedOn").equal(value);
   }
 
   public com.antwerkz.critter.TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, javabot.model.AdminEvent.State> state() {
@@ -94,27 +94,27 @@ public class OperationEventCriteria extends com.antwerkz.critter.criteria.BaseCr
       return ds.update(query(), updateOperations, true, wc);
     }
 
-    public OperationEventUpdater completed(org.joda.time.DateTime value) {
+    public OperationEventUpdater completed(java.time.LocalDateTime value) {
       updateOperations.set("completed", value);
       return this;
     }
 
-    public OperationEventUpdater unsetCompleted(org.joda.time.DateTime value) {
+    public OperationEventUpdater unsetCompleted(java.time.LocalDateTime value) {
       updateOperations.unset("completed");
       return this;
     }
 
-    public OperationEventUpdater addCompleted(org.joda.time.DateTime value) {
+    public OperationEventUpdater addCompleted(java.time.LocalDateTime value) {
       updateOperations.add("completed", value);
       return this;
     }
 
-    public OperationEventUpdater addCompleted(org.joda.time.DateTime value, boolean addDups) {
+    public OperationEventUpdater addCompleted(java.time.LocalDateTime value, boolean addDups) {
       updateOperations.add("completed", value, addDups);
       return this;
     }
 
-    public OperationEventUpdater addAllToCompleted(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
+    public OperationEventUpdater addAllToCompleted(java.util.List<java.time.LocalDateTime> values, boolean addDups) {
       updateOperations.addAll("completed", values, addDups);
       return this;
     }
@@ -129,12 +129,12 @@ public class OperationEventCriteria extends com.antwerkz.critter.criteria.BaseCr
       return this;
     }
   
-    public OperationEventUpdater removeFromCompleted(org.joda.time.DateTime value) {
+    public OperationEventUpdater removeFromCompleted(java.time.LocalDateTime value) {
       updateOperations.removeAll("completed", value);
       return this;
     }
 
-    public OperationEventUpdater removeAllFromCompleted(java.util.List<org.joda.time.DateTime> values) {
+    public OperationEventUpdater removeAllFromCompleted(java.util.List<java.time.LocalDateTime> values) {
       updateOperations.removeAll("completed", values);
       return this;
     }
@@ -330,27 +330,27 @@ public class OperationEventCriteria extends com.antwerkz.critter.criteria.BaseCr
       updateOperations.inc("requestedBy", value);
       return this;
     }
-    public OperationEventUpdater requestedOn(org.joda.time.DateTime value) {
+    public OperationEventUpdater requestedOn(java.time.LocalDateTime value) {
       updateOperations.set("requestedOn", value);
       return this;
     }
 
-    public OperationEventUpdater unsetRequestedOn(org.joda.time.DateTime value) {
+    public OperationEventUpdater unsetRequestedOn(java.time.LocalDateTime value) {
       updateOperations.unset("requestedOn");
       return this;
     }
 
-    public OperationEventUpdater addRequestedOn(org.joda.time.DateTime value) {
+    public OperationEventUpdater addRequestedOn(java.time.LocalDateTime value) {
       updateOperations.add("requestedOn", value);
       return this;
     }
 
-    public OperationEventUpdater addRequestedOn(org.joda.time.DateTime value, boolean addDups) {
+    public OperationEventUpdater addRequestedOn(java.time.LocalDateTime value, boolean addDups) {
       updateOperations.add("requestedOn", value, addDups);
       return this;
     }
 
-    public OperationEventUpdater addAllToRequestedOn(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
+    public OperationEventUpdater addAllToRequestedOn(java.util.List<java.time.LocalDateTime> values, boolean addDups) {
       updateOperations.addAll("requestedOn", values, addDups);
       return this;
     }
@@ -365,12 +365,12 @@ public class OperationEventCriteria extends com.antwerkz.critter.criteria.BaseCr
       return this;
     }
   
-    public OperationEventUpdater removeFromRequestedOn(org.joda.time.DateTime value) {
+    public OperationEventUpdater removeFromRequestedOn(java.time.LocalDateTime value) {
       updateOperations.removeAll("requestedOn", value);
       return this;
     }
 
-    public OperationEventUpdater removeAllFromRequestedOn(java.util.List<org.joda.time.DateTime> values) {
+    public OperationEventUpdater removeAllFromRequestedOn(java.util.List<java.time.LocalDateTime> values) {
       updateOperations.removeAll("requestedOn", values);
       return this;
     }

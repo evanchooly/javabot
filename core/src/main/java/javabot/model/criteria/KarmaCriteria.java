@@ -26,12 +26,12 @@ public class KarmaCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Ka
     return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.lang.String>(this, query, prefix + "name").equal(value);
   }
 
-  public com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, org.joda.time.DateTime> updated() {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, org.joda.time.DateTime>(this, query, prefix + "updated");
+  public com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.time.LocalDateTime> updated() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.time.LocalDateTime>(this, query, prefix + "updated");
   }
 
-  public org.mongodb.morphia.query.Criteria updated(org.joda.time.DateTime value) {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, org.joda.time.DateTime>(this, query, prefix + "updated").equal(value);
+  public org.mongodb.morphia.query.Criteria updated(java.time.LocalDateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.time.LocalDateTime>(this, query, prefix + "updated").equal(value);
   }
 
   public com.antwerkz.critter.TypeSafeFieldEnd<KarmaCriteria, Karma, java.lang.String> upperName() {
@@ -204,27 +204,27 @@ public class KarmaCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Ka
       updateOperations.inc("name", value);
       return this;
     }
-    public KarmaUpdater updated(org.joda.time.DateTime value) {
+    public KarmaUpdater updated(java.time.LocalDateTime value) {
       updateOperations.set("updated", value);
       return this;
     }
 
-    public KarmaUpdater unsetUpdated(org.joda.time.DateTime value) {
+    public KarmaUpdater unsetUpdated(java.time.LocalDateTime value) {
       updateOperations.unset("updated");
       return this;
     }
 
-    public KarmaUpdater addUpdated(org.joda.time.DateTime value) {
+    public KarmaUpdater addUpdated(java.time.LocalDateTime value) {
       updateOperations.add("updated", value);
       return this;
     }
 
-    public KarmaUpdater addUpdated(org.joda.time.DateTime value, boolean addDups) {
+    public KarmaUpdater addUpdated(java.time.LocalDateTime value, boolean addDups) {
       updateOperations.add("updated", value, addDups);
       return this;
     }
 
-    public KarmaUpdater addAllToUpdated(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
+    public KarmaUpdater addAllToUpdated(java.util.List<java.time.LocalDateTime> values, boolean addDups) {
       updateOperations.addAll("updated", values, addDups);
       return this;
     }
@@ -239,12 +239,12 @@ public class KarmaCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Ka
       return this;
     }
   
-    public KarmaUpdater removeFromUpdated(org.joda.time.DateTime value) {
+    public KarmaUpdater removeFromUpdated(java.time.LocalDateTime value) {
       updateOperations.removeAll("updated", value);
       return this;
     }
 
-    public KarmaUpdater removeAllFromUpdated(java.util.List<org.joda.time.DateTime> values) {
+    public KarmaUpdater removeAllFromUpdated(java.util.List<java.time.LocalDateTime> values) {
       updateOperations.removeAll("updated", values);
       return this;
     }

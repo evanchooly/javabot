@@ -17,7 +17,7 @@ import javabot.model.Channel;
 import javabot.model.Logs;
 import javabot.model.criteria.LogsCriteria;
 import org.bson.types.ObjectId;
-import org.joda.time.DateTime;
+import java.time.LocalDateTime;
 import org.joda.time.DateTimeZone;
 import org.testng.Assert;
 import org.testng.annotations.Guice;

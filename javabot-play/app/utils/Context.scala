@@ -3,7 +3,7 @@ package utils
 import javabot.dao.ChannelDao
 import javabot.model.Logs
 import javax.inject.Inject
-import org.joda.time.DateTime
+import java.time.LocalDateTime
 import play.api.mvc
 import play.api.mvc.AnyContent
 

@@ -10,12 +10,12 @@ public class ShunCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Shu
   }
 
 
-  public com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, org.joda.time.DateTime> expiry() {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, org.joda.time.DateTime>(this, query, prefix + "expiry");
+  public com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, java.time.LocalDateTime> expiry() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, java.time.LocalDateTime>(this, query, prefix + "expiry");
   }
 
-  public org.mongodb.morphia.query.Criteria expiry(org.joda.time.DateTime value) {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, org.joda.time.DateTime>(this, query, prefix + "expiry").equal(value);
+  public org.mongodb.morphia.query.Criteria expiry(java.time.LocalDateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, java.time.LocalDateTime>(this, query, prefix + "expiry").equal(value);
   }
 
   public com.antwerkz.critter.TypeSafeFieldEnd<ShunCriteria, Shun, org.bson.types.ObjectId> id() {
@@ -70,27 +70,27 @@ public class ShunCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Shu
       return ds.update(query(), updateOperations, true, wc);
     }
 
-    public ShunUpdater expiry(org.joda.time.DateTime value) {
+    public ShunUpdater expiry(java.time.LocalDateTime value) {
       updateOperations.set("expiry", value);
       return this;
     }
 
-    public ShunUpdater unsetExpiry(org.joda.time.DateTime value) {
+    public ShunUpdater unsetExpiry(java.time.LocalDateTime value) {
       updateOperations.unset("expiry");
       return this;
     }
 
-    public ShunUpdater addExpiry(org.joda.time.DateTime value) {
+    public ShunUpdater addExpiry(java.time.LocalDateTime value) {
       updateOperations.add("expiry", value);
       return this;
     }
 
-    public ShunUpdater addExpiry(org.joda.time.DateTime value, boolean addDups) {
+    public ShunUpdater addExpiry(java.time.LocalDateTime value, boolean addDups) {
       updateOperations.add("expiry", value, addDups);
       return this;
     }
 
-    public ShunUpdater addAllToExpiry(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
+    public ShunUpdater addAllToExpiry(java.util.List<java.time.LocalDateTime> values, boolean addDups) {
       updateOperations.addAll("expiry", values, addDups);
       return this;
     }
@@ -105,12 +105,12 @@ public class ShunCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Shu
       return this;
     }
   
-    public ShunUpdater removeFromExpiry(org.joda.time.DateTime value) {
+    public ShunUpdater removeFromExpiry(java.time.LocalDateTime value) {
       updateOperations.removeAll("expiry", value);
       return this;
     }
 
-    public ShunUpdater removeAllFromExpiry(java.util.List<org.joda.time.DateTime> values) {
+    public ShunUpdater removeAllFromExpiry(java.util.List<java.time.LocalDateTime> values) {
       updateOperations.removeAll("expiry", values);
       return this;
     }

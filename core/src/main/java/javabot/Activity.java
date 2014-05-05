@@ -2,17 +2,16 @@ package javabot;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
-
-import org.joda.time.DateTime;
+import java.time.LocalDateTime;
 
 public class Activity implements Serializable {
     private String channel;
-    private DateTime start;
-    private DateTime end;
+    private LocalDateTime start;
+    private LocalDateTime end;
     private long count;
     private long total;
 
-    public Activity(String chan, long chanCount, DateTime endDate, DateTime startDate, long totalRowCount) {
+    public Activity(String chan, long chanCount, LocalDateTime endDate, LocalDateTime startDate, long totalRowCount) {
         channel = chan;
         count = chanCount;
         end = endDate;
@@ -28,11 +27,11 @@ public class Activity implements Serializable {
         return count;
     }
 
-    public DateTime getEnd() {
+    public LocalDateTime getEnd() {
         return end;
     }
 
-    public DateTime getStart() {
+    public LocalDateTime getStart() {
         return start;
     }
 

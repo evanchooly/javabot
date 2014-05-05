@@ -8,7 +8,7 @@ import javabot.dao.util.QueryParam;
 import javabot.model.Factoid;
 import javabot.model.Persistent;
 import javabot.model.criteria.FactoidCriteria;
-import org.joda.time.DateTime;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,8 +51,8 @@ public class FactoidDao extends BaseDao<Factoid> {
     factoid.setName(key);
     factoid.setValue(value);
     factoid.setUserName(sender);
-    factoid.setUpdated(new DateTime());
-    factoid.setLastUsed(new DateTime());
+    factoid.setUpdated(LocalDateTime.now());
+    factoid.setLastUsed(LocalDateTime.now());
     save(factoid);
     changeDao.logAdd(sender, key, value);
     return factoid;
@@ -71,7 +71,7 @@ public class FactoidDao extends BaseDao<Factoid> {
     criteria.upperName().equal(name.toUpperCase());
     Factoid factoid = criteria.query().get();
     if (factoid != null) {
-      factoid.setLastUsed(new DateTime());
+      factoid.setLastUsed(LocalDateTime.now());
       super.save(factoid);
     }
     return factoid;
@@ -86,7 +86,7 @@ public class FactoidDao extends BaseDao<Factoid> {
     );
     Factoid factoid = criteria.query().get();
     if (factoid != null) {
-      factoid.setLastUsed(new DateTime());
+      factoid.setLastUsed(LocalDateTime.now());
       super.save(factoid);
     }
     return factoid;

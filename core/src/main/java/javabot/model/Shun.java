@@ -1,6 +1,7 @@
 package javabot.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import com.antwerkz.maven.SPI;
 import org.mongodb.morphia.annotations.Entity;
@@ -9,7 +10,6 @@ import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Indexes;
 import org.bson.types.ObjectId;
-import org.joda.time.DateTime;
 
 @Entity("shuns")
 @SPI(Persistent.class)
@@ -25,7 +25,7 @@ public class Shun implements Serializable, Persistent {
 
   private String upperNick;
 
-  private DateTime expiry;
+  private LocalDateTime expiry;
 
   public ObjectId getId() {
     return id;
@@ -43,11 +43,11 @@ public class Shun implements Serializable, Persistent {
     this.nick = nick;
   }
 
-  public DateTime getExpiry() {
+  public LocalDateTime getExpiry() {
     return expiry;
   }
 
-  public void setExpiry(DateTime updated) {
+  public void setExpiry(LocalDateTime updated) {
     this.expiry = updated;
   }
 

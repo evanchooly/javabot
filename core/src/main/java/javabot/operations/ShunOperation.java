@@ -1,5 +1,7 @@
 package javabot.operations;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -8,8 +10,6 @@ import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
 import javabot.Message;
 import javabot.dao.ShunDao;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
 
 /**
  * Causes the bot to disregard bot triggers for a few minutes. Useful to de-fang abusive users without ejecting the bot
@@ -17,10 +17,6 @@ import org.joda.time.Duration;
  */
 @SPI(BotOperation.class)
 public class ShunOperation extends BotOperation {
-  private static final long MILLISECOND = 1;
-  private static final long SECOND = 1000 * MILLISECOND;
-  private static final long MINUTE = 60 * SECOND;
-  private static final Duration SHUN_DURATION = Duration.standardMinutes(5);
   @Inject
   private ShunDao shunDao;
 
@@ -43,11 +39,12 @@ public class ShunOperation extends BotOperation {
     if (shunDao.isShunned(victim)) {
       return String.format("%s is already shunned.", victim);
     }
-    System.out.println("DateTime.now() = " + DateTime.now());
-    final DateTime until = parts.length == 1
-        ? DateTime.now().plusMinutes(5)
-        : DateTime.now().plusSeconds(Integer.parseInt(parts[1]));
+    System.out.println("DateTime.now() = " + LocalDateTime.now());
+    final LocalDateTime until = parts.length == 1
+        ? LocalDateTime.now().plusMinutes(5)
+        : LocalDateTime.now().plusSeconds(Integer.parseInt(parts[1]));
     shunDao.addShun(victim, until);
-    return String.format("%s is shunned until %s.", victim, until.toString("yyyy/MM/dd HH:mm:ss"));
+    return String.format("%s is shunned until %s.", victim,
+        until.format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
   }
 }

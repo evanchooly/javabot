@@ -1,22 +1,25 @@
 package javabot.dao.util;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 import org.mongodb.morphia.converters.DateConverter;
 import org.mongodb.morphia.mapping.MappedField;
 import org.mongodb.morphia.mapping.MappingException;
-import org.joda.time.DateTime;
 
-public class DateTimeConverter extends DateConverter {
-  public DateTimeConverter() {
-    super(DateTime.class);
+public class LocalDateTimeConverter extends DateConverter {
+  public LocalDateTimeConverter() {
+    super(LocalDateTime.class);
   }
 
   @Override
   public Object decode(final Class targetClass, final Object val, final MappedField optionalExtraInfo)
       throws MappingException {
-    Date d = (Date) super.decode(targetClass, val, optionalExtraInfo);
-    return new DateTime(d.getTime());
+    Date date = (Date) super.decode(targetClass, val, optionalExtraInfo);
+    Instant instant = Instant.ofEpochMilli(date.getTime());
+    return LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
   }
 
   @Override
@@ -24,6 +27,6 @@ public class DateTimeConverter extends DateConverter {
     if (value == null) {
       return null;
     }
-    return ((DateTime) value).toDate();
+    return new Date(((LocalDateTime) value).toInstant(ZoneOffset.UTC).toEpochMilli());
   }
 }

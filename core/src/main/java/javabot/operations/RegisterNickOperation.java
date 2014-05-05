@@ -33,8 +33,8 @@ public class RegisterNickOperation extends BotOperation {
         Config config = configDao.get();
         String eventMessage = Sofia.registerNick(config.getUrl(), registration.getUrl(), twitterName);
 
-        responses.add(new Message(event.getSender(), new IrcEvent(event.getSender().getNick(), event.getSender(), eventMessage),
-          eventMessage));
+        responses.add(new Message(event.getSender(), new IrcEvent(event.getSender().getNick(), event.getSender(),
+            eventMessage), eventMessage));
       }
     }
     return responses;

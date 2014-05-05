@@ -1,8 +1,11 @@
 package javabot;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 
 import com.google.inject.Injector;
+import javabot.dao.NickServDao;
 import javabot.model.Channel;
 import javabot.model.IrcUser;
 import javabot.model.Logs;
@@ -10,10 +13,15 @@ import javabot.operations.throttle.Throttler;
 import org.jibble.pircbot.PircBot;
 
 public class MyPircBot extends PircBot {
-  private final Javabot javabot;
-
   @Inject
   private Throttler throttler;
+
+  @Inject
+  private NickServDao nickServDao;
+
+  private final List<String> nickServ = new ArrayList<>();
+
+  private final Javabot javabot;
 
   public MyPircBot(final Javabot javabot, final Injector injector) {
     this.javabot = javabot;
@@ -80,12 +88,36 @@ public class MyPircBot extends PircBot {
   }
 
   @Override
+  protected void onNotice(final String sourceNick, final String sourceLogin, final String sourceHostname,
+      final String target, final String notice) {
+    super.onNotice(sourceNick, sourceLogin, sourceHostname, target, notice);
+    if (sourceNick.equalsIgnoreCase("NickServ")) {
+      String message = notice.replace("\u0002", "");
+      synchronized (nickServ) {
+        if (message.equals("*** End of Info ***")) {
+          try {
+            nickServDao.process(nickServ);
+          } catch (Exception e) {
+            e.printStackTrace();  
+          }
+          nickServ.clear();
+        } else {
+          System.out.println(message);
+          if(message.startsWith("Information on ") || !nickServ.isEmpty()) {
+            nickServ.add(message);
+          }
+        }
+      }
+    }
+  }
+
+  @Override
   public void onPrivateMessage(final String sender, final String login, final String hostname, final String message) {
     if (javabot.adminDao.isAdmin(sender, hostname) || javabot.isOnSameChannelAs(sender)) {
       javabot.executors.execute(() -> {
         javabot.logsDao.logMessage(Logs.Type.MESSAGE, sender, sender, message);
         IrcUser user = javabot.getUser(sender, login, hostname);
-        if (!throttler.isThrottled(user)) {
+        if (!throttler.isThrottled(user, this)) {
           for (final Message response : javabot.getResponses(sender, user, message)) {
             response.send(javabot);
           }

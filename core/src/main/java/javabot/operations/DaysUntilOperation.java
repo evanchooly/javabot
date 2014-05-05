@@ -1,18 +1,17 @@
 package javabot.operations;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
-import javabot.model.IrcUser;
 import javabot.Message;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import javabot.model.IrcUser;
 
 @SPI(BotOperation.class)
 public class DaysUntilOperation extends BotOperation {
@@ -23,18 +22,16 @@ public class DaysUntilOperation extends BotOperation {
     if (message.startsWith("days until ")) {
       final IrcUser sender = event.getSender();
       message = message.substring("days until ".length());
-      final Calendar calendar = Calendar.getInstance();
-      final SimpleDateFormat sdf = new SimpleDateFormat();
-      DateTime d = null;
+      LocalDateTime d = null;
       final DateTimeFormatter[] formats = {
-          DateTimeFormat.forPattern("yyyy/MM/dd"), DateTimeFormat.forPattern("MMM d, ''yy"),
-          DateTimeFormat.forPattern("d MMM yyyy"), DateTimeFormat.forPattern("MMM d, yyyy"),
-          DateTimeFormat.forPattern("MMM d, ''yy")
+          DateTimeFormatter.ofPattern("yyyy/MM/dd"), DateTimeFormatter.ofPattern("MMM d, ''yy"),
+          DateTimeFormatter.ofPattern("d MMM yyyy"), DateTimeFormatter.ofPattern("MMM d, yyyy"),
+          DateTimeFormatter.ofPattern("MMM d, ''yy")
       };
       int i = 0;
       while (i < formats.length && d == null) {
         try {
-          d = formats[i].parseDateTime(message);
+          d = LocalDateTime.parse(message, formats[i]);
           calcTime(responses, event, message, sender, d);
         } catch (IllegalArgumentException e) {
           // I think we just want to ignore this...
@@ -50,8 +47,8 @@ public class DaysUntilOperation extends BotOperation {
   }
 
   private void calcTime(final List<Message> responses, final IrcEvent event, final String message,
-      final IrcUser sender, final DateTime d) {
-    final long days = new Duration(d, new DateTime().withTimeAtStartOfDay()).getStandardDays();
+      final IrcUser sender, final LocalDateTime d) {
+    final long days = Duration.between(d, LocalDateTime.now().withHour(0)).toDays();
     responses.add(new Message(event.getChannel(), event,
         String.format("%s:  there are %d days until %s.", sender, days, message)));
   }

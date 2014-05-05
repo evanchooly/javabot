@@ -7,7 +7,7 @@ import javabot.dao.ChannelDao;
 import javabot.dao.FactoidDao;
 import javabot.model.Admin;
 import javabot.model.Logs;
-import org.joda.time.DateTime;
+import java.time.LocalDateTime;
 import play.mvc.Http;
 
 public class Context {

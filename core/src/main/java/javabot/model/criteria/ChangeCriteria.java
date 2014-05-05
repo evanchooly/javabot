@@ -10,12 +10,12 @@ public class ChangeCriteria extends com.antwerkz.critter.criteria.BaseCriteria<C
   }
 
 
-  public com.antwerkz.critter.TypeSafeFieldEnd<ChangeCriteria, Change, org.joda.time.DateTime> changeDate() {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<ChangeCriteria, Change, org.joda.time.DateTime>(this, query, prefix + "changeDate");
+  public com.antwerkz.critter.TypeSafeFieldEnd<ChangeCriteria, Change, java.time.LocalDateTime> changeDate() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChangeCriteria, Change, java.time.LocalDateTime>(this, query, prefix + "changeDate");
   }
 
-  public org.mongodb.morphia.query.Criteria changeDate(org.joda.time.DateTime value) {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<ChangeCriteria, Change, org.joda.time.DateTime>(this, query, prefix + "changeDate").equal(value);
+  public org.mongodb.morphia.query.Criteria changeDate(java.time.LocalDateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ChangeCriteria, Change, java.time.LocalDateTime>(this, query, prefix + "changeDate").equal(value);
   }
 
   public com.antwerkz.critter.TypeSafeFieldEnd<ChangeCriteria, Change, org.bson.types.ObjectId> id() {
@@ -62,27 +62,27 @@ public class ChangeCriteria extends com.antwerkz.critter.criteria.BaseCriteria<C
       return ds.update(query(), updateOperations, true, wc);
     }
 
-    public ChangeUpdater changeDate(org.joda.time.DateTime value) {
+    public ChangeUpdater changeDate(java.time.LocalDateTime value) {
       updateOperations.set("changeDate", value);
       return this;
     }
 
-    public ChangeUpdater unsetChangeDate(org.joda.time.DateTime value) {
+    public ChangeUpdater unsetChangeDate(java.time.LocalDateTime value) {
       updateOperations.unset("changeDate");
       return this;
     }
 
-    public ChangeUpdater addChangeDate(org.joda.time.DateTime value) {
+    public ChangeUpdater addChangeDate(java.time.LocalDateTime value) {
       updateOperations.add("changeDate", value);
       return this;
     }
 
-    public ChangeUpdater addChangeDate(org.joda.time.DateTime value, boolean addDups) {
+    public ChangeUpdater addChangeDate(java.time.LocalDateTime value, boolean addDups) {
       updateOperations.add("changeDate", value, addDups);
       return this;
     }
 
-    public ChangeUpdater addAllToChangeDate(java.util.List<org.joda.time.DateTime> values, boolean addDups) {
+    public ChangeUpdater addAllToChangeDate(java.util.List<java.time.LocalDateTime> values, boolean addDups) {
       updateOperations.addAll("changeDate", values, addDups);
       return this;
     }
@@ -97,12 +97,12 @@ public class ChangeCriteria extends com.antwerkz.critter.criteria.BaseCriteria<C
       return this;
     }
   
-    public ChangeUpdater removeFromChangeDate(org.joda.time.DateTime value) {
+    public ChangeUpdater removeFromChangeDate(java.time.LocalDateTime value) {
       updateOperations.removeAll("changeDate", value);
       return this;
     }
 
-    public ChangeUpdater removeAllFromChangeDate(java.util.List<org.joda.time.DateTime> values) {
+    public ChangeUpdater removeAllFromChangeDate(java.util.List<java.time.LocalDateTime> values) {
       updateOperations.removeAll("changeDate", values);
       return this;
     }

@@ -1,6 +1,7 @@
 package javabot.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import javax.inject.Inject;
 
 import org.mongodb.morphia.annotations.Entity;
@@ -11,7 +12,6 @@ import org.mongodb.morphia.annotations.Transient;
 import javabot.Javabot;
 import javabot.dao.EventDao;
 import org.bson.types.ObjectId;
-import org.joda.time.DateTime;
 
 @Entity("events")
 @Indexes({
@@ -34,9 +34,9 @@ public class AdminEvent implements Serializable, Persistent {
 
   private String requestedBy;
 
-  private DateTime requestedOn;
+  private LocalDateTime requestedOn;
 
-  private DateTime completed;
+  private LocalDateTime completed;
 
   private State state = State.NEW;
 
@@ -48,7 +48,7 @@ public class AdminEvent implements Serializable, Persistent {
   public AdminEvent(EventType type, String requestedBy) {
     this.type = type;
     this.requestedBy = requestedBy;
-    requestedOn = new DateTime();
+    requestedOn = LocalDateTime.now();
   }
 
   @Override
@@ -61,11 +61,11 @@ public class AdminEvent implements Serializable, Persistent {
     this.id = id;
   }
 
-  public void setCompleted(final DateTime completed) {
+  public void setCompleted(final LocalDateTime completed) {
     this.completed = completed;
   }
 
-  public DateTime getCompleted() {
+  public LocalDateTime getCompleted() {
     return completed;
   }
 
@@ -93,11 +93,11 @@ public class AdminEvent implements Serializable, Persistent {
     this.requestedBy = requestedBy;
   }
 
-  public DateTime getRequestedOn() {
+  public LocalDateTime getRequestedOn() {
     return requestedOn;
   }
 
-  public void setRequestedOn(DateTime requestedOn) {
+  public void setRequestedOn(LocalDateTime requestedOn) {
     this.requestedOn = requestedOn;
   }
 

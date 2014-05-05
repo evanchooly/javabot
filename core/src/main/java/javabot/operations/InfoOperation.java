@@ -1,5 +1,6 @@
 package javabot.operations;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -32,7 +33,7 @@ public class InfoOperation extends BotOperation {
         responses.add(new Message(channel, event,
             String.format("%s%s was added by: %s on %s and has a literal value of: %s", key,
                 factoid.getLocked() ? "*" : "", factoid.getUserName(),
-                factoid.getUpdated().toString(INFO_DATE_FORMAT), factoid.getValue())));
+                factoid.getUpdated().format(DateTimeFormatter.ofPattern(INFO_DATE_FORMAT)), factoid.getValue())));
       } else {
         responses.add(new Message(channel, event, "I have no factoid called \"" + key + "\""));
       }

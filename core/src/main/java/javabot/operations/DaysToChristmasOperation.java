@@ -1,13 +1,15 @@
 package javabot.operations;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.antwerkz.maven.SPI;
+import static java.time.LocalDateTime.now;
 import javabot.IrcEvent;
 import javabot.Message;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
 
 @SPI(BotOperation.class)
 public class DaysToChristmasOperation extends BotOperation {
@@ -15,11 +17,11 @@ public class DaysToChristmasOperation extends BotOperation {
   public List<Message> handleMessage(final IrcEvent event) {
     final List<Message> responses = new ArrayList<Message>();
     if ("countdown to christmas".equals(event.getMessage().toLowerCase())) {
-      DateTime christmas = new DateTime().withDayOfMonth(25).withMonthOfYear(12);
-      DateTime now = new DateTime();
-      Duration duration = new Duration(now, christmas);
+      LocalDateTime christmas = LocalDateTime.of(now().getYear(), Month.DECEMBER, 25, 0, 0, 0);
+      LocalDateTime now = now();
+      Duration duration = Duration.between(now, christmas);
       responses.add(new Message(event.getChannel(), event,
-          String.format("There are %s days until Christmas.", duration.toStandardDays().getDays())));
+          String.format("There are %s days until Christmas.", duration.toDays())));
     }
     return responses;
   }

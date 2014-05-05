@@ -1,11 +1,11 @@
 package javabot.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-import org.mongodb.morphia.query.Query;
 import javabot.model.Change;
 import javabot.model.criteria.ChangeCriteria;
-import org.joda.time.DateTime;
+import org.mongodb.morphia.query.Query;
 
 public class ChangeDao extends BaseDao<Change> {
   public ChangeDao() {
@@ -20,7 +20,7 @@ public class ChangeDao extends BaseDao<Change> {
   public void logChange(final String message) {
     final Change change = new Change();
     change.setMessage(message);
-    change.setChangeDate(new DateTime());
+    change.setChangeDate(LocalDateTime.now());
     save(change);
   }
 

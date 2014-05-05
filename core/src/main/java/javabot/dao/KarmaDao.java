@@ -7,7 +7,7 @@ import org.mongodb.morphia.query.Query;
 import javabot.dao.util.QueryParam;
 import javabot.model.Karma;
 import javabot.model.criteria.KarmaCriteria;
-import org.joda.time.DateTime;
+import java.time.LocalDateTime;
 
 public class KarmaDao extends BaseDao<Karma> {
   @Inject
@@ -29,7 +29,7 @@ public class KarmaDao extends BaseDao<Karma> {
   }
 
   public void save(Karma karma) {
-    karma.setUpdated(new DateTime());
+    karma.setUpdated(LocalDateTime.now());
     super.save(karma);
     changeDao.logChange(String.format("%s changed '%s' to '%d'", karma.getUserName(), karma.getName(),
         karma.getValue()));

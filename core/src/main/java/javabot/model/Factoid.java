@@ -4,18 +4,18 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
 
 import com.antwerkz.maven.SPI;
 import com.fasterxml.jackson.annotation.JsonView;
+import javabot.json.Views.PUBLIC;
+import javabot.operations.TellSubject;
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.PrePersist;
-import javabot.json.Views.PUBLIC;
-import javabot.operations.TellSubject;
-import org.bson.types.ObjectId;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,8 +35,8 @@ public class Factoid implements Serializable, Persistent {
   private String userName;
   private String upperUserName;
   @JsonView(PUBLIC.class)
-  private DateTime updated;
-  private DateTime lastUsed;
+  private LocalDateTime updated;
+  private LocalDateTime lastUsed;
   private Boolean locked;
 
   public ObjectId getId() {
@@ -71,19 +71,19 @@ public class Factoid implements Serializable, Persistent {
     userName = creator;
   }
 
-  public DateTime getUpdated() {
+  public LocalDateTime getUpdated() {
     return updated;
   }
 
-  public void setUpdated(final DateTime date) {
+  public void setUpdated(final LocalDateTime date) {
     updated = date;
   }
 
-  public DateTime getLastUsed() {
+  public LocalDateTime getLastUsed() {
     return lastUsed;
   }
 
-  public void setLastUsed(final DateTime used) {
+  public void setLastUsed(final LocalDateTime used) {
     lastUsed = used;
   }
 

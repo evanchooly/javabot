@@ -6,7 +6,7 @@ import java.util.List;
 import javabot.model.Channel;
 import javabot.model.Logs;
 import javabot.model.criteria.LogsCriteria;
-import org.joda.time.DateTime;
+import java.time.LocalDateTime;
 import org.joda.time.DateTimeZone;
 
 public class LogsDao extends javabot.dao.LogsDao {

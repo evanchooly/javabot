@@ -22,7 +22,7 @@ import javabot.model.Logs;
 import javabot.model.NickRegistration;
 import javabot.model.Shun;
 import org.bson.types.ObjectId;
-import org.joda.time.DateTime;
+import java.time.LocalDateTime;
 
 import javax.inject.Inject;
 import java.io.FileInputStream;
