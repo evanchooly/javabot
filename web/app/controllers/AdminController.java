@@ -60,7 +60,7 @@ public class AdminController extends JavaController {
   public Result login() {
     CommonProfile profile = getUserProfile();
     if (adminDao.findAll().isEmpty()) {
-      System.out.println("creating new admin");
+      LOG.info("creating new admin");
       adminDao.create("", profile.getEmail(), "");
     }
     Session session = Http.Context.current().session();
@@ -150,7 +150,6 @@ public class AdminController extends JavaController {
 
   public Result saveChannel() {
     Channel channel = Form.form(Channel.class).bindFromRequest().get();
-    System.out.println("channel = " + channel);
     channelDao.save(channel);
     return ok(config.apply(new OAuthDeadboltHandler(), contextProvider.get(), buildConfigForm(),
         configDao.get().getOperations(), configDao.operations()));

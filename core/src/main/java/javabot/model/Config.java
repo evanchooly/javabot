@@ -36,6 +36,8 @@ public class Config implements Serializable, Persistent {
 
   private Integer throttleThreshold = 5;
 
+  private Integer mininumNickServAge = 14;
+
   public Config() {
   }
 
@@ -59,6 +61,14 @@ public class Config implements Serializable, Persistent {
 
   public void setId(final ObjectId configId) {
     id = configId;
+  }
+
+  public Integer getMininumNickServAge() {
+    return mininumNickServAge;
+  }
+
+  public void setMininumNickServAge(final Integer mininumNickServAge) {
+    this.mininumNickServAge = mininumNickServAge;
   }
 
   public String getNick() {

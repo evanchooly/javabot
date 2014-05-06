@@ -69,4 +69,10 @@ public class NickServDao extends BaseDao<NickServInfo> {
     criteria.account(account);
     return criteria.query().get();
   }
+
+  public NickServInfo findByNick(final String nick) {
+    NickServInfoCriteria criteria = new NickServInfoCriteria(ds);
+    criteria.nick(nick);
+    return criteria.query().get();
+  }
 }

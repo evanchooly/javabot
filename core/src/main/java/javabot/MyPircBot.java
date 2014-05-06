@@ -9,10 +9,15 @@ import javabot.dao.NickServDao;
 import javabot.model.Channel;
 import javabot.model.IrcUser;
 import javabot.model.Logs;
+import javabot.operations.throttle.NickServViolationException;
 import javabot.operations.throttle.Throttler;
 import org.jibble.pircbot.PircBot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MyPircBot extends PircBot {
+  private static final Logger LOG = LoggerFactory.getLogger(MyPircBot.class);
+
   @Inject
   private Throttler throttler;
 
@@ -74,10 +79,10 @@ public class MyPircBot extends PircBot {
 
   @Override
   public void onDisconnect() {
-    System.out.println("MyPircBot.onDisconnect");
+    LOG.debug("MyPircBot.onDisconnect");
     if (!javabot.executors.isShutdown()) {
       try {
-        System.out.println("trying to reconnect");
+        LOG.info("trying to reconnect");
         javabot.setReconnecting(true);
         javabot.connect();
       } catch (Exception e) {
@@ -94,16 +99,16 @@ public class MyPircBot extends PircBot {
     if (sourceNick.equalsIgnoreCase("NickServ")) {
       String message = notice.replace("\u0002", "");
       synchronized (nickServ) {
-        if (message.equals("*** End of Info ***")) {
+        if (message.equals("*** End of Info ***") && !nickServ.isEmpty()) {
           try {
             nickServDao.process(nickServ);
           } catch (Exception e) {
-            e.printStackTrace();  
+            e.printStackTrace();
           }
           nickServ.clear();
         } else {
-          System.out.println(message);
-          if(message.startsWith("Information on ") || !nickServ.isEmpty()) {
+          LOG.debug(message);
+          if (message.startsWith("Information on ") || !nickServ.isEmpty()) {
             nickServ.add(message);
           }
         }
@@ -117,10 +122,14 @@ public class MyPircBot extends PircBot {
       javabot.executors.execute(() -> {
         javabot.logsDao.logMessage(Logs.Type.MESSAGE, sender, sender, message);
         IrcUser user = javabot.getUser(sender, login, hostname);
-        if (!throttler.isThrottled(user, this)) {
-          for (final Message response : javabot.getResponses(sender, user, message)) {
-            response.send(javabot);
+        try {
+          if (!throttler.isThrottled(user, this)) {
+            for (final Message response : javabot.getResponses(sender, user, message)) {
+              response.send(javabot);
+            }
           }
+        } catch (NickServViolationException e) {
+          new Message(sender, new IrcEvent(sender, user, message), e.getMessage()).send(javabot);
         }
       });
     }

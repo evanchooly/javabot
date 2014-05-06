@@ -29,6 +29,7 @@ import javax.inject.Inject;
 
 import ca.grimoire.maven.ArtifactDescription;
 import ca.grimoire.maven.NoArtifactException;
+import com.antwerkz.sofia.Sofia;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javabot.commands.AdminCommand;
@@ -47,6 +48,7 @@ import javabot.model.Logs;
 import javabot.operations.BotOperation;
 import javabot.operations.OperationComparator;
 import javabot.operations.StandardOperation;
+import javabot.operations.throttle.NickServViolationException;
 import javabot.operations.throttle.Throttler;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.User;
@@ -364,16 +366,20 @@ public class Javabot {
         final List<Message> responses = new ArrayList<>();
         for (final String startString : startStrings) {
           if (message.startsWith(startString)) {
-            if(throttler.isThrottled(sender, getPircBot())) {
-              responses.add(new Message(sender, new IrcEvent(channel, sender, message), "Slow your roll, son."));
-            } else {
-              String content = message.substring(startString.length()).trim();
-              while (!content.isEmpty() && (content.charAt(0) == ':' || content.charAt(0) == ',')) {
-                content = content.substring(1).trim();
+            try {
+              if (throttler.isThrottled(sender, getPircBot())) {
+                responses.add(new Message(sender, new IrcEvent(channel, sender, message), Sofia.throttledUser()));
+              } else {
+                String content = message.substring(startString.length()).trim();
+                while (!content.isEmpty() && (content.charAt(0) == ':' || content.charAt(0) == ',')) {
+                  content = content.substring(1).trim();
+                }
+                if (!content.isEmpty()) {
+                  responses.addAll(getResponses(channel, sender, content));
+                }
               }
-              if (!content.isEmpty()) {
-                responses.addAll(getResponses(channel, sender, content));
-              }
+            } catch (NickServViolationException e) {
+              responses.add(new Message(sender, new IrcEvent(channel, sender, message), e.getMessage()));
             }
           }
         }
@@ -423,7 +429,7 @@ public class Javabot {
     final IrcEvent event = new IrcEvent(channel, sender, message);
     while (responses.isEmpty() && iterator.hasNext()) {
       List<Message> list = iterator.next().handleMessage(event);
-      if(!list.isEmpty()) {
+      if (!list.isEmpty()) {
         responses.addAll(list);
       }
     }
@@ -443,11 +449,15 @@ public class Javabot {
     final List<Message> responses = new ArrayList<>();
     while (responses.isEmpty() && iterator.hasNext()) {
       List<Message> list = iterator.next().handleChannelMessage(new IrcEvent(channel, sender, message));
-      if(!list.isEmpty()) {
-        if(throttler.isThrottled(sender, getPircBot())) {
-          responses.add(new Message(sender, new IrcEvent(channel, sender, message), "Slow your roll, son."));
-        } else {
-          responses.addAll(list);
+      if (!list.isEmpty()) {
+        try {
+          if (throttler.isThrottled(sender, getPircBot())) {
+            responses.add(new Message(sender, new IrcEvent(channel, sender, message), Sofia.throttledUser()));
+          } else {
+            responses.addAll(list);
+          }
+        } catch (NickServViolationException e) {
+          responses.add(new Message(sender, new IrcEvent(channel, sender, message), e.getMessage()));
         }
       }
     }

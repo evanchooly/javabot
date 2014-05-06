@@ -10,6 +10,8 @@ import com.antwerkz.maven.SPI;
 import javabot.IrcEvent;
 import javabot.Message;
 import javabot.dao.ShunDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Causes the bot to disregard bot triggers for a few minutes. Useful to de-fang abusive users without ejecting the bot
@@ -17,6 +19,8 @@ import javabot.dao.ShunDao;
  */
 @SPI(BotOperation.class)
 public class ShunOperation extends BotOperation {
+  private static final Logger LOG = LoggerFactory.getLogger(ShunOperation.class);
+
   @Inject
   private ShunDao shunDao;
 
@@ -39,7 +43,7 @@ public class ShunOperation extends BotOperation {
     if (shunDao.isShunned(victim)) {
       return String.format("%s is already shunned.", victim);
     }
-    System.out.println("DateTime.now() = " + LocalDateTime.now());
+    LOG.debug("DateTime.now() = " + LocalDateTime.now());
     final LocalDateTime until = parts.length == 1
         ? LocalDateTime.now().plusMinutes(5)
         : LocalDateTime.now().plusSeconds(Integer.parseInt(parts[1]));

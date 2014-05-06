@@ -13,8 +13,12 @@ import javabot.javadoc.criteria.JavadocClassCriteria;
 import javabot.javadoc.criteria.JavadocFieldCriteria;
 import javabot.javadoc.criteria.JavadocMethodCriteria;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JavadocClassDao extends BaseDao<JavadocClass> {
+  private static final Logger LOG = LoggerFactory.getLogger(JavadocClassDao.class);
+
   protected JavadocClassDao() {
     super(JavadocClass.class);
   }
@@ -43,8 +47,8 @@ public class JavadocClassDao extends BaseDao<JavadocClass> {
       criteria.upperPackageName().equal(pkg.toUpperCase());
       criteria.upperName().equal(name.toUpperCase());
     } catch (NullPointerException e) {
-      System.out.println("pkg = " + pkg);
-      System.out.println("name = " + name);
+      LOG.debug("pkg = " + pkg);
+      LOG.debug("name = " + name);
       throw e;
     }
     return criteria.query().asList().toArray(new JavadocClass[0]);

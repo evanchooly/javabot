@@ -37,6 +37,10 @@ public class Sofia {
         return (String) getBundle(locale).getObject(key);
     }
 
+    public static String accountTooNew(Locale... locale) {
+        return getMessageValue("account.too.new", locale);
+    }
+
     public static String changingLockedFactoid(Object arg0, Object arg1, Locale... locale) {
         return MessageFormat.format(getMessageValue("changing.locked.factoid", locale), arg0, arg1);
     }
@@ -125,8 +129,16 @@ public class Sofia {
         return getMessageValue("throttle.threshold", locale);
     }
 
+    public static String throttledUser(Locale... locale) {
+        return getMessageValue("throttled.user", locale);
+    }
+
     public static String tooManyResults(Object arg0, Locale... locale) {
         return MessageFormat.format(getMessageValue("too.many.results", locale), arg0);
+    }
+
+    public static String unknownUser(Locale... locale) {
+        return getMessageValue("unknown.user", locale);
     }
 
     public static String webUrl(Locale... locale) {

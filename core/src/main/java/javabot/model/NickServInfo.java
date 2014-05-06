@@ -11,6 +11,7 @@ import static java.lang.String.format;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Indexed;
 
 @Entity("nickserv")
 public class NickServInfo implements Persistent {
@@ -18,7 +19,9 @@ public class NickServInfo implements Persistent {
 
   @Id
   private ObjectId id;
+  @Indexed
   private String nick;
+  @Indexed
   private String account;
   private LocalDateTime registered;
   private LocalDateTime userRegistered;

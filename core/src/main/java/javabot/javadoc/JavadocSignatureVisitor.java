@@ -8,11 +8,15 @@ import java.util.Stack;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.signature.SignatureVisitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class JavadocSignatureVisitor extends SignatureVisitor {
+  private static final Logger LOG = LoggerFactory.getLogger(JavadocSignatureVisitor.class);
+
   private static final Map<Character, String> PRIMITIVES = new HashMap<>();
 
-  boolean trace = !true;
+  boolean trace = LOG.isTraceEnabled();
 
   static {
     PRIMITIVES.put('B', "byte");
@@ -46,10 +50,8 @@ class JavadocSignatureVisitor extends SignatureVisitor {
     super(Opcodes.ASM5);
     this.varargs = varargs;
     if (trace) {
-      System.out.println("\n\n*** JavadocSignatureVisitor.JavadocSignatureVisitor");
-    }
-    if (trace) {
-      System.out.println("className = [" + className + "], name = [" + name + "],\n signature = [" + signature + "]");
+      LOG.trace("\n\n*** JavadocSignatureVisitor.JavadocSignatureVisitor");
+      LOG.trace("className = [" + className + "], name = [" + name + "],\n signature = [" + signature + "]");
     }
     this.className = className;
     this.name = name;
@@ -112,7 +114,7 @@ class JavadocSignatureVisitor extends SignatureVisitor {
   @Override
   public void visitBaseType(final char baseType) {
     if (trace) {
-      System.out.println("JavadocSignatureVisitor.visitBaseType(" + baseType + ")");
+      LOG.trace("JavadocSignatureVisitor.visitBaseType(" + baseType + ")");
     }
     if(type == null) {
       type = new JavadocType();
@@ -124,7 +126,7 @@ class JavadocSignatureVisitor extends SignatureVisitor {
   @Override
   public void visitTypeVariable(final String typeVariable) {
     if (trace) {
-      System.out.println("JavadocSignatureVisitor.visitTypeVariable(" + typeVariable + ")");
+      LOG.trace("JavadocSignatureVisitor.visitTypeVariable(" + typeVariable + ")");
     }
     if (!done) {
       type.addTypeVariable(typeVariable);
@@ -156,7 +158,7 @@ class JavadocSignatureVisitor extends SignatureVisitor {
   @Override
   public void visitInnerClassType(final String innerClassType) {
     if (trace) {
-      System.out.println("JavadocSignatureVisitor.visitInnerClassType(" + innerClassType + ")");
+      LOG.trace("JavadocSignatureVisitor.visitInnerClassType(" + innerClassType + ")");
     }
   }
 
@@ -168,14 +170,14 @@ class JavadocSignatureVisitor extends SignatureVisitor {
   private void push(final String item) {
     stack.push(item);
     if (trace) {
-      System.out.println("push stack = " + stack);
+      LOG.trace("push stack = " + stack);
     }
   }
 
   private String pop() {
     String pop = stack.pop();
     if (trace) {
-      System.out.println("pop stack = " + stack);
+      LOG.trace("pop stack = " + stack);
     }
     return pop;
   }
@@ -183,7 +185,7 @@ class JavadocSignatureVisitor extends SignatureVisitor {
   @Override
   public SignatureVisitor visitTypeArgument(final char typeArgument) {
     if (trace) {
-      System.out.println("JavadocSignatureVisitor.visitTypeArgument(" + typeArgument + ")");
+      LOG.trace("JavadocSignatureVisitor.visitTypeArgument(" + typeArgument + ")");
     }
     return this;
   }
@@ -192,7 +194,7 @@ class JavadocSignatureVisitor extends SignatureVisitor {
   public void visitEnd() {
     String stage = pop();
     if (trace) {
-      System.out.println("---- JavadocSignatureVisitor.visitEnd : " + stage);
+      LOG.trace("---- JavadocSignatureVisitor.visitEnd : " + stage);
     }
   }
 
