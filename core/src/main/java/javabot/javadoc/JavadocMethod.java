@@ -68,7 +68,7 @@ public class JavadocMethod extends JavadocElement {
       }
       url.append(arg.replaceAll("<.*", ""));
     }
-    return parent.getDirectUrl() + "#" + this.name + "(" + url + ")";
+    return parent.getDirectUrl() + "#" + this.name + "-" + url + "-";
   }
 
   public ObjectId getId() {
@@ -93,7 +93,7 @@ public class JavadocMethod extends JavadocElement {
   }
 
   public final String getShortSignature() {
-    return name + "(" + shortSignatureTypes + ")";
+    return name + "-" + shortSignatureTypes + "-";
   }
 
   public String getName() {
