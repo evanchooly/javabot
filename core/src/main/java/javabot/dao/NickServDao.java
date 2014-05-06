@@ -26,22 +26,16 @@ public class NickServDao extends BaseDao<NickServInfo> {
       int i = line.indexOf(':');
       String key = line.substring(0, i).trim();
       String value = line.substring(i + 1).trim();
-      switch (key) {
-        case "Registered":
-          info.setRegistered(extractDate(value));
-          break;
-        case "User Reg.":
-          info.setUserRegistered(extractDate(value));
-          break;
-        case "Last seen":
-          info.setLastSeen(extractDate(value));
-          break;
-        case "Last addr":
-          info.setLastAddress(value);
-          break;
-        default:
-          info.extra(key, value);
-          break;
+      if (key.equalsIgnoreCase("Registered")) {
+        info.setRegistered(extractDate(value));
+      } else if (key.equalsIgnoreCase("User Reg.")) {
+        info.setUserRegistered(extractDate(value));
+      } else if (key.equalsIgnoreCase("Last seen")) {
+        info.setLastSeen(extractDate(value));
+      } else if (key.equalsIgnoreCase("Last addr")) {
+        info.setLastAddress(value);
+      } else {
+        info.extra(key.replace(".", ""), value);
       }
     });
     NickServInfo nickServInfo = findByAccount(info.getAccount());

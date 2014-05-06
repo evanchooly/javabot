@@ -1,7 +1,5 @@
 package javabot.model.criteria;
 
-import java.time.LocalDateTime;
-
 import javabot.model.Admin;
 
 public class AdminCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Admin> {
@@ -52,8 +50,8 @@ public class AdminCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Ad
     return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String>(this, query, prefix + "ircName").equal(value);
   }
 
-  public com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, LocalDateTime> updated() {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, LocalDateTime>(this, query, prefix + "updated");
+  public com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.time.LocalDateTime> updated() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.time.LocalDateTime>(this, query, prefix + "updated");
   }
 
   public org.mongodb.morphia.query.Criteria updated(java.time.LocalDateTime value) {

@@ -26,6 +26,14 @@ public class ConfigCriteria extends com.antwerkz.critter.criteria.BaseCriteria<C
     return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, org.bson.types.ObjectId>(this, query, prefix + "id").equal(value);
   }
 
+  public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Integer> mininumNickServAge() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Integer>(this, query, prefix + "mininumNickServAge");
+  }
+
+  public org.mongodb.morphia.query.Criteria mininumNickServAge(java.lang.Integer value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.Integer>(this, query, prefix + "mininumNickServAge").equal(value);
+  }
+
   public com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String> nick() {
     return new com.antwerkz.critter.TypeSafeFieldEnd<ConfigCriteria, Config, java.lang.String>(this, query, prefix + "nick");
   }
@@ -242,6 +250,65 @@ public class ConfigCriteria extends com.antwerkz.critter.criteria.BaseCriteria<C
 
     public ConfigUpdater incId(Number value) {
       updateOperations.inc("id", value);
+      return this;
+    }
+    public ConfigUpdater mininumNickServAge(java.lang.Integer value) {
+      updateOperations.set("mininumNickServAge", value);
+      return this;
+    }
+
+    public ConfigUpdater unsetMininumNickServAge(java.lang.Integer value) {
+      updateOperations.unset("mininumNickServAge");
+      return this;
+    }
+
+    public ConfigUpdater addMininumNickServAge(java.lang.Integer value) {
+      updateOperations.add("mininumNickServAge", value);
+      return this;
+    }
+
+    public ConfigUpdater addMininumNickServAge(java.lang.Integer value, boolean addDups) {
+      updateOperations.add("mininumNickServAge", value, addDups);
+      return this;
+    }
+
+    public ConfigUpdater addAllToMininumNickServAge(java.util.List<java.lang.Integer> values, boolean addDups) {
+      updateOperations.addAll("mininumNickServAge", values, addDups);
+      return this;
+    }
+  
+    public ConfigUpdater removeFirstMininumNickServAge() {
+      updateOperations.removeFirst("mininumNickServAge");
+      return this;
+    }
+  
+    public ConfigUpdater removeLastMininumNickServAge() {
+      updateOperations.removeLast("mininumNickServAge");
+      return this;
+    }
+  
+    public ConfigUpdater removeFromMininumNickServAge(java.lang.Integer value) {
+      updateOperations.removeAll("mininumNickServAge", value);
+      return this;
+    }
+
+    public ConfigUpdater removeAllFromMininumNickServAge(java.util.List<java.lang.Integer> values) {
+      updateOperations.removeAll("mininumNickServAge", values);
+      return this;
+    }
+ 
+    public ConfigUpdater decMininumNickServAge() {
+      updateOperations.dec("mininumNickServAge");
+      return this;
+    }
+
+    public ConfigUpdater incMininumNickServAge() {
+      updateOperations.inc("mininumNickServAge");
+      return this;
+    }
+
+    public ConfigUpdater incMininumNickServAge(Number value) {
+      updateOperations.inc("mininumNickServAge", value);
       return this;
     }
     public ConfigUpdater nick(java.lang.String value) {
