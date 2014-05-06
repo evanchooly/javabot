@@ -47,6 +47,17 @@ public class Throttler extends BaseDao<ThrottleItem> {
    * @return true if the user is currently throttled and ought to be ignored, false otherwise.
    */
   public boolean isThrottled(final IrcUser user, final MyPircBot myPircBot) {
+    if (!adminDao.isAdmin(user.getNick(), user.getHost())) {
+      validateNickServAccount(user, myPircBot);
+      ds.save(new ThrottleItem(user));
+      ThrottleItemCriteria criteria = new ThrottleItemCriteria(ds);
+      criteria.user(user.getUserName());
+      return criteria.query().countAll() > configDao.get().getThrottleThreshold();
+    }
+    return false;
+  }
+
+  private void validateNickServAccount(final IrcUser user, final MyPircBot myPircBot) {
     AtomicReference<NickServInfo> info = new AtomicReference<>(nickServDao.findByNick(user.getNick()));
     if(info.get() == null) {
       myPircBot.sendMessage("NickServ", "info " + user.getNick());
@@ -71,14 +82,6 @@ public class Throttler extends BaseDao<ThrottleItem> {
     if(Duration.between(nickServInfo.getRegistered(), now()).toDays() < configDao.get().getMininumNickServAge()) {
       throw new NickServViolationException(Sofia.accountTooNew());
     }
-
-    if (!adminDao.isAdmin(user.getNick(), user.getHost())) {
-      ds.save(new ThrottleItem(user));
-      ThrottleItemCriteria criteria = new ThrottleItemCriteria(ds);
-      criteria.user(user.getUserName());
-      return criteria.query().countAll() > configDao.get().getThrottleThreshold();
-    }
-    return false;
   }
 
 }
