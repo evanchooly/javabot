@@ -37,14 +37,14 @@ public class JavadocMethod extends JavadocElement {
   public JavadocMethod(final JavadocClass parent, final String name, final int count,
       final List<String> longArgs, final List<String> shortArgs) {
     this.name = name;
+    javadocClassId = parent.getId();
+    setApiId(parent.getApiId());
+    parentClassName = parent.toString();
+
     paramCount = count;
     longSignatureTypes = String.join(", ", longArgs);
     shortSignatureTypes = String.join(", ", shortArgs);
     buildUrl(parent, longArgs);
-
-    javadocClassId = parent.getId();
-    setApiId(parent.getApiId());
-    parentClassName = parent.toString();
   }
 
   private void buildUrl(final JavadocClass parent, final List<String> longArgs) {
@@ -57,10 +57,10 @@ public class JavadocMethod extends JavadocElement {
       }
       url.append(arg.replaceAll("<.*", ""));
     }
-    String displayUrl = parentUrl + "#" + this.name + "(" + url + ")";
-    String directUrl = java8 ? parentUrl + "#" + this.name + "-" + url + "-" : displayUrl;
+    String directUrl = java8 ? parentUrl + "#" + this.name + "-" + url + "-" :
+        parentUrl + "#" + this.name + "(" + url + ")";
 
-    setLongUrl(displayUrl);
+    setLongUrl(directUrl);
     setDirectUrl(directUrl);
   }
 

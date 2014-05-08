@@ -111,6 +111,9 @@ public class ApiEvent extends AdminEvent {
 
   public void delete(Javabot bot) {
     JavadocApi api = apiDao.find(apiId);
+    if (api == null) {
+      api = apiDao.find(name);
+    }
     if (api != null) {
       apiDao.delete(api);
     }
