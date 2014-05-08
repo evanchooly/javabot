@@ -38,37 +38,30 @@ public class JavadocMethod extends JavadocElement {
       final List<String> longArgs, final List<String> shortArgs) {
     this.name = name;
     paramCount = count;
-    longSignatureTypes = join(longArgs, ", ");
-    shortSignatureTypes = join(shortArgs, ", ");
-    final String url = buildUrl(parent, longArgs);
-    setLongUrl(url);
-    setDirectUrl(url);
+    longSignatureTypes = String.join(", ", longArgs);
+    shortSignatureTypes = String.join(", ", shortArgs);
+    buildUrl(parent, longArgs);
 
     javadocClassId = parent.getId();
     setApiId(parent.getApiId());
     parentClassName = parent.toString();
   }
 
-  private String join(final List<String> list, final String delim) {
-    StringBuilder joined = new StringBuilder();
-    for (String item : list) {
-      if(joined.length() != 0) {
-        joined.append(delim);
-      }
-      joined.append(item);
-    }
-    return joined.toString();
-  }
-
-  private String buildUrl(final JavadocClass parent, final List<String> longArgs) {
+  private void buildUrl(final JavadocClass parent, final List<String> longArgs) {
+    String parentUrl = parent.getDirectUrl();
+    boolean java8 = parentUrl.contains("se/8");
     StringBuilder url = new StringBuilder();
     for (String arg : longArgs) {
       if(url.length() != 0) {
-        url.append(", ");
+        url.append(java8 ? "-": ", ");
       }
       url.append(arg.replaceAll("<.*", ""));
     }
-    return parent.getDirectUrl() + "#" + this.name + "-" + url + "-";
+    String displayUrl = parentUrl + "#" + this.name + "(" + url + ")";
+    String directUrl = java8 ? parentUrl + "#" + this.name + "-" + url + "-" : displayUrl;
+
+    setLongUrl(displayUrl);
+    setDirectUrl(directUrl);
   }
 
   public ObjectId getId() {
@@ -93,7 +86,7 @@ public class JavadocMethod extends JavadocElement {
   }
 
   public final String getShortSignature() {
-    return name + "-" + shortSignatureTypes + "-";
+    return name + "(" + shortSignatureTypes + ")";
   }
 
   public String getName() {

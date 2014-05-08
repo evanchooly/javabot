@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
+import com.jayway.awaitility.Awaitility;
 import com.jayway.awaitility.Duration;
 import javabot.BaseTest;
 import javabot.dao.ApiDao;
@@ -79,10 +80,11 @@ public class JavadocTest extends BaseOperationTest {
     if (Boolean.valueOf(System.getProperty("dropJDK", "false"))) {
       System.out.println("Dropping JDK API");
       dropApi("JDK");
+      System.out.println("Done");
     }
     JavadocApi api = apiDao.find("JDK");
     if (api == null) {
-      ApiEvent event = new ApiEvent(BaseTest.TEST_USER.getNick(), "JDK", "http://docs.oracle.com/javase/7/docs/api",
+      ApiEvent event = new ApiEvent(BaseTest.TEST_USER.getNick(), "JDK", "http://docs.oracle.com/javase/8/docs/api",
           new File(System.getProperty("java.home"), "lib/rt.jar").toURI().toURL().toString());
       eventDao.save(event);
       waitForEvent(event, "adding JDK", new Duration(30, TimeUnit.MINUTES));
@@ -104,6 +106,9 @@ public class JavadocTest extends BaseOperationTest {
     final ApiEvent event = new ApiEvent(EventType.DELETE, BaseTest.TEST_USER.getNick(), apiName);
     eventDao.save(event);
     waitForEvent(event, "dropping " + apiName, Duration.FIVE_MINUTES);
+    Awaitility.await()
+        .atMost(60, TimeUnit.SECONDS)
+        .until(() -> apiDao.find(apiName) == null);
     drainMessages();
   }
 }

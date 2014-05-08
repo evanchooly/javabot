@@ -1,6 +1,7 @@
 package javabot.javadoc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,8 @@ public class JavadocClassVisitor extends ClassVisitor {
 
   private String className;
 
+  private final List<String> packages = new ArrayList<>();
+
   public JavadocClassVisitor() {
     super(Opcodes.ASM5);
   }
@@ -55,7 +58,11 @@ public class JavadocClassVisitor extends ClassVisitor {
       final String superName, final String[] interfaces) {
     try {
       pkg = getPackage(name);
-      if (isPublic(access)) {
+      boolean process = packages.isEmpty();
+      for (String aPackage : packages) {
+        process |= pkg.startsWith(aPackage);
+      }
+      if (process && isPublic(access)) {
         className = name.substring(name.lastIndexOf("/") + 1).replace('$', '.');
         JavadocClass javadocClass = parser.getOrCreate(parser.getApi(), pkg, className);
         if (superName != null) {
@@ -128,7 +135,16 @@ public class JavadocClassVisitor extends ClassVisitor {
         for (JavadocType type : types) {
           update(longTypes, shortTypes, type.toString());
         }
-        dao.save(new JavadocMethod(javadocClass, "<init>".equals(name) ? javadocClass.getName() : name,
+        String methodName;
+        if ("<init>".equals(name)) {
+          methodName = javadocClass.getName();
+          if(methodName.contains(".")) {
+            methodName = methodName.substring(methodName.lastIndexOf(".") + 1);
+          }
+        } else {
+          methodName = name;
+        }
+        dao.save(new JavadocMethod(javadocClass, methodName,
             types.size(), longTypes, shortTypes));
       }
     }
@@ -159,4 +175,7 @@ public class JavadocClassVisitor extends ClassVisitor {
     return v.getTypes();
   }
 
+  public void setPackages(final String... packages) {
+    this.packages.addAll(Arrays.asList(packages));
+  }
 }

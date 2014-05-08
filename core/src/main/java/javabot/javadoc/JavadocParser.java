@@ -148,7 +148,11 @@ public class JavadocParser {
     @Override
     public void run() {
       try {
-        new ClassReader(jarFile.getInputStream(entry)).accept(provider.get(), 0);
+        JavadocClassVisitor classVisitor = provider.get();
+        if("JDK".equals(api.getName())) {
+          classVisitor.setPackages("java", "javax");
+        }
+        new ClassReader(jarFile.getInputStream(entry)).accept(classVisitor, 0);
       } catch (Exception e) {
         throw new RuntimeException(e.getMessage(), e);
       }

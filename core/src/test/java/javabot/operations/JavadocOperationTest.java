@@ -25,7 +25,7 @@ public class JavadocOperationTest extends BaseOperationTest {
   public void jdk() throws MalformedURLException {
     JavadocApi api = apiDao.find("JDK");
     if (api == null) {
-      ApiEvent event = new ApiEvent(BaseTest.TEST_USER.getNick(), "JDK", "http://docs.oracle.com/javase/7/docs/api",
+      ApiEvent event = new ApiEvent(BaseTest.TEST_USER.getNick(), "JDK", "http://docs.oracle.com/javase/8/docs/api",
           null);
       eventDao.save(event);
       waitForEvent(event, "adding JDK", new Duration(30, TimeUnit.MINUTES));
