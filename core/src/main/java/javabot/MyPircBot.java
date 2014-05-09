@@ -61,11 +61,13 @@ public class MyPircBot extends PircBot {
   @Override
   public void onPart(final String channel, final String sender, final String login, final String hostname) {
     javabot.logsDao.logMessage(Logs.Type.PART, sender, channel, ":" + hostname + " parted the channel");
+    nickServDao.unregister(sender);
   }
 
   @Override
   public void onQuit(final String channel, final String sender, final String login, final String hostname) {
     javabot.logsDao.logMessage(Logs.Type.QUIT, sender, channel, "quit");
+    nickServDao.unregister(sender);
   }
 
   @Override
@@ -117,6 +119,11 @@ public class MyPircBot extends PircBot {
   }
 
   @Override
+  protected void onNickChange(final String oldNick, final String login, final String hostname, final String newNick) {
+    nickServDao.updateNick(oldNick, newNick);
+  }
+
+  @Override
   public void onPrivateMessage(final String sender, final String login, final String hostname, final String message) {
     if (javabot.adminDao.isAdmin(sender, hostname) || javabot.isOnSameChannelAs(sender)) {
       javabot.executors.execute(() -> {
@@ -146,5 +153,6 @@ public class MyPircBot extends PircBot {
       final String kickerHostname, final String recipientNick, final String reason) {
     javabot.logsDao
         .logMessage(Logs.Type.KICK, kickerNick, channel, " kicked " + recipientNick + " (" + reason + ")");
+    nickServDao.unregister(recipientNick);
   }
 }
