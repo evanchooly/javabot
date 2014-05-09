@@ -80,6 +80,11 @@ public class MyPircBot extends PircBot {
   }
 
   @Override
+  protected void onConnect() {
+    nickServDao.clear();
+  }
+
+  @Override
   public void onDisconnect() {
     LOG.debug("MyPircBot.onDisconnect");
     if (!javabot.executors.isShutdown()) {

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static java.lang.String.format;
+import static java.time.LocalDateTime.now;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -26,6 +27,8 @@ public class NickServInfo implements Persistent {
   private LocalDateTime registered;
   private LocalDateTime userRegistered;
   private LocalDateTime lastSeen;
+  @Indexed(expireAfterSeconds = 60 * 60 * 24)
+  private LocalDateTime created = now();
   private Map<String, String> extraneous = new TreeMap<>();
 
   private String lastAddress;
