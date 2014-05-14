@@ -50,7 +50,7 @@ public class NickServLookup extends AdminCommand {
     if(info.get() == null) {
       myPircBot.sendMessage("NickServ", "info " + name);
         Awaitility.await()
-            .atMost(5, TimeUnit.SECONDS)
+            .atMost(10, TimeUnit.SECONDS)
             .until(() -> {
               info.set(nickServDao.find(name));
               return info.get() != null;
