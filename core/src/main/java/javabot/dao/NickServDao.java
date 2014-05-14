@@ -21,8 +21,8 @@ public class NickServDao extends BaseDao<NickServInfo> {
   public void process(final List<String> list) {
     NickServInfo info = new NickServInfo();
     String[] split = list.get(0).split(" ");
-    info.setNick(split[2]);
-    info.setAccount(split[4].substring(0, split[4].indexOf(')')));
+    info.setNick(split[2].toLowerCase());
+    info.setAccount(split[4].substring(0, split[4].indexOf(')')).toLowerCase());
     list.subList(1, list.size()).stream().filter(line -> line.contains(":")).forEach(line -> {
       int i = line.indexOf(':');
       String key = line.substring(0, i).trim();
@@ -39,7 +39,13 @@ public class NickServDao extends BaseDao<NickServInfo> {
         info.extra(key.replace(".", ""), value);
       }
     });
-    NickServInfo nickServInfo = findByAccount(info.getAccount());
+
+    NickServInfo nickServInfo = find(info.getAccount());
+
+    if (nickServInfo == null) {
+      nickServInfo = find(info.getNick());
+    }
+
     if (nickServInfo != null) {
       nickServInfo.setNick(info.getNick());
       nickServInfo.setLastSeen(info.getLastSeen());
@@ -59,15 +65,12 @@ public class NickServDao extends BaseDao<NickServInfo> {
     }
   }
 
-  public NickServInfo findByAccount(final String account) {
+  public NickServInfo find(final String name) {
     NickServInfoCriteria criteria = new NickServInfoCriteria(ds);
-    criteria.account(account);
-    return criteria.query().get();
-  }
-
-  public NickServInfo findByNick(final String nick) {
-    NickServInfoCriteria criteria = new NickServInfoCriteria(ds);
-    criteria.nick(nick);
+    criteria.or(
+        criteria.nick(name.toLowerCase()),
+        criteria.account(name.toLowerCase())
+    );
     return criteria.query().get();
   }
 

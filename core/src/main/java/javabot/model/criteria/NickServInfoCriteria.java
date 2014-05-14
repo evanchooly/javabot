@@ -18,6 +18,14 @@ public class NickServInfoCriteria extends com.antwerkz.critter.criteria.BaseCrit
     return new com.antwerkz.critter.TypeSafeFieldEnd<NickServInfoCriteria, NickServInfo, java.lang.String>(this, query, prefix + "account").equal(value);
   }
 
+  public com.antwerkz.critter.TypeSafeFieldEnd<NickServInfoCriteria, NickServInfo, java.time.LocalDateTime> created() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<NickServInfoCriteria, NickServInfo, java.time.LocalDateTime>(this, query, prefix + "created");
+  }
+
+  public org.mongodb.morphia.query.Criteria created(java.time.LocalDateTime value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<NickServInfoCriteria, NickServInfo, java.time.LocalDateTime>(this, query, prefix + "created").equal(value);
+  }
+
   public com.antwerkz.critter.TypeSafeFieldEnd<NickServInfoCriteria, NickServInfo, java.util.Map<java.lang.String,java.lang.String>> extraneous() {
     return new com.antwerkz.critter.TypeSafeFieldEnd<NickServInfoCriteria, NickServInfo, java.util.Map<java.lang.String,java.lang.String>>(this, query, prefix + "extraneous");
   }
@@ -159,6 +167,65 @@ public class NickServInfoCriteria extends com.antwerkz.critter.criteria.BaseCrit
 
     public NickServInfoUpdater incAccount(Number value) {
       updateOperations.inc("account", value);
+      return this;
+    }
+    public NickServInfoUpdater created(java.time.LocalDateTime value) {
+      updateOperations.set("created", value);
+      return this;
+    }
+
+    public NickServInfoUpdater unsetCreated(java.time.LocalDateTime value) {
+      updateOperations.unset("created");
+      return this;
+    }
+
+    public NickServInfoUpdater addCreated(java.time.LocalDateTime value) {
+      updateOperations.add("created", value);
+      return this;
+    }
+
+    public NickServInfoUpdater addCreated(java.time.LocalDateTime value, boolean addDups) {
+      updateOperations.add("created", value, addDups);
+      return this;
+    }
+
+    public NickServInfoUpdater addAllToCreated(java.util.List<java.time.LocalDateTime> values, boolean addDups) {
+      updateOperations.addAll("created", values, addDups);
+      return this;
+    }
+  
+    public NickServInfoUpdater removeFirstCreated() {
+      updateOperations.removeFirst("created");
+      return this;
+    }
+  
+    public NickServInfoUpdater removeLastCreated() {
+      updateOperations.removeLast("created");
+      return this;
+    }
+  
+    public NickServInfoUpdater removeFromCreated(java.time.LocalDateTime value) {
+      updateOperations.removeAll("created", value);
+      return this;
+    }
+
+    public NickServInfoUpdater removeAllFromCreated(java.util.List<java.time.LocalDateTime> values) {
+      updateOperations.removeAll("created", values);
+      return this;
+    }
+ 
+    public NickServInfoUpdater decCreated() {
+      updateOperations.dec("created");
+      return this;
+    }
+
+    public NickServInfoUpdater incCreated() {
+      updateOperations.inc("created");
+      return this;
+    }
+
+    public NickServInfoUpdater incCreated(Number value) {
+      updateOperations.inc("created", value);
       return this;
     }
     public NickServInfoUpdater extraneous(java.util.Map<java.lang.String,java.lang.String> value) {

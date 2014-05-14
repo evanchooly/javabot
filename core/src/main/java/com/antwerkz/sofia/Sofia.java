@@ -37,6 +37,24 @@ public class Sofia {
         return (String) getBundle(locale).getObject(key);
     }
 
+    public static String noNickservEntry(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("@info.no.nickserv.entry", locale), arg0);
+    }
+
+    public static void logNoNickservEntry(Object arg0, Locale... locale) {
+        if(logger.isInfoEnabled()) {
+            logger.info(noNickservEntry(arg0));
+        }
+    }
+    public static String waitingForNickserv(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("@info.waiting.for.nickserv", locale), arg0);
+    }
+
+    public static void logWaitingForNickserv(Object arg0, Locale... locale) {
+        if(logger.isInfoEnabled()) {
+            logger.info(waitingForNickserv(arg0));
+        }
+    }
     public static String accountTooNew(Locale... locale) {
         return getMessageValue("account.too.new", locale);
     }

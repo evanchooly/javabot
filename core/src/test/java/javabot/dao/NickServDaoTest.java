@@ -35,7 +35,7 @@ public class NickServDaoTest extends BaseServiceTest {
           LocalDateTime.of(2014, Month.MARCH, 1, 16, 30), LocalDateTime.now()));
     }
     for (int i = 0; i < 5; i++) {
-      Assert.assertNotNull(nickServDao.findByAccount("account" + i));
+      Assert.assertNotNull(nickServDao.find("account" + i));
     }
   }
 

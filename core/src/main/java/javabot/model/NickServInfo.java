@@ -20,15 +20,22 @@ public class NickServInfo implements Persistent {
 
   @Id
   private ObjectId id;
+
   @Indexed
   private String nick;
+
   @Indexed
   private String account;
+
   private LocalDateTime registered;
+
   private LocalDateTime userRegistered;
+
   private LocalDateTime lastSeen;
+
   @Indexed(expireAfterSeconds = 60 * 60 * 24)
   private LocalDateTime created = now();
+
   private Map<String, String> extraneous = new TreeMap<>();
 
   private String lastAddress;
@@ -94,8 +101,8 @@ public class NickServInfo implements Persistent {
 
   @Override
   public String toString() {
-    return format( "NickServInfo{id=%s, nick='%s', account='%s', registered=%s, userRegistered=%s, lastSeen=%s,"
-            + " lastAddress='%s'}", id, nick, account, registered, userRegistered, lastSeen, lastAddress);
+    return format("NickServInfo{id=%s, nick='%s', account='%s', registered=%s, userRegistered=%s, lastSeen=%s,"
+        + " lastAddress='%s'}", id, nick, account, registered, userRegistered, lastSeen, lastAddress);
   }
 
   public List<String> toNickServFormat() {
@@ -106,21 +113,22 @@ public class NickServInfo implements Persistent {
 //    "cheeser has enabled nick protection",
 //    "*** End of Info ***"
     List<String> list = new ArrayList<>();
-    list.add(format("\"Information on %s (account %s):", getNick(), getAccount()));
+    list.add(format("Information on %s (account %s):", getNick(), getAccount()));
     append(list, "Registered", toString(getRegistered()));
     append(list, "User Reg.", toString(getUserRegistered()));
     append(list, "Last seen", toString(getLastSeen()));
     list.add("*** End of Info ***");
-
     return list;
   }
 
   private void append(final List<String> list, final String label, final String value) {
-    list.add(format("%-12s: %s", label, value));
+    if (value != null) {
+      list.add(format("%-12s: %s", label, value));
+    }
   }
 
   private String toString(LocalDateTime date) {
-    return date.format(DateTimeFormatter.ofPattern(NSERV_DATE_FORMAT));
+    return date != null ? date.format(DateTimeFormatter.ofPattern(NSERV_DATE_FORMAT)) : null;
   }
 
   public void setLastAddress(final String lastAddress) {

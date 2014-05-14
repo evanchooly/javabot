@@ -11,11 +11,6 @@ import javabot.Message;
 import javabot.dao.ApiDao;
 import javabot.javadoc.JavadocApi;
 
-/**
- * Created Jan 9, 2009
- *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
- */
 @SPI({AdminCommand.class})
 public class InfoApi extends AdminCommand {
   @Inject
