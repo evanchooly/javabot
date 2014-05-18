@@ -100,7 +100,7 @@ public class MyPircBot extends PircBot {
   }
 
   @Override
-  protected void onNotice(final String sourceNick, final String sourceLogin, final String sourceHostname,
+  public void onNotice(final String sourceNick, final String sourceLogin, final String sourceHostname,
       final String target, final String notice) {
     super.onNotice(sourceNick, sourceLogin, sourceHostname, target, notice);
     if (sourceNick.equalsIgnoreCase("NickServ")) {

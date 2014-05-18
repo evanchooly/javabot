@@ -30,18 +30,19 @@ public class NickServDaoTest extends BaseServiceTest {
   }
 
   public void privMsg() {
+    nickServDao.clear();
     for (int i = 0; i < 5; i++) {
-      send(getNickServInfo("account" + i, "nick" + 1, LocalDateTime.of(2014, Month.MARCH, 1, 16, 30),
+      send(getNickServInfo("account" + i, "nick" + i, LocalDateTime.of(2014, Month.MARCH, 1, 16, 30),
           LocalDateTime.of(2014, Month.MARCH, 1, 16, 30), LocalDateTime.now()));
     }
     for (int i = 0; i < 5; i++) {
-      Assert.assertNotNull(nickServDao.find("account" + i));
+      Assert.assertNotNull("Should find account" + i, nickServDao.find("account" + i));
     }
   }
 
   private void send(final NickServInfo info) {
     info.toNickServFormat().stream().forEach(o -> {
-      getJavabot().getPircBot().onPrivateMessage("nickserv", "nickserv", "", o);
+      getJavabot().getPircBot().onNotice("nickserv", "nickserv", "", "", o);
     });
   }
 
