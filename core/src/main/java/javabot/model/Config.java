@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.antwerkz.maven.SPI;
-import static java.lang.String.format;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -153,10 +152,17 @@ public class Config implements Serializable, Persistent {
 
   @Override
   public String toString() {
-    return format(
-        "Config{id=%s, server='%s', url='%s', port=%d, historyLength=%d, trigger='%s', nick='%s', password='%s', "
-            + "schemaVersion=%d, operations=%s, throttleThreshold=%d}", id, server, url, port, historyLength, trigger,
-        nick, password, schemaVersion, operations, throttleThreshold
-    );
+    return "Config{" +
+        "server='" + server + '\'' +
+        ", url='" + url + '\'' +
+        ", port=" + port +
+        ", historyLength=" + historyLength +
+        ", trigger='" + trigger + '\'' +
+        ", nick='" + nick + '\'' +
+        ", schemaVersion=" + schemaVersion +
+        ", throttleThreshold=" + throttleThreshold +
+        ", mininumNickServAge=" + mininumNickServAge +
+        ", operations=" + operations +
+        '}';
   }
 }
