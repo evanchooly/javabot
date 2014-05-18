@@ -8,11 +8,9 @@ import javabot.BaseTest;
 import javabot.dao.ChangeDao;
 import javabot.dao.ConfigDao;
 import javabot.dao.KarmaDao;
-import javabot.dao.NickServDao;
 import javabot.model.Config;
 import javabot.model.IrcUser;
 import javabot.model.Karma;
-import javabot.model.NickServInfo;
 import javabot.model.ThrottleItem;
 import org.mongodb.morphia.Datastore;
 import org.testng.Assert;
@@ -27,9 +25,6 @@ public class KarmaOperationTest extends BaseOperationTest {
   private ChangeDao changeDao;
 
   @Inject
-  private NickServDao nickServDao;
-
-  @Inject
   private Datastore ds;
 
   @Inject
@@ -42,11 +37,7 @@ public class KarmaOperationTest extends BaseOperationTest {
       ds.delete(ds.createQuery(ThrottleItem.class));
       final Karma karma = karmaDao.find("testjavabot");
       int value = karma != null ? karma.getValue() : 0;
-      final IrcUser bob = new IrcUser("bob", "bob", "localhost");
-      NickServInfo info = new NickServInfo(bob);
-      info.setRegistered(info.getRegistered().minusDays(100));
-      nickServDao.clear();
-      nickServDao.save(info);
+      final IrcUser bob = registerIrcUser("bob", "bob", "localhost");
       for (int i = 0; i < throttleThreshold; i++) {
         testMessageAs(bob, "~testjavabot++",
             String.format("testjavabot has a karma level of %d, %s", ++value, bob.getNick()));

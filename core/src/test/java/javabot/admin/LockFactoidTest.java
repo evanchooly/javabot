@@ -18,7 +18,7 @@ public class LockFactoidTest extends BaseOperationTest {
             sendMessage("~forget " + name);
             testMessage("~" + name + " is i should be locked", "OK, " + TEST_USER + ".");
             testMessage("~admin lock " + name, name + " locked.");
-            final IrcUser bob = new IrcUser("bob", "bob", "localhost");
+            final IrcUser bob = registerIrcUser("bob", "bob", "localhost");
             testMessageAs(bob, String.format("~forget %s", name), "Only admins can delete locked factoids, bob.");
             testMessage("~admin unlock " + name, name + " unlocked.");
             testMessageAs(bob, String.format("~forget %s", name), getForgetMessage(bob, name));

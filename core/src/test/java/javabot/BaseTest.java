@@ -11,10 +11,12 @@ import com.jayway.awaitility.Duration;
 import javabot.dao.AdminDao;
 import javabot.dao.ChannelDao;
 import javabot.dao.EventDao;
+import javabot.dao.NickServDao;
 import javabot.model.AdminEvent;
 import javabot.model.AdminEvent.State;
 import javabot.model.Channel;
 import javabot.model.IrcUser;
+import javabot.model.NickServInfo;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.Guice;
 
@@ -42,6 +44,9 @@ public class BaseTest {
   public final String ok;
 
   protected TestJavabot bot;
+
+  @Inject
+  private NickServDao nickServDao;
 
   public BaseTest() {
     Javabot.setPropertiesFile("test-javabot.properties");
@@ -113,5 +118,14 @@ public class BaseTest {
             return done.contains(eventDao.find(event.getId()).getState());
           }
         });
+  }
+
+  protected IrcUser registerIrcUser(final String nick, final String userName, final String host) {
+    final IrcUser bob = new IrcUser(nick, userName, host);
+    NickServInfo info = new NickServInfo(bob);
+    info.setRegistered(info.getRegistered().minusDays(100));
+    nickServDao.clear();
+    nickServDao.save(info);
+    return bob;
   }
 }
