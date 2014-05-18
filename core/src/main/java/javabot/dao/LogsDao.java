@@ -1,6 +1,9 @@
 package javabot.dao;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import javax.inject.Inject;
 
 import javabot.Seen;
@@ -48,6 +51,36 @@ public class LogsDao extends BaseDao<Logs> {
     criteria.channel().equal(channel);
     Logs logs = criteria.query().get();
     return logs != null ? new Seen(logs.getChannel(), logs.getMessage(), logs.getNick(), logs.getUpdated()) : null;
+  }
+
+  private List<Logs> dailyLog(String channelName, LocalDateTime date, Boolean logged) {
+    List<Logs> list = null;
+    if (logged) {
+      LocalDate localDateTime = date == null
+          ? LocalDate.now()
+          : date.toLocalDate();
+      LocalDate start = localDateTime;
+      LocalDate tomorrow = start.plusDays(1);
+      LogsCriteria criteria = new LogsCriteria(ds);
+      criteria.channel(channelName);
+      LocalDateTime nextMidnight = tomorrow.atStartOfDay();
+      LocalDateTime lastMidnight = start.atStartOfDay();
+      criteria.and(
+          criteria.updated().lessThanOrEq(nextMidnight),
+          criteria.updated().greaterThanOrEq(lastMidnight)
+      );
+      list = criteria.query().asList();
+    }
+    return list;
+  }
+
+  public List<Logs> findByChannel(String name,LocalDateTime date,Boolean showAll) {
+    Channel channel = channelDao.get(name);
+    if (channel != null && (showAll || channel.getLogged())) {
+      return dailyLog(name, date, showAll || channel.getLogged());
+    } else {
+      return Collections.emptyList();
+    }
   }
 
 }

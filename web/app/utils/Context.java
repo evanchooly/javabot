@@ -1,13 +1,14 @@
 package utils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.inject.Inject;
 
 import javabot.dao.ChannelDao;
 import javabot.dao.FactoidDao;
+import javabot.dao.LogsDao;
 import javabot.model.Admin;
 import javabot.model.Logs;
-import java.time.LocalDateTime;
 import play.mvc.Http;
 
 public class Context {
@@ -48,7 +49,7 @@ public class Context {
     return logs;
   }
 
-  public void logChannel(String name, DateTime date) {
+  public void logChannel(String name, LocalDateTime date) {
     channel = name;
     logs = logsDao.findByChannel(channel, date, showAll());
   }

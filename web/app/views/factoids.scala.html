@@ -2,6 +2,7 @@
     page: Page[javabot.model.Factoid])
 
 @import java.net.URLEncoder
+@import java.time.format.DateTimeFormatter
 @import controllers.Encodings
 @import be.objectify.deadbolt.java.views.html._
 @import be.objectify.deadbolt.core.utils.TemplateUtils._
@@ -53,7 +54,7 @@
                     </td>
                     <td>@factoid.getValue</td>
                     <td>@factoid.getUserName</td>
-                    <td class="right">@{factoid.getUpdated.toString("yyyy.MM.dd hh:mm")}</td>
+                    <td class="right">@{DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm").format(factoid.getUpdated)}</td>
                 </tr>
             }
         </table>

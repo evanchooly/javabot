@@ -2,6 +2,7 @@
     page: Page[javabot.model.Karma])
 
 @import java.net.URLEncoder
+@import java.time.format.DateTimeFormatter
 @import be.objectify.deadbolt.java.views.html._
 @import be.objectify.deadbolt.core.utils.TemplateUtils._
 @import scala.collection.JavaConversions._
@@ -49,7 +50,7 @@
                 <td>@karma.getName</td>
                 <td>@karma.getValue</td>
                 <td>@karma.getUserName</td>
-                <td class="right">@{karma.getUpdated.toString("yyyy.MM.dd hh:mm")}</td>
+                <td class="right">@{DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm").format(karma.getUpdated)}</td>
             </tr>
         }
     </table>

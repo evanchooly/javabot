@@ -60,7 +60,6 @@ public class AdminController extends JavaController {
   public Result login() {
     CommonProfile profile = getUserProfile();
     if (adminDao.findAll().isEmpty()) {
-      LOG.info("creating new admin");
       adminDao.create("", profile.getEmail(), "");
     }
     Session session = Http.Context.current().session();

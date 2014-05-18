@@ -2,6 +2,7 @@
     before: String, after: String)
 
 @import java.net.URLEncoder
+@import java.time.format.DateTimeFormatter
 @import be.objectify.deadbolt.java.views.html._
 @import be.objectify.deadbolt.core.utils.TemplateUtils._
 @import javabot.model.Logs.Type._
@@ -51,7 +52,7 @@
                         }
                     }
                 }
-            <td class="time right">[@{log.getUpdated.toString("hh:mm")}]</td>
+            <td class="time right">[@{DateTimeFormatter.ofPattern("hh:mm").format(log.getUpdated)}]</td>
             </tr>
         }
     </table>

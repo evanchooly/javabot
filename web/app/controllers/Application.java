@@ -2,6 +2,9 @@ package controllers;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
@@ -10,9 +13,6 @@ import javabot.model.Change;
 import javabot.model.Factoid;
 import javabot.model.Karma;
 import models.Page;
-import java.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.data.Form;
@@ -53,6 +53,8 @@ public class Application extends Controller {
 
   private static final String PATTERN = "yyyy-MM-dd";
 
+  public static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern(PATTERN);
+
   public Result index() {
     return ok(index.render(handler, contextProvider.get()));
   }
@@ -89,8 +91,7 @@ public class Application extends Controller {
   }
 
   public Result logs(String channel, String dateString) {
-    DateTime date;
-    DateTimeFormatter format = DateTimeFormat.forPattern(PATTERN);
+    LocalDateTime date;
     String channelName;
     try {
       channelName = URLDecoder.decode(channel, "UTF-8");
@@ -100,20 +101,21 @@ public class Application extends Controller {
     }
     try {
       if ("today".equals(dateString)) {
-        date = DateTime.now().withTimeAtStartOfDay();
+        date = LocalDate.now().atStartOfDay();
       } else {
-        date = DateTime.parse(dateString, format);
+        date = LocalDate.parse(dateString, FORMAT).atStartOfDay();
       }
     } catch (Exception e) {
-      date = DateTime.now().withTimeAtStartOfDay();
+      LOG.error(e.getMessage(), e);
+      date = LocalDate.now().atStartOfDay();
     }
 
     Context context = contextProvider.get();
     context.logChannel(channelName, date);
 
     return ok(views.html.logs.apply(handler, context, channelName,
-        date.toString(PATTERN),
-        date.minusDays(1).toString(PATTERN),
-        date.plusDays(1).toString(PATTERN)));
+        FORMAT.format(date),
+        FORMAT.format(date.minusDays(1)),
+        FORMAT.format(date.plusDays(1))));
   }
 }
