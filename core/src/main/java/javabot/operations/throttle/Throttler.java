@@ -56,7 +56,7 @@ public class Throttler extends BaseDao<ThrottleItem> {
       Sofia.logWaitingForNickserv(user.getNick());
       try {
         Awaitility.await()
-            .atMost(10, TimeUnit.SECONDS)
+            .atMost(15, TimeUnit.SECONDS)
             .until(() -> {
               info.set(nickServDao.find(user.getNick()));
               return info.get() != null;
