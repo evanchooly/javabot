@@ -43,6 +43,13 @@ public class NickServInfo implements Persistent {
   public NickServInfo() {
   }
 
+  public NickServInfo(final IrcUser user) {
+    nick = user.getNick();
+    account = user.getUserName();
+    registered = LocalDateTime.now();
+    userRegistered = LocalDateTime.now();
+  }
+
   public ObjectId getId() {
     return id;
   }
