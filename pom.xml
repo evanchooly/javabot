@@ -16,6 +16,13 @@
         <module>core</module>
     </modules>
 
+    <repositories>
+        <repository>
+            <id>stackmagic.github.maven-repo</id>
+            <url>http://stackmagic.github.com/maven-repo/maven2</url>
+        </repository>
+    </repositories>
+
     <build>
         <defaultGoal>package</defaultGoal>
         <pluginManagement>

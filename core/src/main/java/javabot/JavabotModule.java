@@ -15,6 +15,7 @@ import com.mongodb.WriteConcern;
 import javabot.dao.util.LocalDateTimeConverter;
 import javabot.javadoc.JavadocClass;
 import javabot.model.Factoid;
+import net.swisstech.bitly.BitlyClient;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
@@ -78,6 +79,12 @@ public class JavabotModule extends AbstractModule {
       }
     }
     return mongoClient;
+  }
+
+  @Provides
+  @Singleton
+  public BitlyClient bitlyClient() throws IOException {
+    return new BitlyClient(getProperties().getProperty("javabot.bitly.token"));
   }
 
   @Provides

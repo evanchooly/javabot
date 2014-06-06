@@ -1,8 +1,8 @@
 package javabot.javadoc;
 
-import javabot.IsGdShortener;
 import javabot.dao.ApiDao;
 import javabot.model.Persistent;
+import net.swisstech.bitly.BitlyClient;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +30,10 @@ public abstract class JavadocElement implements Persistent {
     this.apiId = api.getId();
   }
 
-  private String buildShortUrl(final String url) {
-    return new IsGdShortener(url).invoke();
+  private String buildShortUrl(final BitlyClient client, final String url) {
+    return client.shorten()
+            .setLongUrl(url)
+            .call().data.url;
   }
 
   public String getLongUrl() {
@@ -50,10 +52,10 @@ public abstract class JavadocElement implements Persistent {
     this.directUrl = directUrl;
   }
 
-  public String getDisplayUrl(final String hint, final ApiDao dao) {
+  public String getDisplayUrl(final String hint, final ApiDao dao, final BitlyClient client) {
     String url = getShortUrl();
     if (url == null) {
-      setShortUrl(buildShortUrl(getLongUrl()) + " [" + dao.find(getApiId()) + ": " + hint + "]");
+      setShortUrl(buildShortUrl(client, getLongUrl()) + " [" + dao.find(getApiId()) + ": " + hint + "]");
       url = getShortUrl();
       dao.save(this);
     }

@@ -14,6 +14,7 @@ import javabot.javadoc.JavadocApi;
 import javabot.javadoc.JavadocClass;
 import javabot.javadoc.JavadocField;
 import javabot.javadoc.JavadocMethod;
+import net.swisstech.bitly.BitlyClient;
 
 @SPI(BotOperation.class)
 public class JavadocOperation extends BotOperation {
@@ -22,6 +23,9 @@ public class JavadocOperation extends BotOperation {
 
   @Inject
   private JavadocClassDao dao;
+
+  @Inject
+  private BitlyClient client;
 
   private static final int RESULT_LIMIT = 5;
 
@@ -104,7 +108,7 @@ public class JavadocOperation extends BotOperation {
       } else {
         final List<JavadocField> list = dao.getField(api, className, fieldName);
         for (final JavadocField field : list) {
-          urls.add(field.getDisplayUrl(field.toString(), apiDao));
+          urls.add(field.getDisplayUrl(field.toString(), apiDao, client));
         }
       }
     }
@@ -112,7 +116,7 @@ public class JavadocOperation extends BotOperation {
 
   private void findClasses(JavadocApi api, final List<String> urls, final String key) {
     for (final JavadocClass javadocClass : dao.getClass(api, key)) {
-      urls.add(javadocClass.getDisplayUrl(javadocClass.toString(), apiDao));
+      urls.add(javadocClass.getDisplayUrl(javadocClass.toString(), apiDao, client));
     }
   }
 
@@ -132,12 +136,12 @@ public class JavadocOperation extends BotOperation {
       final String signatureTypes = key.substring(openIndex + 1, closeIndex);
       final List<String> list = new ArrayList<>();
       for (final JavadocMethod method : dao.getMethods(api, className, methodName, signatureTypes)) {
-        list.add(method.getDisplayUrl(method.toString(), apiDao));
+        list.add(method.getDisplayUrl(method.toString(), apiDao, client));
       }
       if(list.isEmpty()) {
         className = methodName;
         for (final JavadocMethod method : dao.getMethods(api, className, methodName, signatureTypes)) {
-          list.add(method.getDisplayUrl(method.toString(), apiDao));
+          list.add(method.getDisplayUrl(method.toString(), apiDao, client));
         }
       }
 
