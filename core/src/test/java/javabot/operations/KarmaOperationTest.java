@@ -152,6 +152,13 @@ public class KarmaOperationTest extends BaseOperationTest {
     Assert.assertTrue(karma2 == karma - 1, "Should have lost one karma point.");
   }
 
+    public void queryOwnKarma() {
+        final IrcUser bill = registerIrcUser("bill", "bill", "localhost");
+        final int karma = getKarma(bill);
+        Assert.assertEquals(karma, 0);
+        testMessageAs(bill, "~karma bill", "you have no karma, bill");
+    }
+
   private int getKarma(final IrcUser target) {
     final Karma karma = karmaDao.find(target.getNick());
     return karma != null ? karma.getValue() : 0;

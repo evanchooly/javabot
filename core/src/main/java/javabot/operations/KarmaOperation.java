@@ -123,7 +123,12 @@ public class KarmaOperation extends BotOperation {
               nick + " has a karma level of " + karma.getValue() + ", " + sender));
         }
       } else {
-        response.add(new Message(channel, event, nick + " has no karma, " + sender));
+          if(!sender.getNick().equals(nick)) {
+              response.add(new Message(channel, event, nick + " has no karma, " + sender));
+          } else {
+              response.add(new Message(channel, event, "you have no karma, " + sender));
+          }
+
       }
     }
     return response;
