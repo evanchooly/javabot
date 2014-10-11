@@ -1,28 +1,27 @@
 package javabot.operations;
 
-import javax.inject.Inject;
-
-import javabot.BaseTest;
+import com.antwerkz.sofia.Sofia;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
 import org.testng.annotations.Test;
 
+import javax.inject.Inject;
+
 @Test(groups = {"operations"})
 public class ForgetFactoidOperationTest extends BaseOperationTest {
-  @Inject
-  private FactoidDao factoidDao;
-  @Inject
-  private ChangeDao changeDao;
+    @Inject
+    private FactoidDao factoidDao;
+    @Inject
+    private ChangeDao changeDao;
 
-  public void forgetFactoid() {
-    if (!factoidDao.hasFactoid("afky")) {
-      factoidDao.addFactoid(TEST_USER.getNick(), "afky", "test");
+    public void forgetFactoid() {
+        if (!factoidDao.hasFactoid("afky")) {
+            factoidDao.addFactoid(getTestUser().getNick(), "afky", "test");
+        }
+        testMessage("~forget afky", Sofia.factoidForgotten("afky", getTestUser()));
     }
-    testMessage("~forget afky", "I forgot about afky, " + BaseTest.TEST_USER + ".");
-  }
 
-  public void nonexistantFactoid() {
-    testMessage("~forget asdfghjkl",
-        String.format("I never knew about asdfghjkl anyway, %s.", BaseTest.TEST_USER));
-  }
+    public void nonexistantFactoid() {
+        testMessage("~forget asdfghjkl", Sofia.factoidDeleteUnknown("asdfghjkl", getTestUser().getNick()));
+    }
 }

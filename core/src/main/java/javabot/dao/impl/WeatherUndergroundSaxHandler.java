@@ -11,11 +11,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * SAX handler for Google's weather API
- *
- * @author Craig Tataryn &lt;craiger@tataryn.net&gt;
- */
 public class WeatherUndergroundSaxHandler extends DefaultHandler {
     boolean collectLocationData = false;
     boolean collectWeatherData = false;

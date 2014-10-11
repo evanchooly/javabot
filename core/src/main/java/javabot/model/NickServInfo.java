@@ -13,8 +13,9 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
+import org.pircbotx.User;
 
-@Entity("nickserv")
+@Entity(value = "nickserv", noClassnameStored = true)
 public class NickServInfo implements Persistent {
   public static final String NSERV_DATE_FORMAT = "MMM dd HH:mm:ss yyyy";
 
@@ -43,9 +44,9 @@ public class NickServInfo implements Persistent {
   public NickServInfo() {
   }
 
-  public NickServInfo(final IrcUser user) {
+  public NickServInfo(final User user) {
     nick = user.getNick();
-    account = user.getUserName();
+    account = null; //user.getUserName();
     registered = LocalDateTime.now();
     userRegistered = LocalDateTime.now();
   }

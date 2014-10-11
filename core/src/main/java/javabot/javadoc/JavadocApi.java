@@ -14,7 +14,7 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Entity("apis")
+@Entity(value = "apis", noClassnameStored = true)
 @SPI(Persistent.class)
 @Indexes({
     @Index(value = "name", unique = true),

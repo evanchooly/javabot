@@ -1,15 +1,21 @@
 package javabot.commands;
 
-import java.util.List;
-
-import javabot.IrcEvent;
-import javabot.Javabot;
+import com.antwerkz.sofia.Sofia;
 import javabot.Message;
-import org.apache.commons.lang.StringUtils;
+import javabot.operations.BotOperation;
+import org.pircbotx.hooks.events.MessageEvent;
+
+import java.util.stream.Collectors;
 
 public abstract class OperationsCommand extends AdminCommand {
-  protected void listCurrent(final List<Message> responses, final Javabot bot, final IrcEvent event) {
-    responses.add(new Message(event.getChannel(), event, "I am currently running the following operations:"));
-    responses.add(new Message(event.getChannel(), event, StringUtils.join(bot.getAllOperations(), ",")));
-  }
+    protected void listCurrent(final Message event) {
+        getBot().postMessage(event.getChannel(), event.getUser(), Sofia.adminRunningOperations(event.getUser().getNick()),
+                             event.isTell());
+        getBot().postMessage(event.getChannel(), event.getUser(),
+                             String.join(",", getBot().getAllOperations()
+                                                      .stream()
+                                                      .map(BotOperation::getName)
+                                                      .collect(Collectors.toList())),
+                             event.isTell());
+    }
 }

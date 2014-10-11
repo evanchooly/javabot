@@ -13,7 +13,6 @@ import javabot.model.Weather;
  * The user can also specify "using google for [place]" or "using wu for [place]" if they want to retrieve weather data
  * from a specific API </p>
  *
- * @author Craig Tataryn &lt;craiger@tataryn.net&gt;
  */
 public class WeatherDao {
 

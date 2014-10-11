@@ -1,13 +1,12 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
-
 import com.antwerkz.maven.SPI;
-import javabot.IrcEvent;
+import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.operations.locator.JCPJSRLocator;
+import org.pircbotx.Channel;
+
+import javax.inject.Inject;
 
 @SPI(BotOperation.class)
 public class JSROperation extends BotOperation {
@@ -15,12 +14,12 @@ public class JSROperation extends BotOperation {
     JCPJSRLocator locator;
 
     @Override
-    public List<Message> handleMessage(final IrcEvent event) {
-        final String message = event.getMessage().toLowerCase();
-        final String channel = event.getChannel();
-        final List<Message> responses = new ArrayList<>();
+    public boolean handleMessage(final Message event) {
+        final String message = event.getValue().toLowerCase();
+        final Channel channel = event.getChannel();
         if ("jsr".equals(message)) {
-            responses.add(new Message(channel, event, "Please supply a JSR number to look up."));
+            getBot().postMessage(channel, event.getUser(), Sofia.jsrMissing(), event.isTell());
+            return true;
         } else {
             if (message.startsWith("jsr ")) {
                 final String jsrString = message.substring("jsr ".length());
@@ -29,17 +28,17 @@ public class JSROperation extends BotOperation {
                     final int jsr = Integer.parseInt(jsrString);
                     String response = locator.findInformation(jsr);
                     if (response != null && !response.isEmpty()) {
-                        responses.add(new Message(channel, event, response));
+                        getBot().postMessage(channel, event.getUser(), response, event.isTell());
                     } else {
-                        responses.add(new Message(channel, event, "I'm sorry, I can't find a JSR " + jsrString));
+                        getBot().postMessage(channel, event.getUser(), Sofia.jsrUnknown(jsrString), event.isTell());
                     }
                 } catch (NumberFormatException nfe) {
-                    responses.add(new Message(channel, event,
-                            "'"+jsrString + "' is not a valid JSR reference."));
+                    getBot().postMessage(channel, event.getUser(), Sofia.jsrInvalid(jsrString), event.isTell());
                 }
+                return true;
             }
         }
-        return responses;
+        return false;
     }
 }
 

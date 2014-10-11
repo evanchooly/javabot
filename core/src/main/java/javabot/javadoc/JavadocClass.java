@@ -12,7 +12,7 @@ import org.mongodb.morphia.annotations.PrePersist;
 import javabot.model.Persistent;
 import org.bson.types.ObjectId;
 
-@Entity(value = "classes")
+@Entity(value = "classes", noClassnameStored = true)
 @SPI(Persistent.class)
 @Indexes({
     @Index("apiId"),

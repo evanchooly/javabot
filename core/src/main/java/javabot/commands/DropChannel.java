@@ -1,39 +1,37 @@
 package javabot.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
-
 import com.antwerkz.maven.SPI;
-import javabot.IrcEvent;
-import javabot.Javabot;
+import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.ChannelDao;
 import javabot.model.Channel;
+import org.pircbotx.PircBotX;
 
-/**
- * Created Dec 17, 2008
- *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
- */
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 @SPI({AdminCommand.class})
 public class DropChannel extends AdminCommand {
-  @Inject
-  private ChannelDao dao;
-  @Param
-  String channel;
+    @Inject
+    private ChannelDao dao;
 
-  @Override
-  public List<Message> execute(final Javabot bot, final IrcEvent event) {
-    final List<Message> responses = new ArrayList<Message>();
-    final Channel chan = dao.get(channel);
-    if (chan != null) {
-      dao.delete(chan);
-      responses.add(new Message(channel, event, "I was asked to leave this channel by " + event.getSender()));
-      bot.getPircBot().partChannel(chan.getName());
-    } else {
-      responses.add(new Message(event.getChannel(), event, "I'm not in " + channel + ", " + event.getSender()));
+    @Inject
+    private Provider<PircBotX> ircBot;
+
+    @Param
+    String channel;
+
+    @Override
+    public void execute(final Message event) {
+        final Channel chan = dao.get(channel);
+        if (chan != null) {
+            dao.delete(chan);
+            getBot().postMessage(ircBot.get().getUserChannelDao().getChannel(channel), event.getUser(),
+                                 Sofia.channelDeleted(event.getUser().getNick()), event.isTell());
+            event.getChannel().send().part(Sofia.channelDeleted(event.getUser().getNick()));
+        } else {
+            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.channelUnknown(channel, event.getUser().getNick()),
+                                 event.isTell());
+        }
     }
-    return responses;
-  }
 }

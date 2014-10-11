@@ -1,24 +1,26 @@
 package javabot;
 
 import javabot.model.IrcUser;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 
 public class IrcEvent {
-    private final String channel;
-    private final IrcUser sender;
+    private final Channel channel;
+    private final User user;
     private String message;
 
-    public IrcEvent(final String eventChannel, final IrcUser user, final String eventMessage) {
+    public IrcEvent(final Channel eventChannel, final User user, final String eventMessage) {
         channel = eventChannel;
-        sender = user;
+        this.user = user;
         message = eventMessage;
     }
 
-    public String getChannel() {
+    public Channel getChannel() {
         return channel;
     }
 
-    public IrcUser getSender() {
-        return sender;
+    public User getUser() {
+        return user;
     }
 
     public String getMessage() {
@@ -33,7 +35,7 @@ public class IrcEvent {
     public String toString() {
         return "BotEvent{" +
             "channel='" + channel + "'" +
-            ", sender='" + sender + "'" +
+            ", sender='" + user + "'" +
             ", message='" + message + "'" +
             "}";
     }

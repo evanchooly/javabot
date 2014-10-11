@@ -1,51 +1,54 @@
 package javabot.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
-
 import com.antwerkz.maven.SPI;
-import javabot.IrcEvent;
-import javabot.Javabot;
+import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.ChannelDao;
 import javabot.model.Channel;
+import org.pircbotx.PircBotX;
 
-/**
- * Created Dec 17, 2008
- *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
- */
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 @SPI({AdminCommand.class})
 public class AddChannel extends AdminCommand {
-  @Inject
-  private ChannelDao dao;
-  @Param
-  String channel;
-  @Param(defaultValue = "true", required = false)
-  String logged;
-  @Param(defaultValue = "", required = false)
-  String password;
+    @Inject
+    private ChannelDao dao;
+    @Inject
+    private Provider<PircBotX> ircBot;
 
-  @Override
-  public List<Message> execute(final Javabot bot, final IrcEvent event) {
-    final List<Message> responses = new ArrayList<Message>();
-    if (channel.startsWith("#")) {
-      Channel chan = dao.get(channel);
-      final Boolean isLogged = Boolean.valueOf(logged);
-      if (chan == null) {
-        chan = dao.create(channel, isLogged, password);
-      } else {
-        chan.setLogged(isLogged);
-        dao.save(chan);
-      }
-      responses.add(new Message(event.getChannel(), event, "Now joining " + channel +
-          (isLogged ? " and logging it" : "")));
-      chan.join(bot);
-      responses.add(new Message(channel, event, "I was asked to join this channel by " + event.getSender()));
-    } else {
-      responses.add(new Message(event.getChannel(), event, "Channel names must start with #, " + event.getSender()));
+    @Param
+    String name;
+    @Param(defaultValue = "true", required = false)
+    String logged;
+    @Param(defaultValue = "", required = false)
+    String password;
+
+    @Override
+    public void execute(final Message event) {
+        if (name.startsWith("#")) {
+            Channel channel = dao.get(name);
+            final Boolean isLogged = Boolean.valueOf(logged);
+            if (channel == null) {
+                channel = dao.create(name, isLogged, password);
+            } else {
+                channel.setLogged(isLogged);
+                dao.save(channel);
+            }
+
+            getBot().postMessage(event.getChannel(), event.getUser(),
+                                 isLogged ? Sofia.adminJoiningLoggedChannel(name) : Sofia.adminJoiningChannel(name),
+                                 event.isTell());
+            if (channel.getKey() == null) {
+                ircBot.get().sendIRC().joinChannel(channel.getName());
+            } else {
+                ircBot.get().sendIRC().joinChannel(channel.getName(), channel.getKey());
+            }
+
+            getBot().postMessage(ircBot.get().getUserChannelDao().getChannel(name), event.getUser(),
+                                 Sofia.adminJoinedChannel(event.getUser().getNick()), event.isTell());
+        } else {
+            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.adminBadChannelName(), event.isTell());
+        }
     }
-    return responses;
-  }
 }

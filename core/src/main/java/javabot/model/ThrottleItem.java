@@ -7,8 +7,9 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
+import org.pircbotx.User;
 
-@Entity("throttled")
+@Entity(value = "throttled", noClassnameStored = true)
 public class ThrottleItem implements Persistent {
   @Id
   private ObjectId id;
@@ -16,8 +17,8 @@ public class ThrottleItem implements Persistent {
   @Indexed(expireAfterSeconds = 60)
   private Date when;
 
-  public ThrottleItem(IrcUser user) {
-      this.user = user.getUserName();
+  public ThrottleItem(User user) {
+      this.user = user.getNick();
       when = new Date();
   }
 

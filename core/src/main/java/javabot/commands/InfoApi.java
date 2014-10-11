@@ -1,37 +1,30 @@
 package javabot.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
-
 import com.antwerkz.maven.SPI;
-import javabot.IrcEvent;
-import javabot.Javabot;
+import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.ApiDao;
 import javabot.javadoc.JavadocApi;
+import org.pircbotx.Channel;
+
+import javax.inject.Inject;
 
 @SPI({AdminCommand.class})
 public class InfoApi extends AdminCommand {
-  @Inject
-  private ApiDao dao;
+    @Inject
+    private ApiDao dao;
 
-  @Param
-  String name;
+    @Param
+    String name;
 
-  @Override
-  @SuppressWarnings("IOResourceOpenedButNotSafelyClosed")
-  public List<Message> execute(final Javabot bot, final IrcEvent event) {
-    final List<Message> responses = new ArrayList<Message>();
-    final String destination = event.getChannel();
-    final JavadocApi api = dao.find(name);
-    if (api != null) {
-      responses.add(new Message(destination, event,
-          String.format("The %s API can be found at %s.", api.getName(), api.getBaseUrl())));
-    } else {
-      responses.add(new Message(destination, event, String.format(
-          "I don't have javadoc for %s, %s", name, event.getSender())));
+    @Override
+    public void execute(final Message event) {
+        final Channel destination = event.getChannel();
+        final JavadocApi api = dao.find(name);
+        if (api != null) {
+            getBot().postMessage(destination, event.getUser(), Sofia.apiLocation(api.getName(), api.getBaseUrl()), event.isTell());
+        } else {
+            getBot().postMessage(destination, event.getUser(), Sofia.unknownApi(name, event.getUser().getNick()), event.isTell());
+        }
     }
-    return responses;
-  }
 }

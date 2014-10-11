@@ -11,7 +11,7 @@ import org.mongodb.morphia.annotations.PrePersist;
 import javabot.model.Persistent;
 import org.bson.types.ObjectId;
 
-@Entity("methods")
+@Entity(value = "methods", noClassnameStored = true)
 @SPI(Persistent.class)
 @Indexes({
     @Index("apiId"),

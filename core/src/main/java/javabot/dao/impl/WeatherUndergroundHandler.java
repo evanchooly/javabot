@@ -13,7 +13,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * Implements a weather service Dao using Weather Underground's weather API
  *
  * @see WeatherDao
- * @author Craig Tataryn &lt;craiger@tataryn.net&gt;
  */
 public class WeatherUndergroundHandler implements WeatherHandler {
     private static final String API_URL = "http://api.wunderground.com/auto/wui/geo/WXCurrentObXML/index.xml?query=";

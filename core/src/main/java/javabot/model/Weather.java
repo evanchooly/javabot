@@ -4,11 +4,9 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * Simple model for passing around Weather conditions
- *
- * @author Craig Tataryn &lt;craiger@tataryn.net&gt;
  */
 public class Weather {
-//    PIRCbot does not support unicode at this time
+//    PircBot does not support unicode at this time
 //    private static char C = '\u2103';
 //    private static char F = '\u2109';
 //    private static char DOT = '\u00B7';

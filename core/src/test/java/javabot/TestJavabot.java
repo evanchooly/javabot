@@ -1,65 +1,35 @@
 package javabot;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
+import com.google.inject.Singleton;
+import org.pircbotx.User;
 
-import javabot.dao.AdminDao;
-import javabot.model.IrcUser;
-
+@Singleton
 public class TestJavabot extends Javabot {
-  @Inject
-  private AdminDao adminDao;
-  private List<Message> messages = new ArrayList<>();
-
-  @Override
-  protected void createIrcBot() {
-    pircBot = new MyPircBot(this, injector) {
-      @Override
-      public String getNick() {
-        return BaseTest.TEST_BOT;
-      }
-    };
-  }
-
-  public List<Message> getMessages() {
-    final List<Message> list = messages;
-    messages = new ArrayList<>();
-    return list;
-  }
-
-  @Override
-  public void loadConfig() {
-    try {
-      super.loadConfig();
-      IrcUser testUser = BaseTest.TEST_USER;
-      if (adminDao.getAdmin(testUser.getUserName()) == null) {
-        adminDao.create(testUser.getNick(), testUser.getUserName(), testUser.getHost());
-      }
-    } catch (Exception e) {
-      log.debug(e.getMessage(), e);
-      throw new RuntimeException(e.getMessage(), e);
+/*
+    @Override
+    public String getNick() {
+        return BaseTest.TEST_NICK;
     }
-  }
 
-  @Override
-  public void connect() {
-  }
+    @Override
+    public void postAction(final org.pircbotx.Channel channel, String message) {
+        postMessage(channel, null, message, false);
+    }
 
-  @Override
-  public void postAction(final Message message) {
-    postMessage(message);
-  }
+    @Override
+    public void postMessage(final org.pircbotx.Channel channel, final User user, String message, final boolean tell) {
+        logMessage(channel, user, message);
+        log.info(message);
+        messages.add(new Message(channel, user, message, tell));
+    }
+*/
 
-  @Override
-  public void postMessage(final Message message) {
-    logMessage(message);
-    log.info(message.toString());
-    messages.add(message);
-  }
+    public String getNick() {
+        return BaseTest.TEST_BOT_NICK;
+    }
 
-  @Override
-  public boolean userIsOnChannel(final String sender, final String channel) {
-    return true;
-  }
+    @Override
+    public boolean isOnCommonChannel(final User user) {
+        return true;
+    }
 }

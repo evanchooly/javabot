@@ -1,75 +1,70 @@
 package javabot.operations;
 
+import com.antwerkz.sofia.Sofia;
+import javabot.BaseTest;
+import javabot.Message;
+import javabot.Messages;
+import org.pircbotx.User;
+import org.testng.Assert;
+
 import java.util.Arrays;
 import java.util.List;
 
-import javabot.BaseTest;
-import javabot.IrcEvent;
-import javabot.model.IrcUser;
-import javabot.Message;
-import org.testng.Assert;
+import static java.lang.String.format;
 
 public abstract class BaseOperationTest extends BaseTest {
-  protected void scanForResponse(final String message, final String target) {
-    final List<Message> list = sendMessage(message);
-    boolean found = false;
-    for (final Message response : list) {
-      found |= response.getMessage().contains(target);
+    protected void scanForResponse(final String message, final String target) {
+        final Messages list = sendMessage(message);
+        boolean found = false;
+        for (final String response : list) {
+            found |= response.contains(target);
+        }
+        Assert.assertTrue(found, format("Did not find \n'%s' in \n'%s'", target, list));
     }
-    Assert.assertTrue(found, String.format("Did not find \n'%s' in \n'%s'", target, list));
-  }
 
-  protected void testMessage(final String message, final String... responses) {
-    compareResults(sendMessage(message), responses);
-  }
-
-  protected void testMessageAs(final IrcUser user, final String message, final String... responses) {
-    compareResults(sendMessage(user, message), responses);
-  }
-
-  private void compareResults(final List<Message> list, final String[] responses) {
-    Assert.assertEquals(list.size(), responses.length, String.format("Should get expected response count back. "
-        + "\n** expected: \n%s"
-        + "\n** got: \n%s", Arrays.toString(responses), list));
-    for (final String response : responses) {
-      Assert.assertEquals(list.remove(0).getMessage(), response);
+    protected void testMessage(final String message, final String... responses) {
+        compareResults(sendMessage(message), responses);
     }
-    Assert.assertTrue(list.isEmpty(), "All responses should be matched.");
-  }
 
-  protected List<Message> sendMessage(final String message) {
-    return sendMessage(BaseTest.TEST_USER, message);
-  }
-
-  protected List<Message> sendMessage(final IrcUser testUser, final String message) {
-    getJavabot().processMessage(new IrcEvent(getJavabotChannel(), testUser, message));
-    return getJavabot().getMessages();
-  }
-
-  protected void testMessageList(final String message, final List<String> responses) {
-    final List<Message> list = sendMessage(message);
-    boolean found = false;
-    for (final Message response : list) {
-      found |= responses.contains(response.getMessage());
+    protected void testMessageAs(final User user, final String message, final String... responses) {
+        compareResults(sendMessage(user, message), responses);
     }
-    Assert.assertTrue(found, String.format("Should get one response from the list of possibilities"
-        + "\n** expected: \n%s"
-        + "\n** got: \n%s", responses, list));
-  }
 
-  public String getForgetMessage(final String factoid) {
-    return getForgetMessage(BaseTest.TEST_USER, factoid);
-  }
+    private void compareResults(final Messages messages, final String[] responses) {
+        Assert.assertEquals(messages.size(), responses.length,
+                            format("Should get expected response count back. "
+                                   + "\n** expected: \n%s"
+                                   + "\n** got: \n%s", Arrays.toString(responses), messages));
+        for (final String response : responses) {
+            Assert.assertEquals(messages.remove(0), response);
+        }
+        Assert.assertTrue(messages.isEmpty(), "All responses should be matched.");
+    }
 
-  public String getForgetMessage(final IrcUser testUser, final String factoid) {
-    return String.format("I forgot about %s, %s.", factoid, testUser);
-  }
+    protected Messages sendMessage(final String message) {
+        return sendMessage(getTestUser(), message);
+    }
 
-  protected String getFoundMessage(final String factoid, final String value) {
-    return String.format("%s, %s is %s", BaseTest.TEST_USER, factoid, value);
-  }
+    protected Messages sendMessage(final User testUser, final String message) {
+        getJavabot().processMessage(new Message(getJavabotChannel(), testUser, message));
+        return getMessages();
+    }
 
-  protected void forgetFactoid(final String name) {
-    testMessage(String.format("~forget %s", name), getForgetMessage(name));
-  }
+    protected void testMessageList(final String message, final List<String> responses) {
+        boolean found = false;
+        for (final String response : sendMessage(message)) {
+            found |= responses.contains(response);
+        }
+        Assert.assertTrue(found, format("Should get one response from the list of possibilities"
+                                        + "\n** expected: \n%s"
+                                        + "\n** got: \n%s", responses, sendMessage(message)));
+    }
+
+    protected String getFoundMessage(final String factoid, final String value) {
+        return format("%s, %s is %s", getTestUser(), factoid, value);
+    }
+
+    protected void forgetFactoid(final String name) {
+        testMessage(format("~forget %s", name), Sofia.factoidForgotten(name, getTestUser().getNick()));
+    }
 }

@@ -19,7 +19,7 @@ import org.mongodb.morphia.annotations.PrePersist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Entity("factoids")
+@Entity(value = "factoids", noClassnameStored = true)
 @SPI(Persistent.class)
 @Indexes({
     @Index(value = "upperName", unique = true),

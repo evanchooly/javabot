@@ -1,61 +1,61 @@
 package javabot.model;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-
 import com.antwerkz.maven.SPI;
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Indexes;
-import org.bson.types.ObjectId;
 
-@Entity("shuns")
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+@Entity(value = "shuns", noClassnameStored = true)
 @SPI(Persistent.class)
 @Indexes({
-    @Index("upperNick")
-})
+             @Index("upperNick")
+         })
 public class Shun implements Serializable, Persistent {
-  @Id
-  private ObjectId id;
+    @Id
+    private ObjectId id;
 
-  @Indexed(unique = true)
-  private String nick;
+    @Indexed(unique = true)
+    private String nick;
 
-  private String upperNick;
+    private String upperNick;
 
-  private LocalDateTime expiry;
+    private LocalDateTime expiry;
 
-  public ObjectId getId() {
-    return id;
-  }
+    public ObjectId getId() {
+        return id;
+    }
 
-  public void setId(ObjectId id) {
-    this.id = id;
-  }
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
 
-  public String getNick() {
-    return nick;
-  }
+    public String getNick() {
+        return nick;
+    }
 
-  public void setNick(String nick) {
-    this.nick = nick;
-  }
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
 
-  public LocalDateTime getExpiry() {
-    return expiry;
-  }
+    public LocalDateTime getExpiry() {
+        return expiry;
+    }
 
-  public void setExpiry(LocalDateTime updated) {
-    this.expiry = updated;
-  }
+    public void setExpiry(LocalDateTime updated) {
+        this.expiry = updated;
+    }
 
-  public String getUpperNick() {
-    return upperNick;
-  }
+    public String getUpperNick() {
+        return upperNick;
+    }
 
-  public void setUpperNick(final String upperNick) {
-    this.upperNick = upperNick;
-  }
+    public void setUpperNick(final String upperNick) {
+        this.upperNick = upperNick;
+    }
 }

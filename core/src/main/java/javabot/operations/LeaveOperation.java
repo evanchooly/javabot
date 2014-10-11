@@ -1,12 +1,10 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.antwerkz.maven.SPI;
-import javabot.IrcEvent;
+import com.antwerkz.sofia.Sofia;
 import javabot.Message;
-import javabot.model.IrcUser;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,30 +13,26 @@ public class LeaveOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(LeaveOperation.class);
 
     @Override
-    public List<Message> handleMessage(final IrcEvent event) {
-        final String message = event.getMessage();
-        final String channel = event.getChannel();
-        final IrcUser sender = event.getSender();
-        final List<Message> responses = new ArrayList<Message>();
+    public boolean handleMessage(final Message event) {
+        final String message = event.getValue();
+        final Channel channel = event.getChannel();
+        final User sender = event.getUser();
         if ("leave".equals(message.toLowerCase())) {
-            if (channel.equalsIgnoreCase(sender.getNick())) {
-                responses.add(new Message(channel, event, "I cannot leave a private message, " + sender + "."));
+            if (channel.getName().equalsIgnoreCase(event.getUser().getNick())) {
+                getBot().postMessage(channel, event.getUser(), Sofia.leavePrivmsg(sender), event.isTell());
             } else {
-                responses.add(new Message(channel, event, "I'll be back..."));
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        getBot().getPircBot().partChannel(channel);
-                        try {
-                            Thread.sleep(60000 * 15);
-                        } catch (InterruptedException exception) {
-                            log.error(exception.getMessage(), exception);
-                        }
-                        getBot().getPircBot().joinChannel(channel);
+                getBot().postMessage(channel, event.getUser(), Sofia.leaveChannel(event.getUser().getNick()), event.isTell());
+                new Thread(() -> {
+                    //                        ircBot.getUserChannelDao().getChannel(channel.getName());
+                    try {
+                        Thread.sleep(60000 * 15);
+                    } catch (InterruptedException exception) {
+                        log.error(exception.getMessage(), exception);
                     }
+                    //                        getBot().getPircBot().joinChannel(channel);
                 }).start();
             }
         }
-        return responses;
+        return false;
     }
 }

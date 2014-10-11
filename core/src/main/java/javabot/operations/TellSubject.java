@@ -1,17 +1,17 @@
 package javabot.operations;
 
-import javabot.model.IrcUser;
+import org.pircbotx.User;
 
 public final class TellSubject {
-    private final IrcUser target;
+    private final User target;
     private final String subject;
 
-    public TellSubject(final IrcUser target, final String subject) {
+    public TellSubject(final User target, final String subject) {
         this.target = target;
         this.subject = subject;
     }
 
-    public IrcUser getTarget() {
+    public User getTarget() {
         return target;
     }
 
@@ -21,11 +21,6 @@ public final class TellSubject {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append("TellSubject");
-        sb.append("{subject='").append(subject).append('\'');
-        sb.append(", target='").append(target).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return String.format("TellSubject{subject='%s', target='%s'}", subject, target.getNick());
     }
 }

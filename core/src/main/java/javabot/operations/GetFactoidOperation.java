@@ -1,161 +1,145 @@
 package javabot.operations;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.inject.Inject;
-
 import com.antwerkz.maven.SPI;
-import javabot.Action;
-import javabot.IrcEvent;
-import javabot.model.IrcUser;
-import javabot.Javabot;
+import com.antwerkz.sofia.Sofia;
 import javabot.Message;
-import javabot.TellMessage;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
-import javabot.operations.throttle.Throttler;
+import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.HashSet;
+import java.util.Set;
 
 @SPI(StandardOperation.class)
 public class GetFactoidOperation extends StandardOperation {
-  public static final String UNKNOWN_MESSSAGE = ", what does that even *mean*?";
+    @Inject
+    private FactoidDao factoidDao;
 
-  @Inject
-  private FactoidDao factoidDao;
+    @Inject
+    private Provider<PircBotX> ircBot;
 
-  @Inject
-  private Throttler throttler;
-
-  public GetFactoidOperation() {
-  }
-
-  public GetFactoidOperation(final Javabot javabot) {
-    setBot(javabot);
-  }
-
-  @Override
-  public List<Message> handleMessage(final IrcEvent event) {
-    List<Message> responses = tell(event);
-    if (responses.isEmpty()) {
-      responses.add(getFactoid(null, event.getMessage(), event.getSender(), event, new HashSet<>()));
+    @Override
+    public boolean handleMessage(final Message event) {
+        return tell(event) || getFactoid(null, event, new HashSet<>());
     }
-    return responses;
-  }
 
-  private Message getFactoid(final TellSubject subject, final String toFind, final IrcUser sender,
-      final IrcEvent event, final Set<String> backtrack) {
-    String message = toFind;
-    if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
-      message = message.substring(0, message.length() - 1);
-    }
-    final String firstWord = message.split(" ")[0];
-    final String params = message.substring(firstWord.length()).trim();
-    Factoid factoid = factoidDao.getFactoid(message.toLowerCase());
-    if (factoid == null) {
-      factoid = factoidDao.getParameterizedFactoid(firstWord);
-    }
-    return factoid != null
-        ? getResponse(subject, sender, event, backtrack, params, factoid)
-        : new Message(event.getChannel(), event, sender + UNKNOWN_MESSSAGE);
-  }
-
-  private Message getResponse(final TellSubject subject, final IrcUser sender,
-      final IrcEvent event, final Set<String> backtrack, final String replacedValue, final Factoid factoid) {
-    final String message = factoid.evaluate(subject, sender.getNick(), replacedValue);
-    if (message.startsWith("<see>")) {
-      if (backtrack.contains(message)) {
-        return new Message(event.getChannel(), event, "Loop detected for factoid '" + message + "'.");
-      } else {
-        backtrack.add(message);
-        return getFactoid(subject, message.substring(5).trim(), sender, event, backtrack);
-      }
-    } else if (message.startsWith("<reply>")) {
-      return new Message(event.getChannel(), event, message.substring("<reply>".length()));
-    } else if (message.startsWith("<action>")) {
-      return new Action(event.getChannel(), event, message.substring("<action>".length()));
-    } else {
-      return new Message(event.getChannel(), event, message);
-    }
-  }
-
-  private List<Message> tell(final IrcEvent event) {
-    final String message = event.getMessage();
-    final String channel = event.getChannel();
-    final IrcUser sender = event.getSender();
-    final List<Message> responses = new ArrayList<>();
-    if (isTellCommand(message)) {
-      final TellSubject tellSubject = parseTellSubject(message);
-      if (tellSubject == null) {
-        responses.add(new Message(channel, event,
-            String.format("The syntax is: tell nick about factoid - you missed out the 'about', %s", sender)));
-      } else {
-        IrcUser user = tellSubject.getTarget();
-        if (user != null) {
-          if ("me".equalsIgnoreCase(user.getNick())) {
-            user = sender;
-          }
-          final String thing = tellSubject.getSubject();
-          if (user.getNick().equalsIgnoreCase(getBot().getPircBot().getNick())) {
-            responses.add(new Message(channel, event, "I don't want to talk to myself"));
-          } else {
-            if (!getBot().userIsOnChannel(user.getNick(), channel)) {
-              responses.add(new Message(sender, event, "The user " + user + " is not on " + channel));
-            } else if (sender.getNick().equals(channel) && !getBot().isOnSameChannelAs(user.getNick())) {
-              responses.add( new Message(sender, event, "I will not send a message to someone who is not on any"
-                      + " of my channels.")
-              );
-            } else if (thing.endsWith("++") || thing.endsWith("--")) {
-              responses.add(new Message(channel, event, "I'm afraid I can't let you do that, Dave."));
-            } else {
-              final List<Message> list = getBot().getResponses(channel, user, thing);
-              for (final Message msg : list) {
-                final String resultMsg = msg.getMessage();
-                if (resultMsg.endsWith(UNKNOWN_MESSSAGE)) {
-                  responses.add(new Message(msg.getDestination(), msg.getEvent(), sender + UNKNOWN_MESSSAGE));
-                } else {
-                  responses.add(new TellMessage(user, msg.getDestination(), msg.getEvent(), resultMsg));
-                }
-              }
-            }
-          }
+    private boolean getFactoid(final TellSubject subject, final Message event, final Set<String> backtrack) {
+        String message = event.getValue();
+        if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
+            message = message.substring(0, message.length() - 1);
         }
-      }
-    }
-    return responses;
-  }
+        final String firstWord = message.split(" ")[0];
+        final String params = message.substring(firstWord.length()).trim();
+        Factoid factoid = factoidDao.getFactoid(message.toLowerCase());
+        if (factoid == null) {
+            factoid = factoidDao.getParameterizedFactoid(firstWord);
+        }
 
-  private TellSubject parseTellSubject(final String message) {
-    if (message.startsWith("tell ")) {
-      return parseLonghand(message);
+        return factoid != null && getResponse(subject, event, backtrack, params, factoid);
     }
-    return parseShorthand(message);
-  }
 
-  private TellSubject parseLonghand(final String message) {
-    final String body = message.substring("tell ".length());
-    final String nick = body.substring(0, body.indexOf(" "));
-    final int about = body.indexOf("about ");
-    if (about < 0) {
-      return null;
+    private boolean getResponse(final TellSubject subject, final Message event, final Set<String> backtrack,
+                                final String replacedValue, final Factoid factoid) {
+        String sender = event.getUser().getNick();
+        final String message = factoid.evaluate(subject, sender, replacedValue);
+        if (message.startsWith("<see>")) {
+            if (backtrack.contains(message)) {
+                getBot().postMessage(event.getChannel(), null, Sofia.factoidLoop(message), event.isTell());
+                return true;
+            } else {
+                backtrack.add(message);
+                return getFactoid(subject, new Message(event, message.substring(5).trim()), backtrack);
+            }
+        } else if (message.startsWith("<reply>")) {
+            getBot().postMessage(event.getChannel(), event.getUser(), message.substring("<reply>".length()),
+                                 event.isTell() && !message.contains(event.getUser().getNick()));
+            return true;
+        } else if (message.startsWith("<action>")) {
+            getBot().postAction(event.getChannel(), message.substring("<action>".length()));
+            return true;
+        } else {
+            getBot().postMessage(event.getChannel(), event.getUser(), message, event.isTell());
+            return true;
+        }
     }
-    final String thing = body.substring(about + "about ".length());
-    return new TellSubject(new IrcUser(nick), thing);
-  }
 
-  private TellSubject parseShorthand(final String message) {
-    String target = message;
-    for (final String start : getBot().getStartStrings()) {
-      if (target.startsWith(start)) {
-        target = target.substring(start.length()).trim();
-      }
+    private boolean tell(final Message event) {
+        final String message = event.getValue();
+        final Channel channel = event.getChannel();
+        final User sender = event.getUser();
+        boolean handled = false;
+        if (isTellCommand(message)) {
+            final TellSubject tellSubject = parseTellSubject(event);
+            if (tellSubject == null) {
+                getBot().postMessage(event.getChannel(), event.getUser(), Sofia.factoidTellSyntax(sender), event.isTell());
+                handled = true;
+            } else {
+                User targetUser = tellSubject.getTarget();
+                if (targetUser != null) {
+                    if ("me".equalsIgnoreCase(targetUser.getNick())) {
+                        targetUser = sender;
+                    }
+                    final String thing = tellSubject.getSubject();
+                    if (targetUser.getNick().equalsIgnoreCase(getBot().getNick())) {
+                        getBot().postMessage(event.getChannel(), event.getUser(), Sofia.botSelfTalk(), true);
+                        handled = true;
+                    } else {
+                        if (!getBot().isOnCommonChannel(targetUser)) {
+                            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.userNotInChannel(targetUser, channel), true);
+                            handled = true;
+                        } else if (sender.getNick().equals(channel.getName()) && !getBot().isOnCommonChannel(targetUser)) {
+                            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.userNoSharedChannels(), true);
+                            handled = true;
+                        } else if (thing.endsWith("++") || thing.endsWith("--")) {
+                            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.notAllowed(), true);
+                            handled = true;
+                        } else {
+                            handled = getBot().getResponses(new Message(channel, targetUser, thing, sender), event.getUser());
+                        }
+                    }
+                }
+            }
+        }
+        return handled;
     }
-    final int space = target.indexOf(' ');
-    return space < 0 ? null : new TellSubject(new IrcUser(target.substring(0, space)),
-        target.substring(space + 1).trim());
-  }
 
-  private boolean isTellCommand(final String message) {
-    return message.startsWith("tell ") || message.startsWith("~");
-  }
+    private TellSubject parseTellSubject(final Message event) {
+        String message = event.getValue();
+        if (message.startsWith("tell ")) {
+            return parseLonghand(event);
+        }
+        return parseShorthand(event);
+    }
+
+    private TellSubject parseLonghand(final Message event) {
+        String message = event.getValue();
+        final String body = message.substring("tell ".length());
+        final String nick = body.substring(0, body.indexOf(" "));
+        final int about = body.indexOf("about ");
+        if (about < 0) {
+            return null;
+        }
+        final String thing = body.substring(about + "about ".length());
+        return new TellSubject(ircBot.get().getUserChannelDao().getUser(nick), thing);
+    }
+
+    private TellSubject parseShorthand(final Message event) {
+        String target = event.getValue();
+        for (final String start : getBot().getStartStrings()) {
+            if (target.startsWith(start)) {
+                target = target.substring(start.length()).trim();
+            }
+        }
+        final int space = target.indexOf(' ');
+        User user = ircBot.get().getUserChannelDao().getUser(target.substring(0, space));
+        return space < 0 ? null : new TellSubject(user, target.substring(space + 1).trim());
+    }
+
+    private boolean isTellCommand(final String message) {
+        return message.startsWith("tell ") || message.startsWith("~");
+    }
 }

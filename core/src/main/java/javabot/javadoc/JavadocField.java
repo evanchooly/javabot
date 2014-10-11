@@ -9,7 +9,7 @@ import org.mongodb.morphia.annotations.PrePersist;
 import javabot.model.Persistent;
 import org.bson.types.ObjectId;
 
-@Entity("fields")
+@Entity(value = "fields", noClassnameStored = true)
 @SPI(Persistent.class)
 @Indexes({
     @Index("javadocClassId, upperName"),

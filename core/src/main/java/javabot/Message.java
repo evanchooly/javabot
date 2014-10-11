@@ -1,46 +1,84 @@
 package javabot;
 
-import javabot.model.IrcUser;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
+
+import static java.lang.String.format;
 
 public class Message {
-  private final String destination;
+    private final Channel channel;
+    private final User user;
+    private final String value;
+    private final  User sender;
+    private final  boolean tell;
 
-  private String message;
+    public Message(final Channel dest, final User user, final String value) {
+        channel = dest;
+        this.user = user;
+        this.value = value;
+        sender = null;
+        tell = false;
+    }
 
-  private IrcEvent event;
+    public Message(final User user, final String value) {
+        channel = null;
+        this.user = user;
+        this.value = value;
+        sender = null;
+        tell = false;
+    }
 
-  public Message(final String dest, final IrcEvent evt, final String value) {
-    destination = dest;
-    message = value;
-    event = evt;
-  }
+    public Message(final Channel dest, final User user, final String value, final User sender) {
+        channel = dest;
+        this.user = user;
+        this.value = value;
+        this.sender = sender;
+        this.tell = true;
+    }
 
-  public Message(final IrcUser sender, final IrcEvent event, final String value) {
-    this(sender.getNick(), event, value);
-  }
+    public Message(final Message message, final String value) {
+        channel = message.getChannel();
+        user = message.getUser();
+        this.value = value;
+        tell = message.isTell();
+        sender = null;
+    }
 
-  public IrcEvent getEvent() {
-    return event;
-  }
+    public Channel getChannel() {
+        return channel;
+    }
 
-  public String getDestination() {
-    return destination;
-  }
+    public User getSender() {
+        return sender;
+    }
 
-  public String getMessage() {
-    return message;
-  }
+    public User getUser() {
+        return user;
+    }
 
-  protected void setMessage(final String message) {
-    this.message = message;
-  }
+    public String getValue() {
+        return value;
+    }
 
-  public void send(final Javabot bot) {
-    bot.postMessage(this);
-  }
+    public boolean isTell() {
+        return tell;
+    }
 
-  @Override
-  public String toString() {
-    return message;
-  }
+    public String resolveMessage() {
+        return tell ? format("%s, %s", user.getNick(), value) : value;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+               "channel=" + channel.getName() +
+               ", user=" + user.getNick() +
+               ", message='" + value + '\'' +
+               ", tell=" + tell +
+               '}';
+    }
+
+    public User getOriginalUser() {
+        return sender == null ? user : sender;
+    }
 }

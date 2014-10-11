@@ -1,39 +1,32 @@
 package javabot.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
-
 import com.antwerkz.maven.SPI;
-import javabot.IrcEvent;
-import javabot.Javabot;
+import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.ChannelDao;
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
 import org.apache.commons.lang.StringUtils;
 
-/**
- * Created Dec 17, 2008
- *
- * @author <a href="mailto:jlee@antwerkz.com">Justin Lee</a>
- */
+import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.lang.String.format;
+
 @SPI({AdminCommand.class})
 public class ListChannels extends AdminCommand {
-  @Inject
-  private ChannelDao dao;
+    @Inject
+    private ChannelDao dao;
 
-  @Override
-  public List<Message> execute(final Javabot bot, final IrcEvent event) {
-    final List<Message> responses = new ArrayList<Message>();
-    final List<Channel> channels = dao.find(new QueryParam(0, Integer.MAX_VALUE));
-    responses.add(new Message(event.getChannel(), event, event.getSender() + ", I'll list the channels in a"
-        + " private message for you"));
-    final List<String> chans = new ArrayList<String>();
-    for (final Channel channel : channels) {
-      chans.add(String.format("%s %s", channel.getName(), channel.getLogged() ? "(logged)" : ""));
+    @Override
+    public void execute(final Message event) {
+        final List<Channel> channels = dao.find(new QueryParam(0, Integer.MAX_VALUE));
+        getBot().postMessage(event.getChannel(), event.getUser(), Sofia.adminListChannelsPreamble(event.getUser().getNick())
+                                , event.isTell());
+        final List<String> names = channels.stream()
+                                           .map(channel -> format("%s %s", channel.getName(), channel.getLogged() ? "(logged)" : ""))
+                                           .collect(Collectors.toList());
+        getBot().postMessage(null, event.getUser(), StringUtils.join(names, ", "), event.isTell());
     }
-    responses.add(new Message(event.getSender().getNick(), event, StringUtils.join(chans, ", ")));
-    return responses;
-  }
 }

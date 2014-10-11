@@ -3,6 +3,7 @@ package javabot.dao;
 import java.util.List;
 import javax.inject.Inject;
 
+import com.antwerkz.sofia.Sofia;
 import org.mongodb.morphia.query.Query;
 import javabot.dao.util.QueryParam;
 import javabot.model.Karma;
@@ -31,11 +32,10 @@ public class KarmaDao extends BaseDao<Karma> {
   public void save(Karma karma) {
     karma.setUpdated(LocalDateTime.now());
     super.save(karma);
-    changeDao.logChange(String.format("%s changed '%s' to '%d'", karma.getUserName(), karma.getName(),
-        karma.getValue()));
+    changeDao.logChange(Sofia.karmaChanged(karma.getUserName(), karma.getName(), karma.getValue()));
   }
 
-  public Karma find(String name) {
+    public Karma find(String name) {
     KarmaCriteria criteria = new KarmaCriteria(ds);
     criteria.upperName().equal(name.toUpperCase());
     return criteria.query().get();

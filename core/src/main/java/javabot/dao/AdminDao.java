@@ -9,6 +9,7 @@ import javabot.model.Config;
 import javabot.model.EventType;
 import javabot.model.OperationEvent;
 import javabot.model.criteria.AdminCriteria;
+import org.pircbotx.User;
 
 public class AdminDao extends BaseDao<Admin> {
   @Inject
@@ -23,8 +24,8 @@ public class AdminDao extends BaseDao<Admin> {
     return ds.createQuery(Admin.class).order("userName").asList();
   }
 
-  public boolean isAdmin(final String user, final String hostName) {
-    return findAll().isEmpty() || getAdmin(user, hostName) != null;
+  public boolean isAdmin(final User user) {
+    return findAll().isEmpty() || getAdmin(user) != null;
   }
 
   public Admin getAdmin(final String ircName, final String hostName) {
@@ -34,9 +35,9 @@ public class AdminDao extends BaseDao<Admin> {
     return adminCriteria.query().get();
   }
 
-  public Admin getAdmin(final String userName) {
+  public Admin getAdmin(final User user) {
     AdminCriteria adminCriteria = new AdminCriteria(ds);
-    adminCriteria.userName().equal(userName);
+    adminCriteria.ircName(user.getNick());
     return adminCriteria.query().get();
   }
 
@@ -50,8 +51,8 @@ public class AdminDao extends BaseDao<Admin> {
     save(admin);
   }
 
-  public void enableOperation(String name, String userName) {
-    Admin admin = getAdmin(userName);
+  public void enableOperation(String name, User user) {
+    Admin admin = getAdmin(user);
     OperationEvent event = new OperationEvent();
     event.setOperation(name);
     event.setRequestedOn(LocalDateTime.now());
@@ -63,8 +64,8 @@ public class AdminDao extends BaseDao<Admin> {
     configDao.save(config);
   }
 
-  public void disableOperation(String name, String userName) {
-    Admin admin = getAdmin(userName);
+  public void disableOperation(String name, User user) {
+    Admin admin = getAdmin(user);
     OperationEvent event = new OperationEvent();
     event.setOperation(name);
     event.setRequestedOn(LocalDateTime.now());

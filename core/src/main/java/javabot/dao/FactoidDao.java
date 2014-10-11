@@ -62,7 +62,7 @@ public class FactoidDao extends BaseDao<Factoid> {
     final Factoid factoid = getFactoid(key);
     if (factoid != null) {
       delete(factoid.getId());
-      changeDao.logChange(String.format("%s remove '%s' with a value of '%s'", sender, key, factoid.getValue()));
+      changeDao.logChange(String.format("%s removed '%s' with a value of '%s'", sender, key, factoid.getValue()));
     }
   }
 

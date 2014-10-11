@@ -2,9 +2,6 @@ package javabot.operations;
 
 import com.antwerkz.maven.SPI;
 
-/**
- * @author ricky_clarkson
- */
 @SPI(BotOperation.class)
 public class DictOperation extends UrlOperation {
     @Override
