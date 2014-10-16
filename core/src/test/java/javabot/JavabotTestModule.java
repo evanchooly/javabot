@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import javabot.dao.NickServDao;
 import javabot.dao.TestNickServDao;
 import javabot.model.Config;
+import org.aeonbits.owner.ConfigFactory;
 import org.pircbotx.Channel;
 import org.pircbotx.Configuration.BotFactory;
 import org.pircbotx.Configuration.Builder;
@@ -17,7 +18,11 @@ import org.pircbotx.output.OutputChannel;
 import org.pircbotx.output.OutputRaw;
 
 import javax.inject.Provider;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class JavabotTestModule extends JavabotModule {
@@ -35,8 +40,24 @@ public class JavabotTestModule extends JavabotModule {
     }
 
     @Override
-    public Properties getProperties() throws IOException {
-        return loadProperties("test-javabot.properties");
+    public JavabotConfig javabotConfig() throws IOException {
+        return validate(ConfigFactory.create(JavabotConfig.class, loadTestProperties(), System.getProperties(), System.getenv()));
+    }
+
+    private Map<Object, Object> loadTestProperties() {
+        return new HashMap<>(load(load(new Properties(), "javabot.properties"), "test-javabot.properties"));
+    }
+
+    private Properties load(final Properties properties, final String name) {
+        File file = new File(name);
+        if (file.exists()) {
+            try (FileInputStream stream = new FileInputStream(file)) {
+                properties.load(stream);
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage(), e);
+            }
+        }
+        return properties;
     }
 
     @Provides

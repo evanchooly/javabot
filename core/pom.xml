@@ -307,6 +307,11 @@
             <artifactId>bitly-api-client</artifactId>
             <version>0.7.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.aeonbits.owner</groupId>
+            <artifactId>owner</artifactId>
+        </dependency>
     </dependencies>
 
     <reporting>

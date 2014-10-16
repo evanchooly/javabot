@@ -1,5 +1,6 @@
 package javabot;
 
+import com.antwerkz.sofia.Sofia;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
@@ -15,6 +16,8 @@ import javabot.model.Channel;
 import javabot.model.Config;
 import javabot.model.Factoid;
 import net.swisstech.bitly.BitlyClient;
+import org.aeonbits.owner.Config.Key;
+import org.aeonbits.owner.ConfigFactory;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.pircbotx.Configuration.Builder;
@@ -22,11 +25,11 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.cap.SASLCapHandler;
 
 import javax.inject.Singleton;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class JavabotModule extends AbstractModule {
 
@@ -51,7 +54,7 @@ public class JavabotModule extends AbstractModule {
     @Singleton
     public Datastore datastore() throws IOException {
         if (datastore == null) {
-            datastore = getMorphia().createDatastore(getMongoClient(), getProperties().getProperty("database.name"));
+            datastore = getMorphia().createDatastore(getMongoClient(), javabotConfig().databaseName());
             datastore.setDefaultWriteConcern(WriteConcern.SAFE);
             try {
                 datastore.ensureIndexes();
@@ -79,9 +82,7 @@ public class JavabotModule extends AbstractModule {
     public MongoClient getMongoClient() throws IOException {
         if (mongoClient == null) {
             try {
-                String host = getProperties().getProperty("database.host", "localhost");
-                int port = Integer.parseInt(getProperties().getProperty("database.port", "27017"));
-                mongoClient = new MongoClient(new ServerAddress(host, port),
+                mongoClient = new MongoClient(new ServerAddress(javabotConfig().databaseHost(), javabotConfig().databasePort()),
                                               MongoClientOptions.builder()
                                                                 .connectTimeout(2000)
                                                                 .build());
@@ -96,7 +97,7 @@ public class JavabotModule extends AbstractModule {
     @Provides
     @Singleton
     public BitlyClient bitlyClient() throws IOException {
-        return new BitlyClient(getProperties().getProperty("javabot.bitly.token"));
+        return new BitlyClient(javabotConfig().bitlyToken());
     }
 
     @Provides
@@ -126,49 +127,31 @@ public class JavabotModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public Properties getProperties() throws IOException {
-        return loadProperties("javabot.properties");
+    public JavabotConfig javabotConfig() throws IOException {
+        return validate(ConfigFactory.create(JavabotConfig.class, new HashMap<>(), System.getProperties(), System.getenv()));
     }
 
-    protected Properties loadProperties(final String fileName) throws IOException {
-        try (InputStream stream = new FileInputStream(fileName)) {
-            final Properties properties = new Properties();
-            properties.load(stream);
-            validateProperties(fileName);
-            return properties;
-        }
-    }
-
-    private void validateProperties(final String fileName) {
-        final Properties props = new Properties();
-        try {
-            try (InputStream stream = new FileInputStream(fileName)) {
-                props.load(stream);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException("Please define a javabot.properties file to configure the bot");
+    @SuppressWarnings("unchecked")
+    protected JavabotConfig validate(final JavabotConfig config) {
+        Class<? extends JavabotConfig> configClass = (Class<? extends JavabotConfig>) config.getClass().getInterfaces()[0];
+        Method[] methods = configClass.getDeclaredMethods();
+        List<String> missingKeys = new ArrayList<>();
+        for (Method method : methods) {
+            try {
+                Key annotation = method.getDeclaredAnnotation(Key.class);
+                if (annotation != null && method.getParameterCount() == 0
+                    && !method.getReturnType().equals(Void.class)
+                    && method.invoke(config) == null) {
+                    missingKeys.add(annotation.value());
+                }
+            } catch (ReflectiveOperationException e) {
+                throw new RuntimeException(e.getMessage(), e);
             }
-        } catch (IOException e) {
-            throw new RuntimeException("Please define a javabot.properties file to configure the bot");
         }
-        boolean valid = check(fileName, props, "javabot.server");
-        valid &= check(fileName, props, "javabot.port");
-        valid &= check(fileName, props, "database.name");
-        valid &= check(fileName, props, "javabot.nick");
-        valid &= check(fileName, props, "javabot.password");
-        valid &= check(fileName, props, "javabot.admin.nick");
-        valid &= check(fileName, props, "javabot.admin.hostmask");
-        if (!valid) {
-            throw new RuntimeException("Missing configuration parameters");
+        if(!missingKeys.isEmpty()) {
+            throw new RuntimeException(Sofia.configurationMissingProperties(missingKeys));
         }
-        System.getProperties().putAll(props);
-    }
-
-    private boolean check(final String fileName, final Properties props, final String key) {
-        if (props.get(key) == null) {
-            System.out.printf("Please specify the property %s in %s\n", key, fileName);
-            return false;
-        }
-        return true;
+        return config;
     }
 
     public BotListener getBotListener() {

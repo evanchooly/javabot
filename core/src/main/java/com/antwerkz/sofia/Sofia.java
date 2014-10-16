@@ -179,6 +179,10 @@ public class Sofia {
         return getMessageValue("channel.updated", locale);
     }
 
+    public static String configurationMissingProperties(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("configuration.missing.properties", locale), arg0);
+    }
+
     public static String configurationSetProperty(Object arg0, Object arg1, Locale... locale) {
         return MessageFormat.format(getMessageValue("configuration.set.property", locale), arg0, arg1);
     }
