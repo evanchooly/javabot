@@ -111,7 +111,7 @@ public class BotListener extends ListenerAdapter<PircBotX> {
                 ircBot.get().sendIRC().joinChannel(channel.getName(), channel.getKey());
             }
         } else if (adminDao.count() == 0) {
-            channel = channelDao.create(event.getChannel(), true, null);
+            channelDao.create(event.getChannel(), true, null);
             getIrcBot().sendIRC().joinChannel(event.getChannel());
         }
     }

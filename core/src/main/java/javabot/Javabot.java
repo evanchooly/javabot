@@ -6,6 +6,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.jayway.awaitility.Awaitility;
 import javabot.commands.AdminCommand;
+import javabot.dao.ChannelDao;
 import javabot.dao.ConfigDao;
 import javabot.dao.EventDao;
 import javabot.dao.LogsDao;
@@ -13,6 +14,7 @@ import javabot.dao.ShunDao;
 import javabot.database.UpgradeScript;
 import javabot.model.AdminEvent;
 import javabot.model.AdminEvent.State;
+import javabot.model.Channel;
 import javabot.model.Config;
 import javabot.model.Logs;
 import javabot.model.Logs.Type;
@@ -30,6 +32,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +47,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -53,6 +57,9 @@ public class Javabot {
 
     @Inject
     private ConfigDao configDao;
+
+    @Inject
+    private ChannelDao channelDao;
 
     @Inject
     private LogsDao logsDao;
@@ -105,6 +112,7 @@ public class Javabot {
         hook.setDaemon(false);
         Runtime.getRuntime().addShutdownHook(hook);
         eventHandler.scheduleAtFixedRate(this::processAdminEvents, 5, 5, TimeUnit.SECONDS);
+        eventHandler.scheduleAtFixedRate(this::joinChannels, 5, 5, TimeUnit.SECONDS);
     }
 
     protected void processAdminEvents() {
@@ -122,6 +130,28 @@ public class Javabot {
             }
             event.setCompleted(LocalDateTime.now());
             eventDao.save(event);
+        }
+    }
+
+    private void joinChannels() {
+        PircBotX ircBot = this.ircBot.get();
+        if (ircBot.isConnected()) {
+            Set<String> joined = ircBot.getUserChannelDao().getAllChannels()
+                                        .stream()
+                                        .map((channel) -> channel.getName())
+                                        .collect(Collectors.toSet());
+            channelDao.getChannels().stream().filter(channel -> !joined.contains(channel.getName())).forEach(channel -> {
+                channel.join(ircBot);
+                sleep(500);
+            });
+        }
+    }
+
+    @SuppressWarnings({"EmptyCatchBlock"})
+    protected void sleep(final int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException exception) {
         }
     }
 
@@ -144,6 +174,9 @@ public class Javabot {
     public void connect() {
         try {
             ircBot.get().startBot();
+            for (Channel channel : channelDao.getChannels()) {
+                channel.join(ircBot.get());
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -333,8 +366,8 @@ public class Javabot {
             Javabot bot = injector.getInstance(Javabot.class);
             bot.start();
             Awaitility.await()
-                .forever()
-                .until(() -> !bot.isRunning());
+                      .forever()
+                      .until(() -> !bot.isRunning());
         } catch (Exception e) {
             e.printStackTrace();
         }

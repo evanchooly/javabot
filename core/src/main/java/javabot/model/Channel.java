@@ -10,6 +10,7 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.PrePersist;
+import org.pircbotx.PircBotX;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -101,4 +102,11 @@ public class Channel implements Serializable, Persistent {
         upperName = name.toUpperCase();
     }
 
+    public void join(final PircBotX ircBot) {
+        if(key == null) {
+            ircBot.sendIRC().joinChannel(name);
+        } else {
+            ircBot.sendIRC().joinChannel(name, key);
+        }
+    }
 }
