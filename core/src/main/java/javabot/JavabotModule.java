@@ -23,6 +23,8 @@ import org.mongodb.morphia.Morphia;
 import org.pircbotx.Configuration.Builder;
 import org.pircbotx.PircBotX;
 import org.pircbotx.cap.SASLCapHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import java.io.IOException;
@@ -32,6 +34,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class JavabotModule extends AbstractModule {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JavabotModule.class);
 
     private MongoClient mongoClient;
 
@@ -115,6 +119,7 @@ public class JavabotModule extends AbstractModule {
                                         .setServerPort(config.getPort())
                                         .addCapHandler(new SASLCapHandler(nick, config.getPassword()));
         for (Channel channel : channelDaoProvider.get().getChannels()) {
+            LOG.info("Adding {} as an autojoined channel", channel.getName());
             if (channel.getKey() == null) {
                 builder.addAutoJoinChannel(channel.getName());
             } else {

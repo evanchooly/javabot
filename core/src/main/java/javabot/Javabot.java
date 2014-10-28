@@ -32,7 +32,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -137,13 +136,16 @@ public class Javabot {
         PircBotX ircBot = this.ircBot.get();
         if (ircBot.isConnected()) {
             Set<String> joined = ircBot.getUserChannelDao().getAllChannels()
-                                        .stream()
-                                        .map((channel) -> channel.getName())
-                                        .collect(Collectors.toSet());
-            channelDao.getChannels().stream().filter(channel -> !joined.contains(channel.getName())).forEach(channel -> {
-                channel.join(ircBot);
-                sleep(500);
-            });
+                                       .stream()
+                                       .map((channel) -> channel.getName())
+                                       .collect(Collectors.toSet());
+            List<Channel> channels = channelDao.getChannels();
+            if (channels.size() < joined.size()) {
+                channels.stream().filter(channel -> !joined.contains(channel.getName())).forEach(channel -> {
+                    channel.join(ircBot);
+                    sleep(500);
+                });
+            }
         }
     }
 
@@ -174,9 +176,6 @@ public class Javabot {
     public void connect() {
         try {
             ircBot.get().startBot();
-            for (Channel channel : channelDao.getChannels()) {
-                channel.join(ircBot.get());
-            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
