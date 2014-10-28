@@ -118,6 +118,7 @@ public class JavabotModule extends AbstractModule {
                                         .setServerHostname(config.getServer())
                                         .setServerPort(config.getPort())
                                         .addCapHandler(new SASLCapHandler(nick, config.getPassword()));
+/*
         for (Channel channel : channelDaoProvider.get().getChannels()) {
             LOG.info("Adding {} as an autojoined channel", channel.getName());
             if (channel.getKey() == null) {
@@ -126,6 +127,7 @@ public class JavabotModule extends AbstractModule {
                 builder.addAutoJoinChannel(channel.getName(), channel.getKey());
             }
         }
+*/
 
         return new PircBotX(builder.buildConfiguration());
     }
