@@ -2,6 +2,7 @@ package javabot.dao;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
+import javabot.JavabotConfig;
 import javabot.model.Config;
 import javabot.model.Logs;
 import javabot.model.Persistent;
@@ -11,14 +12,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 public class ConfigDao extends BaseDao<Config> {
     private static final Logger LOG = LoggerFactory.getLogger(ConfigDao.class);
 
     @Inject
-    private Properties properties;
+    private JavabotConfig javabotConfig;
 
     private Query<Config> query;
 
@@ -39,10 +39,10 @@ public class ConfigDao extends BaseDao<Config> {
 
     public Config create() {
         final Config config = new Config();
-        config.setNick(properties.getProperty("javabot.nick"));
-        config.setPassword(properties.getProperty("javabot.password")); // optional
-        config.setServer(properties.getProperty("javabot.server", "irc.freenode.org"));
-        config.setPort(Integer.parseInt(properties.getProperty("javabot.port", "6667")));
+        config.setNick(javabotConfig.nick());
+        config.setPassword(javabotConfig.password()); // optional
+        config.setServer(javabotConfig.ircHost());
+        config.setPort(javabotConfig.ircPort());
         config.setTrigger("~");
         for (final BotOperation operation : BotOperation.list()) {
             config.getOperations().add(operation.getName());
@@ -81,13 +81,5 @@ public class ConfigDao extends BaseDao<Config> {
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }
-    }
-
-    private String getProperty(String name) {
-        final String value = System.getProperty(name);
-        if (value == null) {
-            throw new RuntimeException("Missing default configuration property: " + name);
-        }
-        return value;
     }
 }

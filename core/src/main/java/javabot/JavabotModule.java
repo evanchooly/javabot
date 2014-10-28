@@ -109,7 +109,7 @@ public class JavabotModule extends AbstractModule {
                                         .setName(nick)
                                         .setLogin(nick)
                                         .setAutoNickChange(false)
-                                        .setCapEnabled(true)
+                                        .setCapEnabled(false)
                                         .addListener(getBotListener())
                                         .setServerHostname(config.getServer())
                                         .setServerPort(config.getPort())

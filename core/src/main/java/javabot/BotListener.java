@@ -4,11 +4,13 @@ import javabot.dao.AdminDao;
 import javabot.dao.ChannelDao;
 import javabot.dao.LogsDao;
 import javabot.dao.NickServDao;
+import javabot.model.Admin;
 import javabot.model.Channel;
 import javabot.model.Logs;
 import javabot.operations.throttle.NickServViolationException;
 import javabot.operations.throttle.Throttler;
 import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
@@ -27,7 +29,9 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class BotListener extends ListenerAdapter<PircBotX> {
     private static final Logger LOG = LoggerFactory.getLogger(BotListener.class);
@@ -71,6 +75,17 @@ public class BotListener extends ListenerAdapter<PircBotX> {
     public void onJoin(final JoinEvent event) {
         logsDao.logMessage(Logs.Type.JOIN, event.getChannel(), event.getUser(),
                            ":" + event.getUser().getHostmask() + " joined the channel");
+        if (adminDao.count() == 0) {
+            Set<User> users = getIrcBot().getUserChannelDao().getUsers(event.getChannel());
+            Admin admin = null;
+            Iterator<User> iterator = users.iterator();
+            while (admin == null && iterator.hasNext()) {
+                final User user = iterator.next();
+                if (!user.getNick().equals(javabotProvider.get().getNick())) {
+                    admin = adminDao.create(user.getNick(), user.getLogin(), user.getHostmask());
+                }
+            }
+        }
     }
 
     @Override
@@ -88,13 +103,16 @@ public class BotListener extends ListenerAdapter<PircBotX> {
 
     @Override
     public void onInvite(final InviteEvent event) {
-        final Channel channel = channelDao.get(event.getChannel());
+        Channel channel = channelDao.get(event.getChannel());
         if (channel != null) {
             if (channel.getKey() == null) {
                 ircBot.get().sendIRC().joinChannel(channel.getName());
             } else {
                 ircBot.get().sendIRC().joinChannel(channel.getName(), channel.getKey());
             }
+        } else if (adminDao.count() == 0) {
+            channel = channelDao.create(event.getChannel(), true, null);
+            getIrcBot().sendIRC().joinChannel(event.getChannel());
         }
     }
 

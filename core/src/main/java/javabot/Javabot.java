@@ -4,6 +4,7 @@ import com.antwerkz.sofia.Sofia;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.jayway.awaitility.Awaitility;
 import javabot.commands.AdminCommand;
 import javabot.dao.ConfigDao;
 import javabot.dao.EventDao;
@@ -86,6 +87,8 @@ public class Javabot {
 
     private final Set<BotOperation> activeOperations = new TreeSet<>(new OperationComparator());
 
+    private volatile boolean running = true;
+
     public void start() {
         setUpThreads();
         loadOperations();
@@ -130,7 +133,12 @@ public class Javabot {
             } catch (InterruptedException e) {
                 log.error(e.getMessage(), e);
             }
+            running = false;
         }
+    }
+
+    private boolean isRunning() {
+        return running;
     }
 
     public void connect() {
@@ -317,11 +325,18 @@ public class Javabot {
 
 
     public static void main(final String[] args) {
-        Injector injector = Guice.createInjector(new JavabotModule());
-        if (log.isInfoEnabled()) {
-            log.info("Starting Javabot");
+        try {
+            Injector injector = Guice.createInjector(new JavabotModule());
+            if (log.isInfoEnabled()) {
+                log.info("Starting Javabot");
+            }
+            Javabot bot = injector.getInstance(Javabot.class);
+            bot.start();
+            Awaitility.await()
+                .forever()
+                .until(() -> !bot.isRunning());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        Javabot bot = injector.getInstance(Javabot.class);
-        bot.start();
     }
 }
