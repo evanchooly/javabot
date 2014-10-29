@@ -8,12 +8,14 @@ import javabot.dao.LogsDao;
 import org.pircbotx.Channel;
 
 import javax.inject.Inject;
-import java.text.DateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @SPI(BotOperation.class)
 public class SeenOperation extends BotOperation {
     @Inject
     private LogsDao dao;
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Override
     public boolean handleMessage(final Message event) {
@@ -23,9 +25,9 @@ public class SeenOperation extends BotOperation {
             final String key = message.substring("seen ".length());
             Seen seen = dao.getSeen(channel.getName(), key);
             if (seen != null) {
-                getBot().postMessage(channel, event.getUser(),
-                                     Sofia.seenLast(event.getUser().getNick(), key, DateFormat.getInstance().format(seen.getUpdated()),
-                                                    seen.getMessage()), event.isTell());
+                LocalDateTime updated = seen.getUpdated();
+                getBot().postMessage(channel, event.getUser(), Sofia.seenLast(event.getUser().getNick(), key, updated.format(FORMATTER),
+                                                                              seen.getMessage()), event.isTell());
             } else {
                 getBot().postMessage(channel, event.getUser(), Sofia.seenUnknown(event.getUser().getNick(), key), event.isTell());
             }
