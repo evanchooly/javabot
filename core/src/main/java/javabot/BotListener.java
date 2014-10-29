@@ -186,17 +186,4 @@ public class BotListener extends ListenerAdapter<PircBotX> {
     public PircBotX getIrcBot() {
         return ircBot.get();
     }
-
-    @Override
-    public void onServerResponse(final ServerResponseEvent<PircBotX> event) throws Exception {
-        LOG.info(event.getParsedResponse().toString());
-    }
-
-/*
-    @Override
-    public void onEvent(final Event<PircBotX> event) throws Exception {
-        LOG.info(event.toString());
-        super.onEvent(event);
-    }
-*/
 }
