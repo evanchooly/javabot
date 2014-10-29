@@ -11,6 +11,7 @@ import javabot.operations.throttle.NickServViolationException;
 import javabot.operations.throttle.Throttler;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
@@ -23,6 +24,7 @@ import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
+import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -178,5 +180,16 @@ public class BotListener extends ListenerAdapter<PircBotX> {
 
     public PircBotX getIrcBot() {
         return ircBot.get();
+    }
+
+    @Override
+    public void onServerResponse(final ServerResponseEvent<PircBotX> event) throws Exception {
+        LOG.info(event.getParsedResponse().toString());
+    }
+
+    @Override
+    public void onEvent(final Event<PircBotX> event) throws Exception {
+        LOG.info(event.toString());
+        super.onEvent(event);
     }
 }
