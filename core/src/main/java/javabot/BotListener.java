@@ -2,6 +2,7 @@ package javabot;
 
 import javabot.dao.AdminDao;
 import javabot.dao.ChannelDao;
+import javabot.dao.ConfigDao;
 import javabot.dao.LogsDao;
 import javabot.dao.NickServDao;
 import javabot.model.Admin;
@@ -55,6 +56,9 @@ public class BotListener extends ListenerAdapter<PircBotX> {
 
     @Inject
     private Provider<Javabot> javabotProvider;
+
+    @Inject
+    private ConfigDao configDao;
 
     private final List<String> nickServ = new ArrayList<>();
 
@@ -121,6 +125,7 @@ public class BotListener extends ListenerAdapter<PircBotX> {
     @Override
     public void onConnect(final ConnectEvent event) {
         nickServDao.clear();
+        event.getBot().sendIRC().message("nickserv", "identify " + configDao.get().getPassword());
     }
 
     @Override
