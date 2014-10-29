@@ -16,10 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class LogsDao extends BaseDao<Logs> {
-    public static final String TODAY = "Logs.today";
-    public static final String COUNT_LOGGED = "Logs.countLogged";
-    public static final String SEEN = "Logs.seen";
-    public static final Logger log = LoggerFactory.getLogger(LogsDao.class);
+    public static final Logger LOG = LoggerFactory.getLogger(LogsDao.class);
     @Inject
     public ConfigDao dao;
     @Inject
@@ -51,6 +48,7 @@ public class LogsDao extends BaseDao<Logs> {
         LogsCriteria criteria = new LogsCriteria(ds);
         criteria.upperNick().equal(nick.toUpperCase());
         criteria.channel().equal(channel);
+        criteria.updated().order(false);
         Logs logs = criteria.query().get();
         return logs != null ? new Seen(logs.getChannel(), logs.getMessage(), logs.getNick(), logs.getUpdated()) : null;
     }
