@@ -135,7 +135,9 @@ public class Javabot {
     private void joinChannels() {
         LOG.info("Checking for channels I should be in");
         PircBotX ircBot = this.ircBot.get();
-        if (ircBot.isConnected()) {
+        boolean connected = ircBot.isConnected();
+        System.out.println("connected = " + connected);
+        if (connected) {
             Set<String> joined = ircBot.getUserChannelDao().getAllChannels()
                                        .stream()
                                        .map((channel) -> channel.getName())
