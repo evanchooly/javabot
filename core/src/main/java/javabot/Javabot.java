@@ -136,7 +136,6 @@ public class Javabot {
         LOG.info("Checking for channels I should be in");
         PircBotX ircBot = this.ircBot.get();
         boolean connected = ircBot.isConnected();
-        System.out.println("connected = " + connected);
         if (connected) {
             Set<String> joined = ircBot.getUserChannelDao().getAllChannels()
                                        .stream()
@@ -145,7 +144,7 @@ public class Javabot {
             System.out.println("joined = " + joined);
             List<Channel> channels = channelDao.getChannels();
             System.out.println("channels = " + channels);
-            if (channels.size() < joined.size()) {
+            if (joined.size() != channels.size()) {
                 channels.stream().filter(channel -> !joined.contains(channel.getName())).forEach(channel -> {
                     LOG.info("Joining " + channel.getName());
                     channel.join(ircBot);
