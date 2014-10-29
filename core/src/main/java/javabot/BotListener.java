@@ -66,8 +66,8 @@ public class BotListener extends ListenerAdapter<PircBotX> {
     private Provider<PircBotX> ircBot;
 
     public void log(final String string) {
-        if (Javabot.log.isInfoEnabled()) {
-            Javabot.log.info(string);
+        if (Javabot.LOG.isInfoEnabled()) {
+            Javabot.LOG.info(string);
         }
     }
 
@@ -192,9 +192,11 @@ public class BotListener extends ListenerAdapter<PircBotX> {
         LOG.info(event.getParsedResponse().toString());
     }
 
+/*
     @Override
     public void onEvent(final Event<PircBotX> event) throws Exception {
         LOG.info(event.toString());
         super.onEvent(event);
     }
+*/
 }

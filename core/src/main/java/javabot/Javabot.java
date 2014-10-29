@@ -52,7 +52,7 @@ import static java.lang.String.format;
 
 @Singleton
 public class Javabot {
-    public static final Logger log = LoggerFactory.getLogger(Javabot.class);
+    public static final Logger LOG = LoggerFactory.getLogger(Javabot.class);
 
     @Inject
     private ConfigDao configDao;
@@ -125,7 +125,7 @@ public class Javabot {
                 event.setState(State.COMPLETED);
             } catch (Exception e) {
                 event.setState(State.FAILED);
-                log.error(e.getMessage(), e);
+                LOG.error(e.getMessage(), e);
             }
             event.setCompleted(LocalDateTime.now());
             eventDao.save(event);
@@ -133,15 +133,19 @@ public class Javabot {
     }
 
     private void joinChannels() {
+        LOG.info("Checking for channels I should be in");
         PircBotX ircBot = this.ircBot.get();
         if (ircBot.isConnected()) {
             Set<String> joined = ircBot.getUserChannelDao().getAllChannels()
                                        .stream()
                                        .map((channel) -> channel.getName())
                                        .collect(Collectors.toSet());
+            System.out.println("joined = " + joined);
             List<Channel> channels = channelDao.getChannels();
+            System.out.println("channels = " + channels);
             if (channels.size() < joined.size()) {
                 channels.stream().filter(channel -> !joined.contains(channel.getName())).forEach(channel -> {
+                    LOG.info("Joining " + channel.getName());
                     channel.join(ircBot);
                     sleep(500);
                 });
@@ -163,7 +167,7 @@ public class Javabot {
             try {
                 executors.awaitTermination(10, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
-                log.error(e.getMessage(), e);
+                LOG.error(e.getMessage(), e);
             }
             running = false;
         }
@@ -200,7 +204,7 @@ public class Javabot {
             try {
                 config.getOperations().forEach(this::enableOperation);
             } catch (Exception e) {
-                log.error(e.getMessage(), e);
+                LOG.error(e.getMessage(), e);
                 throw new RuntimeException(e.getMessage(), e);
             }
             addDefaultOperations(ServiceLoader.load(AdminCommand.class));
@@ -277,8 +281,8 @@ public class Javabot {
                 getChannelResponses(message);
             }
         } else {
-            if (log.isInfoEnabled()) {
-                log.info("ignoring " + sender);
+            if (LOG.isInfoEnabled()) {
+                LOG.info("ignoring " + sender);
             }
         }
     }
@@ -359,8 +363,8 @@ public class Javabot {
     public static void main(final String[] args) {
         try {
             Injector injector = Guice.createInjector(new JavabotModule());
-            if (log.isInfoEnabled()) {
-                log.info("Starting Javabot");
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Starting Javabot");
             }
             Javabot bot = injector.getInstance(Javabot.class);
             bot.start();
