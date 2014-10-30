@@ -329,18 +329,18 @@ public class Javabot {
     public boolean getChannelResponses(final Message event) {
         final Iterator<BotOperation> iterator = getAllOperations().iterator();
         boolean handled = false;
-        if (!throttler.isThrottled(event.getUser())) {
+//        if (!throttler.isThrottled(event.getUser())) {
             while (iterator.hasNext() && !handled) {
                 handled = iterator.next().handleChannelMessage(event);
             }
-        } else {
-            try {
-                postMessage(null, event.getUser(), Sofia.throttledUser(), false);
-            } catch (NickServViolationException e) {
-                handled = true;
-                postMessage(null, event.getUser(), e.getMessage(), false);
-            }
-        }
+//        } else {
+//            try {
+//                postMessage(null, event.getUser(), Sofia.throttledUser(), false);
+//            } catch (NickServViolationException e) {
+//                handled = true;
+//                postMessage(null, event.getUser(), e.getMessage(), false);
+//            }
+//        }
         return handled;
     }
 
