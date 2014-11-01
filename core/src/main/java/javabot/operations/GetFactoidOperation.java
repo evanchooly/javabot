@@ -136,8 +136,12 @@ public class GetFactoidOperation extends StandardOperation {
             }
         }
         final int space = target.indexOf(' ');
-        User user = ircBot.get().getUserChannelDao().getUser(target.substring(0, space));
-        return space < 0 ? null : new TellSubject(user, target.substring(space + 1).trim());
+        TellSubject tellSubject = null;
+        if (space >= 0) {
+            User user = ircBot.get().getUserChannelDao().getUser(target.substring(0, space));
+            tellSubject = new TellSubject(user, target.substring(space + 1).trim());
+        }
+        return tellSubject;
     }
 
     private boolean isTellCommand(final String message) {
