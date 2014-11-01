@@ -19,7 +19,7 @@ public class LeaveOperation extends BotOperation {
         final User sender = event.getUser();
         if ("leave".equals(message.toLowerCase())) {
             if (channel.getName().equalsIgnoreCase(event.getUser().getNick())) {
-                getBot().postMessage(channel, event.getUser(), Sofia.leavePrivmsg(sender), event.isTell());
+                getBot().postMessage(channel, event.getUser(), Sofia.leavePrivmsg(sender.getNick()), event.isTell());
             } else {
                 getBot().postMessage(channel, event.getUser(), Sofia.leaveChannel(event.getUser().getNick()), event.isTell());
                 new Thread(() -> {

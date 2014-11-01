@@ -66,16 +66,16 @@ public class KarmaOperationTest extends BaseOperationTest {
     public void noncontiguousNameAddKarma() {
         final String target = "foo " + new Date().getTime();
         final int karma = getKarma(userFactory.createUser(target, target, "localhost")) + 1;
-        testMessage("~" + target + "++", Sofia.karmaOthersValue(target, karma, getTestUser()));
-        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(getTestUser(), target, karma)));
+        testMessage("~" + target + "++", Sofia.karmaOthersValue(target, karma, getTestUser().getNick()));
+        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(getTestUser().getNick(), target, karma)));
         karmaDao.delete(karmaDao.find(target).getId());
     }
 
     public void karmaLooksLikeParam() {
         final String target = "foo " + new Date().getTime();
         final int karma = getKarma(userFactory.createUser(target, target, "localhost")) - 1;
-        testMessage("~" + target + "--bar=as", Sofia.karmaOthersValue(target, karma, getTestUser()));
-        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(getTestUser(), target, karma)));
+        testMessage("~" + target + "--bar=as", Sofia.karmaOthersValue(target, karma, getTestUser().getNick()));
+        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(getTestUser().getNick(), target, karma)));
         karmaDao.delete(karmaDao.find(target).getId());
     }
 
@@ -87,8 +87,8 @@ public class KarmaOperationTest extends BaseOperationTest {
     public void noncontiguousNameAddKarmaTrailingSpace() {
         final String target = "foo " + new Date().getTime();
         final int karma = getKarma(userFactory.createUser(target, target, "localhost")) + 1;
-        testMessage("~" + target + " ++", Sofia.karmaOthersValue(target, karma, getTestUser()));
-        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(getTestUser(), target, karma)));
+        testMessage("~" + target + " ++", Sofia.karmaOthersValue(target, karma, getTestUser().getNick()));
+        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(getTestUser().getNick(), target, karma)));
         karmaDao.delete(karmaDao.find(target).getId());
     }
 
@@ -97,7 +97,7 @@ public class KarmaOperationTest extends BaseOperationTest {
         final String target = "foo " + new Date().getTime();
         final int karma = getKarma(userFactory.createUser(target, target, "localhost")) + 1;
         testMessage("~" + target + "++ hey coolio", Sofia.karmaOthersValue(target, karma, getTestUser().getNick()));
-        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(getTestUser(), target, karma)));
+        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(getTestUser().getNick(), target, karma)));
         karmaDao.delete(karmaDao.find(target).getId());
     }
 
@@ -105,7 +105,7 @@ public class KarmaOperationTest extends BaseOperationTest {
         final String target = "a"; // shortest possible name
         final int karma = getKarma(userFactory.createUser(target, target, "localhost")) + 1;
         testMessage("~" + target + "++", Sofia.karmaOthersValue(target, karma, getTestUser().getNick()));
-        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(getTestUser(), target, karma)));
+        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(getTestUser().getNick(), target, karma)));
         karmaDao.delete(karmaDao.find(target).getId());
     }
 
@@ -113,28 +113,28 @@ public class KarmaOperationTest extends BaseOperationTest {
         final String target = ""; // no name
         final int karma = getKarma(userFactory.createUser(target, target, "localhost")) + 1;
         testMessage("~" + target + "++", Sofia.unhandledMessage(getTestUser().getNick()));
-        Assert.assertFalse(changeDao.findLog(Sofia.karmaChanged(getTestUser(), target, karma)));
+        Assert.assertFalse(changeDao.findLog(Sofia.karmaChanged(getTestUser().getNick(), target, karma)));
     }
 
     public void noNameSubKarma() {
         final String target = ""; // no name
         final int karma = getKarma(userFactory.createUser(target, target, "localhost")) - 1;
         testMessage("~" + target + "--", Sofia.unhandledMessage(getTestUser().getNick()));
-        Assert.assertFalse(changeDao.findLog(Sofia.karmaChanged(getTestUser(), target, karma)));
+        Assert.assertFalse(changeDao.findLog(Sofia.karmaChanged(getTestUser().getNick(), target, karma)));
     }
 
     public void logNew() {
         final String target = new Date().getTime() + "";
         final int karma = getKarma(userFactory.createUser(target, target, "localhost")) + 1;
-        testMessage("~" + target + "++", Sofia.karmaOthersValue(target, karma, getTestUser()));
-        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(getTestUser(), target, karma)));
+        testMessage("~" + target + "++", Sofia.karmaOthersValue(target, karma, getTestUser().getNick()));
+        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(getTestUser().getNick(), target, karma)));
         karmaDao.delete(karmaDao.find(target).getId());
     }
 
     public void logChanged() {
         final String target = "javabot";
         final int karma = getKarma(userFactory.createUser(target, target, "localhost")) + 1;
-        testMessage("~" + target + "++", Sofia.karmaOthersValue(target, karma, getTestUser()));
+        testMessage("~" + target + "++", Sofia.karmaOthersValue(target, karma, getTestUser().getNick()));
     }
 
     public void changeOwnKarma() {

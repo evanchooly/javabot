@@ -36,7 +36,7 @@ public class DaysUntilOperation extends BotOperation {
                 i++;
             }
             if (d == null) {
-                getBot().postMessage(event.getChannel(), event.getUser(), Sofia.invalidDateFormat(sender), event.isTell());
+                getBot().postMessage(event.getChannel(), event.getUser(), Sofia.invalidDateFormat(sender.getNick()), event.isTell());
                 handled = true;
             }
         }

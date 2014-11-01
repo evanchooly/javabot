@@ -66,8 +66,8 @@ public class AddFactoidOperation extends StandardOperation {
                             handled = updateExistingFactoid(event, message, factoid, is, key);
                         } else {
                             logDao.logMessage(Type.MESSAGE, event.getChannel(), event.getUser(),
-                                              Sofia.changingLockedFactoid(event.getUser(), key));
-                            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.factoidLocked(event.getUser()),
+                                              Sofia.changingLockedFactoid(event.getUser().getNick(), key));
+                            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.factoidLocked(event.getUser().getNick()),
                                                  event.isTell());
                             handled = true;
                         }
@@ -124,12 +124,12 @@ public class AddFactoidOperation extends StandardOperation {
                                           final int is, final String key) {
         final String newValue = message.substring(is + 4);
         logDao.logMessage(Type.MESSAGE, event.getChannel(), event.getUser(),
-                          Sofia.factoidChanged(event.getUser(), key, factoid.getValue(), newValue, event.getChannel()));
+                          Sofia.factoidChanged(event.getUser().getNick(), key, factoid.getValue(), newValue, event.getChannel().getName()));
         factoid.setValue(newValue);
         factoid.setUpdated(LocalDateTime.now());
         factoid.setUserName(event.getUser().getNick());
         factoidDao.save(factoid);
-        getBot().postMessage(event.getChannel(), event.getUser(), Sofia.ok(event.getUser()), event.isTell());
+        getBot().postMessage(event.getChannel(), event.getUser(), Sofia.ok(event.getUser().getNick()), event.isTell());
         return true;
     }
 }

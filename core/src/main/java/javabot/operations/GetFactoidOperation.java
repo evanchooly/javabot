@@ -75,7 +75,7 @@ public class GetFactoidOperation extends StandardOperation {
         if (isTellCommand(message)) {
             final TellSubject tellSubject = parseTellSubject(event);
             if (tellSubject == null) {
-                getBot().postMessage(event.getChannel(), event.getUser(), Sofia.factoidTellSyntax(sender), event.isTell());
+                getBot().postMessage(event.getChannel(), event.getUser(), Sofia.factoidTellSyntax(sender.getNick()), event.isTell());
                 handled = true;
             } else {
                 User targetUser = tellSubject.getTarget();
@@ -89,7 +89,8 @@ public class GetFactoidOperation extends StandardOperation {
                         handled = true;
                     } else {
                         if (!getBot().isOnCommonChannel(targetUser)) {
-                            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.userNotInChannel(targetUser, channel), true);
+                            getBot().postMessage(event.getChannel(), event.getUser(),
+                                                 Sofia.userNotInChannel(targetUser.getNick(), channel.getName()), true);
                             handled = true;
                         } else if (sender.getNick().equals(channel.getName()) && !getBot().isOnCommonChannel(targetUser)) {
                             getBot().postMessage(event.getChannel(), event.getUser(), Sofia.userNoSharedChannels(), true);

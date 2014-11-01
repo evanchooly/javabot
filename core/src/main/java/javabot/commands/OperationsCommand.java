@@ -3,7 +3,6 @@ package javabot.commands;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.operations.BotOperation;
-import org.pircbotx.hooks.events.MessageEvent;
 
 import java.util.stream.Collectors;
 

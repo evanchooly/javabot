@@ -39,17 +39,17 @@ public class AddFactoidOperationTest extends BaseOperationTest {
 
     public void replace() {
         testMessage("~replace is first entry", ok);
-        testMessage("~no, replace is <reply>second entry", "OK, " + getTestUser() + ".");
+        testMessage("~no, replace is <reply>second entry", Sofia.ok(getTestUser().getNick()));
         testMessage("~replace", "second entry");
         forgetFactoid("replace");
-        testMessage("~no, replace is <reply>second entry", "OK, " + getTestUser() + ".");
+        testMessage("~no, replace is <reply>second entry", Sofia.ok(getTestUser().getNick()));
     }
 
     @Test(dependsOnMethods = {"factoidAdd"})
     public void duplicateAdd() throws IOException {
         final String message = "~test pong is pong";
         testMessage(message, ok);
-        testMessage(message, Sofia.factoidExists("test pong", getTestUser()));
+        testMessage(message, Sofia.factoidExists("test pong", getTestUser().getNick()));
         forgetFactoid("test pong");
     }
 

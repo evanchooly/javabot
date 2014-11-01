@@ -17,7 +17,7 @@ public class LockFactoidTest extends BaseOperationTest {
     public void lock(final String name) {
         try {
             sendMessage("~forget " + name).get();
-            testMessage("~" + name + " is i should be locked", "OK, " + getTestUser().getNick() + ".");
+            testMessage("~" + name + " is i should be locked", Sofia.ok(getTestUser().getNick()));
             testMessage("~admin lock " + name, name + " locked.");
 
             final User bob = registerIrcUser("bob", "bob", "localhost");
@@ -26,7 +26,7 @@ public class LockFactoidTest extends BaseOperationTest {
             testMessage("~admin unlock " + name, name + " unlocked.");
             testMessageAs(bob, String.format("~forget %s", name),Sofia.factoidForgotten(name, bob.getNick()));
 
-            testMessage("~" + name + " is i should be locked", "OK, " + getTestUser().getNick() + ".");
+            testMessage("~" + name + " is i should be locked", Sofia.ok(getTestUser().getNick()));
             testMessage("~admin lock " + name, name + " locked.");
             testMessage(String.format("~forget %s", name), Sofia.factoidForgotten(name, getTestUser().getNick()));
 

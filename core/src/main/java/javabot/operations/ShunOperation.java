@@ -43,8 +43,6 @@ public class ShunOperation extends BotOperation {
                                     : LocalDateTime.now().plusSeconds(Integer.parseInt(parts[1]));
         shunDao.addShun(victim, until);
 
-        long l = until.toEpochSecond(ZoneOffset.UTC);
-
-        return String.format(Sofia.shunned(victim, new Date(l)));
+        return String.format(Sofia.shunned(victim, new Date(until.toEpochSecond(ZoneOffset.UTC))));
     }
 }
