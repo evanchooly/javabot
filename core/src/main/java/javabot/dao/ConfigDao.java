@@ -20,17 +20,12 @@ public class ConfigDao extends BaseDao<Config> {
     @Inject
     private JavabotConfig javabotConfig;
 
-    private Query<Config> query;
-
     protected ConfigDao() {
         super(Config.class);
     }
 
     public Config get() {
-        if (query == null) {
-            query = ds.createQuery(Config.class);
-        }
-        Config config = query.get();
+        Config config = ds.createQuery(Config.class).get();
         if (config == null) {
             config = create();
         }

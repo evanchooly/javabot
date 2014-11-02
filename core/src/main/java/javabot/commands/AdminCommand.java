@@ -18,13 +18,15 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import java.lang.reflect.Field;
+import java.security.cert.PKIXRevocationChecker;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 public abstract class AdminCommand extends BotOperation {
-    private static final Logger log = LoggerFactory.getLogger(AdminCommand.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AdminCommand.class);
+
     protected List<String> args;
 
     @Inject
@@ -52,10 +54,14 @@ public abstract class AdminCommand extends BotOperation {
                 if (canHandle(split[0])) {
                     handled = true;
                     try {
-                        parse(new ArrayList<>(Arrays.asList(split)));
-                        execute(event);
+                        synchronized (this) {
+                            ArrayList<String> params = new ArrayList<>(Arrays.asList(split));
+                            parse(params);
+                            execute(event);
+                            clear(params);
+                        }
                     } catch (ParseException e) {
-                        log.error(e.getMessage(), e);
+                        LOG.error(e.getMessage(), e);
                         getBot().postMessage(null, event.getUser(), Sofia.adminParseFailure(e.getMessage()), event.isTell());
                     }
                 }
@@ -71,7 +77,7 @@ public abstract class AdminCommand extends BotOperation {
         try {
             return message.equalsIgnoreCase(getClass().getSimpleName());
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
         }
     }
@@ -133,10 +139,23 @@ public abstract class AdminCommand extends BotOperation {
                 throw new ParseException("Too many options given to " + getCommandName());
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            log.error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
             throw new ParseException(e.getMessage());
         }
     }
+
+    private void clear(final ArrayList<String> params) throws ParseException {
+        try {
+            for (final Object o : getOptions().getOptions()) {
+                Field field = getClass().getDeclaredField(((Option) o).getOpt());
+                field.set(this, null);
+            }
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            LOG.error(e.getMessage(), e);
+            throw new ParseException(e.getMessage());
+        }
+    }
+
 
     private Field getPrimaryParam() {
         for (final Field field : getClass().getDeclaredFields()) {
