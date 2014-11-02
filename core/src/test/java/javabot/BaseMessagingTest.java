@@ -1,4 +1,4 @@
-package javabot.operations;
+package javabot;
 
 import com.antwerkz.sofia.Sofia;
 import javabot.BaseTest;
@@ -12,7 +12,7 @@ import java.util.List;
 
 import static java.lang.String.format;
 
-public abstract class BaseOperationTest extends BaseTest {
+public abstract class BaseMessagingTest extends BaseTest {
     protected void scanForResponse(final String message, final String target) {
         final Messages list = sendMessage(message);
         boolean found = false;

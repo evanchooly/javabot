@@ -8,7 +8,7 @@ import javabot.dao.JavadocClassDao;
 import javabot.javadoc.JavadocApi;
 import javabot.model.ApiEvent;
 import javabot.model.EventType;
-import javabot.operations.BaseOperationTest;
+import javabot.BaseMessagingTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -21,7 +21,7 @@ import java.net.MalformedURLException;
 import java.util.concurrent.TimeUnit;
 
 @Test
-public class JavadocTest extends BaseOperationTest {
+public class JavadocTest extends BaseMessagingTest {
     private static final Logger LOG = LoggerFactory.getLogger(JavadocTest.class);
 
     @Inject

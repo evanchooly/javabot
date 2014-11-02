@@ -1,6 +1,7 @@
 package javabot.operations;
 
 import com.google.inject.Inject;
+import javabot.BaseMessagingTest;
 import javabot.operations.locator.JCPJSRLocator;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -8,7 +9,7 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.assertNotNull;
 
 @Test(groups = {"operations"})
-public class JSROperationTest extends BaseOperationTest {
+public class JSROperationTest extends BaseMessagingTest {
     @Inject
     JCPJSRLocator locator;
 

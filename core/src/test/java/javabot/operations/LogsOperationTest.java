@@ -1,5 +1,6 @@
 package javabot.operations;
 
+import javabot.BaseMessagingTest;
 import javabot.Message;
 import javabot.Messages;
 import javabot.model.Logs;
@@ -14,7 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import java.util.UUID;
 
-public class LogsOperationTest extends BaseOperationTest {
+public class LogsOperationTest extends BaseMessagingTest {
     @Inject
     private Provider<PircBotX> ircBot;
 

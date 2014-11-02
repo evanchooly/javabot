@@ -1,6 +1,7 @@
 package javabot.operations;
 
 import com.antwerkz.sofia.Sofia;
+import javabot.BaseMessagingTest;
 import javabot.dao.FactoidDao;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -12,7 +13,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @Test
-public class GetFactoidOperationTest extends BaseOperationTest {
+public class GetFactoidOperationTest extends BaseMessagingTest {
     private static final String REPLY_VALUE = "I'm a reply!";
     @Inject
     private FactoidDao factoidDao;

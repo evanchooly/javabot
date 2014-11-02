@@ -1,8 +1,7 @@
 package javabot.dao;
 
 import com.antwerkz.sofia.Sofia;
-import javabot.BaseTest;
-import javabot.operations.BaseOperationTest;
+import javabot.BaseMessagingTest;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -10,7 +9,7 @@ import org.testng.annotations.Test;
 import javax.inject.Inject;
 
 @Test
-public class SeeLoopTest extends BaseOperationTest {
+public class SeeLoopTest extends BaseMessagingTest {
     @Inject
     private FactoidDao factoidDao;
 

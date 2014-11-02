@@ -1,6 +1,7 @@
 package javabot.operations;
 
 import com.jayway.awaitility.Duration;
+import javabot.BaseMessagingTest;
 import javabot.Messages;
 import javabot.dao.ApiDao;
 import javabot.dao.EventDao;
@@ -14,7 +15,7 @@ import java.net.MalformedURLException;
 import java.util.concurrent.TimeUnit;
 
 @Test//(dependsOnMethods = {"jdk"})
-public class JavadocOperationTest extends BaseOperationTest {
+public class JavadocOperationTest extends BaseMessagingTest {
     @Inject
     private ApiDao apiDao;
     @Inject

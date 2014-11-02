@@ -1,10 +1,11 @@
 package javabot.operations;
 
+import javabot.BaseMessagingTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 @Test(groups = {"operations"})
-public class URLTitleOperationTest extends BaseOperationTest {
+public class URLTitleOperationTest extends BaseMessagingTest {
     @DataProvider(name="urls")
     Object[][] getUrls() {
         return new Object[][] {

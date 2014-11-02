@@ -25,9 +25,9 @@ public class SeenOperation extends BotOperation {
             final String key = message.substring("seen ".length());
             Seen seen = dao.getSeen(channel.getName(), key);
             if (seen != null) {
-                LocalDateTime updated = seen.getUpdated();
-                getBot().postMessage(channel, event.getUser(), Sofia.seenLast(event.getUser().getNick(), key, updated.format(FORMATTER),
-                                                                              seen.getMessage()), event.isTell());
+                getBot().postMessage(channel, event.getUser(),
+                                     Sofia.seenLast(event.getUser().getNick(), key, seen.getUpdated().format(FORMATTER),
+                                                    seen.getMessage()), event.isTell());
             } else {
                 getBot().postMessage(channel, event.getUser(), Sofia.seenUnknown(event.getUser().getNick(), key), event.isTell());
             }

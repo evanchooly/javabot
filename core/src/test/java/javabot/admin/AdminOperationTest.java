@@ -3,7 +3,7 @@ package javabot.admin;
 import com.jayway.awaitility.Awaitility;
 import javabot.Messages;
 import javabot.commands.AdminCommand;
-import javabot.operations.BaseOperationTest;
+import javabot.BaseMessagingTest;
 import javabot.operations.BotOperation;
 import javabot.operations.StandardOperation;
 import org.testng.Assert;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Test
-public class AdminOperationTest extends BaseOperationTest {
+public class AdminOperationTest extends BaseMessagingTest {
 
     @Inject
     private Messages messages;

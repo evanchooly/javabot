@@ -1,13 +1,13 @@
 package javabot.admin;
 
 import com.antwerkz.sofia.Sofia;
-import javabot.operations.BaseOperationTest;
+import javabot.BaseMessagingTest;
 import org.pircbotx.User;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 @Test
-public class LockFactoidTest extends BaseOperationTest {
+public class LockFactoidTest extends BaseMessagingTest {
     @DataProvider(name = "factoids")
     public String[][] names() {
         return new String[][]{{"lock me"}, {"lockme"},};

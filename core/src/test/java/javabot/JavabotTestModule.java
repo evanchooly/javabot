@@ -3,10 +3,12 @@ package javabot;
 import com.google.inject.Inject;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import javabot.dao.LogsDao;
 import javabot.dao.NickServDao;
 import javabot.dao.TestNickServDao;
 import javabot.model.Config;
 import org.aeonbits.owner.ConfigFactory;
+import org.apache.commons.logging.Log;
 import org.pircbotx.Channel;
 import org.pircbotx.Configuration.BotFactory;
 import org.pircbotx.Configuration.Builder;
@@ -16,6 +18,8 @@ import org.pircbotx.UserChannelDao;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.output.OutputChannel;
 import org.pircbotx.output.OutputRaw;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Provider;
 import java.io.File;
@@ -105,11 +109,16 @@ public class JavabotTestModule extends JavabotModule {
 
     @Singleton
     private static class TestBotFactory extends BotFactory {
+        private static final Logger LOG = LoggerFactory.getLogger(TestBotFactory.class);
+
         @Inject
         private BotFactory botFactory;
 
         @Inject
         private Messages messages;
+
+        @Inject
+        private LogsDao logsDao;
 
         @Override
         public UserChannelDao createUserChannelDao(final PircBotX bot) {
@@ -126,17 +135,17 @@ public class JavabotTestModule extends JavabotModule {
             return new OutputRaw(bot, 0) {
                 @Override
                 public void rawLine(final String line) {
-                    new Exception("line = [" + line + "]").printStackTrace();
+                    LOG.debug(line);
                 }
 
                 @Override
                 public void rawLineNow(final String line) {
-                    new Exception("line = [" + line + "]").printStackTrace();
+                    LOG.debug(line);
                 }
 
                 @Override
                 public void rawLineNow(final String line, final boolean resetDelay) {
-                    new Exception("line = [" + line + "], resetDelay = [" + resetDelay + "]").printStackTrace();
+                    LOG.debug("line = [" + line + "], resetDelay = [" + resetDelay + "]");
                 }
 
                 @Override

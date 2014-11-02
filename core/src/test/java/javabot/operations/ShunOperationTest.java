@@ -1,10 +1,10 @@
 package javabot.operations;
 
-import javabot.BaseTest;
+import javabot.BaseMessagingTest;
 import org.testng.annotations.Test;
 
 @Test(enabled = false)
-public class ShunOperationTest extends BaseOperationTest {
+public class ShunOperationTest extends BaseMessagingTest {
   public void shunMe() throws InterruptedException {
     sendMessage("~forget shunHey");
     try {

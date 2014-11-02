@@ -4,11 +4,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import com.google.inject.Inject;
+import javabot.BaseMessagingTest;
 import javabot.dao.FactoidDao;
 import javabot.model.Factoid;
 import org.testng.annotations.Test;
 
-public class InfoOperationTest extends BaseOperationTest {
+public class InfoOperationTest extends BaseMessagingTest {
   @Inject
   private FactoidDao factoidDao;
 

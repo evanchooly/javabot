@@ -1,12 +1,13 @@
 package javabot.operations;
 
+import javabot.BaseMessagingTest;
 import org.testng.annotations.Test;
 
 /**
  * Integration test for the Weather Operation, will actually attempt to contact the Google API for weather as
  * it's using the real Dao instead of a Mock/Stub
  */
-public class WeatherOperationTest extends BaseOperationTest {
+public class WeatherOperationTest extends BaseMessagingTest {
     @Test
     public void tellWeather() throws Exception {
         scanForResponse("~weather Winnipeg", "Weather for");

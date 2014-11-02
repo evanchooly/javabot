@@ -1,13 +1,14 @@
 package javabot.operations;
 
 import com.antwerkz.sofia.Sofia;
+import javabot.BaseMessagingTest;
 import javabot.dao.FactoidDao;
 import org.testng.annotations.Test;
 
 import javax.inject.Inject;
 
 @Test
-public class TellOperationTest extends BaseOperationTest {
+public class TellOperationTest extends BaseMessagingTest {
     @Inject
     private FactoidDao dao;
 

@@ -1,6 +1,7 @@
 package javabot.operations;
 
 import com.antwerkz.sofia.Sofia;
+import javabot.BaseMessagingTest;
 import javabot.dao.ChangeDao;
 import javabot.dao.ConfigDao;
 import javabot.dao.KarmaDao;
@@ -17,7 +18,7 @@ import javax.inject.Inject;
 import java.util.Date;
 
 @Test(groups = {"operations"})
-public class KarmaOperationTest extends BaseOperationTest {
+public class KarmaOperationTest extends BaseMessagingTest {
     @Inject
     private UserFactory userFactory;
 

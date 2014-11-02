@@ -1,6 +1,7 @@
 package javabot.operations;
 
 import com.antwerkz.sofia.Sofia;
+import javabot.BaseMessagingTest;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
 import org.testng.Assert;
@@ -11,7 +12,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 
 @Test(groups = {"operations"})
-public class AddFactoidOperationTest extends BaseOperationTest {
+public class AddFactoidOperationTest extends BaseMessagingTest {
     @Inject
     private FactoidDao factoidDao;
     @Inject
