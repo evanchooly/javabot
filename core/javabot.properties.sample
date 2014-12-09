@@ -15,3 +15,8 @@ jdbc.url=jdbc:postgresql:javabot
 jdbc.username=javabot
 jdbc.password=javabot
 jdbc.driver=org.postgresql.Driver
+
+# bitly sample elements
+javabot.bitly.secret=
+javabot.bitly.clientId=
+javabot.bitly.token=
