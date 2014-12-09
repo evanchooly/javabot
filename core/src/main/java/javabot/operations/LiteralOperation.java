@@ -30,6 +30,7 @@ public class LiteralOperation extends BotOperation {
                 getBot().postMessage(channel, event.getOriginalUser(), Sofia.factoidUnknown(key),
                                      event.isTell() && event.getSender() == null);
             }
+            return true;
         }
         return false;
     }
