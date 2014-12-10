@@ -41,10 +41,23 @@ public class AdminDao extends BaseDao<Admin> {
         return adminCriteria.query().get();
     }
 
+    public Admin getAdminByEmailAddress(final String email) {
+        AdminCriteria criteria = new AdminCriteria(ds);
+        criteria.emailAddress(email);
+        Admin admin = criteria.query().get();
+        if(admin == null && count() == 0) {
+            admin = new Admin();
+            admin.setEmailAddress(email);
+            admin.setBotOwner(true);
+            save(admin);
+        }
+        return admin;
+    }
+
     public Admin create(final String ircName, final String userName, final String hostName) {
         final Admin admin = new Admin();
         admin.setIrcName(ircName);
-        admin.setUserName(userName);
+        admin.setEmailAddress(userName);
         admin.setHostName(hostName);
         admin.setUpdated(LocalDateTime.now());
         admin.setBotOwner(findAll().isEmpty());
@@ -53,26 +66,24 @@ public class AdminDao extends BaseDao<Admin> {
         return admin;
     }
 
-    public void enableOperation(String name, User user) {
-        Admin admin = getAdmin(user);
+    public void enableOperation(String name, Admin admin) {
         OperationEvent event = new OperationEvent();
         event.setOperation(name);
         event.setRequestedOn(LocalDateTime.now());
         event.setType(EventType.ADD);
-        event.setRequestedBy(admin.getUserName());
+        event.setRequestedBy(admin.getEmailAddress());
         save(event);
         Config config = configDao.get();
         config.getOperations().add(name);
         configDao.save(config);
     }
 
-    public void disableOperation(String name, User user) {
-        Admin admin = getAdmin(user);
+    public void disableOperation(String name, Admin admin) {
         OperationEvent event = new OperationEvent();
         event.setOperation(name);
         event.setRequestedOn(LocalDateTime.now());
         event.setType(EventType.DELETE);
-        event.setRequestedBy(admin.getUserName());
+        event.setRequestedBy(admin.getEmailAddress());
         save(event);
         Config config = configDao.get();
         config.getOperations().remove(name);

@@ -1,6 +1,5 @@
 package javabot.model;
 
-import com.antwerkz.maven.SPI;
 import com.fasterxml.jackson.annotation.JsonView;
 import javabot.json.Views.PUBLIC;
 import javabot.json.Views.SYSTEM;
@@ -16,7 +15,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity(value = "channels", noClassnameStored = true)
-@SPI(Persistent.class)
 @Indexes({
              @Index(value = "upperName", unique = true, dropDups = true)
          })
@@ -38,6 +36,22 @@ public class Channel implements Serializable, Persistent {
 
     @JsonView(PUBLIC.class)
     private Boolean logged = true;
+
+    public Channel() {
+    }
+
+    public Channel(final String name, final String key, final boolean logged) {
+        this.name = name;
+        this.key = key;
+        this.logged = logged;
+    }
+
+    public Channel(final ObjectId id, final String name, final String key, final boolean logged) {
+        this.id = id;
+        this.name = name;
+        this.key = key;
+        this.logged = logged;
+    }
 
     public ObjectId getId() {
         return id;

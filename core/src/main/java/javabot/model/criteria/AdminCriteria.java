@@ -26,6 +26,14 @@ public class AdminCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Ad
     return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.Boolean>(this, query, prefix + "botOwner").equal(value);
   }
 
+  public com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String> emailAddress() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String>(this, query, prefix + "emailAddress");
+  }
+
+  public org.mongodb.morphia.query.Criteria emailAddress(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String>(this, query, prefix + "emailAddress").equal(value);
+  }
+
   public com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String> hostName() {
     return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String>(this, query, prefix + "hostName");
   }
@@ -56,14 +64,6 @@ public class AdminCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Ad
 
   public org.mongodb.morphia.query.Criteria updated(java.time.LocalDateTime value) {
     return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.time.LocalDateTime>(this, query, prefix + "updated").equal(value);
-  }
-
-  public com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String> userName() {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String>(this, query, prefix + "userName");
-  }
-
-  public org.mongodb.morphia.query.Criteria userName(java.lang.String value) {
-    return new com.antwerkz.critter.TypeSafeFieldEnd<AdminCriteria, Admin, java.lang.String>(this, query, prefix + "userName").equal(value);
   }
 
 
@@ -210,6 +210,65 @@ public class AdminCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Ad
 
     public AdminUpdater incBotOwner(Number value) {
       updateOperations.inc("botOwner", value);
+      return this;
+    }
+    public AdminUpdater emailAddress(java.lang.String value) {
+      updateOperations.set("emailAddress", value);
+      return this;
+    }
+
+    public AdminUpdater unsetEmailAddress(java.lang.String value) {
+      updateOperations.unset("emailAddress");
+      return this;
+    }
+
+    public AdminUpdater addEmailAddress(java.lang.String value) {
+      updateOperations.add("emailAddress", value);
+      return this;
+    }
+
+    public AdminUpdater addEmailAddress(java.lang.String value, boolean addDups) {
+      updateOperations.add("emailAddress", value, addDups);
+      return this;
+    }
+
+    public AdminUpdater addAllToEmailAddress(java.util.List<java.lang.String> values, boolean addDups) {
+      updateOperations.addAll("emailAddress", values, addDups);
+      return this;
+    }
+  
+    public AdminUpdater removeFirstEmailAddress() {
+      updateOperations.removeFirst("emailAddress");
+      return this;
+    }
+  
+    public AdminUpdater removeLastEmailAddress() {
+      updateOperations.removeLast("emailAddress");
+      return this;
+    }
+  
+    public AdminUpdater removeFromEmailAddress(java.lang.String value) {
+      updateOperations.removeAll("emailAddress", value);
+      return this;
+    }
+
+    public AdminUpdater removeAllFromEmailAddress(java.util.List<java.lang.String> values) {
+      updateOperations.removeAll("emailAddress", values);
+      return this;
+    }
+ 
+    public AdminUpdater decEmailAddress() {
+      updateOperations.dec("emailAddress");
+      return this;
+    }
+
+    public AdminUpdater incEmailAddress() {
+      updateOperations.inc("emailAddress");
+      return this;
+    }
+
+    public AdminUpdater incEmailAddress(Number value) {
+      updateOperations.inc("emailAddress", value);
       return this;
     }
     public AdminUpdater hostName(java.lang.String value) {
@@ -446,65 +505,6 @@ public class AdminCriteria extends com.antwerkz.critter.criteria.BaseCriteria<Ad
 
     public AdminUpdater incUpdated(Number value) {
       updateOperations.inc("updated", value);
-      return this;
-    }
-    public AdminUpdater userName(java.lang.String value) {
-      updateOperations.set("userName", value);
-      return this;
-    }
-
-    public AdminUpdater unsetUserName(java.lang.String value) {
-      updateOperations.unset("userName");
-      return this;
-    }
-
-    public AdminUpdater addUserName(java.lang.String value) {
-      updateOperations.add("userName", value);
-      return this;
-    }
-
-    public AdminUpdater addUserName(java.lang.String value, boolean addDups) {
-      updateOperations.add("userName", value, addDups);
-      return this;
-    }
-
-    public AdminUpdater addAllToUserName(java.util.List<java.lang.String> values, boolean addDups) {
-      updateOperations.addAll("userName", values, addDups);
-      return this;
-    }
-  
-    public AdminUpdater removeFirstUserName() {
-      updateOperations.removeFirst("userName");
-      return this;
-    }
-  
-    public AdminUpdater removeLastUserName() {
-      updateOperations.removeLast("userName");
-      return this;
-    }
-  
-    public AdminUpdater removeFromUserName(java.lang.String value) {
-      updateOperations.removeAll("userName", value);
-      return this;
-    }
-
-    public AdminUpdater removeAllFromUserName(java.util.List<java.lang.String> values) {
-      updateOperations.removeAll("userName", values);
-      return this;
-    }
- 
-    public AdminUpdater decUserName() {
-      updateOperations.dec("userName");
-      return this;
-    }
-
-    public AdminUpdater incUserName() {
-      updateOperations.inc("userName");
-      return this;
-    }
-
-    public AdminUpdater incUserName(Number value) {
-      updateOperations.inc("userName", value);
       return this;
     }
   }

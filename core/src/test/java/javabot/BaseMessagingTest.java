@@ -1,9 +1,6 @@
 package javabot;
 
 import com.antwerkz.sofia.Sofia;
-import javabot.BaseTest;
-import javabot.Message;
-import javabot.Messages;
 import org.pircbotx.User;
 import org.testng.Assert;
 

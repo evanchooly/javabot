@@ -2,7 +2,6 @@ package javabot.operations;
 
 import ca.grimoire.maven.ArtifactDescription;
 import ca.grimoire.maven.NoArtifactException;
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 
@@ -10,8 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-@SPI(StandardOperation.class)
-public class VersionOperation extends StandardOperation {
+public class VersionOperation extends BotOperation implements StandardOperation  {
     @Override
     public boolean handleMessage(final Message event) {
         final String message = event.getValue();

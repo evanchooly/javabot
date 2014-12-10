@@ -30,7 +30,7 @@ public class LogsOperationTest extends BaseMessagingTest {
         String uuid = UUID.randomUUID().toString();
         sendMessage(uuid);
         Messages list = sendMessage("~logs");
-        Assert.assertEquals(list.isEmpty(), false);
+        Assert.assertFalse(list.isEmpty());
         int listSize = list.size();
         Assert.assertTrue(list.get(listSize - 2).contains(uuid));
         Assert.assertTrue(list.get(listSize - 1).contains("~logs"));
@@ -44,7 +44,7 @@ public class LogsOperationTest extends BaseMessagingTest {
         int listSize = list.size();
         Assert.assertEquals(listSize, 1);
         String msg = list.get(listSize - 1);
-        Assert.assertEquals(msg.contains("No logs found for nick: " + uuid), true);
+        Assert.assertTrue(msg.contains("No logs found for nick: " + uuid));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class LogsOperationTest extends BaseMessagingTest {
         Messages list = sendMessage("~logs " + uuid);
         int listSize = list.size();
         Assert.assertEquals(listSize, 1);
-        Assert.assertEquals(list.get(listSize - 1).contains(uuid), true);
+        Assert.assertTrue(list.get(listSize - 1).contains(uuid));
     }
 
     private class TestUser extends User {

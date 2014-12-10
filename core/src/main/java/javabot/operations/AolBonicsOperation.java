@@ -1,13 +1,11 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 
 import java.util.Set;
 import java.util.TreeSet;
 
-@SPI(BotOperation.class)
 public class AolBonicsOperation extends BotOperation {
     private final Set<String> phrases = new TreeSet<>();
 

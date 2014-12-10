@@ -1,6 +1,5 @@
 package javabot.commands;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.ConfigDao;
@@ -8,7 +7,6 @@ import javabot.model.Config;
 
 import javax.inject.Inject;
 
-@SPI({AdminCommand.class})
 public class EnableOperation extends OperationsCommand {
     @Param
     String name;

@@ -1,0 +1,33 @@
+server:
+  type: simple
+  applicationContextPath: /  # Default value*
+  adminContextPath: /dwadmin  # Default value*
+  connector:
+      type: http
+      port: 8080
+
+# Logging settings.
+logging:
+
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: INFO
+
+  # Logger-specific levels.
+  loggers:
+
+    com.antwerkz: INFO
+    javax.ws.rs: DEBUG
+    com.sun.jersey: ERROR
+    org.eclipse.jetty: ERROR
+
+  appenders:
+    - type: console
+
+oauthSuccessUrl: http://localhost:8080/auth/verify
+
+oauthCfg:
+  - name: googleplus
+    prefix: googleapis.com
+    key: '252062164775-43gpeek32n49pupse6h8a5sdl7dj3ibk.apps.googleusercontent.com'
+    secret: 'Ob0-GVUEgKmvWluXHI36HC9z'
+    permissions: https://www.googleapis.com/auth/userinfo.profile,email

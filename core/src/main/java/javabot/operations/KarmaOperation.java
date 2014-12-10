@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.KarmaDao;
@@ -13,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.util.regex.Pattern;
 
-@SPI(BotOperation.class)
 public class KarmaOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(KarmaOperation.class);
 

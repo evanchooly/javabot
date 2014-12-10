@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.FactoidDao;
@@ -14,7 +13,6 @@ import java.time.format.DateTimeFormatter;
 /**
  * Simple operation to pull who added the factoid and when it was added
  */
-@SPI(BotOperation.class)
 public class InfoOperation extends BotOperation {
     public static final String INFO_DATE_FORMAT = "dd MMM yyyy' at 'KK:mm";
 

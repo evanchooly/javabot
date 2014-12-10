@@ -1,6 +1,5 @@
 package javabot.commands;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.ChannelDao;
@@ -10,7 +9,6 @@ import org.pircbotx.PircBotX;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-@SPI({AdminCommand.class})
 public class AddChannel extends AdminCommand {
     @Inject
     private ChannelDao dao;

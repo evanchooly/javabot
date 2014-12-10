@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.AdminDao;
@@ -10,7 +9,6 @@ import javabot.model.NickRegistration;
 
 import javax.inject.Inject;
 
-@SPI(BotOperation.class)
 public class RegisterNickOperation extends BotOperation {
     @Inject
     private AdminDao adminDao;

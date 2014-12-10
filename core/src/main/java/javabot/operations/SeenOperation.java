@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.Seen;
@@ -8,10 +7,8 @@ import javabot.dao.LogsDao;
 import org.pircbotx.Channel;
 
 import javax.inject.Inject;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@SPI(BotOperation.class)
 public class SeenOperation extends BotOperation {
     @Inject
     private LogsDao dao;

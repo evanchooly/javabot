@@ -11,7 +11,7 @@ public abstract class OperationsCommand extends AdminCommand {
         getBot().postMessage(event.getChannel(), event.getUser(), Sofia.adminRunningOperations(event.getUser().getNick()),
                              event.isTell());
         getBot().postMessage(event.getChannel(), event.getUser(),
-                             String.join(",", getBot().getAllOperations()
+                             String.join(",", getBot().getActiveOperations()
                                                       .stream()
                                                       .map(BotOperation::getName)
                                                       .collect(Collectors.toList())),

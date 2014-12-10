@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.FactoidDao;
@@ -14,8 +13,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 
-@SPI(StandardOperation.class)
-public class AddFactoidOperation extends StandardOperation {
+public class AddFactoidOperation extends BotOperation implements StandardOperation {
     public static final Logger log = LoggerFactory.getLogger(AddFactoidOperation.class);
 
     @Inject

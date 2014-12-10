@@ -3,7 +3,7 @@ package javabot.dao;
 import java.util.List;
 import javax.inject.Inject;
 
-import javabot.Activity;
+import javabot.model.Activity;
 import javabot.model.Channel;
 import org.testng.Assert;
 import org.testng.annotations.Test;

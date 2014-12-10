@@ -1,6 +1,5 @@
 package javabot.commands;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.ConfigDao;
@@ -8,7 +7,6 @@ import javabot.model.Config;
 
 import javax.inject.Inject;
 
-@SPI({AdminCommand.class})
 public class DisableOperation extends OperationsCommand {
     @Param
     String name;
@@ -19,9 +17,6 @@ public class DisableOperation extends OperationsCommand {
     @Override
     public void execute(final Message event) {
         if (getBot().disableOperation(name)) {
-            Config config = configDao.get();
-            config.getOperations().remove(name);
-            configDao.save(config);
             getBot().postMessage(event.getChannel(), event.getUser(), Sofia.adminOperationDisabled(name), event.isTell());
             listCurrent(event);
         } else {

@@ -1,16 +1,14 @@
 package javabot.model;
 
-import java.io.Serializable;
-import java.util.Set;
-import java.util.TreeSet;
-
-import com.antwerkz.maven.SPI;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
+import java.io.Serializable;
+import java.util.Set;
+import java.util.TreeSet;
+
 @Entity("configuration")
-@SPI(Persistent.class)
 public class Config implements Serializable, Persistent {
   @Id
   private ObjectId id;
@@ -35,7 +33,7 @@ public class Config implements Serializable, Persistent {
 
   private Integer throttleThreshold = 5;
 
-  private Integer mininumNickServAge = 14;
+  private Integer minimumNickServAge = 14;
 
   public Config() {
   }
@@ -62,12 +60,12 @@ public class Config implements Serializable, Persistent {
     id = configId;
   }
 
-  public Integer getMininumNickServAge() {
-    return mininumNickServAge;
+  public Integer getMinimumNickServAge() {
+    return minimumNickServAge;
   }
 
-  public void setMininumNickServAge(final Integer mininumNickServAge) {
-    this.mininumNickServAge = mininumNickServAge;
+  public void setMinimumNickServAge(final Integer minimumNickServAge) {
+    this.minimumNickServAge = minimumNickServAge;
   }
 
   public String getNick() {
@@ -161,7 +159,7 @@ public class Config implements Serializable, Persistent {
         ", nick='" + nick + '\'' +
         ", schemaVersion=" + schemaVersion +
         ", throttleThreshold=" + throttleThreshold +
-        ", mininumNickServAge=" + mininumNickServAge +
+        ", mininumNickServAge=" + minimumNickServAge +
         ", operations=" + operations +
         '}';
   }

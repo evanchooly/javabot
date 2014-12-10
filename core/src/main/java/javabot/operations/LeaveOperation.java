@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import org.pircbotx.Channel;
@@ -8,7 +7,6 @@ import org.pircbotx.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SPI(BotOperation.class)
 public class LeaveOperation extends BotOperation {
     private static final Logger log = LoggerFactory.getLogger(LeaveOperation.class);
 

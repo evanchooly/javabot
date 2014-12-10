@@ -2,12 +2,14 @@ package javabot;
 
 import com.jayway.awaitility.Awaitility;
 import com.jayway.awaitility.Duration;
+import freemarker.log.Logger;
 import javabot.dao.AdminDao;
 import javabot.dao.ChangeDao;
 import javabot.dao.ChannelDao;
 import javabot.dao.EventDao;
 import javabot.dao.LogsDao;
 import javabot.dao.NickServDao;
+import javabot.model.Admin;
 import javabot.model.AdminEvent;
 import javabot.model.AdminEvent.State;
 import javabot.model.Change;
@@ -15,6 +17,7 @@ import javabot.model.Channel;
 import javabot.model.Logs;
 import javabot.model.NickServInfo;
 import javabot.model.UserFactory;
+import javabot.operations.BotOperation;
 import org.mongodb.morphia.Datastore;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -26,6 +29,7 @@ import org.testng.annotations.Guice;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import java.util.EnumSet;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 @Guice(modules = {JavabotTestModule.class})
@@ -35,6 +39,7 @@ public class BaseTest {
     public static final String TEST_USER_NICK = "botuser";
 
     public static final String TEST_BOT_NICK = "testjavabot";
+    public static final String BOT_EMAIL = "test@example.com";
 
     public EnumSet<State> done = EnumSet.of(State.COMPLETED, State.FAILED);
 
@@ -78,10 +83,16 @@ public class BaseTest {
     @BeforeTest
     public void setup() {
         bot.start();
+        enableAllOperations();
         User testUser = getTestUser();
-        if (adminDao.getAdmin(testUser) == null) {
-            adminDao.create(testUser.getNick(), testUser.getRealName(), testUser.getHostmask());
+        Admin admin = adminDao.getAdmin(testUser);
+        if (admin == null) {
+            admin = adminDao.create(testUser.getNick(), testUser.getRealName(), testUser.getHostmask());
+            admin.setBotOwner(true);
+            adminDao.save(admin);
         }
+        admin.setEmailAddress(BOT_EMAIL);
+        adminDao.save(admin);
 
         Channel channel = channelDao.get(getJavabotChannel().getName());
         if (channel == null) {
@@ -94,6 +105,19 @@ public class BaseTest {
         datastore.delete(logsDao.getQuery(Logs.class));
         datastore.delete(changeDao.getQuery(Change.class));
 
+        Logger logger = Logger.getLogger("freemarker.cache");
+    }
+
+    protected void enableAllOperations() {
+        for (Entry<String, BotOperation> entry : bot.getAllOperations().entrySet()) {
+            bot.enableOperation(entry.getKey());
+        }
+    }
+
+    protected void disableAllOperations() {
+        for (Entry<String, BotOperation> entry : bot.getAllOperations().entrySet()) {
+            bot.disableOperation(entry.getKey());
+        }
     }
 
     @BeforeMethod
@@ -121,9 +145,7 @@ public class BaseTest {
     }
 
     protected org.pircbotx.Channel getJavabotChannel() {
-        org.pircbotx.Channel channel = getIrcBot().getUserChannelDao().getChannel("#jbunittest");
-        assert channel != null;
-        return channel;
+        return getIrcBot().getUserChannelDao().getChannel("#jbunittest");
     }
 
     @SuppressWarnings({"EmptyCatchBlock"})
@@ -156,5 +178,4 @@ public class BaseTest {
         nickServDao.save(info);
         return bob;
     }
-
 }

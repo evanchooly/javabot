@@ -1,10 +1,8 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import javabot.Message;
 import org.pircbotx.Channel;
 
-@SPI(BotOperation.class)
 public class Magic8BallOperation extends BotOperation {
     String[] responses = {
                              "Yes",

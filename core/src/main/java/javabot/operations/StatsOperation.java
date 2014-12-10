@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.FactoidDao;
@@ -11,7 +10,6 @@ import java.time.Instant;
 
 import static java.time.Instant.now;
 
-@SPI(BotOperation.class)
 public class StatsOperation extends BotOperation {
     @Inject
     private FactoidDao factoidDao;

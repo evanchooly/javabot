@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import javabot.Message;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -17,7 +16,6 @@ import org.jsoup.nodes.Document;
 import java.io.IOException;
 import java.net.URL;
 
-@SPI(BotOperation.class)
 public class URLTitleOperation extends BotOperation {
     @Override
     public boolean handleChannelMessage(final Message event) {

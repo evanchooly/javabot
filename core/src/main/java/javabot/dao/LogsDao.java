@@ -82,4 +82,9 @@ public class LogsDao extends BaseDao<Logs> {
         }
     }
 
+    public void deleteAllForChannel(final String channel) {
+        LogsCriteria criteria = new LogsCriteria(ds);
+        criteria.channel(channel);
+        ds.delete(criteria.query());
+    }
 }

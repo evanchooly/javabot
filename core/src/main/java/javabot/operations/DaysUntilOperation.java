@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import org.pircbotx.User;
@@ -10,7 +9,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-@SPI(BotOperation.class)
 public class DaysUntilOperation extends BotOperation {
     @Override
     public boolean handleMessage(final Message event) {

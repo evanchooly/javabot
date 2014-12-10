@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryImpl;
-import javabot.Activity;
+import javabot.model.Activity;
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
 import javabot.model.criteria.ChannelCriteria;
@@ -30,7 +30,17 @@ public class ChannelDao extends BaseDao<Channel> {
 
   @SuppressWarnings({"unchecked"})
   public List<Channel> getChannels() {
-    return getQuery().asList();
+    return getChannels(false);
+  }
+
+  public List<Channel> getChannels(Boolean showAll) {
+    ChannelCriteria channelCriteria = new ChannelCriteria(ds);
+    if (!showAll) {
+      channelCriteria.logged().equal(true);
+    }
+    Query<Channel> query = channelCriteria.query();
+    query.order("name");
+    return query.asList();
   }
 
   @SuppressWarnings({"unchecked"})
@@ -40,16 +50,6 @@ public class ChannelDao extends BaseDao<Channel> {
       condition = "-" + condition;
     }
     return getQuery().order(condition).asList();
-  }
-
-  public List<Channel> findLogged(Boolean showAll) {
-    ChannelCriteria channelCriteria = new ChannelCriteria(ds);
-    if (!showAll) {
-      channelCriteria.logged().equal(true);
-    }
-    Query<Channel> query = channelCriteria.query();
-    query.order("name");
-    return query.asList();
   }
 
   public boolean isLogged(final String channel) {
@@ -66,7 +66,7 @@ public class ChannelDao extends BaseDao<Channel> {
   @SuppressWarnings({"unchecked"})
   public List<Activity> getStatistics() {
 /*
-@NamedQuery(name = ChannelDao.STATISTICS, query = "select new javabot.Activity(l.channel, count(l), max(l.updated),"
+@NamedQuery(name = ChannelDao.STATISTICS, query = "select new javabot.model.Activity(l.channel, count(l), max(l.updated),"
     + " min(l.updated), (select count(e) from Logs e)) from Logs l "
     + "where l.channel like '#%' group by l.channel order by count(l) desc")
 */

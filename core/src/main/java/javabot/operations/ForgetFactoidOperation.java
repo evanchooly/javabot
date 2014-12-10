@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.FactoidDao;
@@ -9,8 +8,7 @@ import org.pircbotx.Channel;
 
 import javax.inject.Inject;
 
-@SPI(StandardOperation.class)
-public class ForgetFactoidOperation extends StandardOperation {
+public class ForgetFactoidOperation extends BotOperation implements StandardOperation  {
     @Inject
     private FactoidDao factoidDao;
 

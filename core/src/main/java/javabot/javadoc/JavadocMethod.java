@@ -1,18 +1,15 @@
 package javabot.javadoc;
 
-import java.util.List;
-
-import com.antwerkz.maven.SPI;
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.PrePersist;
-import javabot.model.Persistent;
-import org.bson.types.ObjectId;
+
+import java.util.List;
 
 @Entity(value = "methods", noClassnameStored = true)
-@SPI(Persistent.class)
 @Indexes({
     @Index("apiId"),
     @Index("javadocClassId, upperName"),

@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 
@@ -14,7 +13,6 @@ import java.util.Date;
 
 import static java.time.LocalDateTime.now;
 
-@SPI(BotOperation.class)
 public class DaysToChristmasOperation extends BotOperation {
     @Override
     public boolean handleMessage(final Message event) {

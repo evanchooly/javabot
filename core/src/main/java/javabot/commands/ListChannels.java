@@ -1,6 +1,5 @@
 package javabot.commands;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.ChannelDao;
@@ -14,7 +13,6 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
-@SPI({AdminCommand.class})
 public class ListChannels extends AdminCommand {
     @Inject
     private ChannelDao dao;

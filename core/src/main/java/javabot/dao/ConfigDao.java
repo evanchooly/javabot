@@ -1,5 +1,6 @@
 package javabot.dao;
 
+import com.google.inject.Injector;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import javabot.JavabotConfig;
@@ -7,21 +8,46 @@ import javabot.model.Config;
 import javabot.model.Logs;
 import javabot.model.Persistent;
 import javabot.operations.BotOperation;
-import org.mongodb.morphia.query.Query;
+import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class ConfigDao extends BaseDao<Config> {
     private static final Logger LOG = LoggerFactory.getLogger(ConfigDao.class);
 
     @Inject
+    private Injector injector;
+
+    @Inject
     private JavabotConfig javabotConfig;
 
     protected ConfigDao() {
         super(Config.class);
+    }
+
+    public List<BotOperation> list() {
+        Reflections reflections = new Reflections("javabot");
+
+        Set<Class<? extends BotOperation>> classes = reflections.getSubTypesOf(BotOperation.class);
+
+        final List<BotOperation> list = new ArrayList<>();
+        for (final Class<? extends BotOperation> operation : classes) {
+            if (!Modifier.isAbstract(operation.getModifiers())) {
+                try {
+                    list.add(injector.getInstance(operation));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return list;
     }
 
     public Config get() {
@@ -39,7 +65,7 @@ public class ConfigDao extends BaseDao<Config> {
         config.setServer(javabotConfig.ircHost());
         config.setPort(javabotConfig.ircPort());
         config.setTrigger("~");
-        for (final BotOperation operation : BotOperation.list()) {
+        for (final BotOperation operation : list()) {
             config.getOperations().add(operation.getName());
         }
         updateHistoryIndex(config.getHistoryLength());

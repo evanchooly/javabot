@@ -66,6 +66,14 @@ public class FactoidCriteria extends com.antwerkz.critter.criteria.BaseCriteria<
     return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String>(this, query, prefix + "upperUserName").equal(value);
   }
 
+  public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String> upperValue() {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String>(this, query, prefix + "upperValue");
+  }
+
+  public org.mongodb.morphia.query.Criteria upperValue(java.lang.String value) {
+    return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String>(this, query, prefix + "upperValue").equal(value);
+  }
+
   public com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String> userName() {
     return new com.antwerkz.critter.TypeSafeFieldEnd<FactoidCriteria, Factoid, java.lang.String>(this, query, prefix + "userName");
   }
@@ -521,6 +529,65 @@ public class FactoidCriteria extends com.antwerkz.critter.criteria.BaseCriteria<
 
     public FactoidUpdater incUpperUserName(Number value) {
       updateOperations.inc("upperUserName", value);
+      return this;
+    }
+    public FactoidUpdater upperValue(java.lang.String value) {
+      updateOperations.set("upperValue", value);
+      return this;
+    }
+
+    public FactoidUpdater unsetUpperValue(java.lang.String value) {
+      updateOperations.unset("upperValue");
+      return this;
+    }
+
+    public FactoidUpdater addUpperValue(java.lang.String value) {
+      updateOperations.add("upperValue", value);
+      return this;
+    }
+
+    public FactoidUpdater addUpperValue(java.lang.String value, boolean addDups) {
+      updateOperations.add("upperValue", value, addDups);
+      return this;
+    }
+
+    public FactoidUpdater addAllToUpperValue(java.util.List<java.lang.String> values, boolean addDups) {
+      updateOperations.addAll("upperValue", values, addDups);
+      return this;
+    }
+  
+    public FactoidUpdater removeFirstUpperValue() {
+      updateOperations.removeFirst("upperValue");
+      return this;
+    }
+  
+    public FactoidUpdater removeLastUpperValue() {
+      updateOperations.removeLast("upperValue");
+      return this;
+    }
+  
+    public FactoidUpdater removeFromUpperValue(java.lang.String value) {
+      updateOperations.removeAll("upperValue", value);
+      return this;
+    }
+
+    public FactoidUpdater removeAllFromUpperValue(java.util.List<java.lang.String> values) {
+      updateOperations.removeAll("upperValue", values);
+      return this;
+    }
+ 
+    public FactoidUpdater decUpperValue() {
+      updateOperations.dec("upperValue");
+      return this;
+    }
+
+    public FactoidUpdater incUpperValue() {
+      updateOperations.inc("upperValue");
+      return this;
+    }
+
+    public FactoidUpdater incUpperValue(Number value) {
+      updateOperations.inc("upperValue", value);
       return this;
     }
     public FactoidUpdater userName(java.lang.String value) {

@@ -1,6 +1,5 @@
 package javabot.commands;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.FactoidDao;
@@ -8,7 +7,6 @@ import javabot.model.Factoid;
 
 import javax.inject.Inject;
 
-@SPI({AdminCommand.class})
 public class LockFactoid extends AdminCommand {
     @Param(primary = true)
     String name;

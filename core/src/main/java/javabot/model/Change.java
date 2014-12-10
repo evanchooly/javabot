@@ -1,6 +1,5 @@
 package javabot.model;
 
-import com.antwerkz.maven.SPI;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -10,7 +9,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity(value = "changes", noClassnameStored = true)
-@SPI(Persistent.class)
 public class Change implements Serializable, Persistent {
 
     @Id
@@ -18,6 +16,13 @@ public class Change implements Serializable, Persistent {
     private String message;
     @Indexed(name = "changed")
     private LocalDateTime changeDate;
+
+    public Change() {
+    }
+
+    public Change(final String message) {
+        this.message = message;
+    }
 
     public ObjectId getId() {
         return id;

@@ -5,9 +5,9 @@ import javabot.model.Channel;
 import javabot.model.Logs.Type;
 import javabot.model.UserFactory;
 import javabot.model.criteria.LogsCriteria;
-import org.junit.Assert;
 import org.mongodb.morphia.Datastore;
 import org.pircbotx.PircBotX;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import javax.inject.Inject;

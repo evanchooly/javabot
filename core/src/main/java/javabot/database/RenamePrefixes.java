@@ -3,9 +3,6 @@ package javabot.database;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import com.antwerkz.maven.SPI;
-
-@SPI(UpgradeScript.class)
 public class RenamePrefixes extends UpgradeScript {
     @Override
     public int id() {

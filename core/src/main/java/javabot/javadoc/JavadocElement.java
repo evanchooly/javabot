@@ -54,12 +54,12 @@ public abstract class JavadocElement implements Persistent {
 
   public String getDisplayUrl(final String hint, final ApiDao dao, final BitlyClient client) {
     String url = getShortUrl();
-    if (url == null) {
+    if (url == null && client != null) {
       setShortUrl(buildShortUrl(client, getLongUrl()) + " [" + dao.find(getApiId()) + ": " + hint + "]");
       url = getShortUrl();
       dao.save(this);
     }
-    return url;
+    return url == null ? getLongUrl() : url;
   }
 
   public String getShortUrl() {

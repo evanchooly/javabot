@@ -2,13 +2,13 @@ package javabot.admin;
 
 import com.jayway.awaitility.Awaitility;
 import com.jayway.awaitility.Duration;
+import javabot.BaseMessagingTest;
 import javabot.dao.ApiDao;
 import javabot.dao.EventDao;
 import javabot.dao.JavadocClassDao;
 import javabot.javadoc.JavadocApi;
 import javabot.model.ApiEvent;
 import javabot.model.EventType;
-import javabot.BaseMessagingTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -53,8 +53,7 @@ public class JavadocTest extends BaseMessagingTest {
     }
 
     private void checkServlets(final String apiName) {
-        Assert.assertEquals(
-                               javadocClassDao.getClass(apiDao.find(apiName), "javax.servlet.http", "HttpServletRequest").length, 1);
+        Assert.assertEquals(javadocClassDao.getClass(apiDao.find(apiName), "javax.servlet.http", "HttpServletRequest").length, 1);
         scanForResponse("~javadoc HttpServlet", "javax.servlet.http.HttpServlet");
         scanForResponse("~javadoc HttpServlet.doGet(*)", "javax.servlet.http.HttpServlet.doGet");
         scanForResponse("~javadoc HttpServletRequest", "javax.servlet.http.HttpServletRequest");
@@ -84,9 +83,9 @@ public class JavadocTest extends BaseMessagingTest {
     public void jdk() throws MalformedURLException {
         getJavabot();
         if (Boolean.valueOf(System.getProperty("dropJDK", "false"))) {
-            System.out.println("Dropping JDK API");
+            LOG.debug("Dropping JDK API");
             dropApi("JDK");
-            System.out.println("Done");
+            LOG.debug("Done");
         }
         JavadocApi api = apiDao.find("JDK");
         if (api == null) {
@@ -104,7 +103,7 @@ public class JavadocTest extends BaseMessagingTest {
         ApiEvent event = new ApiEvent(getTestUser().getNick(), apiName, apiUrlString, downloadUrlString);
         eventDao.save(event);
         waitForEvent(event, "adding " + apiName, new Duration(30, TimeUnit.MINUTES));
-        LOG.info("done waiting for event to finish");
+        LOG.debug("done waiting for event to finish");
         getMessages().get();
     }
 

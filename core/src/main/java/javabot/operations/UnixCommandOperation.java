@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import org.pircbotx.Channel;
@@ -11,7 +10,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
-@SPI(BotOperation.class)
 public class UnixCommandOperation extends BotOperation {
     private final Set<String> commands = new TreeSet<>();
     private final List<String> insults = new ArrayList<>();

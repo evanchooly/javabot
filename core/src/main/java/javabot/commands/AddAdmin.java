@@ -1,6 +1,5 @@
 package javabot.commands;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import com.google.inject.Provider;
 import javabot.Message;
@@ -10,7 +9,6 @@ import org.pircbotx.User;
 
 import javax.inject.Inject;
 
-@SPI({AdminCommand.class})
 public class AddAdmin extends AdminCommand {
     @Inject
     private AdminDao dao;

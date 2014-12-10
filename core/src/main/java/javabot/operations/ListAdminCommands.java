@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.commands.AdminCommand;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
-@SPI({AdminCommand.class})
 public class ListAdminCommands extends AdminCommand {
     @Override
     public void execute(Message event) {

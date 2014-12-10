@@ -2,9 +2,9 @@ package javabot.dao;
 
 import javabot.BotListener;
 import javabot.model.NickServInfo;
-import org.junit.Assert;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.NoticeEvent;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import javax.inject.Inject;
@@ -41,7 +41,7 @@ public class NickServDaoTest extends BaseServiceTest {
                                  LocalDateTime.of(2014, Month.MARCH, 1, 16, 30), LocalDateTime.now()));
         }
         for (int i = 0; i < 5; i++) {
-            Assert.assertNotNull("Should find account" + i, nickServDao.find("account" + i));
+            Assert.assertNotNull(nickServDao.find("account" + i), "Should find account" + i);
         }
     }
 

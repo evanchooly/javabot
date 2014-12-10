@@ -11,8 +11,6 @@
     <name>javabot</name>
 
     <modules>
-        <module>spi-apt</module>
-        <module>apt-tools</module>
         <module>core</module>
     </modules>
 
@@ -71,9 +69,15 @@
             </dependency>
 
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>${slf4j.version}</version>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.1.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>1.1.2</version>
             </dependency>
 
             <dependency>
@@ -85,7 +89,7 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.2.5</version>
+                <version>4.3.6</version>
             </dependency>
 
             <dependency>
@@ -155,7 +159,7 @@
 
     <properties>
         <guice.version>3.0</guice.version>
-        <sofia.version>0.13</sofia.version>
+        <sofia.version>0.15</sofia.version>
         <critter.version>1.2.5</critter.version>
         <slf4j.version>1.7.4</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -165,10 +169,7 @@
         <profile>
             <id>migration</id>
             <modules>
-                <module>spi-apt</module>
-                <module>apt-tools</module>
                 <module>core</module>
-                <module>migration</module>
             </modules>
         </profile>
     </profiles>

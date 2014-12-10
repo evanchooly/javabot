@@ -6,7 +6,7 @@ import org.aeonbits.owner.Config.LoadType;
 import org.aeonbits.owner.Config.Sources;
 
 @LoadPolicy(LoadType.MERGE)
-@Sources({"classpath:javabot.properties",
+@Sources({"file:javabot-sample.properties",
           "file:javabot.properties"
           })
 public interface JavabotConfig extends Config {
@@ -31,23 +31,16 @@ public interface JavabotConfig extends Config {
     int databasePort();
 
     @Key("javabot.nick")
+    @DefaultValue("testjavabot")
     String nick();
 
     @Key("javabot.password")
     String password();
 
-    @Key("javabot.admin.nick")
-    String adminNick();
-
-    @Key("javabot.admin.hostmask")
-    String adminHostMask();
-
     @Key("javabot.bitly.token")
     String bitlyToken();
 
-    @Key("javabot.bitly.clientId")
-    String bitlyClientId();
-
-    @Key("javabot.bitly.secret")
-    String bitlySecret();
+    @Key("start.web.app")
+    @DefaultValue("false")
+    Boolean startWebApp();
 }

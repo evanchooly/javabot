@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.operations.locator.JCPJSRLocator;
@@ -8,7 +7,6 @@ import org.pircbotx.Channel;
 
 import javax.inject.Inject;
 
-@SPI(BotOperation.class)
 public class JSROperation extends BotOperation {
     @Inject
     JCPJSRLocator locator;

@@ -1,6 +1,5 @@
 package javabot.model;
 
-import com.antwerkz.maven.SPI;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -14,7 +13,6 @@ import java.time.LocalDateTime;
 @Indexes({
              @Index(value = "channel, upperNick, updated", name = "seen"),
          })
-@SPI(Persistent.class)
 public class Logs implements Persistent {
     @Id
     private ObjectId id;

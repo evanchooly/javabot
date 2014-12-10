@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.impl.WeatherDao;
@@ -11,7 +10,6 @@ import javax.inject.Inject;
 /**
  * Gets current weather conditions for a place given as a parameter.
  */
-@SPI(BotOperation.class)
 public class WeatherOperation extends BotOperation {
     @Inject
     private WeatherDao weatherDao;

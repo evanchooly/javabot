@@ -1,17 +1,12 @@
 package javabot.operations;
 
-import com.google.inject.Provider;
 import javabot.Javabot;
 import javabot.Message;
 import javabot.dao.AdminDao;
 import org.pircbotx.User;
-import org.pircbotx.hooks.events.MessageEvent;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import java.util.ServiceLoader;
 
 public abstract class BotOperation {
     static Random random = new Random();
@@ -19,15 +14,6 @@ public abstract class BotOperation {
     private Javabot bot;
     @Inject
     private AdminDao dao;
-
-    public static List<BotOperation> list() {
-        final ServiceLoader<BotOperation> loader = ServiceLoader.load(BotOperation.class);
-        final List<BotOperation> list = new ArrayList<>();
-        for (final BotOperation operation : loader) {
-            list.add(operation);
-        }
-        return list;
-    }
 
     public Javabot getBot() {
         return bot;

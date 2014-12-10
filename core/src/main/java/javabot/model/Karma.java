@@ -1,6 +1,5 @@
 package javabot.model;
 
-import com.antwerkz.maven.SPI;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -12,7 +11,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity(value = "karma", noClassnameStored = true)
-@SPI(Persistent.class)
 @Indexes({
              @Index("upperName")
          })
@@ -29,6 +27,15 @@ public class Karma implements Serializable, Persistent {
     private String userName;
 
     private LocalDateTime updated;
+
+    public Karma() {
+    }
+
+    public Karma(final String name, final Integer value, final String userName) {
+        this.name = name;
+        this.value = value;
+        this.userName = userName;
+    }
 
     public ObjectId getId() {
         return id;

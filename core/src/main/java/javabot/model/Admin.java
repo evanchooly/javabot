@@ -1,7 +1,7 @@
 package javabot.model;
 
-import com.antwerkz.maven.SPI;
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.AlsoLoad;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
@@ -11,9 +11,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity(value = "admins", noClassnameStored = true)
-@SPI(Persistent.class)
 @Indexes({
-             @Index(value = "userName", unique = true),
+             @Index(value = "emailAddress", unique = true),
              @Index("ircName, hostName")
          })
 public class Admin implements Serializable, Persistent {
@@ -24,9 +23,10 @@ public class Admin implements Serializable, Persistent {
 
     private String hostName;
 
-    private String userName;
-
     private String ircName;
+
+    @AlsoLoad("userName")
+    private String emailAddress;
 
     private String addedBy;
 
@@ -50,12 +50,12 @@ public class Admin implements Serializable, Persistent {
         this.botOwner = botOwner;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 
-    public void setUserName(String adminName) {
-        userName = adminName;
+    public void setEmailAddress(String address) {
+        emailAddress = address;
     }
 
     public LocalDateTime getUpdated() {
@@ -96,7 +96,7 @@ public class Admin implements Serializable, Persistent {
         sb.append("id=").append(id);
         sb.append(", botOwner=").append(botOwner);
         sb.append(", hostName='").append(hostName).append('\'');
-        sb.append(", userName='").append(userName).append('\'');
+        sb.append(", emailAddress='").append(emailAddress).append('\'');
         sb.append(", ircName='").append(ircName).append('\'');
         sb.append(", addedBy='").append(addedBy).append('\'');
         sb.append(", updated=").append(updated);

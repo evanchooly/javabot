@@ -1,10 +1,8 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 
-@SPI(BotOperation.class)
 public class IgnoreOperation extends BotOperation {
     @Override
     public boolean handleMessage(final Message event) {

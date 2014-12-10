@@ -1,8 +1,5 @@
 package javabot.operations.locator;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -16,6 +13,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class JCPJSRLocator {
     public Map<String, String> locate(final Map<String, String> inputs) {

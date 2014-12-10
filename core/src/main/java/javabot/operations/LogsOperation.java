@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.model.Logs;
@@ -10,7 +9,6 @@ import org.mongodb.morphia.Datastore;
 import javax.inject.Inject;
 import java.time.format.DateTimeFormatter;
 
-@SPI(BotOperation.class)
 public class LogsOperation extends BotOperation {
     private static final String KEYWORD_LOGS = "logs";
 

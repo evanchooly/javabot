@@ -1,6 +1,5 @@
 package javabot.commands;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.ConfigDao;
@@ -10,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import java.lang.reflect.Method;
 
-@SPI({AdminCommand.class})
 public class Configure extends AdminCommand {
     @Inject
     private ConfigDao dao;

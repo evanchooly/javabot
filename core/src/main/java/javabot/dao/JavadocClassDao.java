@@ -124,17 +124,17 @@ public class JavadocClassDao extends BaseDao<JavadocClass> {
 
     public void deleteFor(final JavadocApi api) {
         if (api != null) {
-            LOG.info("Dropping fields from " + api.getName());
+            LOG.debug("Dropping fields from " + api.getName());
             JavadocFieldCriteria criteria = new JavadocFieldCriteria(ds);
             criteria.apiId(api.getId());
             ds.delete(criteria.query());
 
-            LOG.info("Dropping methods from " + api.getName());
+            LOG.debug("Dropping methods from " + api.getName());
             JavadocMethodCriteria method = new JavadocMethodCriteria(ds);
             method.apiId(api.getId());
             ds.delete(method.query());
 
-            LOG.info("Dropping classes from " + api.getName());
+            LOG.debug("Dropping classes from " + api.getName());
             JavadocClassCriteria klass = new JavadocClassCriteria(ds);
             klass.apiId(api.getId());
             ds.delete(klass.query());

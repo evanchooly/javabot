@@ -1,6 +1,5 @@
 package javabot.commands;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import com.jayway.awaitility.Awaitility;
 import com.jayway.awaitility.core.ConditionTimeoutException;
@@ -12,7 +11,6 @@ import javax.inject.Inject;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-@SPI({AdminCommand.class})
 public class NickServLookup extends AdminCommand {
     @Inject
     private NickServDao nickServDao;

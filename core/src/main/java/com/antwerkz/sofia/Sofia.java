@@ -11,9 +11,7 @@ import org.slf4j.*;
 
 public class Sofia {
     private static Map<Locale, ResourceBundle> messages = new HashMap<>();
-        private static final Logger logger = LoggerFactory.getLogger(Sofia.class);
-
-    private Sofia() {}
+    private static final Logger logger = LoggerFactory.getLogger(Sofia.class);
 
     private static ResourceBundle getBundle(Locale... localeList) {
         Locale locale = localeList.length == 0 ? Locale.getDefault() : localeList[0];
@@ -37,6 +35,15 @@ public class Sofia {
         return (String) getBundle(locale).getObject(key);
     }
 
+    public static String loggingInUser(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("@debug.logging.in.user", locale), arg0);
+    }
+
+    public static void logLoggingInUser(Object arg0, Locale... locale) {
+        if(logger.isDebugEnabled()) {
+            logger.debug(loggingInUser(arg0));
+        }
+    }
     public static String noNickservEntry(Object arg0, Locale... locale) {
         return MessageFormat.format(getMessageValue("@info.no.nickserv.entry", locale), arg0);
     }
@@ -57,6 +64,18 @@ public class Sofia {
     }
     public static String accountTooNew(Locale... locale) {
         return getMessageValue("account.too.new", locale);
+    }
+
+    public static String action(Locale... locale) {
+        return getMessageValue("action", locale);
+    }
+
+    public static String addedBy(Locale... locale) {
+        return getMessageValue("addedBy", locale);
+    }
+
+    public static String addedOn(Locale... locale) {
+        return getMessageValue("addedOn", locale);
     }
 
     public static String adminAdded(Object arg0, Locale... locale) {
@@ -179,6 +198,42 @@ public class Sofia {
         return getMessageValue("channel.updated", locale);
     }
 
+    public static String configIrcHistory(Locale... locale) {
+        return getMessageValue("config.irc.history", locale);
+    }
+
+    public static String configIrcNick(Locale... locale) {
+        return getMessageValue("config.irc.nick", locale);
+    }
+
+    public static String configIrcPassword(Locale... locale) {
+        return getMessageValue("config.irc.password", locale);
+    }
+
+    public static String configIrcPort(Locale... locale) {
+        return getMessageValue("config.irc.port", locale);
+    }
+
+    public static String configIrcServer(Locale... locale) {
+        return getMessageValue("config.irc.server", locale);
+    }
+
+    public static String configIrcTrigger(Locale... locale) {
+        return getMessageValue("config.irc.trigger", locale);
+    }
+
+    public static String configMinimumNickservAge(Locale... locale) {
+        return getMessageValue("config.minimum.nickserv.age", locale);
+    }
+
+    public static String configThrottleThreshold(Locale... locale) {
+        return getMessageValue("config.throttle.threshold", locale);
+    }
+
+    public static String configWebUrl(Locale... locale) {
+        return getMessageValue("config.web.url", locale);
+    }
+
     public static String configurationMissingProperties(Object arg0, Locale... locale) {
         return MessageFormat.format(getMessageValue("configuration.missing.properties", locale), arg0);
     }
@@ -263,36 +318,24 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("invalid.date.format", locale), arg0);
     }
 
-    public static String ircHistory(Locale... locale) {
-        return getMessageValue("irc.history", locale);
-    }
-
-    public static String ircNick(Locale... locale) {
-        return getMessageValue("irc.nick", locale);
-    }
-
-    public static String ircPassword(Locale... locale) {
-        return getMessageValue("irc.password", locale);
-    }
-
-    public static String ircPort(Locale... locale) {
-        return getMessageValue("irc.port", locale);
-    }
-
-    public static String ircServer(Locale... locale) {
-        return getMessageValue("irc.server", locale);
-    }
-
-    public static String ircTrigger(Locale... locale) {
-        return getMessageValue("irc.trigger", locale);
-    }
-
     public static String ircName(Locale... locale) {
         return getMessageValue("ircName", locale);
     }
 
     public static String javadocApiList(Object arg0, Object arg1, Locale... locale) {
         return MessageFormat.format(getMessageValue("javadoc.api.list", locale), arg0, arg1);
+    }
+
+    public static String javadocApiName(Locale... locale) {
+        return getMessageValue("javadoc.api.name", locale);
+    }
+
+    public static String javadocDownloadUrl(Locale... locale) {
+        return getMessageValue("javadoc.download.url", locale);
+    }
+
+    public static String javadocUrl(Locale... locale) {
+        return getMessageValue("javadoc.url", locale);
     }
 
     public static String jsrInvalid(Object arg0, Locale... locale) {
@@ -391,8 +434,8 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("shunned", locale), arg0, arg1);
     }
 
-    public static String throttleThreshold(Locale... locale) {
-        return getMessageValue("throttle.threshold", locale);
+    public static String submit(Locale... locale) {
+        return getMessageValue("submit", locale);
     }
 
     public static String throttledUser(Locale... locale) {
@@ -429,10 +472,6 @@ public class Sofia {
 
     public static String weatherUnknown(Object arg0, Locale... locale) {
         return MessageFormat.format(getMessageValue("weather.unknown", locale), arg0);
-    }
-
-    public static String webUrl(Locale... locale) {
-        return getMessageValue("web.url", locale);
     }
 
 

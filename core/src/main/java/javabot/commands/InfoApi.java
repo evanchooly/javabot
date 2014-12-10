@@ -1,6 +1,5 @@
 package javabot.commands;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.ApiDao;
@@ -9,7 +8,6 @@ import org.pircbotx.Channel;
 
 import javax.inject.Inject;
 
-@SPI({AdminCommand.class})
 public class InfoApi extends AdminCommand {
     @Inject
     private ApiDao dao;

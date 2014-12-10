@@ -1,6 +1,5 @@
 package javabot.operations;
 
-import com.antwerkz.maven.SPI;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.ShunDao;
@@ -14,7 +13,6 @@ import java.util.Date;
  * Causes the bot to disregard bot triggers for a few minutes. Useful to de-fang abusive users without ejecting the bot from a channel
  * entirely.
  */
-@SPI(BotOperation.class)
 public class ShunOperation extends BotOperation {
     @Inject
     private ShunDao shunDao;
