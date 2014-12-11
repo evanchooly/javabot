@@ -27,6 +27,7 @@ import org.pircbotx.cap.SASLCapHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -101,8 +102,9 @@ public class JavabotModule extends AbstractModule {
 
     @Provides
     @Singleton
+    @Nullable
     public BitlyClient bitlyClient() throws IOException {
-        return javabotConfig().bitlyToken() != null ? new BitlyClient(javabotConfig().bitlyToken()) : null;
+        return !javabotConfig().bitlyToken().equals("") ? new BitlyClient(javabotConfig().bitlyToken()) : null;
     }
 
     @Provides

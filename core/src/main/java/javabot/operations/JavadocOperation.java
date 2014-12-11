@@ -10,6 +10,7 @@ import net.swisstech.bitly.BitlyClient;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ public class JavadocOperation extends BotOperation {
     private JavadocClassDao dao;
 
     @Inject
+    @Nullable
     private BitlyClient client;
 
     private static final int RESULT_LIMIT = 5;

@@ -38,6 +38,7 @@ public interface JavabotConfig extends Config {
     String password();
 
     @Key("javabot.bitly.token")
+    @DefaultValue("")
     String bitlyToken();
 
     @Key("start.web.app")
