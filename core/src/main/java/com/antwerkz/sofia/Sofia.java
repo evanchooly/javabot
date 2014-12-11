@@ -418,6 +418,18 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("register.nick", locale), arg0, arg1, arg2);
     }
 
+    public static String rfcFail(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("rfc.fail", locale), arg0);
+    }
+
+    public static String rfcInvalid(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("rfc.invalid", locale), arg0);
+    }
+
+    public static String rfcSucceed(Object arg0, Object arg1, Locale... locale) {
+        return MessageFormat.format(getMessageValue("rfc.succeed", locale), arg0, arg1);
+    }
+
     public static String seenLast(Object arg0, Object arg1, Object arg2, Object arg3, Locale... locale) {
         return MessageFormat.format(getMessageValue("seen.last", locale), arg0, arg1, arg2, arg3);
     }
