@@ -7,8 +7,8 @@ import javabot.dao.LogsDao;
 import javabot.dao.NickServDao;
 import javabot.dao.TestNickServDao;
 import javabot.model.Config;
+import javabot.model.TestUser;
 import org.aeonbits.owner.ConfigFactory;
-import org.apache.commons.logging.Log;
 import org.pircbotx.Channel;
 import org.pircbotx.Configuration.BotFactory;
 import org.pircbotx.Configuration.Builder;
@@ -18,6 +18,7 @@ import org.pircbotx.UserChannelDao;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.output.OutputChannel;
 import org.pircbotx.output.OutputRaw;
+import org.pircbotx.output.OutputUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,6 @@ import java.util.Properties;
 
 public class JavabotTestModule extends JavabotModule {
     private Provider<TestJavabot> botProvider;
-    private final Messages messages = new Messages();
     private Provider<TestBotFactory> botFactoryProvider;
 
     @Override
@@ -91,11 +91,6 @@ public class JavabotTestModule extends JavabotModule {
         return botFactoryProvider.get();
     }
 
-    @Provides
-    public Messages messages() {
-        return messages;
-    }
-
     private static class TestPircBotX extends PircBotX {
         public TestPircBotX(final Builder<PircBotX> builder) {
             super(builder.buildConfiguration());
@@ -122,10 +117,10 @@ public class JavabotTestModule extends JavabotModule {
 
         @Override
         public UserChannelDao createUserChannelDao(final PircBotX bot) {
-            return new UserChannelDao(bot, botFactory) {
+            return new UserChannelDao(bot, this) {
                 @Override
                 public User getUser(final String nick) {
-                    return botFactory.createUser(bot, nick);
+                    return createUser(bot, nick);
                 }
             };
         }
@@ -171,5 +166,40 @@ public class JavabotTestModule extends JavabotModule {
                 }
             };
         }
+
+        @Override
+        public OutputUser createOutputUser(final PircBotX bot, final User user) {
+            return new OutputUser(bot, user) {
+                @Override
+                public void message(final String message) {
+                    messages.add(message);
+                }
+
+                @Override
+                public void action(final String action) {
+                    super.action(action);
+                }
+
+                @Override
+                public void ctcpCommand(final String command) {
+                    super.ctcpCommand(command);
+                }
+
+                @Override
+                public void ctcpResponse(final String message) {
+                    super.ctcpResponse(message);
+                }
+
+                @Override
+                public void notice(final String notice) {
+                    super.notice(notice);
+                }
+            };
+        }
+        @Override
+        public User createUser(PircBotX bot, String nick) {
+      			return new TestUser(bot, bot.getUserChannelDao(), messages, nick, null, null);
+      		}
+
     }
 }

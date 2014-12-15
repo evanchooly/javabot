@@ -1,15 +1,21 @@
 package javabot.operations;
 
 import com.antwerkz.sofia.Sofia;
+import com.jayway.awaitility.Awaitility;
 import javabot.BaseMessagingTest;
+import javabot.BotListener;
+import javabot.Message;
+import javabot.Messages;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
+import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @Test(groups = {"operations"})
 public class AddFactoidOperationTest extends BaseMessagingTest {
@@ -17,6 +23,8 @@ public class AddFactoidOperationTest extends BaseMessagingTest {
     private FactoidDao factoidDao;
     @Inject
     private ChangeDao changeDao;
+    @Inject
+    private BotListener listener;
 
     @BeforeMethod
     public void setUp() {
@@ -54,7 +62,6 @@ public class AddFactoidOperationTest extends BaseMessagingTest {
         forgetFactoid("test pong");
     }
 
-    @Test
     public void blankValue() {
         testMessage("~pong is", Sofia.unhandledMessage(getTestUser().getNick()));
     }
@@ -69,5 +76,15 @@ public class AddFactoidOperationTest extends BaseMessagingTest {
         final String factoid = "should be the full (/hi there) factoid";
         testMessage("~asdf is <reply>" + factoid, ok);
         testMessage("~asdf", factoid);
+    }
+
+    public void privMessage() {
+        listener.onPrivateMessage(new PrivateMessageEvent<>(getIrcBot(), getTestUser(), "privMessage is doh!"));
+        Awaitility.await()
+            .atMost(10, TimeUnit.SECONDS)
+            .until(() -> !getMessages().isEmpty());
+        Messages messages = getMessages();
+        System.out.println("messages = " + messages);;
+        Assert.assertFalse(messages.isEmpty());
     }
 }
