@@ -186,6 +186,7 @@ public class Javabot {
     public void startWebApp() {
         if (javabotConfig.startWebApp()) {
             try {
+                Sofia.logWebappStarting();
                 injector.getInstance(JavabotApplication.class).run(new String[]{"server", "javabot.yml"});
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage(), e);
