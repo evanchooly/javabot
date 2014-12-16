@@ -16,14 +16,11 @@ public class EnableOperation extends OperationsCommand {
 
     @Override
     public void execute(final Message event) {
-        if (getBot().enableOperation(name)) {
-            Config config = configDao.get();
-            config.getOperations().add(name);
-            configDao.save(config);
-            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.adminOperationEnabled(name), event.isTell());
-            listCurrent(event);
-        } else {
-            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.adminOperationNotEnabled(name), event.isTell());
-        }
+        getBot().enableOperation(name);
+        Config config = configDao.get();
+        config.getOperations().add(name);
+        configDao.save(config);
+        getBot().postMessage(event.getChannel(), event.getUser(), Sofia.adminOperationEnabled(name), event.isTell());
+        listCurrent(event);
     }
 }

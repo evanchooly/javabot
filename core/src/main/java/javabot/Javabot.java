@@ -218,8 +218,13 @@ public class Javabot {
         if (allOperations == null) {
             final Config config = configDao.get();
             allOperations = new TreeMap<>();
-            for (final BotOperation op : configDao.list()) {
-                allOperations.put(op.getName(), op);
+            List<BotOperation> list = configDao.list();
+            if (list.isEmpty()) {
+
+            } else {
+                for (final BotOperation op : list) {
+                    allOperations.put(op.getName(), op);
+                }
             }
             try {
                 config.getOperations().forEach(this::enableOperation);
@@ -244,16 +249,11 @@ public class Javabot {
         return disabled;
     }
 
-    public boolean enableOperation(final String name) {
-        boolean enabled = false;
-        if (getAllOperations().get(name) != null) {
-            Config config = configDao.get();
-            config.getOperations().add(name);
-            getActiveOperations().add(getAllOperations().get(name));
-            configDao.save(config);
-            enabled = true;
-        }
-        return enabled;
+    public void enableOperation(final String name) {
+        Config config = configDao.get();
+        config.getOperations().add(name);
+        getActiveOperations().add(getAllOperations().get(name));
+        configDao.save(config);
     }
 
     public Set<BotOperation> getActiveOperations() {
