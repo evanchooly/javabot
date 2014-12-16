@@ -62,6 +62,15 @@ public class Sofia {
             logger.info(waitingForNickserv(arg0));
         }
     }
+    public static String webappNotStarting(Locale... locale) {
+        return getMessageValue("@info.webapp.not.starting", locale);
+    }
+
+    public static void logWebappNotStarting(Locale... locale) {
+        if(logger.isInfoEnabled()) {
+            logger.info(webappNotStarting());
+        }
+    }
     public static String accountTooNew(Locale... locale) {
         return getMessageValue("account.too.new", locale);
     }

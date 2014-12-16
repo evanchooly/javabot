@@ -190,6 +190,8 @@ public class Javabot {
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage(), e);
             }
+        } else {
+            Sofia.logWebappNotStarting();
         }
     }
 
