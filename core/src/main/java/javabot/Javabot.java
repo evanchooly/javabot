@@ -114,7 +114,7 @@ public class Javabot {
         hook.setDaemon(false);
         Runtime.getRuntime().addShutdownHook(hook);
         eventHandler.scheduleAtFixedRate(this::processAdminEvents, 5, 5, TimeUnit.SECONDS);
-        eventHandler.scheduleAtFixedRate(this::joinChannels, 5, 5, TimeUnit.SECONDS);
+        eventHandler.scheduleAtFixedRate(this::joinChannels, 5, 60, TimeUnit.SECONDS);
     }
 
     protected void processAdminEvents() {
@@ -143,7 +143,7 @@ public class Javabot {
                                        .stream()
                                        .map(org.pircbotx.Channel::getName)
                                        .collect(Collectors.toSet());
-            List<Channel> channels = channelDao.getChannels();
+            List<Channel> channels = channelDao.getChannels(true);
             if (joined.size() != channels.size()) {
                 channels.stream().filter(channel -> !joined.contains(channel.getName())).forEach(channel -> {
                     channel.join(ircBot);
