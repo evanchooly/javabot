@@ -116,6 +116,7 @@ public class Javabot {
         Runtime.getRuntime().addShutdownHook(hook);
         eventHandler.scheduleAtFixedRate(this::processAdminEvents, 5, 5, TimeUnit.SECONDS);
         eventHandler.scheduleAtFixedRate(this::joinChannels, 5, 60, TimeUnit.SECONDS);
+        eventHandler.scheduleAtFixedRate(this::enableOperations, 5, 60, TimeUnit.SECONDS);
     }
 
     protected void processAdminEvents() {
