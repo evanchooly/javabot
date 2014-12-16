@@ -32,13 +32,13 @@ public class ConfigDao extends BaseDao<Config> {
         super(Config.class);
     }
 
-    public List<BotOperation> list() {
+    public <T> List<T> list(final Class<T> type) {
         Reflections reflections = new Reflections("javabot");
 
-        Set<Class<? extends BotOperation>> classes = reflections.getSubTypesOf(BotOperation.class);
+        Set<Class<? extends T>> classes = reflections.getSubTypesOf(type);
 
-        final List<BotOperation> list = new ArrayList<>();
-        for (final Class<? extends BotOperation> operation : classes) {
+        final List<T> list = new ArrayList<>();
+        for (final Class<? extends T> operation : classes) {
             if (!Modifier.isAbstract(operation.getModifiers())) {
                 try {
                     list.add(injector.getInstance(operation));
@@ -65,7 +65,7 @@ public class ConfigDao extends BaseDao<Config> {
         config.setServer(javabotConfig.ircHost());
         config.setPort(javabotConfig.ircPort());
         config.setTrigger("~");
-        for (final BotOperation operation : list()) {
+        for (final BotOperation operation : list(BotOperation.class)) {
             config.getOperations().add(operation.getName());
         }
         updateHistoryIndex(config.getHistoryLength());

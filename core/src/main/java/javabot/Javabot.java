@@ -19,6 +19,7 @@ import javabot.model.Config;
 import javabot.model.Logs;
 import javabot.model.Logs.Type;
 import javabot.operations.BotOperation;
+import javabot.operations.GetFactoidOperation;
 import javabot.operations.OperationComparator;
 import javabot.operations.StandardOperation;
 import javabot.operations.throttle.NickServViolationException;
@@ -99,7 +100,7 @@ public class Javabot {
 
     public void start() {
         setUpThreads();
-        getAllOperations();
+        enableOperations();
         applyUpgradeScripts();
         connect();
         startWebApp();
@@ -216,24 +217,27 @@ public class Javabot {
     @SuppressWarnings({"unchecked"})
     public final Map<String, BotOperation> getAllOperations() {
         if (allOperations == null) {
-            final Config config = configDao.get();
             allOperations = new TreeMap<>();
-            List<BotOperation> list = configDao.list();
-            if (list.isEmpty()) {
-
-            } else {
-                for (final BotOperation op : list) {
-                    allOperations.put(op.getName(), op);
-                }
-            }
-            try {
-                config.getOperations().forEach(this::enableOperation);
-            } catch (Exception e) {
-                LOG.error(e.getMessage(), e);
-                throw new RuntimeException(e.getMessage(), e);
+            for (final BotOperation op : configDao.list(BotOperation.class)) {
+                allOperations.put(op.getName(), op);
             }
         }
         return allOperations;
+    }
+
+    public final void enableOperations() {
+        for (final StandardOperation op : configDao.list(StandardOperation.class)) {
+            enableOperation(((BotOperation) op).getName());
+        }
+        for (final AdminCommand op : configDao.list(AdminCommand.class)) {
+            enableOperation(op.getName());
+        }
+        try {
+            configDao.get().getOperations().forEach(this::enableOperation);
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
     public boolean disableOperation(final String name) {

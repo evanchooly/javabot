@@ -3,6 +3,7 @@ package javabot.commands;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.dao.ConfigDao;
+import javabot.operations.BotOperation;
 import org.apache.commons.lang.StringUtils;
 
 import javax.inject.Inject;
@@ -14,7 +15,7 @@ public class ListOperations extends OperationsCommand {
     @Override
     public void execute(final Message event) {
         getBot().postMessage(event.getChannel(), event.getUser(),
-                             Sofia.adminKnownOperations(event.getUser().getNick(), StringUtils.join(configDao.list().iterator(), ",")),
+                             Sofia.adminKnownOperations(event.getUser().getNick(), StringUtils.join(configDao.list(BotOperation.class).iterator(), ",")),
                              event.isTell());
 
         listCurrent(event);
