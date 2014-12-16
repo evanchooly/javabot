@@ -11,6 +11,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import java.time.LocalDateTime;
 
 public class LogsDaoTest extends BaseTest {
@@ -23,7 +24,7 @@ public class LogsDaoTest extends BaseTest {
     @Inject
     private UserFactory userFactory;
     @Inject
-    private PircBotX ircBot;
+    private Provider<PircBotX> ircBot;
 
     public static final String CHANNEL_NAME = "#watercooler";
 
@@ -37,7 +38,7 @@ public class LogsDaoTest extends BaseTest {
         channel.setName(CHANNEL_NAME);
         channel.setLogged(true);
         channelDao.save(channel);
-        dao.logMessage(Type.MESSAGE, ircBot.getUserChannelDao().getChannel(channel.getName()),
+        dao.logMessage(Type.MESSAGE, ircBot.get().getUserChannelDao().getChannel(channel.getName()),
                        userFactory.createUser("ChattyCathy", "ChattyCathy", "localhost"), "test message");
 
         Assert.assertNotNull(dao.getSeen(channel.getName(), "chattycathy"));
