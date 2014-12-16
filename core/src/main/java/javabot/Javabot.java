@@ -26,11 +26,13 @@ import javabot.operations.throttle.Throttler;
 import javabot.web.JavabotApplication;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import org.pircbotx.exception.IrcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -177,7 +179,15 @@ public class Javabot {
 
     public void connect() {
         try {
-            ircBot.get().startBot();
+            Thread thread = new Thread(() -> {
+                try {
+                    ircBot.get().startBot();
+                } catch (IOException | IrcException e) {
+                    e.printStackTrace();
+                }
+            });
+            thread.setDaemon(false);
+            thread.start();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
