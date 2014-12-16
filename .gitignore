@@ -12,9 +12,8 @@ RUNNING_PID
 bin/dumps
 dist
 idea-files
-javabot-play/conf/javabot.properties
-javabot-play/conf/oauth.*
 javabot.properties
+javabot.yml
 logs
 out
 play.war
