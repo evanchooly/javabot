@@ -21,6 +21,9 @@ public class GetFactoidOperation extends BotOperation implements StandardOperati
     private Provider<PircBotX> ircBot;
 
     @Override
+    public int getPriority() { return Integer.MIN_VALUE; }
+
+    @Override
     public boolean handleMessage(final Message event) {
         return tell(event) || getFactoid(null, event, new HashSet<>());
     }
