@@ -20,6 +20,14 @@ public abstract class BotOperation {
     }
 
     /**
+     * This method returns where the operation should fall in terms of priority. Lower values represent lower
+     * priority. Implementations can probably get by with the default implementation (which returns a priority of 10)
+     * but some commands may want to override this.
+     * @return the priority of the command
+     */
+    public int getPriority() { return 10;}
+
+    /**
      * @return true if the message has been handled
      */
     public boolean handleMessage(final Message event) {
