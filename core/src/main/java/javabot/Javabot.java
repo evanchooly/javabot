@@ -19,7 +19,6 @@ import javabot.model.Config;
 import javabot.model.Logs;
 import javabot.model.Logs.Type;
 import javabot.operations.BotOperation;
-import javabot.operations.GetFactoidOperation;
 import javabot.operations.OperationComparator;
 import javabot.operations.StandardOperation;
 import javabot.operations.throttle.NickServViolationException;
@@ -285,10 +284,7 @@ public class Javabot {
                             postMessage(null, message.getUser(), Sofia.throttledUser(), false);
                             handled = true;
                         } else {
-                            String content = message.getValue().substring(startString.length()).trim();
-                            while (!content.isEmpty() && (content.charAt(0) == ':' || content.charAt(0) == ',')) {
-                                content = content.substring(1).trim();
-                            }
+                            String content = extractContentFromMessage(message.getValue(), startString);
                             if (!content.isEmpty()) {
                                 handled = getResponses(new Message(message, content), message.getUser());
                             }
@@ -306,6 +302,14 @@ public class Javabot {
                 LOG.info("ignoring " + sender);
             }
         }
+    }
+
+    protected String extractContentFromMessage(final String message, final String startString) {
+        String content = message.substring(startString.length()).trim();
+        while (!content.isEmpty() && (content.charAt(0) == ':' || content.charAt(0) == ',')) {
+            content = content.substring(1).trim();
+        }
+        return content;
     }
 
     public void addIgnore(final String sender) {

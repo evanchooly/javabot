@@ -12,7 +12,6 @@ import javabot.operations.throttle.NickServViolationException;
 import javabot.operations.throttle.Throttler;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
-import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
@@ -25,7 +24,6 @@ import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
-import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -158,12 +156,21 @@ public class BotListener extends ListenerAdapter<PircBotX> {
     @Override
     public void onPrivateMessage(PrivateMessageEvent event) {
         Javabot javabot = javabotProvider.get();
+        String startStringForPm = "";
+        final String message = event.getMessage();
+        for (final String startString : javabot.getStartStrings()) {
+            if (message.startsWith(startString)) {
+                startStringForPm = startString;
+            }
+        }
+
+        final String content = javabot.extractContentFromMessage(message, startStringForPm);
         if (adminDao.isAdmin(event.getUser()) || javabot.isOnCommonChannel(event.getUser())) {
             javabot.executors.execute(() -> {
                 javabot.logMessage(null, event.getUser(), event.getMessage());
                 try {
                     if (!throttler.isThrottled(event.getUser())) {
-                        javabot.getResponses(new Message(event.getUser(), event.getMessage()), event.getUser());
+                        javabot.getResponses(new Message(event.getUser(), content), event.getUser());
                     }
                 } catch (NickServViolationException e) {
                     event.getUser().send().message(e.getMessage());
