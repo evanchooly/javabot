@@ -82,8 +82,6 @@ public class BaseTest {
 
     @BeforeTest
     public void setup() {
-        bot.start();
-        enableAllOperations();
         User testUser = getTestUser();
         Admin admin = adminDao.getAdmin(testUser);
         if (admin == null) {

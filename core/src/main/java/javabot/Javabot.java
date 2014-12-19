@@ -82,7 +82,7 @@ public class Javabot {
     @Inject
     private JavabotConfig javabotConfig;
 
-    private Map<String, BotOperation> allOperations;
+    private Map<String, BotOperation> allOperationsMap;
 
     private String[] startStrings;
 
@@ -98,8 +98,8 @@ public class Javabot {
     private volatile boolean running = true;
 
     public void start() {
-        setUpThreads();
         enableOperations();
+        setUpThreads();
         applyUpgradeScripts();
         connect();
         startWebApp();
@@ -115,7 +115,6 @@ public class Javabot {
         Runtime.getRuntime().addShutdownHook(hook);
         eventHandler.scheduleAtFixedRate(this::processAdminEvents, 5, 5, TimeUnit.SECONDS);
         eventHandler.scheduleAtFixedRate(this::joinChannels, 5, 60, TimeUnit.SECONDS);
-        eventHandler.scheduleAtFixedRate(this::enableOperations, 5, 60, TimeUnit.SECONDS);
     }
 
     protected void processAdminEvents() {
@@ -216,13 +215,13 @@ public class Javabot {
 
     @SuppressWarnings({"unchecked"})
     public final Map<String, BotOperation> getAllOperations() {
-        if (allOperations == null) {
-            allOperations = new TreeMap<>();
+        if (allOperationsMap == null) {
+            allOperationsMap = new TreeMap<>();
             for (final BotOperation op : configDao.list(BotOperation.class)) {
-                allOperations.put(op.getName(), op);
+                allOperationsMap.put(op.getName(), op);
             }
         }
-        return allOperations;
+        return allOperationsMap;
     }
 
     public final void enableOperations() {
@@ -254,10 +253,16 @@ public class Javabot {
     }
 
     public void enableOperation(final String name) {
-        Config config = configDao.get();
-        config.getOperations().add(name);
-        getActiveOperations().add(getAllOperations().get(name));
-        configDao.save(config);
+        BotOperation op = getAllOperations().get(name);
+        if (op != null) {
+            Config config = configDao.get();
+            config.getOperations().add(name);
+            getActiveOperations().add(op);
+            configDao.save(config);
+        } else {
+            System.out.println(String.format("Operation not found: %s.  \nKnown ops: %s", name, getAllOperations().keySet()));
+            System.exit(-1);
+        }
     }
 
     public Set<BotOperation> getActiveOperations() {

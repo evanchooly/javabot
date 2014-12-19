@@ -33,6 +33,7 @@ import java.util.Properties;
 public class JavabotTestModule extends JavabotModule {
     private Provider<TestJavabot> botProvider;
     private Provider<TestBotFactory> botFactoryProvider;
+    private TestJavabot testJavabot;
 
     @Override
     protected void configure() {
@@ -67,8 +68,10 @@ public class JavabotTestModule extends JavabotModule {
     @Provides
     @Singleton
     public Javabot getJavabot() {
-        TestJavabot testJavabot = botProvider.get();
-        testJavabot.start();
+        if(testJavabot == null) {
+            testJavabot = botProvider.get();
+            testJavabot.start();
+        }
         return testJavabot;
     }
 
