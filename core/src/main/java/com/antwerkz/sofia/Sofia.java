@@ -500,6 +500,10 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("user.notFound", locale), arg0);
     }
 
+    public static String userParted(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("user.parted", locale), arg0);
+    }
+
     public static String weatherUnknown(Object arg0, Locale... locale) {
         return MessageFormat.format(getMessageValue("weather.unknown", locale), arg0);
     }

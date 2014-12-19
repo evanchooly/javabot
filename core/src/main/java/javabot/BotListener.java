@@ -1,5 +1,6 @@
 package javabot;
 
+import com.antwerkz.sofia.Sofia;
 import javabot.dao.AdminDao;
 import javabot.dao.ChannelDao;
 import javabot.dao.ConfigDao;
@@ -94,8 +95,7 @@ public class BotListener extends ListenerAdapter<PircBotX> {
 
     @Override
     public void onPart(final PartEvent event) {
-        logsDao.logMessage(Logs.Type.PART, event.getChannel(), event.getUser(),
-                           ":" + event.getUser() + " parted the channel");
+        logsDao.logMessage(Logs.Type.PART, event.getChannel(), event.getUser(), Sofia.userParted(event.getUser().getNick()));
         nickServDao.unregister(event.getUser());
     }
 
