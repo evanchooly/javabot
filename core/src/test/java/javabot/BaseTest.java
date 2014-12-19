@@ -102,8 +102,7 @@ public class BaseTest {
 
         datastore.delete(logsDao.getQuery(Logs.class));
         datastore.delete(changeDao.getQuery(Change.class));
-
-        Logger logger = Logger.getLogger("freemarker.cache");
+        enableAllOperations();
     }
 
     protected void enableAllOperations() {
