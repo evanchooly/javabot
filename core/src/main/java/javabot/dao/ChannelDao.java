@@ -23,6 +23,12 @@ public class ChannelDao extends BaseDao<Channel> {
     delete(find(id));
   }
 
+  public void delete(final String name) {
+    ChannelCriteria channelCriteria = new ChannelCriteria(ds);
+    channelCriteria.name(name);
+    ds.delete(channelCriteria.query());
+  }
+
   @SuppressWarnings({"unchecked"})
   public List<String> configuredChannels() {
     return ((QueryImpl) getQuery()).getCollection().distinct("name");

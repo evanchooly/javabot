@@ -70,7 +70,6 @@ public class JavabotTestModule extends JavabotModule {
     public Javabot getJavabot() {
         if(testJavabot == null) {
             testJavabot = botProvider.get();
-            testJavabot.start();
         }
         return testJavabot;
     }

@@ -2,7 +2,6 @@ package javabot;
 
 import com.jayway.awaitility.Awaitility;
 import com.jayway.awaitility.Duration;
-import freemarker.log.Logger;
 import javabot.dao.AdminDao;
 import javabot.dao.ChangeDao;
 import javabot.dao.ChannelDao;
@@ -71,7 +70,7 @@ public class BaseTest {
     private ChangeDao changeDao;
 
     @Inject
-    private TestJavabot bot;
+    private Provider<TestJavabot> bot;
 
     @Inject
     private Messages messages;
@@ -102,18 +101,19 @@ public class BaseTest {
 
         datastore.delete(logsDao.getQuery(Logs.class));
         datastore.delete(changeDao.getQuery(Change.class));
+        bot.get().start();
         enableAllOperations();
     }
 
     protected void enableAllOperations() {
-        for (Entry<String, BotOperation> entry : bot.getAllOperations().entrySet()) {
-            bot.enableOperation(entry.getKey());
+        for (Entry<String, BotOperation> entry : bot.get().getAllOperations().entrySet()) {
+            bot.get().enableOperation(entry.getKey());
         }
     }
 
     protected void disableAllOperations() {
-        for (Entry<String, BotOperation> entry : bot.getAllOperations().entrySet()) {
-            bot.disableOperation(entry.getKey());
+        for (Entry<String, BotOperation> entry : bot.get().getAllOperations().entrySet()) {
+            bot.get().disableOperation(entry.getKey());
         }
     }
 
@@ -134,7 +134,7 @@ public class BaseTest {
     }
 
     public final TestJavabot getJavabot() {
-        return bot;
+        return bot.get();
     }
 
     public PircBotX getIrcBot() {
@@ -156,7 +156,7 @@ public class BaseTest {
     @AfterSuite
     public void shutdown() throws InterruptedException {
         if (bot != null) {
-            bot.shutdown();
+            bot.get().shutdown();
         }
     }
 

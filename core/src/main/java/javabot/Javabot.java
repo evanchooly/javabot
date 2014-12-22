@@ -207,8 +207,9 @@ public class Javabot {
     }
 
     protected final void applyUpgradeScripts() {
-        for (final UpgradeScript script : UpgradeScript.loadScripts()) {
-            injector.injectMembers(script);
+        final Set<UpgradeScript> set = new TreeSet<>(new ScriptComparator());
+        set.addAll(configDao.list(UpgradeScript.class));
+        for (final UpgradeScript script : set) {
             script.execute();
         }
     }

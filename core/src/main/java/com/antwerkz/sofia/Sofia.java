@@ -500,8 +500,12 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("user.notFound", locale), arg0);
     }
 
-    public static String userParted(Object arg0, Locale... locale) {
-        return MessageFormat.format(getMessageValue("user.parted", locale), arg0);
+    public static String userParted(Object arg0, Object arg1, Locale... locale) {
+        return MessageFormat.format(getMessageValue("user.parted", locale), arg0, arg1);
+    }
+
+    public static String userQuit(Object arg0, Object arg1, Locale... locale) {
+        return MessageFormat.format(getMessageValue("user.quit", locale), arg0, arg1);
     }
 
     public static String weatherUnknown(Object arg0, Locale... locale) {

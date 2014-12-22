@@ -33,7 +33,7 @@ public class LogsDao extends BaseDao<Logs> {
             logMessage.setNick(user.getNick());
         }
         if (channel != null) {
-            logMessage.setChannel(channel.getName().toLowerCase());
+            logMessage.setChannel(channel.getName());
         }
         logMessage.setMessage(message);
         logMessage.setUpdated(LocalDateTime.now());
