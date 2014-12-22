@@ -61,11 +61,11 @@ public class LogsDaoTest extends BaseTest {
         org.pircbotx.Channel channel = bot.getUserChannelDao().getChannel(chanName);
         User user = bot.getUserChannelDao().getUser(getTestUser().getNick());
 
-        logsDao.logMessage(Logs.Type.PART, channel, user, Sofia.userParted(user.getNick()));
+        logsDao.logMessage(Logs.Type.PART, channel, user, Sofia.userParted(user.getNick(), "i'm out of here!"));
 
         List<Logs> logs = logsDao.findByChannel(chanName, LocalDateTime.now(), true);
 
         Assert.assertFalse(logs.isEmpty(), "Should have one log entry");
-        Assert.assertEquals(logs.get(0).getMessage(), Sofia.userParted(user.getNick()));
+        Assert.assertEquals(logs.get(0).getMessage(), Sofia.userParted(user.getNick(), "i'm out of here!"));
     }
 }

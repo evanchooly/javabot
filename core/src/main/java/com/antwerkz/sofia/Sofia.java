@@ -488,6 +488,10 @@ public class Sofia {
         return getMessageValue("unknown.user", locale);
     }
 
+    public static String userJoined(Object arg0, Object arg1, Object arg2, Locale... locale) {
+        return MessageFormat.format(getMessageValue("user.joined", locale), arg0, arg1, arg2);
+    }
+
     public static String userNoSharedChannels(Locale... locale) {
         return getMessageValue("user.no.shared.channels", locale);
     }

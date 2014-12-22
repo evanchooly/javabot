@@ -79,7 +79,8 @@ public class BotListener extends ListenerAdapter<PircBotX> {
     @Override
     public void onJoin(final JoinEvent event) {
         logsDao.logMessage(Logs.Type.JOIN, event.getChannel(), event.getUser(),
-                           ":" + event.getUser().getHostmask() + " joined the channel");
+                           Sofia.userJoined(event.getUser().getNick(), event.getUser().getHostmask(),
+                                            event.getChannel().getName()));
         if (adminDao.count() == 0) {
             Set<User> users = getIrcBot().getUserChannelDao().getUsers(event.getChannel());
             Admin admin = null;
