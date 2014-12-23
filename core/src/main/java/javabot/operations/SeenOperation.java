@@ -18,7 +18,7 @@ public class SeenOperation extends BotOperation {
     public boolean handleMessage(final Message event) {
         final String message = event.getValue();
         final Channel channel = event.getChannel();
-        if ("seen ".equalsIgnoreCase(message.substring(0, Math.min(message.length(), 5)))) {
+        if (channel != null && "seen ".equalsIgnoreCase(message.substring(0, Math.min(message.length(), 5)))) {
             final String key = message.substring("seen ".length());
             Seen seen = dao.getSeen(channel.getName(), key);
             if (seen != null) {

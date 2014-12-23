@@ -1,12 +1,12 @@
 package javabot.web.views;
 
+import com.antwerkz.sofia.Sofia;
 import javabot.dao.ChannelDao;
 import javabot.dao.LogsDao;
 import javabot.model.Channel;
 import javabot.model.Logs.Type;
-import net.htmlparser.jericho.Element;
-import net.htmlparser.jericho.Source;
 import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -14,8 +14,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import java.io.IOException;
 import java.time.LocalDateTime;
-
-import static java.lang.String.format;
 
 public class LogsViewTest extends ViewsTest {
     @Inject
@@ -27,41 +25,42 @@ public class LogsViewTest extends ViewsTest {
 
     @Test
     public void render() throws IOException {
-        Source source = render(new LogsView(getInjector(), new MockServletRequest(false), "testchannel", LocalDateTime.now()));
+        render(new LogsView(getInjector(), new MockServletRequest(false), "testchannel", LocalDateTime.now()));
     }
 
     @Test
     public void actions() throws IOException {
-        String value = "my type is " + Type.MESSAGE;
-        create(Type.MESSAGE, "testchannel", value);
-        String rendered = render(new LogsView(getInjector(), new MockServletRequest(false), "testchannel", LocalDateTime.now())).toString();
-        Assert.assertTrue(rendered.contains("<td>" + value + "</td>"), "Should find basic message");
+        String message = "my type is " + Type.MESSAGE;
+        final String eventChannel = "testchannel";
+        final User user = getTestUser();
+
+        logsDao.deleteAllForChannel(eventChannel);
+
+        create(Type.MESSAGE, eventChannel, message);
 
         String action = "really loves deleting boiler plate code";
-        create(Type.ACTION, "testchannel", action);
-        Source source = render(new LogsView(getInjector(), new MockServletRequest(false), "testchannel", LocalDateTime.now()));
-        Assert.assertNotNull(source.getFirstElement("class", "action", false), "Should find action");
+        create(Type.ACTION, eventChannel, action);
+        create(Type.JOIN, eventChannel, Sofia.userJoined(user.getNick(), user.getHostmask(), eventChannel));
+        create(Type.QUIT, eventChannel, Sofia.userQuit(user.getNick(), eventChannel));
+        create(Type.PART, eventChannel, Sofia.userParted(user.getNick(), "i'm done"));
 
-        value = format(":unaffiliated/%s joined the channel", getTestUser());
-        create(Type.JOIN, "testchannel", value);
-        source = render(new LogsView(getInjector(), new MockServletRequest(false), "testchannel", LocalDateTime.now()));
-        Assert.assertNotNull(source.getFirstElement("class", "join", false), "Should find join");
+        String rendered = render(new LogsView(getInjector(), new MockServletRequest(false), eventChannel, LocalDateTime.now())).toString();
 
-        value = format("%s quit", getTestUser());
-        create(Type.QUIT, "testchannel", value);
-        source = render(new LogsView(getInjector(), new MockServletRequest(false), "testchannel", LocalDateTime.now()));
-        Assert.assertNotNull(source.getFirstElement("class", "quit", false), "Should find quit");
-
-        value = format(":unaffiliated/%s parted the channel", getTestUser());
-        create(Type.PART, "testchannel", value);
-        source = render(new LogsView(getInjector(), new MockServletRequest(false), "testchannel", LocalDateTime.now()));
-        Assert.assertNotNull(source.getFirstElement("class", "part", false), "Should find part");
+        Assert.assertTrue(rendered.contains("<td>" + message + "</td>"),
+                          "Should find basic message: \n" + rendered);
+        Assert.assertTrue(rendered.contains(">" + user + " " + action + "</td>"),
+                          "Should find action: \n" + rendered);
+        Assert.assertTrue(rendered.contains(">" + Sofia.userJoined(user.getNick(), user.getHostmask(), eventChannel) + "</td>"),
+                          "Should find join: \n" + rendered);
+        Assert.assertTrue(rendered.contains(">" + Sofia.userQuit(user.getNick(), eventChannel) + "</td>"),
+                          "Should find quit: \n" + rendered);
+        Assert.assertTrue(rendered.contains(">" + Sofia.userParted(user.getNick(), "i'm done") + "</td>"),
+                          "Should find part: \n" + rendered);
     }
 
     private void create(final Type type, final String channelName, final String value) {
-        logsDao.deleteAllForChannel(channelName);
         Channel channel = channelDao.get(channelName);
-        if(channel == null) {
+        if (channel == null) {
             channelDao.create(channelName, true, null);
         }
 

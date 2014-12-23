@@ -492,6 +492,10 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("user.joined", locale), arg0, arg1, arg2);
     }
 
+    public static String userNickChanged(Object arg0, Object arg1, Locale... locale) {
+        return MessageFormat.format(getMessageValue("user.nickChanged", locale), arg0, arg1);
+    }
+
     public static String userNoSharedChannels(Locale... locale) {
         return getMessageValue("user.no.shared.channels", locale);
     }

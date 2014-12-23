@@ -36,9 +36,11 @@
                 <td class="${log.type?lower_case}" colspan="2">${log.message}</td>
                 <#break>
             <#case "ACTION">
+                <td class="${log.type?lower_case}" colspan="2">${log.nick} ${log.message}</td>
+                <#break>
             <#case "KICK">
             <#case "QUIT">
-                <td class="${log.type?lower_case}" colspan="2">${log.nick} ${log.message}</td>
+                <td class="${log.type?lower_case}" colspan="2">${log.message}</td>
                 <#break>
             <#default>
                 <td class="nick">${log.nick}</td>
