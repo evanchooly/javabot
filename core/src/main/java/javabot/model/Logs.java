@@ -120,9 +120,14 @@ public class Logs implements Persistent {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Logs{");
-        sb.append("id=").append(id);
-        sb.append('}');
-        return sb.toString();
+        return "Logs{" +
+               " id=" + id +
+               ", type=" + type +
+               ", channel='" + channel + '\'' +
+               ", updated=" + updated +
+               ", nick='" + nick + '\'' +
+               ", message='" + message + '\'' +
+               ", upperNick='" + upperNick + '\'' +
+               '}';
     }
 }

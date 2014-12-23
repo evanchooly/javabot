@@ -32,6 +32,8 @@
     <tr>
         <#switch log.type>
             <#case "JOIN">
+                <td class="${log.type?lower_case}" colspan="2">${log.message}</td>
+                <#break>
             <#case "PART">
                 <td class="${log.type?lower_case}" colspan="2">${log.message}</td>
                 <#break>
@@ -39,6 +41,8 @@
                 <td class="${log.type?lower_case}" colspan="2">${log.nick} ${log.message}</td>
                 <#break>
             <#case "KICK">
+                <td class="${log.type?lower_case}" colspan="2">${log.message}</td>
+                <#break>
             <#case "QUIT">
                 <td class="${log.type?lower_case}" colspan="2">${log.message}</td>
                 <#break>
