@@ -61,10 +61,7 @@ public class LogsDao extends BaseDao<Logs> {
                               : date.toLocalDate();
             LocalDate tomorrow = start.plusDays(1);
             LogsCriteria criteria = new LogsCriteria(ds);
-            criteria.or(
-                criteria.channel(channelName),
-                criteria.channel(null)
-            );
+            criteria.channel(channelName);
             LocalDateTime nextMidnight = tomorrow.atStartOfDay();
             LocalDateTime lastMidnight = start.atStartOfDay();
             criteria.and(
