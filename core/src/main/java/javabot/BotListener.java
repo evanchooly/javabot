@@ -97,16 +97,12 @@ public class BotListener extends ListenerAdapter<PircBotX> {
 
     @Override
     public void onPart(final PartEvent event) {
-        LOG.info("************ BotListener.onPart");
-        LOG.info("************ event = [" + event + "]");
         logsDao.logMessage(Logs.Type.PART, event.getChannel(), event.getUser(), Sofia.userParted(event.getUser().getNick(), event.getReason()));
         nickServDao.unregister(event.getUser());
     }
 
     @Override
     public void onQuit(final QuitEvent event) {
-        LOG.info("************ BotListener.onQuit");
-        LOG.info("************ event = [" + event + "]");
         logsDao.logMessage(Logs.Type.QUIT, null, event.getUser(), Sofia.userQuit(event.getUser().getNick(), event.getReason()));
         nickServDao.unregister(event.getUser());
     }
