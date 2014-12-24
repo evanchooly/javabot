@@ -28,7 +28,7 @@ public class NickServLookup extends AdminCommand {
                 info.toNickServFormat().stream().forEach(line -> getJavabot().postMessage(null, event.getUser(), line, event.isTell()));
             }
         } catch (ConditionTimeoutException e) {
-            getJavabot().postMessage(null, event.getUser(), Sofia.noNickservEntry(name), event.isTell());
+            getJavabot().postMessage(null, event.getUser(), Sofia.nickservNotResponding(), event.isTell());
         }
     }
 

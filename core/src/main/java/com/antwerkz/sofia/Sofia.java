@@ -412,6 +412,10 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("logs.noneForNick", locale), arg0);
     }
 
+    public static String nickservNotResponding(Locale... locale) {
+        return getMessageValue("nickserv.not.responding", locale);
+    }
+
     public static String noDocumentation(Object arg0, Locale... locale) {
         return MessageFormat.format(getMessageValue("no.documentation", locale), arg0);
     }
