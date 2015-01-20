@@ -76,6 +76,7 @@ public class Throttler extends BaseDao<ThrottleItem> {
             Sofia.logNoNickservEntry(user.getNick());
             throw new NickServViolationException(Sofia.unknownUser());
         }
+        System.out.println("nickServInfo = " + nickServInfo);
         if (Duration.between(nickServInfo.getRegistered(), now()).toDays() < configDao.get().getMinimumNickServAge()) {
             throw new NickServViolationException(Sofia.accountTooNew());
         }
