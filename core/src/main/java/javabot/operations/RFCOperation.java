@@ -4,6 +4,7 @@ import com.antwerkz.sofia.Sofia;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.inject.Singleton;
 import javabot.Message;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Displays RFC url and title
  */
+@Singleton
 public class RFCOperation extends BotOperation {
   public static final String prefix = "rfc ";
   LoadingCache<String, String> rfcTitleCache = CacheBuilder.newBuilder()
