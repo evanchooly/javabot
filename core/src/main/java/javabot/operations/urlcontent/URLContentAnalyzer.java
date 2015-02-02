@@ -36,10 +36,13 @@ public class URLContentAnalyzer {
         // now break down the words in the title.
         String[] wordsInTitle = title.toLowerCase().split(" ");
         long words = Stream.of(wordsInTitle)
+                .map(s -> s.replaceAll("[\\W]|_", ""))
                 .filter(s -> s.length() > 2)
                 .count();
         // generate a ratio of words to occurrences in the title.
         long hits = Stream.of(wordsInTitle)
+                .map(s -> s.replaceAll("[\\W]|_", ""))
+                .filter(s -> s.length() > 2)
                 .filter(s -> url.toLowerCase().contains(s.toLowerCase()))
                 .count();
 
