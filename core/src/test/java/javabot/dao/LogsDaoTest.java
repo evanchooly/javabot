@@ -6,7 +6,7 @@ import javabot.model.Channel;
 import javabot.model.Logs;
 import javabot.model.Logs.Type;
 import javabot.model.UserFactory;
-import javabot.model.criteria.LogsCriteria;
+import javabot.criteria.LogsCriteria;
 import org.mongodb.morphia.Datastore;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;

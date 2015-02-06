@@ -5,6 +5,8 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -29,7 +31,7 @@ public class Config implements Serializable, Persistent {
 
   private Integer schemaVersion;
 
-  private Set<String> operations = new TreeSet<>();
+  private List<String> operations = new ArrayList<>();
 
   private Integer throttleThreshold = 5;
 
@@ -40,7 +42,7 @@ public class Config implements Serializable, Persistent {
 
   public Config(final ObjectId id, final String server, final String url, final Integer port,
       final Integer historyLength, final String trigger, final String nick, final String password,
-      final Set<String> operations) {
+      final List<String> operations) {
     this.id = id;
     this.historyLength = historyLength;
     this.nick = nick;
@@ -76,11 +78,11 @@ public class Config implements Serializable, Persistent {
     nick = botName;
   }
 
-  public Set<String> getOperations() {
+  public List<String> getOperations() {
     return operations;
   }
 
-  public void setOperations(final Set<String> list) {
+  public void setOperations(final List<String> list) {
     operations = list;
   }
 

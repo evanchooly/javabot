@@ -14,6 +14,7 @@ import javax.inject.Provider;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TreeSet;
 
@@ -29,7 +30,7 @@ public class ConfigurationViewTest extends ViewsTest {
     @Test
     public void configuration() throws IOException {
         Config config = configDao.get();
-        config.setOperations(new TreeSet<>());
+        config.setOperations(new ArrayList<>());
         configDao.save(config);
 
         FreemarkerViewRenderer renderer = new FreemarkerViewRenderer();
@@ -47,7 +48,7 @@ public class ConfigurationViewTest extends ViewsTest {
         assertEquals(disable.getAttributeValue("class"), "inactive");
 
         config = configDao.get();
-        config.setOperations(new TreeSet<>(asList(operation)));
+        config.setOperations(asList(operation));
         configDao.save(config);
 
         output = new ByteArrayOutputStream();

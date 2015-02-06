@@ -4,7 +4,7 @@ import javabot.model.Admin;
 import javabot.model.Config;
 import javabot.model.EventType;
 import javabot.model.OperationEvent;
-import javabot.model.criteria.AdminCriteria;
+import javabot.criteria.AdminCriteria;
 import org.pircbotx.User;
 
 import javax.inject.Inject;

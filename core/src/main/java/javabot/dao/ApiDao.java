@@ -4,7 +4,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import javabot.javadoc.JavadocApi;
-import javabot.javadoc.criteria.JavadocApiCriteria;
+import javabot.criteria.JavadocApiCriteria;
 import org.bson.types.ObjectId;
 
 public class ApiDao extends BaseDao<JavadocApi> {

@@ -3,7 +3,7 @@ package javabot.operations;
 import com.antwerkz.sofia.Sofia;
 import javabot.Message;
 import javabot.model.Logs;
-import javabot.model.criteria.LogsCriteria;
+import javabot.criteria.LogsCriteria;
 import org.mongodb.morphia.Datastore;
 
 import javax.inject.Inject;

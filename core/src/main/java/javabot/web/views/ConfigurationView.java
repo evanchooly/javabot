@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class ConfigurationView extends MainView {
     @Inject
@@ -39,7 +40,7 @@ public class ConfigurationView extends MainView {
     }
 
     public Set<String> getCurrentOps() {
-        return getConfiguration().getOperations();
+        return new TreeSet<>(getConfiguration().getOperations());
     }
 
     public boolean enabled(String operation) {

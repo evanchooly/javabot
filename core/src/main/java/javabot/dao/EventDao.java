@@ -2,7 +2,7 @@ package javabot.dao;
 
 import javabot.model.AdminEvent;
 import javabot.model.AdminEvent.State;
-import javabot.model.criteria.AdminEventCriteria;
+import javabot.criteria.AdminEventCriteria;
 
 public class EventDao extends BaseDao<AdminEvent> {
   protected EventDao() {

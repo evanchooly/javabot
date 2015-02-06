@@ -9,7 +9,7 @@ import org.mongodb.morphia.query.QueryImpl;
 import javabot.model.Activity;
 import javabot.dao.util.QueryParam;
 import javabot.model.Channel;
-import javabot.model.criteria.ChannelCriteria;
+import javabot.criteria.ChannelCriteria;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 

@@ -10,6 +10,7 @@
 .settings
 RUNNING_PID
 bin/dumps
+core/src/main/java/javabot/criteria/
 dist
 idea-files
 javabot.properties

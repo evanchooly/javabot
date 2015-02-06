@@ -1,8 +1,8 @@
 package javabot.dao;
 
 import javabot.model.NickServInfo;
-import javabot.model.criteria.NickServInfoCriteria;
-import javabot.model.criteria.NickServInfoCriteria.NickServInfoUpdater;
+import javabot.criteria.NickServInfoCriteria;
+import javabot.criteria.NickServInfoCriteria.NickServInfoUpdater;
 import org.pircbotx.User;
 
 import java.time.LocalDateTime;

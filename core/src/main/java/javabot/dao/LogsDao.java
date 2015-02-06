@@ -3,7 +3,7 @@ package javabot.dao;
 import javabot.Seen;
 import javabot.model.Logs;
 import javabot.model.Logs.Type;
-import javabot.model.criteria.LogsCriteria;
+import javabot.criteria.LogsCriteria;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.slf4j.Logger;

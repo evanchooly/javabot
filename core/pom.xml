@@ -156,19 +156,33 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.antwerkz.critter</groupId>
+                <artifactId>critter-maven</artifactId>
+                <version>${critter.version}</version>
+                <executions>
+                    <execution>
+                        <id>critter</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <criteriaPkg>javabot.criteria</criteriaPkg>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
         <dependency>
             <groupId>com.antwerkz.critter</groupId>
-            <artifactId>critter-apt</artifactId>
+            <artifactId>critter-core</artifactId>
             <version>${critter.version}</version>
-            <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>com.antwerkz.critter</groupId>
-            <artifactId>critter-core</artifactId>
+            <artifactId>critter-maven</artifactId>
             <version>${critter.version}</version>
         </dependency>
 

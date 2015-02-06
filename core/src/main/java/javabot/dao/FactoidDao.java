@@ -4,7 +4,7 @@ import com.mongodb.WriteResult;
 import javabot.dao.util.QueryParam;
 import javabot.model.Factoid;
 import javabot.model.Persistent;
-import javabot.model.criteria.FactoidCriteria;
+import javabot.criteria.FactoidCriteria;
 import org.mongodb.morphia.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
