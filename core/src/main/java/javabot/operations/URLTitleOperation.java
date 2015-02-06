@@ -48,6 +48,7 @@ public class URLTitleOperation extends BotOperation {
             HttpClient httpclient = new DefaultHttpClient(params);
             HttpGet httpget = new HttpGet(url);
             HttpResponse response = httpclient.execute(httpget);
+
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 try {
@@ -55,7 +56,10 @@ public class URLTitleOperation extends BotOperation {
                     if (analyzer.check(url, doc.title())) {
                         getBot().postMessage(event.getChannel(),
                                 event.getUser(),
-                                originalUrl + ": " + doc.title(),
+                                String.format("%s'%s title: %s",
+                                        event.getUser().getNick(),
+                                        event.getUser().getNick().endsWith("s")?"":"s",
+                                        doc.title()),
                                 event.isTell());
                     }
                 } finally {
