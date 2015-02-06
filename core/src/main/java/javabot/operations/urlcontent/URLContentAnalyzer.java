@@ -16,7 +16,7 @@ public class URLContentAnalyzer {
     }
 
     private void checkForBlacklistedSites(String url, String title) throws ContentException {
-        String[] patterns = {"astebin", "mysticpaste.com", "pastie", "gist.github.com"};
+        String[] patterns = {"astebin", "mysticpaste.com", "pastie", "gist.github.com", "ideone.com"};
         for (String pattern : patterns) {
             if (url.contains(pattern)) {
                 throw new ContentException(String.format("Rejected: blacklisted site %s", url));
