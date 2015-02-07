@@ -11,7 +11,7 @@
                     <td class="dateNav top today">
                         <h3>${today}</h3>
                     <#if isAdmin()>
-                        <a href="/admin/editChannel/${channel}">(edit channel)</a>
+                        <a href="/admin/editChannel/${encode(channel)}">(edit channel)</a>
                     </#if>
                     </td>
                     <td class="dateNav top right nextNav">

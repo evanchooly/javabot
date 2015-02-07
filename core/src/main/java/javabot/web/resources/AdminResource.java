@@ -79,6 +79,14 @@ public class AdminResource {
         return new ChannelEditView(injector, request, new Channel());
     }
 
+    @GET
+    @Path("/editChannel/{channel}")
+    public View editChannel(@Context HttpServletRequest request, @Restricted(Authority.ROLE_ADMIN) User user,
+        @PathParam("channel") String channel) {
+
+        return new ChannelEditView(injector, request, channelDao.get(channel));
+    }
+
     @POST
     @Path("/saveConfig")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)

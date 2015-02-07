@@ -5,11 +5,10 @@
             <td class="top right">
                 <#if channel.id?? >
                     <input type="hidden" name="id" value="${channel.id}"/>
+                    <input type="hidden" name="name" value="${channel.name}"/>${channel.name}
+                <#else>
+                    <input type="text" name="name" value="">
                 </#if>
-
-                <input type="text" name="name" value="<#if channel.name?? >${channel.name}</#if>"
-                    <#if channel.id?? > disabled </#if>
-                />
                 <#--<span class="error">#{error 'channel.name' /}</span>-->
             </td>
         </tr>
