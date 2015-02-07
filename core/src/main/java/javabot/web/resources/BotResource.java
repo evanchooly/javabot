@@ -98,7 +98,6 @@ public class BotResource {
                 date = LocalDate.parse(dateString, FORMAT).atStartOfDay();
             }
         } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
             date = LocalDate.now().atStartOfDay();
         }
 

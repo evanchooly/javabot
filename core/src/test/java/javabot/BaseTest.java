@@ -1,5 +1,11 @@
 package javabot;
 
+import java.util.EnumSet;
+import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import com.jayway.awaitility.Awaitility;
 import com.jayway.awaitility.Duration;
 import javabot.dao.AdminDao;
@@ -25,154 +31,148 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Guice;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import java.util.EnumSet;
-import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
-
 @Guice(modules = {JavabotTestModule.class})
 public class BaseTest {
-    public static final String TEST_NICK = "jbtestuser";
+  public static final String TEST_NICK = "jbtestuser";
 
-    public static final String TEST_USER_NICK = "botuser";
+  public static final String TEST_USER_NICK = "botuser";
 
-    public static final String TEST_BOT_NICK = "testjavabot";
-    public static final String BOT_EMAIL = "test@example.com";
+  public static final String TEST_BOT_NICK = "testjavabot";
 
-    public EnumSet<State> done = EnumSet.of(State.COMPLETED, State.FAILED);
+  public static final String BOT_EMAIL = "test@example.com";
 
-    @Inject
-    private UserFactory userFactory;
+  public EnumSet<State> done = EnumSet.of(State.COMPLETED, State.FAILED);
 
-    @Inject
-    private Datastore datastore;
+  @Inject
+  private UserFactory userFactory;
 
-    @Inject
-    private EventDao eventDao;
+  @Inject
+  private Datastore datastore;
 
-    @Inject
-    private ChannelDao channelDao;
+  @Inject
+  private EventDao eventDao;
 
-    @Inject
-    private LogsDao logsDao;
+  @Inject
+  private ChannelDao channelDao;
 
-    @Inject
-    private NickServDao nickServDao;
+  @Inject
+  private LogsDao logsDao;
 
-    @Inject
-    private Provider<PircBotX> ircBot;
+  @Inject
+  private NickServDao nickServDao;
 
-    @Inject
-    private AdminDao adminDao;
+  @Inject
+  private Provider<PircBotX> ircBot;
 
-    @Inject
-    private ChangeDao changeDao;
+  @Inject
+  private AdminDao adminDao;
 
-    @Inject
-    private Provider<TestJavabot> bot;
+  @Inject
+  private ChangeDao changeDao;
 
-    @Inject
-    private Messages messages;
+  @Inject
+  private Provider<TestJavabot> bot;
 
-    public final String ok = "OK, " + TEST_USER_NICK.substring(0, Math.min(TEST_USER_NICK.length(), 16)) + ".";
+  @Inject
+  private Messages messages;
 
-    private User testUser;
+  public final String ok = "OK, " + TEST_USER_NICK.substring(0, Math.min(TEST_USER_NICK.length(), 16)) + ".";
 
-    @BeforeTest
-    public void setup() {
-        User testUser = getTestUser();
-        Admin admin = adminDao.getAdmin(testUser);
-        if (admin == null) {
-            admin = adminDao.create(testUser.getNick(), testUser.getRealName(), testUser.getHostmask());
-            admin.setBotOwner(true);
-            adminDao.save(admin);
-        }
-        admin.setEmailAddress(BOT_EMAIL);
-        adminDao.save(admin);
+  private User testUser;
 
-        Channel channel = channelDao.get(getJavabotChannel().getName());
-        if (channel == null) {
-            channel = new Channel();
-            channel.setName(getJavabotChannel().getName());
-            channel.setLogged(true);
-            channelDao.save(channel);
-        }
-
-        datastore.delete(logsDao.getQuery(Logs.class));
-        datastore.delete(changeDao.getQuery(Change.class));
-        bot.get().start();
-        enableAllOperations();
+  @BeforeTest
+  public void setup() {
+    User testUser = getTestUser();
+    Admin admin = adminDao.getAdminByEmailAddress(BOT_EMAIL);
+    if (admin == null) {
+      admin = adminDao.create(testUser.getNick(), testUser.getRealName(), testUser.getHostmask());
+      admin.setBotOwner(true);
+      admin.setEmailAddress(BOT_EMAIL);
+      adminDao.save(admin);
     }
 
-    protected void enableAllOperations() {
-        for (Entry<String, BotOperation> entry : bot.get().getAllOperations().entrySet()) {
-            bot.get().enableOperation(entry.getKey());
-        }
+    Channel channel = channelDao.get(getJavabotChannel().getName());
+    if (channel == null) {
+      channel = new Channel();
+      channel.setName(getJavabotChannel().getName());
+      channel.setLogged(true);
+      channelDao.save(channel);
     }
 
-    protected void disableAllOperations() {
-        for (Entry<String, BotOperation> entry : bot.get().getAllOperations().entrySet()) {
-            bot.get().disableOperation(entry.getKey());
-        }
-    }
+    datastore.delete(logsDao.getQuery(Logs.class));
+    datastore.delete(changeDao.getQuery(Change.class));
+    bot.get().start();
+    enableAllOperations();
+  }
 
-    @BeforeMethod
-    public void clearMessages() {
-        messages.get();
+  protected void enableAllOperations() {
+    for (Entry<String, BotOperation> entry : bot.get().getAllOperations().entrySet()) {
+      bot.get().enableOperation(entry.getKey());
     }
+  }
 
-    public User getTestUser() {
-        if (testUser == null) {
-            testUser = userFactory.createUser(TEST_USER_NICK, TEST_USER_NICK, "hostmask");
-        }
-        return testUser;
+  protected void disableAllOperations() {
+    for (Entry<String, BotOperation> entry : bot.get().getAllOperations().entrySet()) {
+      bot.get().disableOperation(entry.getKey());
     }
+  }
 
-    public Messages getMessages() {
-        return messages;
-    }
+  @BeforeMethod
+  public void clearMessages() {
+    messages.get();
+  }
 
-    public final TestJavabot getJavabot() {
-        return bot.get();
+  public User getTestUser() {
+    if (testUser == null) {
+      testUser = userFactory.createUser(TEST_USER_NICK, TEST_USER_NICK, "hostmask");
     }
+    return testUser;
+  }
 
-    public PircBotX getIrcBot() {
-        return ircBot.get();
-    }
+  public Messages getMessages() {
+    return messages;
+  }
 
-    protected org.pircbotx.Channel getJavabotChannel() {
-        return getIrcBot().getUserChannelDao().getChannel("#jbunittest");
-    }
+  public final TestJavabot getJavabot() {
+    return bot.get();
+  }
 
-    @SuppressWarnings({"EmptyCatchBlock"})
-    protected static void sleep(final int milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException exception) {
-        }
-    }
+  public PircBotX getIrcBot() {
+    return ircBot.get();
+  }
 
-    @AfterSuite
-    public void shutdown() throws InterruptedException {
-        if (bot != null) {
-            bot.get().shutdown();
-        }
-    }
+  protected org.pircbotx.Channel getJavabotChannel() {
+    return getIrcBot().getUserChannelDao().getChannel("#jbunittest");
+  }
 
-    protected void waitForEvent(final AdminEvent event, final String alias, final Duration timeout) {
-        Awaitility.await(alias)
-                  .atMost(timeout)
-                  .pollInterval(5, TimeUnit.SECONDS)
-                  .until(() -> done.contains(eventDao.find(event.getId()).getState()));
+  @SuppressWarnings({"EmptyCatchBlock"})
+  protected static void sleep(final int milliseconds) {
+    try {
+      Thread.sleep(milliseconds);
+    } catch (InterruptedException exception) {
     }
+  }
 
-    protected User registerIrcUser(final String nick, final String userName, final String host) {
-        User bob = userFactory.createUser(nick, userName, host);
-        NickServInfo info = new NickServInfo(bob);
-        info.setRegistered(info.getRegistered().minusDays(100));
-        nickServDao.clear();
-        nickServDao.save(info);
-        return bob;
+  @AfterSuite
+  public void shutdown() throws InterruptedException {
+    if (bot != null) {
+      bot.get().shutdown();
     }
+  }
+
+  protected void waitForEvent(final AdminEvent event, final String alias, final Duration timeout) {
+    Awaitility.await(alias)
+        .atMost(timeout)
+        .pollInterval(5, TimeUnit.SECONDS)
+        .until(() -> done.contains(eventDao.find(event.getId()).getState()));
+  }
+
+  protected User registerIrcUser(final String nick, final String userName, final String host) {
+    User bob = userFactory.createUser(nick, userName, host);
+    NickServInfo info = new NickServInfo(bob);
+    info.setRegistered(info.getRegistered().minusDays(100));
+    nickServDao.clear();
+    nickServDao.save(info);
+    return bob;
+  }
 }
