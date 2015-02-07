@@ -1,5 +1,6 @@
 package javabot.dao;
 
+import com.antwerkz.sofia.Sofia;
 import com.mongodb.WriteResult;
 import javabot.dao.util.QueryParam;
 import javabot.model.Factoid;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 @SuppressWarnings({"ConstantNamingConvention"})
 public class FactoidDao extends BaseDao<Factoid> {
@@ -108,13 +110,25 @@ public class FactoidDao extends BaseDao<Factoid> {
     private Query<Factoid> buildFindQuery(final QueryParam qp, final Factoid filter, final boolean count) {
         FactoidCriteria criteria = new FactoidCriteria(ds);
         if (filter.getName() != null) {
+          try {
             criteria.upperName().contains(filter.getName().toUpperCase());
+          } catch (PatternSyntaxException e) {
+            Sofia.logFactoidInvalidSearchValue(filter.getValue());
+          }
         }
         if (filter.getUserName() != null) {
+          try {
             criteria.upperUserName().contains(filter.getUserName().toUpperCase());
+          } catch (PatternSyntaxException e) {
+            Sofia.logFactoidInvalidSearchValue(filter.getValue());
+          }
         }
         if (filter.getValue() != null) {
+          try {
             criteria.upperValue().contains(filter.getValue().toUpperCase());
+          } catch (PatternSyntaxException e) {
+            Sofia.logFactoidInvalidSearchValue(filter.getValue());
+          }
         }
         if (!count && qp != null && qp.hasSort()) {
             criteria.query().order((qp.isSortAsc() ? "" : "-") + "upper" + qp.getSort());

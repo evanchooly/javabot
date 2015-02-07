@@ -44,6 +44,15 @@ public class Sofia {
             logger.debug(loggingInUser(arg0));
         }
     }
+    public static String factoidInvalidSearchValue(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("@info.factoid.invalid.search.value", locale), arg0);
+    }
+
+    public static void logFactoidInvalidSearchValue(Object arg0, Locale... locale) {
+        if(logger.isInfoEnabled()) {
+            logger.info(factoidInvalidSearchValue(arg0));
+        }
+    }
     public static String noNickservEntry(Object arg0, Locale... locale) {
         return MessageFormat.format(getMessageValue("@info.no.nickserv.entry", locale), arg0);
     }
