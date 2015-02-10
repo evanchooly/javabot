@@ -1,8 +1,8 @@
 package javabot.dao;
 
-import javabot.criteria.JavadocClassCriteria;
-import javabot.criteria.JavadocFieldCriteria;
-import javabot.criteria.JavadocMethodCriteria;
+import javabot.javadoc.criteria.JavadocClassCriteria;
+import javabot.javadoc.criteria.JavadocFieldCriteria;
+import javabot.javadoc.criteria.JavadocMethodCriteria;
 import javabot.javadoc.JavadocApi;
 import javabot.javadoc.JavadocClass;
 import javabot.javadoc.JavadocClassVisitor;

@@ -166,9 +166,6 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                        <configuration>
-                            <criteriaPkg>javabot.criteria</criteriaPkg>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

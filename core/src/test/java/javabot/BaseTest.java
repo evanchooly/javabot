@@ -84,12 +84,11 @@ public class BaseTest {
   public void setup() {
     User testUser = getTestUser();
     Admin admin = adminDao.getAdminByEmailAddress(BOT_EMAIL);
-    if (admin == null) {
-      admin = adminDao.create(testUser.getNick(), testUser.getRealName(), testUser.getHostmask());
-      admin.setBotOwner(true);
-      admin.setEmailAddress(BOT_EMAIL);
-      adminDao.save(admin);
-    }
+    admin.setIrcName(testUser.getNick());
+    admin.setEmailAddress(BOT_EMAIL);
+    admin.setHostName(testUser.getHostmask());
+    admin.setBotOwner(true);
+    adminDao.save(admin);
 
     Channel channel = channelDao.get(getJavabotChannel().getName());
     if (channel == null) {

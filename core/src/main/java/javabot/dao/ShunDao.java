@@ -3,7 +3,7 @@ package javabot.dao;
 import java.time.LocalDateTime;
 
 import javabot.model.Shun;
-import javabot.criteria.ShunCriteria;
+import javabot.model.criteria.ShunCriteria;
 
 public class ShunDao extends BaseDao<Shun> {
 

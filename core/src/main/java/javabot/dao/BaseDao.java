@@ -27,7 +27,7 @@ public class BaseDao<T extends Persistent> {
   }
 
   public T find(final ObjectId id) {
-    return ds.<T>createQuery(entityClass).filter("_id", id).get();
+    return ds.createQuery(entityClass).filter("_id", id).get();
   }
 
   public List<T> findAll() {

@@ -4,7 +4,7 @@ import com.antwerkz.sofia.Sofia;
 import com.mongodb.WriteResult;
 import javabot.dao.util.QueryParam;
 import javabot.model.Karma;
-import javabot.criteria.KarmaCriteria;
+import javabot.model.criteria.KarmaCriteria;
 import org.mongodb.morphia.query.Query;
 
 import javax.inject.Inject;

@@ -9,7 +9,7 @@ import javabot.dao.ConfigDao;
 import javabot.dao.NickServDao;
 import javabot.model.NickServInfo;
 import javabot.model.ThrottleItem;
-import javabot.criteria.ThrottleItemCriteria;
+import javabot.model.criteria.ThrottleItemCriteria;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
