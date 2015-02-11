@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 
 @Entity(value = "factoids", noClassnameStored = true)
 @Indexes({
-    @Index(value = "upperName", unique = true),
     @Index("upperName, upperUserName")
 })
 public class Factoid implements Serializable, Persistent {
@@ -44,13 +43,13 @@ public class Factoid implements Serializable, Persistent {
 
   private Boolean locked;
 
-  @Indexed
+  @Indexed(unique = true)
   private String upperName;
 
-  @Indexed
+  @Indexed(unique = true)
   private String upperUserName;
 
-  @Indexed
+  @Indexed(unique = true)
   private String upperValue;
 
   public Factoid() {
