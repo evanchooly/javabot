@@ -43,13 +43,13 @@ public class Factoid implements Serializable, Persistent {
 
   private Boolean locked;
 
-  @Indexed(unique = true)
+  @Indexed
   private String upperName;
 
-  @Indexed(unique = true)
+  @Indexed
   private String upperUserName;
 
-  @Indexed(unique = true)
+  @Indexed
   private String upperValue;
 
   public Factoid() {
