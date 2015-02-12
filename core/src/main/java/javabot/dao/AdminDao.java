@@ -21,7 +21,6 @@ public class AdminDao extends BaseDao<Admin> {
 
   @Override
   public List<Admin> findAll() {
-    System.out.println("AdminDao.findAll");
     return ds.createQuery(Admin.class).order("userName").asList();
   }
 
@@ -37,8 +36,6 @@ public class AdminDao extends BaseDao<Admin> {
   }
 
   public Admin getAdmin(final User user) {
-    System.out.println("AdminDao.getAdmin");
-    System.out.println("user = [" + user + "]");
     AdminCriteria adminCriteria = new AdminCriteria(ds);
     adminCriteria.ircName(user.getNick());
     return adminCriteria.query().get();

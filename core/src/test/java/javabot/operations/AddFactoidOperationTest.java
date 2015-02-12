@@ -84,7 +84,6 @@ public class AddFactoidOperationTest extends BaseMessagingTest {
             .atMost(10, TimeUnit.SECONDS)
             .until(() -> !getMessages().isEmpty());
         Messages messages = getMessages();
-        System.out.println("messages = " + messages);;
         Assert.assertFalse(messages.isEmpty());
     }
 }

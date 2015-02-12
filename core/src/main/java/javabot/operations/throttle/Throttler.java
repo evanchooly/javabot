@@ -43,14 +43,11 @@ public class Throttler extends BaseDao<ThrottleItem> {
    * @return true if the user is currently throttled and ought to be ignored, false otherwise.
    */
   public boolean isThrottled(final User user) {
-    System.out.println("checking isAdmin");
     if (!adminDao.isAdmin(user)) {
-      System.out.println("validateNickServAccount");
       validateNickServAccount(user);
       ds.save(new ThrottleItem(user));
       ThrottleItemCriteria criteria = new ThrottleItemCriteria(ds);
       criteria.user(user.getNick());
-      System.out.println("counting throttles");
       return criteria.query().countAll() > configDao.get().getThrottleThreshold();
     }
     return false;

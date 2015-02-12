@@ -29,7 +29,6 @@ public class AdminSeleniumTest {
         driver = new ChromeDriver();
         baseUrl = "http://localhost:8080/";
         Options manage = driver.manage();
-        System.out.println("manage = " + manage);
         manage.timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
 

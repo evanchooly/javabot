@@ -178,7 +178,6 @@ public class Javabot {
     try {
       Thread thread = new Thread(() -> {
         try {
-          System.out.println("*******  Connecting to the server: " + configDao.get());
           ircBot.get().startBot();
         } catch (Exception e) {
           e.printStackTrace(System.out);
@@ -273,19 +272,16 @@ public class Javabot {
     final org.pircbotx.Channel channel = message.getChannel();
     logsDao.logMessage(Logs.Type.MESSAGE, channel, sender, message.getValue());
     boolean handled = false;
-    System.out.println("checking isValidSender");
     if (isValidSender(sender.getNick())) {
       for (final String startString : getStartStrings()) {
         if (message.getValue().startsWith(startString)) {
           try {
-            System.out.println("checking isThrottled");
             if (throttler.isThrottled(message.getUser())) {
               postMessage(null, message.getUser(), Sofia.throttledUser(), false);
               handled = true;
             } else {
               String content = extractContentFromMessage(message.getValue(), startString);
               if (!content.isEmpty()) {
-                System.out.println("checking for responses");
                 handled = getResponses(new Message(message, content), message.getUser());
               }
             }
@@ -346,7 +342,6 @@ public class Javabot {
     boolean handled = false;
     while (iterator.hasNext() && !handled) {
       final BotOperation next = iterator.next();
-      System.out.println("checking operation " + next);
       handled = next.handleMessage(message);
     }
 
