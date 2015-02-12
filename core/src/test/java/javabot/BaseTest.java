@@ -1,7 +1,6 @@
 package javabot;
 
 import java.util.EnumSet;
-import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -22,7 +21,6 @@ import javabot.model.Channel;
 import javabot.model.Logs;
 import javabot.model.NickServInfo;
 import javabot.model.UserFactory;
-import javabot.operations.BotOperation;
 import org.mongodb.morphia.Datastore;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -105,15 +103,13 @@ public class BaseTest {
   }
 
   protected void enableAllOperations() {
-    for (Entry<String, BotOperation> entry : bot.get().getAllOperations().entrySet()) {
-      bot.get().enableOperation(entry.getKey());
-    }
+    final TestJavabot bot = this.bot.get();
+    bot.getAllOperations().keySet().forEach(bot::enableOperation);
   }
 
   protected void disableAllOperations() {
-    for (Entry<String, BotOperation> entry : bot.get().getAllOperations().entrySet()) {
-      bot.get().disableOperation(entry.getKey());
-    }
+    final TestJavabot bot = this.bot.get();
+    bot.getAllOperations().keySet().forEach(bot::disableOperation);
   }
 
   @BeforeMethod

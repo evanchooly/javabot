@@ -209,9 +209,7 @@ public class Javabot {
     protected final void applyUpgradeScripts() {
         final Set<UpgradeScript> set = new TreeSet<>(new ScriptComparator());
         set.addAll(configDao.list(UpgradeScript.class));
-        for (final UpgradeScript script : set) {
-            script.execute();
-        }
+        set.forEach(UpgradeScript::execute);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -226,14 +224,9 @@ public class Javabot {
     }
 
     public final void enableOperations() {
-        for (final StandardOperation op : configDao.list(StandardOperation.class)) {
-            enableOperation(((BotOperation) op).getName());
-        }
-        for (final AdminCommand op : configDao.list(AdminCommand.class)) {
-            enableOperation(op.getName());
-        }
         try {
-            configDao.get().getOperations().forEach(this::enableOperation);
+            configDao.get().getOperations()
+                .forEach(klass -> getActiveOperations().add(getAllOperations().get(klass)));
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             throw new RuntimeException(e.getMessage(), e);
