@@ -1,10 +1,29 @@
 package javabot;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import com.antwerkz.sofia.Sofia;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.jayway.awaitility.Awaitility;
+import static java.lang.String.format;
 import javabot.commands.AdminCommand;
 import javabot.dao.ChannelDao;
 import javabot.dao.ConfigDao;
@@ -26,30 +45,8 @@ import javabot.operations.throttle.Throttler;
 import javabot.web.JavabotApplication;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
-import org.pircbotx.exception.IrcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import static java.lang.String.format;
 
 @Singleton
 public class Javabot {
@@ -181,15 +178,16 @@ public class Javabot {
         try {
             Thread thread = new Thread(() -> {
                 try {
+                    System.out.println("*******  Connecting to the server: " + configDao.get());
                     ircBot.get().startBot();
-                } catch (IOException | IrcException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace(System.out);
                 }
             });
             thread.setDaemon(false);
             thread.start();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            ex.printStackTrace(System.out);
         }
     }
 
