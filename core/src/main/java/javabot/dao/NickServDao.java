@@ -8,7 +8,6 @@ import javabot.model.NickServInfo;
 import static javabot.model.NickServInfo.NSERV_DATE_FORMAT;
 import javabot.model.criteria.NickServInfoCriteria;
 import javabot.model.criteria.NickServInfoCriteria.NickServInfoUpdater;
-import org.mongodb.morphia.query.Query;
 import org.pircbotx.User;
 
 public class NickServDao extends BaseDao<NickServInfo> {
@@ -68,12 +67,12 @@ public class NickServDao extends BaseDao<NickServInfo> {
   }
 
   public NickServInfo find(final String name) {
-    final Query<NickServInfo> query = ds.createQuery(NickServInfo.class);
-    query.or(
-        query.criteria("nick").equal(name.toLowerCase()),
-        query.criteria("account").equal(name.toLowerCase())
+    NickServInfoCriteria criteria = new NickServInfoCriteria(ds);
+    criteria.or(
+        criteria.nick(name.toLowerCase()),
+        criteria.account(name.toLowerCase())
     );
-    return query.get();
+    return criteria.query().get();
   }
 
   public NickServInfo updateNick(final String oldNick, final String newNick) {
