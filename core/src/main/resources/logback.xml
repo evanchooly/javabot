@@ -14,11 +14,7 @@
         </encoder>
     </appender>
 
-    <root level="error">
-        <appender-ref ref="FILE"/>
-    </root>
-
-    <logger name="javabot">
+    <logger name="javabot" level="ERROR">
         <appender-ref ref="FILE"/>
     </logger>
 
@@ -26,14 +22,11 @@
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="org.pircbotx" level="error" additivity="false">
+    <logger name="org.pircbotx" level="ERROR" additivity="false">
         <appender-ref ref="FILE"/>
     </logger>
 
-<!--
-    <logger name="org.pircbotx.InputParser" level="error" >
+    <root level="ERROR">
         <appender-ref ref="FILE"/>
-    </logger>
--->
-
+    </root>
 </configuration>
