@@ -1,4 +1,4 @@
-<configuration>
+<configuration scan="true">
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <file>/tmp/javabot.log</file>
@@ -26,12 +26,14 @@
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="org.pircbotx" level="error">
+    <logger name="org.pircbotx" level="error" additivity="false">
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="org.pircbotx.InputParser" level="error">
+<!--
+    <logger name="org.pircbotx.InputParser" level="error" >
         <appender-ref ref="FILE"/>
     </logger>
+-->
 
 </configuration>
