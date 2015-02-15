@@ -26,11 +26,11 @@
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="org.pircbotx" level="ERROR">
+    <logger name="org.pircbotx" level="error">
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="org.pircbotx.InputParser" level="ERROR">
+    <logger name="org.pircbotx.InputParser" level="error">
         <appender-ref ref="FILE"/>
     </logger>
 
