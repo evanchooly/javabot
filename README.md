@@ -38,3 +38,8 @@ current working directory for the tests. In IDEA, that's *normally* the root of 
     docker run -d -p 27017:27017 --name mongodb dockerfile/mongodb
 ```
 1. Build and test.
+
+Developing
+------
+
+If you use IDEA, make sure you have "Use plugin registry" enabled in your Maven configuration.
