@@ -15,6 +15,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 public class URLTitleOperation extends BotOperation {
@@ -47,6 +48,7 @@ public class URLTitleOperation extends BotOperation {
             HttpConnectionParams.setSoTimeout(params, 5 * 1000);
             HttpClient httpclient = new DefaultHttpClient(params);
             HttpGet httpget = new HttpGet(url);
+            httpget.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0");
             HttpResponse response = httpclient.execute(httpget);
 
             HttpEntity entity = response.getEntity();
@@ -71,6 +73,7 @@ public class URLTitleOperation extends BotOperation {
                 String tUrl = url.replace("//", "//www.");
                 findTitle(event, tUrl, originalUrl, false);
             }
+        } catch(IllegalArgumentException ignored) {
         }
     }
 }
