@@ -15,7 +15,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 public class URLTitleOperation extends BotOperation {
@@ -50,30 +49,32 @@ public class URLTitleOperation extends BotOperation {
             HttpGet httpget = new HttpGet(url);
             httpget.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0");
             HttpResponse response = httpclient.execute(httpget);
-
             HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                try {
-                    Document doc = Jsoup.parse(EntityUtils.toString(entity));
-                    if (analyzer.check(url, doc.title())) {
-                        getBot().postMessage(event.getChannel(),
-                                event.getUser(),
-                                String.format("%s'%s title: %s",
-                                        event.getUser().getNick(),
-                                        event.getUser().getNick().endsWith("s")?"":"s",
-                                        doc.title()),
-                                event.isTell());
+            try {
+                if (!(response.getStatusLine().getStatusCode() == 404 ||
+                        response.getStatusLine().getStatusCode() == 403)) {
+                    if (entity != null) {
+                        Document doc = Jsoup.parse(EntityUtils.toString(entity));
+                        if (analyzer.check(url, doc.title())) {
+                            getBot().postMessage(event.getChannel(),
+                                    event.getUser(),
+                                    String.format("%s'%s title: %s",
+                                            event.getUser().getNick(),
+                                            event.getUser().getNick().endsWith("s") ? "" : "s",
+                                            doc.title()),
+                                    event.isTell());
+                        }
                     }
-                } finally {
-                    EntityUtils.consume(entity);
                 }
+            } finally {
+                EntityUtils.consume(entity);
             }
         } catch (IOException ioe) {
             if (loop && !url.substring(0, 10).contains("//www.")) {
                 String tUrl = url.replace("//", "//www.");
                 findTitle(event, tUrl, originalUrl, false);
             }
-        } catch(IllegalArgumentException ignored) {
+        } catch (IllegalArgumentException ignored) {
         }
     }
 }
