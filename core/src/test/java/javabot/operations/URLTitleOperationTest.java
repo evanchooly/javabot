@@ -22,8 +22,9 @@ public class URLTitleOperationTest extends BaseMessagingTest {
                 {"http://javachannel.org/posts/finding-hash-collisions-in-java-strings/", null},
                 {"http://hastebin.com/askhjahs", null},
                 {"http://pastebin.com/askhjahs", null},
-                {"http://www.facebook.com/thechurchofspace",null}, // url matches content title too well
+                {"https://www.facebook.com/thechurchofspace",null}, // url matches content title too well
                 {"http://architects.dzone.com/articles/why-programmers-should-have", null}, // url matches title
+                {"http://facebook.com/foo/bar/blah", null}, // doesn't exist on facebook, I hope
                 {"http://", null},
         };
     }
