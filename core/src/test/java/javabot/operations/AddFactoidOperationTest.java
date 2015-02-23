@@ -8,6 +8,10 @@ import javabot.Message;
 import javabot.Messages;
 import javabot.dao.ChangeDao;
 import javabot.dao.FactoidDao;
+import javabot.dao.KarmaDao;
+import javabot.model.Karma;
+import javabot.model.UserFactory;
+import org.pircbotx.User;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -15,6 +19,7 @@ import org.testng.annotations.Test;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 @Test(groups = {"operations"})
@@ -25,6 +30,10 @@ public class AddFactoidOperationTest extends BaseMessagingTest {
     private ChangeDao changeDao;
     @Inject
     private BotListener listener;
+    @Inject
+    private KarmaDao karmaDao;
+    @Inject
+    private UserFactory userFactory;
 
     @BeforeMethod
     public void setUp() {
@@ -53,6 +62,17 @@ public class AddFactoidOperationTest extends BaseMessagingTest {
         forgetFactoid("replace");
         testMessage("~no, replace is <reply>second entry", Sofia.ok(getTestUser().getNick()));
     }
+
+    /** 
+     * This test relies on the KarmaOperation being in the operation set.
+     */
+    @Test    
+    public void testAddOperationPriority() {
+        final String target = "foo is " + new Date().getTime();
+        final int karma = getKarma(userFactory.createUser(target, target, "localhost")) + 1;
+        testMessage("~" + target + "++", Sofia.karmaOthersValue(target, karma, getTestUser().getNick()));
+        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(getTestUser().getNick(), target, karma)));
+        karmaDao.delete(karmaDao.find(target).getId());    }
 
     @Test(dependsOnMethods = {"factoidAdd"})
     public void duplicateAdd() throws IOException {
@@ -85,5 +105,10 @@ public class AddFactoidOperationTest extends BaseMessagingTest {
             .until(() -> !getMessages().isEmpty());
         Messages messages = getMessages();
         Assert.assertFalse(messages.isEmpty());
+    }
+
+    private int getKarma(final User target) {
+        final Karma karma = karmaDao.find(target.getNick());
+        return karma != null ? karma.getValue() : 0;
     }
 }

@@ -130,4 +130,12 @@ public class AddFactoidOperation extends BotOperation implements StandardOperati
         getBot().postMessage(event.getChannel(), event.getUser(), Sofia.ok(event.getUser().getNick()), event.isTell());
         return true;
     }
+    /**
+      * Adding factoids should happen after everything else has had a chance to run. See issue #88.
+      */
+    @Override
+    public int getPriority() { 
+        return 1;
+    }
+    
 }
