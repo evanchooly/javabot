@@ -140,7 +140,9 @@ public class KarmaOperationTest extends BaseMessagingTest {
 
     public void changeOwnKarma() {
         final int karma = getKarma(getTestUser());
-        sendMessage("~" + getTestUser() + "++");
+        testMessage("~" + getTestUser() + "++",
+                "You can't increment your own karma.",
+                getTestUser()+", you have a karma level of "+(karma-1));
         final int karma2 = getKarma(getTestUser());
         Assert.assertTrue(karma2 == karma - 1, "Should have lost one karma point.");
     }
