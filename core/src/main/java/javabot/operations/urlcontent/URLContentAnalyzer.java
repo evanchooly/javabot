@@ -1,8 +1,27 @@
 package javabot.operations.urlcontent;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class URLContentAnalyzer {
+    public final static String[] patterns = {
+            "astebin",
+            "mysticpaste.com",
+            "pastie",
+            "gist.github.com",
+            "ideone.com",
+            "docs.oracle.com.*api"
+    };
+    public final static Map<String, Pattern> matchingPatterns = new HashMap<>();
+
+    static {
+        Stream.of(patterns).forEach(s ->
+                matchingPatterns.put(s, Pattern.compile(".*" + s + ".*"))
+        );
+    }
+
     public boolean check(String url, String title) {
         try {
             checkNulls(url, title);
@@ -16,9 +35,8 @@ public class URLContentAnalyzer {
     }
 
     private void checkForBlacklistedSites(String url, String title) throws ContentException {
-        String[] patterns = {"astebin", "mysticpaste.com", "pastie", "gist.github.com", "ideone.com"};
         for (String pattern : patterns) {
-            if (url.contains(pattern)) {
+            if (matchingPatterns.get(pattern).matcher(url).matches()) {
                 throw new ContentException(String.format("Rejected: blacklisted site %s", url));
             }
         }
