@@ -26,6 +26,8 @@ public class URLTitleOperationTest extends BaseMessagingTest {
                 {"http://architects.dzone.com/articles/why-programmers-should-have", null}, // url matches title
                 {"http://facebook.com/foo/bar/blah", null}, // doesn't exist on facebook, I hope
                 {"http://", null},
+                {"http://docs.oracle.com/javaee/6/tutorial/doc/", "botuser's title: - The Java EE 6 Tutorial"},
+                {"https://docs.oracle.com/javaee/7/api/javax/enterprise/inject/Instance.html", null},
         };
     }
 
