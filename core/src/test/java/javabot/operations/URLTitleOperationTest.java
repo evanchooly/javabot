@@ -28,6 +28,8 @@ public class URLTitleOperationTest extends BaseMessagingTest {
                 {"http://", null},
                 {"http://docs.oracle.com/javaee/6/tutorial/doc/", "botuser's title: - The Java EE 6 Tutorial"},
                 {"https://docs.oracle.com/javaee/7/api/javax/enterprise/inject/Instance.html", null},
+                {"http://docs.oracle.com/javase/tutorial/java/nutsandbolts/branch.html",
+                        "botuser's title: Branching Statements (The Java Tutorials > Learning the Java Language > Language Basics)"},
         };
     }
 

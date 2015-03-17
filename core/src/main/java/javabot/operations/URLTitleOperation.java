@@ -16,6 +16,8 @@ import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class URLTitleOperation extends BotOperation {
     URLContentAnalyzer analyzer = new URLContentAnalyzer();
@@ -55,13 +57,14 @@ public class URLTitleOperation extends BotOperation {
                         response.getStatusLine().getStatusCode() == 403)) {
                     if (entity != null) {
                         Document doc = Jsoup.parse(EntityUtils.toString(entity));
-                        if (analyzer.check(url, doc.title())) {
+                        String title=clean(doc.title());
+                        if (analyzer.check(url, title)) {
                             getBot().postMessage(event.getChannel(),
                                     event.getUser(),
                                     String.format("%s'%s title: %s",
                                             event.getUser().getNick(),
                                             event.getUser().getNick().endsWith("s") ? "" : "s",
-                                            doc.title()),
+                                            title),
                                     event.isTell());
                         }
                     }
@@ -76,5 +79,11 @@ public class URLTitleOperation extends BotOperation {
             }
         } catch (IllegalArgumentException ignored) {
         }
+    }
+
+    private String clean(String title) {
+        StringBuilder sb=new StringBuilder();
+        title.chars().filter(i -> i<((2<<7)-1)).forEach(i->sb.append((char)i));
+        return sb.toString();
     }
 }
