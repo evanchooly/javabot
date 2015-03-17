@@ -83,7 +83,7 @@ public class URLTitleOperation extends BotOperation {
 
     private String clean(String title) {
         StringBuilder sb=new StringBuilder();
-        title.chars().filter(i -> i<((2<<7)-1)).forEach(i->sb.append((char)i));
+        title.chars().filter(i -> i < 127).forEach(i->sb.append((char)i));
         return sb.toString();
     }
 }
