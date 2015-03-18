@@ -12,7 +12,8 @@ public class URLContentAnalyzer {
             "pastie",
             "gist.github.com",
             "ideone.com",
-            "docs.oracle.com.*api"
+            "docs.oracle.com.*api",
+            "git.io",
     };
     public final static Map<String, Pattern> matchingPatterns = new HashMap<>();
 
