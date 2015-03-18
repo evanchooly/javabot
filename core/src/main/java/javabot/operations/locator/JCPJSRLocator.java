@@ -3,8 +3,11 @@ package javabot.operations.locator;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -18,17 +21,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JCPJSRLocator {
+    static final RequestConfig requestConfig = RequestConfig.custom()
+            .setConnectionRequestTimeout(5000)
+            .setConnectTimeout(5000)
+            .setSocketTimeout(5000)
+            .build();
+
     public Map<String, String> locate(final Map<String, String> inputs) {
         final Map<String, String> retVal = new HashMap<>();
         final String urlString = "http://www.jcp.org/en/jsr/detail?id=" + inputs.get("jsr");
         retVal.put("url", urlString);
-        try {
-            HttpParams params = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(params, 5 * 1000);
-            HttpConnectionParams.setSoTimeout(params, 5 * 1000);
-            HttpClient httpclient = new DefaultHttpClient(params);
+        try (CloseableHttpClient client = HttpClientBuilder
+                .create()
+                .setDefaultRequestConfig(requestConfig)
+                .build()) {
             HttpGet httpget = new HttpGet(urlString);
-            HttpResponse response = httpclient.execute(httpget);
+            HttpResponse response = client.execute(httpget);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 try {
