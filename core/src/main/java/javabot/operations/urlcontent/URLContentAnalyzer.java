@@ -1,10 +1,13 @@
 package javabot.operations.urlcontent;
 
+import com.google.inject.Singleton;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+@Singleton
 public class URLContentAnalyzer {
     public final static String[] patterns = {
             "astebin",
@@ -12,7 +15,8 @@ public class URLContentAnalyzer {
             "pastie",
             "gist.github.com",
             "ideone.com",
-            "docs.oracle.com.*api"
+            "docs.oracle.com.*api",
+            "git.io",
     };
     public final static Map<String, Pattern> matchingPatterns = new HashMap<>();
 
@@ -22,19 +26,27 @@ public class URLContentAnalyzer {
         );
     }
 
+    public boolean precheck(String url) {
+        try {
+            checkForBlacklistedSites(url);
+            return true;
+        } catch(ContentException e) {
+            return false;
+        }
+    }
     public boolean check(String url, String title) {
         try {
             checkNulls(url, title);
             checkTitleToURLRatio(url, title);
-            checkForBlacklistedSites(url, title);
+            checkForBlacklistedSites(url);
+            return true;
         } catch (ContentException e) {
             // log failure?
             return false;
         }
-        return true;
     }
 
-    private void checkForBlacklistedSites(String url, String title) throws ContentException {
+    private void checkForBlacklistedSites(String url) throws ContentException {
         for (String pattern : patterns) {
             if (matchingPatterns.get(pattern).matcher(url).matches()) {
                 throw new ContentException(String.format("Rejected: blacklisted site %s", url));
