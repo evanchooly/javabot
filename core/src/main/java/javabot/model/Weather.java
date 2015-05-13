@@ -23,8 +23,7 @@ public class Weather {
     private String humidity;
     private String wind;
     private String windChill;
-    private Date localTime;
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a");
+    private String localTime;
 
     /**
      * Get city. This is just a ad-hoc String which is set by the underlying API retrieving weather info
@@ -151,11 +150,11 @@ public class Weather {
         return degrees.replace('C', C).replace('F', F);
     }
 
-    public Date getLocalTime() {
+    public String getLocalTime() {
         return localTime;
     }
 
-    public void setLocalTime(Date localTime) {
+    public void setLocalTime(String localTime) {
         this.localTime = localTime;
     }
 
@@ -198,7 +197,7 @@ public class Weather {
             if (windShown) {
                 result.append(dotWithSpaces);
             }
-            result.append(dateFormat.format(this.getLocalTime()));
+            result.append(this.getLocalTime());
         }
         return result.toString();
     }
