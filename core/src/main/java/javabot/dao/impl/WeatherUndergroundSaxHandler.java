@@ -18,7 +18,6 @@ public class WeatherUndergroundSaxHandler extends DefaultHandler {
     boolean collectWeatherData = false;
     String currentElem;
     boolean error = false;
-    final static SimpleDateFormat inputDateParser=new SimpleDateFormat("MMM dd, hh:mm a zzz");;
 
     private final Map<String, String> weatherMap = new HashMap<String, String>();
     private Set<String> weatherElems = new HashSet<String>() {
@@ -34,7 +33,7 @@ public class WeatherUndergroundSaxHandler extends DefaultHandler {
     };
 
     public void startElement(final String uri, final String localName, final String qName, final Attributes attributes)
-                throws SAXException {
+            throws SAXException {
         if ("display_location".equalsIgnoreCase(qName)) {
             collectLocationData = true;
             collectWeatherData = false;
@@ -72,6 +71,7 @@ public class WeatherUndergroundSaxHandler extends DefaultHandler {
 
     /**
      * Returns the weather data parsed from the feed.
+     *
      * @return Weather data, or null if none was parsed
      */
     public Weather getWeather() {
@@ -88,9 +88,15 @@ public class WeatherUndergroundSaxHandler extends DefaultHandler {
             weather.setHumidity(weatherMap.get("relative_humidity"));
             weather.setWind(weatherMap.get("wind_string"));
             weather.setWindChill(weatherMap.get("windchill_string"));
-            try {
-                weather.setLocalTime(inputDateParser.parse(weatherMap.get("local_time")));
-            } catch (ParseException ignored) {
+
+            String localTime = weatherMap.get("local_time");
+            if (localTime != null && !"".equals(localTime.trim())) {
+                String[] tokens = localTime.trim().split(" ");
+                if (tokens.length == 5) {
+                    StringBuilder time = new StringBuilder();
+                    time.append(tokens[2]).append(" ").append(tokens[3]);
+                    weather.setLocalTime(time.toString());
+                }
             }
             return weather;
         }

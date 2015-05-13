@@ -51,10 +51,9 @@ public class WeatherOperationTest extends BaseMessagingTest {
      * (jottinger) is a lazy git who doesn't feel like
      * working it out.
      */
-    //@Test
     @SuppressWarnings("unused")
     public void validateWeatherTime() {
-        super.testMessage("~weather toronto", "foo");
+        super.testMessage("~weather tel aviv", "foo");
     }
 
 }
