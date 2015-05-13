@@ -31,6 +31,7 @@ public class WeatherDao {
           put("LONDON", "London, United Kingdom");
           put("PARIS", "Paris, France");
           put("TORONTO", "Toronto, Ontario");
+          put("RALEIGH", "Raleigh, NC");
       }
   };
 
