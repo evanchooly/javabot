@@ -19,7 +19,7 @@
             </#if>
         ${factoid.name}
         </td>
-        <td>${factoid.value}</td>
+        <td>${factoid.value?html}</td>
         <td>${factoid.userName}</td>
         <td class="right">${format(factoid.updated)}</td>
     </tr>
