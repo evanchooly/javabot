@@ -2,11 +2,14 @@ package javabot.model;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Simple model for passing around Weather conditions
  */
 public class Weather {
-//    PircBot does not support unicode at this time
+    //    PircBot does not support unicode at this time
 //    private static char C = '\u2103';
 //    private static char F = '\u2109';
 //    private static char DOT = '\u00B7';
@@ -20,6 +23,8 @@ public class Weather {
     private String humidity;
     private String wind;
     private String windChill;
+    private Date localTime;
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a");
 
     /**
      * Get city. This is just a ad-hoc String which is set by the underlying API retrieving weather info
@@ -146,8 +151,17 @@ public class Weather {
         return degrees.replace('C', C).replace('F', F);
     }
 
+    public Date getLocalTime() {
+        return localTime;
+    }
+
+    public void setLocalTime(Date localTime) {
+        this.localTime = localTime;
+    }
+
     @Override
     public String toString() {
+        boolean windShown = false;
         String dotWithSpaces = " " + SEPARATOR + " ";
         StringBuilder result = new StringBuilder("Weather for ");
         result.append(city);
@@ -173,11 +187,18 @@ public class Weather {
         result.append(condition);
         result.append(dotWithSpaces);
         if (StringUtils.trimToEmpty(this.wind).equals("")) {
+            windShown = true;
             result.append("Wind ");
             //lowercase the first char since we are prepending with an uppercase word
             //for instance "wind" might be "From the West at..."  We'd want that do be "from the West at..."
-            result.append(this.wind.substring(0,1).toLowerCase());
+            result.append(this.wind.substring(0, 1).toLowerCase());
             result.append(this.wind.substring(1));
+        }
+        if (this.getLocalTime() != null) {
+            if (windShown) {
+                result.append(dotWithSpaces);
+            }
+            result.append(dateFormat.format(this.getLocalTime()));
         }
         return result.toString();
     }

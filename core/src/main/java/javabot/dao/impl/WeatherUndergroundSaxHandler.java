@@ -6,6 +6,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,6 +18,7 @@ public class WeatherUndergroundSaxHandler extends DefaultHandler {
     boolean collectWeatherData = false;
     String currentElem;
     boolean error = false;
+    final static SimpleDateFormat inputDateParser=new SimpleDateFormat("MMM dd, hh:mm a zzz");;
 
     private final Map<String, String> weatherMap = new HashMap<String, String>();
     private Set<String> weatherElems = new HashSet<String>() {
@@ -26,6 +29,7 @@ public class WeatherUndergroundSaxHandler extends DefaultHandler {
             add("wind_string");
             add("relative_humidity");
             add("windchill_string");
+            add("local_time");
         }
     };
 
@@ -84,6 +88,10 @@ public class WeatherUndergroundSaxHandler extends DefaultHandler {
             weather.setHumidity(weatherMap.get("relative_humidity"));
             weather.setWind(weatherMap.get("wind_string"));
             weather.setWindChill(weatherMap.get("windchill_string"));
+            try {
+                weather.setLocalTime(inputDateParser.parse(weatherMap.get("local_time")));
+            } catch (ParseException ignored) {
+            }
             return weather;
         }
     }

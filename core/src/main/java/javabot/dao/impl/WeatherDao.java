@@ -28,6 +28,10 @@ public class WeatherDao {
           put("NYC", "New York City, NY");
           put("LAS VEGAS", "Las Vegas, NV");
           put("VEGAS", "Las Vegas, NV");
+          put("LONDON", "London, United Kingdom");
+          put("PARIS", "Paris, France");
+          put("TORONTO", "Toronto, Ontario");
+          put("RALEIGH", "Raleigh, NC");
       }
   };
 
