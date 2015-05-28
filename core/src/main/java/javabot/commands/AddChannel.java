@@ -34,19 +34,17 @@ public class AddChannel extends AdminCommand {
                 dao.save(channel);
             }
 
-            getBot().postMessage(event.getChannel(), event.getUser(),
-                                 isLogged ? Sofia.adminJoiningLoggedChannel(name) : Sofia.adminJoiningChannel(name),
-                                 event.isTell());
+            getBot().postMessageToChannel(event, isLogged ? Sofia.adminJoiningLoggedChannel(name) : Sofia.adminJoiningChannel(name));
             if (channel.getKey() == null) {
                 ircBot.get().sendIRC().joinChannel(channel.getName());
             } else {
                 ircBot.get().sendIRC().joinChannel(channel.getName(), channel.getKey());
             }
 
-            getBot().postMessage(ircBot.get().getUserChannelDao().getChannel(name), event.getUser(),
-                                 Sofia.adminJoinedChannel(event.getUser().getNick()), event.isTell());
+            getBot().postMessageToChannel(new Message(event, ircBot.get().getUserChannelDao().getChannel(name)),
+                                          Sofia.adminJoinedChannel(event.getUser().getNick()));
         } else {
-            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.adminBadChannelName(), event.isTell());
+            getBot().postMessageToChannel(event, Sofia.adminBadChannelName());
         }
     }
 }

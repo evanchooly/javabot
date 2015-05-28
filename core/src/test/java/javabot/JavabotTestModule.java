@@ -99,6 +99,11 @@ public class JavabotTestModule extends JavabotModule {
         }
 
         @Override
+        public String getNick() {
+            return BaseTest.TEST_BOT_NICK;
+        }
+
+        @Override
         protected void connect() throws IOException, IrcException {
             reconnectStopped = true;
         }
@@ -109,13 +114,7 @@ public class JavabotTestModule extends JavabotModule {
         private static final Logger LOG = LoggerFactory.getLogger(TestBotFactory.class);
 
         @Inject
-        private BotFactory botFactory;
-
-        @Inject
         private Messages messages;
-
-        @Inject
-        private LogsDao logsDao;
 
         @Override
         public UserChannelDao createUserChannelDao(final PircBotX bot) {

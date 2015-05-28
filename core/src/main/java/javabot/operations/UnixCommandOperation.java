@@ -16,10 +16,6 @@ public class UnixCommandOperation extends BotOperation {
     private final Random random;
 
     public UnixCommandOperation() {
-        //        addFiles("/usr/bin");
-        //        addFiles("/bin");
-        //        addFiles("/usr/sbin");
-        //        addFiles("/sbin");
         commands.add("rm");
         commands.add("ls");
         commands.add("clear");
@@ -35,11 +31,9 @@ public class UnixCommandOperation extends BotOperation {
     @Override
     public boolean handleChannelMessage(final Message event) {
         final String message = event.getValue();
-        final Channel channel = event.getChannel();
         final String[] split = message.split(" ");
         if (split.length != 0 && split.length < 3 && commands.contains(split[0])) {
-            getBot().postMessage(channel, event.getUser(), Sofia.botUnixCommand(event.getUser().getNick(), getInsult()),
-                                 event.isTell());
+            getBot().postMessageToChannel(event, Sofia.botUnixCommand(event.getUser().getNick(), getInsult()));
             return true;
         }
         return false;

@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import java.lang.reflect.Field;
-import java.security.cert.PKIXRevocationChecker;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -58,15 +57,15 @@ public abstract class AdminCommand extends BotOperation {
                             ArrayList<String> params = new ArrayList<>(Arrays.asList(split));
                             parse(params);
                             execute(event);
-                            clear(params);
+                            clear();
                         }
                     } catch (ParseException e) {
                         LOG.error(e.getMessage(), e);
-                        getBot().postMessage(null, event.getUser(), Sofia.adminParseFailure(e.getMessage()), event.isTell());
+                        getBot().postMessageToUser(event.getUser(), Sofia.adminParseFailure(e.getMessage()));
                     }
                 }
             } else {
-                getBot().postMessage(event.getChannel(), event.getUser(), Sofia.notAdmin(event.getUser().getNick()), event.isTell());
+                getBot().postMessageToChannel(event, Sofia.notAdmin(event.getUser().getNick()));
                 handled = true;
             }
         }
@@ -144,7 +143,7 @@ public abstract class AdminCommand extends BotOperation {
         }
     }
 
-    private void clear(final ArrayList<String> params) throws ParseException {
+    private void clear() throws ParseException {
         try {
             for (final Object o : getOptions().getOptions()) {
                 Field field = getClass().getDeclaredField(((Option) o).getOpt());

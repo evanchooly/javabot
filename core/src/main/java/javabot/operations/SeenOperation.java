@@ -22,11 +22,11 @@ public class SeenOperation extends BotOperation {
             final String key = message.substring("seen ".length());
             Seen seen = dao.getSeen(channel.getName(), key);
             if (seen != null) {
-                getBot().postMessage(channel, event.getUser(),
-                                     Sofia.seenLast(event.getUser().getNick(), key, seen.getUpdated().format(FORMATTER),
-                                                    seen.getMessage()), event.isTell());
+                getBot().postMessageToChannel(event,
+                                              Sofia.seenLast(event.getUser().getNick(), key, seen.getUpdated().format(FORMATTER),
+                                                             seen.getMessage()));
             } else {
-                getBot().postMessage(channel, event.getUser(), Sofia.seenUnknown(event.getUser().getNick(), key), event.isTell());
+                getBot().postMessageToChannel(event, Sofia.seenUnknown(event.getUser().getNick(), key));
             }
             return true;
         }

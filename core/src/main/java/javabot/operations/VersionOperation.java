@@ -14,7 +14,7 @@ public class VersionOperation extends BotOperation implements StandardOperation 
     public boolean handleMessage(final Message event) {
         final String message = event.getValue();
         if ("version".equalsIgnoreCase(message)) {
-            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.botVersion(loadVersion()), event.isTell());
+            getBot().postMessageToChannel(event, Sofia.botVersion(loadVersion()));
             return true;
         }
         return false;

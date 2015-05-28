@@ -1,6 +1,7 @@
 package javabot;
 
 import com.google.inject.Singleton;
+import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 @Singleton
@@ -26,6 +27,12 @@ public class TestJavabot extends Javabot {
 
     public String getNick() {
         return BaseTest.TEST_BOT_NICK;
+    }
+
+    @Override
+    public PircBotX getIrcBot() {
+        final PircBotX ircBot = super.getIrcBot();
+        return ircBot;
     }
 
     @Override

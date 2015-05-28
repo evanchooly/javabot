@@ -2,6 +2,7 @@ package javabot.model;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Entity(value = "karma", noClassnameStored = true)
 @Indexes({
-             @Index("upperName")
+             @Index(fields = @Field("upperName"))
          })
 public class Karma implements Serializable, Persistent {
     @Id

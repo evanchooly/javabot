@@ -25,9 +25,7 @@ public class DaysToChristmasOperation extends BotOperation {
             cal.set(Calendar.DAY_OF_MONTH, 25);
             Instant instant = christmas.atZone(ZoneId.systemDefault()).toInstant();
 
-            getBot().postMessage(event.getChannel(), event.getUser(),
-                                 Sofia.daysUntil(event.getUser().getNick(), duration.toDays(), Date.from(instant)),
-                                 event.isTell());
+            getBot().postMessageToChannel(event, Sofia.daysUntil(event.getUser().getNick(), duration.toDays(), Date.from(instant)));
             return true;
         }
         return false;

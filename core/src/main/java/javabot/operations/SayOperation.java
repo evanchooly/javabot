@@ -7,7 +7,7 @@ public class SayOperation extends BotOperation {
     public boolean handleMessage(final Message event) {
         final String message = event.getValue();
         if (message.startsWith("say ")) {
-            getBot().postMessage(event.getChannel(), event.getUser(), message.substring("say ".length()), event.isTell());
+            getBot().postMessageToChannel(event, message.substring("say ".length()));
             return true;
         }
         return false;

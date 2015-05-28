@@ -3,6 +3,7 @@ package javabot.model;
 import javabot.Javabot;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexed;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 
 @Entity("events")
 @Indexes({
-             @Index("state, requestedOn")
+             @Index(fields = {@Field("state"), @Field("requestedOn")})
          })
 public class AdminEvent implements Serializable, Persistent {
     public enum State {

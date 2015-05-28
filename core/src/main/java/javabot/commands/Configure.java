@@ -21,7 +21,7 @@ public class Configure extends AdminCommand {
     public void execute(final Message event) {
         final Config config = dao.get();
         if (StringUtils.isEmpty(property)) {
-            getBot().postMessage(null, event.getUser(), config.toString(), event.isTell());
+            getBot().postMessageToUser(event.getUser(), config.toString());
         } else {
             try {
                 final String name = property.substring(0, 1).toUpperCase() + property.substring(1);
@@ -31,12 +31,12 @@ public class Configure extends AdminCommand {
                 try {
                     set.invoke(config, type.equals(String.class) ? value.trim() : Integer.parseInt(value));
                     dao.save(config);
-                    getBot().postMessage(null, event.getUser(), Sofia.configurationSetProperty(property, value), event.isTell());
+                    getBot().postMessageToUser(event.getUser(), Sofia.configurationSetProperty(property, value));
                 } catch (ReflectiveOperationException | NumberFormatException e) {
-                    getBot().postMessage(null, event.getUser(), e.getMessage(), event.isTell());
+                    getBot().postMessageToUser(event.getUser(), e.getMessage());
                 }
             } catch (NoSuchMethodException e) {
-                getBot().postMessage(null, event.getUser(), Sofia.configurationUnknownProperty(property), event.isTell());
+                getBot().postMessageToUser(event.getUser(), Sofia.configurationUnknownProperty(property));
             }
         }
     }

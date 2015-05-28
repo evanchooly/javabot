@@ -12,6 +12,7 @@ import javabot.json.Views.PUBLIC;
 import javabot.operations.TellSubject;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexed;
@@ -22,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 @Entity(value = "factoids", noClassnameStored = true)
 @Indexes({
-    @Index("upperName, upperUserName")
+    @Index(fields = {@Field("upperName"), @Field("upperUserName")})
 })
 public class Factoid implements Serializable, Persistent {
   private static final Logger log = LoggerFactory.getLogger(Factoid.class);

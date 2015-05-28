@@ -14,11 +14,10 @@ public class ListOperations extends OperationsCommand {
 
     @Override
     public void execute(final Message event) {
-        getBot().postMessage(event.getChannel(), event.getUser(),
-                             Sofia.adminKnownOperations(event.getUser().getNick(), StringUtils.join(configDao.list(BotOperation.class).iterator(), ",")),
-                             event.isTell());
+        getBot().postMessageToChannel(event, Sofia.adminKnownOperations(event.getUser().getNick(),
+                                                                 StringUtils.join(configDao.list(BotOperation.class).iterator(), ",")));
 
         listCurrent(event);
-        getBot().postMessage(event.getChannel(), event.getUser(), Sofia.adminOperationInstructions(), event.isTell());
+        getBot().postMessageToChannel(event, Sofia.adminOperationInstructions());
     }
 }

@@ -24,12 +24,11 @@ public class DropChannel extends AdminCommand {
         final Channel chan = dao.get(channel);
         if (chan != null) {
             dao.delete(chan);
-            getBot().postMessage(ircBot.get().getUserChannelDao().getChannel(channel), event.getUser(),
-                                 Sofia.channelDeleted(event.getUser().getNick()), event.isTell());
+            final Message message = new Message(ircBot.get().getUserChannelDao().getChannel(channel), event.getUser(), event.getValue());
+            getBot().postMessageToChannel(message, Sofia.channelDeleted(event.getUser().getNick()));
             event.getChannel().send().part(Sofia.channelDeleted(event.getUser().getNick()));
         } else {
-            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.channelUnknown(channel, event.getUser().getNick()),
-                                 event.isTell());
+            getBot().postMessageToChannel(event, Sofia.channelUnknown(channel, event.getUser().getNick()));
         }
     }
 }

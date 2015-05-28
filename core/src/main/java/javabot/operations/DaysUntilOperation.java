@@ -34,7 +34,7 @@ public class DaysUntilOperation extends BotOperation {
                 i++;
             }
             if (d == null) {
-                getBot().postMessage(event.getChannel(), event.getUser(), Sofia.invalidDateFormat(sender.getNick()), event.isTell());
+                getBot().postMessageToChannel(event, Sofia.invalidDateFormat(sender.getNick()));
                 handled = true;
             }
         }
@@ -44,7 +44,6 @@ public class DaysUntilOperation extends BotOperation {
     private void calcTime(final Message event, final LocalDateTime d) {
         final Long days = Duration.between(d, LocalDateTime.now().withHour(0)).toDays();
         long l = d.toLocalDate().toEpochDay();
-        getBot().postMessage(event.getChannel(), event.getUser(), Sofia.daysUntil(event.getUser().getNick(), days, new Date(l)),
-                             event.isTell());
+        getBot().postMessageToChannel(event, Sofia.daysUntil(event.getUser().getNick(), days, new Date(l)));
     }
 }

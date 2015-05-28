@@ -1,29 +1,10 @@
 package javabot;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import com.antwerkz.sofia.Sofia;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.jayway.awaitility.Awaitility;
-import static java.lang.String.format;
 import javabot.commands.AdminCommand;
 import javabot.dao.ChannelDao;
 import javabot.dao.ConfigDao;
@@ -47,6 +28,24 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Singleton
 public class Javabot {
@@ -277,7 +276,7 @@ public class Javabot {
         if (message.getValue().startsWith(startString)) {
           try {
             if (throttler.isThrottled(message.getUser())) {
-              postMessage(null, message.getUser(), Sofia.throttledUser(), false);
+              postMessageToUser(message.getUser(), Sofia.throttledUser());
               handled = true;
             } else {
               String content = extractContentFromMessage(message.getValue(), startString);
@@ -286,7 +285,7 @@ public class Javabot {
               }
             }
           } catch (NickServViolationException e) {
-            postMessage(null, message.getUser(), e.getMessage(), false);
+            postMessageToUser(message.getUser(), e.getMessage());
           }
         }
       }
@@ -312,12 +311,17 @@ public class Javabot {
     ignores.add(sender);
   }
 
-  public void postMessage(final org.pircbotx.Channel channel, final User user, String message, final boolean tell) {
-    logMessage(channel, user, message);
-    if (channel != null) {
-      String value = tell && !message.contains(user.getNick()) ? format("%s, %s", user.getNick(), message) : message;
-      channel.send().message(value);
-    } else if (user != null) {
+  public void postMessageToChannel(final Message event, String message) {
+    if (event != null) {
+      final String value = event.massageTell(message);
+      logMessage(event.getChannel(), getIrcBot().getUserBot(), value);
+      event.getChannel().send().message(value);
+    }
+  }
+
+  public void postMessageToUser(final User user, String message) {
+    if (user != null) {
+      logMessage(null, user, message);
       user.send().message(message);
     }
   }
@@ -346,7 +350,8 @@ public class Javabot {
     }
 
     if (!handled) {
-      postMessage(message.getChannel(), requester, Sofia.unhandledMessage(requester.getNick()), false);
+      postMessageToChannel(new Message(message.getChannel(), message.getSender(), message.getValue()),
+                           Sofia.unhandledMessage(requester.getNick()));
     }
     return true;
   }
@@ -379,6 +384,10 @@ public class Javabot {
 
   public String getNick() {
     return configDao.get().getNick();
+  }
+
+  public PircBotX getIrcBot() {
+    return ircBot.get();
   }
 
   public static void main(final String[] args) {

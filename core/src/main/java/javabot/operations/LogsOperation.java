@@ -31,17 +31,12 @@ public class LogsOperation extends BotOperation {
                 criteria.query().limit(50);
             }
             for (Logs logs : criteria.query().fetch()) {
-                getBot().postMessage(event.getChannel(), event.getUser(),
-                                     Sofia.logsEntry(logs.getUpdated().format(DateTimeFormatter.ofPattern("HH:mm")),
-                                                     logs.getNick(), logs.getMessage()), event.isTell());
+                getBot().postMessageToChannel(event, Sofia.logsEntry(logs.getUpdated().format(DateTimeFormatter.ofPattern("HH:mm")),
+                                                                     logs.getNick(), logs.getMessage()));
                 handled = true;
             }
             if (!handled) {
-                if (nickname.isEmpty()) {
-                    getBot().postMessage(event.getChannel(), event.getUser(), Sofia.logsNone(), event.isTell());
-                } else {
-                    getBot().postMessage(event.getChannel(), event.getUser(), Sofia.logsNoneForNick(nickname), event.isTell());
-                }
+                getBot().postMessageToChannel(event, nickname.isEmpty() ? Sofia.logsNone() : Sofia.logsNoneForNick(nickname));
             }
             return true;
         }

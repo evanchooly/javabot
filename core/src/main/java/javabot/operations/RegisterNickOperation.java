@@ -27,7 +27,7 @@ public class RegisterNickOperation extends BotOperation {
                 Config config = configDao.get();
                 String eventMessage = Sofia.registerNick(config.getUrl(), registration.getUrl(), twitterName);
 
-                getBot().postMessage(null, event.getUser(), eventMessage, event.isTell());
+                getBot().postMessageToUser(event.getUser(), eventMessage);
                 return true;
             }
         }

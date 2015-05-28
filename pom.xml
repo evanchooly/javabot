@@ -113,7 +113,7 @@
             <dependency>
                 <groupId>org.mongodb.morphia</groupId>
                 <artifactId>morphia</artifactId>
-                <version>0.110</version>
+                <version>1.0.0-rc1</version>
             </dependency>
 
             <dependency>
@@ -143,12 +143,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.mongodb</groupId>
-                <artifactId>mongo-java-driver</artifactId>
-                <version>2.13.0</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.aeonbits.owner</groupId>
                 <artifactId>owner</artifactId>
                 <version>1.0.6</version>
@@ -159,17 +153,8 @@
     <properties>
         <guice.version>3.0</guice.version>
         <sofia.version>0.15</sofia.version>
-        <critter.version>2.0.3</critter.version>
+        <critter.version>2.1.0-SNAPSHOT</critter.version>
         <slf4j.version>1.7.4</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <profiles>
-        <profile>
-            <id>migration</id>
-            <modules>
-                <module>core</module>
-            </modules>
-        </profile>
-    </profiles>
 </project>

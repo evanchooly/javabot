@@ -6,15 +6,14 @@ import javabot.operations.BotOperation;
 
 import java.util.stream.Collectors;
 
+import static java.lang.String.join;
+
 public abstract class OperationsCommand extends AdminCommand {
     protected void listCurrent(final Message event) {
-        getBot().postMessage(event.getChannel(), event.getUser(), Sofia.adminRunningOperations(event.getUser().getNick()),
-                             event.isTell());
-        getBot().postMessage(event.getChannel(), event.getUser(),
-                             String.join(",", getBot().getActiveOperations()
-                                                      .stream()
-                                                      .map(BotOperation::getName)
-                                                      .collect(Collectors.toList())),
-                             event.isTell());
+        getBot().postMessageToChannel(event, Sofia.adminRunningOperations(event.getUser().getNick()));
+        getBot().postMessageToChannel(event, join(",", getBot().getActiveOperations()
+                                                               .stream()
+                                                               .map(BotOperation::getName)
+                                                               .collect(Collectors.toList())));
     }
 }

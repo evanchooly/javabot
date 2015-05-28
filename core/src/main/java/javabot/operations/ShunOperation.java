@@ -22,9 +22,9 @@ public class ShunOperation extends BotOperation {
         if (message.startsWith("shun ")) {
             final String[] parts = message.substring(5).split(" ");
             if (parts.length == 0) {
-                getBot().postMessage(event.getChannel(), event.getUser(), Sofia.shunUsage(), event.isTell());
+                getBot().postMessageToChannel(event, Sofia.shunUsage());
             } else {
-                getBot().postMessage(event.getChannel(), event.getUser(), getShunnedMessage(parts), event.isTell());
+                getBot().postMessageToChannel(event, getShunnedMessage(parts));
             }
             return true;
         }

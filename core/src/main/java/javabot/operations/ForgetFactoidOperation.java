@@ -19,7 +19,7 @@ public class ForgetFactoidOperation extends BotOperation implements StandardOper
         boolean handled = false;
         if (message.startsWith("forget ")) {
             if (!channel.getName().startsWith("#") && !isAdminUser(event.getUser())) {
-                getBot().postMessage(channel, event.getUser(), Sofia.privmsgChange(), event.isTell());
+                getBot().postMessageToChannel(event, Sofia.privmsgChange());
             } else {
                 message = message.substring("forget ".length());
                 if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
@@ -35,16 +35,13 @@ public class ForgetFactoidOperation extends BotOperation implements StandardOper
         final Factoid factoid = factoidDao.getFactoid(key);
         if (factoid != null) {
             if (!factoid.getLocked() || isAdminUser(event.getUser())) {
-                getBot().postMessage(event.getChannel(), event.getUser(), Sofia.factoidForgotten(key, event.getUser().getNick()),
-                                     event.isTell());
+                getBot().postMessageToChannel(event, Sofia.factoidForgotten(key, event.getUser().getNick()));
                 factoidDao.delete(event.getUser().getNick(), key);
             } else {
-                getBot().postMessage(event.getChannel(), event.getUser(), Sofia.factoidDeleteLocked(event.getUser().getNick()),
-                                     event.isTell());
+                getBot().postMessageToChannel(event, Sofia.factoidDeleteLocked(event.getUser().getNick()));
             }
         } else {
-            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.factoidDeleteUnknown(key, event.getUser().getNick()),
-                                 event.isTell());
+            getBot().postMessageToChannel(event, Sofia.factoidDeleteUnknown(key, event.getUser().getNick()));
         }
 
         return true;

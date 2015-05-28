@@ -2,6 +2,7 @@ package javabot.model;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexed;
@@ -12,8 +13,8 @@ import java.time.LocalDateTime;
 
 @Entity(value = "shuns", noClassnameStored = true)
 @Indexes({
-             @Index("upperNick")
-         })
+             @Index(fields = @Field("upperNick"))
+})
 public class Shun implements Serializable, Persistent {
     @Id
     private ObjectId id;

@@ -16,7 +16,7 @@ public class JSROperation extends BotOperation {
         final String message = event.getValue().toLowerCase();
         final Channel channel = event.getChannel();
         if ("jsr".equals(message)) {
-            getBot().postMessage(channel, event.getUser(), Sofia.jsrMissing(), event.isTell());
+            getBot().postMessageToChannel(event, Sofia.jsrMissing());
             return true;
         } else {
             if (message.startsWith("jsr ")) {
@@ -26,12 +26,12 @@ public class JSROperation extends BotOperation {
                     final int jsr = Integer.parseInt(jsrString);
                     String response = locator.findInformation(jsr);
                     if (response != null && !response.isEmpty()) {
-                        getBot().postMessage(channel, event.getUser(), response, event.isTell());
+                        getBot().postMessageToChannel(event, response);
                     } else {
-                        getBot().postMessage(channel, event.getUser(), Sofia.jsrUnknown(jsrString), event.isTell());
+                        getBot().postMessageToChannel(event, Sofia.jsrUnknown(jsrString));
                     }
                 } catch (NumberFormatException nfe) {
-                    getBot().postMessage(channel, event.getUser(), Sofia.jsrInvalid(jsrString), event.isTell());
+                    getBot().postMessageToChannel(event, Sofia.jsrInvalid(jsrString));
                 }
                 return true;
             }

@@ -2,6 +2,7 @@ package javabot.javadoc;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
@@ -9,8 +10,8 @@ import org.mongodb.morphia.annotations.PrePersist;
 
 @Entity(value = "fields", noClassnameStored = true)
 @Indexes({
-    @Index("javadocClassId, upperName"),
-    @Index("apiId, javadocClassId, upperName"),
+    @Index(fields = {@Field("javadocClassId"), @Field("upperName")}),
+    @Index(fields = {@Field("apiId"), @Field("javadocClassId"), @Field("upperName")}),
 })
 
 public class JavadocField extends JavadocElement {

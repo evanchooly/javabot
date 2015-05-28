@@ -49,21 +49,20 @@ public class GetFactoidOperation extends BotOperation implements StandardOperati
         final String message = factoid.evaluate(subject, sender, replacedValue);
         if (message.startsWith("<see>")) {
             if (backtrack.contains(message)) {
-                getBot().postMessage(event.getChannel(), null, Sofia.factoidLoop(message), event.isTell());
+                getBot().postMessageToChannel(event, Sofia.factoidLoop(message));
                 return true;
             } else {
                 backtrack.add(message);
                 return getFactoid(subject, new Message(event, message.substring(5).trim()), backtrack);
             }
         } else if (message.startsWith("<reply>")) {
-            getBot().postMessage(event.getChannel(), event.getUser(), message.substring("<reply>".length()),
-                                 event.isTell() && !message.contains(event.getUser().getNick()));
+            getBot().postMessageToChannel(event, message.substring("<reply>".length()));
             return true;
         } else if (message.startsWith("<action>")) {
             getBot().postAction(event.getChannel(), message.substring("<action>".length()));
             return true;
         } else {
-            getBot().postMessage(event.getChannel(), event.getUser(), message, event.isTell());
+            getBot().postMessageToChannel(event, message);
             return true;
         }
     }
@@ -76,7 +75,7 @@ public class GetFactoidOperation extends BotOperation implements StandardOperati
         if (isTellCommand(message)) {
             final TellSubject tellSubject = parseTellSubject(event);
             if (tellSubject == null) {
-                getBot().postMessage(event.getChannel(), event.getUser(), Sofia.factoidTellSyntax(sender.getNick()), event.isTell());
+                getBot().postMessageToChannel(event, Sofia.factoidTellSyntax(sender.getNick()));
                 handled = true;
             } else {
                 User targetUser = tellSubject.getTarget();
@@ -86,18 +85,18 @@ public class GetFactoidOperation extends BotOperation implements StandardOperati
                     }
                     final String thing = tellSubject.getSubject();
                     if (targetUser.getNick().equalsIgnoreCase(getBot().getNick())) {
-                        getBot().postMessage(event.getChannel(), event.getUser(), Sofia.botSelfTalk(), true);
+                        getBot().postMessageToChannel(event, Sofia.botSelfTalk());
                         handled = true;
                     } else {
                         if (!getBot().isOnCommonChannel(targetUser)) {
-                            getBot().postMessage(event.getChannel(), event.getUser(),
-                                                 Sofia.userNotInChannel(targetUser.getNick(), channel.getName()), true);
+                            getBot().postMessageToChannel(event,
+                                                          Sofia.userNotInChannel(targetUser.getNick(), channel.getName()));
                             handled = true;
                         } else if (sender.getNick().equals(channel.getName()) && !getBot().isOnCommonChannel(targetUser)) {
-                            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.userNoSharedChannels(), true);
+                            getBot().postMessageToChannel(event, Sofia.userNoSharedChannels());
                             handled = true;
                         } else if (thing.endsWith("++") || thing.endsWith("--")) {
-                            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.notAllowed(), true);
+                            getBot().postMessageToChannel(event, Sofia.notAllowed());
                             handled = true;
                         } else {
                             handled = getBot().getResponses(new Message(channel, targetUser, thing, sender), event.getUser());

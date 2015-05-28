@@ -3,8 +3,10 @@ package javabot.javadoc;
 import javabot.model.Persistent;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
+import org.mongodb.morphia.annotations.IndexOptions;
 import org.mongodb.morphia.annotations.Indexes;
 import org.mongodb.morphia.annotations.PrePersist;
 import org.slf4j.Logger;
@@ -15,8 +17,8 @@ import java.util.List;
 
 @Entity(value = "apis", noClassnameStored = true)
 @Indexes({
-    @Index(value = "name", unique = true),
-    @Index(value = "upperName", unique = true)
+    @Index(fields = @Field("name"), options = @IndexOptions(unique = true)),
+    @Index(fields = @Field("upperName"), options = @IndexOptions(unique = true))
 })
 public class JavadocApi implements Persistent {
   private static final Logger log = LoggerFactory.getLogger(JavadocApi.class);

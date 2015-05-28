@@ -44,6 +44,14 @@ public class Message {
         sender = null;
     }
 
+    public Message(final Message message, final Channel channel) {
+        this.channel = channel;
+        user = message.getUser();
+        this.value = message.getValue();
+        tell = message.isTell();
+        sender = null;
+    }
+
     public Channel getChannel() {
         return channel;
     }
@@ -80,5 +88,9 @@ public class Message {
 
     public User getOriginalUser() {
         return sender == null ? user : sender;
+    }
+
+    public String massageTell(final String message) {
+        return tell && !message.contains(user.getNick()) ? format("%s, %s", user.getNick(), message) : message;
     }
 }

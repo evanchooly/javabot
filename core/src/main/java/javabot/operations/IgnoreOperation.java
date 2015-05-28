@@ -10,7 +10,7 @@ public class IgnoreOperation extends BotOperation {
         if (message.startsWith("ignore ")) {
             final String[] parts = message.split(" ");
             getBot().addIgnore(parts[1]);
-            getBot().postMessage(event.getChannel(), event.getUser(), Sofia.botIgnoring(parts[1]), event.isTell());
+            getBot().postMessageToChannel(event, Sofia.botIgnoring(parts[1]));
             return true;
         }
         return false;

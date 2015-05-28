@@ -18,7 +18,7 @@ public class URLTitleOperationTest extends BaseMessagingTest {
                 {"http://google.com", null},
                 {"Have you tried to http://google.com", null},
                 {"http://varietyofsound.wordpress.com has a lot of VSTs", null},
-                {"Have you tried to http://javachannel.org/", "botuser's title: Freenode ##java | enthusiasts united"},
+                {"Have you tried to http://javachannel.org/", "botuser's title: Freenode ##java  enthusiasts united"},
                 {"http://javachannel.org/posts/finding-hash-collisions-in-java-strings/", null},
                 {"http://hastebin.com/askhjahs", null},
                 {"http://pastebin.com/askhjahs", null},

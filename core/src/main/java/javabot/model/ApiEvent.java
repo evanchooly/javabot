@@ -145,7 +145,7 @@ public class ApiEvent extends AdminEvent {
             parser.parse(api, file.getAbsolutePath(), new StringWriter() {
                 @Override
                 public void write(final String line) {
-                    getBot().postMessage(null, user, line, false);
+                    getBot().postMessageToUser(user, line);
                 }
             });
         } catch (IOException e) {

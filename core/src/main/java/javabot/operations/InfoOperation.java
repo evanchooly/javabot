@@ -30,13 +30,10 @@ public class InfoOperation extends BotOperation {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INFO_DATE_FORMAT);
                 LocalDateTime updated = factoid.getUpdated();
                 String formatted = formatter.format(updated);
-                getBot().postMessage(channel, event.getUser(),
-                                     Sofia.factoidInfo(key, factoid.getLocked() ? "*" : "", factoid.getUserName(),
-                                                       formatted, factoid.getValue()),
-                                     event.isTell());
+                getBot().postMessageToChannel(event, Sofia.factoidInfo(key, factoid.getLocked() ? "*" : "", factoid.getUserName(),
+                                                                formatted, factoid.getValue()));
             } else {
-                getBot().postMessage(channel, event.getOriginalUser(), Sofia.factoidUnknown(key),
-                                     event.isTell() && event.getSender() == null);
+                getBot().postMessageToChannel(event, Sofia.factoidUnknown(key));
             }
             return true;
         }

@@ -17,9 +17,7 @@ public abstract class UrlOperation extends BotOperation {
         if (message.startsWith(getTrigger())) {
             message = message.substring(getTrigger().length());
             try {
-                getBot().postMessage(event.getChannel(), event.getUser(),
-                                     getBaseUrl() + URLEncoder.encode(message, Charset.defaultCharset().displayName()),
-                                     event.isTell());
+                getBot().postMessageToChannel(event, getBaseUrl() + URLEncoder.encode(message, Charset.defaultCharset().displayName()));
                 return true;
             } catch (UnsupportedEncodingException e) {
                 log.error(e.getMessage(), e);

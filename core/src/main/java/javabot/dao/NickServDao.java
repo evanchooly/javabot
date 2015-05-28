@@ -80,7 +80,7 @@ public class NickServDao extends BaseDao<NickServInfo> {
     criteria.nick(oldNick);
     NickServInfoUpdater updater = criteria.getUpdater();
     updater.nick(newNick);
-    updater.update();
+    updater.updateFirst();
     criteria = new NickServInfoCriteria(ds);
     criteria.nick(newNick);
     return criteria.query().get();

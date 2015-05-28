@@ -20,11 +20,7 @@ public class WeatherOperation extends BotOperation {
         if (message.toLowerCase().startsWith("weather ")) {
             final String place = message.substring("weather ".length()).trim();
             final Weather result = weatherDao.getWeatherFor(place);
-            if (result == null) {
-                getBot().postMessage(event.getChannel(), event.getUser(), Sofia.weatherUnknown(place), event.isTell());
-            } else {
-                getBot().postMessage(event.getChannel(), event.getUser(), result.toString(), event.isTell());
-            }
+            getBot().postMessageToChannel(event, result == null ? Sofia.weatherUnknown(place) : result.toString());
             return true;
         }
         return false;

@@ -16,18 +16,17 @@ public class DropApi extends AdminCommand {
 
     @Override
     public void execute(final Message event) {
-        final Channel channel = event.getChannel();
         final JavadocApi api = dao.find(name);
         if (api != null) {
-            drop(event, channel, api);
+            drop(event, api);
         } else {
-            getBot().postMessage(channel, event.getUser(), Sofia.unknownApi(name, event.getUser().getNick()), event.isTell());
+            getBot().postMessageToChannel(event, Sofia.unknownApi(name, event.getUser().getNick()));
         }
     }
 
-    private void drop(final Message event, final Channel channel, final JavadocApi api) {
-        getBot().postMessage(channel, event.getUser(), Sofia.adminRemovingOldJavadoc(api.getName()), event.isTell());
+    private void drop(final Message event, final JavadocApi api) {
+        getBot().postMessageToChannel(event, Sofia.adminRemovingOldJavadoc(api.getName()));
         dao.delete(api);
-        getBot().postMessage(channel, event.getUser(), Sofia.adminDoneRemovingOldJavadoc(api.getName()), event.isTell());
+        getBot().postMessageToChannel(event, Sofia.adminDoneRemovingOldJavadoc(api.getName()));
     }
 }

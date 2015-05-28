@@ -20,11 +20,10 @@ public class ListChannels extends AdminCommand {
     @Override
     public void execute(final Message event) {
         final List<Channel> channels = dao.find(new QueryParam(0, Integer.MAX_VALUE));
-        getBot().postMessage(event.getChannel(), event.getUser(), Sofia.adminListChannelsPreamble(event.getUser().getNick())
-                                , event.isTell());
+        getBot().postMessageToChannel(event, Sofia.adminListChannelsPreamble(event.getUser().getNick()));
         final List<String> names = channels.stream()
                                            .map(channel -> format("%s %s", channel.getName(), channel.getLogged() ? "(logged)" : ""))
                                            .collect(Collectors.toList());
-        getBot().postMessage(null, event.getUser(), StringUtils.join(names, ", "), event.isTell());
+        getBot().postMessageToUser(event.getUser(), StringUtils.join(names, ", "));
     }
 }

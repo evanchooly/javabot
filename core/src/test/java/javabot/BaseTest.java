@@ -170,4 +170,8 @@ public class BaseTest {
     nickServDao.save(info);
     return bob;
   }
+
+  public Datastore getDatastore() {
+    return datastore;
+  }
 }

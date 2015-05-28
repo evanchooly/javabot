@@ -2,6 +2,7 @@ package javabot.javadoc;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Field;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
@@ -12,10 +13,10 @@ import java.util.List;
 
 @Entity(value = "classes", noClassnameStored = true)
 @Indexes({
-    @Index("apiId"),
-    @Index(value = "upperName"),
-    @Index(value = "upperPackageName, upperName"),
-    @Index(value = "apiId, upperPackageName, upperName"),
+    @Index(fields = @Field("apiId")),
+    @Index(fields = @Field("upperName")),
+    @Index(fields = {@Field("upperPackageName"), @Field("upperName")}),
+    @Index(fields = {@Field("apiId"), @Field("upperPackageName"), @Field("upperName")}),
 })
 public class JavadocClass extends JavadocElement {
   @Id
@@ -29,8 +30,7 @@ public class JavadocClass extends JavadocElement {
   private List<JavadocMethod> methods = new ArrayList<>();
   private List<JavadocField> fields = new ArrayList<>();
 
-  public JavadocClass() {
-  }
+  public JavadocClass() { }
 
   public JavadocClass(final JavadocApi api, final String pkg, final String name) {
     packageName = pkg;

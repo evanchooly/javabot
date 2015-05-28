@@ -23,13 +23,13 @@ public class AddAdmin extends AdminCommand {
     public void execute(final Message event) {
         final User user = findUser(userName);
         if (user == null) {
-            getJavabot().postMessage(event.getChannel(), event.getUser(), Sofia.userNotFound(userName), event.isTell());
+            getJavabot().postMessageToChannel(event, Sofia.userNotFound(userName));
         } else {
             if (dao.getAdmin(user.getNick(), hostName) != null) {
-                getJavabot().postMessage(event.getChannel(), event.getUser(), Sofia.adminAlready(user.getNick()), event.isTell());
+                getJavabot().postMessageToChannel(event, Sofia.adminAlready(user.getNick()));
             } else {
                 dao.create(user.getNick(), user.getLogin(), user.getHostmask());
-                getJavabot().postMessage(event.getChannel(), event.getUser(), Sofia.adminAdded(user.getNick()), event.isTell());
+                getJavabot().postMessageToChannel(event, Sofia.adminAdded(user.getNick()));
             }
         }
     }
