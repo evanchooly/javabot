@@ -314,8 +314,12 @@ public class Javabot {
   public void postMessageToChannel(final Message event, String message) {
     if (event != null) {
       final String value = event.massageTell(message);
-      logMessage(event.getChannel(), getIrcBot().getUserBot(), value);
-      event.getChannel().send().message(value);
+      if (event.getChannel() != null) {
+        logMessage(event.getChannel(), getIrcBot().getUserBot(), value);
+        event.getChannel().send().message(value);
+      } else {
+        postMessageToUser(event.getUser(), value);
+      }
     }
   }
 
