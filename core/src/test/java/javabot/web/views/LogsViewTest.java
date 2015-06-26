@@ -37,6 +37,7 @@ public class LogsViewTest extends ViewsTest {
         logsDao.deleteAllForChannel(eventChannel);
 
         create(Type.MESSAGE, eventChannel, message);
+        create(Type.MESSAGE, eventChannel, "this is a test of a url: http://google.com/ now isn't that cool");
 
         String action = "really loves deleting boiler plate code";
         create(Type.ACTION, eventChannel, action);
@@ -46,16 +47,18 @@ public class LogsViewTest extends ViewsTest {
 
         String rendered = render(new LogsView(getInjector(), new MockServletRequest(false), eventChannel, LocalDateTime.now())).toString();
 
+        Assert.assertTrue(rendered.contains(Sofia.logsAnchorFormat("http://google.com/", "http://google.com/")),
+                "Should find url in logs: \n" + Sofia.logsAnchorFormat("http://google.com/", "http://google.com/"));
         Assert.assertTrue(rendered.contains("<td>" + message + "</td>"),
-                          "Should find basic message: \n" + rendered);
+                "Should find basic message: \n" + rendered);
         Assert.assertTrue(rendered.contains(">" + user + " " + action + "</td>"),
-                          "Should find action: \n" + rendered);
+                "Should find action: \n" + rendered);
         Assert.assertTrue(rendered.contains(">" + Sofia.userJoined(user.getNick(), user.getHostmask(), eventChannel) + "</td>"),
-                          "Should find join: \n" + rendered);
+                "Should find join: \n" + rendered);
         Assert.assertTrue(rendered.contains(">" + Sofia.userQuit(user.getNick(), eventChannel) + "</td>"),
-                          "Should find quit: \n" + rendered);
+                "Should find quit: \n" + rendered);
         Assert.assertTrue(rendered.contains(">" + Sofia.userParted(user.getNick(), "i'm done") + "</td>"),
-                          "Should find part: \n" + rendered);
+                "Should find part: \n" + rendered);
     }
 
     private void create(final Type type, final String channelName, final String value) {
