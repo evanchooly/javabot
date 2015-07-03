@@ -24,3 +24,4 @@ target
 test-javabot.properties
 tmp
 web/conf/oauth.*
+core/src/main/java/com/antwerkz/sofia/Sofia.java
