@@ -153,7 +153,7 @@
     <properties>
         <guice.version>3.0</guice.version>
         <sofia.version>0.15</sofia.version>
-        <critter.version>2.1.0</critter.version>
+        <critter.version>2.1.1</critter.version>
         <slf4j.version>1.7.4</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
