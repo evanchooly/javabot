@@ -3,6 +3,7 @@ package javabot.web.views;
 import com.antwerkz.sofia.Sofia;
 import com.google.inject.Injector;
 import javabot.dao.LogsDao;
+import javabot.dao.util.CleanHtmlConverter;
 import javabot.model.Logs;
 import javabot.web.resources.BotResource;
 import org.jsoup.Jsoup;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.function.Function;
 
 public class LogsView extends MainView {
     public static final DateTimeFormatter LOG_FORMAT = DateTimeFormatter.ofPattern("hh:mm");
@@ -57,21 +59,7 @@ public class LogsView extends MainView {
         List<Logs> logs=logsDao.findByChannel(channel, date, isAdmin());
         // filter the log content
         for(Logs log:logs) {
-            String message=log.getMessage()
-                    .replaceAll("&", "&amp;")
-                    .replaceAll("<", "&lt;")
-                    .replaceAll(">", "&gt;");
-            if(message.contains("http://") || message.contains("https://")) {
-                StringBuilder sewingMachine=new StringBuilder();
-                for(String token:message.split(" ")) {
-                    if(token.startsWith("http://") || token.startsWith("https://")) {
-                        token= Sofia.logsAnchorFormat(token, token);
-                    }
-                    sewingMachine.append(token).append(" ");
-                }
-                message=sewingMachine.toString();
-            }
-            log.setMessage(message);
+            log.setMessage(CleanHtmlConverter.convert(log.getMessage(), s -> Sofia.logsAnchorFormat(s, s)));
         }
         return logs;
     }
