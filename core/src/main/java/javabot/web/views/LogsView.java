@@ -1,9 +1,12 @@
 package javabot.web.views;
 
+import com.antwerkz.sofia.Sofia;
 import com.google.inject.Injector;
 import javabot.dao.LogsDao;
 import javabot.model.Logs;
 import javabot.web.resources.BotResource;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -51,7 +54,26 @@ public class LogsView extends MainView {
     }
 
     public List<Logs> logs() {
-        return logsDao.findByChannel(channel, date, isAdmin());
+        List<Logs> logs=logsDao.findByChannel(channel, date, isAdmin());
+        // filter the log content
+        for(Logs log:logs) {
+            String message=log.getMessage()
+                    .replaceAll("&", "&amp;")
+                    .replaceAll("<", "&lt;")
+                    .replaceAll(">", "&gt;");
+            if(message.contains("http://") || message.contains("https://")) {
+                StringBuilder sewingMachine=new StringBuilder();
+                for(String token:message.split(" ")) {
+                    if(token.startsWith("http://") || token.startsWith("https://")) {
+                        token= Sofia.logsAnchorFormat(token, token);
+                    }
+                    sewingMachine.append(token).append(" ");
+                }
+                message=sewingMachine.toString();
+            }
+            log.setMessage(message);
+        }
+        return logs;
     }
     @Override
     public String getChildView() {
