@@ -54,10 +54,10 @@ public class JavadocTest extends BaseMessagingTest {
 
     private void checkServlets(final String apiName) {
         Assert.assertEquals(javadocClassDao.getClass(apiDao.find(apiName), "javax.servlet.http", "HttpServletRequest").length, 1);
-        scanForResponse("~javadoc HttpServlet", "javax.servlet.http.HttpServlet");
-        scanForResponse("~javadoc HttpServlet.doGet(*)", "javax.servlet.http.HttpServlet.doGet");
-        scanForResponse("~javadoc HttpServletRequest", "javax.servlet.http.HttpServletRequest");
-        scanForResponse("~javadoc HttpServletRequest.getMethod()", "javax.servlet.http.HttpServletRequest.getMethod");
+        scanForResponse("~javadoc HttpServlet", "javax/servlet/http/HttpServlet.html");
+        scanForResponse("~javadoc HttpServlet.doGet(*)", "javax/servlet/http/HttpServlet.html#doGet");
+        scanForResponse("~javadoc HttpServletRequest", "javax/servlet/http/HttpServletRequest.html");
+        scanForResponse("~javadoc HttpServletRequest.getMethod()", "javax/servlet/http/HttpServletRequest.html#getMethod");
     }
 
     @Test
@@ -65,18 +65,18 @@ public class JavadocTest extends BaseMessagingTest {
         String apiName = "JavaEE7";
         dropApi(apiName);
         addApi(apiName, "http://docs.oracle.com/javaee/7/api/", "https://repo1.maven.org/maven2/javax/javaee-api/7.0/javaee-api-7.0.jar");
-        scanForResponse("~javadoc Annotated", "javax.enterprise.inject.spi.Annotated");
-        scanForResponse("~javadoc Annotated.getAnnotation(*)", "javax.enterprise.inject.spi.Annotated.getAnnotation");
-        scanForResponse("~javadoc ContextService", "javax.enterprise.concurrent.ContextService");
-        scanForResponse("~javadoc ContextService.createContextualProxy(*)", "createContextualProxy(Object, Class...)");
+        scanForResponse("~javadoc Annotated", "javax/enterprise/inject/spi/Annotated.html");
+        scanForResponse("~javadoc Annotated.getAnnotation(*)", "javax/enterprise/inject/spi/Annotated.html#getAnnotation");
+        scanForResponse("~javadoc ContextService", "javax/enterprise/concurrent/ContextService.html");
+        scanForResponse("~javadoc ContextService.createContextualProxy(*)", "createContextualProxy(java.lang.Object, java.lang.Class...)");
         scanForResponse("~javadoc ContextService.createContextualProxy(*)",
-                        "createContextualProxy(Object, Map<String, String>, Class...)");
-        scanForResponse("~javadoc ContextService.createContextualProxy(*)", "createContextualProxy(T, Class<T>)");
+                        "createContextualProxy(java.lang.Object, java.util.Map, java.lang.Class...)");
+        scanForResponse("~javadoc ContextService.createContextualProxy(*)", "createContextualProxy(T, java.lang.Class)");
         scanForResponse("~javadoc ContextService.createContextualProxy(*)",
-                        "createContextualProxy(T, Map<String, String>, Class<T>)");
-        scanForResponse("~javadoc PartitionPlan", "[JavaEE7: javax.batch.api.partition.PartitionPlan]");
+                        "createContextualProxy(T, java.util.Map, java.lang.Class)");
+        scanForResponse("~javadoc PartitionPlan", "javax/batch/api/partition/PartitionPlan.html");
         scanForResponse("~javadoc PartitionPlan.setPartitionProperties(Properties[])",
-                        "javax.batch.api.partition.PartitionPlan.setPartitionProperties(Properties[])");
+                        "javax/batch/api/partition/PartitionPlan.html#setPartitionProperties(java.util.Properties[])");
     }
 
     @Test

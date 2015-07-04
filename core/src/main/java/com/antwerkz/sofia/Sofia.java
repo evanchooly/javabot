@@ -409,6 +409,10 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("leave.privmsg", locale), arg0);
     }
 
+    public static String logsAnchorFormat(Object arg0, Object arg1, Locale... locale) {
+        return MessageFormat.format(getMessageValue("logs.anchorFormat", locale), arg0, arg1);
+    }
+
     public static String logsEntry(Object arg0, Object arg1, Object arg2, Locale... locale) {
         return MessageFormat.format(getMessageValue("logs.entry", locale), arg0, arg1, arg2);
     }
