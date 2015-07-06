@@ -2,6 +2,7 @@ package javabot.dao;
 
 import com.antwerkz.sofia.Sofia;
 import com.mongodb.WriteResult;
+import javabot.dao.util.CleanHtmlConverter;
 import javabot.dao.util.QueryParam;
 import javabot.model.Factoid;
 import javabot.model.Persistent;
@@ -33,12 +34,15 @@ public class FactoidDao extends BaseDao<Factoid> {
         Factoid factoid = (Factoid) persistent;
         Factoid old = find(persistent.getId());
         super.save(persistent);
+        String formattedValue=CleanHtmlConverter.convert(factoid.getValue(), s -> Sofia.logsAnchorFormat(s, s));
         if (old != null) {
             changeDao.logChange(String.format("%s changed '%s' from '%s' to '%s'",
-                                              factoid.getUserName(), factoid.getName(), old.getValue(), factoid.getValue()));
+                                              factoid.getUserName(), factoid.getName(),
+                    CleanHtmlConverter.convert(old.getValue(), s -> Sofia.logsAnchorFormat(s, s)),
+                    formattedValue));
         } else {
             changeDao.logChange(String.format("%s added '%s' with '%s'", factoid.getUserName(), factoid.getName(),
-                                              factoid.getValue()));
+                    formattedValue));
         }
     }
 
