@@ -43,11 +43,6 @@ public class ChangesView extends PagedView<Change> {
 
     @Override
     public List<Change> getPageItems() {
-        List<Change> changes=changeDao.getChanges(new QueryParam(getIndex(), ITEMS_PER_PAGE, "updated", true), filter);
-        // filter the log content
-        for(Change change:changes) {
-            change.setMessage(CleanHtmlConverter.convert(change.getMessage(), s -> Sofia.logsAnchorFormat(s, s)));
-        }
-        return changes;
+        return changeDao.getChanges(new QueryParam(getIndex(), ITEMS_PER_PAGE, "updated", true), filter);
     }
 }
