@@ -2,6 +2,7 @@ package javabot.operations;
 
 import javabot.Message;
 import javabot.operations.urlcontent.URLContentAnalyzer;
+import javabot.operations.urlcontent.URLFromMessageParser;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
@@ -15,12 +16,15 @@ import org.jsoup.nodes.Document;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import static java.lang.String.format;
 
 public class URLTitleOperation extends BotOperation {
     @Inject
     URLContentAnalyzer analyzer;
+    @Inject
+    URLFromMessageParser parser;
 
     static final RequestConfig requestConfig = RequestConfig.custom()
                                                             .setConnectionRequestTimeout(5000)
@@ -31,21 +35,16 @@ public class URLTitleOperation extends BotOperation {
     @Override
     public boolean handleChannelMessage(final Message event) {
         final String message = event.getValue();
-        if (message.contains("http://") || message.contains("https://")) {
-            for (String token : message.split(" ")) {
-                if (token.startsWith("http")) {
-                    // let's try to build a url from it!
-                    try {
-                        new URL(token);
-                        findTitle(event, token, true);
-                        return true;
-                    } catch (IOException ignored) {
-                        ignored.printStackTrace();
-                    }
-                }
+        try {
+            for (URL url: parser.urlsFromMessage(message)) {
+                findTitle(event, url.toString(), true);
+                return true;
             }
+            return false;
+        } catch (IOException ignored) {
+            ignored.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     private void findTitle(Message event, String url, boolean loop) throws IOException {
