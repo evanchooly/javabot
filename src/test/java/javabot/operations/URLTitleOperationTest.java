@@ -7,6 +7,8 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
 
+import java.net.URL;
+
 @Test(groups = {"operations"})
 public class URLTitleOperationTest extends BaseMessagingTest {
     URLContentAnalyzer analyzer = new URLContentAnalyzer();
@@ -22,7 +24,7 @@ public class URLTitleOperationTest extends BaseMessagingTest {
                 {"http://javachannel.org/posts/finding-hash-collisions-in-java-strings/", null},
                 {"http://hastebin.com/askhjahs", null},
                 {"http://pastebin.com/askhjahs", null},
-                {"https://www.facebook.com/thechurchofspace",null}, // url matches content title too well
+                {"https://www.facebook.com/thechurchofspace", null}, // url matches content title too well
                 {"http://architects.dzone.com/articles/why-programmers-should-have", null}, // url matches title
                 {"http://facebook.com/foo/bar/blah", null}, // doesn't exist on facebook, I hope
                 {"http://", null},
@@ -36,7 +38,7 @@ public class URLTitleOperationTest extends BaseMessagingTest {
 
     @Test(dataProvider = "urls")
     public void testSimpleUrl(String url, String content) {
-        if(content!=null) {
+        if (content != null) {
             testMessage(url, content);
         } else {
             testMessage(url);
@@ -60,4 +62,5 @@ public class URLTitleOperationTest extends BaseMessagingTest {
     public void testFuzzyContent(String url, String title, boolean pass) {
         assertEquals(analyzer.check(url, title), pass);
     }
+
 }
