@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -36,18 +37,41 @@ public class URLTitleOperation extends BotOperation {
     public boolean handleChannelMessage(final Message event) {
         final String message = event.getValue();
         try {
-            for (URL url: parser.urlsFromMessage(message)) {
-                findTitle(event, url.toString(), true);
+            List<String> titlesToPost = parser.urlsFromMessage(message).stream()
+                    .map(URL::toString)
+                    .map(s -> findTitle(s, true))
+                    .filter((s -> s != null))
+                    .collect(Collectors.toList());
+            if (titlesToPost.isEmpty()) {
+                return false;
+            } else {
+                postMessageToChannel(titlesToPost, event);
                 return true;
             }
-            return false;
-        } catch (IOException ignored) {
+        } catch (Exception ignored) {
             ignored.printStackTrace();
             return false;
         }
     }
 
-    private void findTitle(Message event, String url, boolean loop) throws IOException {
+    private void postMessageToChannel(List<String> titlesToPost, Message event) {
+        String botMessage;
+        if (titlesToPost.size() == 1) {
+            botMessage = format("%s'%s title: %s",
+                    event.getUser().getNick(),
+                    event.getUser().getNick().endsWith("s") ? "" : "s",
+                    titlesToPost.get(0));
+        } else {
+            botMessage = format("%s'%s titles: %s",
+                    event.getUser().getNick(),
+                    event.getUser().getNick().endsWith("s") ? "" : "s",
+                    String.join(" | ", titlesToPost.stream().map(s -> "\"" + s + "\"").collect(Collectors.toList())));
+        }
+
+        getBot().postMessageToChannel(event, botMessage);
+    }
+
+    private String findTitle(String url, boolean loop) {
         if (analyzer.precheck(url)) {
             try (CloseableHttpClient client = HttpClientBuilder
                                                   .create()
@@ -57,19 +81,16 @@ public class URLTitleOperation extends BotOperation {
                 httpget.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0");
                 HttpResponse response = client.execute(httpget);
                 HttpEntity entity = response.getEntity();
+
                 try {
                     if (!(response.getStatusLine().getStatusCode() == 404 ||
-                          response.getStatusLine().getStatusCode() == 403)) {
-                        if (entity != null) {
-                            Document doc = Jsoup.parse(EntityUtils.toString(entity));
-                            String title = clean(doc.title());
-                            if (analyzer.check(url, title)) {
-                                getBot().postMessageToChannel(event, format("%s'%s title: %s",
-                                                                            event.getUser().getNick(),
-                                                                            event.getUser().getNick().endsWith("s") ? "" : "s",
-                                                                            title));
-                            }
-                        }
+                          response.getStatusLine().getStatusCode() == 403) && entity != null) {
+
+                        Document doc = Jsoup.parse(EntityUtils.toString(entity));
+                        String title = clean(doc.title());
+                        return (analyzer.check(url, title)) ? title : null;
+                    } else {
+                        return null;
                     }
                 } finally {
                     EntityUtils.consume(entity);
@@ -77,10 +98,15 @@ public class URLTitleOperation extends BotOperation {
             } catch (IOException ioe) {
                 if (loop && !url.substring(0, 10).contains("//www.")) {
                     String tUrl = url.replace("//", "//www.");
-                    findTitle(event, tUrl, false);
+                    return findTitle(tUrl, false);
+                } else {
+                    return null;
                 }
             } catch (IllegalArgumentException ignored) {
+                return null;
             }
+        } else {
+            return null;
         }
     }
 

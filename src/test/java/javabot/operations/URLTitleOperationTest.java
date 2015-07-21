@@ -33,6 +33,10 @@ public class URLTitleOperationTest extends BaseMessagingTest {
                 {"http://docs.oracle.com/javase/tutorial/java/nutsandbolts/branch.html",
                         "botuser's title: Branching Statements (The Java Tutorials > Learning the Java Language > Language Basics)"},
                 {"http://git.io/foo", null},
+                {"Two urls with titles: http://docs.oracle.com/javaee/6/tutorial/doc/ and http://javachannel.org/",
+                        "botuser's titles: \"- The Java EE 6 Tutorial\" | \"Freenode ##java  enthusiasts united\""},
+                {"Two urls, one with a title: http://javachannel.org/posts/finding-hash-collisions-in-java-strings/  and http://javachannel.org/",
+                        "botuser's title: Freenode ##java  enthusiasts united"},
         };
     }
 
