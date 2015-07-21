@@ -1,7 +1,10 @@
+[![Build Status](https://travis-ci.org/evanchooly/javabot.svg?branch=master)](https://travis-ci.org/evanchooly/javabot)
+
 javabot
 =======
 
 factoid bot for irc channels
+
 
 Building
 --------
