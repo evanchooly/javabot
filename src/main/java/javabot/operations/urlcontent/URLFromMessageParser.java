@@ -45,7 +45,6 @@ public class URLFromMessageParser {
 
         //Walk backwards in message from urlStart, and strip the punctuation if an open brace/bracket is seen
         //before another close.  Otherwise, return the url as is.
-
         for (char c : StringUtils.reverse(message.substring(0,idxUrlStart)).toCharArray()) {
             if (c == OPEN_PUNCTUATION[idxPunc]) {
                 return url.substring(0,url.length() - 1);
