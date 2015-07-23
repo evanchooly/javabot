@@ -7,13 +7,19 @@ import javabot.model.Factoid;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.lang.String.format;
+
 public class GetFactoidOperation extends BotOperation implements StandardOperation  {
+    private static final Logger LOG = LoggerFactory.getLogger(GetFactoidOperation.class);
+
     @Inject
     private FactoidDao factoidDao;
 
@@ -59,7 +65,13 @@ public class GetFactoidOperation extends BotOperation implements StandardOperati
             getBot().postMessageToChannel(event, message.substring("<reply>".length()));
             return true;
         } else if (message.startsWith("<action>")) {
-            getBot().postAction(event.getChannel(), message.substring("<action>".length()));
+            try {
+                getBot().postAction(event.getChannel(), message.substring("<action>".length()));
+            } catch (Exception e) {
+                LOG.error(format("NPE:  subject = [%s], event = [%s], backtrack = [%s], replacedValue = [%s], factoid = [%s]",
+                                 subject, event, backtrack, replacedValue, factoid));
+                e.printStackTrace();
+            }
             return true;
         } else {
             getBot().postMessageToChannel(event, message);

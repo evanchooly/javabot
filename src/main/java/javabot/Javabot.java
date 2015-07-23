@@ -350,7 +350,13 @@ public class Javabot {
     boolean handled = false;
     while (iterator.hasNext() && !handled) {
       final BotOperation next = iterator.next();
-      handled = next.handleMessage(message);
+      try {
+        handled = next.handleMessage(message);
+      } catch (Exception e) {
+        LOG.error("NPE: message = [" + message + "], requester = [" + requester + "]");
+        e.printStackTrace();
+        handled = true;
+      }
     }
 
     if (!handled) {

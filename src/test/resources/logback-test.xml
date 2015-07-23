@@ -1,0 +1,34 @@
+<configuration scan="true">
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>/tmp/javabot-test.log</file>
+
+        <encoder>
+            <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="javabot" level="ERROR">
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <logger name="freemarker.cache">
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <logger name="org.pircbotx.InputParser" level="ERROR" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+
+<!--
+    <root level="ERROR">
+        <appender-ref ref="FILE"/>
+    </root>
+-->
+</configuration>
