@@ -64,7 +64,7 @@ public class KarmaOperation extends BotOperation {
             }
             // got an empty nick; spaces only?
             if (!nick.isEmpty()) {
-                if (!channel.getName().startsWith("#")) {
+                if (channel == null || !channel.getName().startsWith("#")) {
                     getBot().postMessageToChannel(event, Sofia.privmsgChange());
                     handled = true;
                 } else {
@@ -95,7 +95,6 @@ public class KarmaOperation extends BotOperation {
 
     public boolean readKarma(final Message event) {
            final String message = event.getValue();
-           final Channel channel = event.getChannel();
            final User sender = event.getUser();
            if (message.startsWith("karma ")) {
                final String nick = message.substring("karma ".length()).toLowerCase();

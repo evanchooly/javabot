@@ -18,7 +18,7 @@ public class ForgetFactoidOperation extends BotOperation implements StandardOper
         String message = event.getValue();
         boolean handled = false;
         if (message.startsWith("forget ")) {
-            if (!channel.getName().startsWith("#") && !isAdminUser(event.getUser())) {
+            if ((channel == null || !channel.getName().startsWith("#")) && !isAdminUser(event.getUser())) {
                 getBot().postMessageToChannel(event, Sofia.privmsgChange());
             } else {
                 message = message.substring("forget ".length());
