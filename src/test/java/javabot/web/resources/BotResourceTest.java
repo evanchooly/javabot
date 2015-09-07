@@ -30,8 +30,7 @@ public class BotResourceTest extends BaseTest {
         + "&userName=Diet")
         .get(ClientResponse.class);
 
-    final int status = response.getStatus();
-    assertEquals(status, 200);
+      assertEquals(response.getStatus(), 200);
   }
 
   @Test

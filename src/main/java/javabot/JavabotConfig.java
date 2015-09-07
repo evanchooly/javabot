@@ -42,6 +42,6 @@ public interface JavabotConfig extends Config {
     String bitlyToken();
 
     @Key("start.web.app")
-    @DefaultValue("false")
+    @DefaultValue("true")
     Boolean startWebApp();
 }
