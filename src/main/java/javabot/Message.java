@@ -72,14 +72,10 @@ public class Message {
         return tell;
     }
 
-    public String resolveMessage() {
-        return tell ? format("%s, %s", user.getNick(), value) : value;
-    }
-
     @Override
     public String toString() {
         return "Message{" +
-               "channel=" + channel.getName() +
+               "channel=" + (channel != null ? channel.getName() : "private message") +
                ", user=" + user.getNick() +
                ", message='" + value + '\'' +
                ", tell=" + tell +
