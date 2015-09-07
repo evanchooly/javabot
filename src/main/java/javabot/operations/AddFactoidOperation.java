@@ -51,7 +51,7 @@ public class AddFactoidOperation extends BotOperation implements StandardOperati
         boolean handled = false;
         if (is != -1) {
             final Channel channel = event.getChannel();
-            if (!channel.getName().startsWith("#") && !isAdminUser(event.getUser())) {
+            if ((channel == null || !channel.getName().startsWith("#")) && !isAdminUser(event.getUser())) {
                 getBot().postMessageToChannel(event, Sofia.privmsgChange());
             } else {
                 String key = message.substring(0, is);
