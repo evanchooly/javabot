@@ -2,6 +2,7 @@ package javabot.operations;
 
 import com.antwerkz.sofia.Sofia;
 import javabot.BaseMessagingTest;
+import javabot.Messages;
 import javabot.dao.FactoidDao;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -17,6 +18,8 @@ public class GetFactoidOperationTest extends BaseMessagingTest {
     private static final String REPLY_VALUE = "I'm a reply!";
     @Inject
     private FactoidDao factoidDao;
+    @Inject
+    private GetFactoidOperation operation;
 
     @BeforeClass
     public void createGets() {
@@ -53,6 +56,7 @@ public class GetFactoidOperationTest extends BaseMessagingTest {
         delete("hey");
         delete("coin");
         delete("hug $1");
+        delete("yalla $1");
     }
 
     private void delete(final String key) {
@@ -143,6 +147,27 @@ public class GetFactoidOperationTest extends BaseMessagingTest {
                            " point in your rambling, incoherent response were you even close to anything that could be considered" +
                            " a rational thought. Everyone in this room is now dumber for having listened to it. I award you no" +
                            " points, and may God have mercy on your soul.");
+    }
+
+    @Test
+    public void longResponse() {
+        factoidDao.addFactoid(TEST_NICK, "yalla $1", "<reply>$1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 "
+                                                  + "!111!!!!!one!!!\n");
+        final Messages messages = sendMessage("~yalla I'm a really long repeated spam I'm a really long repeated spam I'm a really long "
+                                              + "repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a "
+                                              + "really long repeated spam I'm a really long repeated spam I'm a really long repeated "
+                                              + "spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long "
+                                              + "repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a "
+                                              + "really long repeated spam I'm a really long repeated spam I'm a really long repeated "
+                                              + "spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long "
+                                              + "repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a "
+                                              + "really long repeated spam I'm a really long repeated spam I'm a really long repeated "
+                                              + "spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long "
+                                              + "repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a "
+                                              + "really long repeated spam I'm a really long repeated spam ");
+
+        Assert.assertEquals(messages.size(), 1);
+        Assert.assertTrue(messages.get(0).length() <= 510);
     }
 
     private void validate(final String factoid, final String response) {

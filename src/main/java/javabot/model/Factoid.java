@@ -144,7 +144,7 @@ public class Factoid implements Serializable, Persistent {
     if (!message.startsWith("<")) {
       message = (subject == null ? sender : subject.getTarget()) + ", " + getName() + " is " + message;
     }
-    return message;
+    return message.substring(0, Math.min(message.length(), 510));
   }
 
   private String urlencode(final String in) {
