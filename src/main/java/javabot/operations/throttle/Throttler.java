@@ -1,15 +1,8 @@
 package javabot.operations.throttle;
 
-import java.time.Duration;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import com.antwerkz.sofia.Sofia;
 import com.jayway.awaitility.Awaitility;
 import com.jayway.awaitility.core.ConditionTimeoutException;
-import static java.time.LocalDateTime.now;
 import javabot.dao.AdminDao;
 import javabot.dao.BaseDao;
 import javabot.dao.ConfigDao;
@@ -19,6 +12,14 @@ import javabot.model.ThrottleItem;
 import javabot.model.criteria.ThrottleItemCriteria;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static java.time.Duration.between;
+import static java.time.LocalDateTime.now;
 
 public class Throttler extends BaseDao<ThrottleItem> {
   @Inject
@@ -75,7 +76,8 @@ public class Throttler extends BaseDao<ThrottleItem> {
       Sofia.logNoNickservEntry(user.getNick());
       throw new NickServViolationException(Sofia.unknownUser());
     }
-    if (Duration.between(nickServInfo.getRegistered(), now()).toDays() < configDao.get().getMinimumNickServAge()) {
+    if (nickServInfo.getRegistered() == null
+        || between(nickServInfo.getRegistered(), now()).toDays() < configDao.get().getMinimumNickServAge()) {
       throw new NickServViolationException(Sofia.accountTooNew());
     }
   }
