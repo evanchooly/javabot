@@ -55,6 +55,9 @@ public class KarmaOperation extends BotOperation {
                     return false;
                 }
             }
+            if(operationPointer != message.length() - 2 && message.charAt(operationPointer + 2) != ' ') {
+                return false;
+            }
             final String nick;
             try {
                 nick = message.substring(0, operationPointer).trim().toLowerCase();
