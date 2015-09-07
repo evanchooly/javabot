@@ -361,7 +361,8 @@ public class Javabot {
     }
 
     if (!handled) {
-      postMessageToChannel(new Message(message.getChannel(), message.getSender(), message.getValue()),
+      final User sender = getIrcBot().getUserChannelDao().getUser(requester.getNick());
+      postMessageToChannel(new Message(message.getChannel(), sender, message.getValue()),
                            Sofia.unhandledMessage(requester.getNick()));
     }
     return true;
