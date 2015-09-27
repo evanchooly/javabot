@@ -3,28 +3,24 @@ package javabot.javadoc
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
-import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.Indexes
 import org.mongodb.morphia.annotations.PrePersist
 
-import java.util.ArrayList
-
-Entity(value = "classes", noClassnameStored = true)
-Indexes(@Index(fields = @Field("apiId")), @Index(fields = @Field("upperName")),
-      @Index(fields = { @Field("upperPackageName"), @Field("upperName") }),
-      @Index(fields = { @Field("apiId"), @Field("upperPackageName"), @Field("upperName") }))
+@Entity(value = "classes", noClassnameStored = true)
+@Indexes(Index(fields = arrayOf(Field("apiId"))), Index(fields = arrayOf(Field("upperName"))),
+      Index(fields = arrayOf(Field("upperPackageName"), Field("upperName") )),
+      Index(fields = arrayOf(Field("apiId"), Field("upperPackageName"), Field("upperName") )))
 public class JavadocClass : JavadocElement {
-    Id
-    private var id: ObjectId? = null
+    override var id: ObjectId? = null
 
     public var packageName: String? = null
     public var upperPackageName: String? = null
-    public var name: String? = null
+    lateinit var name: String
     public var upperName: String? = null
     public var superClassId: ObjectId? = null
-    private val methods = ArrayList<JavadocMethod>()
-    private val fields = ArrayList<JavadocField>()
+//    private val methods = ArrayList<JavadocMethod>()
+//    private val fields = ArrayList<JavadocField>()
 
     public constructor() {
     }
@@ -37,21 +33,13 @@ public class JavadocClass : JavadocElement {
         longUrl = api.baseUrl + "index.html?" + pkg.replace('.', '/') + "/" + name + ".html"
     }
 
-    override fun getId(): ObjectId {
-        return id
-    }
-
-    override fun setId(classId: ObjectId) {
-        id = classId
-    }
-
     public fun setSuperClassId(javadocClass: JavadocClass) {
-        superClassId = javadocClass.getId()
+        superClassId = javadocClass.id
     }
 
-    PrePersist
+    @PrePersist
     public fun uppers() {
-        upperName = name!!.toUpperCase()
+        upperName = name.toUpperCase()
         upperPackageName = packageName!!.toUpperCase()
     }
 

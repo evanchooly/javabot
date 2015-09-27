@@ -4,26 +4,27 @@ import com.antwerkz.sofia.Sofia
 import com.google.inject.Injector
 import javabot.dao.LogsDao
 import javabot.dao.util.CleanHtmlConverter
-import javabot.kotlin.web.resources.BotResource
 import javabot.model.Logs
-
-import javax.inject.Inject
-import javax.servlet.http.HttpServletRequest
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import javax.inject.Inject
+import javax.servlet.http.HttpServletRequest
 
-public class LogsView(injector: Injector, request: HttpServletRequest, public val channel: String, private val date: LocalDateTime) : MainView(
+public class LogsView(injector: Injector, request: HttpServletRequest,
+                      val channel: String,
+                      private val date: LocalDateTime) : MainView(
       injector, request) {
+    companion object {
+        public val LOG_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm")
+    }
+
     @Inject
-    private val logsDao: LogsDao? = null
-    public val today: String
-    public val yesterday: String
-    public val tomorrow: String
+    lateinit val logsDao: LogsDao
+    val today = javabot.kotlin.web.resources.BotResource.Companion.FORMAT.format(date)
+    val yesterday = javabot.kotlin.web.resources.BotResource.Companion.FORMAT.format(date.minusDays(1))
+    val tomorrow = javabot.kotlin.web.resources.BotResource.Companion.FORMAT.format(date.plusDays(1))
 
     init {
-        today = BotResource.FORMAT.format(date)
-        yesterday = BotResource.FORMAT.format(date.minusDays(1))
-        tomorrow = BotResource.FORMAT.format(date.plusDays(1))
     }
 
     override fun format(date: LocalDateTime): String {
@@ -31,7 +32,7 @@ public class LogsView(injector: Injector, request: HttpServletRequest, public va
     }
 
     public fun logs(): List<Logs> {
-        val logs = logsDao!!.findByChannel(channel, date, isAdmin())
+        val logs = logsDao.findByChannel(channel, date, isAdmin())
         // filter the log content
         for (log in logs) {
             log.message = CleanHtmlConverter.convert(log.message) { s -> Sofia.logsAnchorFormat(s, s) }
@@ -41,10 +42,6 @@ public class LogsView(injector: Injector, request: HttpServletRequest, public va
 
     override fun getChildView(): String {
         return "logs.ftl"
-    }
-
-    companion object {
-        public val LOG_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm")
     }
 
 }

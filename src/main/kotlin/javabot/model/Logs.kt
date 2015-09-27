@@ -3,29 +3,26 @@ package javabot.model
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
-import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.IndexOptions
 import org.mongodb.morphia.annotations.Indexes
 import org.mongodb.morphia.annotations.PrePersist
-
 import java.time.LocalDateTime
 
-Entity(value = "logs", noClassnameStored = true)
-Indexes(@Index(fields = { @Field("channel"), @Field("upperNick"), @Field("updated") }, options = @IndexOptions(name = "seen")))
+@Entity(value = "logs", noClassnameStored = true)
+@Indexes(Index(fields = arrayOf(Field("channel"), Field("upperNick"), Field("updated")), options = IndexOptions(name = "seen")))
 public class Logs : Persistent {
-    Id
-    private var id: ObjectId? = null
+    override var id: ObjectId? = null
 
-    public var nick: String? = null
+    lateinit var nick: String
 
     public var upperNick: String? = null
 
-    public var channel: String? = null
+    lateinit var channel: String
 
-    public var message: String? = null
+    public var message: String = ""
 
-    public var updated: LocalDateTime? = null
+    lateinit var updated: LocalDateTime
 
     public enum class Type {
         ACTION,
@@ -45,27 +42,19 @@ public class Logs : Persistent {
 
     public var type: Type? = null
 
-    override fun getId(): ObjectId {
-        return id
-    }
-
-    override fun setId(logsId: ObjectId) {
-        id = logsId
-    }
-
     public fun isAction(): Boolean {
-        return message != null && Type.ACTION == type
+        return Type.ACTION == type
     }
 
     public fun isKick(): Boolean {
-        return message != null && Type.KICK == type
+        return Type.KICK == type
     }
 
     public fun isServerMessage(): Boolean {
-        return message != null && Type.JOIN == type || Type.PART == type || Type.QUIT == type
+        return Type.JOIN == type || Type.PART == type || Type.QUIT == type
     }
 
-    PrePersist
+    @PrePersist
     public fun upperNick() {
         upperNick = if (nick == null) null else nick!!.toUpperCase()
     }

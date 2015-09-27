@@ -2,7 +2,7 @@ package javabot.model
 
 import org.mongodb.morphia.annotations.Entity
 
-Entity("events")
+@Entity("events")
 public class OperationEvent : AdminEvent() {
     public var operation: String? = null
 

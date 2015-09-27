@@ -1,10 +1,10 @@
 package javabot.web.views
 
 import javabot.BaseTest
-import javabot.web.JavabotConfiguration
-import javabot.web.model.Authority
-import javabot.web.model.InMemoryUserCache
-import javabot.web.model.User
+import javabot.kotlin.web.JavabotConfiguration
+import javabot.kotlin.web.model.Authority
+import javabot.kotlin.web.model.InMemoryUserCache
+import javabot.kotlin.web.model.User
 import org.brickred.socialauth.util.AccessGrant
 
 import javax.servlet.AsyncContext
@@ -34,17 +34,17 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
     init {
         if (loggedIn) {
             val tempUser = User(UUID.randomUUID())
-            tempUser.setOpenIDIdentifier(UUID.randomUUID().toString())
-            tempUser.setOAuthInfo(AccessGrant())
-            tempUser.setEmail(BaseTest.BOT_EMAIL)
-            tempUser.getAuthorities().add(Authority.ROLE_PUBLIC)
+            tempUser.openIDIdentifier = UUID.randomUUID().toString()
+            tempUser.OAuthInfo = AccessGrant()
+            tempUser.email = BaseTest.BOT_EMAIL
+            tempUser.authorities.add(Authority.ROLE_PUBLIC)
 
             InMemoryUserCache.INSTANCE.put(tempUser)
 
             cookies = arrayOf(Cookie(JavabotConfiguration.SESSION_TOKEN_NAME,
-                  tempUser.getSessionToken().toString()))
+                  tempUser.sessionToken.toString()))
         } else {
-            cookies = arrayOfNulls<Cookie>(0)
+            cookies = arrayOf<Cookie>()
         }
     }
 
@@ -148,27 +148,27 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return false
     }
 
-    Throws(IOException::class, ServletException::class)
+    @Throws(IOException::class, ServletException::class)
     override fun authenticate(response: HttpServletResponse): Boolean {
         return false
     }
 
-    Throws(ServletException::class)
+    @Throws(ServletException::class)
     override fun login(username: String, password: String) {
 
     }
 
-    Throws(ServletException::class)
+    @Throws(ServletException::class)
     override fun logout() {
 
     }
 
-    Throws(IOException::class, ServletException::class)
+    @Throws(IOException::class, ServletException::class)
     override fun getParts(): Collection<Part>? {
         return null
     }
 
-    Throws(IOException::class, ServletException::class)
+    @Throws(IOException::class, ServletException::class)
     override fun getPart(name: String): Part? {
         return null
     }
@@ -185,7 +185,7 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return null
     }
 
-    Throws(UnsupportedEncodingException::class)
+    @Throws(UnsupportedEncodingException::class)
     override fun setCharacterEncoding(env: String) {
 
     }
@@ -198,7 +198,7 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return null
     }
 
-    Throws(IOException::class)
+    @Throws(IOException::class)
     override fun getInputStream(): ServletInputStream? {
         return null
     }
@@ -212,7 +212,7 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
     }
 
     override fun getParameterValues(name: String): Array<String> {
-        return arrayOfNulls(0)
+        return arrayOf()
     }
 
     override fun getParameterMap(): Map<String, Array<String>>? {
@@ -235,7 +235,7 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return 0
     }
 
-    Throws(IOException::class)
+    @Throws(IOException::class)
     override fun getReader(): BufferedReader? {
         return null
     }
@@ -296,12 +296,12 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return null
     }
 
-    Throws(IllegalStateException::class)
+    @Throws(IllegalStateException::class)
     override fun startAsync(): AsyncContext? {
         return null
     }
 
-    Throws(IllegalStateException::class)
+    @Throws(IllegalStateException::class)
     override fun startAsync(servletRequest: ServletRequest, servletResponse: ServletResponse): AsyncContext? {
         return null
     }

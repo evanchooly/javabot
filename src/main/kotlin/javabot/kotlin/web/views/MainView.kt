@@ -24,13 +24,13 @@ public abstract class MainView(injector: Injector, val request: HttpServletReque
     }
 
     @Inject
-    private lateinit val adminDao: AdminDao
+    lateinit val adminDao: AdminDao
 
     @Inject
-    private lateinit val channelDao: ChannelDao
+    lateinit val channelDao: ChannelDao
 
     @Inject
-    private lateinit val factoidDao: FactoidDao
+    lateinit val factoidDao: FactoidDao
 
     private val errors = ArrayList<String>()
 
@@ -39,13 +39,13 @@ public abstract class MainView(injector: Injector, val request: HttpServletReque
     }
 
     public fun sofia(): Sofia {
-        return Sofia()
+        return Sofia
     }
 
     public abstract fun getChildView(): String
 
     public fun getFactoidCount(): Long {
-        return factoidDao.count()!!
+        return factoidDao.count()
     }
 
     public fun loggedIn(): Boolean {
@@ -57,7 +57,7 @@ public abstract class MainView(injector: Injector, val request: HttpServletReque
         val cookie = getSessionCookie()
         if (cookie != null) {
             val optional = InMemoryUserCache.INSTANCE.getBySessionToken(cookie.value)
-            return optional.isPresent && adminDao.getAdminByEmailAddress(optional.get().email) != null
+            return optional.isPresent && adminDao.getAdminByEmailAddress(optional.get().email!!) != null
         } else {
             return false
         }

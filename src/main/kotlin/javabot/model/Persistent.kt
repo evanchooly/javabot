@@ -1,9 +1,9 @@
 package javabot.model
 
 import org.bson.types.ObjectId
+import org.mongodb.morphia.annotations.Id
 
 public interface Persistent {
-    public fun getId(): ObjectId
-
-    public fun setId(id: ObjectId)
+    @Id
+    public var id: ObjectId?
 }

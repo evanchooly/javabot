@@ -31,7 +31,7 @@ import javax.ws.rs.core.Response
 public class PublicOAuthResource {
 
     @Inject
-    private lateinit val adminDao: AdminDao
+    lateinit val adminDao: AdminDao
 
     public var configuration: JavabotConfiguration? = null
 
@@ -85,7 +85,7 @@ public class PublicOAuthResource {
 
             val userOptional = InMemoryUserCache.INSTANCE.getByOpenIDIdentifier(tempUser.openIDIdentifier)
             if (!userOptional.isPresent) {
-                val admin = adminDao.getAdminByEmailAddress(tempUser.email)
+                val admin = adminDao.getAdminByEmailAddress(tempUser.email!!)
                 if (admin != null) {
                     tempUser.authorities.add(Authority.ROLE_ADMIN)
                 }

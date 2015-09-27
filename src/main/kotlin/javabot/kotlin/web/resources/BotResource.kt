@@ -32,7 +32,7 @@ import javax.ws.rs.core.MediaType
 public class BotResource {
 
     @Inject
-    private lateinit val injector: Injector
+    lateinit val injector: Injector
 
     @GET
     @Produces("text/html;charset=ISO-8859-1")

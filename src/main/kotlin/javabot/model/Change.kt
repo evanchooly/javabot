@@ -8,27 +8,14 @@ import org.mongodb.morphia.annotations.Indexed
 import java.io.Serializable
 import java.time.LocalDateTime
 
-Entity(value = "changes", noClassnameStored = true)
-public class Change : Serializable, Persistent {
+@Entity(value = "changes", noClassnameStored = true)
+public class Change(var message: String?) : Serializable, Persistent {
 
-    Id
-    private var id: ObjectId? = null
-    public var message: String? = null
-    Indexed(name = "changed")
-    public var changeDate: LocalDateTime? = null
+    override var id: ObjectId? = null
+    @Indexed(name = "changed")
+    var changeDate = LocalDateTime.now()
 
-    public constructor() {
-    }
+    public constructor() : this(null) {
 
-    public constructor(message: String) {
-        this.message = message
-    }
-
-    override fun getId(): ObjectId {
-        return id
-    }
-
-    override fun setId(id: ObjectId) {
-        this.id = id
     }
 }

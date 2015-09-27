@@ -2,32 +2,21 @@ package javabot.kotlin.web.views
 
 import com.google.common.base.Strings
 import com.google.inject.Injector
-import javabot.dao.FactoidDao
 import javabot.dao.util.QueryParam
 import javabot.model.Factoid
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
-import javax.inject.Inject
-import javax.servlet.http.HttpServletRequest
 import java.io.UnsupportedEncodingException
+import javax.servlet.http.HttpServletRequest
 
-public class FactoidsView(injector: Injector, request: HttpServletRequest, page: Int, private val filter: Factoid) : PagedView<Factoid>(
-      injector, request, page) {
-
-    @Inject
-    private val factoidDao: FactoidDao? = null
-
-    init {
-        itemCount = factoidDao!!.countFiltered(filter)
-    }
+public class FactoidsView(injector: Injector, request: HttpServletRequest, page: Int, private val filter: Factoid) :
+      PagedView<Factoid>(injector, request, page) {
 
     override fun getPageUrl(): String {
         return "/factoids"
     }
 
     override fun countItems(): Long {
-        return itemCount
+        return factoidDao.countFiltered(filter)
     }
 
     override fun getFilter(): Factoid? {
@@ -35,7 +24,7 @@ public class FactoidsView(injector: Injector, request: HttpServletRequest, page:
     }
 
     override fun getPageItems(): List<Factoid> {
-        return factoidDao!!.getFactoidsFiltered(QueryParam(getIndex(), PagedView.ITEMS_PER_PAGE, "Name", true), filter)
+        return factoidDao.getFactoidsFiltered(QueryParam(getIndex(), PagedView.ITEMS_PER_PAGE, "Name", true), filter)
     }
 
     override fun getNextPage(): String? {
@@ -57,7 +46,7 @@ public class FactoidsView(injector: Injector, request: HttpServletRequest, page:
                     builder.append("&value=").append(encode(filter.value))
                 }
                 if (!Strings.isNullOrEmpty(filter.userName)) {
-                    builder.append("&userName=").append(encode(filter.userName))
+                    builder.append("&userName=").append(encode(filter.userName!!))
                 }
                 return url + builder
             }

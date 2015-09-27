@@ -14,17 +14,17 @@ import java.util.TreeSet
 
 public class ConfigurationView(injector: Injector, request: HttpServletRequest) : MainView(injector, request) {
     @Inject
-    private lateinit val configDao: ConfigDao
+    lateinit val configDao: ConfigDao
     @Inject
-    private lateinit val javabot: Javabot
+    lateinit val javabot: Javabot
 
     private val config: Config by lazy {
         configDao.get()
     }
 
     public fun operations(): List<BotOperation> {
-        val all = ArrayList(javabot.allOperations.values())
-        Collections.sort(all) { left, right -> left.name.compareTo(right.name) }
+        val all = ArrayList(javabot.getAllOperations().values())
+        Collections.sort(all) { left, right -> left.getName().compareTo(right.getName()) }
         return all
     }
 

@@ -3,34 +3,27 @@ package javabot.operations
 import javabot.Message
 import javabot.operations.urlcontent.URLContentAnalyzer
 import javabot.operations.urlcontent.URLFromMessageParser
-import org.apache.http.HttpEntity
-import org.apache.http.HttpResponse
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods.HttpGet
-import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.util.EntityUtils
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-
-import javax.inject.Inject
 import java.io.IOException
-import java.net.URL
-import java.util.stream.Collectors
-
 import java.lang.String.format
+import javax.inject.Inject
 
 public class URLTitleOperation : BotOperation() {
-    Inject
-    var analyzer: URLContentAnalyzer
-    Inject
-    var parser: URLFromMessageParser
+    @Inject
+    lateinit var analyzer: URLContentAnalyzer
+    @Inject
+    lateinit var parser: URLFromMessageParser
 
     override fun handleChannelMessage(event: Message): Boolean {
         val message = event.value
         try {
-            val titlesToPost = parser.urlsFromMessage(message)!!.stream().map(Function<URL, String> { it.toString() }).map(
-                  { s -> findTitle(s, true) }).filter(({ s -> s != null })).collect(Collectors.toList<String>())
+            val titlesToPost = parser.urlsFromMessage(message)
+                  .map({ it.toString() })
+                  .map({ s -> findTitle(s, true) }).filterNotNull()
             if (titlesToPost.isEmpty()) {
                 return false
             } else {
@@ -47,15 +40,13 @@ public class URLTitleOperation : BotOperation() {
     private fun postMessageToChannel(titlesToPost: List<String>, event: Message) {
         val botMessage: String
         if (titlesToPost.size() == 1) {
-            botMessage = format("%s'%s title: %s",
-                  event.user.nick,
+            botMessage = format("%s'%s title: %s", event.user.nick,
                   if (event.user.nick.endsWith("s")) "" else "s",
                   titlesToPost.get(0))
         } else {
-            botMessage = format("%s'%s titles: %s",
-                  event.user.nick,
+            botMessage = format("%s'%s titles: %s", event.user.nick,
                   if (event.user.nick.endsWith("s")) "" else "s",
-                  String.join(" | ", titlesToPost.stream().map({ s -> "\"" + s + "\"" }).collect(Collectors.toList<String>())))
+                  titlesToPost.map({ s -> "\"" + s + "\"" }).join(" | "))
         }
 
         bot.postMessageToChannel(event, botMessage)
@@ -101,7 +92,7 @@ public class URLTitleOperation : BotOperation() {
 
     private fun clean(title: String): String {
         val sb = StringBuilder()
-        title.chars().filter({ i -> i < 127 }).forEach({ i -> sb.append(i.toChar()) })
+        title.filter({ i -> i < 127 as Char}).forEach({ i -> sb.append(i.toChar()) })
         return sb.toString()
     }
 

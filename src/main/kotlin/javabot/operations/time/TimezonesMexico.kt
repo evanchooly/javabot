@@ -10,7 +10,7 @@ public class TimezonesMexico : Timezones {
         Mexico_City("America/Mexico_City")
     }
 
-    override fun get(province: String): String {
+    override fun get(province: String): String? {
         return timezones.get(province)
     }
 

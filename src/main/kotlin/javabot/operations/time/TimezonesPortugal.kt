@@ -7,7 +7,7 @@ public class TimezonesPortugal : Timezones {
         Lisbon("Europe/Lisbon")
     }
 
-    override fun get(province: String): String {
+    override fun get(province: String): String? {
         return timezones.get(province)
     }
 

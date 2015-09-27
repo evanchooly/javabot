@@ -7,7 +7,7 @@ public class TimezonesMongolia : Timezones {
         Ulaanbaatar("Asia/Ulaanbaatar")
     }
 
-    override fun get(province: String): String {
+    override fun get(province: String): String? {
         return timezones.get(province)
     }
 

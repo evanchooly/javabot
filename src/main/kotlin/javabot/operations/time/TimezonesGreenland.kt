@@ -9,7 +9,7 @@ public class TimezonesGreenland : Timezones {
         Danmarkshavn("America/Danmarkshavn")
     }
 
-    override fun get(province: String): String {
+    override fun get(province: String): String? {
         return timezones.get(province)
     }
 

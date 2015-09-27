@@ -1,53 +1,48 @@
 package javabot.model
 
-import java.io.Serializable
-import java.io.UnsupportedEncodingException
-import java.net.URLEncoder
-import java.nio.charset.Charset
-import java.time.LocalDateTime
-
 import com.fasterxml.jackson.annotation.JsonView
-import java.lang.String.format
 import javabot.json.Views.PUBLIC
 import javabot.operations.TellSubject
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
-import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.Indexed
 import org.mongodb.morphia.annotations.Indexes
 import org.mongodb.morphia.annotations.PrePersist
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.io.Serializable
+import java.io.UnsupportedEncodingException
+import java.lang.String.format
+import java.net.URLEncoder
+import java.nio.charset.Charset
+import java.time.LocalDateTime
 
-Entity(value = "factoids", noClassnameStored = true)
-Indexes(@Index(fields = { @Field("upperName"), @Field("upperUserName") }))
+@Entity(value = "factoids", noClassnameStored = true)
+@Indexes(Index(fields = arrayOf(Field("upperName"), Field("upperUserName"))))
 public class Factoid : Serializable, Persistent {
+    override var id: ObjectId? = null
 
-    Id
-    private var id: ObjectId? = null
+    lateinit var name: String
 
-    public var name: String? = null
+    lateinit var value: String
 
-    public var value: String? = null
+    lateinit var userName: String
 
-    public var userName: String? = null
-
-    JsonView(PUBLIC::class)
+    @JsonView(PUBLIC::class)
     public var updated: LocalDateTime? = null
 
     public var lastUsed: LocalDateTime? = null
 
-    private var locked: Boolean? = null
+    var locked: Boolean = false
 
-    Indexed
+    @Indexed
     private var upperName: String? = null
 
-    Indexed
+    @Indexed
     private var upperUserName: String? = null
 
-    Indexed
+    @Indexed
     private var upperValue: String? = null
 
     public constructor() {
@@ -59,30 +54,14 @@ public class Factoid : Serializable, Persistent {
         this.userName = userName
     }
 
-    override fun getId(): ObjectId {
-        return id
-    }
-
-    override fun setId(factoidId: ObjectId) {
-        id = factoidId
-    }
-
-    public fun getLocked(): Boolean? {
-        return if (locked == null) java.lang.Boolean.FALSE else locked
-    }
-
-    public fun setLocked(locked: Boolean?) {
-        this.locked = locked
-    }
-
     public fun evaluate(subject: TellSubject?, sender: String, replacedValue: String?): String {
         var message = value
         val target = if (subject == null) sender else subject.target.nick
-        if (subject != null && !message.contains("$who") && message.startsWith("<reply>")) {
-            message = StringBuilder(message).insert(message.indexOf(">") + 1, "$who, ").toString()
+        if (subject != null && !message.contains("\$who") && message.startsWith("<reply>")) {
+            message = StringBuilder(message).insert(message.indexOf(">") + 1, "\$who, ").toString()
         }
-        message = message.replaceAll("\\$who", target)
-        var replaced: String = replacedValue
+        message = message.replace("\$who".toRegex(), target)
+        var replaced = replacedValue!!
         if (name.endsWith("$1")) {
             replaced = replacedValue
         }
@@ -92,30 +71,29 @@ public class Factoid : Serializable, Persistent {
         if (name.endsWith(" $^")) {
             replaced = urlencode(camelcase(replacedValue))
         }
-        if (replacedValue != null) {
-            message = message.replaceAll("\\$1", replaced)
-            message = message.replaceAll("\\$\\+", replaced)
-            message = message.replaceAll("\\$\\^", replaced)
-        }
+        message = message.replace("\\\$1".toRegex(), replaced)
+        message = message.replace("\\\$\\+".toRegex(), replaced)
+        message = message.replace("\\\$\\^".toRegex(), replaced)
         message = processRandomList(message)
         if (!message.startsWith("<")) {
-            message = (if (subject == null) sender else subject.target) + ", " + name + " is " + message
+            val comparable = if (subject == null) sender else subject.target.nick
+            message = "$comparable, $name is $message"
         }
         return message.substring(0, Math.min(message.length(), 510))
     }
 
-    private fun urlencode(`in`: String): String {
+    private fun urlencode(value: String): String {
         try {
-            return URLEncoder.encode(`in`, Charset.defaultCharset().displayName())
+            return URLEncoder.encode(value, Charset.defaultCharset().displayName())
         } catch (e: UnsupportedEncodingException) {
             log.error(e.getMessage(), e)
-            return `in`
+            return value
         }
 
     }
 
     private fun camelcase(`in`: String): String {
-        val sb = StringBuilder(`in`.replaceAll("\\s", " "))
+        val sb = StringBuilder(`in`.replace("\\s".toRegex(), " "))
         if (!`in`.isEmpty()) {
             var idx = sb.indexOf(" ")
             sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)))
@@ -149,11 +127,11 @@ public class Factoid : Serializable, Persistent {
         return result
     }
 
-    PrePersist
+    @PrePersist
     public fun uppers() {
-        upperName = name!!.toUpperCase()
+        upperName = name.toUpperCase()
         upperUserName = userName!!.toUpperCase()
-        upperValue = value!!.toUpperCase()
+        upperValue = value.toUpperCase()
     }
 
     override fun toString(): String {

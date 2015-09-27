@@ -5,23 +5,19 @@ import javabot.Message
 import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
 import javabot.javadoc.JavadocApi
-import javabot.javadoc.JavadocField
 import net.swisstech.bitly.BitlyClient
-import org.pircbotx.Channel
-import org.pircbotx.User
-import javax.inject.Inject
 import java.util.ArrayList
-import java.util.stream.Collectors
+import javax.inject.Inject
 
 public class JavadocOperation : BotOperation() {
-    Inject
-    private val apiDao: ApiDao? = null
+    @Inject
+    lateinit val apiDao: ApiDao
 
-    Inject
-    private val dao: JavadocClassDao? = null
+    @Inject
+    lateinit val dao: JavadocClassDao
 
-    Inject
-    private val client: BitlyClient? = null
+    @Inject
+    lateinit val client: BitlyClient
 
     override fun handleMessage(event: Message): Boolean {
         val message = event.value
@@ -32,10 +28,9 @@ public class JavadocOperation : BotOperation() {
                 displayApiList(event)
                 handled = true
             } else {
-                val api: JavadocApi
                 if (key.startsWith("-")) {
                     if (key.contains(" ")) {
-                        api = apiDao!!.find(key.substring(1, key.indexOf(" ")))
+                        val api = apiDao.find(key.substring(1, key.indexOf(" ")))
                         key = key.substring(key.indexOf(" ") + 1).trim()
                         handled = buildResponse(event, api, key)
                     } else {
@@ -54,12 +49,10 @@ public class JavadocOperation : BotOperation() {
     private fun buildResponse(event: Message, api: JavadocApi?, key: String): Boolean {
         val urls = handle(api, key)
         if (!urls.isEmpty()) {
-            val channel = event.channel
-            val user = event.user
 
-            val nick = user.nick
+            val nick = event.user.nick
             var urlMessage = StringBuilder(nick + ": ")
-            urlMessage = buildResponse(event, urls, urlMessage, channel)
+            urlMessage = buildResponse(event, urls, urlMessage)
             if (urls.size() > RESULT_LIMIT) {
                 bot.postMessageToChannel(event, Sofia.tooManyResults(nick))
                 bot.postMessageToUser(event.user, urlMessage.toString())
@@ -73,20 +66,19 @@ public class JavadocOperation : BotOperation() {
         return true
     }
 
-    private fun buildResponse(event: Message, urls: List<String>,
-                              urlMessage: StringBuilder, channel: Channel): StringBuilder {
-        var urlMessage = urlMessage
+    private fun buildResponse(event: Message, urls: List<String>, urlMessage: StringBuilder): StringBuilder {
+        var message = urlMessage
         for (index in urls.indices) {
-            if ((urlMessage + urls.get(index)).length() > 400) {
-                bot.postMessageToChannel(event, urlMessage.toString())
-                urlMessage = StringBuilder()
+            if ((message.toString() + urls.get(index)).length() > 400) {
+                bot.postMessageToChannel(event, message.toString())
+                message = StringBuilder()
             }
-            urlMessage.append(if (index == 0) "" else "; ").append(urls.get(index))
+            message.append(if (index == 0) "" else "; ").append(urls.get(index))
         }
-        return urlMessage
+        return message
     }
 
-    public fun handle(api: JavadocApi, key: String): List<String> {
+    public fun handle(api: JavadocApi?, key: String): List<String> {
         val urls = ArrayList<String>()
         val openIndex = key.indexOf('(')
         if (openIndex == -1) {
@@ -97,7 +89,7 @@ public class JavadocOperation : BotOperation() {
         return urls
     }
 
-    private fun parseFieldOrClassRequest(urls: MutableList<String>, api: JavadocApi, key: String) {
+    private fun parseFieldOrClassRequest(urls: MutableList<String>, api: JavadocApi?, key: String) {
         val finalIndex = key.lastIndexOf('.')
         if (finalIndex == -1) {
             findClasses(api, urls, key)
@@ -107,19 +99,18 @@ public class JavadocOperation : BotOperation() {
             if (Character.isUpperCase(fieldName.charAt(0)) && fieldName.toUpperCase() != fieldName) {
                 findClasses(api, urls, key)
             } else {
-                val list = dao!!.getField(api, className, fieldName)
-                urls.addAll(list.stream().map({ field -> field.getDisplayUrl(field.toString(), apiDao, client) }).collect(
-                      Collectors.toList<String>()))
+                val list = dao.getField(api, className, fieldName)
+                urls.addAll(list.map({ field -> field.getDisplayUrl(field.toString(), apiDao, client) }))
             }
         }
     }
 
-    private fun findClasses(api: JavadocApi, urls: MutableList<String>, key: String) {
-        urls.addAll(dao!!.getClass(api, key).stream().map(
-              { javadocClass -> javadocClass.getDisplayUrl(javadocClass.toString(), apiDao, client) }).collect(Collectors.toList<String>()))
+    private fun findClasses(api: JavadocApi?, urls: MutableList<String>, key: String) {
+        urls.addAll(dao.getClass(api, key).map(
+              { javadocClass -> javadocClass.getDisplayUrl(javadocClass.toString(), apiDao, client) }))
     }
 
-    private fun parseMethodRequest(urls: MutableList<String>, api: JavadocApi, key: String, openIndex: Int) {
+    private fun parseMethodRequest(urls: MutableList<String>, api: JavadocApi?, key: String, openIndex: Int) {
         val closeIndex = key.indexOf(')')
         if (closeIndex != -1) {
             val finalIndex = key.lastIndexOf('.', openIndex)
@@ -136,14 +127,14 @@ public class JavadocOperation : BotOperation() {
             val list = ArrayList<String>()
 
             //
-            list.addAll(dao!!.getMethods(api, className, methodName, signatureTypes).stream().map(
-                  { method -> method.getDisplayUrl(method.toString(), apiDao, client) }).collect(Collectors.toList<String>()))
+            list.addAll(dao.getMethods(api, className, methodName, signatureTypes).map(
+                  { method -> method.getDisplayUrl(method.toString(), apiDao, client) }))
             //
 
             if (list.isEmpty()) {
                 className = methodName
-                list.addAll(dao.getMethods(api, className, methodName, signatureTypes).stream().map(
-                      { method -> method.getDisplayUrl(method.toString(), apiDao, client) }).collect(Collectors.toList<String>()))
+                list.addAll(dao.getMethods(api, className, methodName, signatureTypes).map(
+                      { method -> method.getDisplayUrl(method.toString(), apiDao, client) }))
             }
 
             urls.addAll(list)
@@ -152,7 +143,7 @@ public class JavadocOperation : BotOperation() {
 
     private fun displayApiList(event: Message) {
         val builder = StringBuilder()
-        for (api in apiDao!!.findAll()) {
+        for (api in apiDao.findAll()) {
             if (builder.length() != 0) {
                 builder.append("; ")
             }

@@ -9,7 +9,7 @@ import org.pircbotx.Channel
 import javax.inject.Inject
 
 public class LiteralOperation : BotOperation() {
-    Inject
+    @Inject
     private val dao: FactoidDao? = null
 
     /**

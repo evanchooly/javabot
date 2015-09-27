@@ -1,18 +1,15 @@
 package javabot.dao
 
+import javabot.model.NickServInfo
+import javabot.model.criteria.NickServInfoCriteria
+import org.pircbotx.User
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-import javabot.model.NickServInfo
-import javabot.model.NickServInfo.NSERV_DATE_FORMAT
-import javabot.model.criteria.NickServInfoCriteria
-import javabot.model.criteria.NickServInfoCriteria.NickServInfoUpdater
-import org.pircbotx.User
-
-public class NickServDao protected constructor() : BaseDao<NickServInfo>(NickServInfo::class.java) {
+public open class NickServDao : BaseDao<NickServInfo>(NickServInfo::class.java) {
 
     public fun clear() {
-        ds.delete(query)
+        ds.delete(getQuery())
     }
 
     public fun process(list: List<String>) {
@@ -20,27 +17,27 @@ public class NickServDao protected constructor() : BaseDao<NickServInfo>(NickSer
         val split = list.get(0).split(" ")
         info.nick = split[2].toLowerCase()
         info.account = split[4].substring(0, split[4].indexOf(')')).toLowerCase()
-        list.subList(1, list.size()).stream().filter({ line -> line.contains(":") }).forEach({ line ->
+        list.subList(1, list.size()).filter({ line -> line.contains(":") }).forEach({ line ->
             val i = line.indexOf(':')
             val key = line.substring(0, i).trim()
             val value = line.substring(i + 1).trim()
-            if (key.equalsIgnoreCase("Registered")) {
+            if (key.equals("Registered", true)) {
                 info.registered = extractDate(value)
-            } else if (key.equalsIgnoreCase("User Reg.")) {
+            } else if (key.equals("User Reg.", true)) {
                 info.userRegistered = extractDate(value)
-            } else if (key.equalsIgnoreCase("Last seen")) {
+            } else if (key.equals("Last seen", true)) {
                 info.lastSeen = extractDate(value)
-            } else if (key.equalsIgnoreCase("Last addr")) {
+            } else if (key.equals("Last addr", true)) {
                 info.lastAddress = value
             } else {
                 info.extra(key.replace(".", ""), value)
             }
         })
 
-        var nickServInfo: NickServInfo? = find(info.account)
+        var nickServInfo: NickServInfo? = find(info.account!!)
 
         if (nickServInfo == null) {
-            nickServInfo = find(info.nick)
+            nickServInfo = find(info.nick!!)
         }
 
         if (nickServInfo != null) {
@@ -58,11 +55,11 @@ public class NickServDao protected constructor() : BaseDao<NickServInfo>(NickSer
             return LocalDateTime.now()
         } else {
             val dateString = if (line.contains("(")) line.substring(0, line.indexOf(" (")) else line
-            return LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern(NSERV_DATE_FORMAT))
+            return LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern(NickServInfo.NSERV_DATE_FORMAT))
         }
     }
 
-    public fun find(name: String): NickServInfo {
+    public open fun find(name: String): NickServInfo? {
         val criteria = NickServInfoCriteria(ds)
         criteria.or(
               criteria.nick(name.toLowerCase()),

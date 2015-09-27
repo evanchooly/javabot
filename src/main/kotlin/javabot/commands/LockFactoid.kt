@@ -8,11 +8,11 @@ import javabot.model.Factoid
 import javax.inject.Inject
 
 public class LockFactoid : AdminCommand() {
-    Param(primary = true)
-    var name: String
+    @Param(primary = true)
+    lateinit var factoidName: String
 
-    Inject
-    private val dao: FactoidDao? = null
+    @Inject
+    lateinit val factoidDao: FactoidDao
 
     override fun canHandle(message: String): Boolean {
         return "lock" == message || "unlock" == message
@@ -21,17 +21,17 @@ public class LockFactoid : AdminCommand() {
     override fun execute(event: Message) {
         val command = args.get(0)
         if ("lock" == command || "unlock" == command) {
-            val factoid = dao!!.getFactoid(name)
+            val factoid = factoidDao!!.getFactoid(factoidName)
             if (factoid == null) {
-                bot.postMessageToChannel(event, Sofia.factoidUnknown(name))
+                bot.postMessageToChannel(event, Sofia.factoidUnknown(factoidName))
             } else if ("lock" == command) {
                 factoid.locked = true
-                dao.save(factoid)
-                bot.postMessageToChannel(event, name + " locked.")
+                factoidDao.save(factoid)
+                bot.postMessageToChannel(event, factoidName + " locked.")
             } else if ("unlock" == command) {
                 factoid.locked = false
-                dao.save(factoid)
-                bot.postMessageToChannel(event, name + " unlocked.")
+                factoidDao.save(factoid)
+                bot.postMessageToChannel(event, factoidName + " unlocked.")
             }
         }
     }

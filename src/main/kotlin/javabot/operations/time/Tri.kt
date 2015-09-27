@@ -7,14 +7,13 @@ public class Tri<T> {
         root = Node()
     }
 
-    public fun get(key: String?): T? {
-        var key: String? = key ?: return null
+    public fun get(key: String): T? {
 
-        key = clean(key)
+        var cleaned = clean(key)
 
-        var current: Node<Any> = root
-        for (i in 0..key.length() - 1) {
-            val index = hash(key.charAt(i))
+        var current = root
+        for (i in 0..cleaned.length() - 1) {
+            val index = hash(cleaned.charAt(i))
             val node = current.getChild(index) ?: return null
 
             current = node
@@ -26,10 +25,10 @@ public class Tri<T> {
         var key = key
         key = clean(key)
 
-        var current: Node<Any> = root
+        var current = root
         for (i in 0..key.length() - 1) {
             val index = hash(key.charAt(i))
-            var node: Node<Any>? = current.getChild(index)
+            var node = current.getChild(index)
 
             if (node == null) {
                 node = Node()
@@ -41,11 +40,11 @@ public class Tri<T> {
     }
 
     private fun clean(key: String): String {
-        return key.toLowerCase().replaceAll("[^a-z]", "")
+        return key.toLowerCase().replace("[^a-z]".toRegex(), "")
     }
 
     private fun hash(c: Char): Int {
-        return c - OFFSET
+        return c.toInt() - OFFSET
     }
 
     private fun toChar(index: Int): Char {
@@ -53,20 +52,19 @@ public class Tri<T> {
     }
 
     private inner class Node<T> {
-        var child = arrayOfNulls<Node<Any>>(ALPHABET_SIZE)
-        public var value: T
+        var child = arrayOfNulls<Node<T>>(26)
+        public var value: T? = null
 
-        public fun getChild(index: Int): Node<Any>? {
+        public fun getChild(index: Int): Node<T>? {
             return child[index]
         }
 
-        public fun setChild(index: Int, node: Node<Any>) {
+        public fun setChild(index: Int, node: Node<T>) {
             child[index] = node
         }
     }
 
     companion object {
-        private val OFFSET = 'a'
-        private val ALPHABET_SIZE = 26
+        private val OFFSET = 'a'.toInt()
     }
 }

@@ -1,24 +1,21 @@
 package javabot.dao.util
 
 import java.util.StringJoiner
-import java.util.function.Function
-import java.util.stream.Stream
 
 public object CleanHtmlConverter {
-    public fun convert(message: String, converter: Function<String, String>): String {
-        var message = message
-        message = message.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
-        if (message.contains("http://") || message.contains("https://")) {
+    public fun convert(message: String, converter: (String) -> String): String {
+        var content = message.replace("&".toRegex(), "&amp;").replace("<".toRegex(), "&lt;").replace(">".toRegex(), "&gt;")
+        if (content.contains("http://") || content.contains("https://")) {
             val joiner = StringJoiner(" ")
-            Stream.of<String>(*message.split(" ")).map<String>({ token ->
+            content.split(" ").map({ token ->
                 if (token.startsWith("http://") || token.startsWith("https://")) {
-                    token = converter.apply(token)
+                    converter(token)
                 }
                 token
-            }).forEach(Consumer<String> { joiner.add(it) })
+            }).forEach({ joiner.add(it) })
 
-            message = joiner.toString()
+            content = joiner.toString()
         }
-        return message
+        return content
     }
 }

@@ -27,7 +27,7 @@ public class WeatherUndergroundHandler : WeatherHandler {
             return null
         }
 
-        return handler.weather
+        return handler.getWeather()
     }
 
     companion object {

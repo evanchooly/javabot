@@ -8,17 +8,15 @@ import org.pircbotx.Channel
 import org.pircbotx.User
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
-import javax.inject.Inject
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.Collections
+import javax.inject.Inject
 
 public class LogsDao : BaseDao<Logs>(Logs::class.java) {
-    Inject
-    public var dao: ConfigDao
-    Inject
-    public var channelDao: ChannelDao
+    @Inject
+    public lateinit var dao: ConfigDao
+    @Inject
+    public lateinit var channelDao: ChannelDao
 
     public fun logMessage(type: Type, channel: Channel?, user: User?, message: String) {
         val logMessage = Logs()
@@ -44,16 +42,13 @@ public class LogsDao : BaseDao<Logs>(Logs::class.java) {
         criteria.channel().equal(channel)
         criteria.updated().order(false)
         val logs = criteria.query().get()
-        return if (logs != null) Seen(logs!!.channel, logs!!.message, logs!!.nick, logs!!.updated) else null
+        return if (logs != null) Seen(logs.channel, logs.message, logs.nick, logs.updated) else null
     }
 
-    private fun dailyLog(channelName: String, date: LocalDateTime?, logged: Boolean?): List<Logs> {
-        var list: List<Logs>? = null
-        if (logged!!) {
-            val start = if (date == null)
-                LocalDate.now()
-            else
-                date.toLocalDate()
+    private fun dailyLog(channelName: String, date: LocalDateTime?, logged: Boolean): List<Logs> {
+        var list: List<Logs> = listOf()
+        if (logged) {
+            val start = if (date == null) LocalDate.now() else date.toLocalDate()
             val tomorrow = start.plusDays(1)
             val criteria = LogsCriteria(ds)
             criteria.channel(channelName)
@@ -69,8 +64,8 @@ public class LogsDao : BaseDao<Logs>(Logs::class.java) {
 
     public fun findByChannel(name: String, date: LocalDateTime, showAll: Boolean?): List<Logs> {
         val channel = channelDao.get(name)
-        if (channel != null && (showAll!! || channel.logged!!)) {
-            return dailyLog(name, date, showAll!! || channel.logged!!)
+        if (channel != null && (showAll!! || channel.logged)) {
+            return dailyLog(name, date, showAll!! || channel.logged)
         } else {
             return emptyList()
         }

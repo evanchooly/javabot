@@ -42,11 +42,11 @@ public class WeatherDao {
      */
     private fun commonPlaces(place: String): String {
         val upper = place.toUpperCase()
-        return if (places.containsKey(upper)) places.get(upper) else place
+        return if (places.containsKey(upper)) places.get(upper)!! else place
 
     }
 
-    public fun getWeatherFor(place: String): Weather {
+    public fun getWeatherFor(place: String): Weather? {
         var weather: Weather? = null
 
         //Use each service until one returns something

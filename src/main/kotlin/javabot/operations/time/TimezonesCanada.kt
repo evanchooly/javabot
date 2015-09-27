@@ -19,7 +19,7 @@ public class TimezonesCanada : Timezones {
         YUKON_TERRITORY(12, "YT", "Whitehorse", "America/Whitehorse")
     }
 
-    override fun get(province: String): String {
+    override fun get(province: String): String? {
         return timezones.get(province)
     }
 

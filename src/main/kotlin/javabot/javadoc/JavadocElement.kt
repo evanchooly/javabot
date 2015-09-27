@@ -4,8 +4,6 @@ import javabot.dao.ApiDao
 import javabot.model.Persistent
 import net.swisstech.bitly.BitlyClient
 import org.bson.types.ObjectId
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 public abstract class JavadocElement : Persistent {
 
@@ -13,7 +11,7 @@ public abstract class JavadocElement : Persistent {
 
     public var shortUrl: String? = null
 
-    public var longUrl: String? = null
+    public var longUrl = ""
 
     public var directUrl: String? = null
 
@@ -22,23 +20,16 @@ public abstract class JavadocElement : Persistent {
     }
 
     private fun buildShortUrl(client: BitlyClient?, url: String): String? {
-        return if (client != null)
-            client.shorten().setLongUrl(url).call().data.url
-        else
-            null
+        return client?.shorten()?.setLongUrl(url)?.call()?.data?.url
     }
 
     public fun getDisplayUrl(hint: String, dao: ApiDao, client: BitlyClient?): String {
-        var url: String? = shortUrl
+        var url = shortUrl
         if (url == null && client != null) {
             shortUrl = buildShortUrl(client, longUrl) + " [" + dao.find(apiId) + ": " + hint + "]"
             url = shortUrl
             dao.save(this)
         }
-        return if (url == null) longUrl else url
-    }
-
-    companion object {
-        private val log = LoggerFactory.getLogger(JavadocElement::class.java)
+        return url ?: longUrl
     }
 }

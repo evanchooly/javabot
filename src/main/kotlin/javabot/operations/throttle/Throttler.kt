@@ -22,16 +22,16 @@ import java.time.Duration.between
 import java.time.LocalDateTime.now
 
 public class Throttler protected constructor() : BaseDao<ThrottleItem>(ThrottleItem::class.java) {
-    Inject
+    @Inject
     private val configDao: ConfigDao? = null
 
-    Inject
+    @Inject
     private val adminDao: AdminDao? = null
 
-    Inject
+    @Inject
     private val nickServDao: NickServDao? = null
 
-    Inject
+    @Inject
     private val ircBot: Provider<PircBotX>? = null
 
     /**

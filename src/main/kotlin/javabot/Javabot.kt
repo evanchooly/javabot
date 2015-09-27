@@ -68,12 +68,11 @@ public open class Javabot {
 
     private var allOperationsMap = sortedMapOf<String, BotOperation>()
 
-    private val startStrings: Array<String> by lazy {
-        val arrayOf: Array<String> = arrayOf(getNick(), "~")
-        arrayOf
+    val startStrings: Array<String> by lazy {
+        arrayOf(getNick(), "~")
     }
 
-    private val executors = ThreadPoolExecutor(5, 10, 5L, TimeUnit.MINUTES, ArrayBlockingQueue(50),
+    val executors = ThreadPoolExecutor(5, 10, 5L, TimeUnit.MINUTES, ArrayBlockingQueue(50),
           JavabotThreadFactory(true, "javabot-handler-thread-"))
 
     private val eventHandler = Executors.newScheduledThreadPool(2, JavabotThreadFactory(true, "javabot-event-handler"))
@@ -203,7 +202,7 @@ public open class Javabot {
     @SuppressWarnings("unchecked")
     public fun getAllOperations(): SortedMap<String, BotOperation> {
         for (op in configDao.list(BotOperation::class.java)) {
-            allOperationsMap.put(op.name, op)
+            allOperationsMap.put(op.getName(), op)
         }
         return allOperationsMap
     }
@@ -219,7 +218,7 @@ public open class Javabot {
 
     }
 
-    public fun disableOperation(name: String): Boolean {
+    public fun disableOperation(name: String?): Boolean {
         var disabled = false
         val operation = getAllOperations().get(name)
         if (operation != null && operation !is AdminCommand && operation !is StandardOperation) {
@@ -232,11 +231,11 @@ public open class Javabot {
         return disabled
     }
 
-    public fun enableOperation(name: String) {
+    public fun enableOperation(name: String?) {
         val op = getAllOperations().get(name)
         if (op != null) {
             val config = configDao.get()
-            config.operations.add(name)
+            config.operations.add(name!!)
             activeOperations.add(op)
             configDao.save(config)
         } else {
@@ -268,7 +267,7 @@ public open class Javabot {
                             }
                         }
                     } catch (e: NickServViolationException) {
-                        postMessageToUser(message.user, e.getMessage())
+                        postMessageToUser(message.user, e.getMessage()!!)
                     }
 
                 }
@@ -283,7 +282,7 @@ public open class Javabot {
         }
     }
 
-    protected fun extractContentFromMessage(message: String, startString: String): String {
+    internal fun extractContentFromMessage(message: String, startString: String): String {
         var content = message.substring(startString.length()).trim()
         while (!content.isEmpty() && (content.charAt(0) == ':' || content.charAt(0) == ',')) {
             content = content.substring(1).trim()
@@ -308,7 +307,7 @@ public open class Javabot {
         }
     }
 
-    public fun postMessageToUser(user: User?, message: String?) {
+    public fun postMessageToUser(user: User?, message: String) {
         if (user != null) {
             logMessage(null, user, message)
             user.send().message(message)
@@ -323,7 +322,7 @@ public open class Javabot {
         channel.send().action(message)
     }
 
-    protected fun logMessage(channel: org.pircbotx.Channel?, user: User, message: String?) {
+    internal fun logMessage(channel: org.pircbotx.Channel?, user: User, message: String) {
         val sender = ircBot.get().nick
         if (channel != null && channel.name != sender) {
             logsDao.logMessage(Logs.Type.MESSAGE, channel, user, message)

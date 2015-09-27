@@ -11,14 +11,14 @@ import java.time.Instant
 import java.time.Instant.now
 
 public class StatsOperation : BotOperation() {
-    Inject
+    @Inject
     private val factoidDao: FactoidDao? = null
     private var numberOfMessages = 0
 
     override fun handleMessage(event: Message): Boolean {
         numberOfMessages++
         val message = event.value
-        if ("stats".equalsIgnoreCase(message)) {
+        if ("stats".equals(message, ignoreCase = true)) {
             bot.postMessageToChannel(event,
                   Sofia.botStats(Duration.between(now(), startTime).toDays(), numberOfMessages, factoidDao!!.count()))
             return true

@@ -6,7 +6,7 @@ import javabot.model.criteria.AdminEventCriteria
 
 public class EventDao protected constructor() : BaseDao<AdminEvent>(AdminEvent::class.java) {
 
-    public fun findUnprocessed(): AdminEvent {
+    public fun findUnprocessed(): AdminEvent? {
         val criteria = AdminEventCriteria(ds)
         criteria.state(State.NEW)
         criteria.query().order("requestedOn")

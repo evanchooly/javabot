@@ -4,25 +4,21 @@ import com.antwerkz.sofia.Sofia
 import javabot.Message
 import javabot.dao.FactoidDao
 import javabot.model.Factoid
-import org.pircbotx.Channel
 import org.pircbotx.PircBotX
 import org.pircbotx.User
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
+import java.lang.String.format
+import java.util.HashSet
 import javax.inject.Inject
 import javax.inject.Provider
-import java.util.HashSet
-
-import java.lang.String.format
 
 public class GetFactoidOperation : BotOperation(), StandardOperation {
 
-    Inject
-    private val factoidDao: FactoidDao? = null
+    @Inject
+    lateinit val factoidDao: FactoidDao
 
-    Inject
-    private val ircBot: Provider<PircBotX>? = null
+    @Inject
+    lateinit val ircBot: Provider<PircBotX>
 
     override fun getPriority(): Int {
         return Integer.MIN_VALUE
@@ -39,15 +35,15 @@ public class GetFactoidOperation : BotOperation(), StandardOperation {
         }
         val firstWord = message.split(" ")[0]
         val params = message.substring(firstWord.length()).trim()
-        var factoid = factoidDao!!.getFactoid(message.toLowerCase())
+        var factoid = factoidDao.getFactoid(message.toLowerCase())
         if (factoid == null) {
             factoid = factoidDao.getParameterizedFactoid(firstWord)
         }
 
-        return factoid != null && getResponse(subject, event, backtrack, params, factoid)
+        return getResponse(subject, event, backtrack, params, factoid)
     }
 
-    private fun getResponse(subject: TellSubject, event: Message, backtrack: MutableSet<String>,
+    private fun getResponse(subject: TellSubject?, event: Message, backtrack: MutableSet<String>,
                             replacedValue: String, factoid: Factoid): Boolean {
         val sender = event.user.nick
         val message = factoid.evaluate(subject, sender, replacedValue)
@@ -64,7 +60,7 @@ public class GetFactoidOperation : BotOperation(), StandardOperation {
             return true
         } else if (message.startsWith("<action>")) {
             try {
-                bot.postAction(event.channel, message.substring("<action>".length()))
+                bot.postAction(event.channel!!, message.substring("<action>".length()))
             } catch (e: Exception) {
                 LOG.error(format("NPE:  subject = [%s], event = [%s], backtrack = [%s], replacedValue = [%s], factoid = [%s]",
                       subject, event, backtrack, replacedValue, factoid))
@@ -80,7 +76,7 @@ public class GetFactoidOperation : BotOperation(), StandardOperation {
 
     private fun tell(event: Message): Boolean {
         val message = event.value
-        val channel = event.channel
+        val channel = event.channel!!
         val sender = event.user
         var handled = false
         if (isTellCommand(message)) {
@@ -91,11 +87,11 @@ public class GetFactoidOperation : BotOperation(), StandardOperation {
             } else {
                 var targetUser: User? = tellSubject.target
                 if (targetUser != null) {
-                    if ("me".equalsIgnoreCase(targetUser.nick)) {
+                    if ("me".equals(targetUser.nick, ignoreCase = true)) {
                         targetUser = sender
                     }
                     val thing = tellSubject.subject
-                    if (targetUser!!.nick.equalsIgnoreCase(bot.getNick())) {
+                    if (targetUser.nick.equals(bot.getNick(), ignoreCase = true)) {
                         bot.postMessageToChannel(event, Sofia.botSelfTalk())
                         handled = true
                     } else {
@@ -136,10 +132,10 @@ public class GetFactoidOperation : BotOperation(), StandardOperation {
             return null
         }
         val thing = body.substring(about + "about ".length())
-        return TellSubject(ircBot!!.get().userChannelDao.getUser(nick), thing)
+        return TellSubject(ircBot.get().userChannelDao.getUser(nick), thing)
     }
 
-    private fun parseShorthand(event: Message): TellSubject {
+    private fun parseShorthand(event: Message): TellSubject? {
         var target = event.value
         for (start in bot.startStrings) {
             if (target.startsWith(start)) {
@@ -149,7 +145,7 @@ public class GetFactoidOperation : BotOperation(), StandardOperation {
         val space = target.indexOf(' ')
         var tellSubject: TellSubject? = null
         if (space >= 0) {
-            val user = ircBot!!.get().userChannelDao.getUser(target.substring(0, space))
+            val user = ircBot.get().userChannelDao.getUser(target.substring(0, space))
             tellSubject = TellSubject(user, target.substring(space + 1).trim())
         }
         return tellSubject

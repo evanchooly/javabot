@@ -33,22 +33,22 @@ import javax.ws.rs.core.MediaType
 @Path("/admin")
 public class AdminResource {
     @Inject
-    private lateinit val injector: Injector
+    lateinit val injector: Injector
 
     @Inject
-    private lateinit val adminDao: AdminDao
+    lateinit val adminDao: AdminDao
 
     @Inject
-    private lateinit val apiDao: ApiDao
+    lateinit val apiDao: ApiDao
 
     @Inject
-    private lateinit val configDao: ConfigDao
+    lateinit val configDao: ConfigDao
 
     @Inject
-    private lateinit val channelDao: ChannelDao
+    lateinit val channelDao: ChannelDao
 
     @Inject
-    private lateinit val javabot: Javabot
+    lateinit val javabot: Javabot
 
     @GET
     public fun index(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User): View {
@@ -79,18 +79,19 @@ public class AdminResource {
     public fun editChannel(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User,
                            @PathParam("channel") channel: String): View {
 
-        return ChannelEditView(injector, request, channelDao.get(channel))
+        // TODO redirect to / if channel is null
+        return ChannelEditView(injector, request, channelDao.get(channel)!!)
     }
 
     @POST
     @Path("/saveConfig")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public fun saveConfig(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User,
-                          @FormParam("server") server: String, @FormParam("url") url: String, @FormParam("port") port: Int?,
-                          @FormParam("historyLength") historyLength: Int?, @FormParam("trigger") trigger: String,
+                          @FormParam("server") server: String, @FormParam("url") url: String, @FormParam("port") port: Int,
+                          @FormParam("historyLength") historyLength: Int, @FormParam("trigger") trigger: String,
                           @FormParam("nick") nick: String, @FormParam("password") password: String,
-                          @FormParam("throttleThreshold") throttleThreshold: Int?,
-                          @FormParam("minimumNickServAge") minimumNickServAge: Int?): View {
+                          @FormParam("throttleThreshold") throttleThreshold: Int,
+                          @FormParam("minimumNickServAge") minimumNickServAge: Int): View {
         val config = configDao.get()
         config.server = server
         config.url = url
@@ -154,7 +155,7 @@ public class AdminResource {
     public fun addApi(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User,
                       @FormParam("name") name: String, @FormParam("baseUrl") baseUrl: String,
                       @FormParam("downloadUrl") downloadUrl: String): View {
-        apiDao.save(ApiEvent(user.email, name, baseUrl, downloadUrl))
+        apiDao.save(ApiEvent(user.email!!, name, baseUrl, downloadUrl))
         return index(request, user)
     }
 
@@ -163,7 +164,7 @@ public class AdminResource {
     public fun deleteApi(@Context request: HttpServletRequest,
                          @Restricted(Authority.ROLE_ADMIN) user: User,
                          @PathParam("id") id: String): View {
-        apiDao.save(ApiEvent(EventType.DELETE, user.email, ObjectId(id)))
+        apiDao.save(ApiEvent(EventType.DELETE, user.email!!, ObjectId(id)))
         return index(request, user)
     }
 

@@ -11,9 +11,9 @@ import org.mongodb.morphia.mapping.MappingException
 
 public class LocalDateTimeConverter : DateConverter(LocalDateTime::class.java) {
 
-    Throws(MappingException::class)
-    override fun decode(targetClass: Class<Any>?, `val`: Any?, optionalExtraInfo: MappedField?): Any {
-        val date = super.decode(targetClass, `val`, optionalExtraInfo) as Date
+    @Throws(MappingException::class)
+    override fun decode(targetClass: Class<*>?, value: Any?, optionalExtraInfo: MappedField?): Any? {
+        val date = super.decode(targetClass, value, optionalExtraInfo) as Date
         val instant = Instant.ofEpochMilli(date.time)
         return LocalDateTime.ofInstant(instant, ZoneOffset.UTC)
     }
@@ -22,6 +22,6 @@ public class LocalDateTimeConverter : DateConverter(LocalDateTime::class.java) {
         if (value == null) {
             return null
         }
-        return Date((value as LocalDateTime?).toInstant(ZoneOffset.UTC).toEpochMilli())
+        return Date((value as LocalDateTime).toInstant(ZoneOffset.UTC).toEpochMilli())
     }
 }

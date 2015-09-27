@@ -3,18 +3,17 @@ package javabot.operations
 import com.antwerkz.sofia.Sofia
 import javabot.Message
 import javabot.dao.ShunDao
-
-import javax.inject.Inject
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.Date
+import javax.inject.Inject
 
 /**
  * Causes the bot to disregard bot triggers for a few minutes. Useful to de-fang abusive users without ejecting the bot from a channel
  * entirely.
  */
 public class ShunOperation : BotOperation() {
-    Inject
+    @Inject
     private val shunDao: ShunDao? = null
 
     override fun handleMessage(event: Message): Boolean {
@@ -31,7 +30,7 @@ public class ShunOperation : BotOperation() {
         return false
     }
 
-    private fun getShunnedMessage(parts: Array<String>): String {
+    private fun getShunnedMessage(parts: List<String>): String {
         val victim = parts[0]
         if (shunDao!!.isShunned(victim)) {
             return Sofia.alreadyShunned(victim)
@@ -42,6 +41,6 @@ public class ShunOperation : BotOperation() {
             LocalDateTime.now().plusSeconds(Integer.parseInt(parts[1]).toLong())
         shunDao.addShun(victim, until)
 
-        return String.format(Sofia.shunned(victim, Date(until.toEpochSecond(ZoneOffset.UTC))))
+        return Sofia.shunned(victim, Date(until.toEpochSecond(ZoneOffset.UTC)))
     }
 }

@@ -4,7 +4,8 @@ import com.google.inject.Injector
 
 import javax.servlet.http.HttpServletRequest
 
-public abstract class PagedView<V>(injector: Injector, request: HttpServletRequest, private var page: Int) : MainView(injector, request) {
+public abstract class PagedView<V>(injector: Injector, request: HttpServletRequest, private var page: Int) :
+      MainView(injector, request) {
     private val itemsPerPage = ITEMS_PER_PAGE
     protected var itemCount: Long = -1
         get() {
@@ -20,7 +21,6 @@ public abstract class PagedView<V>(injector: Injector, request: HttpServletReque
     }
 
     public abstract fun getPagedView(): String
-
 
     public abstract fun countItems(): Long
 

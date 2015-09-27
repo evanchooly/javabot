@@ -1,19 +1,16 @@
 package javabot.operations.urlcontent
 
 import org.apache.commons.lang.StringUtils.isBlank
-
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.StringUtils
-
 import java.net.URL
 import java.util.ArrayList
-import java.util.stream.Collectors
 
 public class URLFromMessageParser {
 
-    public fun urlsFromMessage(message: String): List<URL>? {
+    public fun urlsFromMessage(message: String): List<URL> {
         if (isBlank(message)) {
-            return null
+            return listOf()
         }
 
         val potentialUrlsFound = ArrayList<String>()
@@ -25,8 +22,9 @@ public class URLFromMessageParser {
             idxHttp = if ((idxSpace == -1)) -1 else message.indexOf("http", idxSpace)
         }
 
-        return potentialUrlsFound.stream().map(Function<String, URL> { this.urlFromToken(it) }).filter({ url -> url != null }).collect(
-              Collectors.toList<URL>())
+        val list = arrayListOf<URL>()
+        potentialUrlsFound.map({ this.urlFromToken(it) }).filterNotNullTo(list)
+        return list
     }
 
     private fun stripPunctuation(message: String, url: String, idxUrlStart: Int): String {

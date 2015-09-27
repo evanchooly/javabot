@@ -8,10 +8,10 @@ import javabot.model.Change
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 
-public class ChangesView(injector: Injector, request: HttpServletRequest, page: Int, private val filter: Change) : PagedView<Change>(
-      injector, request, page) {
+public class ChangesView(injector: Injector, request: HttpServletRequest, page: Int, private val filter: Change) :
+      PagedView<Change>(injector, request, page) {
     @Inject
-    private lateinit val changeDao: ChangeDao
+    lateinit val changeDao: ChangeDao
 
     override fun getPagedView(): String {
         return "changes.ftl"

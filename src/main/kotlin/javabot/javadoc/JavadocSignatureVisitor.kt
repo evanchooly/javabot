@@ -1,26 +1,24 @@
 package javabot.javadoc
 
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.signature.SignatureVisitor
+import org.slf4j.LoggerFactory
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.Stack
-
-import org.objectweb.asm.Opcodes
-import org.objectweb.asm.signature.SignatureVisitor
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 class JavadocSignatureVisitor(private val className: String, private val name: String, private val signature: String,
                               private val varargs: Boolean) : SignatureVisitor(Opcodes.ASM5) {
 
     var trace = LOG.isTraceEnabled
 
-    private val types = ArrayList<JavadocType>()
+    val types = ArrayList<JavadocType>()
 
-    private var type: JavadocType? = null
+    var type: JavadocType? = null
 
-    private var done = false
+    var done = false
 
-    private val stack = Stack<String>()
+    val stack = Stack<String>()
 
     init {
         if (trace) {
@@ -29,7 +27,7 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
         }
     }
 
-    override fun visitFormalTypeParameter(formalParameter: String?) {
+    override fun visitFormalTypeParameter(formalParameter: String) {
         push("JavadocSignatureVisitor.visitFormalTypeParameter($formalParameter)")
         type = JavadocType(formalParameter)
     }
@@ -57,7 +55,7 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
     override fun visitParameterType(): SignatureVisitor {
         push("JavadocSignatureVisitor.visitParameterType")
         type = JavadocType()
-        types.add(type)
+        types.add(type!!)
         return this
     }
 
@@ -80,12 +78,12 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
         }
         if (type == null) {
             type = JavadocType()
-            types.add(type)
+            types.add(type!!)
         }
-        type!!.setName(PRIMITIVES.get(baseType))
+        type!!.name = PRIMITIVES.get(baseType)
     }
 
-    override fun visitTypeVariable(typeVariable: String?) {
+    override fun visitTypeVariable(typeVariable: String) {
         if (trace) {
             LOG.trace("JavadocSignatureVisitor.visitTypeVariable($typeVariable)")
         }
@@ -98,7 +96,7 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
         push("JavadocSignatureVisitor.visitArrayType")
         if (type == null) {
             type = JavadocType()
-            types.add(type)
+            types.add(type!!)
         }
         type!!.setArray(true)
         //    if(1==1) throw new RuntimeException("JavadocSignatureVisitor.visitArrayType");
@@ -109,9 +107,9 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
         push("JavadocSignatureVisitor.visitClassType($classType)")
         if (type == null) {
             type = JavadocType()
-            types.add(type)
+            types.add(type!!)
         }
-        type!!.setName(classType!!.replace('/', '.'))
+        type!!.name = classType!!.replace('/', '.')
     }
 
     override fun visitInnerClassType(innerClassType: String?) {
@@ -171,7 +169,13 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
 
     public class JavadocType {
         public var name: String? = null
-            private set
+            set(value) {
+                if ($name == null) {
+                    $name = value
+                } else if(value != null){
+                    typeVariables.add(value)
+                }
+            }
 
         private val typeVariables = ArrayList<String>()
 
@@ -188,14 +192,6 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
 
         public fun addTypeVariable(typeVariable: String) {
             typeVariables.add(typeVariable)
-        }
-
-        public fun setName(name: String) {
-            if (this.name == null) {
-                this.name = name
-            } else {
-                typeVariables.add(name)
-            }
         }
 
         public fun setArray(array: Boolean) {

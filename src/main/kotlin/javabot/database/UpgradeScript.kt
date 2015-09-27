@@ -1,21 +1,16 @@
 package javabot.database
 
 import javabot.dao.ConfigDao
-import javabot.model.Config
-
-import javax.inject.Inject
 import java.io.IOException
 import java.sql.SQLException
-import java.util.Comparator
-import java.util.ServiceLoader
-import java.util.TreeSet
+import javax.inject.Inject
 
 public abstract class UpgradeScript {
-    Inject
-    private val configDao: ConfigDao? = null
+    @Inject
+    lateinit val configDao: ConfigDao
 
     public fun execute() {
-        val config = configDao!!.get()
+        val config = configDao.get()
         if (config.schemaVersion < id()) {
             try {
                 doUpgrade()
@@ -28,14 +23,14 @@ public abstract class UpgradeScript {
     }
 
     public fun registerUpgrade() {
-        val config = configDao!!.get()
+        val config = configDao.get()
         config.schemaVersion = id()
         configDao.save(config)
     }
 
     public abstract fun id(): Int
 
-    Throws(SQLException::class, IOException::class)
+    @Throws(SQLException::class, IOException::class)
     public abstract fun doUpgrade()
 
     override fun toString(): String {

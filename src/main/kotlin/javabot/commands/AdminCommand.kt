@@ -4,40 +4,26 @@ import com.antwerkz.sofia.Sofia
 import javabot.Javabot
 import javabot.Message
 import javabot.operations.BotOperation
-import org.apache.commons.cli.CommandLine
-import org.apache.commons.cli.CommandLineParser
 import org.apache.commons.cli.GnuParser
 import org.apache.commons.cli.Option
 import org.apache.commons.cli.Options
 import org.apache.commons.cli.ParseException
 import org.apache.commons.lang.StringUtils
 import org.pircbotx.PircBotX
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
+import java.lang.reflect.Field
 import javax.inject.Inject
 import javax.inject.Provider
-import java.lang.reflect.Field
-import java.util.ArrayList
-import java.util.Arrays
 
 public abstract class AdminCommand : BotOperation() {
 
-    protected var args: MutableList<String>
+    protected var args: MutableList<Any?> = arrayListOf()
 
-    Inject
-    private val javabot: Provider<Javabot>? = null
+    @Inject
+    lateinit val javabot: Provider<Javabot>
 
-    Inject
-    private val pircBot: Provider<PircBotX>? = null
-
-    public fun getJavabot(): Javabot {
-        return javabot!!.get()
-    }
-
-    public fun getIrcBot(): PircBotX {
-        return pircBot!!.get()
-    }
+    @Inject
+    lateinit val pircBot: Provider<PircBotX>
 
     override fun handleMessage(event: Message): Boolean {
         var handled = false
@@ -45,19 +31,18 @@ public abstract class AdminCommand : BotOperation() {
         if (message.toLowerCase().startsWith("admin ")) {
             if (isAdminUser(event.user)) {
                 message = message.substring(6)
-                val split = message.split(" ")
-                if (canHandle(split[0])) {
+                val params = message.split(" ") as MutableList
+                if (canHandle(params[0])) {
                     handled = true
                     try {
                         synchronized (this) {
-                            val params = ArrayList(Arrays.asList<String>(*split))
                             parse(params)
                             execute(event)
                             clear()
                         }
                     } catch (e: ParseException) {
                         LOG.error(e.getMessage(), e)
-                        bot.postMessageToUser(event.user, Sofia.adminParseFailure(e.getMessage()))
+                        bot.postMessageToUser(event.user, Sofia.adminParseFailure(e.getMessage()!!))
                     }
 
                 }
@@ -71,7 +56,7 @@ public abstract class AdminCommand : BotOperation() {
 
     public open fun canHandle(message: String): Boolean {
         try {
-            return message.equalsIgnoreCase(javaClass.simpleName)
+            return message.equals(javaClass.simpleName, ignoreCase = true)
         } catch (e: Exception) {
             LOG.error(e.getMessage(), e)
             throw RuntimeException(e.getMessage(), e)
@@ -86,23 +71,23 @@ public abstract class AdminCommand : BotOperation() {
         for (field in javaClass.declaredFields) {
             val annotation = field.getAnnotation(Param::class.java)
             if (annotation != null) {
-                val name = if ("" == annotation.name()) field.name else annotation.name()
-                val value = if (!StringUtils.isEmpty(annotation.defaultValue())) annotation.defaultValue() else null
+                val name = if ("" == annotation.name) field.name else annotation.name
+                val value = if (!StringUtils.isEmpty(annotation.defaultValue)) annotation.defaultValue else null
                 val option = object : Option(name, true, null) {
                     override fun getValue(): String {
                         val optValue = super.getValue()
-                        return optValue ?: value
+                        return optValue ?: value!!
                     }
                 }
-                option.isRequired = annotation.required() && !annotation.primary()
+                option.isRequired = annotation.required && !annotation.primary
                 options.addOption(option)
             }
         }
         return options
     }
 
-    SuppressWarnings("unchecked")
-    Throws(ParseException::class)
+    @SuppressWarnings("unchecked")
+    @Throws(ParseException::class)
     public fun parse(params: MutableList<String>) {
         var index = 2
         while (index < params.size()) {
@@ -114,7 +99,7 @@ public abstract class AdminCommand : BotOperation() {
         }
         val options = getOptions()
         val parser = GnuParser()
-        val line = parser.parse(options, params.toArray<String>(arrayOfNulls<String>(params.size())))
+        val line = parser.parse(options, params.toTypedArray())
         args = line.argList
         try {
             val iterator = line.iterator()
@@ -142,7 +127,7 @@ public abstract class AdminCommand : BotOperation() {
 
     }
 
-    Throws(ParseException::class)
+    @Throws(ParseException::class)
     private fun clear() {
         try {
             for (o in getOptions().options) {
@@ -163,7 +148,7 @@ public abstract class AdminCommand : BotOperation() {
     private fun getPrimaryParam(): Field? {
         for (field in javaClass.declaredFields) {
             val annotation = field.getAnnotation(Param::class.java)
-            if (annotation != null && annotation.primary()) {
+            if (annotation != null && annotation.primary) {
                 return field
             }
         }
@@ -177,7 +162,7 @@ public abstract class AdminCommand : BotOperation() {
     }
 
     override fun toString(): String {
-        return String.format("%s [admin]", name)
+        return "%s [admin]".format(getName())
     }
 
     companion object {

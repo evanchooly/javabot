@@ -27,7 +27,19 @@
                 </excludes>
             </resource>
         </resources>
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
@@ -50,16 +62,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
-                <inherited>true</inherited>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -110,6 +112,7 @@
                     </execution>
                 </executions>
             </plugin>
+<!--
             <plugin>
                 <groupId>com.antwerkz.sofia</groupId>
                 <artifactId>sofia-maven</artifactId>
@@ -126,6 +129,7 @@
                     <outputDirectory>src/main/java</outputDirectory>
                 </configuration>
             </plugin>
+-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -195,6 +199,11 @@
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>com.antwerkz.critter</groupId>
+            <artifactId>critter-core</artifactId>
+            <version>${critter.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.antwerkz.sofia</groupId>
             <artifactId>sofia-core</artifactId>
@@ -432,6 +441,7 @@
     </reporting>
 
     <properties>
+        <critter.version>2.1.1</critter.version>
         <guice.version>3.0</guice.version>
         <sofia.version>0.15</sofia.version>
         <slf4j.version>1.7.4</slf4j.version>

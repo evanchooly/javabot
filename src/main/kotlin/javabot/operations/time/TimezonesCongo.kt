@@ -7,7 +7,7 @@ public class TimezonesCongo : Timezones {
         Lubumbashi("Africa/Lubumbashi")
     }
 
-    override fun get(province: String): String {
+    override fun get(province: String): String? {
         return timezones.get(province)
     }
 

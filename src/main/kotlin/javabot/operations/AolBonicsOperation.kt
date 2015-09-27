@@ -29,7 +29,7 @@ public class AolBonicsOperation : BotOperation() {
 
     override fun handleChannelMessage(event: Message): Boolean {
         for (bad in event.value.split(" ")) {
-            if (phrases.contains(bad.toLowerCase().replaceAll("!|\\.|\\?|,", ""))) {
+            if (phrases.contains(bad.toLowerCase().replace("!|\\.|\\?|,".toRegex(), ""))) {
                 bot.postMessageToChannel(event, Sofia.botAolbonics(event.user.nick))
                 return true
             }

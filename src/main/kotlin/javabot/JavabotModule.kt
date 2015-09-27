@@ -12,10 +12,7 @@ import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
 import javabot.dao.util.LocalDateTimeConverter
 import javabot.javadoc.JavadocClass
-import javabot.model.Channel
-import javabot.model.Config
 import javabot.model.Factoid
-import javabot.web.JavabotApplication
 import net.swisstech.bitly.BitlyClient
 import org.aeonbits.owner.Config.Key
 import org.aeonbits.owner.ConfigFactory
@@ -24,15 +21,12 @@ import org.mongodb.morphia.Morphia
 import org.pircbotx.Configuration.Builder
 import org.pircbotx.PircBotX
 import org.pircbotx.cap.SASLCapHandler
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import javax.inject.Singleton
 import java.io.IOException
-import java.lang.reflect.Method
 import java.util.ArrayList
 import java.util.HashMap
+import javax.inject.Singleton
 
-public class JavabotModule : AbstractModule() {
+open class JavabotModule : AbstractModule() {
 
     private var mongoClient: MongoClient? = null
 
@@ -41,8 +35,8 @@ public class JavabotModule : AbstractModule() {
     private var datastore: Datastore? = null
     private var botListenerProvider: Provider<BotListener>? = null
 
-    protected var channelDaoProvider: Provider<ChannelDao>
-    protected var configDaoProvider: Provider<ConfigDao>
+    lateinit var channelDaoProvider: Provider<ChannelDao>
+    lateinit var configDaoProvider: Provider<ConfigDao>
 
     override fun configure() {
         configDaoProvider = binder().getProvider(ConfigDao::class.java)
@@ -50,9 +44,9 @@ public class JavabotModule : AbstractModule() {
         botListenerProvider = binder().getProvider(BotListener::class.java)
     }
 
-    Provides
-    Singleton
-    Throws(IOException::class)
+    @Provides
+    @Singleton
+    @Throws(IOException::class)
     public fun datastore(): Datastore {
         if (datastore == null) {
             datastore = getMorphia().createDatastore(getMongoClient(), javabotConfig().databaseName())
@@ -64,11 +58,11 @@ public class JavabotModule : AbstractModule() {
             }
 
         }
-        return datastore
+        return datastore!!
     }
 
-    Provides
-    Singleton
+    @Provides
+    @Singleton
     public fun getMorphia(): Morphia {
         if (morphia == null) {
             morphia = Morphia()
@@ -76,12 +70,12 @@ public class JavabotModule : AbstractModule() {
             morphia!!.mapPackage(Factoid::class.java.`package`.name)
             morphia!!.mapper.converters.addConverter(LocalDateTimeConverter::class.java)
         }
-        return morphia
+        return morphia!!
     }
 
-    Provides
-    Singleton
-    Throws(IOException::class)
+    @Provides
+    @Singleton
+    @Throws(IOException::class)
     public fun getMongoClient(): MongoClient {
         if (mongoClient == null) {
             try {
@@ -91,25 +85,24 @@ public class JavabotModule : AbstractModule() {
                 e.printStackTrace()
                 throw RuntimeException(e.getMessage(), e)
             }
-
         }
-        return mongoClient
+        return mongoClient!!
     }
 
-    Provides
-    Singleton
-    Throws(IOException::class)
+    @Provides
+    @Singleton
+    @Throws(IOException::class)
     public fun bitlyClient(): BitlyClient? {
         return if (javabotConfig().bitlyToken() != "") BitlyClient(javabotConfig().bitlyToken()) else null
     }
 
-    Provides
-    Singleton
-    protected fun createIrcBot(): PircBotX {
+    @Provides
+    @Singleton
+    protected open fun createIrcBot(): PircBotX {
         val config = configDaoProvider.get().get()
         val nick = config.nick
         val builder = Builder<PircBotX>().setName(nick).setLogin(nick).setAutoNickChange(false).setCapEnabled(false).addListener(
-              getBotListener()).setServerHostname(config.server).setServerPort(config.port!!).addCapHandler(
+              getBotListener()).setServerHostname(config.server).setServerPort(config.port).addCapHandler(
               SASLCapHandler(nick, config.password))
         /*
         for (Channel channel : channelDaoProvider.get().getChannels()) {
@@ -125,16 +118,16 @@ public class JavabotModule : AbstractModule() {
         return PircBotX(builder.buildConfiguration())
     }
 
-    Provides
-    Singleton
-    Throws(IOException::class)
-    public fun javabotConfig(): JavabotConfig {
+    @Provides
+    @Singleton
+    @Throws(IOException::class)
+    public open fun javabotConfig(): JavabotConfig {
         return validate(ConfigFactory.create(JavabotConfig::class.java, HashMap<Any, Any>(), System.getProperties(), System.getenv()))
     }
 
-    SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     protected fun validate(config: JavabotConfig): JavabotConfig {
-        val configClass = config.javaClass.interfaces[0] as Class<out JavabotConfig>
+        val configClass = config.javaClass.interfaces[0] as Class<JavabotConfig>
         val methods = configClass.declaredMethods
         val missingKeys = ArrayList<String>()
         for (method in methods) {
@@ -142,7 +135,7 @@ public class JavabotModule : AbstractModule() {
                 val annotation = method.getDeclaredAnnotation(Key::class.java)
                 if (annotation != null && method.parameterCount == 0 && method.returnType != Void::class.java && method.invoke(
                       config) == null) {
-                    missingKeys.add(annotation.value())
+                    missingKeys.add(annotation.value)
                 }
             } catch (e: ReflectiveOperationException) {
                 throw RuntimeException(e.getMessage(), e)
@@ -157,10 +150,5 @@ public class JavabotModule : AbstractModule() {
 
     public fun getBotListener(): BotListener {
         return botListenerProvider!!.get()
-    }
-
-    companion object {
-
-        private val LOG = LoggerFactory.getLogger(JavabotModule::class.java)
     }
 }

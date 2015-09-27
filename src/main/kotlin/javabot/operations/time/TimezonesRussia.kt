@@ -16,7 +16,7 @@ public class TimezonesRussia : Timezones {
         Magadan("Asia/Magadan")
     }
 
-    override fun get(province: String): String {
+    override fun get(province: String): String? {
         return timezones.get(province)
     }
 

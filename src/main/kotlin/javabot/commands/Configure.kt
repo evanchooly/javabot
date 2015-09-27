@@ -3,22 +3,19 @@ package javabot.commands
 import com.antwerkz.sofia.Sofia
 import javabot.Message
 import javabot.dao.ConfigDao
-import javabot.model.Config
 import org.apache.commons.lang.StringUtils
-
 import javax.inject.Inject
-import java.lang.reflect.Method
 
 public class Configure : AdminCommand() {
-    Inject
-    private val dao: ConfigDao? = null
-    Param(required = false)
-    var property: String
-    Param(required = false)
-    var value: String
+    @Inject
+    lateinit val configDao: ConfigDao
+    @Param
+    lateinit var property: String
+    @Param
+    lateinit var value: String
 
     override fun execute(event: Message) {
-        val config = dao!!.get()
+        val config = configDao.get()
         if (StringUtils.isEmpty(property)) {
             bot.postMessageToUser(event.user, config.toString())
         } else {
@@ -29,12 +26,12 @@ public class Configure : AdminCommand() {
                 val set = config.javaClass.getDeclaredMethod("set" + name, type)
                 try {
                     set.invoke(config, if (type == String::class.java) value.trim() else Integer.parseInt(value))
-                    dao.save(config)
+                    configDao.save(config)
                     bot.postMessageToUser(event.user, Sofia.configurationSetProperty(property, value))
                 } catch (e: ReflectiveOperationException) {
-                    bot.postMessageToUser(event.user, e.getMessage())
+                    bot.postMessageToUser(event.user, e.getMessage()!!)
                 } catch (e: NumberFormatException) {
-                    bot.postMessageToUser(event.user, e.getMessage())
+                    bot.postMessageToUser(event.user, e.getMessage()!!)
                 }
 
             } catch (e: NoSuchMethodException) {

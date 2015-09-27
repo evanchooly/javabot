@@ -3,14 +3,11 @@ package javabot.operations
 import com.antwerkz.sofia.Sofia
 import javabot.Message
 import javabot.dao.FactoidDao
-import javabot.model.Factoid
-import org.pircbotx.Channel
-
 import javax.inject.Inject
 
 public class ForgetFactoidOperation : BotOperation(), StandardOperation {
-    Inject
-    private val factoidDao: FactoidDao? = null
+    @Inject
+    lateinit val factoidDao: FactoidDao
 
     override fun handleMessage(event: Message): Boolean {
         val channel = event.channel
@@ -31,7 +28,7 @@ public class ForgetFactoidOperation : BotOperation(), StandardOperation {
     }
 
     protected fun forget(event: Message, key: String): Boolean {
-        val factoid = factoidDao!!.getFactoid(key)
+        val factoid = factoidDao.getFactoid(key)
         if (factoid != null) {
             if ((!factoid.locked) || isAdminUser(event.user)) {
                 bot.postMessageToChannel(event, Sofia.factoidForgotten(key, event.user.nick))

@@ -1,17 +1,11 @@
 package javabot.operations.locator
 
-import org.apache.http.HttpEntity
-import org.apache.http.HttpResponse
+import com.google.common.base.Strings
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods.HttpGet
-import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.util.EntityUtils
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
-import org.jsoup.nodes.TextNode
-
 import java.util.HashMap
 
 public class JCPJSRLocator {
@@ -45,8 +39,7 @@ public class JCPJSRLocator {
                 }
 
             }
-        } catch (e: Exception) {
-            retVal.put("title", null)
+        } catch (ignored: Exception) {
         }
 
         return retVal
@@ -56,7 +49,7 @@ public class JCPJSRLocator {
         val inputs = HashMap<String, String>()
         inputs.put("jsr", Integer.toString(jsr))
         val outputs = locate(inputs)
-        if (outputs.get("title") == null) {
+        if (Strings.isNullOrEmpty(outputs.get("title"))) {
             return ""
         }
         return "'" + outputs.get("title") + "' can be found at " + outputs.get("url")

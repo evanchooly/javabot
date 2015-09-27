@@ -1,18 +1,16 @@
 package javabot.dao
 
-import java.time.LocalDateTime
-import javax.inject.Inject
-
 import javabot.model.Admin
-import javabot.model.Config
 import javabot.model.EventType
 import javabot.model.OperationEvent
 import javabot.model.criteria.AdminCriteria
 import org.pircbotx.User
+import java.time.LocalDateTime
+import javax.inject.Inject
 
 public class AdminDao : BaseDao<Admin>(Admin::class.java) {
-    Inject
-    private val configDao: ConfigDao? = null
+    @Inject
+    lateinit val configDao: ConfigDao
 
     override fun findAll(): List<Admin> {
         return ds.createQuery(Admin::class.java).order("userName").asList()
@@ -22,7 +20,7 @@ public class AdminDao : BaseDao<Admin>(Admin::class.java) {
         return findAll().isEmpty() || getAdmin(user) != null
     }
 
-    public fun getAdmin(ircName: String, hostName: String): Admin {
+    public fun getAdmin(ircName: String, hostName: String): Admin? {
         val adminCriteria = AdminCriteria(ds)
         adminCriteria.ircName().equal(ircName)
         adminCriteria.hostName().equal(hostName)
@@ -35,14 +33,14 @@ public class AdminDao : BaseDao<Admin>(Admin::class.java) {
         return adminCriteria.query().get()
     }
 
-    public fun getAdminByEmailAddress(email: String): Admin {
+    public fun getAdminByEmailAddress(email: String): Admin? {
         val criteria = AdminCriteria(ds)
         criteria.emailAddress(email)
         var admin = criteria.query().get()
-        if (admin == null && count() == 0) {
+        if (admin == null && count() == 0L) {
             admin = Admin()
-            admin!!.emailAddress = email
-            admin!!.botOwner = true
+            admin.emailAddress = email
+            admin.botOwner = true
             save(admin)
         }
         return admin
@@ -67,7 +65,7 @@ public class AdminDao : BaseDao<Admin>(Admin::class.java) {
         event.type = EventType.ADD
         event.requestedBy = admin.emailAddress
         save(event)
-        val config = configDao!!.get()
+        val config = configDao.get()
         config.operations.add(name)
         configDao.save(config)
     }
@@ -79,12 +77,12 @@ public class AdminDao : BaseDao<Admin>(Admin::class.java) {
         event.type = EventType.DELETE
         event.requestedBy = admin.emailAddress
         save(event)
-        val config = configDao!!.get()
+        val config = configDao.get()
         config.operations.remove(name)
         configDao.save(config)
     }
 
     public fun count(): Long {
-        return query.countAll()
+        return getQuery().countAll()
     }
 }

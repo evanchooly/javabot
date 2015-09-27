@@ -9,13 +9,13 @@ import javax.servlet.http.HttpServletRequest
 
 public class JavadocView(injector: Injector, request: HttpServletRequest) : MainView(injector, request) {
     @Inject
-    private val apiDao: ApiDao? = null
+    lateinit val apiDao: ApiDao
 
     override fun getChildView(): String {
         return "admin/javadoc.ftl"
     }
 
     public fun apis(): List<JavadocApi> {
-        return apiDao!!.findAll()
+        return apiDao.findAll()
     }
 }

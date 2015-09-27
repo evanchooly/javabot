@@ -9,10 +9,10 @@ import javax.inject.Inject
 import java.util.Random
 
 public abstract class BotOperation {
-    Inject
-    public val bot: Javabot? = null
-    Inject
-    private val dao: AdminDao? = null
+    @Inject
+    lateinit val bot: Javabot
+    @Inject
+    lateinit val adminDao: AdminDao
 
     /**
      * This method returns where the operation should fall in terms of priority. Lower values represent lower
@@ -36,7 +36,7 @@ public abstract class BotOperation {
     }
 
     public fun getName(): String {
-        return javaClass.simpleName.replaceAll("Operation", "")
+        return javaClass.simpleName.replace("Operation".toRegex(), "")
     }
 
     override fun toString(): String {
@@ -44,16 +44,16 @@ public abstract class BotOperation {
     }
 
     protected fun isAdminUser(user: User): Boolean {
-        return dao!!.isAdmin(user)
+        return adminDao.isAdmin(user)
     }
 
     protected fun formatMessage(text: String, vararg messages: String): String {
-        return formatMessage(text, random.nextInt(messages.size()), messages)
+        return formatMessage(text, random.nextInt(messages.size()), messages as Array<String>)
     }
 
     protected fun formatMessage(text: String, index: Int, messages: Array<String>): String {
         val format = messages[index]
-        return String.format(format, text)
+        return format; //String.format(format, text)
     }
 
     companion object {

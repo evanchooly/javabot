@@ -25,14 +25,14 @@ public class ChangeDao : BaseDao<Change>(Change::class.java) {
     public fun findLog(message: String): Boolean {
         val criteria = ChangeCriteria(ds)
         criteria.message().equal(message)
-        return criteria.query().countAll() !== 0
+        return criteria.query().countAll() !== 0L
     }
 
-    public fun count(filter: Change): Long? {
+    public fun count(filter: Change): Long {
         return buildFindQuery(null, filter, true).countAll()
     }
 
-    SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public fun getChanges(qp: QueryParam, filter: Change): List<Change> {
         return buildFindQuery(qp, filter, true).asList()
     }

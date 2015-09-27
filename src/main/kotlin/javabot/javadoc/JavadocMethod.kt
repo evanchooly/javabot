@@ -8,12 +8,11 @@ import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.Indexes
 import org.mongodb.morphia.annotations.PrePersist
 
-Entity(value = "methods", noClassnameStored = true)
-Indexes(@Index(fields = @Field("apiId")), @Index(fields = { @Field("javadocClassId"), @Field("upperName") }),
-      @Index(fields = { @Field("apiId"), @Field("javadocClassId"), @Field("upperName") }))
+@Entity(value = "methods", noClassnameStored = true)
+@Indexes(Index(fields = arrayOf(Field("apiId"))), Index(fields = arrayOf(Field("javadocClassId"), Field("upperName") )),
+      Index(fields = arrayOf(Field("apiId"), Field("javadocClassId"), Field("upperName") )))
 public class JavadocMethod : JavadocElement {
-    Id
-    private var id: ObjectId? = null
+    override var id: ObjectId? = null
     public var javadocClassId: ObjectId? = null
 
     public var name: String? = null
@@ -35,20 +34,21 @@ public class JavadocMethod : JavadocElement {
         parentClassName = parent.toString()
 
         paramCount = count
-        longSignatureTypes = String.join(", ", longArgs)
-        shortSignatureTypes = String.join(", ", shortArgs)
+        longArgs.join(", ")
+        longSignatureTypes = longArgs.join(", ")
+        shortSignatureTypes = shortArgs.join(", ")
         buildUrl(parent, longArgs)
     }
 
     private fun buildUrl(parent: JavadocClass, longArgs: List<String>) {
         val parentUrl = parent.directUrl
-        val java8 = parentUrl.contains("se/8")
+        val java8 = parentUrl?.contains("se/8") ?: false
         val url = StringBuilder()
         for (arg in longArgs) {
             if (url.length() != 0) {
                 url.append(if (java8) "-" else ", ")
             }
-            url.append(arg.replaceAll("<.*", ""))
+            url.append(arg.replace("<.*".toRegex(), ""))
         }
         var directUrl = if (java8)
             parentUrl + "#" + this.name + "-" + url + "-"
@@ -56,11 +56,7 @@ public class JavadocMethod : JavadocElement {
             parentUrl + "#" + this.name + "(" + url + ")"
 
         longUrl = directUrl
-        directUrl = directUrl
-    }
-
-    override fun getId(): ObjectId {
-        return id
+        this.directUrl = directUrl
     }
 
     public fun setJavadocClassId(javadocClass: JavadocClass) {
@@ -68,15 +64,11 @@ public class JavadocMethod : JavadocElement {
         parentClassName = javadocClass.toString()
     }
 
-    override fun setId(methodId: ObjectId) {
-        id = methodId
-    }
-
     public fun getShortSignature(): String {
         return "$name($shortSignatureTypes)"
     }
 
-    PrePersist
+    @PrePersist
     public fun uppers() {
         upperName = name!!.toUpperCase()
     }

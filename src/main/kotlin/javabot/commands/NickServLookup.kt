@@ -12,32 +12,32 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 
 public class NickServLookup : AdminCommand() {
-    Inject
-    private val nickServDao: NickServDao? = null
+    @Inject
+    lateinit val nickServDao: NickServDao
 
-    Param
-    var name: String
+    @Param
+    lateinit var nick: String
 
     override fun execute(event: Message) {
         try {
             val info = validateNickServAccount()
             if (info == null) {
-                javabot.postMessageToUser(event.user, Sofia.noNickservEntry(name))
+                javabot.get().postMessageToUser(event.user, Sofia.noNickservEntry(nick))
             } else {
-                info.toNickServFormat().stream().forEach({ line -> javabot.postMessageToUser(event.user, line) })
+                info.toNickServFormat().forEach({ line -> javabot.get().postMessageToUser(event.user, line) })
             }
         } catch (e: ConditionTimeoutException) {
-            javabot.postMessageToUser(event.user, Sofia.nickservNotResponding())
+            javabot.get().postMessageToUser(event.user, Sofia.nickservNotResponding())
         }
 
     }
 
     private fun validateNickServAccount(): NickServInfo? {
-        val info = AtomicReference(nickServDao!!.find(name))
+        val info = AtomicReference(nickServDao!!.find(nick))
         if (info.get() == null) {
-            ircBot.sendIRC().message("NickServ", "info " + name)
+            pircBot.get().sendIRC().message("NickServ", "info " + nick)
             Awaitility.await().atMost(10, TimeUnit.SECONDS).until<Any> {
-                info.set(nickServDao.find(name))
+                info.set(nickServDao.find(nick))
                 info.get() != null
             }
         }

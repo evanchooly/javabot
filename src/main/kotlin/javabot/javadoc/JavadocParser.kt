@@ -1,12 +1,15 @@
 package javabot.javadoc
 
+import javabot.JavabotThreadFactory
+import javabot.dao.ApiDao
+import javabot.dao.JavadocClassDao
+import org.objectweb.asm.ClassReader
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
 import java.io.Writer
 import java.util.ArrayList
-import java.util.Enumeration
 import java.util.HashMap
-import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
@@ -16,29 +19,22 @@ import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
 
-import javabot.JavabotThreadFactory
-import javabot.dao.ApiDao
-import javabot.dao.JavadocClassDao
-import org.objectweb.asm.ClassReader
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
-Singleton
+@Singleton
 public class JavadocParser {
 
-    Inject
-    private val apiDao: ApiDao? = null
+    @Inject
+    lateinit val apiDao: ApiDao
 
-    Inject
-    private val dao: JavadocClassDao? = null
+    @Inject
+    lateinit val javadocClassDao: JavadocClassDao
 
-    Inject
-    private val provider: Provider<JavadocClassVisitor>? = null
+    @Inject
+    lateinit val provider: Provider<JavadocClassVisitor>
 
-    public var api: JavadocApi? = null
+    lateinit var api: JavadocApi
         private set
 
-    private val deferred = HashMap<String, List<JavadocClass>>()
+    private val deferred = HashMap<String, MutableList<JavadocClass>?>()
 
     public fun parse(classApi: JavadocApi, location: String, writer: Writer) {
         api = classApi
@@ -53,7 +49,7 @@ public class JavadocParser {
                   JavabotThreadFactory(false, "javadoc-thread-"))
             executor.prestartCoreThread()
             val file = File(location)
-            val deleteFile = "JDK" != api!!.name
+            val deleteFile = "JDK" != api.name
             try {
                 JarFile(file).use { jarFile ->
                     val entries = jarFile.entries()
@@ -66,8 +62,7 @@ public class JavadocParser {
                         }
                     }
                     while (!workQueue.isEmpty()) {
-                        writer.write(String.format("Waiting on %s work queue to drain.  %d items left", api!!.name,
-                              workQueue.size()))
+                        writer.write("Waiting on %s work queue to drain.  %d items left".format(api.name, workQueue.size()))
                         Thread.sleep(5000)
                     }
                 }
@@ -78,8 +73,7 @@ public class JavadocParser {
             }
             executor.shutdown()
             executor.awaitTermination(1, TimeUnit.HOURS)
-            writer.write(String.format("Finished importing %s.  %s!", api!!.name,
-                  if (workQueue.isEmpty()) "SUCCESS" else "FAILURE"))
+            writer.write("Finished importing %s.  %s!".format(api.name, if (workQueue.isEmpty()) "SUCCESS" else "FAILURE"))
         } catch (e: IOException) {
             log.error(e.getMessage(), e)
             throw RuntimeException(e.getMessage(), e)
@@ -90,8 +84,7 @@ public class JavadocParser {
 
     }
 
-    public fun getOrQueue(api: JavadocApi, pkg: String, name: String,
-                          newClass: JavadocClass): JavadocClass {
+    public fun getOrQueue(api: JavadocApi, pkg: String, name: String, newClass: JavadocClass): JavadocClass? {
         synchronized (deferred) {
             val parent = getJavadocClass(api, pkg, name)
             if (parent == null) {
@@ -112,13 +105,13 @@ public class JavadocParser {
             var cls = getJavadocClass(api, pkg, name)
             if (cls == null) {
                 cls = JavadocClass(api, pkg, name)
-                dao!!.save(cls)
+                javadocClassDao.save(cls)
             }
             val list = deferred.get(pkg + "." + name)
             if (list != null) {
                 for (subclass in list) {
                     subclass.superClassId = cls.superClassId
-                    dao!!.save(subclass)
+                    javadocClassDao.save(subclass)
                 }
                 deferred.remove(pkg + "." + name)
             }
@@ -128,7 +121,7 @@ public class JavadocParser {
 
     private fun getJavadocClass(api: JavadocApi, pkg: String, name: String): JavadocClass? {
         var cls: JavadocClass? = null
-        for (javadocClass in dao!!.getClass(api, pkg, name)) {
+        for (javadocClass in javadocClassDao.getClass(api, pkg, name)) {
             if (javadocClass.apiId == api.id) {
                 cls = javadocClass
             }
@@ -140,8 +133,8 @@ public class JavadocParser {
 
         override fun run() {
             try {
-                val classVisitor = provider!!.get()
-                if ("JDK" == api!!.name) {
+                val classVisitor = provider.get()
+                if ("JDK" == api.name) {
                     classVisitor.setPackages("java", "javax")
                 }
                 ClassReader(jarFile.getInputStream(entry)).accept(classVisitor, 0)

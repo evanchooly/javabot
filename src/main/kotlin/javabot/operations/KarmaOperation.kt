@@ -14,7 +14,7 @@ import java.util.regex.Pattern
 
 public class KarmaOperation : BotOperation() {
 
-    Inject
+    @Inject
     private val dao: KarmaDao? = null
 
     override fun handleMessage(event: Message): Boolean {
@@ -68,7 +68,7 @@ public class KarmaOperation : BotOperation() {
                     bot.postMessageToChannel(event, Sofia.privmsgChange())
                     handled = true
                 } else {
-                    if (nick.equalsIgnoreCase(sender.nick)) {
+                    if (nick.equals(sender.nick, ignoreCase = true)) {
                         if (increment) {
                             bot.postMessageToChannel(event, Sofia.karmaOwnIncrement())
                         }
@@ -100,7 +100,7 @@ public class KarmaOperation : BotOperation() {
             val nick = message.substring("karma ".length()).toLowerCase()
             val karma = dao!!.find(nick)
             if (karma != null) {
-                bot.postMessageToChannel(event, if (nick.equalsIgnoreCase(sender.nick))
+                bot.postMessageToChannel(event, if (nick.equals(sender.nick, ignoreCase = true))
                     Sofia.karmaOwnValue(sender.nick, karma.value)
                 else
                     Sofia.karmaOthersValue(nick, karma.value, sender.nick))

@@ -1,37 +1,34 @@
 package javabot.model
 
+import org.bson.types.ObjectId
+import org.mongodb.morphia.annotations.Entity
+import org.mongodb.morphia.annotations.Indexed
+import org.pircbotx.User
+import java.lang.String.format
 import java.time.LocalDateTime
+import java.time.LocalDateTime.now
 import java.time.format.DateTimeFormatter
 import java.util.ArrayList
 import java.util.TreeMap
 
-import java.lang.String.format
-import java.time.LocalDateTime.now
-import org.bson.types.ObjectId
-import org.mongodb.morphia.annotations.Entity
-import org.mongodb.morphia.annotations.Id
-import org.mongodb.morphia.annotations.Indexed
-import org.pircbotx.User
-
-Entity(value = "nickserv", noClassnameStored = true)
+@Entity(value = "nickserv", noClassnameStored = true)
 public class NickServInfo : Persistent {
 
-    Id
-    private var id: ObjectId? = null
+    override var id: ObjectId? = null
 
-    Indexed
+    @Indexed
     public var nick: String? = null
 
-    Indexed
+    @Indexed
     public var account: String? = null
 
-    public var registered: LocalDateTime? = null
+    public var registered = LocalDateTime.now()
 
-    public var userRegistered: LocalDateTime? = null
+    public var userRegistered = registered
 
     public var lastSeen: LocalDateTime? = null
 
-    Indexed(expireAfterSeconds = 60 * 60 * 24)
+    @Indexed(expireAfterSeconds = 60 * 60 * 24)
     private val created = now()
 
     private val extraneous = TreeMap<String, String>()
@@ -46,14 +43,6 @@ public class NickServInfo : Persistent {
         account = null //user.getUserName();
         registered = LocalDateTime.now()
         userRegistered = LocalDateTime.now()
-    }
-
-    override fun getId(): ObjectId {
-        return id
-    }
-
-    override fun setId(id: ObjectId) {
-        this.id = id
     }
 
     public fun extra(key: String, value: String) {

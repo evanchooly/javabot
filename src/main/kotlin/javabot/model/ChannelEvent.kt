@@ -9,17 +9,17 @@ import org.pircbotx.PircBotX
 import javax.inject.Inject
 import javax.inject.Provider
 
-Entity("events")
+@Entity("events")
 public class ChannelEvent : AdminEvent {
-    Inject
-    Transient
-    private val channelDao: ChannelDao? = null
-    Inject
-    Transient
-    private val ircBot: Provider<PircBotX>? = null
-    public var channel: String? = null
-    public var key: String? = null
-    public var logged: Boolean? = null
+    @Inject
+    @Transient
+    lateinit val channelDao: ChannelDao
+    @Inject
+    @Transient
+    lateinit val ircBot: Provider<PircBotX>
+    lateinit var channel: String
+    var key: String? = null
+    var logged: Boolean = false
 
     protected constructor() {
     }
@@ -33,32 +33,32 @@ public class ChannelEvent : AdminEvent {
     }
 
     override fun add() {
-        join(channelDao!!.create(channel, logged, key))
+        join(channelDao.create(channel, logged, key))
     }
 
     protected fun join(chan: Channel) {
         if (chan.key == null) {
-            ircBot!!.get().sendIRC().joinChannel(chan.name)
+            ircBot.get().sendIRC().joinChannel(chan.name)
         } else {
-            ircBot!!.get().sendIRC().joinChannel(chan.name, chan.key)
+            ircBot.get().sendIRC().joinChannel(chan.name, chan.key)
         }
     }
 
     override fun delete() {
-        val chan = channelDao!!.get(channel)
+        val chan = channelDao.get(channel)
         if (chan != null) {
             channelDao.delete(chan.id)
-            ircBot!!.get().userChannelDao.getChannel(channel).send().part(Sofia.channelDeleted(requestedBy))
+            ircBot.get().userChannelDao.getChannel(channel).send().part(Sofia.channelDeleted(requestedBy))
         }
     }
 
     override fun update() {
-        val chan = channelDao!!.get(channel)
+        val chan = channelDao.get(channel)
         if (chan != null) {
             chan.logged = logged
             chan.key = key
             channelDao.save(chan)
-            ircBot!!.get().userChannelDao.getChannel(channel).send().part(Sofia.channelDeleted(requestedBy))
+            ircBot.get().userChannelDao.getChannel(channel).send().part(Sofia.channelDeleted(requestedBy))
             join(chan)
         }
     }

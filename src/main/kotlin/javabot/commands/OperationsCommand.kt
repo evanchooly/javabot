@@ -11,7 +11,6 @@ import java.lang.String.join
 public abstract class OperationsCommand : AdminCommand() {
     protected fun listCurrent(event: Message) {
         bot.postMessageToChannel(event, Sofia.adminRunningOperations(event.user.nick))
-        bot.postMessageToChannel(event, join(",",
-              bot.activeOperations.stream().map(Function<BotOperation, String> { it.getName() }).collect(Collectors.toList<String>())))
+        bot.postMessageToChannel(event, join(",", bot.activeOperations.map( { it.getName() })))
     }
 }

@@ -9,49 +9,45 @@ import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Transient
 import org.pircbotx.PircBotX
-import org.pircbotx.User
-
-import javax.inject.Inject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
 import java.io.StringWriter
 import java.net.MalformedURLException
 import java.net.URL
+import javax.inject.Inject
 
-Entity("events")
+@Entity("events")
 public class ApiEvent : AdminEvent {
     public var apiId: ObjectId? = null
 
-    public var name: String
+    lateinit var name: String
 
-    public var baseUrl: String
+    lateinit var baseUrl: String
 
-    public var downloadUrl: String
+    lateinit var downloadUrl: String
 
-    Inject
-    Transient
-    private val ircBot: Provider<PircBotX>? = null
+    @Inject
+    @Transient
+    lateinit val ircBot: Provider<PircBotX>
 
-    Inject
-    Transient
-    private val parser: JavadocParser? = null
+    @Inject
+    @Transient
+    lateinit val parser: JavadocParser
 
-    Inject
-    Transient
-    private val apiDao: ApiDao? = null
+    @Inject
+    @Transient
+    lateinit val apiDao: ApiDao
 
-    Inject
-    Transient
-    private val adminDao: AdminDao? = null
+    @Inject
+    @Transient
+    lateinit val adminDao: AdminDao
 
     public constructor() {
     }
 
     public constructor(requestedBy: String, name: String, baseUrl: String, downloadUrl: String) : super(EventType.ADD, requestedBy) {
-        requestedBy = requestedBy
+        this.requestedBy = requestedBy
         this.name = name
         this.baseUrl = baseUrl
         if (name == "JDK") {
@@ -66,7 +62,7 @@ public class ApiEvent : AdminEvent {
         }
     }
 
-    public constructor(type: EventType, requestedBy: String, apiId: ObjectId) : super(type, requestedBy) {
+    public constructor(type: EventType, requestedBy: String, apiId: ObjectId?) : super(type, requestedBy) {
         this.apiId = apiId
     }
 
@@ -80,7 +76,7 @@ public class ApiEvent : AdminEvent {
     }
 
     override fun delete() {
-        var api = apiDao!!.find(apiId)
+        var api = apiDao.find(apiId)
         if (api == null) {
             api = apiDao.find(name)
         }
@@ -91,52 +87,52 @@ public class ApiEvent : AdminEvent {
 
     override fun add() {
         val api = JavadocApi(name, baseUrl, downloadUrl)
-        apiDao!!.save(api)
-        process(api)
-    }
-
-    override fun reload() {
-        val api = apiDao!!.find(apiId)
-        apiDao.delete(apiId)
-        api.id = null
         apiDao.save(api)
         process(api)
     }
 
+    override fun reload() {
+        val api = apiDao.find(apiId)
+        if (api != null) {
+            apiDao.delete(apiId)
+            api.id = null
+            apiDao.save(api)
+            process(api)
+        }
+    }
+
     private fun process(api: JavadocApi) {
-        val admin = adminDao!!.getAdmin(ircBot!!.get().userChannelDao.getUser(requestedBy))
-        val user = ircBot.get().userChannelDao.getUser(admin.ircName)
-        try {
-            val file = downloadZip(api.name + ".jar", api.downloadUrl)
-            parser!!.parse(api, file.absolutePath, object : StringWriter() {
-                override fun write(line: String) {
-                    bot.postMessageToUser(user, line)
-                }
-            })
-        } catch (e: IOException) {
-            throw RuntimeException(e.getMessage(), e)
+        val admin = adminDao.getAdmin(ircBot.get().userChannelDao.getUser(requestedBy))
+        if (admin != null) {
+            val user = ircBot.get().userChannelDao.getUser(admin.ircName)
+            try {
+                val file = downloadZip(api.name + ".jar", api.downloadUrl)
+                parser.parse(api, file.absolutePath, object : StringWriter() {
+                    override fun write(line: String) {
+                        bot.postMessageToUser(user, line)
+                    }
+                })
+            } catch (e: IOException) {
+                throw RuntimeException(e.getMessage(), e)
+            }
         }
 
     }
 
-    Throws(IOException::class)
+    @Throws(IOException::class)
     private fun downloadZip(fileName: String, zipURL: String): File {
         val file = File("/tmp/" + fileName)
-        var read: Int
         if (!file.exists()) {
-            URL(zipURL).openStream().use { inputStream ->
-                FileOutputStream(file).use { fos ->
-                    val bytes = ByteArray(8192)
-                    while ((read = inputStream.read(bytes)) != -1) {
-                        fos.write(bytes, 0, read)
-                    }
-                }
-            }
+            val fileOutputStream = FileOutputStream(file)
+            val openStream = URL(zipURL).openStream()
+            fileOutputStream.write(openStream.readBytes())
+            fileOutputStream.close()
+            openStream.close()
         }
         return file
     }
 
     override fun toString(): String {
-        return String.format("ApiEvent{name='%s', state=%s, completed=%s, type=%s}", name, state, completed, type)
+        return "ApiEvent{name='%s', state=%s, completed=%s, type=%s}".format(name, state, completed, type)
     }
 }

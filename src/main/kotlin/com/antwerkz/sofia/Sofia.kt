@@ -28,7 +28,7 @@ public object Sofia {
             bundle = ResourceBundle.getBundle("sofia", locale)
             messages.put(locale, bundle)
         }
-        return bundle
+        return bundle!!
     }
 
     private fun getMessageValue(key: String, vararg locale: Locale): String {
@@ -455,7 +455,7 @@ public object Sofia {
         return getMessageValue("privmsg.change", *locale)
     }
 
-    public fun registerNick(arg0: Any, arg1: Any, arg2: Any, vararg locale: Locale): String {
+    public fun registerNick(arg0: Any, arg1: Any?, arg2: Any, vararg locale: Locale): String {
         return MessageFormat.format(getMessageValue("register.nick", *locale), arg0, arg1, arg2)
     }
 

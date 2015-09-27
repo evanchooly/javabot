@@ -2,24 +2,22 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import javabot.Message
-import javabot.model.Logs
 import javabot.model.criteria.LogsCriteria
 import org.mongodb.morphia.Datastore
-
-import javax.inject.Inject
 import java.time.format.DateTimeFormatter
+import javax.inject.Inject
 
 public class LogsOperation : BotOperation() {
 
-    Inject
-    private val ds: Datastore? = null
+    @Inject
+    lateinit val ds: Datastore
 
     override fun handleMessage(event: Message): Boolean {
         val message = event.value
         if (message.toLowerCase().startsWith(KEYWORD_LOGS)) {
             val nickname = message.substring(KEYWORD_LOGS.length()).trim()
             val criteria = LogsCriteria(ds)
-            criteria.channel(event.channel.name)
+            criteria.channel(event.channel!!.name)
             criteria.updated().order(true)
             var handled = false
             if (nickname.isEmpty()) {

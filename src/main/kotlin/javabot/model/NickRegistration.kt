@@ -8,10 +8,9 @@ import org.pircbotx.User
 import java.io.Serializable
 import java.util.UUID
 
-Entity(value = "registrations", noClassnameStored = true)
+@Entity(value = "registrations", noClassnameStored = true)
 public class NickRegistration : Serializable, Persistent {
-    Id
-    private var id: ObjectId? = null
+    override var id: ObjectId? = null
     public var url: String? = null
     public var nick: String? = null
     public var host: String? = null
@@ -25,13 +24,5 @@ public class NickRegistration : Serializable, Persistent {
         url = UUID.randomUUID().toString()
         nick = sender.nick
         host = sender.hostmask
-    }
-
-    override fun getId(): ObjectId {
-        return id
-    }
-
-    override fun setId(id: ObjectId) {
-        this.id = id
     }
 }

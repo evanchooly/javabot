@@ -58,7 +58,7 @@ public class TimezonesUS : Timezones {
         WYOMING(56, "WY", "Cheyenne", "US/Mountain")
     }
 
-    override fun get(province: String): String {
+    override fun get(province: String): String? {
         return timezones.get(province)
     }
 

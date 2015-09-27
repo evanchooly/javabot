@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServletRequest
 
 public class KarmaView(injector: Injector, request: HttpServletRequest, page: Int) : PagedView<Karma>(injector, request, page) {
     @Inject
-    private val karmaDao: KarmaDao? = null
+    lateinit val karmaDao: KarmaDao
 
-    override fun countItems(): Long? {
-        return karmaDao!!.count()
+    override fun countItems(): Long {
+        return karmaDao.count()
     }
 
     override fun getPageUrl(): String {
@@ -21,7 +21,7 @@ public class KarmaView(injector: Injector, request: HttpServletRequest, page: In
     }
 
     override fun getPageItems(): List<Karma> {
-        return karmaDao!!.getKarmas(QueryParam(index, PagedView.ITEMS_PER_PAGE, "value", false))
+        return karmaDao.getKarmas(QueryParam(getIndex(), PagedView.ITEMS_PER_PAGE, "value", false))
     }
 
     override fun getPagedView(): String {

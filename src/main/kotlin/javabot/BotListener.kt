@@ -7,13 +7,11 @@ import javabot.dao.ConfigDao
 import javabot.dao.LogsDao
 import javabot.dao.NickServDao
 import javabot.model.Admin
-import javabot.model.Channel
 import javabot.model.Logs
 import javabot.model.Logs.Type
 import javabot.operations.throttle.NickServViolationException
 import javabot.operations.throttle.Throttler
 import org.pircbotx.PircBotX
-import org.pircbotx.User
 import org.pircbotx.hooks.ListenerAdapter
 import org.pircbotx.hooks.events.ActionEvent
 import org.pircbotx.hooks.events.ConnectEvent
@@ -26,40 +24,38 @@ import org.pircbotx.hooks.events.NoticeEvent
 import org.pircbotx.hooks.events.PartEvent
 import org.pircbotx.hooks.events.PrivateMessageEvent
 import org.pircbotx.hooks.events.QuitEvent
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
+import java.util.ArrayList
 import javax.inject.Inject
 import javax.inject.Provider
-import java.util.ArrayList
 
 public class BotListener : ListenerAdapter<PircBotX>() {
 
-    Inject
-    private val throttler: Throttler? = null
+    @Inject
+    private lateinit val throttler: Throttler
 
-    Inject
-    private val nickServDao: NickServDao? = null
+    @Inject
+    private lateinit val nickServDao: NickServDao
 
-    Inject
-    private val logsDao: LogsDao? = null
+    @Inject
+    private lateinit val logsDao: LogsDao
 
-    Inject
-    private val channelDao: ChannelDao? = null
+    @Inject
+    private lateinit val channelDao: ChannelDao
 
-    Inject
-    private val adminDao: AdminDao? = null
+    @Inject
+    private lateinit val adminDao: AdminDao
 
-    Inject
-    private val javabotProvider: Provider<Javabot>? = null
+    @Inject
+    private lateinit val javabotProvider: Provider<Javabot>
 
-    Inject
-    private val configDao: ConfigDao? = null
+    @Inject
+    private lateinit val configDao: ConfigDao
 
     private val nickServ = ArrayList<String>()
 
-    Inject
-    private val ircBot: Provider<PircBotX>? = null
+    @Inject
+    private lateinit val ircBot: Provider<PircBotX>
 
     public fun log(string: String) {
         if (Javabot.LOG.isInfoEnabled) {
@@ -67,64 +63,64 @@ public class BotListener : ListenerAdapter<PircBotX>() {
         }
     }
 
-    override fun onMessage(event: MessageEvent<PircBotX>?) {
-        val javabot = javabotProvider!!.get()
-        javabot.getExecutors().execute({ javabot.processMessage(Message(event!!.channel, event.user, event.message)) })
+    override fun onMessage(event: MessageEvent<PircBotX>) {
+        val javabot = javabotProvider.get()
+        javabot.executors.execute({ javabot.processMessage(Message(event.channel, event.user, event.message)) })
     }
 
-    override fun onJoin(event: JoinEvent<PircBotX>?) {
-        logsDao!!.logMessage(Logs.Type.JOIN, event!!.channel, event.user,
+    override fun onJoin(event: JoinEvent<PircBotX>) {
+        logsDao.logMessage(Logs.Type.JOIN, event.channel, event.user,
               Sofia.userJoined(event.user.nick, event.user.hostmask,
                     event.channel.name))
-        if (adminDao!!.count() == 0) {
+        if (adminDao.count() == 0L) {
             val users = getIrcBot().userChannelDao.getUsers(event.channel)
             var admin: Admin? = null
             val iterator = users.iterator()
             while (admin == null && iterator.hasNext()) {
                 val user = iterator.next()
-                if (user.nick != javabotProvider!!.get().getNick()) {
+                if (user.nick != javabotProvider.get().getNick()) {
                     admin = adminDao.create(user.nick, user.login, user.hostmask)
                 }
             }
         }
     }
 
-    override fun onPart(event: PartEvent<PircBotX>?) {
-        logsDao!!.logMessage(Logs.Type.PART, event!!.channel, event.user, Sofia.userParted(event.user.nick, event.reason))
-        nickServDao!!.unregister(event.user)
+    override fun onPart(event: PartEvent<PircBotX>) {
+        logsDao.logMessage(Logs.Type.PART, event.channel, event.user, Sofia.userParted(event.user.nick, event.reason))
+        nickServDao.unregister(event.user)
     }
 
-    override fun onQuit(event: QuitEvent<PircBotX>?) {
-        logsDao!!.logMessage(Logs.Type.QUIT, null, event!!.user, Sofia.userQuit(event.user.nick, event.reason))
-        nickServDao!!.unregister(event.user)
+    override fun onQuit(event: QuitEvent<PircBotX>) {
+        logsDao.logMessage(Logs.Type.QUIT, null, event.user, Sofia.userQuit(event.user.nick, event.reason))
+        nickServDao.unregister(event.user)
     }
 
-    override fun onInvite(event: InviteEvent<PircBotX>?) {
-        val channel = channelDao!!.get(event!!.channel)
+    override fun onInvite(event: InviteEvent<PircBotX>) {
+        val channel = channelDao.get(event.channel)
         if (channel != null) {
             if (channel.key == null) {
-                ircBot!!.get().sendIRC().joinChannel(channel.name)
+                ircBot.get().sendIRC().joinChannel(channel.name)
             } else {
-                ircBot!!.get().sendIRC().joinChannel(channel.name, channel.key)
+                ircBot.get().sendIRC().joinChannel(channel.name, channel.key)
             }
-        } else if (adminDao!!.count() == 0) {
+        } else if (adminDao.count() == 0L) {
             channelDao.create(event.channel, true, null)
             getIrcBot().sendIRC().joinChannel(event.channel)
         }
     }
 
-    override fun onConnect(event: ConnectEvent<PircBotX>?) {
-        nickServDao!!.clear()
-        event!!.bot.sendIRC().message("nickserv", "identify " + configDao!!.get()!!.password)
+    override fun onConnect(event: ConnectEvent<PircBotX>) {
+        nickServDao.clear()
+        event.bot.sendIRC().message("nickserv", "identify " + configDao.get().password)
     }
 
-    override fun onNotice(event: NoticeEvent<PircBotX>?) {
-        if (event!!.user.nick.equalsIgnoreCase("NickServ")) {
+    override fun onNotice(event: NoticeEvent<PircBotX>) {
+        if (event.user.nick.equals("NickServ", ignoreCase = true)) {
             val message = event.notice.replace("\u0002", "")
             synchronized (nickServ) {
                 if (message == "*** End of Info ***" && !nickServ.isEmpty()) {
                     try {
-                        nickServDao!!.process(nickServ)
+                        nickServDao.process(nickServ)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -140,15 +136,15 @@ public class BotListener : ListenerAdapter<PircBotX>() {
         }
     }
 
-    override fun onNickChange(event: NickChangeEvent<PircBotX>?) {
-        logsDao!!.logMessage(Type.NICK, null, event!!.user, Sofia.userNickChanged(event.oldNick, event.newNick))
-        nickServDao!!.updateNick(event.oldNick, event.newNick)
+    override fun onNickChange(event: NickChangeEvent<PircBotX>) {
+        logsDao.logMessage(Type.NICK, null, event.user, Sofia.userNickChanged(event.oldNick, event.newNick))
+        nickServDao.updateNick(event.oldNick, event.newNick)
     }
 
-    override fun onPrivateMessage(event: PrivateMessageEvent<PircBotX>?) {
-        val javabot = javabotProvider!!.get()
+    override fun onPrivateMessage(event: PrivateMessageEvent<PircBotX>) {
+        val javabot = javabotProvider.get()
         var startStringForPm = ""
-        val message = event!!.message
+        val message = event.message
         for (startString in javabot.startStrings) {
             if (message.startsWith(startString)) {
                 startStringForPm = startString
@@ -156,11 +152,11 @@ public class BotListener : ListenerAdapter<PircBotX>() {
         }
 
         val content = javabot.extractContentFromMessage(message, startStringForPm)
-        if (adminDao!!.isAdmin(event.user) || javabot.isOnCommonChannel(event.user)) {
-            javabot.getExecutors().execute({
+        if (adminDao.isAdmin(event.user) || javabot.isOnCommonChannel(event.user)) {
+            javabot.executors.execute({
                 javabot.logMessage(null, event.user, event.message)
                 try {
-                    if (!throttler!!.isThrottled(event.user)) {
+                    if (!throttler.isThrottled(event.user)) {
                         javabot.getResponses(Message(event.user, content), event.user)
                     }
                 } catch (e: NickServViolationException) {
@@ -170,17 +166,17 @@ public class BotListener : ListenerAdapter<PircBotX>() {
         }
     }
 
-    override fun onAction(event: ActionEvent<PircBotX>?) {
-        logsDao!!.logMessage(Logs.Type.ACTION, event!!.channel, event.user, event.message)
+    override fun onAction(event: ActionEvent<PircBotX>) {
+        logsDao.logMessage(Logs.Type.ACTION, event.channel, event.user, event.message)
     }
 
-    override fun onKick(event: KickEvent<PircBotX>?) {
-        logsDao!!.logMessage(Logs.Type.KICK, event!!.channel, event.user,
-              String.format(" kicked %s (%s)", event.recipient.nick, event.reason))
+    override fun onKick(event: KickEvent<PircBotX>) {
+        logsDao.logMessage(Logs.Type.KICK, event.channel, event.user,
+              " kicked %s (%s)".format(event.recipient.nick, event.reason))
     }
 
     public fun getIrcBot(): PircBotX {
-        return ircBot!!.get()
+        return ircBot.get()
     }
 
     companion object {

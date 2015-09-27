@@ -8,10 +8,6 @@ import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 
 public class AdminIndexView(injector: Injector, request: HttpServletRequest) : MainView(injector, request) {
-
-    @Inject
-    private lateinit val adminDao: AdminDao
-
     public fun getAdmins(): List<Admin> {
         return adminDao.findAll()
     }

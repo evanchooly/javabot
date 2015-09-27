@@ -2,21 +2,18 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import javabot.Message
-import javabot.Seen
 import javabot.dao.LogsDao
-import org.pircbotx.Channel
-
-import javax.inject.Inject
 import java.time.format.DateTimeFormatter
+import javax.inject.Inject
 
 public class SeenOperation : BotOperation() {
-    Inject
+    @Inject
     private val dao: LogsDao? = null
 
     override fun handleMessage(event: Message): Boolean {
         val message = event.value
         val channel = event.channel
-        if (channel != null && "seen ".equalsIgnoreCase(message.substring(0, Math.min(message.length(), 5)))) {
+        if (channel != null && "seen ".equals(message.substring(0, Math.min(message.length(), 5)), ignoreCase = true)) {
             val key = message.substring("seen ".length())
             val seen = dao!!.getSeen(channel.name, key)
             if (seen != null) {

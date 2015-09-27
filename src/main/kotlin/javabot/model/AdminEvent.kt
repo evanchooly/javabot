@@ -4,18 +4,16 @@ import javabot.Javabot
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
-import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.Indexed
 import org.mongodb.morphia.annotations.Indexes
 import org.mongodb.morphia.annotations.Transient
-
-import javax.inject.Inject
 import java.io.Serializable
 import java.time.LocalDateTime
+import javax.inject.Inject
 
-Entity("events")
-Indexes(@Index(fields = { @Field("state"), @Field("requestedOn") }))
+@Entity("events")
+@Indexes(Index(fields = arrayOf(Field("state"), Field("requestedOn") )))
 public open class AdminEvent : Serializable, Persistent {
     public enum class State {
         NEW,
@@ -24,18 +22,17 @@ public open class AdminEvent : Serializable, Persistent {
         FAILED
     }
 
-    Inject
-    Transient
-    public val bot: Javabot? = null
+    @Inject
+    @Transient
+    lateinit val bot: Javabot
 
-    Id
-    private var id: ObjectId? = null
+    override var id: ObjectId? = null
 
-    public var requestedBy: String? = null
+    lateinit var requestedBy: String
 
-    public var requestedOn: LocalDateTime? = null
+    lateinit var requestedOn: LocalDateTime
 
-    Indexed(expireAfterSeconds = 60 * 60 * 24)
+    @Indexed(expireAfterSeconds = 60 * 60 * 24)
     public var completed: LocalDateTime? = null
 
     public var state: State = State.NEW
@@ -51,14 +48,6 @@ public open class AdminEvent : Serializable, Persistent {
         requestedOn = LocalDateTime.now()
     }
 
-    override fun getId(): ObjectId {
-        return id
-    }
-
-    override fun setId(id: ObjectId) {
-        this.id = id
-    }
-
     public fun handle() {
         when (type) {
             EventType.ADD -> add()
@@ -69,7 +58,7 @@ public open class AdminEvent : Serializable, Persistent {
     }
 
     override fun toString(): String {
-        return String.format("AdminEvent{id=%s, requestedOn=%s, completed=%s, state=%s, type=%s}", id, requestedOn, completed, state, type)
+        return "AdminEvent{id=%s, requestedOn=%s, completed=%s, state=%s, type=%s}".format(id, requestedOn, completed, state, type)
     }
 
     public open fun add() {

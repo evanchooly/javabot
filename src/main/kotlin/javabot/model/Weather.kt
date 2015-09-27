@@ -18,8 +18,8 @@ public class Weather {
     public var windChill: String? = null
     public var localTime: String? = null
 
-    private fun replaceDegrees(degrees: String): String {
-        return degrees.replace('C', C).replace('F', F)
+    private fun replaceDegrees(degrees: String?): String {
+        return degrees?.replace('C', C)?.replace('F', F) ?: ""
     }
 
     override fun toString(): String {
@@ -74,70 +74,4 @@ public class Weather {
         private val F = 'F'
         private val SEPARATOR = '|'
     }
-
 }
-/**
- * Get city. This is just a ad-hoc String which is set by the underlying API retrieving weather info
-
- * @return city as String.
- */
-/**
- * Set city.
-
- * @param city the value to set.
- */
-/**
- * Gets the weather conditions (i.e. "Sunny")
-
- * @return condition as String.
- */
-/**
- * Set condition.
-
- * @param condition the value to set.
- */
-/**
- * Gets the tempturature in Fahrenheit
-
- * @return tempf as String.
- */
-/**
- * Set tempf.
-
- * @param tempf the value to set.
- */
-/**
- * Get the temperature in Celcius
-
- * @return tempc as String.
- */
-/**
- * Set tempc.
-
- * @param tempc the value to set.
- */
-/**
- * Get humidity.
-
- * @return humidity as String.
- */
-/**
- * Set humidity.
-
- * @param humidity the value to set.
- */
-/**
- * Get wind speed/direction text (i.e. Wind: NW at 20mph)
-
- * @return wind as String.
- */
-/**
- * Set wind.
-
- * @param wind the value to set.
- */
-/**
- * Get a windchill condition (i.e. 15 F (-9 C) )
-
- * @return
- */

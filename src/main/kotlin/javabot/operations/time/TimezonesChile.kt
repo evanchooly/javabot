@@ -7,7 +7,7 @@ public class TimezonesChile : Timezones {
         Santiago("America/Santiago")
     }
 
-    override fun get(province: String): String {
+    override fun get(province: String): String? {
         return timezones.get(province)
     }
 

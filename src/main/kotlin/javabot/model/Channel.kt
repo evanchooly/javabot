@@ -6,36 +6,33 @@ import javabot.json.Views.SYSTEM
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
-import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.IndexOptions
 import org.mongodb.morphia.annotations.Indexes
 import org.mongodb.morphia.annotations.PrePersist
 import org.pircbotx.PircBotX
-
 import java.io.Serializable
 import java.time.LocalDateTime
 
-Entity(value = "channels", noClassnameStored = true)
-Indexes(@Index(fields = @Field("upperName"), options = @IndexOptions(unique = true, dropDups = true)))
+@Entity(value = "channels", noClassnameStored = true)
+@Indexes(Index(fields = arrayOf(Field("upperName")), options = IndexOptions(unique = true, dropDups = true)))
 public class Channel : Serializable, Persistent {
-    Id
-    private var id: ObjectId? = null
+    override var id: ObjectId? = null
 
-    JsonView(PUBLIC::class)
-    public var name: String? = null
+    @JsonView(PUBLIC::class)
+    lateinit var name: String
 
-    JsonView(SYSTEM::class)
-    public var upperName: String? = null
+    @JsonView(SYSTEM::class)
+    lateinit var upperName: String
 
-    JsonView(PUBLIC::class)
+    @JsonView(PUBLIC::class)
     public var key: String? = null
 
-    JsonView(PUBLIC::class)
+    @JsonView(PUBLIC::class)
     public var updated: LocalDateTime? = null
 
-    JsonView(PUBLIC::class)
-    private var logged: Boolean? = true
+    @JsonView(PUBLIC::class)
+    var logged: Boolean = true
 
     public constructor() {
     }
@@ -53,27 +50,11 @@ public class Channel : Serializable, Persistent {
         this.logged = logged
     }
 
-    override fun getId(): ObjectId {
-        return id
-    }
-
-    override fun setId(channelId: ObjectId) {
-        id = channelId
-    }
-
-    public fun getLogged(): Boolean? {
-        return if (logged == null) java.lang.Boolean.FALSE else logged
-    }
-
-    public fun setLogged(isLogged: Boolean?) {
-        logged = isLogged
-    }
-
     override fun toString(): String {
         return "Channel{id=$id, logged=$logged, name='$name', updated=$updated}"
     }
 
-    PrePersist
+    @PrePersist
     public fun uppers() {
         upperName = name!!.toUpperCase()
     }

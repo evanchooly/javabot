@@ -5,19 +5,17 @@ import com.mongodb.WriteResult
 import javabot.dao.util.QueryParam
 import javabot.model.Karma
 import javabot.model.criteria.KarmaCriteria
-import org.mongodb.morphia.query.Query
-
-import javax.inject.Inject
 import java.time.LocalDateTime
+import javax.inject.Inject
 
 public class KarmaDao : BaseDao<Karma>(Karma::class.java) {
-    Inject
-    private val changeDao: ChangeDao? = null
+    @Inject
+    lateinit val changeDao: ChangeDao
 
     public fun getKarmas(qp: QueryParam): List<Karma> {
         val query = ds.createQuery(Karma::class.java)
         if (qp.hasSort()) {
-            query.order((if (qp.isSortAsc) "" else "-") + qp.sort)
+            query.order((if (qp.sortAsc) "" else "-") + qp.sort)
         }
         query.offset(qp.first)
         query.limit(qp.count)
@@ -27,16 +25,16 @@ public class KarmaDao : BaseDao<Karma>(Karma::class.java) {
     public fun save(karma: Karma) {
         karma.updated = LocalDateTime.now()
         super.save(karma)
-        changeDao!!.logChange(Sofia.karmaChanged(karma.userName, karma.name, karma.value))
+        changeDao.logChange(Sofia.karmaChanged(karma.userName, karma.name, karma.value))
     }
 
-    public fun find(name: String): Karma {
+    public fun find(name: String): Karma? {
         val criteria = KarmaCriteria(ds)
         criteria.upperName().equal(name.toUpperCase())
         return criteria.query().get()
     }
 
-    public fun count(): Long? {
+    public fun count(): Long {
         return ds.createQuery(Karma::class.java).countAll()
     }
 

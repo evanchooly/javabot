@@ -8,12 +8,12 @@ import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.Indexes
 import org.mongodb.morphia.annotations.PrePersist
 
-Entity(value = "fields", noClassnameStored = true)
-Indexes(@Index(fields = { @Field("javadocClassId"), @Field("upperName") }),
-      @Index(fields = { @Field("apiId"), @Field("javadocClassId"), @Field("upperName") }))
+@Entity(value = "fields", noClassnameStored = true)
+@Indexes(Index(fields = arrayOf(Field("javadocClassId"), Field("upperName") )),
+      Index(fields = arrayOf(Field("apiId"), Field("javadocClassId"), Field("upperName") )))
 public class JavadocField : JavadocElement {
-    Id
-    private var id: ObjectId? = null
+    @Id
+    override var id: ObjectId? = null
 
     public var javadocClassId: ObjectId? = null
     public var name: String? = null
@@ -37,20 +37,12 @@ public class JavadocField : JavadocElement {
         parentClassName = parent.toString()
     }
 
-    override fun getId(): ObjectId {
-        return id
-    }
-
-    override fun setId(methodId: ObjectId) {
-        id = methodId
-    }
-
     public fun setJavadocClassId(javadocClass: JavadocClass) {
         this.javadocClassId = javadocClass.id
         parentClassName = javadocClass.toString()
     }
 
-    PrePersist
+    @PrePersist
     public fun uppers() {
         upperName = name!!.toUpperCase()
     }

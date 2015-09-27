@@ -4,41 +4,30 @@ import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.AlsoLoad
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
-import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.IndexOptions
 import org.mongodb.morphia.annotations.Indexes
-
 import java.io.Serializable
 import java.time.LocalDateTime
 
-Entity(value = "admins", noClassnameStored = true)
-Indexes(@Index(fields = @Field("emailAddress"), options = @IndexOptions(unique = true)),
-      @Index(fields = { @Field("ircName"), @Field("hostName") }))
+@Entity(value = "admins", noClassnameStored = true)
+@Indexes(Index(fields = arrayOf(Field("emailAddress")), options = IndexOptions(unique = true)),
+      Index(fields = arrayOf(Field("ircName"), Field("hostName"))))
 public class Admin : Serializable, Persistent {
-    Id
-    private var id: ObjectId? = null
+    override var id: ObjectId? = null
 
-    public var botOwner: Boolean? = false
+    public var botOwner: Boolean = false
 
     public var hostName: String? = null
 
     public var ircName: String? = null
 
-    AlsoLoad("userName")
-    public var emailAddress: String? = null
+    @AlsoLoad("userName")
+    lateinit var emailAddress: String
 
     public var addedBy: String? = null
 
     public var updated: LocalDateTime = LocalDateTime.now()
-
-    override fun getId(): ObjectId {
-        return id
-    }
-
-    override fun setId(adminId: ObjectId) {
-        id = adminId
-    }
 
     override fun toString(): String {
         val sb = StringBuilder("Admin{")

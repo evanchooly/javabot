@@ -5,16 +5,13 @@ import org.apache.commons.lang.StringUtils
 import org.xml.sax.Attributes
 import org.xml.sax.SAXException
 import org.xml.sax.helpers.DefaultHandler
-
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.HashMap
 import java.util.HashSet
 
 public class WeatherUndergroundSaxHandler : DefaultHandler() {
     var collectLocationData = false
     var collectWeatherData = false
-    var currentElem: String
+    var currentElem = ""
     var error = false
 
     private val weatherMap = HashMap<String, String>()
@@ -30,12 +27,12 @@ public class WeatherUndergroundSaxHandler : DefaultHandler() {
         }
     }
 
-    Throws(SAXException::class)
-    override fun startElement(uri: String?, localName: String?, qName: String?, attributes: Attributes?) {
-        if ("display_location".equalsIgnoreCase(qName)) {
+    @Throws(SAXException::class)
+    override fun startElement(uri: String?, localName: String, qName: String, attributes: Attributes?) {
+        if ("display_location".equals(qName, true)) {
             collectLocationData = true
             collectWeatherData = false
-        } else if ("current_observation".equalsIgnoreCase(qName)) {
+        } else if ("current_observation".equals(qName, true)) {
             collectWeatherData = true
         }
 
@@ -44,18 +41,18 @@ public class WeatherUndergroundSaxHandler : DefaultHandler() {
         }
     }
 
-    Throws(SAXException::class)
-    override fun endElement(uri: String?, localName: String?, qName: String?) {
-        if ("display_location".equalsIgnoreCase(qName)) {
+    @Throws(SAXException::class)
+    override fun endElement(uri: String?, localName: String, qName: String) {
+        if ("display_location".equals(qName, true)) {
             collectLocationData = false
             collectWeatherData = true
-        } else if ("current_observation".equalsIgnoreCase(qName)) {
+        } else if ("current_observation".equals(qName, true)) {
             collectWeatherData = false
         }
         currentElem = ""
     }
 
-    Throws(SAXException::class)
+    @Throws(SAXException::class)
     override fun characters(chars: CharArray?, start: Int, length: Int) {
         val body = StringUtils.trimToEmpty(StringBuffer().append(chars, start, length).toString())
         if (!error) {

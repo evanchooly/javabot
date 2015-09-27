@@ -12,7 +12,7 @@ public class Message {
     public val sender: User?
     private val tell: Boolean
 
-    public constructor(dest: Channel, user: User, value: String) {
+    public constructor(dest: Channel?, user: User, value: String) {
         channel = dest
         this.user = user
         this.value = value

@@ -18,7 +18,7 @@ public class TimezonesBrazil : Timezones {
         Noronha("America/Noronha")
     }
 
-    override fun get(province: String): String {
+    override fun get(province: String): String? {
         return timezones.get(province)
     }
 

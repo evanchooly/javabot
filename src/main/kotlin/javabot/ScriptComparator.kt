@@ -15,7 +15,6 @@ public class ScriptComparator : Comparator<UpgradeScript> {
         if (o1.id() > o2.id()) {
             return 1
         }
-        throw RuntimeException(String.format("%s and %s have the same priority: %d",
-              o1.javaClass.name, o2.javaClass.name, o1.id()))
+        throw RuntimeException("%s and %s have the same priority: %d".format(o1.javaClass.name, o2.javaClass.name, o1.id()))
     }
 }

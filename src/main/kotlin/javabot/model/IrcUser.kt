@@ -2,7 +2,7 @@ package javabot.model
 
 import org.mongodb.morphia.annotations.Embedded
 
-Embedded
+@Embedded
 public class IrcUser {
     public var nick: String? = null
     public var userName: String? = null
@@ -19,6 +19,6 @@ public class IrcUser {
     }
 
     override fun toString(): String {
-        return nick
+        return nick ?: ""
     }
 }

@@ -8,35 +8,31 @@ import javabot.model.Factoid
 import javabot.model.Persistent
 import javabot.model.criteria.FactoidCriteria
 import org.mongodb.morphia.query.Query
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
-import javax.inject.Inject
 import java.time.LocalDateTime
 import java.util.regex.PatternSyntaxException
+import javax.inject.Inject
 
-SuppressWarnings("ConstantNamingConvention")
+@SuppressWarnings("ConstantNamingConvention")
 public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
+    @Inject
+    lateinit val changeDao: ChangeDao
 
-    Inject
-    private val changeDao: ChangeDao? = null
+    @Inject
+    lateinit val configDao: ConfigDao
 
-    Inject
-    private val dao: ConfigDao? = null
-
-    override fun save(persistent: Persistent) {
-        val factoid = persistent as Factoid
-        val old = find(persistent.id)
-        super.save(persistent)
+    override fun save(entity: Persistent) {
+        val factoid = entity as Factoid
+        val old = find(entity.id)
+        super.save(entity)
         val formattedValue = CleanHtmlConverter.convert(factoid.value) { s -> Sofia.logsAnchorFormat(s, s) }
         if (old != null) {
-            changeDao!!.logChange(String.format("%s changed '%s' from '%s' to '%s'",
-                  factoid.userName, factoid.name,
-                  CleanHtmlConverter.convert(old.value) { s -> Sofia.logsAnchorFormat(s, s) },
+            val value: (Any) -> String = { s -> Sofia.logsAnchorFormat(s, s) }
+            changeDao.logChange("%s changed '%s' from '%s' to '%s'".format(factoid.userName, factoid.name,
+                  CleanHtmlConverter.convert(old.value, value),
                   formattedValue))
         } else {
-            changeDao!!.logChange(String.format("%s added '%s' with '%s'", factoid.userName, factoid.name,
-                  formattedValue))
+            changeDao.logChange("%s added '%s' with '%s'".format(factoid.userName, factoid.name, formattedValue))
         }
     }
 
@@ -55,7 +51,7 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
         factoid.updated = LocalDateTime.now()
         factoid.lastUsed = LocalDateTime.now()
         save(factoid)
-        changeDao!!.logAdd(sender, key, value)
+        changeDao.logAdd(sender, key, value)
         return factoid
     }
 
@@ -63,7 +59,7 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
         val factoid = getFactoid(key)
         if (factoid != null) {
             delete(factoid.id)
-            changeDao!!.logChange(String.format("%s removed '%s' with a value of '%s'", sender, key, factoid.value))
+            changeDao.logChange("%s removed '%s' with a value of '%s'".format(sender, key, factoid.value))
         }
     }
 
@@ -72,7 +68,7 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
         criteria.upperName().equal(name.toUpperCase())
         val factoid = criteria.query().get()
         if (factoid != null) {
-            factoid!!.lastUsed = LocalDateTime.now()
+            factoid.lastUsed = LocalDateTime.now()
             super.save(factoid)
         }
         return factoid
@@ -86,17 +82,17 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
               criteria.upperName().equal(name.toUpperCase() + " $+"))
         val factoid = criteria.query().get()
         if (factoid != null) {
-            factoid!!.lastUsed = LocalDateTime.now()
+            factoid.lastUsed = LocalDateTime.now()
             super.save(factoid)
         }
         return factoid
     }
 
-    public fun count(): Long? {
+    public fun count(): Long {
         return ds.createQuery(Factoid::class.java).countAll()
     }
 
-    public fun countFiltered(filter: Factoid): Long? {
+    public fun countFiltered(filter: Factoid): Long {
         return buildFindQuery(null, filter, true).countAll()
     }
 
@@ -106,32 +102,28 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
 
     private fun buildFindQuery(qp: QueryParam?, filter: Factoid, count: Boolean): Query<Factoid> {
         val criteria = FactoidCriteria(ds)
-        if (filter.name != null) {
-            try {
-                criteria.upperName().contains(filter.name.toUpperCase())
-            } catch (e: PatternSyntaxException) {
-                Sofia.logFactoidInvalidSearchValue(filter.value)
-            }
-
+        try {
+            criteria.upperName().contains(filter.name.toUpperCase())
+        } catch (e: PatternSyntaxException) {
+            Sofia.logFactoidInvalidSearchValue(filter.value)
         }
+
         if (filter.userName != null) {
             try {
-                criteria.upperUserName().contains(filter.userName.toUpperCase())
+                criteria.upperUserName().contains(filter.userName!!.toUpperCase())
             } catch (e: PatternSyntaxException) {
                 Sofia.logFactoidInvalidSearchValue(filter.value)
             }
 
         }
-        if (filter.value != null) {
-            try {
-                criteria.upperValue().contains(filter.value.toUpperCase())
-            } catch (e: PatternSyntaxException) {
-                Sofia.logFactoidInvalidSearchValue(filter.value)
-            }
-
+        try {
+            criteria.upperValue().contains(filter.value.toUpperCase())
+        } catch (e: PatternSyntaxException) {
+            Sofia.logFactoidInvalidSearchValue(filter.value)
         }
+
         if (!count && qp != null && qp.hasSort()) {
-            criteria.query().order((if (qp.isSortAsc) "" else "-") + "upper" + qp.sort)
+            criteria.query().order((if (qp.sortAsc) "" else "-") + "upper" + qp.sort)
             criteria.query().offset(qp.first)
             criteria.query().limit(qp.count)
         }
@@ -140,9 +132,5 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
 
     public fun deleteAll(): WriteResult {
         return ds.delete(ds.createQuery(Factoid::class.java))
-    }
-
-    companion object {
-        private val log = LoggerFactory.getLogger(FactoidDao::class.java)
     }
 }

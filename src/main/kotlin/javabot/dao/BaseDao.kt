@@ -7,9 +7,9 @@ import javabot.dao.util.EntityNotFoundException
 import javabot.model.Persistent
 import org.bson.types.ObjectId
 
-public open class BaseDao<T : Persistent> protected constructor(private val entityClass: Class<T>) {
-    Inject
-    protected var ds: Datastore
+public open class BaseDao<T : Persistent>(val entityClass: Class<T>) {
+    @Inject
+    lateinit var ds: Datastore
 
     public fun getQuery(): Query<T> {
         return getQuery(entityClass)
@@ -19,7 +19,7 @@ public open class BaseDao<T : Persistent> protected constructor(private val enti
         return ds.createQuery(clazz)
     }
 
-    public fun find(id: ObjectId): T? {
+    public fun find(id: ObjectId?): T? {
         return ds.createQuery(entityClass).filter("_id", id).get()
     }
 
@@ -27,22 +27,22 @@ public open class BaseDao<T : Persistent> protected constructor(private val enti
         return ds.createQuery(entityClass).asList()
     }
 
-    private fun loadChecked(id: ObjectId): T {
+    private fun loadChecked(id: ObjectId?): T {
         val persistedObject = find(id) ?: throw EntityNotFoundException(entityClass, id)
         return persistedObject
     }
 
-    public open fun save(`object`: Persistent) {
-        ds.save(`object`)
+    public open fun save(entity: Persistent) {
+        ds.save(entity)
     }
 
-    public fun delete(`object`: Persistent?) {
-        if (`object` != null) {
-            ds.delete<Persistent>(`object`)
+    public fun delete(entity: Persistent?) {
+        if (entity != null) {
+            ds.delete<Persistent>(entity)
         }
     }
 
-    public open fun delete(id: ObjectId) {
+    public open fun delete(id: ObjectId?) {
         delete(loadChecked(id))
     }
 }
