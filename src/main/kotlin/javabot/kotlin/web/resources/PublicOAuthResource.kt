@@ -31,7 +31,7 @@ import javax.ws.rs.core.Response
 public class PublicOAuthResource {
 
     @Inject
-    lateinit val adminDao: AdminDao
+    lateinit var adminDao: AdminDao
 
     public var configuration: JavabotConfiguration? = null
 

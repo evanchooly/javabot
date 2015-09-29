@@ -1,6 +1,7 @@
 package javabot.commands
 
 import com.antwerkz.sofia.Sofia
+import com.beust.jcommander.Parameter
 import javabot.Message
 import javabot.dao.ChannelDao
 import org.pircbotx.PircBotX
@@ -9,16 +10,16 @@ import javax.inject.Provider
 
 public class AddChannel : AdminCommand() {
     @Inject
-    lateinit val channelDao: ChannelDao
+    lateinit var channelDao: ChannelDao
     @Inject
-    lateinit val ircBot: Provider<PircBotX>
+    lateinit var ircBot: Provider<PircBotX>
 
-    @Param
+    @Parameter(required = true)
     lateinit var channelName: String
-    @Param(defaultValue = "true", required = false)
-    lateinit var logged: String
-    @Param(defaultValue = "", required = false)
-    lateinit var password: String
+    @Parameter(required = false)
+    var logged = true
+    @Parameter(required = false, password = true)
+    var password: String = ""
 
     override fun execute(event: Message) {
         if (channelName.startsWith("#")) {

@@ -11,7 +11,8 @@ import java.time.LocalDateTime
 @Entity(value = "changes", noClassnameStored = true)
 public class Change(var message: String?) : Serializable, Persistent {
 
-    override var id: ObjectId? = null
+    @Id
+    var id: ObjectId? = null
     @Indexed(name = "changed")
     var changeDate = LocalDateTime.now()
 

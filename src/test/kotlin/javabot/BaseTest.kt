@@ -33,37 +33,37 @@ public open class BaseTest {
     public var done: EnumSet<State> = EnumSet.of(State.COMPLETED, State.FAILED)
 
     @Inject
-    lateinit val userFactory: UserFactory
+    protected lateinit var userFactory: UserFactory
 
     @Inject
-    lateinit val datastore: Datastore
+    protected lateinit var datastore: Datastore
 
     @Inject
-    lateinit val eventDao: EventDao
+    protected lateinit var eventDao: EventDao
 
     @Inject
-    lateinit val channelDao: ChannelDao
+    protected lateinit var channelDao: ChannelDao
 
     @Inject
-    lateinit val logsDao: LogsDao
+    protected lateinit var logsDao: LogsDao
 
     @Inject
-    lateinit val nickServDao: NickServDao
+    protected lateinit var nickServDao: NickServDao
 
     @Inject
-    lateinit val ircBot: Provider<PircBotX>
+    protected lateinit var ircBot: Provider<PircBotX>
 
     @Inject
-    lateinit val adminDao: AdminDao
+    protected lateinit var adminDao: AdminDao
 
     @Inject
-    lateinit val changeDao: ChangeDao
+    protected lateinit var changeDao: ChangeDao
 
     @Inject
-    lateinit val javabot: Provider<TestJavabot>
+    protected lateinit var javabot: Provider<TestJavabot>
 
     @Inject
-    public val messages = Messages()
+    protected lateinit var messages: Messages
 
     public val ok: String = "OK, " + TEST_USER_NICK.substring(0, Math.min(TEST_USER_NICK.length(), 16)) + "."
 

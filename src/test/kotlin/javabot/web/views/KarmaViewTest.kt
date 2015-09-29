@@ -16,7 +16,7 @@ import java.util.Locale
 
 public class KarmaViewTest : ViewsTest() {
     @Inject
-    private val karmaDao: KarmaDao? = null
+    protected lateinit var karmaDao: KarmaDao
 
     @Test
     @Throws(IOException::class)
@@ -35,7 +35,7 @@ public class KarmaViewTest : ViewsTest() {
     }
 
     private fun createKarma(count: Int) {
-        karmaDao!!.deleteAll()
+        karmaDao.deleteAll()
         for (i in 0..count - 1) {
             val karma = Karma("name " + i, i, "userName " + i)
             karma.updated = LocalDateTime.now()

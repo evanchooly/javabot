@@ -8,9 +8,9 @@ import javax.inject.Provider
 
 public class UserFactory {
     @Inject
-    lateinit  val ircBot: Provider<PircBotX>
+    protected lateinit var ircBot: Provider<PircBotX>
     @Inject
-    lateinit val messages: Messages
+    protected lateinit var messages: Messages
 
     public fun createUser(nick: String, login: String, host: String): User {
         val bot = ircBot.get()

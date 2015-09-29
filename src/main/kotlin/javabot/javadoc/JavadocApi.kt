@@ -4,6 +4,7 @@ import javabot.model.Persistent
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
+import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.IndexOptions
 import org.mongodb.morphia.annotations.Indexes
@@ -22,7 +23,8 @@ class JavadocApi : Persistent {
         public val JDK_JARS: List<String> = Arrays.asList("rt.jar", "jce.jar")
     }
 
-    override var id: ObjectId? = null
+    @Id
+    var id: ObjectId? = null
 
     lateinit var name: String
 

@@ -77,7 +77,7 @@ public class ChannelDao : BaseDao<Channel>(Channel::class.java) {
         val channels = criteria.query().retrievedFields(true, "name").asList()
         val names = ArrayList<String>()
         for (channel in channels) {
-            names.add(channel.name!!)
+            names.add(channel.name)
         }
         return names
     }

@@ -11,7 +11,7 @@ import javax.inject.Inject
 @Test
 public class SeeLoopTest : BaseMessagingTest() {
     @Inject
-    lateinit val factoidDao: FactoidDao
+    protected lateinit var factoidDao: FactoidDao
 
     public fun serial() {
         createCircularSee()

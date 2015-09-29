@@ -13,10 +13,10 @@ import javax.inject.Provider
 public class ChannelEvent : AdminEvent {
     @Inject
     @Transient
-    lateinit val channelDao: ChannelDao
+    lateinit var channelDao: ChannelDao
     @Inject
     @Transient
-    lateinit val ircBot: Provider<PircBotX>
+    lateinit var ircBot: Provider<PircBotX>
     lateinit var channel: String
     var key: String? = null
     var logged: Boolean = false

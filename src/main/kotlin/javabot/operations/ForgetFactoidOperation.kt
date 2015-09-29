@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 public class ForgetFactoidOperation : BotOperation(), StandardOperation {
     @Inject
-    lateinit val factoidDao: FactoidDao
+    lateinit var factoidDao: FactoidDao
 
     override fun handleMessage(event: Message): Boolean {
         val channel = event.channel

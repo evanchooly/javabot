@@ -33,22 +33,22 @@ import javax.ws.rs.core.MediaType
 @Path("/admin")
 public class AdminResource {
     @Inject
-    lateinit val injector: Injector
+    lateinit var injector: Injector
 
     @Inject
-    lateinit val adminDao: AdminDao
+    lateinit var adminDao: AdminDao
 
     @Inject
-    lateinit val apiDao: ApiDao
+    lateinit var apiDao: ApiDao
 
     @Inject
-    lateinit val configDao: ConfigDao
+    lateinit var configDao: ConfigDao
 
     @Inject
-    lateinit val channelDao: ChannelDao
+    lateinit var channelDao: ChannelDao
 
     @Inject
-    lateinit val javabot: Javabot
+    lateinit var javabot: Javabot
 
     @GET
     public fun index(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User): View {

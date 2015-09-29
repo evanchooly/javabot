@@ -4,6 +4,7 @@ import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.AlsoLoad
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
+import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.IndexOptions
 import org.mongodb.morphia.annotations.Indexes
@@ -14,7 +15,8 @@ import java.time.LocalDateTime
 @Indexes(Index(fields = arrayOf(Field("emailAddress")), options = IndexOptions(unique = true)),
       Index(fields = arrayOf(Field("ircName"), Field("hostName"))))
 public class Admin : Serializable, Persistent {
-    override var id: ObjectId? = null
+    @Id
+    var id: ObjectId? = null
 
     public var botOwner: Boolean = false
 

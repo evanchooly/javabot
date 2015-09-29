@@ -11,7 +11,7 @@ import org.testng.Assert.assertNotNull
 @Test(groups = arrayOf("operations"))
 public class JSROperationTest : BaseMessagingTest() {
     @Inject
-    lateinit var locator: JCPJSRLocator
+    protected lateinit var locator: JCPJSRLocator
 
     @Test
     public fun testLocatorConfig() {

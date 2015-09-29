@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 public class KarmaDao : BaseDao<Karma>(Karma::class.java) {
     @Inject
-    lateinit val changeDao: ChangeDao
+    lateinit var changeDao: ChangeDao
 
     public fun getKarmas(qp: QueryParam): List<Karma> {
         val query = ds.createQuery(Karma::class.java)

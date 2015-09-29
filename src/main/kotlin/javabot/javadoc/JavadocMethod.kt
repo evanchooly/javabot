@@ -12,7 +12,8 @@ import org.mongodb.morphia.annotations.PrePersist
 @Indexes(Index(fields = arrayOf(Field("apiId"))), Index(fields = arrayOf(Field("javadocClassId"), Field("upperName") )),
       Index(fields = arrayOf(Field("apiId"), Field("javadocClassId"), Field("upperName") )))
 public class JavadocMethod : JavadocElement {
-    override var id: ObjectId? = null
+    @Id
+    var id: ObjectId? = null
     public var javadocClassId: ObjectId? = null
 
     public var name: String? = null

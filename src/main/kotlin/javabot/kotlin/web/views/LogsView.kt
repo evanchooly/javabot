@@ -19,7 +19,7 @@ public class LogsView(injector: Injector, request: HttpServletRequest,
     }
 
     @Inject
-    lateinit val logsDao: LogsDao
+    lateinit var logsDao: LogsDao
     val today = javabot.kotlin.web.resources.BotResource.Companion.FORMAT.format(date)
     val yesterday = javabot.kotlin.web.resources.BotResource.Companion.FORMAT.format(date.minusDays(1))
     val tomorrow = javabot.kotlin.web.resources.BotResource.Companion.FORMAT.format(date.plusDays(1))

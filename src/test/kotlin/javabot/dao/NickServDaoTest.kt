@@ -13,7 +13,7 @@ import javax.inject.Inject
 @Test
 public class NickServDaoTest : BaseServiceTest() {
     @Inject
-    private val botListener: BotListener? = null
+    protected lateinit var botListener: BotListener
 
     public fun parseNickServResponse() {
         nickServDao.clear()
@@ -39,7 +39,7 @@ public class NickServDaoTest : BaseServiceTest() {
 
     private fun send(info: NickServInfo) {
         val user = ircBot.get().userChannelDao.getUser("nickserv")
-        info.toNickServFormat().forEach({ o -> botListener!!.onNotice(NoticeEvent(ircBot.get(), user, null, o)) })
+        info.toNickServFormat().forEach({ o -> botListener.onNotice(NoticeEvent(ircBot.get(), user, null, o)) })
     }
 
     private fun getNickServInfo(account: String, nick: String, registered: LocalDateTime,

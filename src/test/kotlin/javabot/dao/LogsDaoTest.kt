@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 public class LogsDaoTest : BaseTest() {
     @Inject
-    lateinit val ds: Datastore
+    protected lateinit var ds: Datastore
 
     @Test
     public fun seen() {

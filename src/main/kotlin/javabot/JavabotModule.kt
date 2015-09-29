@@ -13,7 +13,6 @@ import javabot.dao.ConfigDao
 import javabot.dao.util.LocalDateTimeConverter
 import javabot.javadoc.JavadocClass
 import javabot.model.Factoid
-import net.swisstech.bitly.BitlyClient
 import org.aeonbits.owner.Config.Key
 import org.aeonbits.owner.ConfigFactory
 import org.mongodb.morphia.Datastore
@@ -31,6 +30,8 @@ open class JavabotModule : AbstractModule() {
     private var mongoClient: MongoClient? = null
 
     private var morphia: Morphia? = null
+
+    private var config: JavabotConfig? = null
 
     private var datastore: Datastore? = null
     private var botListenerProvider: Provider<BotListener>? = null
@@ -91,39 +92,42 @@ open class JavabotModule : AbstractModule() {
 
     @Provides
     @Singleton
-    @Throws(IOException::class)
-    public fun bitlyClient(): BitlyClient? {
-        return if (javabotConfig().bitlyToken() != "") BitlyClient(javabotConfig().bitlyToken()) else null
-    }
-
-    @Provides
-    @Singleton
     protected open fun createIrcBot(): PircBotX {
         val config = configDaoProvider.get().get()
-        val nick = config.nick
-        val builder = Builder<PircBotX>().setName(nick).setLogin(nick).setAutoNickChange(false).setCapEnabled(false).addListener(
-              getBotListener()).setServerHostname(config.server).setServerPort(config.port).addCapHandler(
-              SASLCapHandler(nick, config.password))
-        /*
-        for (Channel channel : channelDaoProvider.get().getChannels()) {
-            LOG.info("Adding {} as an autojoined channel", channel.getName());
-            if (channel.getKey() == null) {
-                builder.addAutoJoinChannel(channel.getName());
-            } else {
-                builder.addAutoJoinChannel(channel.getName(), channel.getKey());
-            }
-        }
-*/
+        val nick = getBotNick()
+        val builder = Builder<PircBotX>()
+              .setName(nick)
+              .setLogin(nick)
+              .setAutoNickChange(false)
+              .setCapEnabled(false)
+              .addListener(getBotListener())
+              .setServerHostname(config.server)
+              .setServerPort(config.port)
+              .addCapHandler(SASLCapHandler(nick, config.password))
 
+        return buildBot(builder)
+    }
+
+    open fun buildBot(builder: Builder<PircBotX>): PircBotX {
         return PircBotX(builder.buildConfiguration())
     }
 
+    open protected fun getBotNick(): String {
+        return configDaoProvider.get().get().nick
+    }
+
     @Provides
     @Singleton
     @Throws(IOException::class)
-    public open fun javabotConfig(): JavabotConfig {
-        return validate(ConfigFactory.create(JavabotConfig::class.java, HashMap<Any, Any>(), System.getProperties(), System.getenv()))
+    public fun javabotConfig(): JavabotConfig {
+        if(config == null) {
+            config = ConfigFactory.create(JavabotConfig::class.java, loadConfigProperties(), System.getProperties(), System.getenv())
+            validate(config!!)
+        }
+        return config!!
     }
+
+    protected open fun loadConfigProperties(): HashMap<Any, Any> = HashMap()
 
     @SuppressWarnings("unchecked")
     protected fun validate(config: JavabotConfig): JavabotConfig {

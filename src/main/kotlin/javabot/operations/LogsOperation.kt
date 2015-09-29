@@ -10,7 +10,7 @@ import javax.inject.Inject
 public class LogsOperation : BotOperation() {
 
     @Inject
-    lateinit val ds: Datastore
+    lateinit var ds: Datastore
 
     override fun handleMessage(event: Message): Boolean {
         val message = event.value

@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 public class AdminDao : BaseDao<Admin>(Admin::class.java) {
     @Inject
-    lateinit val configDao: ConfigDao
+    lateinit var configDao: ConfigDao
 
     override fun findAll(): List<Admin> {
         return ds.createQuery(Admin::class.java).order("userName").asList()

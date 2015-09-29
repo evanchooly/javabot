@@ -17,27 +17,27 @@ import javax.inject.Inject
 public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
 
     @Inject
-    lateinit val javadocClassDao: JavadocClassDao
+    lateinit var javadocClassDao: JavadocClassDao
 
     @Inject
-    lateinit val apiDao: ApiDao
+    lateinit var apiDao: ApiDao
 
     @Inject
-    lateinit val parser: JavadocParser
+    lateinit var parser: JavadocParser
 
     lateinit var pkg: String
 
-    lateinit var className: String
+    private var className: String? = null
 
     private val packages = ArrayList<String>()
 
-    override fun visit(version: Int, access: Int, name: String, signature: String,
-                       superName: String?, interfaces: Array<String>) {
+    override fun visit(version: Int, access: Int, name: String, signature: String?,
+                       superName: String?, interfaces: Array<String>?) {
         try {
             pkg = getPackage(name)
             var process = packages.isEmpty()
             for (aPackage in packages) {
-                process = process or pkg!!.startsWith(aPackage)
+                process = process || pkg.startsWith(aPackage)
             }
             if (process && isPublic(access)) {
                 className = name.substring(name.lastIndexOf("/") + 1).replace('$', '.')
@@ -74,8 +74,8 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
             ""
     }
 
-    override fun visitField(access: Int, name: String, desc: String, signature: String,
-                            value: Any): FieldVisitor? {
+    override fun visitField(access: Int, name: String, desc: String, signature: String?,
+                            value: Any?): FieldVisitor? {
         if (className != null) {
             val javadocClass = getJavadocClass()
             if (javadocClass != null && isPublic(access)) {
@@ -85,14 +85,13 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
                 } catch (e: IndexOutOfBoundsException) {
                     throw RuntimeException(e.getMessage(), e)
                 }
-
             }
         }
         return null
     }
 
     private fun getJavadocClass(): JavadocClass? {
-        val classes = javadocClassDao.getClass(parser.api, pkg, className)
+        val classes = javadocClassDao.getClass(parser.api, pkg, className!!)
         if (classes.size() == 1) {
             return classes[0]
         }
@@ -100,12 +99,12 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
               pkg, className))
     }
 
-    override fun visitMethod(access: Int, name: String, desc: String, signature: String?,
-                             exceptions: Array<String>): MethodVisitor? {
+    override fun visitMethod(access: Int, name: String, desc: String?, signature: String?,
+                             exceptions: Array<String>?): MethodVisitor? {
         if (className != null) {
             val javadocClass = getJavadocClass()
             if (javadocClass != null && (isPublic(access) || isProtected(access))) {
-                val types = extractTypes(className, name, signature ?: desc,
+                val types = extractTypes(className!!, name, signature ?: desc,
                       (access and Opcodes.ACC_VARARGS) == Opcodes.ACC_VARARGS)
 
                 val longTypes = ArrayList<String>()
@@ -131,7 +130,7 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
 
     private fun update(longTypes: MutableList<String>, shortTypes: MutableList<String>, arg: String) {
         longTypes.add(arg)
-        shortTypes.add(calculateNameAndPackage(arg)[1])
+        shortTypes.add(calculateNameAndPackage(arg).second)
     }
 
     public fun setPackages(vararg packages: String) {
@@ -154,24 +153,25 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
             PRIMITIVES.put('Z', "boolean")
         }
 
-        public fun calculateNameAndPackage(value: String): List<String> {
-            val list = arrayListOf<String>()
+        public fun calculateNameAndPackage(value: String): Pair<String?, String> {
             var clsName = value
             while (clsName.contains(".") && Character.isLowerCase(clsName.charAt(0))) {
                 clsName = clsName.substring(clsName.indexOf(".") + 1)
             }
-            if (value != clsName) {
-                list.add(value.substring(0, value.indexOf(clsName) - 1))
+            val pkgName = if (value != clsName) {
+                value.substring(0, value.indexOf(clsName) - 1)
+            } else {
+                null
             }
-            list.add(clsName)
-            return list
+
+            return Pair(pkgName, clsName)
         }
 
-        fun extractTypes(className: String, methodName: String, signature: String,
+        fun extractTypes(className: String, methodName: String, signature: String?,
                          varargs: Boolean): List<JavadocType> {
             val reader = SignatureReader(signature)
             val v = JavadocSignatureVisitor(className, methodName, signature, varargs)
-            if (!signature.isEmpty()) {
+            if (!(signature?.isEmpty() ?: true)) {
                 reader.accept(v)
             }
             return v.types

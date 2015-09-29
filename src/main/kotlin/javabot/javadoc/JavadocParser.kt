@@ -23,13 +23,13 @@ import javax.inject.Singleton
 public class JavadocParser {
 
     @Inject
-    lateinit val apiDao: ApiDao
+    lateinit var apiDao: ApiDao
 
     @Inject
-    lateinit val javadocClassDao: JavadocClassDao
+    lateinit var javadocClassDao: JavadocClassDao
 
     @Inject
-    lateinit val provider: Provider<JavadocClassVisitor>
+    lateinit var provider: Provider<JavadocClassVisitor>
 
     lateinit var api: JavadocApi
         private set

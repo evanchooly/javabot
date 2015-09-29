@@ -8,7 +8,7 @@ import org.testng.annotations.Test
 
 public class FactoidDaoTest : BaseServiceTest() {
     @Inject
-    lateinit val factoidDao: FactoidDao
+    protected lateinit var factoidDao: FactoidDao
 
     @Test(groups = arrayOf("operations"))
     public fun testInsertfactoid() {

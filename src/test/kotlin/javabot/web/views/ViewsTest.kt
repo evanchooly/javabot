@@ -16,7 +16,7 @@ import java.util.Locale
 public open class ViewsTest : BaseTest() {
 
     @Inject
-    lateinit val injector: Injector
+    protected lateinit var injector: Injector
 
     protected fun checkRange(source: Source, from: Int, to: Int, of: Int) {
         val content = source.getElementById("currentPage").content.toString().trim()

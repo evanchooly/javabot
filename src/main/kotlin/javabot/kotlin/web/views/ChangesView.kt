@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest
 public class ChangesView(injector: Injector, request: HttpServletRequest, page: Int, private val filter: Change) :
       PagedView<Change>(injector, request, page) {
     @Inject
-    lateinit val changeDao: ChangeDao
+    lateinit var changeDao: ChangeDao
 
     override fun getPagedView(): String {
         return "changes.ftl"

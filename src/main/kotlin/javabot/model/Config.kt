@@ -2,12 +2,14 @@ package javabot.model
 
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
+import org.mongodb.morphia.annotations.Id
 import java.io.Serializable
 import java.util.ArrayList
 
 @Entity("configuration")
 class Config : Serializable, Persistent {
-    override var id: ObjectId? = null
+    @Id
+    var id: ObjectId? = null
 
     var server: String = "irc.freenode.org"
 

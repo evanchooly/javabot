@@ -11,7 +11,7 @@ import org.testng.Assert.assertEquals
 @Test(groups = arrayOf("operations"))
 public class RFCOperationTest : BaseMessagingTest() {
     @Inject
-    lateinit var operation: RFCOperation
+    protected lateinit var operation: RFCOperation
 
     @Test
     public fun testBadRFCNumber() {

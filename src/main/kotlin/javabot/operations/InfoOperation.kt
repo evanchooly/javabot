@@ -12,7 +12,7 @@ import javax.inject.Inject
 public class InfoOperation : BotOperation() {
 
     @Inject
-    lateinit val factoidDao: FactoidDao
+    lateinit var factoidDao: FactoidDao
 
     override fun handleMessage(event: Message): Boolean {
         val message = event.value.toLowerCase()

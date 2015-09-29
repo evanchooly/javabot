@@ -14,9 +14,9 @@ import java.util.TreeSet
 
 public class ConfigurationView(injector: Injector, request: HttpServletRequest) : MainView(injector, request) {
     @Inject
-    lateinit val configDao: ConfigDao
+    lateinit var configDao: ConfigDao
     @Inject
-    lateinit val javabot: Javabot
+    lateinit var javabot: Javabot
 
     private val config: Config by lazy {
         configDao.get()

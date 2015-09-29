@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest
 
 public class KarmaView(injector: Injector, request: HttpServletRequest, page: Int) : PagedView<Karma>(injector, request, page) {
     @Inject
-    lateinit val karmaDao: KarmaDao
+    lateinit var karmaDao: KarmaDao
 
     override fun countItems(): Long {
         return karmaDao.count()

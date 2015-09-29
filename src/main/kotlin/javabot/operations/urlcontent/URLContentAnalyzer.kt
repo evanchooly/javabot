@@ -19,10 +19,10 @@ public class URLContentAnalyzer {
 
     }
 
-    public fun check(url: String, title: String): Boolean {
+    public fun check(url: String, title: String?): Boolean {
         try {
             checkNulls(url, title)
-            checkTitleToURLRatio(url, title)
+            checkTitleToURLRatio(url, title!!)
             checkForBlacklistedSites(url)
             return true
         } catch (e: ContentException) {

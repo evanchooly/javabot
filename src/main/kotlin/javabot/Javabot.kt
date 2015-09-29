@@ -40,31 +40,31 @@ import javax.inject.Provider
 public open class Javabot {
 
     @Inject
-    private lateinit val configDao: ConfigDao
+    private lateinit var configDao: ConfigDao
 
     @Inject
-    private lateinit val channelDao: ChannelDao
+    private lateinit var channelDao: ChannelDao
 
     @Inject
-    private lateinit val logsDao: LogsDao
+    private lateinit var logsDao: LogsDao
 
     @Inject
-    private lateinit val shunDao: ShunDao
+    private lateinit var shunDao: ShunDao
 
     @Inject
-    private lateinit val eventDao: EventDao
+    private lateinit var eventDao: EventDao
 
     @Inject
-    private lateinit val throttler: Throttler
+    private lateinit var throttler: Throttler
 
     @Inject
     protected lateinit var injector: Injector
 
     @Inject
-    private lateinit val ircBot: Provider<PircBotX>
+    private lateinit var ircBot: Provider<PircBotX>
 
     @Inject
-    private lateinit val javabotConfig: JavabotConfig
+    private lateinit var javabotConfig: JavabotConfig
 
     private var allOperationsMap = sortedMapOf<String, BotOperation>()
 
@@ -210,7 +210,12 @@ public open class Javabot {
     public fun enableOperations() {
         try {
             val allOperations = getAllOperations()
-            configDao.get().operations.forEach { klass -> activeOperations.add(allOperations.get(klass)) }
+            configDao.get().operations.forEach { klass ->
+                val get = allOperations.get(klass)
+                if(get != null) {
+                    activeOperations.add(get)
+                }
+            }
         } catch (e: Exception) {
             LOG.error(e.getMessage(), e)
             throw RuntimeException(e.getMessage(), e)
@@ -242,10 +247,6 @@ public open class Javabot {
             println("Operation not found: ${name}.  \nKnown ops: ${getAllOperations().keySet()}")
             System.exit(-1)
         }
-    }
-
-    public fun getActiveOperations(): MutableSet<BotOperation> {
-        return activeOperations
     }
 
     public fun processMessage(message: Message) {
@@ -298,7 +299,7 @@ public open class Javabot {
         if (event != null) {
             val value = event.massageTell(message)
             if (event.channel != null) {
-                logMessage(event.channel, getIrcBot().userBot, value)
+                logMessage(event.channel, getIrcBot().getUserBot(), value)
                 event.channel.send().message(value)
             } else {
                 LOG.debug("channel is null.  sending directly to user: " + event)

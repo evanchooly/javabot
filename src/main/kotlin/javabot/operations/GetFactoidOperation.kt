@@ -15,10 +15,10 @@ import javax.inject.Provider
 public class GetFactoidOperation : BotOperation(), StandardOperation {
 
     @Inject
-    lateinit val factoidDao: FactoidDao
+    lateinit var factoidDao: FactoidDao
 
     @Inject
-    lateinit val ircBot: Provider<PircBotX>
+    lateinit var ircBot: Provider<PircBotX>
 
     override fun getPriority(): Int {
         return Integer.MIN_VALUE
@@ -40,7 +40,7 @@ public class GetFactoidOperation : BotOperation(), StandardOperation {
             factoid = factoidDao.getParameterizedFactoid(firstWord)
         }
 
-        return getResponse(subject, event, backtrack, params, factoid)
+        return factoid != null && getResponse(subject, event, backtrack, params, factoid)
     }
 
     private fun getResponse(subject: TellSubject?, event: Message, backtrack: MutableSet<String>,

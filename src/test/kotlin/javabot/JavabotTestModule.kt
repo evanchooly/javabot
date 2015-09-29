@@ -38,12 +38,7 @@ public class JavabotTestModule : JavabotModule() {
         super.configure()
     }
 
-    @Throws(IOException::class)
-    override fun javabotConfig(): JavabotConfig {
-        return validate(ConfigFactory.create(JavabotConfig::class.java, loadTestProperties(), System.getProperties(), System.getenv()))
-    }
-
-    private fun loadTestProperties(): Map<Any, Any> {
+    override protected fun loadConfigProperties(): HashMap<Any, Any> {
         return HashMap(load(load(Properties(), "javabot.properties"), "test-javabot.properties"))
     }
 
@@ -66,13 +61,8 @@ public class JavabotTestModule : JavabotModule() {
         return testJavabot
     }
 
-    override fun createIrcBot(): PircBotX {
-        val config = configDaoProvider.get().get()
-        val builder = Builder<PircBotX>().setAutoNickChange(true).setName(BaseTest.TEST_BOT_NICK).setLogin(
-              BaseTest.TEST_BOT_NICK).addListener(getBotListener()).setServerHostname(config.server).setServerPort(config.port)
-              .setBotFactory(
-              botFactory())
-
+    override fun buildBot(builder: Builder<PircBotX>): PircBotX {
+        builder.setBotFactory(botFactory())
         return TestPircBotX(builder)
     }
 
@@ -92,11 +82,13 @@ public class JavabotTestModule : JavabotModule() {
         }
     }
 
+    override protected fun getBotNick(): String = BaseTest.TEST_BOT_NICK
+
     @Singleton
     private class TestBotFactory : BotFactory() {
 
         @Inject
-        lateinit private val messages: Messages
+        lateinit val messages: Messages
 
         override fun createUserChannelDao(bot: PircBotX): UserChannelDao<User, Channel> {
             return object : UserChannelDao<User, Channel>(bot, this) {

@@ -4,6 +4,7 @@ import javabot.Javabot
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
+import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.Indexed
 import org.mongodb.morphia.annotations.Indexes
@@ -24,9 +25,10 @@ public open class AdminEvent : Serializable, Persistent {
 
     @Inject
     @Transient
-    lateinit val bot: Javabot
+    lateinit var bot: Javabot
 
-    override var id: ObjectId? = null
+    @Id
+    var id: ObjectId? = null
 
     lateinit var requestedBy: String
 

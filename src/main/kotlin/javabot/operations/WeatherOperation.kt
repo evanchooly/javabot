@@ -12,7 +12,7 @@ import javax.inject.Inject
  */
 public class WeatherOperation : BotOperation() {
     @Inject
-    lateinit val weatherDao: WeatherDao
+    lateinit var weatherDao: WeatherDao
 
     override fun handleMessage(event: Message): Boolean {
         val message = event.value

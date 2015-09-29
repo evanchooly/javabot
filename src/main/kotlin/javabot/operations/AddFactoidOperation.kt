@@ -14,10 +14,10 @@ import javax.inject.Inject
 public class AddFactoidOperation : BotOperation(), StandardOperation {
 
     @Inject
-    lateinit val factoidDao: FactoidDao
+    lateinit var factoidDao: FactoidDao
 
     @Inject
-    lateinit val logDao: LogsDao
+    lateinit var logDao: LogsDao
 
     override fun handleMessage(event: Message): Boolean {
         var message = event.value

@@ -16,11 +16,13 @@ public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(Jav
     @SuppressWarnings("unchecked")
     public fun getClass(api: JavadocApi?, name: String): List<JavadocClass> {
         val strings = JavadocClassVisitor.calculateNameAndPackage(name)
-        val pkgName = strings[0]
+        val pkgName = strings.first
         val criteria = JavadocClassCriteria(ds)
-        criteria.upperName().equal(strings[1].toUpperCase())
+        criteria.upperName().equal(strings.second.toUpperCase())
         api?.let { it.id?.let { id -> criteria.apiId(id) } }
-        criteria.upperPackageName().equal(pkgName.toUpperCase())
+        if(pkgName != null) {
+            criteria.upperPackageName().equal(pkgName.toUpperCase())
+        }
         return criteria.query().asList()
     }
 

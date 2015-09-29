@@ -10,9 +10,9 @@ import java.util.Random
 
 public abstract class BotOperation {
     @Inject
-    lateinit val bot: Javabot
+    lateinit var bot: Javabot
     @Inject
-    lateinit val adminDao: AdminDao
+    lateinit var adminDao: AdminDao
 
     /**
      * This method returns where the operation should fall in terms of priority. Lower values represent lower

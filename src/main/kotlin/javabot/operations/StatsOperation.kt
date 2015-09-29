@@ -12,7 +12,7 @@ import java.time.Instant.now
 
 public class StatsOperation : BotOperation() {
     @Inject
-    private val factoidDao: FactoidDao? = null
+    lateinit var factoidDao: FactoidDao
     private var numberOfMessages = 0
 
     override fun handleMessage(event: Message): Boolean {

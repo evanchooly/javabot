@@ -92,7 +92,7 @@ public class URLTitleOperation : BotOperation() {
 
     private fun clean(title: String): String {
         val sb = StringBuilder()
-        title.filter({ i -> i < 127 as Char}).forEach({ i -> sb.append(i.toChar()) })
+        title.filter({ i -> i.toInt() < 127}).forEach({ i -> sb.append(i.toChar()) })
         return sb.toString()
     }
 

@@ -20,11 +20,11 @@ import javax.inject.Inject
 @Test(groups = arrayOf("operations"))
 public class AddFactoidOperationTest : BaseMessagingTest() {
     @Inject
-    lateinit val factoidDao: FactoidDao
+    protected lateinit var factoidDao: FactoidDao
     @Inject
-    lateinit val listener: BotListener
+    protected lateinit var listener: BotListener
     @Inject
-    lateinit val karmaDao: KarmaDao
+    protected lateinit var karmaDao: KarmaDao
 
     @BeforeMethod
     public fun setUp() {

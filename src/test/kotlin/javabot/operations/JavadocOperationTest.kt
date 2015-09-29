@@ -14,7 +14,7 @@ import javax.inject.Inject
 @Test//(dependsOnMethods = {"jdk"})
 public class JavadocOperationTest : BaseMessagingTest() {
     @Inject
-    lateinit val apiDao: ApiDao
+    protected lateinit var apiDao: ApiDao
 
     @BeforeTest
     public fun getBot() {

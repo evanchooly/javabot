@@ -6,6 +6,7 @@ import javabot.operations.TellSubject
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
+import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.Indexed
 import org.mongodb.morphia.annotations.Indexes
@@ -21,7 +22,8 @@ import java.time.LocalDateTime
 @Entity(value = "factoids", noClassnameStored = true)
 @Indexes(Index(fields = arrayOf(Field("upperName"), Field("upperUserName"))))
 public class Factoid : Serializable, Persistent {
-    override var id: ObjectId? = null
+    @Id
+    var id: ObjectId? = null
 
     lateinit var name: String
 
@@ -130,7 +132,7 @@ public class Factoid : Serializable, Persistent {
     @PrePersist
     public fun uppers() {
         upperName = name.toUpperCase()
-        upperUserName = userName!!.toUpperCase()
+        upperUserName = userName.toUpperCase()
         upperValue = value.toUpperCase()
     }
 

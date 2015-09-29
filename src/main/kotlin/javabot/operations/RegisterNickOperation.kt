@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 public class RegisterNickOperation : BotOperation() {
     @Inject
-    lateinit val configDao: ConfigDao
+    lateinit var configDao: ConfigDao
 
     override fun handleMessage(event: Message): Boolean {
         val message = event.value

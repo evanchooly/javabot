@@ -24,13 +24,13 @@ public abstract class MainView(injector: Injector, val request: HttpServletReque
     }
 
     @Inject
-    lateinit val adminDao: AdminDao
+    lateinit var adminDao: AdminDao
 
     @Inject
-    lateinit val channelDao: ChannelDao
+    lateinit var channelDao: ChannelDao
 
     @Inject
-    lateinit val factoidDao: FactoidDao
+    lateinit var factoidDao: FactoidDao
 
     private val errors = ArrayList<String>()
 

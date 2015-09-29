@@ -7,7 +7,7 @@ import java.util.ArrayList
 import java.util.HashMap
 import java.util.Stack
 
-class JavadocSignatureVisitor(private val className: String, private val name: String, private val signature: String,
+class JavadocSignatureVisitor(private val className: String, private val name: String, private val signature: String?,
                               private val varargs: Boolean) : SignatureVisitor(Opcodes.ASM5) {
 
     var trace = LOG.isTraceEnabled
@@ -218,7 +218,7 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
                 if (generics.length() != 0) {
                     generics.append(", ")
                 }
-                generics.append(JavadocClassVisitor.calculateNameAndPackage(typeVariable)[1])
+                generics.append(JavadocClassVisitor.calculateNameAndPackage(typeVariable).second)
             }
             if (generics.length() != 0) {
                 builder.append("<").append(generics).append(">")

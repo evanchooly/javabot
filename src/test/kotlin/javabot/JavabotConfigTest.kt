@@ -7,11 +7,11 @@ import org.testng.annotations.Test
 public class JavabotConfigTest : BaseTest() {
 
     @Inject
-    private val javabotConfig: JavabotConfig? = null
+    protected lateinit var javabotConfig: JavabotConfig
 
     @Test
     public fun testConfig() {
-        Assert.assertNotEquals(javabotConfig!!.nick(), "javabot")
+        Assert.assertNotEquals(javabotConfig.nick(), "javabot")
         Assert.assertNotEquals(javabotConfig.databaseName(), "javabot")
     }
 }

@@ -15,7 +15,7 @@ import java.util.regex.Pattern
 public class KarmaOperation : BotOperation() {
 
     @Inject
-    private val dao: KarmaDao? = null
+    lateinit var dao: KarmaDao
 
     override fun handleMessage(event: Message): Boolean {
         var handled = readKarma(event)
@@ -80,9 +80,9 @@ public class KarmaOperation : BotOperation() {
                         karma.name = nick
                     }
                     if (increment) {
-                        karma.value = karma.value!! + 1
+                        karma.value = karma.value + 1
                     } else {
-                        karma.value = karma.value!! - 1
+                        karma.value = karma.value - 1
                     }
                     karma.userName = sender.nick
                     dao.save(karma)

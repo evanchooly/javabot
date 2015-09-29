@@ -12,7 +12,7 @@ import javax.inject.Inject
 @Test
 public class TellOperationTest : BaseMessagingTest() {
     @Inject
-    lateinit val dao: FactoidDao
+    protected lateinit var dao: FactoidDao
 
 
     public fun shortcut() {

@@ -17,10 +17,10 @@ import javax.inject.Inject
 public class ConfigDao protected constructor() : BaseDao<Config>(Config::class.java) {
 
     @Inject
-    lateinit val injector: Injector
+    lateinit var injector: Injector
 
     @Inject
-    lateinit val javabotConfig: JavabotConfig
+    lateinit var javabotConfig: JavabotConfig
 
     public fun <T> list(type: Class<T>): List<T> {
         val reflections = Reflections("javabot")

@@ -1,15 +1,16 @@
 package javabot.commands
 
 import com.antwerkz.sofia.Sofia
+import com.beust.jcommander.Parameter
 import javabot.Message
 import javabot.dao.ApiDao
 import javax.inject.Inject
 
 public class InfoApi : AdminCommand() {
     @Inject
-    lateinit val apiDao: ApiDao
+    lateinit var apiDao: ApiDao
 
-    @Param
+    @Parameter
     lateinit var apiName: String
 
     override fun execute(event: Message) {

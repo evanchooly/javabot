@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 public class LiteralOperation : BotOperation() {
     @Inject
-    private val dao: FactoidDao? = null
+    lateinit var dao: FactoidDao
 
     /**
      * @see BotOperation.handleMessage
@@ -19,7 +19,7 @@ public class LiteralOperation : BotOperation() {
         val message = event.value.toLowerCase()
         if (message.startsWith("literal ")) {
             val key = message.substring("literal ".length())
-            val factoid = dao!!.getFactoid(key)
+            val factoid = dao.getFactoid(key)
             bot.postMessageToChannel(event, if (factoid != null) factoid.value else Sofia.factoidUnknown(key))
             return true
         }

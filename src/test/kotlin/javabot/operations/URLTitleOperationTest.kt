@@ -8,7 +8,7 @@ import org.testng.annotations.Test
 
 @Test(groups = arrayOf("operations"))
 public class URLTitleOperationTest : BaseMessagingTest() {
-    var analyzer = URLContentAnalyzer()
+    private var analyzer = URLContentAnalyzer()
 
     @DataProvider(name = "urls")
     fun getUrls(): Array<Array<Any?>> {
@@ -57,7 +57,7 @@ public class URLTitleOperationTest : BaseMessagingTest() {
     }
 
     @Test(dataProvider = "urlRulesCheck")
-    public fun testFuzzyContent(url: String, title: String, pass: Boolean) {
+    public fun testFuzzyContent(url: String, title: String?, pass: Boolean) {
         assertEquals(analyzer.check(url, title), pass)
     }
 

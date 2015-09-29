@@ -10,11 +10,12 @@ import java.util.UUID
 
 @Entity(value = "registrations", noClassnameStored = true)
 public class NickRegistration : Serializable, Persistent {
-    override var id: ObjectId? = null
-    public var url: String? = null
-    public var nick: String? = null
-    public var host: String? = null
-    public var twitterName: String? = null
+    @Id
+    var id: ObjectId? = null
+    var url: String? = null
+    var nick: String? = null
+    var host: String? = null
+    var twitterName: String? = null
 
     public constructor() {
     }

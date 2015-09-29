@@ -1,6 +1,7 @@
 package javabot.commands
 
 import com.antwerkz.sofia.Sofia
+import com.beust.jcommander.Parameter
 import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.core.ConditionTimeoutException
 import javabot.Message
@@ -13,9 +14,9 @@ import java.util.concurrent.atomic.AtomicReference
 
 public class NickServLookup : AdminCommand() {
     @Inject
-    lateinit val nickServDao: NickServDao
+    lateinit var nickServDao: NickServDao
 
-    @Param
+    @Parameter
     lateinit var nick: String
 
     override fun execute(event: Message) {
@@ -33,7 +34,7 @@ public class NickServLookup : AdminCommand() {
     }
 
     private fun validateNickServAccount(): NickServInfo? {
-        val info = AtomicReference(nickServDao!!.find(nick))
+        val info = AtomicReference(nickServDao.find(nick))
         if (info.get() == null) {
             pircBot.get().sendIRC().message("NickServ", "info " + nick)
             Awaitility.await().atMost(10, TimeUnit.SECONDS).until<Any> {

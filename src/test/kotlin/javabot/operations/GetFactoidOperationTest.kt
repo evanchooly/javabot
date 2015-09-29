@@ -15,7 +15,7 @@ import javax.inject.Inject
 @Test
 public class GetFactoidOperationTest : BaseMessagingTest() {
     @Inject
-    lateinit val factoidDao: FactoidDao
+    protected lateinit var factoidDao: FactoidDao
 
     @BeforeClass
     public fun createGets() {

@@ -16,10 +16,10 @@ import javax.inject.Inject
 @SuppressWarnings("ConstantNamingConvention")
 public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
     @Inject
-    lateinit val changeDao: ChangeDao
+    lateinit var changeDao: ChangeDao
 
     @Inject
-    lateinit val configDao: ConfigDao
+    lateinit var configDao: ConfigDao
 
     override fun save(entity: Persistent) {
         val factoid = entity as Factoid
@@ -74,12 +74,12 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
         return factoid
     }
 
-    public fun getParameterizedFactoid(name: String): Factoid {
+    public fun getParameterizedFactoid(name: String): Factoid? {
         val criteria = FactoidCriteria(ds)
         criteria.or(
-              criteria.upperName().equal(name.toUpperCase() + " $1"),
-              criteria.upperName().equal(name.toUpperCase() + " $^"),
-              criteria.upperName().equal(name.toUpperCase() + " $+"))
+              criteria.upperName().equal(name.toUpperCase() + " \$1"),
+              criteria.upperName().equal(name.toUpperCase() + " \$^"),
+              criteria.upperName().equal(name.toUpperCase() + " \$+"))
         val factoid = criteria.query().get()
         if (factoid != null) {
             factoid.lastUsed = LocalDateTime.now()
@@ -110,7 +110,7 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
 
         if (filter.userName != null) {
             try {
-                criteria.upperUserName().contains(filter.userName!!.toUpperCase())
+                criteria.upperUserName().contains(filter.userName.toUpperCase())
             } catch (e: PatternSyntaxException) {
                 Sofia.logFactoidInvalidSearchValue(filter.value)
             }

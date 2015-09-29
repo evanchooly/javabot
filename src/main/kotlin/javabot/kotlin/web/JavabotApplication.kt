@@ -38,7 +38,7 @@ class JavabotApplication : Application<JavabotConfiguration>() {
     }
 
     @Inject
-    lateinit val injector: Injector
+    lateinit var injector: Injector
 
     override fun initialize(bootstrap: Bootstrap<JavabotConfiguration>) {
         bootstrap.addBundle(ViewBundle())

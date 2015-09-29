@@ -9,7 +9,7 @@ import javax.inject.Inject
 @Test(groups = arrayOf("operations"))
 public class ForgetFactoidOperationTest : BaseMessagingTest() {
     @Inject
-    lateinit val factoidDao: FactoidDao
+    protected lateinit var factoidDao: FactoidDao
 
     public fun forgetFactoid() {
         if (!factoidDao.hasFactoid("afky")) {

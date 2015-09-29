@@ -14,7 +14,7 @@ import javax.inject.Inject
  */
 public class ShunOperation : BotOperation() {
     @Inject
-    private val shunDao: ShunDao? = null
+    lateinit var shunDao: ShunDao
 
     override fun handleMessage(event: Message): Boolean {
         val message = event.value

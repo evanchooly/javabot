@@ -17,12 +17,12 @@ import javax.inject.Inject
 
 public class ConfigurationViewTest : ViewsTest() {
     @Inject
-    private val configDao: ConfigDao? = null
+    protected lateinit var configDao: ConfigDao
 
     @Test
     @Throws(IOException::class)
     public fun configuration() {
-        var config = configDao!!.get()
+        var config = configDao.get()
         config.operations = ArrayList<String>()
         configDao.save(config)
 

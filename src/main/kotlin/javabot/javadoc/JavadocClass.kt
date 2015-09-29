@@ -3,6 +3,7 @@ package javabot.javadoc
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
+import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.Indexes
 import org.mongodb.morphia.annotations.PrePersist
@@ -12,7 +13,8 @@ import org.mongodb.morphia.annotations.PrePersist
       Index(fields = arrayOf(Field("upperPackageName"), Field("upperName") )),
       Index(fields = arrayOf(Field("apiId"), Field("upperPackageName"), Field("upperName") )))
 public class JavadocClass : JavadocElement {
-    override var id: ObjectId? = null
+    @Id
+    var id: ObjectId? = null
 
     public var packageName: String? = null
     public var upperPackageName: String? = null

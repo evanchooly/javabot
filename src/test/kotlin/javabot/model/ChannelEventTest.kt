@@ -11,7 +11,7 @@ import javax.inject.Inject
 @Test
 public class ChannelEventTest : BaseTest() {
     @Inject
-    lateinit val injector: Injector
+    protected lateinit var injector: Injector
 
     @BeforeTest
     public fun clearEvents() {

@@ -46,7 +46,7 @@ public class FactoidsView(injector: Injector, request: HttpServletRequest, page:
                     builder.append("&value=").append(encode(filter.value))
                 }
                 if (!Strings.isNullOrEmpty(filter.userName)) {
-                    builder.append("&userName=").append(encode(filter.userName!!))
+                    builder.append("&userName=").append(encode(filter.userName))
                 }
                 return url + builder
             }

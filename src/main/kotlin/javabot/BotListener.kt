@@ -32,30 +32,30 @@ import javax.inject.Provider
 public class BotListener : ListenerAdapter<PircBotX>() {
 
     @Inject
-    private lateinit val throttler: Throttler
+    private lateinit var throttler: Throttler
 
     @Inject
-    private lateinit val nickServDao: NickServDao
+    private lateinit var nickServDao: NickServDao
 
     @Inject
-    private lateinit val logsDao: LogsDao
+    private lateinit var logsDao: LogsDao
 
     @Inject
-    private lateinit val channelDao: ChannelDao
+    private lateinit var channelDao: ChannelDao
 
     @Inject
-    private lateinit val adminDao: AdminDao
+    private lateinit var adminDao: AdminDao
 
     @Inject
-    private lateinit val javabotProvider: Provider<Javabot>
+    private lateinit var javabotProvider: Provider<Javabot>
 
     @Inject
-    private lateinit val configDao: ConfigDao
+    private lateinit var configDao: ConfigDao
 
     private val nickServ = ArrayList<String>()
 
     @Inject
-    private lateinit val ircBot: Provider<PircBotX>
+    private lateinit var ircBot: Provider<PircBotX>
 
     public fun log(string: String) {
         if (Javabot.LOG.isInfoEnabled) {

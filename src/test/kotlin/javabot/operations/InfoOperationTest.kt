@@ -11,7 +11,7 @@ import org.testng.annotations.Test
 
 public class InfoOperationTest : BaseMessagingTest() {
     @Inject
-    lateinit val factoidDao: FactoidDao
+    protected lateinit var factoidDao: FactoidDao
 
     @Test
     public fun info() {

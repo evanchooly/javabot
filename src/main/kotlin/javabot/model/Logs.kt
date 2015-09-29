@@ -3,6 +3,7 @@ package javabot.model
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
+import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.IndexOptions
 import org.mongodb.morphia.annotations.Indexes
@@ -12,7 +13,8 @@ import java.time.LocalDateTime
 @Entity(value = "logs", noClassnameStored = true)
 @Indexes(Index(fields = arrayOf(Field("channel"), Field("upperNick"), Field("updated")), options = IndexOptions(name = "seen")))
 public class Logs : Persistent {
-    override var id: ObjectId? = null
+    @Id
+    var id: ObjectId? = null
 
     lateinit var nick: String
 
@@ -56,7 +58,7 @@ public class Logs : Persistent {
 
     @PrePersist
     public fun upperNick() {
-        upperNick = if (nick == null) null else nick!!.toUpperCase()
+        upperNick = if (nick == null) null else nick.toUpperCase()
     }
 
     override fun toString(): String {

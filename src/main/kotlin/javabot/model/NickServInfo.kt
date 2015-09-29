@@ -2,6 +2,7 @@ package javabot.model
 
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
+import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Indexed
 import org.pircbotx.User
 import java.lang.String.format
@@ -14,7 +15,8 @@ import java.util.TreeMap
 @Entity(value = "nickserv", noClassnameStored = true)
 public class NickServInfo : Persistent {
 
-    override var id: ObjectId? = null
+    @Id
+    var id: ObjectId? = null
 
     @Indexed
     public var nick: String? = null

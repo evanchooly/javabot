@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 public abstract class UpgradeScript {
     @Inject
-    lateinit val configDao: ConfigDao
+    lateinit var configDao: ConfigDao
 
     public fun execute() {
         val config = configDao.get()

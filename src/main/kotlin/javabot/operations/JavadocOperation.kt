@@ -1,23 +1,34 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import com.google.inject.Inject
+import javabot.JavabotConfig
 import javabot.Message
 import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
 import javabot.javadoc.JavadocApi
 import net.swisstech.bitly.BitlyClient
+import javax.annotation.Nullable
 import java.util.ArrayList
-import javax.inject.Inject
 
 public class JavadocOperation : BotOperation() {
     @Inject
-    lateinit val apiDao: ApiDao
+    lateinit var apiDao: ApiDao
 
     @Inject
-    lateinit val dao: JavadocClassDao
+    lateinit var dao: JavadocClassDao
 
     @Inject
-    lateinit val client: BitlyClient
+    lateinit var config: JavabotConfig
+
+    @field:[Nullable Inject(optional = true)]
+    var client: BitlyClient? = null
+        get() {
+            if ($client == null) {
+                $client = if (config.bitlyToken() != "") BitlyClient(config.bitlyToken()) else null
+            }
+            return $client;
+        }
 
     override fun handleMessage(event: Message): Boolean {
         val message = event.value

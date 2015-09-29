@@ -1,6 +1,7 @@
 package javabot.commands
 
 import com.antwerkz.sofia.Sofia
+import com.beust.jcommander.Parameter
 import javabot.Message
 import javabot.dao.ConfigDao
 import org.apache.commons.lang.StringUtils
@@ -8,10 +9,10 @@ import javax.inject.Inject
 
 public class Configure : AdminCommand() {
     @Inject
-    lateinit val configDao: ConfigDao
-    @Param
+    lateinit var configDao: ConfigDao
+    @Parameter
     lateinit var property: String
-    @Param
+    @Parameter
     lateinit var value: String
 
     override fun execute(event: Message) {

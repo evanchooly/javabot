@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 public class ListOperations : OperationsCommand() {
     @Inject
-    lateinit val configDao: ConfigDao
+    lateinit var configDao: ConfigDao
 
     override fun execute(event: Message) {
         bot.postMessageToChannel(event, Sofia.adminKnownOperations(event.user.nick,

@@ -21,10 +21,10 @@ import javax.inject.Inject
 public class JavadocTest : BaseMessagingTest() {
 
     @Inject
-    lateinit val apiDao: ApiDao
+    protected lateinit var apiDao: ApiDao
 
     @Inject
-    lateinit val javadocClassDao: JavadocClassDao
+    protected lateinit var javadocClassDao: JavadocClassDao
 
     @Test
     @Throws(IOException::class)
@@ -63,9 +63,9 @@ public class JavadocTest : BaseMessagingTest() {
         scanForResponse("~javadoc Annotated", "javax/enterprise/inject/spi/Annotated.html")
         scanForResponse("~javadoc Annotated.getAnnotation(*)", "javax/enterprise/inject/spi/Annotated.html#getAnnotation")
         scanForResponse("~javadoc ContextService", "javax/enterprise/concurrent/ContextService.html")
-        scanForResponse("~javadoc ContextService.createContextualProxy(*)", "createContextualProxy(java.lang.Object, java.lang.Class...)")
+        scanForResponse("~javadoc ContextService.createContextualProxy(*)", "createContextualProxy(java.lang.Object, java.lang.Class[])")
         scanForResponse("~javadoc ContextService.createContextualProxy(*)",
-              "createContextualProxy(java.lang.Object, java.util.Map, java.lang.Class...)")
+              "createContextualProxy(java.lang.Object, java.util.Map, java.lang.Class[])")
         scanForResponse("~javadoc ContextService.createContextualProxy(*)", "createContextualProxy(T, java.lang.Class)")
         scanForResponse("~javadoc ContextService.createContextualProxy(*)",
               "createContextualProxy(T, java.util.Map, java.lang.Class)")

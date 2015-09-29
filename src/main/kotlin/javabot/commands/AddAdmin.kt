@@ -1,6 +1,7 @@
 package javabot.commands
 
 import com.antwerkz.sofia.Sofia
+import com.beust.jcommander.Parameter
 import com.google.inject.Provider
 import javabot.Message
 import org.pircbotx.PircBotX
@@ -9,10 +10,10 @@ import javax.inject.Inject
 
 public class AddAdmin : AdminCommand() {
     @Inject
-    private lateinit val ircBot: Provider<PircBotX>
-    @Param
+    private lateinit var ircBot: Provider<PircBotX>
+    @Parameter(required = true)
     lateinit var userName: String
-    @Param
+    @Parameter(required = true)
     lateinit var hostName: String
 
     override fun execute(event: Message) {

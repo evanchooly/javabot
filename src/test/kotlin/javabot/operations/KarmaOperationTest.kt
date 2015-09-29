@@ -15,13 +15,13 @@ import javax.inject.Inject
 @Test(groups = arrayOf("operations"))
 public class KarmaOperationTest : BaseMessagingTest() {
     @Inject
-    lateinit val karmaDao: KarmaDao
+    protected lateinit var karmaDao: KarmaDao
 
     @Inject
-    lateinit val ds: Datastore
+    protected lateinit var ds: Datastore
 
     @Inject
-    lateinit val configDao: ConfigDao
+    protected lateinit var configDao: ConfigDao
 
     @Throws(InterruptedException::class)
     public fun updateKarma() {
@@ -64,7 +64,7 @@ public class KarmaOperationTest : BaseMessagingTest() {
 
     public fun karmaLooksLikeParam() {
         val target = "foo " + Date().time
-        testMessage(format("~%s--bar=as", target), Sofia.unhandledMessage(testUser.nick))
+        testMessage("~${target}--bar=as", Sofia.unhandledMessage(testUser.nick))
     }
 
     public fun karmaLooksLikeParamShort() {
@@ -126,8 +126,7 @@ public class KarmaOperationTest : BaseMessagingTest() {
 
     public fun changeOwnKarma() {
         val karma = getKarma(testUser.nick)
-        testMessage(format("~%s++", testUser), "You can't increment your own karma.",
-              format("%s, you have a karma level of %d", testUser, karma - 1))
+        testMessage("~${testUser}++", "You can't increment your own karma.", "${testUser}, you have a karma level of ${karma - 1}")
         val karma2 = getKarma(testUser.nick)
         Assert.assertTrue(karma2 == karma - 1, "Should have lost one karma point.")
     }

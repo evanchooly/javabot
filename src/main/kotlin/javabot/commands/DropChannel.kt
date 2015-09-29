@@ -1,6 +1,7 @@
 package javabot.commands
 
 import com.antwerkz.sofia.Sofia
+import com.beust.jcommander.Parameter
 import javabot.Message
 import javabot.dao.ChannelDao
 import org.pircbotx.PircBotX
@@ -9,12 +10,12 @@ import javax.inject.Provider
 
 public class DropChannel : AdminCommand() {
     @Inject
-    lateinit val channelDao: ChannelDao
+    lateinit var channelDao: ChannelDao
 
     @Inject
-    lateinit val ircBot: Provider<PircBotX>
+    lateinit var ircBot: Provider<PircBotX>
 
-    @Param
+    @Parameter
     lateinit var channel: String
 
     override fun execute(event: Message) {

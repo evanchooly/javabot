@@ -29,19 +29,19 @@ public class ApiEvent : AdminEvent {
 
     @Inject
     @Transient
-    lateinit val ircBot: Provider<PircBotX>
+    lateinit var ircBot: Provider<PircBotX>
 
     @Inject
     @Transient
-    lateinit val parser: JavadocParser
+    lateinit var parser: JavadocParser
 
     @Inject
     @Transient
-    lateinit val apiDao: ApiDao
+    lateinit var apiDao: ApiDao
 
     @Inject
     @Transient
-    lateinit val adminDao: AdminDao
+    lateinit var adminDao: AdminDao
 
     public constructor() {
     }

@@ -9,12 +9,12 @@ import org.testng.internal.Nullable
 public class ShortenerTest : BaseTest() {
     @Inject(optional = true)
     @Nullable
-    private val client: BitlyClient? = null
+    var client: BitlyClient? = null
 
     @Test
     public fun shorten() {
         if (client != null) {
-            Assert.assertNotNull(client.shorten().setLongUrl("http://www.cnn.com").call().data.url)
+            Assert.assertNotNull(client!!.shorten().setLongUrl("http://www.cnn.com").call().data.url)
         }
     }
 }

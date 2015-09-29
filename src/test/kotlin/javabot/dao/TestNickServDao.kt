@@ -10,10 +10,10 @@ import java.time.temporal.ChronoUnit
 
 public class TestNickServDao : NickServDao() {
     @Inject
-    private val ircBot: Provider<PircBotX>? = null
+    protected lateinit var ircBot: Provider<PircBotX>
 
     override fun find(name: String): NickServInfo {
-        val nickServInfo = NickServInfo(ircBot!!.get().userChannelDao.getUser(name))
+        val nickServInfo = NickServInfo(ircBot.get().userChannelDao.getUser(name))
         nickServInfo.registered = LocalDateTime.now().minus(30, ChronoUnit.DAYS)
         return nickServInfo
 

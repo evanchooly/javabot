@@ -11,7 +11,7 @@ import java.lang.String.format
 @Test
 public class ConfigureTest : BaseMessagingTest() {
     @Inject
-    lateinit var configDao: ConfigDao
+    protected lateinit var configDao: ConfigDao
 
     public fun change() {
         val config = configDao.get()

@@ -17,7 +17,7 @@ import java.util.Locale
 
 public class FactoidsViewTest : ViewsTest() {
     @Inject
-    private val factoidDao: FactoidDao? = null
+    protected lateinit var factoidDao: FactoidDao
 
     @Test
     @Throws(IOException::class)
@@ -92,7 +92,7 @@ public class FactoidsViewTest : ViewsTest() {
     }
 
     private fun createFactoids(count: Int) {
-        factoidDao!!.deleteAll()
+        factoidDao.deleteAll()
         for (i in 0..count - 1) {
             val factoid = Factoid("name " + i, "value " + i, "userName " + i)
             factoid.updated = LocalDateTime.now()
