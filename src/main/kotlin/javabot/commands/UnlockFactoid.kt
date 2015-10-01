@@ -2,13 +2,11 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
-import com.beust.jcommander.Parameters
 import javabot.Message
 import javabot.dao.FactoidDao
 import javax.inject.Inject
 
-@Parameters(separators = "=")
-public class LockFactoid : AdminCommand() {
+public class UnlockFactoid : AdminCommand() {
 
     @Parameter
     lateinit var args: MutableList<String>
@@ -22,9 +20,9 @@ public class LockFactoid : AdminCommand() {
         if (factoid == null) {
             bot.postMessageToChannel(event, Sofia.factoidUnknown(factoidName))
         } else {
-            factoid.locked = true
+            factoid.locked = false
             factoidDao.save(factoid)
-            bot.postMessageToChannel(event, "${factoidName} locked.")
+            bot.postMessageToChannel(event, "${factoidName} unlocked.")
         }
     }
 }

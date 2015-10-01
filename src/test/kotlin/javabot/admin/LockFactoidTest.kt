@@ -16,18 +16,18 @@ public class LockFactoidTest : BaseMessagingTest() {
     @Test(dataProvider = "factoids")
     public fun lock(name: String) {
         try {
-            sendMessage("~forget " + name).get()
-            testMessage("~$name is i should be locked", Sofia.ok(testUser.nick))
-            testMessage("~admin lock " + name, name + " locked.")
+            sendMessage("~forget ${name}").get()
+            testMessage("~${name} is i should be locked", Sofia.ok(testUser.nick))
+            testMessage("~admin lockFactoid ${name}", "${name} locked.")
 
             val bob = registerIrcUser("bob", "bob", "localhost")
             testMessageAs(bob, "~forget ${name}", Sofia.factoidDeleteLocked(bob.nick))
 
-            testMessage("~admin unlock " + name, name + " unlocked.")
+            testMessage("~admin unlockFactoid ${name}", "${name} unlocked.")
             testMessageAs(bob, "~forget ${name}", Sofia.factoidForgotten(name, bob.nick))
 
             testMessage("~$name is i should be locked", Sofia.ok(testUser.nick))
-            testMessage("~admin lock " + name, name + " locked.")
+            testMessage("~admin lockFactoid ${name}", "${name} locked.")
             testMessage("~forget ${name}", Sofia.factoidForgotten(name, testUser.nick))
 
         } catch (e: Exception) {

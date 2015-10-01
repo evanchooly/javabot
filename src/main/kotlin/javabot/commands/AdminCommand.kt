@@ -14,8 +14,6 @@ import javax.inject.Provider
 @Parameters(separators = "=")
 public abstract class AdminCommand : BotOperation() {
 
-    protected var args: MutableList<Any?> = arrayListOf()
-
     @Inject
     lateinit var javabot: Provider<Javabot>
 
@@ -33,7 +31,8 @@ public abstract class AdminCommand : BotOperation() {
                     handled = true
                     try {
                         synchronized (this) {
-                            parse(params)
+                            val cli = message.substring(params[0].length()).trim()
+                            JCommander(this).parse(cli)
                             execute(event)
                         }
                     } catch (e: Exception) {
@@ -61,30 +60,6 @@ public abstract class AdminCommand : BotOperation() {
     }
 
     public abstract fun execute(event: Message)
-
-    @SuppressWarnings("unchecked")
-    public fun parse(params: MutableList<String>) {
-        try {
-
-/*
-            var index = 2
-            while (index < params.size()) {
-                if (!params.get(index).startsWith("-")) {
-                    params.set(index - 1, params.get(index - 1) + " " + params.remove(index))
-                } else {
-                    index++
-                }
-            }
-            if ("admin" == params.get(0)) {
-                params.remove(0)
-            }
-            params.remove(0)
-*/
-            JCommander(this).parse(*params.filter { it.startsWith("-")}.toTypedArray())
-        } catch(e: Exception) {
-            e.printStackTrace()
-        }
-    }
 
 
     public fun getCommandName(): String {
