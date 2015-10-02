@@ -6,7 +6,7 @@ import org.testng.annotations.Test
 public class JavadocClassVisitorTest {
     @Test
     public fun generics() {
-        compare("(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;", true, "java.lang.String", "java.lang.Object...")
+        compare("(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;", true, "java.lang.String", "java.lang.Object[]")
         compare("(Ljava/util/Map<Ljava/lang/String;Ljava/lang/String;>;)TT;", false, "java.util.Map<String, String>")
         compare("(TV;)V", false, "V")
         compare("(Ljava/util/List<Ljava/lang/Object;>;Ljava/lang/Exception;)V", false,

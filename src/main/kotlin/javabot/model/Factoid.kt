@@ -21,15 +21,9 @@ import java.time.LocalDateTime
 
 @Entity(value = "factoids", noClassnameStored = true)
 @Indexes(Index(fields = arrayOf(Field("upperName"), Field("upperUserName"))))
-public class Factoid : Serializable, Persistent {
+public class Factoid(var name: String = "", var value: String = "", var userName: String = "") : Serializable, Persistent {
     @Id
     var id: ObjectId? = null
-
-    lateinit var name: String
-
-    lateinit var value: String
-
-    lateinit var userName: String
 
     @JsonView(PUBLIC::class)
     public var updated: LocalDateTime? = null
@@ -47,22 +41,13 @@ public class Factoid : Serializable, Persistent {
     @Indexed
     private var upperValue: String? = null
 
-    public constructor() {
-    }
-
-    public constructor(name: String, value: String, userName: String) {
-        this.name = name
-        this.value = value
-        this.userName = userName
-    }
-
     public fun evaluate(subject: TellSubject?, sender: String, replacedValue: String?): String {
         var message = value
         val target = if (subject == null) sender else subject.target.nick
         if (subject != null && !message.contains("\$who") && message.startsWith("<reply>")) {
             message = StringBuilder(message).insert(message.indexOf(">") + 1, "\$who, ").toString()
         }
-        message = message.replace("\$who".toRegex(), target)
+        message = message.replace("\$who", target)
         var replaced = replacedValue!!
         if (name.endsWith("$1")) {
             replaced = replacedValue
@@ -73,9 +58,9 @@ public class Factoid : Serializable, Persistent {
         if (name.endsWith(" $^")) {
             replaced = urlencode(camelcase(replacedValue))
         }
-        message = message.replace("\\\$1".toRegex(), replaced)
-        message = message.replace("\\\$\\+".toRegex(), replaced)
-        message = message.replace("\\\$\\^".toRegex(), replaced)
+        message = message.replace("$1", replaced)
+        message = message.replace("$+", replaced)
+        message = message.replace("$^", replaced)
         message = processRandomList(message)
         if (!message.startsWith("<")) {
             val comparable = if (subject == null) sender else subject.target.nick
@@ -117,7 +102,7 @@ public class Factoid : Serializable, Persistent {
         var index2 = result.indexOf(")", index + 1)
         while (index < result.length() && index != -1 && index2 != -1) {
             val choice = result.substring(index + 1, index2)
-            val choices = choice.split("\\|")
+            val choices = choice.split("|")
             if (choices.size() > 1) {
                 val chosen = (Math.random() * choices.size()).toInt()
                 result = format("%s%s%s", result.substring(0, index), choices[chosen],

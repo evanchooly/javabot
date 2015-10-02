@@ -46,7 +46,7 @@ public class ChangeDao : BaseDao<Change>(Change::class.java) {
             criteria.message().contains(filter.message)
         }
         if (filter.changeDate != null) {
-            criteria.changeDate(filter.changeDate)
+            criteria.changeDate(filter.changeDate!!)
         }
         criteria.changeDate().order(false)
         if (!count && qp != null) {

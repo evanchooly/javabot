@@ -8,7 +8,6 @@ import javabot.model.Factoid
 import javabot.model.Persistent
 import javabot.model.criteria.FactoidCriteria
 import org.mongodb.morphia.query.Query
-import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 import java.util.regex.PatternSyntaxException
 import javax.inject.Inject
@@ -23,13 +22,22 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
 
     override fun save(entity: Persistent) {
         val factoid = entity as Factoid
+        if(factoid.name == null) {
+            throw IllegalArgumentException("Factoid name can not be null")
+        }
+        if(factoid.value == null) {
+            throw IllegalArgumentException("Factoid value can not be null")
+        }
+        if(factoid.userName == null) {
+            throw IllegalArgumentException("Factoid user name can not be null")
+        }
         val old = find(entity.id)
         super.save(entity)
-        val formattedValue = CleanHtmlConverter.convert(factoid.value) { s -> Sofia.logsAnchorFormat(s, s) }
+        val formattedValue = CleanHtmlConverter.convert(factoid.value!!) { s -> Sofia.logsAnchorFormat(s, s) }
         if (old != null) {
             val value: (Any) -> String = { s -> Sofia.logsAnchorFormat(s, s) }
             changeDao.logChange("%s changed '%s' from '%s' to '%s'".format(factoid.userName, factoid.name,
-                  CleanHtmlConverter.convert(old.value, value),
+                  CleanHtmlConverter.convert(old.value!!, value),
                   formattedValue))
         } else {
             changeDao.logChange("%s added '%s' with '%s'".format(factoid.userName, factoid.name, formattedValue))
@@ -43,11 +51,8 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
     }
 
     public fun addFactoid(sender: String, key: String, value: String): Factoid {
-        val factoid = Factoid()
+        val factoid = Factoid(key, value, sender)
         factoid.id = factoid.id
-        factoid.name = key
-        factoid.value = value
-        factoid.userName = sender
         factoid.updated = LocalDateTime.now()
         factoid.lastUsed = LocalDateTime.now()
         save(factoid)
@@ -102,24 +107,28 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
 
     private fun buildFindQuery(qp: QueryParam?, filter: Factoid, count: Boolean): Query<Factoid> {
         val criteria = FactoidCriteria(ds)
-        try {
-            criteria.upperName().contains(filter.name.toUpperCase())
-        } catch (e: PatternSyntaxException) {
-            Sofia.logFactoidInvalidSearchValue(filter.value)
+        filter.name?.let {
+            try {
+                criteria.upperName().contains(it.toUpperCase())
+            } catch (e: PatternSyntaxException) {
+                Sofia.logFactoidInvalidSearchValue(it)
+            }
         }
 
-        if (filter.userName != null) {
+        filter.userName?.let {
             try {
-                criteria.upperUserName().contains(filter.userName.toUpperCase())
+                criteria.upperUserName().contains(it.toUpperCase())
             } catch (e: PatternSyntaxException) {
-                Sofia.logFactoidInvalidSearchValue(filter.value)
+                Sofia.logFactoidInvalidSearchValue(it)
             }
 
         }
-        try {
-            criteria.upperValue().contains(filter.value.toUpperCase())
-        } catch (e: PatternSyntaxException) {
-            Sofia.logFactoidInvalidSearchValue(filter.value)
+        filter.value?.let {
+            try {
+                criteria.upperValue().contains(it.toUpperCase())
+            } catch (e: PatternSyntaxException) {
+                Sofia.logFactoidInvalidSearchValue(it)
+            }
         }
 
         if (!count && qp != null && qp.hasSort()) {

@@ -51,6 +51,7 @@ public class ConfigDao protected constructor() : BaseDao<Config>(Config::class.j
 
     private fun create(): Config {
         val config = Config()
+        config.url = javabotConfig.url()
         config.nick = javabotConfig.nick()
         config.password = javabotConfig.password() // optional
         config.server = javabotConfig.ircHost()

@@ -114,7 +114,7 @@ public class GetFactoidOperationTest : BaseMessagingTest() {
               "insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you even close to " +
               "anything that could be considered a rational thought. Everyone in this room is now dumber for having listened to it. I " +
               "award you no points, and may God have mercy on your soul." )
-        BaseTest.sleep(6000)
+        Thread.sleep(6000)
         testMessage("~~ ${BaseTest.TEST_NICK} seeTest", "${BaseTest.TEST_NICK}, I'm a reply!")
         testMessage("~~ ${BaseTest.TEST_NICK} bobloblaw", Sofia.unhandledMessage(testUser.nick))
         testMessage("~~ ${BaseTest.TEST_NICK} api", "${BaseTest.TEST_NICK}, api is http://java.sun.com/javase/current/docs/api/index.html")
@@ -157,7 +157,7 @@ public class GetFactoidOperationTest : BaseMessagingTest() {
     }
 
     private fun validate(factoid: String, response: String) {
-        testMessage("~~  BaseTest.TEST_NICK ${factoid}", "${BaseTest.TEST_NICK}, ${response}")
+        testMessage("~~  ${BaseTest.TEST_NICK} ${factoid}", "${BaseTest.TEST_NICK}, ${response}")
     }
 
     companion object {

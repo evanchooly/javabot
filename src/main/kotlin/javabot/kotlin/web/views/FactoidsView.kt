@@ -39,15 +39,9 @@ public class FactoidsView(injector: Injector, request: HttpServletRequest, page:
         try {
             if (url != null) {
                 val builder = StringBuilder()
-                if (!Strings.isNullOrEmpty(filter.name)) {
-                    builder.append("&name=").append(encode(filter.name))
-                }
-                if (!Strings.isNullOrEmpty(filter.value)) {
-                    builder.append("&value=").append(encode(filter.value))
-                }
-                if (!Strings.isNullOrEmpty(filter.userName)) {
-                    builder.append("&userName=").append(encode(filter.userName))
-                }
+                builder.append("&name=").append(encode(filter.name))
+                builder.append("&value=").append(encode(filter.value))
+                builder.append("&userName=").append(encode(filter.userName))
                 return url + builder
             }
         } catch (e: UnsupportedEncodingException) {

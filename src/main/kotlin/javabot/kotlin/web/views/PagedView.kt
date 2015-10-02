@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest
 public abstract class PagedView<V>(injector: Injector, request: HttpServletRequest, private var page: Int) :
       MainView(injector, request) {
     private val itemsPerPage = ITEMS_PER_PAGE
-    protected var itemCount: Long = -1
+    var itemCount: Long = -1
         get() {
             if ($itemCount == -1L) {
                 $itemCount = countItems()

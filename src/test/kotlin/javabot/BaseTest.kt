@@ -137,20 +137,8 @@ public open class BaseTest {
 
     companion object {
         public val TEST_NICK: String = "jbtestuser"
-
         public val TEST_USER_NICK: String = "botuser"
-
         public val TEST_BOT_NICK: String = "testjavabot"
-
         public val BOT_EMAIL: String = "test@example.com"
-
-        @SuppressWarnings("EmptyCatchBlock")
-        protected fun sleep(milliseconds: Int) {
-            try {
-                Thread.sleep(milliseconds.toLong())
-            } catch (exception: InterruptedException) {
-            }
-
-        }
     }
 }

@@ -14,7 +14,7 @@ public class Change(var message: String?) : Serializable, Persistent {
     @Id
     var id: ObjectId? = null
     @Indexed(name = "changed")
-    var changeDate = LocalDateTime.now()
+    var changeDate: LocalDateTime? = null
 
     public constructor() : this(null) {
 

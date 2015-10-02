@@ -18,7 +18,7 @@ public class ConfigurationView(injector: Injector, request: HttpServletRequest) 
     @Inject
     lateinit var javabot: Javabot
 
-    private val config: Config by lazy {
+    val configuration: Config by lazy {
         configDao.get()
     }
 
@@ -29,7 +29,7 @@ public class ConfigurationView(injector: Injector, request: HttpServletRequest) 
     }
 
     public fun getCurrentOps(): Set<String> {
-        return TreeSet(config.operations)
+        return TreeSet(configuration.operations)
     }
 
     public fun enabled(operation: String): Boolean {

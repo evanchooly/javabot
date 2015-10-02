@@ -2,12 +2,10 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
-import com.beust.jcommander.Parameters
 import javabot.Message
 import javabot.dao.FactoidDao
 import javax.inject.Inject
 
-@Parameters(separators = "=")
 public class LockFactoid : AdminCommand() {
 
     @Parameter

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory
 import javax.inject.Inject
 import javax.inject.Provider
 
-@Parameters(separators = "=")
+@Parameters(separators = "=", optionPrefixes = "--")
 public abstract class AdminCommand : BotOperation() {
 
     @Inject
@@ -31,8 +31,7 @@ public abstract class AdminCommand : BotOperation() {
                     handled = true
                     try {
                         synchronized (this) {
-                            val cli = message.substring(params[0].length()).trim()
-                            JCommander(this).parse(cli)
+                            parse(params)
                             execute(event)
                         }
                     } catch (e: Exception) {
@@ -47,6 +46,10 @@ public abstract class AdminCommand : BotOperation() {
             }
         }
         return handled
+    }
+
+    protected open fun parse(params: MutableList<String>) {
+        JCommander(this).parse(*params.subList(1, params.size()).toTypedArray())
     }
 
     public open fun canHandle(message: String): Boolean {
