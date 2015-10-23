@@ -6,7 +6,6 @@ import com.google.inject.Singleton
 import javabot.dao.NickServDao
 import javabot.dao.TestNickServDao
 import javabot.model.TestUser
-import org.aeonbits.owner.ConfigFactory
 import org.pircbotx.Channel
 import org.pircbotx.Configuration.BotFactory
 import org.pircbotx.Configuration.Builder
@@ -88,7 +87,7 @@ public class JavabotTestModule : JavabotModule() {
     private class TestBotFactory : BotFactory() {
 
         @Inject
-        lateinit val messages: Messages
+        lateinit var messages: Messages
 
         override fun createUserChannelDao(bot: PircBotX): UserChannelDao<User, Channel> {
             return object : UserChannelDao<User, Channel>(bot, this) {
