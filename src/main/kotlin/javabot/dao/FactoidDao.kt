@@ -22,25 +22,24 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
 
     override fun save(entity: Persistent) {
         val factoid = entity as Factoid
-        if(factoid.name == null) {
-            throw IllegalArgumentException("Factoid name can not be null")
+        if(factoid.name == "") {
+            throw IllegalArgumentException("Factoid name can not be blank")
         }
-        if(factoid.value == null) {
-            throw IllegalArgumentException("Factoid value can not be null")
+        if(factoid.value == "") {
+            throw IllegalArgumentException("Factoid value can not be blank")
         }
-        if(factoid.userName == null) {
-            throw IllegalArgumentException("Factoid user name can not be null")
+        if(factoid.userName == "") {
+            throw IllegalArgumentException("Factoid user name can not be blank")
         }
         val old = find(entity.id)
         super.save(entity)
-        val formattedValue = CleanHtmlConverter.convert(factoid.value!!) { s -> Sofia.logsAnchorFormat(s, s) }
+        val formattedValue = CleanHtmlConverter.convert(factoid.value) { s -> Sofia.logsAnchorFormat(s, s) }
         if (old != null) {
             val value: (Any) -> String = { s -> Sofia.logsAnchorFormat(s, s) }
-            changeDao.logChange("%s changed '%s' from '%s' to '%s'".format(factoid.userName, factoid.name,
-                  CleanHtmlConverter.convert(old.value!!, value),
-                  formattedValue))
+            val oldFormat = CleanHtmlConverter.convert(old.value, value)
+            changeDao.logChange("${factoid.userName} changed '${factoid.name}' from '${oldFormat}' to '${formattedValue}'")
         } else {
-            changeDao.logChange("%s added '%s' with '%s'".format(factoid.userName, factoid.name, formattedValue))
+            changeDao.logChange("${factoid.userName} added '${factoid.name}' with '${formattedValue}'")
         }
     }
 
@@ -64,7 +63,7 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
         val factoid = getFactoid(key)
         if (factoid != null) {
             delete(factoid.id)
-            changeDao.logChange("%s removed '%s' with a value of '%s'".format(sender, key, factoid.value))
+            changeDao.logChange("${sender} removed '${key}' with a value of '${factoid.value}'")
         }
     }
 
@@ -107,27 +106,27 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
 
     private fun buildFindQuery(qp: QueryParam?, filter: Factoid, count: Boolean): Query<Factoid> {
         val criteria = FactoidCriteria(ds)
-        filter.name?.let {
+        if(filter.name != "") {
             try {
-                criteria.upperName().contains(it.toUpperCase())
+                criteria.upperName().contains(filter.name.toUpperCase())
             } catch (e: PatternSyntaxException) {
-                Sofia.logFactoidInvalidSearchValue(it)
+                Sofia.logFactoidInvalidSearchValue(filter.name)
             }
         }
 
-        filter.userName?.let {
+        if(filter.userName != "") {
             try {
-                criteria.upperUserName().contains(it.toUpperCase())
+                criteria.upperUserName().contains(filter.userName.toUpperCase())
             } catch (e: PatternSyntaxException) {
-                Sofia.logFactoidInvalidSearchValue(it)
+                Sofia.logFactoidInvalidSearchValue(filter.userName)
             }
-
         }
-        filter.value?.let {
+
+        if(filter.value != "") {
             try {
-                criteria.upperValue().contains(it.toUpperCase())
+                criteria.upperValue().contains(filter.value.toUpperCase())
             } catch (e: PatternSyntaxException) {
-                Sofia.logFactoidInvalidSearchValue(it)
+                Sofia.logFactoidInvalidSearchValue(filter.value)
             }
         }
 

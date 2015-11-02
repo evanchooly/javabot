@@ -88,7 +88,7 @@ public class WeatherUndergroundSaxHandler : DefaultHandler() {
             val localTime = weatherMap.get("local_time")
             if (localTime != null && "" != localTime.trim()) {
                 val tokens = localTime.trim().split(" ")
-                if (tokens.size() == 5) {
+                if (tokens.size == 5) {
                     val time = StringBuilder()
                     time.append(tokens[2]).append(" ").append(tokens[3])
                     weather.localTime = time.toString()

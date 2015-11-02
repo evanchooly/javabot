@@ -82,8 +82,8 @@ public class BotResource {
         try {
             channelName = URLDecoder.decode(channel, "UTF-8")
         } catch (e: UnsupportedEncodingException) {
-            LOG.error(e.getMessage(), e)
-            throw RuntimeException(e.getMessage(), e)
+            LOG.error(e.message, e)
+            throw RuntimeException(e.message, e)
         }
 
         try {

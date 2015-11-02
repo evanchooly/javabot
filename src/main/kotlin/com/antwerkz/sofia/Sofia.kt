@@ -14,7 +14,7 @@ public object Sofia {
     private val logger = LoggerFactory.getLogger(Sofia::class.java)
 
     private fun getBundle(vararg localeList: Locale): ResourceBundle {
-        val locale = if (localeList.size() == 0) Locale.getDefault() else localeList[0]
+        val locale = if (localeList.size == 0) Locale.getDefault() else localeList[0]
         var labels: ResourceBundle? = loadBundle(locale)
         if (labels == null) {
             labels = loadBundle(Locale.ROOT)

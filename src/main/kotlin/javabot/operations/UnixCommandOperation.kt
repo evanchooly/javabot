@@ -29,7 +29,7 @@ public class UnixCommandOperation : BotOperation() {
     override fun handleChannelMessage(event: Message): Boolean {
         val message = event.value
         val split = message.split(" ")
-        if (split.size() != 0 && split.size() < 3 && commands.contains(split[0])) {
+        if (split.size != 0 && split.size < 3 && commands.contains(split[0])) {
             bot.postMessageToChannel(event, Sofia.botUnixCommand(event.user.nick, getInsult()))
             return true
         }
@@ -37,6 +37,6 @@ public class UnixCommandOperation : BotOperation() {
     }
 
     private fun getInsult(): String {
-        return insults.get(random.nextInt(insults.size()))
+        return insults.get(random.nextInt(insults.size))
     }
 }

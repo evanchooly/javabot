@@ -31,10 +31,10 @@ public class GetFactoidOperation : BotOperation(), StandardOperation {
     private fun getFactoid(subject: TellSubject?, event: Message, backtrack: MutableSet<String>): Boolean {
         var message = event.value
         if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
-            message = message.substring(0, message.length() - 1)
+            message = message.substring(0, message.length - 1)
         }
         val firstWord = message.split(" ")[0]
-        val params = message.substring(firstWord.length()).trim()
+        val params = message.substring(firstWord.length).trim()
         var factoid = factoidDao.getFactoid(message.toLowerCase())
         if (factoid == null) {
             factoid = factoidDao.getParameterizedFactoid(firstWord)
@@ -56,11 +56,11 @@ public class GetFactoidOperation : BotOperation(), StandardOperation {
                 return getFactoid(subject, Message(event, message.substring(5).trim()), backtrack)
             }
         } else if (message.startsWith("<reply>")) {
-            bot.postMessageToChannel(event, message.substring("<reply>".length()))
+            bot.postMessageToChannel(event, message.substring("<reply>".length))
             return true
         } else if (message.startsWith("<action>")) {
             try {
-                bot.postAction(event.channel!!, message.substring("<action>".length()))
+                bot.postAction(event.channel!!, message.substring("<action>".length))
             } catch (e: Exception) {
                 LOG.error(format("NPE:  subject = [%s], event = [%s], backtrack = [%s], replacedValue = [%s], factoid = [%s]",
                       subject, event, backtrack, replacedValue, factoid))
@@ -125,13 +125,13 @@ public class GetFactoidOperation : BotOperation(), StandardOperation {
 
     private fun parseLonghand(event: Message): TellSubject? {
         val message = event.value
-        val body = message.substring("tell ".length())
+        val body = message.substring("tell ".length)
         val nick = body.substring(0, body.indexOf(" "))
         val about = body.indexOf("about ")
         if (about < 0) {
             return null
         }
-        val thing = body.substring(about + "about ".length())
+        val thing = body.substring(about + "about ".length)
         return TellSubject(ircBot.get().userChannelDao.getUser(nick), thing)
     }
 
@@ -139,7 +139,7 @@ public class GetFactoidOperation : BotOperation(), StandardOperation {
         var target = event.value
         for (start in bot.startStrings) {
             if (target.startsWith(start)) {
-                target = target.substring(start.length()).trim()
+                target = target.substring(start.length).trim()
             }
         }
         val space = target.indexOf(' ')

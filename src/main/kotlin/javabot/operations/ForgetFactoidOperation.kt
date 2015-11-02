@@ -17,9 +17,9 @@ public class ForgetFactoidOperation : BotOperation(), StandardOperation {
             if ((channel == null || !channel.name.startsWith("#")) && !isAdminUser(event.user)) {
                 bot.postMessageToChannel(event, Sofia.privmsgChange())
             } else {
-                message = message.substring("forget ".length())
+                message = message.substring("forget ".length)
                 if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
-                    message = message.substring(0, message.length() - 1)
+                    message = message.substring(0, message.length - 1)
                 }
                 handled = forget(event, message.toLowerCase())
             }

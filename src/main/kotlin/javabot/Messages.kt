@@ -18,11 +18,11 @@ public class Messages : Iterable<String> {
     }
 
     public fun size(): Int {
-        return messages.size()
+        return messages.size
     }
 
     public fun remove(index: Int): String {
-        return messages.remove(index)
+        return messages.removeAt(index)
     }
 
     public fun get(): List<String> {

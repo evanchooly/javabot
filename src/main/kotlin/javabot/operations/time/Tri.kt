@@ -12,8 +12,8 @@ public class Tri<T> {
         var cleaned = clean(key)
 
         var current = root
-        for (i in 0..cleaned.length() - 1) {
-            val index = hash(cleaned.charAt(i))
+        for (i in 0..cleaned.length - 1) {
+            val index = hash(cleaned[i])
             val node = current.getChild(index) ?: return null
 
             current = node
@@ -26,8 +26,8 @@ public class Tri<T> {
         key = clean(key)
 
         var current = root
-        for (i in 0..key.length() - 1) {
-            val index = hash(key.charAt(i))
+        for (i in 0..key.length - 1) {
+            val index = hash(key[i])
             var node = current.getChild(index)
 
             if (node == null) {

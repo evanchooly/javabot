@@ -53,8 +53,8 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
                 }
             }
         } catch (e: Exception) {
-            log.error(e.getMessage(), e)
-            throw RuntimeException(e.getMessage(), e)
+            log.error(e.message, e)
+            throw RuntimeException(e.message, e)
         }
 
     }
@@ -83,7 +83,7 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
                     val javadocType = extractTypes(className!!, "", desc, false).get(0)
                     javadocClassDao.save(JavadocField(javadocClass, name, javadocType.toString()))
                 } catch (e: IndexOutOfBoundsException) {
-                    throw RuntimeException(e.getMessage(), e)
+                    throw RuntimeException(e.message, e)
                 }
             }
         }
@@ -92,10 +92,10 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
 
     private fun getJavadocClass(): JavadocClass? {
         val classes = javadocClassDao.getClass(parser.api, pkg, className!!)
-        if (classes.size() == 1) {
+        if (classes.size == 1) {
             return classes[0]
         }
-        throw RuntimeException("Wrong number of classes (%d) found for %s.%s".format(classes.size(),
+        throw RuntimeException("Wrong number of classes (%d) found for %s.%s".format(classes.size,
               pkg, className))
     }
 
@@ -122,7 +122,7 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
                     methodName = name
                 }
                 javadocClassDao.save(JavadocMethod(javadocClass, methodName,
-                      types.size(), longTypes, shortTypes))
+                        types.size, longTypes, shortTypes))
             }
         }
         return null
@@ -155,7 +155,7 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
 
         public fun calculateNameAndPackage(value: String): Pair<String?, String> {
             var clsName = value
-            while (clsName.contains(".") && Character.isLowerCase(clsName.charAt(0))) {
+            while (clsName.contains(".") && Character.isLowerCase(clsName[0])) {
                 clsName = clsName.substring(clsName.indexOf(".") + 1)
             }
             val pkgName = if (value != clsName) {

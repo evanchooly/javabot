@@ -83,12 +83,12 @@ public class AddFactoidOperation : BotOperation(), StandardOperation {
                 var key = message.substring(0, message.indexOf(" is "))
                 key = key.toLowerCase()
                 while (key.endsWith(".") || key.endsWith("?") || key.endsWith("!")) {
-                    key = key.substring(0, key.length() - 1)
+                    key = key.substring(0, key.length - 1)
                 }
                 val index = message.indexOf(" is ")
                 var value: String? = null
                 if (index != -1) {
-                    value = message.substring(index + 4, message.length())
+                    value = message.substring(index + 4, message.length)
                 }
                 if (key.trim().isEmpty()) {
                     bot.postMessageToChannel(event, Sofia.factoidInvalidName())

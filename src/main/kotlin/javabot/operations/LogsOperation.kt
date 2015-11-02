@@ -15,7 +15,7 @@ public class LogsOperation : BotOperation() {
     override fun handleMessage(event: Message): Boolean {
         val message = event.value
         if (message.toLowerCase().startsWith(KEYWORD_LOGS)) {
-            val nickname = message.substring(KEYWORD_LOGS.length()).trim()
+            val nickname = message.substring(KEYWORD_LOGS.length).trim()
             val criteria = LogsCriteria(ds)
             criteria.channel(event.channel!!.name)
             criteria.updated().order(true)

@@ -54,7 +54,7 @@ public class ApiEvent : AdminEvent {
             try {
                 this.downloadUrl = File(System.getProperty("java.home"), "lib/rt.jar").toURI().toURL().toString()
             } catch (e: MalformedURLException) {
-                throw IllegalArgumentException(e.getMessage(), e)
+                throw IllegalArgumentException(e.message, e)
             }
 
         } else {
@@ -113,7 +113,7 @@ public class ApiEvent : AdminEvent {
                     }
                 })
             } catch (e: IOException) {
-                throw RuntimeException(e.getMessage(), e)
+                throw RuntimeException(e.message, e)
             }
         }
 

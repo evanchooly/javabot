@@ -89,7 +89,7 @@ public class ConfigDao protected constructor() : BaseDao<Config>(Config::class.j
         try {
             collection.createIndex(BasicDBObject("updated", 1), keys)
         } catch (e: Exception) {
-            LOG.error(e.getMessage(), e)
+            LOG.error(e.message, e)
         }
 
     }

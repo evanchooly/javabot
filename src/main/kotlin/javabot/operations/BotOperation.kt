@@ -48,7 +48,7 @@ public abstract class BotOperation {
     }
 
     protected fun formatMessage(text: String, vararg messages: String): String {
-        return formatMessage(text, random.nextInt(messages.size()), messages as Array<String>)
+        return formatMessage(text, random.nextInt(messages.size), messages as Array<String>)
     }
 
     protected fun formatMessage(text: String, index: Int, messages: Array<String>): String {

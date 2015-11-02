@@ -113,7 +113,7 @@ public open class Javabot {
                 event.state = State.COMPLETED
             } catch (e: Exception) {
                 event.state = State.FAILED
-                LOG.error(e.getMessage(), e)
+                LOG.error(e.message, e)
             }
 
             event.completed = LocalDateTime.now()
@@ -127,7 +127,7 @@ public open class Javabot {
         if (connected) {
             val joined = ircBot.userChannelDao.allChannels.map({it.name }).toSet()
             val channels = channelDao.getChannels(true)
-            if (joined.size() != channels.size()) {
+            if (joined.size != channels.size) {
                 channels.filter({ channel -> !joined.contains(channel.name) }).forEach({ channel ->
                     channel.join(ircBot)
                     sleep(500)
@@ -151,7 +151,7 @@ public open class Javabot {
             try {
                 executors.awaitTermination(10, TimeUnit.SECONDS)
             } catch (e: InterruptedException) {
-                LOG.error(e.getMessage(), e)
+                LOG.error(e.message, e)
             }
 
             running = false
@@ -180,12 +180,12 @@ public open class Javabot {
     }
 
     public fun startWebApp() {
-        if (javabotConfig.startWebApp()!!) {
+        if (javabotConfig.startWebApp()) {
             try {
                 Sofia.logWebappStarting()
                 injector.getInstance<JavabotApplication>(JavabotApplication::class.java).run(arrayOf("server", "javabot.yml"))
             } catch (e: Exception) {
-                throw RuntimeException(e.getMessage(), e)
+                throw RuntimeException(e.message, e)
             }
 
         } else {
@@ -217,8 +217,8 @@ public open class Javabot {
                 }
             }
         } catch (e: Exception) {
-            LOG.error(e.getMessage(), e)
-            throw RuntimeException(e.getMessage(), e)
+            LOG.error(e.message, e)
+            throw RuntimeException(e.message, e)
         }
 
     }
@@ -229,7 +229,7 @@ public open class Javabot {
         if (operation != null && operation !is AdminCommand && operation !is StandardOperation) {
             activeOperations.remove(operation)
             val config = configDao.get()
-            config.operations.remove(name)
+            config.operations.removeRaw(name)
             configDao.save(config)
             disabled = true
         }
@@ -244,7 +244,7 @@ public open class Javabot {
             activeOperations.add(op)
             configDao.save(config)
         } else {
-            println("Operation not found: ${name}.  \nKnown ops: ${getAllOperations().keySet()}")
+            println("Operation not found: ${name}.  \nKnown ops: ${getAllOperations().keys}")
             System.exit(-1)
         }
     }
@@ -268,7 +268,7 @@ public open class Javabot {
                             }
                         }
                     } catch (e: NickServViolationException) {
-                        postMessageToUser(message.user, e.getMessage()!!)
+                        postMessageToUser(message.user, e.message!!)
                     }
 
                 }
@@ -284,8 +284,8 @@ public open class Javabot {
     }
 
     internal fun extractContentFromMessage(message: String, startString: String): String {
-        var content = message.substring(startString.length()).trim()
-        while (!content.isEmpty() && (content.charAt(0) == ':' || content.charAt(0) == ',')) {
+        var content = message.substring(startString.length).trim()
+        while (!content.isEmpty() && (content[0] == ':' || content[0] == ',')) {
             content = content.substring(1).trim()
         }
         return content

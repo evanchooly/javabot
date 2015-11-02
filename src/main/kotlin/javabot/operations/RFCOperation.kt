@@ -28,7 +28,7 @@ public class RFCOperation : BotOperation() {
     override fun handleMessage(event: Message): Boolean {
         val message = event.value.toLowerCase()
         if (message.startsWith(prefix)) {
-            val rfcText = message.substring(prefix.length()).trim()
+            val rfcText = message.substring(prefix.length).trim()
             try {
                 val rfc = Integer.parseInt(rfcText)
                 try {

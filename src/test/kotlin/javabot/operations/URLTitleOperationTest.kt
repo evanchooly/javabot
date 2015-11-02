@@ -21,7 +21,8 @@ public class URLTitleOperationTest : BaseMessagingTest() {
               arrayOf<Any?>("http://hastebin.com/askhjahs", null),
               arrayOf<Any?>("http://pastebin.com/askhjahs", null),
               arrayOf<Any?>("https://www.facebook.com/thechurchofspace", null), // url matches content title too well
-              arrayOf<Any?>("http://architects.dzone.com/articles/why-programmers-should-have", null), // url matches title
+              arrayOf<Any?>("http://architects.dzone.com/articles/why-programmers-should-have",
+                      "botuser's title: Why Programmers Should Have a Blog - DZone Agile"), // url matches title
               arrayOf<Any?>("http://facebook.com/foo/bar/blah", null), // doesn't exist on facebook, I hope
               arrayOf<Any?>("http://", null),
               arrayOf<Any?>("http://docs.oracle.com/javaee/6/tutorial/doc/", "botuser's title: - The Java EE 6 Tutorial"),

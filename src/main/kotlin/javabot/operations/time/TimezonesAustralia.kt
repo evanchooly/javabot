@@ -28,9 +28,9 @@ public class TimezonesAustralia : Timezones {
         private val timezones = Tri<String>()
 
         init {
-            for (states in AustralianState.values()) {
+            for (states in AustralianState.values) {
                 val timezone = states.timezone
-                timezones.insert(states.name().toLowerCase(), timezone)
+                timezones.insert(states.name.toLowerCase(), timezone)
                 timezones.insert(states.abbreviation.toLowerCase(), timezone)
                 timezones.insert(states.capital, timezone)
             }

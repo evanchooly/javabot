@@ -15,13 +15,13 @@ public class DaysUntilOperation : BotOperation() {
         var handled = false
         if (message.startsWith("days until ")) {
             val sender = event.user
-            message = message.substring("days until ".length())
+            message = message.substring("days until ".length)
             var d: LocalDateTime? = null
             val formats = arrayOf(DateTimeFormatter.ofPattern("yyyy/MM/dd"), DateTimeFormatter.ofPattern("MMM d, ''yy"),
                   DateTimeFormatter.ofPattern("d MMM yyyy"), DateTimeFormatter.ofPattern("MMM d, yyyy"),
                   DateTimeFormatter.ofPattern("MMM d, ''yy"))
             var i = 0
-            while (i < formats.size() && d == null) {
+            while (i < formats.size && d == null) {
                 try {
                     d = LocalDateTime.parse(message, formats[i])
                     calcTime(event, d)

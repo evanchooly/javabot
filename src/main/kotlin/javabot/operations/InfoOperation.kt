@@ -17,7 +17,7 @@ public class InfoOperation : BotOperation() {
     override fun handleMessage(event: Message): Boolean {
         val message = event.value.toLowerCase()
         if (message.startsWith("info ")) {
-            val key = message.substring("info ".length())
+            val key = message.substring("info ".length)
             val factoid = factoidDao.getFactoid(key)
             if (factoid != null) {
                 val formatter = DateTimeFormatter.ofPattern(INFO_DATE_FORMAT)

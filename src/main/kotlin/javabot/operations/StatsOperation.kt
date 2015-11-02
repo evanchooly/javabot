@@ -20,7 +20,7 @@ public class StatsOperation : BotOperation() {
         val message = event.value
         if ("stats".equals(message, ignoreCase = true)) {
             bot.postMessageToChannel(event,
-                  Sofia.botStats(Duration.between(now(), startTime).toDays(), numberOfMessages, factoidDao!!.count()))
+                  Sofia.botStats(Duration.between(now(), startTime).toDays(), numberOfMessages, factoidDao.count()))
             return true
         }
         return false

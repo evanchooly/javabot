@@ -11,7 +11,7 @@ public class Magic8BallOperation : BotOperation() {
     override fun handleMessage(event: Message): Boolean {
         val message = event.value.toLowerCase()
         if (message.startsWith("should i ") || message.startsWith("magic8 ")) {
-            bot.postMessageToChannel(event, responses[((Math.random() * responses.size()).toInt())])
+            bot.postMessageToChannel(event, responses[((Math.random() * responses.size).toInt())])
             return true
         }
         return false

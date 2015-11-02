@@ -11,7 +11,7 @@ import java.util.stream.Collectors
 public class ListAdminCommands : AdminCommand() {
     override fun execute(event: Message) {
         val list = listCommands().map({ it.getCommandName() })
-        bot.postMessageToChannel(event, Sofia.adminKnownCommands(event.user.nick, list.join(", ")))
+        bot.postMessageToChannel(event, Sofia.adminKnownCommands(event.user.nick, list.joinToString(", ")))
     }
 
     public fun listCommands(): List<AdminCommand> {

@@ -82,9 +82,9 @@ enum class InMemoryUserCache {
 
         val map = userCache!!.asMap()
 
-        for (entry in map.entrySet()) {
-            if (entry.getValue().openIDIdentifier == identifier) {
-                return Optional.of(entry.getValue())
+        for (entry in map.entries) {
+            if (entry.value.openIDIdentifier == identifier) {
+                return Optional.of(entry.value)
             }
 
         }
@@ -95,10 +95,10 @@ enum class InMemoryUserCache {
     public fun getByEmailAddress(emailAddress: String): Optional<User> {
         val map = userCache!!.asMap()
 
-        for (entry in map.entrySet()) {
+        for (entry in map.entries) {
 
-            if (entry.getValue().email == emailAddress) {
-                return Optional.of(entry.getValue())
+            if (entry.value.email == emailAddress) {
+                return Optional.of(entry.value)
             }
 
         }

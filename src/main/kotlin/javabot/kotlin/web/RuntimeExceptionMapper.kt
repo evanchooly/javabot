@@ -29,7 +29,7 @@ public class RuntimeExceptionMapper(configuration: JavabotConfiguration) : Excep
         if (runtime is WebApplicationException) {
             return handleWebApplicationException(runtime)
         } else {
-            log.error(runtime.getMessage(), runtime)
+            log.error(runtime.message, runtime)
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(PublicErrorResource().view500()).build()
         }
     }
@@ -54,7 +54,7 @@ public class RuntimeExceptionMapper(configuration: JavabotConfiguration) : Excep
 
             //                       .entity(new PublicErrorResource().view404())
         } else {
-            log.error(exception.getMessage(), exception)
+            log.error(exception.message, exception)
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(PublicErrorResource().view500()).build()
         }
     }

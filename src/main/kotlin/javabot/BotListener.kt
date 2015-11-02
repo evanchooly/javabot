@@ -160,7 +160,7 @@ public class BotListener : ListenerAdapter<PircBotX>() {
                         javabot.getResponses(Message(event.user, content), event.user)
                     }
                 } catch (e: NickServViolationException) {
-                    event.user.send().message(e.getMessage())
+                    event.user.send().message(e.message)
                 }
             })
         }

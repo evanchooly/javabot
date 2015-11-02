@@ -35,9 +35,9 @@ public class JavadocMethod : JavadocElement {
         parentClassName = parent.toString()
 
         paramCount = count
-        longArgs.join(", ")
-        longSignatureTypes = longArgs.join(", ")
-        shortSignatureTypes = shortArgs.join(", ")
+        longArgs.joinToString(", ")
+        longSignatureTypes = longArgs.joinToString(", ")
+        shortSignatureTypes = shortArgs.joinToString(", ")
         buildUrl(parent, longArgs)
     }
 
@@ -46,7 +46,7 @@ public class JavadocMethod : JavadocElement {
         val java8 = parentUrl?.contains("se/8") ?: false
         val url = StringBuilder()
         for (arg in longArgs) {
-            if (url.length() != 0) {
+            if (url.length != 0) {
                 url.append(if (java8) "-" else ", ")
             }
             url.append(arg.replace("<.*".toRegex(), ""))

@@ -66,14 +66,14 @@ public class Factoid(var name: String = "", var value: String = "", var userName
             val comparable = if (subject == null) sender else subject.target.nick
             message = "$comparable, $name is $message"
         }
-        return message.substring(0, Math.min(message.length(), 510))
+        return message.substring(0, Math.min(message.length, 510))
     }
 
     private fun urlencode(value: String): String {
         try {
             return URLEncoder.encode(value, Charset.defaultCharset().displayName())
         } catch (e: UnsupportedEncodingException) {
-            log.error(e.getMessage(), e)
+            log.error(e.message, e)
             return value
         }
 
@@ -83,11 +83,11 @@ public class Factoid(var name: String = "", var value: String = "", var userName
         val sb = StringBuilder(`in`.replace("\\s".toRegex(), " "))
         if (!`in`.isEmpty()) {
             var idx = sb.indexOf(" ")
-            sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)))
+            sb.setCharAt(0, Character.toUpperCase(sb[0]))
             while (idx > -1) {
                 sb.deleteCharAt(idx)
-                if (idx < sb.length()) {
-                    sb.setCharAt(idx, Character.toUpperCase(sb.charAt(idx)))
+                if (idx < sb.length) {
+                    sb.setCharAt(idx, Character.toUpperCase(sb[idx]))
                 }
                 idx = sb.indexOf(" ")
             }
@@ -100,11 +100,11 @@ public class Factoid(var name: String = "", var value: String = "", var userName
         var index = -1
         index = result.indexOf("(", index + 1)
         var index2 = result.indexOf(")", index + 1)
-        while (index < result.length() && index != -1 && index2 != -1) {
+        while (index < result.length && index != -1 && index2 != -1) {
             val choice = result.substring(index + 1, index2)
             val choices = choice.split("|")
-            if (choices.size() > 1) {
-                val chosen = (Math.random() * choices.size()).toInt()
+            if (choices.size > 1) {
+                val chosen = (Math.random() * choices.size).toInt()
                 result = format("%s%s%s", result.substring(0, index), choices[chosen],
                       result.substring(index2 + 1))
             }

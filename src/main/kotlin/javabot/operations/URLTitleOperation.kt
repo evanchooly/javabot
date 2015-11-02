@@ -39,14 +39,14 @@ public class URLTitleOperation : BotOperation() {
 
     private fun postMessageToChannel(titlesToPost: List<String>, event: Message) {
         val botMessage: String
-        if (titlesToPost.size() == 1) {
+        if (titlesToPost.size == 1) {
             botMessage = format("%s'%s title: %s", event.user.nick,
                   if (event.user.nick.endsWith("s")) "" else "s",
                   titlesToPost.get(0))
         } else {
             botMessage = format("%s'%s titles: %s", event.user.nick,
                   if (event.user.nick.endsWith("s")) "" else "s",
-                  titlesToPost.map({ s -> "\"" + s + "\"" }).join(" | "))
+                    titlesToPost.map({ s -> "\"" + s + "\"" }).joinToString(" | "))
         }
 
         bot.postMessageToChannel(event, botMessage)

@@ -13,12 +13,12 @@ public abstract class UrlOperation : BotOperation() {
     override fun handleMessage(event: Message): Boolean {
         var message = event.value
         if (message.startsWith(getTrigger())) {
-            message = message.substring(getTrigger().length())
+            message = message.substring(getTrigger().length)
             try {
                 bot.postMessageToChannel(event, getBaseUrl() + URLEncoder.encode(message, Charset.defaultCharset().displayName()))
                 return true
             } catch (e: UnsupportedEncodingException) {
-                log.error(e.getMessage(), e)
+                log.error(e.message, e)
             }
 
         }

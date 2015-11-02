@@ -23,7 +23,7 @@ public class ConfigurationView(injector: Injector, request: HttpServletRequest) 
     }
 
     public fun operations(): List<BotOperation> {
-        val all = ArrayList(javabot.getAllOperations().values())
+        val all = ArrayList(javabot.getAllOperations().values)
         Collections.sort(all) { left, right -> left.getName().compareTo(right.getName()) }
         return all
     }

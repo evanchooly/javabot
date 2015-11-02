@@ -11,7 +11,7 @@ class PublicErrorResource {
     }
 
     private fun getRandomImage(images: Array<String>): String {
-        return images[Random().nextInt(images.size())]
+        return images[Random().nextInt(images.size)]
     }
 
     companion object {

@@ -16,7 +16,7 @@ public class JSROperation : BotOperation() {
             return true
         } else {
             if (message.startsWith("jsr ")) {
-                val jsrString = message.substring("jsr ".length())
+                val jsrString = message.substring("jsr ".length)
 
                 try {
                     val jsr = Integer.parseInt(jsrString)

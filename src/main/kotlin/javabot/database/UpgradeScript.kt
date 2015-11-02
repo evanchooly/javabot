@@ -16,7 +16,7 @@ public abstract class UpgradeScript {
                 doUpgrade()
                 registerUpgrade()
             } catch (e: Exception) {
-                throw RuntimeException(e.getMessage(), e)
+                throw RuntimeException(e.message, e)
             }
 
         }

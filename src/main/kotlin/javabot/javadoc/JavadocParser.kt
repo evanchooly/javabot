@@ -32,7 +32,6 @@ public class JavadocParser {
     lateinit var provider: Provider<JavadocClassVisitor>
 
     lateinit var api: JavadocApi
-        private set
 
     private val deferred = HashMap<String, MutableList<JavadocClass>?>()
 
@@ -62,7 +61,7 @@ public class JavadocParser {
                         }
                     }
                     while (!workQueue.isEmpty()) {
-                        writer.write("Waiting on %s work queue to drain.  %d items left".format(api.name, workQueue.size()))
+                        writer.write("Waiting on %s work queue to drain.  %d items left".format(api.name, workQueue.size))
                         Thread.sleep(5000)
                     }
                 }
@@ -75,11 +74,11 @@ public class JavadocParser {
             executor.awaitTermination(1, TimeUnit.HOURS)
             writer.write("Finished importing %s.  %s!".format(api.name, if (workQueue.isEmpty()) "SUCCESS" else "FAILURE"))
         } catch (e: IOException) {
-            log.error(e.getMessage(), e)
-            throw RuntimeException(e.getMessage(), e)
+            log.error(e.message, e)
+            throw RuntimeException(e.message, e)
         } catch (e: InterruptedException) {
-            log.error(e.getMessage(), e)
-            throw RuntimeException(e.getMessage(), e)
+            log.error(e.message, e)
+            throw RuntimeException(e.message, e)
         }
 
     }
@@ -139,7 +138,7 @@ public class JavadocParser {
                 }
                 ClassReader(jarFile.getInputStream(entry)).accept(classVisitor, 0)
             } catch (e: Exception) {
-                throw RuntimeException(e.getMessage(), e)
+                throw RuntimeException(e.message, e)
             }
 
         }

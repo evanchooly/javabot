@@ -68,7 +68,7 @@ public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(Jav
         val methods = ArrayList<JavadocMethod>()
 
         while (!list.isEmpty()) {
-            val javadocClass = list.remove(0)
+            val javadocClass = list.removeAt(0)
             if (javadocClass != null) {
                 methods.addAll(getMethods(methodName, signatureTypes, javadocClass))
                 javadocClass.superClassId?.let { list.add(find(it)) }

@@ -9,10 +9,10 @@ public abstract class PagedView<V>(injector: Injector, request: HttpServletReque
     private val itemsPerPage = ITEMS_PER_PAGE
     var itemCount: Long = -1
         get() {
-            if ($itemCount == -1L) {
-                $itemCount = countItems()
+            if (field == -1L) {
+                field = countItems()
             }
-            return $itemCount
+            return field
         }
 
 

@@ -49,7 +49,7 @@ public class PublicOAuthResource {
                 val uri = URI(manager?.getAuthenticationUrl("googleplus", configuration!!.OAuthSuccessUrl))
                 return Response.temporaryRedirect(uri).build()
             } catch (e: Exception) {
-                log.error(e.getMessage(), e)
+                log.error(e.message, e)
             }
 
         }
@@ -96,7 +96,7 @@ public class PublicOAuthResource {
 
             return Response.temporaryRedirect(URI("/")).cookie(replaceSessionTokenCookie(Optional.of(tempUser))).build()
         } catch (e: Exception) {
-            log.error(e.getMessage(), e)
+            log.error(e.message, e)
         }
 
         // Must have failed to be here
@@ -114,7 +114,7 @@ public class PublicOAuthResource {
             manager.socialAuthConfig = config
             return manager
         } catch (e: Exception) {
-            log.error(e.getMessage(), e)
+            log.error(e.message, e)
         }
 
         return null

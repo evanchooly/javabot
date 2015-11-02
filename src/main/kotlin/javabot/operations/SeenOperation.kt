@@ -13,8 +13,8 @@ public class SeenOperation : BotOperation() {
     override fun handleMessage(event: Message): Boolean {
         val message = event.value
         val channel = event.channel
-        if (channel != null && "seen ".equals(message.substring(0, Math.min(message.length(), 5)), ignoreCase = true)) {
-            val key = message.substring("seen ".length())
+        if (channel != null && "seen ".equals(message.substring(0, Math.min(message.length, 5)), ignoreCase = true)) {
+            val key = message.substring("seen ".length)
             val seen = dao.getSeen(channel.name, key)
             if (seen != null) {
                 bot.postMessageToChannel(event,

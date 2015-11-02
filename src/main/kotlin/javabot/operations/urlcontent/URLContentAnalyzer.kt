@@ -54,11 +54,11 @@ public class URLContentAnalyzer {
         val wordsInTitle = title.toLowerCase().split(" ")
         val words = wordsInTitle
               .map({ s -> s.replace("[\\W]|_".toRegex(), "") })
-              .filter { s -> s.length() > 2 }
+              .filter { s -> s.length > 2 }
               .count()
         // generate a ratio of words to occurrences in the title.
         val hits = wordsInTitle
-              .map({ s -> s.replace("[\\W]|_".toRegex(), "") }).filter { s -> s.length() > 2 }.filter { s ->
+              .map({ s -> s.replace("[\\W]|_".toRegex(), "") }).filter { s -> s.length > 2 }.filter { s ->
             url.toLowerCase().contains(s.toLowerCase())
         }.count()
 

@@ -30,9 +30,9 @@ public class Configure : AdminCommand() {
                     configDao.save(config)
                     bot.postMessageToUser(event.user, Sofia.configurationSetProperty(property!!, value!!))
                 } catch (e: ReflectiveOperationException) {
-                    bot.postMessageToUser(event.user, e.getMessage()!!)
+                    bot.postMessageToUser(event.user, e.message!!)
                 } catch (e: NumberFormatException) {
-                    bot.postMessageToUser(event.user, e.getMessage()!!)
+                    bot.postMessageToUser(event.user, e.message!!)
                 }
 
             } catch (e: NoSuchMethodException) {

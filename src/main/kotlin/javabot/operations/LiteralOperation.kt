@@ -18,7 +18,7 @@ public class LiteralOperation : BotOperation() {
     override fun handleMessage(event: Message): Boolean {
         val message = event.value.toLowerCase()
         if (message.startsWith("literal ")) {
-            val key = message.substring("literal ".length())
+            val key = message.substring("literal ".length)
             val factoid = dao.getFactoid(key)
             bot.postMessageToChannel(event, if (factoid != null) factoid.value else Sofia.factoidUnknown(key))
             return true

@@ -20,7 +20,7 @@ public class ShunOperation : BotOperation() {
         val message = event.value
         if (message.startsWith("shun ")) {
             val parts = message.substring(5).split(" ")
-            if (parts.size() == 0) {
+            if (parts.size == 0) {
                 bot.postMessageToChannel(event, Sofia.shunUsage())
             } else {
                 bot.postMessageToChannel(event, getShunnedMessage(parts))
@@ -32,10 +32,10 @@ public class ShunOperation : BotOperation() {
 
     private fun getShunnedMessage(parts: List<String>): String {
         val victim = parts[0]
-        if (shunDao!!.isShunned(victim)) {
+        if (shunDao.isShunned(victim)) {
             return Sofia.alreadyShunned(victim)
         }
-        val until = if (parts.size() == 1)
+        val until = if (parts.size == 1)
             LocalDateTime.now().plusMinutes(5)
         else
             LocalDateTime.now().plusSeconds(Integer.parseInt(parts[1]).toLong())

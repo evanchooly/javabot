@@ -28,7 +28,7 @@ public class URLFromMessageParser {
     }
 
     private fun stripPunctuation(message: String, url: String, idxUrlStart: Int): String {
-        val last = url.charAt(url.length() - 1)
+        val last = url[url.length - 1]
 
         val idxPunc = ArrayUtils.indexOf(CLOSE_PUNCTUATION, last)
         if (idxPunc == -1) {
@@ -39,7 +39,7 @@ public class URLFromMessageParser {
         //before another close.  Otherwise, return the url as is.
         for (c in StringUtils.reverse(message.substring(0, idxUrlStart)).toCharArray()) {
             if (c == OPEN_PUNCTUATION[idxPunc]) {
-                return url.substring(0, url.length() - 1)
+                return url.substring(0, url.length - 1)
             }
             if (c == CLOSE_PUNCTUATION[idxPunc]) {
                 return url

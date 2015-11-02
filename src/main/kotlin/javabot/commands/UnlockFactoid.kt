@@ -24,7 +24,7 @@ public class UnlockFactoid : AdminCommand() {
 */
 
     override fun execute(event: Message) {
-        val factoidName = args.join(" ")
+        val factoidName = args.joinToString(" ")
         val factoid = factoidDao.getFactoid(factoidName)
         if (factoid == null) {
             bot.postMessageToChannel(event, Sofia.factoidUnknown(factoidName))

@@ -84,7 +84,7 @@ open class JavabotModule : AbstractModule() {
                       MongoClientOptions.builder().connectTimeout(2000).build())
             } catch (e: RuntimeException) {
                 e.printStackTrace()
-                throw RuntimeException(e.getMessage(), e)
+                throw RuntimeException(e.message, e)
             }
         }
         return mongoClient!!
@@ -142,7 +142,7 @@ open class JavabotModule : AbstractModule() {
                     missingKeys.add(annotation.value)
                 }
             } catch (e: ReflectiveOperationException) {
-                throw RuntimeException(e.getMessage(), e)
+                throw RuntimeException(e.message, e)
             }
 
         }

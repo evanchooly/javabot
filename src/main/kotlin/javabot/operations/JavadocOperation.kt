@@ -24,17 +24,17 @@ public class JavadocOperation : BotOperation() {
     @field:[Nullable Inject(optional = true)]
     var client: BitlyClient? = null
         get() {
-            if ($client == null) {
-                $client = if (config.bitlyToken() != "") BitlyClient(config.bitlyToken()) else null
+            if (field == null) {
+                field = if (config.bitlyToken() != "") BitlyClient(config.bitlyToken()) else null
             }
-            return $client;
+            return field;
         }
 
     override fun handleMessage(event: Message): Boolean {
         val message = event.value
         var handled = false
         if (message.toLowerCase().startsWith("javadoc")) {
-            var key = message.substring("javadoc".length()).trim()
+            var key = message.substring("javadoc".length).trim()
             if (key.startsWith("-list") || key.isEmpty()) {
                 displayApiList(event)
                 handled = true
@@ -64,7 +64,7 @@ public class JavadocOperation : BotOperation() {
             val nick = event.user.nick
             var urlMessage = StringBuilder(nick + ": ")
             urlMessage = buildResponse(event, urls, urlMessage)
-            if (urls.size() > RESULT_LIMIT) {
+            if (urls.size > RESULT_LIMIT) {
                 bot.postMessageToChannel(event, Sofia.tooManyResults(nick))
                 bot.postMessageToUser(event.user, urlMessage.toString())
             } else {
@@ -80,7 +80,7 @@ public class JavadocOperation : BotOperation() {
     private fun buildResponse(event: Message, urls: List<String>, urlMessage: StringBuilder): StringBuilder {
         var message = urlMessage
         for (index in urls.indices) {
-            if ((message.toString() + urls.get(index)).length() > 400) {
+            if ((message.toString() + urls.get(index)).length > 400) {
                 bot.postMessageToChannel(event, message.toString())
                 message = StringBuilder()
             }
@@ -107,7 +107,7 @@ public class JavadocOperation : BotOperation() {
         } else {
             val className = key.substring(0, finalIndex)
             val fieldName = key.substring(finalIndex + 1)
-            if (Character.isUpperCase(fieldName.charAt(0)) && fieldName.toUpperCase() != fieldName) {
+            if (Character.isUpperCase(fieldName[0]) && fieldName.toUpperCase() != fieldName) {
                 findClasses(api, urls, key)
             } else {
                 val list = dao.getField(api, className, fieldName)
@@ -155,7 +155,7 @@ public class JavadocOperation : BotOperation() {
     private fun displayApiList(event: Message) {
         val builder = StringBuilder()
         for (api in apiDao.findAll()) {
-            if (builder.length() != 0) {
+            if (builder.length != 0) {
                 builder.append("; ")
             }
             builder.append(api.name)

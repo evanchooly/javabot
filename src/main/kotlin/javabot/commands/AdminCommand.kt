@@ -35,8 +35,8 @@ public abstract class AdminCommand : BotOperation() {
                             execute(event)
                         }
                     } catch (e: Exception) {
-                        LOG.error(e.getMessage(), e)
-                        bot.postMessageToUser(event.user, Sofia.adminParseFailure(e.getMessage()!!))
+                        LOG.error(e.message, e)
+                        bot.postMessageToUser(event.user, Sofia.adminParseFailure(e.message!!))
                     }
 
                 }
@@ -49,15 +49,15 @@ public abstract class AdminCommand : BotOperation() {
     }
 
     protected open fun parse(params: MutableList<String>) {
-        JCommander(this).parse(*params.subList(1, params.size()).toTypedArray())
+        JCommander(this).parse(*params.subList(1, params.size).toTypedArray())
     }
 
     public open fun canHandle(message: String): Boolean {
         try {
             return message.equals(javaClass.simpleName, ignoreCase = true)
         } catch (e: Exception) {
-            LOG.error(e.getMessage(), e)
-            throw RuntimeException(e.getMessage(), e)
+            LOG.error(e.message, e)
+            throw RuntimeException(e.message, e)
         }
 
     }

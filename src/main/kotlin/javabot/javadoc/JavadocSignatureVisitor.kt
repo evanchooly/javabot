@@ -162,7 +162,7 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
 
     public fun getTypes(): List<JavadocType> {
         if (varargs && !types.isEmpty()) {
-            types.get(types.size() - 1).setVarargs(true)
+            types.get(types.size - 1).setVarargs(true)
         }
         return types
     }
@@ -170,8 +170,8 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
     public class JavadocType {
         public var name: String? = null
             set(value) {
-                if ($name == null) {
-                    $name = value
+                if (field == null) {
+                    field = value
                 } else if(value != null){
                     typeVariables.add(value)
                 }
@@ -203,24 +203,24 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
         }
 
         override fun toString(): String {
-            if (name == null && typeVariables.size() == 1) {
+            if (name == null && typeVariables.size == 1) {
                 return typeVariables.get(0)
             }
             val builder: StringBuilder
             try {
                 builder = StringBuilder(name)
             } catch (e: NullPointerException) {
-                throw RuntimeException(e.getMessage(), e)
+                throw RuntimeException(e.message, e)
             }
 
             val generics = StringBuilder()
             for (typeVariable in typeVariables) {
-                if (generics.length() != 0) {
+                if (generics.length != 0) {
                     generics.append(", ")
                 }
                 generics.append(JavadocClassVisitor.calculateNameAndPackage(typeVariable).second)
             }
-            if (generics.length() != 0) {
+            if (generics.length != 0) {
                 builder.append("<").append(generics).append(">")
             }
             if (isArray()) {

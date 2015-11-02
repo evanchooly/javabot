@@ -51,7 +51,7 @@ public class KarmaOperation : BotOperation() {
                     return false
                 }
             }
-            if (operationPointer != message.length() - 2 && message.charAt(operationPointer + 2) != ' ') {
+            if (operationPointer != message.length - 2 && message[operationPointer + 2] != ' ') {
                 return false
             }
             val nick: String
@@ -74,7 +74,7 @@ public class KarmaOperation : BotOperation() {
                         }
                         increment = false
                     }
-                    var karma: Karma? = dao!!.find(nick)
+                    var karma: Karma? = dao.find(nick)
                     if (karma == null) {
                         karma = Karma()
                         karma.name = nick
@@ -97,8 +97,8 @@ public class KarmaOperation : BotOperation() {
         val message = event.value
         val sender = event.user
         if (message.startsWith("karma ")) {
-            val nick = message.substring("karma ".length()).toLowerCase()
-            val karma = dao!!.find(nick)
+            val nick = message.substring("karma ".length).toLowerCase()
+            val karma = dao.find(nick)
             if (karma != null) {
                 bot.postMessageToChannel(event, if (nick.equals(sender.nick, ignoreCase = true))
                     Sofia.karmaOwnValue(sender.nick, karma.value)

@@ -19,7 +19,7 @@ public class LeaveOperation : BotOperation() {
                     try {
                         Thread.sleep((60000 * 15).toLong())
                     } catch (exception: InterruptedException) {
-                        log.error(exception.getMessage(), exception)
+                        log.error(exception.message, exception)
                     }
                     //                        getBot().getPircBot().joinChannel(channel);
                 }.start()

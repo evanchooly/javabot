@@ -45,7 +45,7 @@ public class FactoidsView(injector: Injector, request: HttpServletRequest, page:
                 return url + builder
             }
         } catch (e: UnsupportedEncodingException) {
-            LOG.error(e.getMessage(), e)
+            LOG.error(e.message, e)
         }
 
         return url

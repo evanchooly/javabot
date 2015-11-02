@@ -14,7 +14,7 @@ public class RegisterNickOperation : BotOperation() {
         val message = event.value
         if (message.startsWith("register ")) {
             val split = message.split(" ")
-            if (split.size() > 1) {
+            if (split.size > 1) {
                 val twitterName = split[1]
                 val registration = NickRegistration(event.user, twitterName)
                 adminDao.save(registration)

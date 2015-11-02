@@ -32,9 +32,9 @@ public class TimezonesCanada : Timezones {
         private val timezones = Tri<String>()
 
         init {
-            for (province in CanadianProvince.values()) {
+            for (province in CanadianProvince.values) {
                 val timezone = province.timezone
-                timezones.insert(province.name().toLowerCase(), timezone)
+                timezones.insert(province.name.toLowerCase(), timezone)
                 timezones.insert(province.abbreviation.toLowerCase(), timezone)
                 timezones.insert(province.capital, timezone)
             }
