@@ -12,14 +12,14 @@ public class LogsOperation : BotOperation() {
     @Inject
     lateinit var ds: Datastore
 
-    override fun handleMessage(event: Message): Boolean {
+    override fun handleMessage(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val message = event.value
         if (message.toLowerCase().startsWith(KEYWORD_LOGS)) {
             val nickname = message.substring(KEYWORD_LOGS.length).trim()
             val criteria = LogsCriteria(ds)
             criteria.channel(event.channel!!.name)
             criteria.updated().order(true)
-            var handled = false
             if (nickname.isEmpty()) {
                 criteria.query().limit(200)
             } else {
@@ -27,16 +27,14 @@ public class LogsOperation : BotOperation() {
                 criteria.query().limit(50)
             }
             for (logs in criteria.query().fetch()) {
-                bot.postMessageToChannel(event, Sofia.logsEntry(logs.updated.format(DateTimeFormatter.ofPattern("HH:mm")),
-                      logs.nick, logs.message))
-                handled = true
+                responses.add(Message(event, Sofia.logsEntry(logs.updated.format(DateTimeFormatter.ofPattern("HH:mm")),
+                      logs.nick, logs.message)))
             }
-            if (!handled) {
-                bot.postMessageToChannel(event, if (nickname.isEmpty()) Sofia.logsNone() else Sofia.logsNoneForNick(nickname))
+            if (responses.isEmpty()) {
+                responses.add(Message(event, if (nickname.isEmpty()) Sofia.logsNone() else Sofia.logsNoneForNick(nickname)))
             }
-            return true
         }
-        return false
+        return responses
     }
 
     companion object {

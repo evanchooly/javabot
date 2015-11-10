@@ -9,11 +9,11 @@ public class JSROperation : BotOperation() {
     @Inject
     lateinit var locator: JCPJSRLocator
 
-    override fun handleMessage(event: Message): Boolean {
+    override fun handleMessage(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val message = event.value.toLowerCase()
         if ("jsr" == message) {
-            bot.postMessageToChannel(event, Sofia.jsrMissing())
-            return true
+            responses.add(Message(event, Sofia.jsrMissing()))
         } else {
             if (message.startsWith("jsr ")) {
                 val jsrString = message.substring("jsr ".length)
@@ -22,18 +22,17 @@ public class JSROperation : BotOperation() {
                     val jsr = Integer.parseInt(jsrString)
                     val response = locator.findInformation(jsr)
                     if (!response.isEmpty()) {
-                        bot.postMessageToChannel(event, response)
+                        responses.add(Message(event, response))
                     } else {
-                        bot.postMessageToChannel(event, Sofia.jsrUnknown(jsrString))
+                        responses.add(Message(event, Sofia.jsrUnknown(jsrString)))
                     }
                 } catch (nfe: NumberFormatException) {
-                    bot.postMessageToChannel(event, Sofia.jsrInvalid(jsrString))
+                    responses.add(Message(event, Sofia.jsrInvalid(jsrString)))
                 }
-
-                return true
             }
         }
-        return false
+
+        return responses
     }
 }
 

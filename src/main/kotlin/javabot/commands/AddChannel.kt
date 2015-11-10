@@ -21,7 +21,8 @@ public class AddChannel : AdminCommand() {
     @Parameter(required = false, password = true)
     var password: String = ""
 
-    override fun execute(event: Message) {
+    override fun execute(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         if (channelName.startsWith("#")) {
             var channel = channelDao.get(channelName)
             val isLogged = java.lang.Boolean.valueOf(logged)
@@ -32,18 +33,22 @@ public class AddChannel : AdminCommand() {
                 channelDao.save(channel)
             }
 
-            bot.postMessageToChannel(event, if (isLogged) Sofia.adminJoiningLoggedChannel(channelName) else Sofia.adminJoiningChannel(
-                  channelName))
+            responses.add(Message(event,
+                    if (isLogged)
+                        Sofia.adminJoiningLoggedChannel(channelName)
+                    else
+                        Sofia.adminJoiningChannel(channelName)))
             if (channel.key == null) {
                 ircBot.get().sendIRC().joinChannel(channel.name)
             } else {
                 ircBot.get().sendIRC().joinChannel(channel.name, channel.key)
             }
 
-            bot.postMessageToChannel(Message(event, ircBot.get().userChannelDao.getChannel(channelName)),
-                  Sofia.adminJoinedChannel(event.user.nick))
+            responses.add(Message(ircBot.get().userChannelDao.getChannel(channelName), event, Sofia.adminJoinedChannel(event.user.nick)))
         } else {
-            bot.postMessageToChannel(event, Sofia.adminBadChannelName())
+            responses.add(Message(event, Sofia.adminBadChannelName()))
         }
+
+        return responses
     }
 }

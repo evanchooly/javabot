@@ -23,15 +23,18 @@ public class UnlockFactoid : AdminCommand() {
     }
 */
 
-    override fun execute(event: Message) {
+    override fun execute(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val factoidName = args.joinToString(" ")
         val factoid = factoidDao.getFactoid(factoidName)
         if (factoid == null) {
-            bot.postMessageToChannel(event, Sofia.factoidUnknown(factoidName))
+            responses.add(Message(event, Sofia.factoidUnknown(factoidName)))
         } else {
             factoid.locked = false
             factoidDao.save(factoid)
-            bot.postMessageToChannel(event, "${factoidName} unlocked.")
+            responses.add(Message(event, "${factoidName} unlocked."))
         }
+
+        return responses
     }
 }

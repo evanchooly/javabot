@@ -10,22 +10,20 @@ public class SeenOperation : BotOperation() {
     @Inject
     lateinit var dao: LogsDao
 
-    override fun handleMessage(event: Message): Boolean {
+    override fun handleMessage(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val message = event.value
         val channel = event.channel
         if (channel != null && "seen ".equals(message.substring(0, Math.min(message.length, 5)), ignoreCase = true)) {
             val key = message.substring("seen ".length)
             val seen = dao.getSeen(channel.name, key)
             if (seen != null) {
-                bot.postMessageToChannel(event,
-                      Sofia.seenLast(event.user.nick, key, seen.updated.format(FORMATTER),
-                            seen.message))
+                responses.add(Message(event, Sofia.seenLast(event.user.nick, key, seen.updated.format(FORMATTER), seen.message)))
             } else {
-                bot.postMessageToChannel(event, Sofia.seenUnknown(event.user.nick, key))
+                responses.add(Message(event, Sofia.seenUnknown(event.user.nick, key)))
             }
-            return true
         }
-        return false
+        return responses
     }
 
     companion object {

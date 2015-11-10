@@ -25,7 +25,8 @@ public class RFCOperation : BotOperation() {
               }
           })
 
-    override fun handleMessage(event: Message): Boolean {
+    override fun handleMessage(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val message = event.value.toLowerCase()
         if (message.startsWith(prefix)) {
             val rfcText = message.substring(prefix.length).trim()
@@ -33,19 +34,18 @@ public class RFCOperation : BotOperation() {
                 val rfc = Integer.parseInt(rfcText)
                 try {
                     val url = "http://www.faqs.org/rfcs/rfc%d.html".format(rfc)
-                    bot.postMessageToChannel(event, Sofia.rfcSucceed(url, rfcTitleCache.get(url)))
+                    responses.add(Message(event, Sofia.rfcSucceed(url, rfcTitleCache.get(url))))
                 } catch (e: ExecutionException) {
                     // from rfc.fail
-                    bot.postMessageToChannel(event, Sofia.rfcFail(rfcText))
+                    responses.add(Message(event, Sofia.rfcFail(rfcText)))
                 }
 
             } catch (e: NumberFormatException) {
-                bot.postMessageToChannel(event, Sofia.rfcInvalid(rfcText))
+                responses.add(Message(event, Sofia.rfcInvalid(rfcText)))
             }
 
-            return true
         }
-        return false
+        return responses
     }
 
     companion object {

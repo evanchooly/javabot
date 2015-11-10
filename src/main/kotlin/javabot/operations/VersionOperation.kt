@@ -10,13 +10,13 @@ import java.io.FileInputStream
 import java.io.InputStream
 
 public class VersionOperation : BotOperation(), StandardOperation {
-    override fun handleMessage(event: Message): Boolean {
+    override fun handleMessage(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val message = event.value
         if ("version".equals(message, ignoreCase = true)) {
-            bot.postMessageToChannel(event, Sofia.botVersion(loadVersion()))
-            return true
+            responses.add(Message(event, Sofia.botVersion(loadVersion())))
         }
-        return false
+        return responses
     }
 
     public fun loadVersion(): String {

@@ -10,19 +10,19 @@ import java.nio.charset.Charset
 
 public abstract class UrlOperation : BotOperation() {
 
-    override fun handleMessage(event: Message): Boolean {
+    override fun handleMessage(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         var message = event.value
         if (message.startsWith(getTrigger())) {
             message = message.substring(getTrigger().length)
             try {
-                bot.postMessageToChannel(event, getBaseUrl() + URLEncoder.encode(message, Charset.defaultCharset().displayName()))
-                return true
+                responses.add(Message(event, getBaseUrl() + URLEncoder.encode(message, Charset.defaultCharset().displayName())))
             } catch (e: UnsupportedEncodingException) {
                 log.error(e.message, e)
             }
 
         }
-        return false
+        return responses
     }
 
     protected abstract fun getBaseUrl(): String

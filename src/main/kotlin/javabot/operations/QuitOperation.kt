@@ -10,14 +10,13 @@ public class QuitOperation : BotOperation() {
     @Inject
     lateinit var configDao: ConfigDao
 
-    override fun handleMessage(event: Message): Boolean {
+    override fun handleMessage(event: Message): List<Message> {
         val message = event.value
         if (message.toLowerCase().startsWith("quit ")) {
             if (message.substring("quit ".length) == configDao.get().password) {
                 System.exit(0)
             }
-            return true
         }
-        return false
+        return listOf()
     }
 }

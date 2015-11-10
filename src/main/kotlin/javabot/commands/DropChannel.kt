@@ -18,16 +18,18 @@ public class DropChannel : AdminCommand() {
     @Parameter
     lateinit var channel: String
 
-    override fun execute(event: Message) {
+    override fun execute(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val chan = channelDao.get(channel)
         if (chan != null) {
             channelDao.delete(chan)
             val deleted = ircBot.get().userChannelDao.getChannel(channel)
             val message = Message(deleted, event.user, event.value)
-            bot.postMessageToChannel(message, Sofia.channelDeleted(event.user.nick))
+            responses.add(Message(message, Sofia.channelDeleted(event.user.nick)))
             deleted.send().part(Sofia.channelDeleted(event.user.nick))
         } else {
-            bot.postMessageToChannel(event, Sofia.channelUnknown(channel, event.user.nick))
+            responses.add(Message(event, Sofia.channelUnknown(channel, event.user.nick)))
         }
+        return responses
     }
 }

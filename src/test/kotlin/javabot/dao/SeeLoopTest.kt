@@ -1,33 +1,20 @@
 package javabot.dao
 
 import com.antwerkz.sofia.Sofia
-import javabot.BaseMessagingTest
+import javabot.BaseTest
+import javabot.operations.GetFactoidOperation
+import org.testng.Assert
 import org.testng.annotations.AfterTest
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
-
 import javax.inject.Inject
 
 @Test
-public class SeeLoopTest : BaseMessagingTest() {
+public class SeeLoopTest : BaseTest() {
     @Inject
     protected lateinit var factoidDao: FactoidDao
-
-    public fun serial() {
-        createCircularSee()
-        createCircularSee2()
-        createNormalSee()
-        followReferencesCorrectly()
-    }
-
-    public fun createCircularSee() {
-        deleteSees()
-        testMessage("~see1 is <see>see2", ok)
-        testMessage("~see2 is <see>see3", ok)
-        testMessage("~see3 is <see>see1", ok)
-        testMessage("~see1", Sofia.factoidLoop("<see>see2"))
-        deleteSees()
-    }
+    @Inject
+    protected lateinit var operation: GetFactoidOperation
 
     @BeforeTest
     @AfterTest
@@ -37,30 +24,33 @@ public class SeeLoopTest : BaseMessagingTest() {
         factoidDao.delete("test", "see3")
     }
 
-    public fun createCircularSee2() {
-        deleteSees()
-        testMessage("~see1 is <see>see2", ok)
-        testMessage("~see2 is <see>see3", ok)
-        testMessage("~see3 is <see>see1", ok)
-        testMessage("~see1", Sofia.factoidLoop("<see>see2"))
-        deleteSees()
+    public fun serial() {
+        createCircularSee()
+        createNormalSee()
+        followReferencesCorrectly()
+    }
+
+    public fun createCircularSee() {
+        factoidDao.addFactoid(testUser.nick, "see1", "<see>see2")
+        factoidDao.addFactoid(testUser.nick, "see2", "<see>see3")
+        factoidDao.addFactoid(testUser.nick, "see3", "<see>see1")
+        var response = operation.handleMessage(message("see1"))
+        Assert.assertEquals(response[0].value, Sofia.factoidLoop("<see>see2"))
     }
 
     public fun followReferencesCorrectly() {
-        deleteSees()
-        testMessage("~see1 is Bzzt \$who", ok)
-        testMessage("~see2 is <see>see1", ok)
-        testMessage("~see3 is <see>see2", ok)
-        testMessage("~see3", "${testUser}, see1 is Bzzt ${testUser}")
-        deleteSees()
+        factoidDao.addFactoid(testUser.nick, "see1", "Bzzt \$who")
+        factoidDao.addFactoid(testUser.nick, "see2", "<see>see1")
+        factoidDao.addFactoid(testUser.nick, "see3", "<see>see2")
+        var response = operation.handleMessage(message("see3"))
+        Assert.assertEquals(response[0].value, "${testUser}, see1 is Bzzt ${testUser}")
     }
 
     public fun createNormalSee() {
-        deleteSees()
-        testMessage("~see1 is <see>see2", ok)
-        testMessage("~see2 is <see>see3", ok)
-        testMessage("~see3 is w00t", ok)
-        testMessage("~see1", "${testUser}, see3 is w00t")
-        deleteSees()
+        factoidDao.addFactoid(testUser.nick, "see1", "<see>see2")
+        factoidDao.addFactoid(testUser.nick, "see2", "<see>see3")
+        factoidDao.addFactoid(testUser.nick, "see3", "w00t")
+        var response = operation.handleMessage(message("see1"))
+        Assert.assertEquals(response[0].value, "${testUser}, see3 is w00t")
     }
 }

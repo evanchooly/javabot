@@ -15,10 +15,11 @@ public class Configure : AdminCommand() {
     @Parameter(names = arrayOf("--value"))
     var value: String? = null
 
-    override fun execute(event: Message) {
+    override fun execute(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val config = configDao.get()
         if (StringUtils.isEmpty(property) || StringUtils.isEmpty(value)) {
-            bot.postMessageToUser(event.user, config.toString())
+            responses.add(Message(event.user, config.toString()))
         } else {
             try {
                 val name = property!!.substring(0, 1).toUpperCase() + property!!.substring(1)
@@ -28,17 +29,18 @@ public class Configure : AdminCommand() {
                 try {
                     set.invoke(config, if (type == String::class.java) value!!.trim() else Integer.parseInt(value))
                     configDao.save(config)
-                    bot.postMessageToUser(event.user, Sofia.configurationSetProperty(property!!, value!!))
+                    responses.add(Message(event.user, Sofia.configurationSetProperty(property!!, value!!)))
                 } catch (e: ReflectiveOperationException) {
-                    bot.postMessageToUser(event.user, e.message!!)
+                    responses.add(Message(event.user, e.message!!))
                 } catch (e: NumberFormatException) {
-                    bot.postMessageToUser(event.user, e.message!!)
+                    responses.add(Message(event.user, e.message!!))
                 }
 
             } catch (e: NoSuchMethodException) {
-                bot.postMessageToUser(event.user, Sofia.configurationUnknownProperty(property!!))
+                responses.add(Message(event.user, Sofia.configurationUnknownProperty(property!!)))
             }
 
         }
+        return responses
     }
 }

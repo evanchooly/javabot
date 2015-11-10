@@ -22,6 +22,8 @@ public class KarmaOperationTest : BaseMessagingTest() {
 
     @Inject
     protected lateinit var configDao: ConfigDao
+    @Inject
+    protected lateinit var operation: KarmaOperation
 
     @Throws(InterruptedException::class)
     public fun updateKarma() {
@@ -64,12 +66,15 @@ public class KarmaOperationTest : BaseMessagingTest() {
 
     public fun karmaLooksLikeParam() {
         val target = "foo " + Date().time
-        testMessage("~${target}--bar=as", Sofia.unhandledMessage(testUser.nick))
+        var response = operation.handleMessage(message("${target}--bar=as"))
+        Assert.assertEquals(response[0].value, Sofia.unhandledMessage(testUser.nick))
     }
 
     public fun karmaLooksLikeParamShort() {
-        testMessage("~--bar=as", Sofia.unhandledMessage(testUser.nick))
-        testMessage("~ --bar=af", Sofia.unhandledMessage(testUser.nick))
+        var response = operation.handleMessage(message("--bar=as"))
+        Assert.assertEquals(response[0].value, Sofia.unhandledMessage(testUser.nick))
+        response = operation.handleMessage(message(" --bar=af"))
+        Assert.assertEquals(response[0].value, Sofia.unhandledMessage(testUser.nick))
     }
 
     public fun noncontiguousNameAddKarmaTrailingSpace() {
@@ -111,7 +116,7 @@ public class KarmaOperationTest : BaseMessagingTest() {
     }
 
     public fun logNew() {
-        val target =  "${Date().time}"
+        val target = "${Date().time}"
         val karma = getKarma(userFactory.createUser(target, target, "localhost").nick) + 1
         testMessage(format("~%s++", target), Sofia.karmaOthersValue(target, karma, testUser.nick))
         Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma)))
@@ -126,7 +131,9 @@ public class KarmaOperationTest : BaseMessagingTest() {
 
     public fun changeOwnKarma() {
         val karma = getKarma(testUser.nick)
-        testMessage("~${testUser}++", "You can't increment your own karma.", "${testUser}, you have a karma level of ${karma - 1}")
+        var response = operation.handleMessage(message("${testUser}++"))
+        Assert.assertEquals(response[0].value, "You can't increment your own karma.")
+        Assert.assertEquals(response[1].value, "${testUser}, you have a karma level of ${karma - 1}")
         val karma2 = getKarma(testUser.nick)
         Assert.assertTrue(karma2 == karma - 1, "Should have lost one karma point.")
     }
@@ -143,7 +150,7 @@ public class KarmaOperationTest : BaseMessagingTest() {
         try {
             val messages = sendMessage(format("~~%s google java embedded nosql", target))
             Assert.assertFalse(messages.get(0).contains("has a karma level"), format("Should not have gotten a karma message: %s",
-                  messages.get(0)))
+                    messages.get(0)))
         } finally {
             val karma = karmaDao.find(target)
             if (karma != null) {

@@ -14,15 +14,17 @@ public class LockFactoid : AdminCommand() {
     @Inject
     lateinit var factoidDao: FactoidDao
 
-    override fun execute(event: Message) {
+    override fun execute(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val factoidName = args.joinToString(" ")
         val factoid = factoidDao.getFactoid(factoidName)
         if (factoid == null) {
-            bot.postMessageToChannel(event, Sofia.factoidUnknown(factoidName))
+            responses.add(Message(event, Sofia.factoidUnknown(factoidName)))
         } else {
             factoid.locked = true
             factoidDao.save(factoid)
-            bot.postMessageToChannel(event, "${factoidName} locked.")
+            responses.add(Message(event, "${factoidName} locked."))
         }
+        return responses
     }
 }

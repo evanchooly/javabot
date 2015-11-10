@@ -8,24 +8,20 @@ import java.util.Arrays
 
 import java.lang.String.format
 
+@Deprecated("this class is no longer necessary", replaceWith = ReplaceWith("BaseTest"), level = DeprecationLevel.WARNING)
 public abstract class BaseMessagingTest : BaseTest() {
-    protected fun scanForResponse(message: String, target: String) {
-        val list = sendMessage(message)
-        var found = false
-        for (response in list) {
-            found = found or response.contains(target)
-        }
-        Assert.assertTrue(found, format("Did not find \n'%s' in \n'%s'", target, list))
-    }
 
+    @Deprecated("call the operations directly", level = DeprecationLevel.WARNING)
     protected fun testMessage(message: String, vararg responses: String) {
         compareResults(sendMessage(message), responses)
     }
 
+    @Deprecated("call the operations directly", level = DeprecationLevel.WARNING)
     protected fun testMessageAs(user: User, message: String, vararg responses: String) {
         compareResults(sendMessage(user, message), responses)
     }
 
+    @Deprecated("call the operations directly", level = DeprecationLevel.WARNING)
     private fun compareResults(messages: Messages, responses: Array<out String>) {
         Assert.assertEquals(messages.size(), responses.size(),
               format("Should get expected response count back. \n** expected: \n%s\n** got: \n%s", Arrays.toString(responses), messages))
@@ -35,15 +31,18 @@ public abstract class BaseMessagingTest : BaseTest() {
         Assert.assertTrue(messages.isEmpty(), "All responses should be matched.")
     }
 
+    @Deprecated("call the operations directly", level = DeprecationLevel.WARNING)
     protected fun sendMessage(message: String): Messages {
         return sendMessage(testUser, message)
     }
 
+    @Deprecated("call the operations directly", level = DeprecationLevel.WARNING)
     protected fun sendMessage(testUser: User, message: String): Messages {
-        javabot.get().processMessage(Message(javabotChannel, testUser, message))
+        bot.get().processMessage(Message(testChannel, testUser, message))
         return messages
     }
 
+    @Deprecated("call the operations directly", level = DeprecationLevel.WARNING)
     protected fun testMessageList(message: String, responses: List<String>) {
         var found = false
         for (response in sendMessage(message)) {
@@ -54,10 +53,12 @@ public abstract class BaseMessagingTest : BaseTest() {
                     sendMessage(message)))
     }
 
+    @Deprecated("call the operations directly", level = DeprecationLevel.WARNING)
     protected fun getFoundMessage(factoid: String, value: String): String {
-        return format("%s, %s is %s", testUser, factoid, value)
+        return format("${testUser}, ${factoid} is ${value}")
     }
 
+    @Deprecated("call the operations directly", level = DeprecationLevel.WARNING)
     protected fun forgetFactoid(name: String) {
         testMessage(format("~forget %s", name), Sofia.factoidForgotten(name, testUser.nick))
     }

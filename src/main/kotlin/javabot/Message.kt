@@ -5,15 +5,15 @@ import org.pircbotx.User
 
 import java.lang.String.format
 
-public class Message {
+open class Message {
     public val channel: Channel?
     public val user: User
     public val value: String
     public val sender: User?
     private val tell: Boolean
 
-    public constructor(dest: Channel?, user: User, value: String) {
-        channel = dest
+    public constructor(channel: Channel?, user: User, value: String) {
+        this.channel = channel
         this.user = user
         this.value = value
         sender = null
@@ -28,26 +28,26 @@ public class Message {
         tell = false
     }
 
-    public constructor(dest: Channel, user: User, value: String, sender: User) {
-        channel = dest
+    public constructor(channel: Channel, user: User, value: String, sender: User) {
+        this.channel = channel
         this.user = user
         this.value = value
         this.sender = sender
         this.tell = true
     }
 
-    public constructor(message: Message, value: String) {
-        channel = message.channel
+    public constructor(channel: Channel, message: Message, value: String) {
+        this.channel = channel
         user = message.user
         this.value = value
         tell = message.isTell()
         sender = null
     }
 
-    public constructor(message: Message, channel: Channel) {
-        this.channel = channel
+    public constructor(message: Message, value: String) {
+        channel = message.channel
         user = message.user
-        this.value = message.value
+        this.value = value
         tell = message.isTell()
         sender = null
     }

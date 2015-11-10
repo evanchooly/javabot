@@ -14,7 +14,8 @@ public class InfoOperation : BotOperation() {
     @Inject
     lateinit var factoidDao: FactoidDao
 
-    override fun handleMessage(event: Message): Boolean {
+    override fun handleMessage(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val message = event.value.toLowerCase()
         if (message.startsWith("info ")) {
             val key = message.substring("info ".length)
@@ -23,14 +24,13 @@ public class InfoOperation : BotOperation() {
                 val formatter = DateTimeFormatter.ofPattern(INFO_DATE_FORMAT)
                 val updated = factoid.updated
                 val formatted = formatter.format(updated)
-                bot.postMessageToChannel(event, Sofia.factoidInfo(key, if (factoid.locked) "*" else "", factoid.userName,
-                      formatted, factoid.value))
+                responses.add(Message(event, Sofia.factoidInfo(key, if (factoid.locked) "*" else "", factoid.userName,
+                      formatted, factoid.value)))
             } else {
-                bot.postMessageToChannel(event, Sofia.factoidUnknown(key))
+                responses.add(Message(event, Sofia.factoidUnknown(key)))
             }
-            return true
         }
-        return false
+        return responses
     }
 
     companion object {

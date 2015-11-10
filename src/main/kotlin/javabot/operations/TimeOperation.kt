@@ -5,12 +5,12 @@ import javabot.Message
 import java.util.Calendar
 
 public class TimeOperation : BotOperation() {
-    override fun handleMessage(event: Message): Boolean {
+    override fun handleMessage(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val message = event.value
         if ("time" == message || "date" == message) {
-            bot.postMessageToChannel(event, Calendar.getInstance().time.toString())
-            return true
+            responses.add(Message(event, Calendar.getInstance().time.toString()))
         }
-        return false
+        return responses
     }
 }

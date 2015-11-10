@@ -19,36 +19,34 @@ public class AddFactoidOperation : BotOperation(), StandardOperation {
     @Inject
     lateinit var logDao: LogsDao
 
-    override fun handleMessage(event: Message): Boolean {
+    override fun handleMessage(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         var message = event.value
         val channel = event.channel
-        var handled = false
         if (message.startsWith("no ") || message.startsWith("no, ")) {
             if ((channel == null || !channel.name.startsWith("#")) && !isAdminUser(event.user)) {
-                bot.postMessageToChannel(event, Sofia.privmsgChange())
-                handled = true
+                responses.add(Message(event, Sofia.privmsgChange()))
             } else {
                 message = message.substring(2)
                 if (message.startsWith(",")) {
                     message = message.substring(1)
                 }
                 message = message.trim()
-                handled = updateFactoid(event, message)
+                updateFactoid(responses, event, message)
             }
         }
-        if (!handled) {
-            handled = addFactoid(event, message)
+        if (responses.isEmpty()) {
+            addFactoid(responses, event, message)
         }
-        return handled
+        return responses
     }
 
-    private fun updateFactoid(event: Message, message: String): Boolean {
+    private fun updateFactoid(responses: MutableList<Message>, event: Message, message: String) {
         val `is` = message.indexOf(" is ")
-        var handled = false
         if (`is` != -1) {
             val channel = event.channel
             if ((channel == null || !channel.name.startsWith("#")) && !isAdminUser(event.user)) {
-                bot.postMessageToChannel(event, Sofia.privmsgChange())
+                responses.add(Message(event, Sofia.privmsgChange()))
             } else {
                 var key = message.substring(0, `is`)
                 key = key.replace("^\\s+".toRegex(), "")
@@ -57,28 +55,25 @@ public class AddFactoidOperation : BotOperation(), StandardOperation {
                 if (factoid != null) {
                     if (factoid.locked) {
                         if (admin) {
-                            handled = updateExistingFactoid(event, message, factoid, `is`, key)
+                            updateExistingFactoid(responses, event, message, factoid, `is`, key)
                         } else {
                             logDao.logMessage(Type.MESSAGE, event.channel, event.user,
-                                  Sofia.changingLockedFactoid(event.user.nick, key))
-                            bot.postMessageToChannel(event, Sofia.factoidLocked(event.user.nick))
-                            handled = true
+                                    Sofia.changingLockedFactoid(event.user.nick, key))
+                            responses.add(Message(event, Sofia.factoidLocked(event.user.nick)))
                         }
                     } else {
-                        handled = updateExistingFactoid(event, message, factoid, `is`, key)
+                        updateExistingFactoid(responses, event, message, factoid, `is`, key)
                     }
                 }
             }
         }
-        return handled
     }
 
-    private fun addFactoid(event: Message, message: String): Boolean {
+    private fun addFactoid(responses: MutableList<Message>, event: Message, message: String): Boolean {
         var handled = false
         if (message.toLowerCase().contains(" is ")) {
             if ((event.channel == null || !event.channel.name.startsWith("#")) && !isAdminUser(event.user)) {
-                bot.postMessageToChannel(event, Sofia.privmsgChange())
-                handled = true
+                responses.add(Message(event, Sofia.privmsgChange()))
             } else {
                 var key = message.substring(0, message.indexOf(" is "))
                 key = key.toLowerCase()
@@ -91,16 +86,14 @@ public class AddFactoidOperation : BotOperation(), StandardOperation {
                     value = message.substring(index + 4, message.length)
                 }
                 if (key.trim().isEmpty()) {
-                    bot.postMessageToChannel(event, Sofia.factoidInvalidName())
-                    handled = true
+                    responses.add(Message(event, Sofia.factoidInvalidName()))
                 } else if (value == null || value.trim().isEmpty()) {
-                    bot.postMessageToChannel(event, Sofia.factoidInvalidValue())
-                    handled = true
+                    responses.add(Message(event, Sofia.factoidInvalidValue()))
                 } else if (factoidDao.hasFactoid(key)) {
                     if (event.channel != null) {
-                        bot.postMessageToChannel(event, Sofia.factoidExists(key, event.user.nick))
+                        responses.add(Message(event, Sofia.factoidExists(key, event.user.nick)))
                     } else {
-                        bot.postMessageToUser(event.user, Sofia.factoidExists(key, event.user.nick))
+                        responses.add(Message(event.user, Sofia.factoidExists(key, event.user.nick)))
                     }
                     handled = true
                 } else {
@@ -109,9 +102,9 @@ public class AddFactoidOperation : BotOperation(), StandardOperation {
                     }
                     factoidDao.addFactoid(event.user.nick, key, value)
                     if (event.channel != null) {
-                        bot.postMessageToChannel(event, Sofia.ok(event.user.nick))
+                        responses.add(Message(event, Sofia.ok(event.user.nick)))
                     } else {
-                        bot.postMessageToUser(event.user, Sofia.ok(event.user.nick))
+                        responses.add(Message(event.user, Sofia.ok(event.user.nick)))
                     }
                     handled = true
                 }
@@ -120,17 +113,16 @@ public class AddFactoidOperation : BotOperation(), StandardOperation {
         return handled
     }
 
-    private fun updateExistingFactoid(event: Message, message: String, factoid: Factoid,
-                                      `is`: Int, key: String): Boolean {
+    private fun updateExistingFactoid(responses: MutableList<Message>, event: Message, message: String, factoid: Factoid,
+                                      `is`: Int, key: String) {
         val newValue = message.substring(`is` + 4)
         logDao.logMessage(Type.MESSAGE, event.channel, event.user,
-              Sofia.factoidChanged(event.user.nick, key, factoid.value, newValue, event.channel!!.name))
+                Sofia.factoidChanged(event.user.nick, key, factoid.value, newValue, event.channel!!.name))
         factoid.value = newValue
         factoid.updated = LocalDateTime.now()
         factoid.userName = event.user.nick
         factoidDao.save(factoid)
-        bot.postMessageToChannel(event, Sofia.ok(event.user.nick))
-        return true
+        responses.add(Message(event, Sofia.ok(event.user.nick)))
     }
 
     /**

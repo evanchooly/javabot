@@ -73,7 +73,7 @@ public open class Javabot {
     }
 
     val executors = ThreadPoolExecutor(5, 10, 5L, TimeUnit.MINUTES, ArrayBlockingQueue(50),
-          JavabotThreadFactory(true, "javabot-handler-thread-"))
+            JavabotThreadFactory(true, "javabot-handler-thread-"))
 
     private val eventHandler = Executors.newScheduledThreadPool(2, JavabotThreadFactory(true, "javabot-event-handler"))
 
@@ -125,7 +125,7 @@ public open class Javabot {
         val ircBot = this.ircBot.get()
         val connected = ircBot.isConnected
         if (connected) {
-            val joined = ircBot.userChannelDao.allChannels.map({it.name }).toSet()
+            val joined = ircBot.userChannelDao.allChannels.map({ it.name }).toSet()
             val channels = channelDao.getChannels(true)
             if (joined.size != channels.size) {
                 channels.filter({ channel -> !joined.contains(channel.name) }).forEach({ channel ->
@@ -211,8 +211,8 @@ public open class Javabot {
         try {
             val allOperations = getAllOperations()
             configDao.get().operations.forEach { klass ->
-                val get = allOperations.get(klass)
-                if(get != null) {
+                val get = allOperations[klass]
+                if (get != null) {
                     activeOperations.add(get)
                 }
             }
@@ -225,7 +225,7 @@ public open class Javabot {
 
     public fun disableOperation(name: String?): Boolean {
         var disabled = false
-        val operation = getAllOperations().get(name)
+        val operation = getAllOperations()[name]
         if (operation != null && operation !is AdminCommand && operation !is StandardOperation) {
             activeOperations.remove(operation)
             val config = configDao.get()
@@ -237,7 +237,7 @@ public open class Javabot {
     }
 
     public fun enableOperation(name: String?) {
-        val op = getAllOperations().get(name)
+        val op = getAllOperations()[name]
         if (op != null) {
             val config = configDao.get()
             config.operations.add(name!!)
@@ -253,18 +253,17 @@ public open class Javabot {
         val sender = message.user
         val channel = message.channel
         logsDao.logMessage(Logs.Type.MESSAGE, channel, sender, message.value)
-        var handled = false
+        val responses = arrayListOf<Message>()
         if (isValidSender(sender.nick)) {
             for (startString in startStrings) {
                 if (message.value.startsWith(startString)) {
                     try {
                         if (throttler.isThrottled(message.user)) {
                             postMessageToUser(message.user, Sofia.throttledUser())
-                            handled = true
                         } else {
                             val content = extractContentFromMessage(message.value, startString)
                             if (!content.isEmpty()) {
-                                handled = getResponses(Message(message, content), message.user)
+                                responses.addAll(getResponses(Message(message, content), message.user))
                             }
                         }
                     } catch (e: NickServViolationException) {
@@ -273,8 +272,11 @@ public open class Javabot {
 
                 }
             }
-            if (!handled) {
-                getChannelResponses(message)
+            if (responses.isEmpty()) {
+                responses.addAll(getChannelResponses(message))
+            }
+            responses.forEach {
+                postMessageToChannel(it, it.value)
             }
         } else {
             if (LOG.isInfoEnabled) {
@@ -295,29 +297,33 @@ public open class Javabot {
         ignores.add(sender)
     }
 
-    public fun postMessageToChannel(event: Message?, message: String) {
+    private fun postMessageToChannel(event: Message?, message: String) {
         if (event != null) {
-            val value = event.massageTell(message)
-            if (event.channel != null) {
-                logMessage(event.channel, getIrcBot().getUserBot(), value)
-                event.channel.send().message(value)
+            if (event is Action) {
+                postAction(event.channel!!, message)
             } else {
-                LOG.debug("channel is null.  sending directly to user: " + event)
-                postMessageToUser(event.user, value)
+                val value = event.massageTell(message)
+                if (event.channel != null) {
+                    logMessage(event.channel, getIrcBot().userBot, value)
+                    event.channel.send().message(value)
+                } else {
+                    LOG.debug("channel is null.  sending directly to user: " + event)
+                    postMessageToUser(event.user, value)
+                }
             }
         }
     }
 
-    public fun postMessageToUser(user: User?, message: String) {
+    fun postMessageToUser(user: User?, message: String) {
         if (user != null) {
             logMessage(null, user, message)
             user.send().message(message)
         }
     }
 
-    public fun postAction(channel: org.pircbotx.Channel, message: String) {
+    private fun postAction(channel: org.pircbotx.Channel, message: String) {
         val bot = ircBot.get().userBot
-        if (channel.name != bot.nick) {
+        if (channel?.name != bot.nick) {
             logsDao.logMessage(Type.ACTION, channel, bot, message)
         }
         channel.send().action(message)
@@ -330,36 +336,35 @@ public open class Javabot {
         }
     }
 
-    public fun getResponses(message: Message, requester: User): Boolean {
+    public fun getResponses(message: Message, requester: User): List<Message> {
         val iterator = activeOperations.iterator()
-        var handled = false
-        while (iterator.hasNext() && !handled) {
+        var responses = arrayListOf<Message>()
+        while (iterator.hasNext() && responses.isEmpty()) {
             val next = iterator.next()
             try {
-                handled = next.handleMessage(message)
+                responses.addAll(next.handleMessage(message))
             } catch (e: Exception) {
                 LOG.error("NPE: message = [$message], requester = [$requester]")
                 e.printStackTrace()
-                handled = true
             }
 
         }
 
-        if (!handled) {
+        if (!responses.isEmpty()) {
             val sender = getIrcBot().userChannelDao.getUser(requester.nick)
             postMessageToChannel(Message(message.channel, sender, message.value),
-                  Sofia.unhandledMessage(requester.nick))
+                    Sofia.unhandledMessage(requester.nick))
         }
-        return true
+        return responses
     }
 
-    public fun getChannelResponses(event: Message): Boolean {
+    private fun getChannelResponses(event: Message): List<Message> {
         val iterator = activeOperations.iterator()
-        var handled = false
-        while (iterator.hasNext() && !handled) {
-            handled = iterator.next().handleChannelMessage(event)
+        var responses = arrayListOf<Message>()
+        while (iterator.hasNext() && responses.isEmpty()) {
+            responses.addAll(iterator.next().handleChannelMessage(event))
         }
-        return handled
+        return responses
     }
 
     public open fun isOnCommonChannel(user: User): Boolean {

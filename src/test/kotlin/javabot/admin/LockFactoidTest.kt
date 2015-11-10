@@ -2,12 +2,22 @@ package javabot.admin
 
 import com.antwerkz.sofia.Sofia
 import javabot.BaseMessagingTest
-import org.pircbotx.User
+import javabot.BaseTest
+import javabot.Message
+import javabot.dao.FactoidDao
+import javabot.operations.ForgetFactoidOperation
+import org.testng.Assert
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
+import javax.inject.Inject
 
 @Test
-public class LockFactoidTest : BaseMessagingTest() {
+public class LockFactoidTest : BaseTest() {
+    @Inject
+    private lateinit var factoidDao: FactoidDao
+    @Inject
+    private lateinit var forgetFactoid: ForgetFactoidOperation
+
     @DataProvider(name = "factoids")
     public fun names(): Array<Array<String>> {
         return arrayOf(arrayOf("lock me"), arrayOf("lockme"))
@@ -16,24 +26,34 @@ public class LockFactoidTest : BaseMessagingTest() {
     @Test(dataProvider = "factoids")
     public fun lock(name: String) {
         try {
-            sendMessage("~forget ${name}").get()
-            testMessage("~${name} is i should be locked", Sofia.ok(testUser.nick))
-            testMessage("~admin lockFactoid ${name}", "${name} locked.")
+            factoidDao.delete(testUser.nick, name)
+            var factoid = factoidDao.addFactoid(testUser.nick, name, "i should be locked")
+            factoid.locked = true
+            factoidDao.save(factoid)
 
             val bob = registerIrcUser("bob", "bob", "localhost")
-            testMessageAs(bob, "~forget ${name}", Sofia.factoidDeleteLocked(bob.nick))
 
-            testMessage("~admin unlockFactoid ${name}", "${name} unlocked.")
-            testMessageAs(bob, "~forget ${name}", Sofia.factoidForgotten(name, bob.nick))
+            var message = Message(testChannel, bob, "forget ${name}")
+            var response = forgetFactoid.handleMessage(message)
+            Assert.assertEquals(response[0].value, Sofia.factoidDeleteLocked(bob.nick))
 
-            testMessage("~$name is i should be locked", Sofia.ok(testUser.nick))
-            testMessage("~admin lockFactoid ${name}", "${name} locked.")
-            testMessage("~forget ${name}", Sofia.factoidForgotten(name, testUser.nick))
+            factoid.locked = false
+            factoidDao.save(factoid)
+
+            response = forgetFactoid.handleMessage(message)
+            Assert.assertEquals(response[0].value, Sofia.factoidForgotten(name, bob.nick))
+
+            factoid = factoidDao.addFactoid(testUser.nick, name, "i should be locked")
+            factoid.locked = true
+            factoidDao.save(factoid)
+            response = forgetFactoid.handleMessage(message("forget ${name}"))
+            Assert.assertEquals(response[0].value, Sofia.factoidForgotten(name, testUser.nick))
 
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
-            sendMessage("~forget " + name).get()
+            factoidDao.delete(testUser.nick, name)
+
         }
     }
 }

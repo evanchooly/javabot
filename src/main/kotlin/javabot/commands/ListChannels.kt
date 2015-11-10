@@ -12,11 +12,14 @@ public class ListChannels : AdminCommand() {
     @Inject
     lateinit var channelDao: ChannelDao
 
-    override fun execute(event: Message) {
+    override fun execute(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val channels = channelDao.find(QueryParam(0, Integer.MAX_VALUE))
-        bot.postMessageToChannel(event, Sofia.adminListChannelsPreamble(event.user.nick))
+        responses.add(Message(event, Sofia.adminListChannelsPreamble(event.user.nick)))
         val names = channels.map(
-              { channel -> format("%s %s", channel.name, if (channel.logged) "(logged)" else "") })
-        bot.postMessageToUser(event.user, StringUtils.join(names, ", "))
+                { channel -> format("%s %s", channel.name, if (channel.logged) "(logged)" else "") })
+        responses.add(Message(event.user, StringUtils.join(names, ", ")))
+
+        return responses
     }
 }

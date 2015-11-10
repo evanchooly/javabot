@@ -2,13 +2,31 @@ package javabot.operations
 
 import javabot.BaseMessagingTest
 import javabot.Message
+import javabot.dao.FactoidDao
+import javabot.dao.LogsDao
 import javabot.model.Logs
+import javabot.model.Logs.Type
 import org.pircbotx.User
 import org.testng.Assert
+import org.testng.annotations.AfterMethod
+import org.testng.annotations.AfterTest
+import org.testng.annotations.BeforeMethod
+import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
 import java.util.UUID
+import javax.inject.Inject
 
 public class LogsOperationTest : BaseMessagingTest() {
+    @Inject
+    private lateinit var operation: LogsOperation
+
+    @BeforeMethod
+    @AfterMethod
+    fun clearLogs() {
+        println("Clearing logs")
+        logsDao.deleteAllForChannel(testChannel.name)
+    }
+
     @Test
     @Throws(Exception::class)
     public fun testChannelLogs() {
@@ -16,12 +34,10 @@ public class LogsOperationTest : BaseMessagingTest() {
         datastore.delete(query)
         // Add a known and unique message to the logs so we can validate that we are testing against new data
         val uuid = UUID.randomUUID().toString()
-        sendMessage(uuid)
-        val list = sendMessage("~logs")
+        logsDao.logMessage(Type.MESSAGE, testChannel, testUser, uuid)
+        val list = operation.handleMessage(message("logs"))
         Assert.assertFalse(list.isEmpty())
-        val listSize = list.size()
-        Assert.assertTrue(list.get(listSize - 2).contains(uuid))
-        Assert.assertTrue(list.get(listSize - 1).contains("~logs"))
+        Assert.assertTrue(list[0].value.contains(uuid))
     }
 
     @Test
@@ -29,11 +45,9 @@ public class LogsOperationTest : BaseMessagingTest() {
     public fun testNickSpecificLogsWhenNoLogsForNick() {
         // We generate unique user names so that existing data in the DB doesn't interfere with this unit test
         val uuid = UUID.randomUUID().toString()
-        val list = sendMessage("~logs " + uuid)
-        val listSize = list.size()
-        Assert.assertEquals(listSize, 1)
-        val msg = list.get(listSize - 1)
-        Assert.assertTrue(msg.contains("No logs found for nick: " + uuid))
+        val list = operation.handleMessage(message("logs ${uuid}"))
+        Assert.assertEquals(list.size, 1)
+        Assert.assertTrue(list[0].value.contains("No logs found for nick: $uuid"))
     }
 
     @Test
@@ -43,11 +57,11 @@ public class LogsOperationTest : BaseMessagingTest() {
         val user = object : TestUser(uuid) {
 
         }
-        javabot.get().processMessage(Message(javabotChannel, user, "Hello I'm " + uuid))
-        val list = sendMessage("~logs " + uuid)
-        val listSize = list.size()
+        bot.get().processMessage(Message(testChannel, user, "Hello I'm $uuid"))
+        val list = operation.handleMessage(message("logs ${uuid}"))
+        val listSize = list.size
         Assert.assertEquals(listSize, 1)
-        Assert.assertTrue(list.get(listSize - 1).contains(uuid))
+        Assert.assertTrue(list[0].value.contains(uuid))
     }
 
     private open inner class TestUser(nick: String) : User(ircBot.get(), ircBot.get().userChannelDao, nick)

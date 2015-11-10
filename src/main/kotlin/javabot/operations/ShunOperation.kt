@@ -16,18 +16,18 @@ public class ShunOperation : BotOperation() {
     @Inject
     lateinit var shunDao: ShunDao
 
-    override fun handleMessage(event: Message): Boolean {
+    override fun handleMessage(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val message = event.value
         if (message.startsWith("shun ")) {
             val parts = message.substring(5).split(" ")
             if (parts.size == 0) {
-                bot.postMessageToChannel(event, Sofia.shunUsage())
+                responses.add(Message(event, Sofia.shunUsage()))
             } else {
-                bot.postMessageToChannel(event, getShunnedMessage(parts))
+                responses.add(Message(event, getShunnedMessage(parts)))
             }
-            return true
         }
-        return false
+        return responses
     }
 
     private fun getShunnedMessage(parts: List<String>): String {

@@ -13,18 +13,20 @@ public class DropApi : AdminCommand() {
     @Parameter
     lateinit var apiName: String
 
-    override fun execute(event: Message) {
+    override fun execute(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val api = apiDao.find(apiName)
         if (api != null) {
-            drop(event, api)
+            drop(responses, event, api)
         } else {
-            bot.postMessageToChannel(event, Sofia.unknownApi(apiName, event.user.nick))
+            responses.add(Message(event, Sofia.unknownApi(apiName, event.user.nick)))
         }
+        return responses
     }
 
-    private fun drop(event: Message, api: JavadocApi) {
-        bot.postMessageToChannel(event, Sofia.adminRemovingOldJavadoc(api.name))
+    private fun drop(responses: MutableList<Message>, event: Message, api: JavadocApi) {
+        responses.add(Message(event, Sofia.adminRemovingOldJavadoc(api.name)))
         apiDao.delete(api)
-        bot.postMessageToChannel(event, Sofia.adminDoneRemovingOldJavadoc(api.name))
+        responses.add(Message(event, Sofia.adminDoneRemovingOldJavadoc(api.name)))
     }
 }

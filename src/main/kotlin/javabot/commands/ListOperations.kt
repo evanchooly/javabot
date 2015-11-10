@@ -12,11 +12,13 @@ public class ListOperations : OperationsCommand() {
     @Inject
     lateinit var configDao: ConfigDao
 
-    override fun execute(event: Message) {
-        bot.postMessageToChannel(event, Sofia.adminKnownOperations(event.user.nick,
-              StringUtils.join(configDao.list(BotOperation::class.java).iterator(), ",")))
+    override fun execute(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
+        responses.add(Message(event, Sofia.adminKnownOperations(event.user.nick,
+              StringUtils.join(configDao.list(BotOperation::class.java).iterator(), ","))))
 
-        listCurrent(event)
-        bot.postMessageToChannel(event, Sofia.adminOperationInstructions())
+        listCurrent(event, responses)
+        responses.add(Message(event, Sofia.adminOperationInstructions()))
+        return responses
     }
 }

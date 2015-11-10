@@ -15,15 +15,14 @@ public class StatsOperation : BotOperation() {
     lateinit var factoidDao: FactoidDao
     private var numberOfMessages = 0
 
-    override fun handleMessage(event: Message): Boolean {
+    override fun handleMessage(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         numberOfMessages++
         val message = event.value
         if ("stats".equals(message, ignoreCase = true)) {
-            bot.postMessageToChannel(event,
-                  Sofia.botStats(Duration.between(now(), startTime).toDays(), numberOfMessages, factoidDao.count()))
-            return true
+            responses.add(Message(event, Sofia.botStats(Duration.between(now(), startTime).toDays(), numberOfMessages, factoidDao.count())))
         }
-        return false
+        return responses
     }
 
     companion object {

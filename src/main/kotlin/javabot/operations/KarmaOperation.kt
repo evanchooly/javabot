@@ -4,22 +4,19 @@ import com.antwerkz.sofia.Sofia
 import javabot.Message
 import javabot.dao.KarmaDao
 import javabot.model.Karma
-import org.pircbotx.Channel
-import org.pircbotx.User
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
-import javax.inject.Inject
 import java.util.regex.Pattern
+import javax.inject.Inject
 
 public class KarmaOperation : BotOperation() {
 
     @Inject
     lateinit var dao: KarmaDao
 
-    override fun handleMessage(event: Message): Boolean {
-        var handled = readKarma(event)
-        if (!handled) {
+    override fun handleMessage(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
+        readKarma(responses, event)
+        if (responses.isEmpty()) {
             val message = event.value
             val sender = event.user
             val channel = event.channel
@@ -30,7 +27,7 @@ public class KarmaOperation : BotOperation() {
                 increment = false
                 // check for no karma inc/dec, and ~-- and ~++ too
                 if (operationPointer < 1) {
-                    return false
+                    return responses
                 }
             }
 
@@ -48,11 +45,11 @@ public class KarmaOperation : BotOperation() {
                 val potentialParam = message.substring(operationPointer - 1)
                 if (optionPattern.matcher(potentialParam).find()) {
                     // we PRESUMABLY have an option...
-                    return false
+                    return responses
                 }
             }
             if (operationPointer != message.length - 2 && message[operationPointer + 2] != ' ') {
-                return false
+                return responses
             }
             val nick: String
             try {
@@ -65,12 +62,11 @@ public class KarmaOperation : BotOperation() {
             // got an empty nick; spaces only?
             if (!nick.isEmpty()) {
                 if (channel == null || !channel.name.startsWith("#")) {
-                    bot.postMessageToChannel(event, Sofia.privmsgChange())
-                    handled = true
+                    responses.add(Message(event, Sofia.privmsgChange()))
                 } else {
                     if (nick.equals(sender.nick, ignoreCase = true)) {
                         if (increment) {
-                            bot.postMessageToChannel(event, Sofia.karmaOwnIncrement())
+                            responses.add(Message(event, Sofia.karmaOwnIncrement()))
                         }
                         increment = false
                     }
@@ -86,34 +82,32 @@ public class KarmaOperation : BotOperation() {
                     }
                     karma.userName = sender.nick
                     dao.save(karma)
-                    handled = readKarma(Message(event.channel, event.user, "karma " + nick))
+                    readKarma(responses, Message(event.channel, event.user, "karma " + nick))
                 }
             }
         }
-        return handled
+        return responses
     }
 
-    public fun readKarma(event: Message): Boolean {
+    public fun readKarma(responses: MutableList<Message>, event: Message) {
         val message = event.value
         val sender = event.user
         if (message.startsWith("karma ")) {
             val nick = message.substring("karma ".length).toLowerCase()
             val karma = dao.find(nick)
             if (karma != null) {
-                bot.postMessageToChannel(event, if (nick.equals(sender.nick, ignoreCase = true))
+                responses.add(Message(event, if (nick.equals(sender.nick, ignoreCase = true))
                     Sofia.karmaOwnValue(sender.nick, karma.value)
                 else
-                    Sofia.karmaOthersValue(nick, karma.value, sender.nick))
+                    Sofia.karmaOthersValue(nick, karma.value, sender.nick)))
             } else {
-                bot.postMessageToChannel(event, if (sender.nick == nick)
+                responses.add(Message(event, if (sender.nick == nick)
                     Sofia.karmaOwnNone(sender.nick)
                 else
-                    Sofia.karmaOthersNone(nick, sender.nick))
+                    Sofia.karmaOthersNone(nick, sender.nick)))
             }
-            return true
 
         }
-        return false
     }
 
     companion object {

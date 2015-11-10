@@ -1,31 +1,31 @@
 package javabot.admin
 
-import com.jayway.awaitility.Awaitility
-import javabot.BaseMessagingTest
+import javabot.BaseTest
 import javabot.commands.AdminCommand
+import javabot.commands.DisableOperation
+import javabot.commands.EnableOperation
+import javabot.commands.ListOperations
 import javabot.operations.BotOperation
 import javabot.operations.StandardOperation
 import org.testng.Assert
 import org.testng.annotations.Test
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeUnit.MILLISECONDS
+import javax.inject.Inject
 
-public class AdminOperationTest : BaseMessagingTest() {
+public class AdminOperationTest : BaseTest() {
+    @Inject
+    lateinit var listOperation: ListOperations
+    @Inject
+    lateinit var disableOperation: DisableOperation
+    @Inject
+    lateinit var enableOperation: EnableOperation
 
     @Test
     public fun disableOperations() {
-        val messages = sendMessage("~admin listOperations")
+        val responses = listOperation.handleMessage(message("admin listOperations"))
         try {
-            for (name in messages.get(2).split(",")) {
+            for (name in responses[2].value.split(",")) {
                 val opName = name.trim().split(" ")[0].trim()
-                sendMessage("~admin disableOperation -name=${opName}")
-                Awaitility.await("~admin disableOperation -name=${opName}")
-                      .pollInterval(100, MILLISECONDS)
-                      .atMost(20, TimeUnit.SECONDS)
-                      .until<Boolean> {
-                          val operation = findOperation(opName)
-                          operation == null || operation is AdminCommand || operation is StandardOperation
-                      }
+                disableOperation.handleMessage(message("admin disableOperation -name=${opName}"))
 
                 val operation = findOperation(opName)
                 Assert.assertTrue(operation == null || operation is AdminCommand || operation is StandardOperation,
@@ -37,7 +37,7 @@ public class AdminOperationTest : BaseMessagingTest() {
     }
 
     private fun findOperation(name: String): BotOperation? {
-        return javabot.get().activeOperations
+        return bot.get().activeOperations
               .filter { op -> op.getName() == name }
               .firstOrNull()
     }
@@ -45,16 +45,9 @@ public class AdminOperationTest : BaseMessagingTest() {
     @Test(dependsOnMethods = arrayOf("disableOperations"))
     public fun enableOperations() {
         disableAllOperations()
-        val allOperations = javabot.get().getAllOperations()
-        for (entry in allOperations.entrySet()) {
-            val opName = entry.getKey()
-            sendMessage("~admin enableOperation --name=${opName}")
-            Awaitility.await("~admin enableOperation --name=${opName}")
-                  .atMost(60, TimeUnit.SECONDS)
-                  .until<Boolean> {
-                      findOperation(opName) != null
-                  }
-            messages.get()
+        val allOperations = bot.get().getAllOperations()
+        for (entry in allOperations.entries) {
+            enableOperation.handleMessage(message("admin enableOperation --name=${entry.key}"))
         }
     }
 }

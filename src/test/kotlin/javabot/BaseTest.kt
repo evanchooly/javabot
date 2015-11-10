@@ -18,6 +18,7 @@ import javabot.model.UserFactory
 import org.mongodb.morphia.Datastore
 import org.pircbotx.PircBotX
 import org.pircbotx.User
+import org.testng.Assert
 import org.testng.annotations.AfterSuite
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.BeforeTest
@@ -60,16 +61,16 @@ public open class BaseTest {
     protected lateinit var changeDao: ChangeDao
 
     @Inject
-    protected lateinit var javabot: Provider<TestJavabot>
+    protected lateinit var bot: Provider<TestJavabot>
 
     @Inject
     protected lateinit var messages: Messages
 
     public val ok: String = "OK, " + TEST_USER_NICK.substring(0, Math.min(TEST_USER_NICK.length(), 16)) + "."
 
-    val testUser: User by lazy { userFactory.createUser(TEST_USER_NICK, TEST_USER_NICK, "hostmask") }
+    public val testUser: User by lazy { userFactory.createUser(TEST_USER_NICK, TEST_USER_NICK, "hostmask") }
 
-    val javabotChannel: org.pircbotx.Channel by lazy { getIrcBot().userChannelDao.getChannel("#jbunittest") }
+    public val testChannel: org.pircbotx.Channel by lazy { getIrcBot().userChannelDao.getChannel("#jbunittest") }
 
     @BeforeTest
     public fun setup() {
@@ -80,27 +81,27 @@ public open class BaseTest {
         admin.botOwner = true
         adminDao.save(admin)
 
-        var channel: Channel? = channelDao.get(javabotChannel.name)
+        var channel: Channel? = channelDao.get(testChannel.name)
         if (channel == null) {
             channel = Channel()
-            channel.name = javabotChannel.name
+            channel.name = testChannel.name
             channel.logged = true
             channelDao.save(channel)
         }
 
         datastore.delete(logsDao.getQuery(Logs::class.java))
         datastore.delete(changeDao.getQuery(Change::class.java))
-        javabot.get().start()
+        bot.get().start()
         enableAllOperations()
     }
 
     protected fun enableAllOperations() {
-        val bot = this.javabot.get()
+        val bot = this.bot.get()
         bot.getAllOperations().keySet().forEach({ bot.enableOperation(it) })
     }
 
     protected fun disableAllOperations() {
-        val bot = this.javabot.get()
+        val bot = this.bot.get()
         bot.getAllOperations().keySet().forEach({ bot.disableOperation(it) })
     }
 
@@ -116,7 +117,7 @@ public open class BaseTest {
     @AfterSuite
     @Throws(InterruptedException::class)
     public fun shutdown() {
-        javabot.get().shutdown()
+        bot.get().shutdown()
     }
 
     protected fun waitForEvent(event: AdminEvent, alias: String, timeout: Duration) {
@@ -133,6 +134,19 @@ public open class BaseTest {
         nickServDao.clear()
         nickServDao.save(info)
         return bob
+    }
+
+
+    protected fun message(value: String): Message {
+        return Message(testChannel, testUser, value)
+    }
+
+    protected fun scanForResponse(messages: List<Message>, target: String) {
+        var found = false
+        for (response in messages) {
+            found = found or response.value.contains(target)
+        }
+        Assert.assertTrue(found, java.lang.String.format("Did not find \n'%s' in \n'%s'", target, messages.map { it.value }))
     }
 
     companion object {

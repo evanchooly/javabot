@@ -19,18 +19,20 @@ public class NickServLookup : AdminCommand() {
     @Parameter
     lateinit var nick: String
 
-    override fun execute(event: Message) {
+    override fun execute(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         try {
             val info = validateNickServAccount()
             if (info == null) {
-                javabot.get().postMessageToUser(event.user, Sofia.noNickservEntry(nick))
+                responses.add(Message(event.user, Sofia.noNickservEntry(nick)))
             } else {
-                info.toNickServFormat().forEach({ line -> javabot.get().postMessageToUser(event.user, line) })
+                info.toNickServFormat().forEach({ line -> responses.add(Message(event.user, line)) })
             }
         } catch (e: ConditionTimeoutException) {
-            javabot.get().postMessageToUser(event.user, Sofia.nickservNotResponding())
+            responses.add(Message(event.user, Sofia.nickservNotResponding()))
         }
 
+        return responses
     }
 
     private fun validateNickServAccount(): NickServInfo? {
@@ -44,5 +46,4 @@ public class NickServLookup : AdminCommand() {
         }
         return info.get()
     }
-
 }

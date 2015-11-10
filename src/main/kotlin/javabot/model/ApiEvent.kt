@@ -105,16 +105,12 @@ public class ApiEvent : AdminEvent {
         val admin = adminDao.getAdmin(ircBot.get().userChannelDao.getUser(requestedBy))
         if (admin != null) {
             val user = ircBot.get().userChannelDao.getUser(admin.ircName)
-            try {
-                val file = downloadZip(api.name + ".jar", api.downloadUrl)
-                parser.parse(api, file.absolutePath, object : StringWriter() {
-                    override fun write(line: String) {
-                        bot.postMessageToUser(user, line)
-                    }
-                })
-            } catch (e: IOException) {
-                throw RuntimeException(e.message, e)
-            }
+            val file = downloadZip(api.name + ".jar", api.downloadUrl)
+            parser.parse(api, file.absolutePath, object : StringWriter() {
+                override fun write(line: String) {
+                    bot.postMessageToUser(user, line)
+                }
+            })
         }
 
     }

@@ -14,7 +14,8 @@ import java.util.Date
 import java.time.LocalDateTime.now
 
 public class DaysToChristmasOperation : BotOperation() {
-    override fun handleMessage(event: Message): Boolean {
+    override fun handleMessage(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         if ("countdown to christmas" == event.value.toLowerCase()) {
             val christmas = LocalDateTime.of(now().year, Month.DECEMBER, 25, 0, 0, 0)
             val now = now()
@@ -24,9 +25,8 @@ public class DaysToChristmasOperation : BotOperation() {
             cal.set(Calendar.DAY_OF_MONTH, 25)
             val instant = christmas.atZone(ZoneId.systemDefault()).toInstant()
 
-            bot.postMessageToChannel(event, Sofia.daysUntil(event.user.nick, duration.toDays(), Date.from(instant)))
-            return true
+            responses.add(Message(event, Sofia.daysUntil(event.user.nick, duration.toDays(), Date.from(instant))))
         }
-        return false
+        return responses
     }
 }

@@ -8,9 +8,12 @@ public class EnableOperation : OperationsCommand() {
     @Parameter(names = arrayOf("--name"))
     lateinit var operationName: String
 
-    override fun execute(event: Message) {
+    override fun execute(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         bot.enableOperation(operationName)
-        bot.postMessageToChannel(event, Sofia.adminOperationEnabled(operationName))
-        listCurrent(event)
+        responses.add(Message(event, Sofia.adminOperationEnabled(operationName)))
+        listCurrent(event, responses)
+        
+        return responses
     }
 }

@@ -2,7 +2,6 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import com.jayway.awaitility.Awaitility
-import javabot.BaseMessagingTest
 import javabot.BaseTest
 import javabot.BotListener
 import javabot.dao.FactoidDao
@@ -18,13 +17,19 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @Test(groups = arrayOf("operations"))
-public class AddFactoidOperationTest : BaseMessagingTest() {
+public class AddFactoidOperationTest : BaseTest() {
     @Inject
     protected lateinit var factoidDao: FactoidDao
     @Inject
     protected lateinit var listener: BotListener
     @Inject
     protected lateinit var karmaDao: KarmaDao
+    @Inject
+    protected lateinit var addFactoidOperation: AddFactoidOperation
+    @Inject
+    protected lateinit var getFactoidOperation: GetFactoidOperation
+   @Inject
+    protected lateinit var forgetFactoidOperation: ForgetFactoidOperation
 
     @BeforeMethod
     public fun setUp() {
@@ -39,62 +44,69 @@ public class AddFactoidOperationTest : BaseMessagingTest() {
     }
 
     public fun factoidAdd() {
-        testMessage("~test pong is pong", ok)
-        testMessage("~ping $1 is <action>sends some radar to $1, awaits a response then forgets how long it took",
-              ok)
-        testMessage("~what? is a question", ok)
-        testMessage("~what up? is <see>what?", ok)
+        var response = addFactoidOperation.handleMessage(message("test pong is pong"))
+        Assert.assertEquals(response[0].value, ok)
+        response = addFactoidOperation.handleMessage(message("ping \$1 is <action>sends some radar to \$1, awaits a response then forgets" +
+                " how long it took"))
+        Assert.assertEquals(response[0].value, ok)
+
+        response = addFactoidOperation.handleMessage(message("what? is a question"))
+        Assert.assertEquals(response[0].value, ok)
+        response = addFactoidOperation.handleMessage(message("what up? is <see>what?"))
+        Assert.assertEquals(response[0].value, ok)
     }
 
     public fun replace() {
-        testMessage("~replace is first entry", ok)
-        testMessage("~no, replace is <reply>second entry", Sofia.ok(testUser.nick))
-        testMessage("~replace", "second entry")
-        forgetFactoid("replace")
-        testMessage("~no, replace is <reply>second entry", Sofia.ok(testUser.nick))
-    }
+        var response = addFactoidOperation.handleMessage(message("replace is first entry"))
+        Assert.assertEquals(response[0].value, ok)
 
-    /**
-     * This test relies on the KarmaOperation being in the operation set.
-     */
-    @Test
-    public fun testAddOperationPriority() {
-        val target = "foo is " + Date().time
-        val karma = getKarma(userFactory.createUser(target, target, "localhost")) + 1
-        testMessage("~$target++", Sofia.karmaOthersValue(target, karma, testUser.nick))
-        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma)))
-        karmaDao.delete(karmaDao.find(target)?.id)
+        response = addFactoidOperation.handleMessage(message("no, replace is <reply>second entry"))
+        Assert.assertEquals(response[0].value, Sofia.ok(testUser.nick))
+
+        response = getFactoidOperation.handleMessage(message("replace"))
+        Assert.assertEquals(response[0].value, "second entry")
+
+        response = forgetFactoidOperation.handleMessage(message("forget replace"))
+        Assert.assertEquals(response[0].value, Sofia.factoidForgotten("replace", testUser.nick))
+
+        response = addFactoidOperation.handleMessage(message("no, replace is <reply>second entry"))
+        Assert.assertEquals(response[0].value, Sofia.ok(testUser.nick))
     }
 
     @Test(dependsOnMethods = arrayOf("factoidAdd"))
     @Throws(IOException::class)
     public fun duplicateAdd() {
-        val message = "~test pong is pong"
-        testMessage(message, ok)
-        testMessage(message, Sofia.factoidExists("test pong", testUser.nick))
-        forgetFactoid("test pong")
+        val message = "test pong is pong"
+        var response = addFactoidOperation.handleMessage(message(message))
+        Assert.assertEquals(response[0].value, ok)
+        response = addFactoidOperation.handleMessage(message(message))
+        Assert.assertEquals(response[0].value, Sofia.factoidExists("test pong", testUser.nick))
+        forgetFactoidOperation.handleMessage(message("forget test pong"))
     }
 
     public fun blankValue() {
-        testMessage("~pong is", Sofia.unhandledMessage(testUser.nick))
+        val response = addFactoidOperation.handleMessage(message("pong is"))
+        Assert.assertEquals(response.size, 0)
     }
 
     public fun addLog() {
-        testMessage("~12345 is 12345", ok)
+        val response = addFactoidOperation.handleMessage(message("12345 is 12345"))
+        Assert.assertEquals(response[0].value, ok)
         Assert.assertTrue(changeDao.findLog(Sofia.factoidAdded(testUser.nick, "12345", "12345")))
-        forgetFactoid("12345")
+        forgetFactoidOperation.handleMessage(message("forget 12345"))
     }
 
     public fun parensFactoids() {
         val factoid = "should be the full (/hi there) factoid"
-        testMessage("~asdf is <reply>" + factoid, ok)
-        testMessage("~asdf", factoid)
+        var response = addFactoidOperation.handleMessage(message("asdf is <reply>" + factoid))
+        Assert.assertEquals(response[0].value, ok)
+        response = getFactoidOperation.handleMessage(message("asdf"))
+        Assert.assertEquals(response[0].value, factoid)
     }
 
     public fun privMessage() {
         listener.onPrivateMessage(PrivateMessageEvent(ircBot.get(), testUser, "privMessage is doh!"))
-        Awaitility.await().atMost(10, TimeUnit.SECONDS).until<Any> { !messages.isEmpty() }
-        val messages = messages
+        Awaitility.await().atMost(10, TimeUnit.SECONDS).until<Boolean> { !messages.isEmpty() }
         Assert.assertFalse(messages.isEmpty())
     }
 

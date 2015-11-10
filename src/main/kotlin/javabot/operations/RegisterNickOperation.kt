@@ -10,7 +10,8 @@ public class RegisterNickOperation : BotOperation() {
     @Inject
     lateinit var configDao: ConfigDao
 
-    override fun handleMessage(event: Message): Boolean {
+    override fun handleMessage(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val message = event.value
         if (message.startsWith("register ")) {
             val split = message.split(" ")
@@ -21,10 +22,9 @@ public class RegisterNickOperation : BotOperation() {
                 val config = configDao.get()
                 val eventMessage = Sofia.registerNick(config.url, registration.url, twitterName)
 
-                bot.postMessageToUser(event.user, eventMessage)
-                return true
+                responses.add(Message(event.user, eventMessage))
             }
         }
-        return false
+        return responses
     }
 }

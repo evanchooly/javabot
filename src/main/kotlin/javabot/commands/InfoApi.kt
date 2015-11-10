@@ -13,12 +13,14 @@ public class InfoApi : AdminCommand() {
     @Parameter
     lateinit var apiName: String
 
-    override fun execute(event: Message) {
+    override fun execute(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val api = apiDao.find(apiName)
         if (api != null) {
-            bot.postMessageToChannel(event, Sofia.apiLocation(api.name, api.baseUrl!!))
+            responses.add(Message(event, Sofia.apiLocation(api.name, api.baseUrl!!)))
         } else {
-            bot.postMessageToChannel(event, Sofia.unknownApi(apiName, event.user.nick))
+            responses.add(Message(event, Sofia.unknownApi(apiName, event.user.nick)))
         }
+        return responses
     }
 }

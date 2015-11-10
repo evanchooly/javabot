@@ -18,38 +18,31 @@ public class URLTitleOperation : BotOperation() {
     @Inject
     lateinit var parser: URLFromMessageParser
 
-    override fun handleChannelMessage(event: Message): Boolean {
+    override fun handleChannelMessage(event: Message): List<Message> {
+        val responses = arrayListOf<Message>()
         val message = event.value
         try {
             val titlesToPost = parser.urlsFromMessage(message)
                   .map({ it.toString() })
                   .map({ s -> findTitle(s, true) }).filterNotNull()
             if (titlesToPost.isEmpty()) {
-                return false
+                return responses
             } else {
-                postMessageToChannel(titlesToPost, event)
-                return true
+                postMessageToChannel(responses, titlesToPost, event)
+                return responses
             }
         } catch (ignored: Exception) {
             ignored.printStackTrace()
-            return false
+            return responses
         }
 
     }
 
-    private fun postMessageToChannel(titlesToPost: List<String>, event: Message) {
-        val botMessage: String
-        if (titlesToPost.size == 1) {
-            botMessage = format("%s'%s title: %s", event.user.nick,
-                  if (event.user.nick.endsWith("s")) "" else "s",
-                  titlesToPost.get(0))
-        } else {
-            botMessage = format("%s'%s titles: %s", event.user.nick,
-                  if (event.user.nick.endsWith("s")) "" else "s",
-                    titlesToPost.map({ s -> "\"" + s + "\"" }).joinToString(" | "))
-        }
-
-        bot.postMessageToChannel(event, botMessage)
+    private fun postMessageToChannel(responses: MutableList<Message>, titlesToPost: List<String>, event: Message) {
+        val title = if(titlesToPost.size == 1) "title" else "titles"
+        val url = if(titlesToPost.size == 1) "url" else "urls"
+        responses.add(Message(event, "${title} for the ${url} from ${event.user.nick}: " +
+                titlesToPost.map({ s -> "\"${s}\"" }).joinToString(" | ")))
     }
 
     private fun findTitle(url: String, loop: Boolean): String? {

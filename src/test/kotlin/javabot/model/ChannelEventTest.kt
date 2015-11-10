@@ -23,7 +23,7 @@ public class ChannelEventTest : BaseTest() {
     @Test
     @Throws(InterruptedException::class)
     public fun addChannel() {
-        javabot
+        bot
         channelDao.delete(channelDao.get("##testChannel"))
         val name = "##testChannel"
         val event = ChannelEvent(name, EventType.ADD, "testng")
@@ -35,7 +35,7 @@ public class ChannelEventTest : BaseTest() {
     @Test
     @Throws(InterruptedException::class)
     public fun addKeyedChannel() {
-        javabot
+        bot
         val key = "abcdef"
         val event = ChannelEvent(KEYED_CHANNEL, key, EventType.ADD, "testng")
         eventDao.save(event)
@@ -46,7 +46,7 @@ public class ChannelEventTest : BaseTest() {
     @Test
     @Throws(InterruptedException::class)
     public fun leave() {
-        javabot
+        bot
         val event = ChannelEvent(KEYED_CHANNEL, EventType.DELETE, "testng")
         eventDao.save(event)
         waitForEvent(event, "leaving channel " + KEYED_CHANNEL, Duration.ONE_MINUTE)

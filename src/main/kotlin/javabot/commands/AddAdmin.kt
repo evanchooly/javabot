@@ -16,18 +16,21 @@ public class AddAdmin : AdminCommand() {
     @Parameter(required = true)
     lateinit var hostName: String
 
-    override fun execute(event: Message) {
+    override fun execute(event: Message): List<Message> {
+        var responses = arrayListOf<Message>()
         val user = findUser(userName)
         if (user == null) {
-            javabot.get().postMessageToChannel(event, Sofia.userNotFound(userName))
+            responses.add(Message(event, Sofia.userNotFound(userName)))
         } else {
             if (adminDao.getAdmin(user.nick, hostName) != null) {
-                javabot.get().postMessageToChannel(event, Sofia.adminAlready(user.nick))
+                responses.add(Message(event, Sofia.adminAlready(user.nick)))
             } else {
                 adminDao.create(user.nick, user.login, user.hostmask)
-                javabot.get().postMessageToChannel(event, Sofia.adminAdded(user.nick))
+                responses.add(Message(event, Sofia.adminAdded(user.nick)))
             }
         }
+
+        return responses
     }
 
     public fun findUser(name: String): User? {

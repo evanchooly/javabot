@@ -20,32 +20,30 @@ public abstract class AdminCommand : BotOperation() {
     @Inject
     lateinit var pircBot: Provider<PircBotX>
 
-    override fun handleMessage(event: Message): Boolean {
-        var handled = false
+    override fun handleMessage(event: Message): List<Message> {
+        var responses = arrayListOf<Message>()
         var message = event.value
         if (message.toLowerCase().startsWith("admin ")) {
             if (isAdminUser(event.user)) {
                 message = message.substring(6)
                 val params = message.split(" ") as MutableList
                 if (canHandle(params[0])) {
-                    handled = true
                     try {
                         synchronized (this) {
                             parse(params)
-                            execute(event)
+                            responses.addAll(execute(event))
                         }
                     } catch (e: Exception) {
                         LOG.error(e.message, e)
-                        bot.postMessageToUser(event.user, Sofia.adminParseFailure(e.message!!))
+                        responses.add(Message(event.user, Sofia.adminParseFailure(e.message!!)))
                     }
 
                 }
             } else {
-                bot.postMessageToChannel(event, Sofia.notAdmin(event.user.nick))
-                handled = true
+                responses.add(Message(event, Sofia.notAdmin(event.user.nick)))
             }
         }
-        return handled
+        return responses
     }
 
     protected open fun parse(params: MutableList<String>) {
@@ -62,8 +60,7 @@ public abstract class AdminCommand : BotOperation() {
 
     }
 
-    public abstract fun execute(event: Message)
-
+    public abstract fun execute(event: Message) : List<Message>
 
     public fun getCommandName(): String {
         var name = javaClass.simpleName
@@ -72,7 +69,7 @@ public abstract class AdminCommand : BotOperation() {
     }
 
     override fun toString(): String {
-        return "%s [admin]".format(getName())
+        return "${getName()} [admin]"
     }
 
     companion object {
