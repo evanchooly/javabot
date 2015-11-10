@@ -1,22 +1,18 @@
 package javabot.operations
 
-import javabot.BaseMessagingTest
+import javabot.BaseTest
 import javabot.Message
-import javabot.dao.FactoidDao
-import javabot.dao.LogsDao
 import javabot.model.Logs
 import javabot.model.Logs.Type
 import org.pircbotx.User
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
-import org.testng.annotations.AfterTest
 import org.testng.annotations.BeforeMethod
-import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
 import java.util.UUID
 import javax.inject.Inject
 
-public class LogsOperationTest : BaseMessagingTest() {
+public class LogsOperationTest : BaseTest() {
     @Inject
     private lateinit var operation: LogsOperation
 

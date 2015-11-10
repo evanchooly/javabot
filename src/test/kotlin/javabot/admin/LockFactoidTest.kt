@@ -1,7 +1,6 @@
 package javabot.admin
 
 import com.antwerkz.sofia.Sofia
-import javabot.BaseMessagingTest
 import javabot.BaseTest
 import javabot.Message
 import javabot.dao.FactoidDao

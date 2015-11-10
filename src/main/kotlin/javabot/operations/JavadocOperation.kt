@@ -35,19 +35,20 @@ public class JavadocOperation : BotOperation() {
         val message = event.value
         if (message.toLowerCase().startsWith("javadoc")) {
             var key = message.substring("javadoc".length).trim()
+            var api: JavadocApi? = null
             if (key.startsWith("-list") || key.isEmpty()) {
                 displayApiList(responses, event)
             } else {
                 if (key.startsWith("-")) {
                     if (key.contains(" ")) {
-                        val api = apiDao.find(key.substring(1, key.indexOf(" ")))
+                        api = apiDao.find(key.substring(1, key.indexOf(" ")))
                         key = key.substring(key.indexOf(" ") + 1).trim()
                     } else {
                         displayApiList(responses, event)
                     }
-                } else {
-                    buildResponse(responses, event, null, key)
                 }
+
+                buildResponse(responses, event, api, key)
             }
         }
         return responses

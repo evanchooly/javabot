@@ -1,6 +1,5 @@
 package javabot.operations
 
-import javabot.BaseMessagingTest
 import javabot.BaseTest
 import javabot.dao.FactoidDao
 import org.testng.Assert

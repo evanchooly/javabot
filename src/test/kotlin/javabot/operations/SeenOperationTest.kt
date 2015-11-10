@@ -1,7 +1,6 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
-import javabot.BaseMessagingTest
 import javabot.BaseTest
 import org.testng.Assert
 import org.testng.annotations.Test

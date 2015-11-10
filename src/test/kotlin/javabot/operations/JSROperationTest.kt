@@ -1,7 +1,6 @@
 package javabot.operations
 
 import com.google.inject.Inject
-import javabot.BaseMessagingTest
 import javabot.BaseTest
 import javabot.operations.locator.JCPJSRLocator
 import org.testng.Assert

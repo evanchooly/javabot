@@ -137,8 +137,8 @@ public open class BaseTest {
     }
 
 
-    protected fun message(value: String): Message {
-        return Message(testChannel, testUser, value)
+    protected fun message(value: String, user: User = testUser): Message {
+        return Message(testChannel, user, value)
     }
 
     protected fun scanForResponse(messages: List<Message>, target: String) {

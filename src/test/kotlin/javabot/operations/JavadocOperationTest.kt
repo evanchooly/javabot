@@ -51,8 +51,7 @@ public class JavadocOperationTest : BaseTest() {
         scanForResponse(operation.handleMessage(message("javadoc String.split(java.lang.String)")),
                 "java/lang/String.html#split-java.lang.String-")
         scanForResponse(operation.handleMessage(message("javadoc String.join(*)")), "java/lang/String.html#join-")
-        scanForResponse(operation.handleMessage(message("${bot.get().getNick()} javadoc String.split(*)")),
-                "java/lang/String.html#split-java.lang.String-")
+        scanForResponse(operation.handleMessage(message("javadoc String.split(*)")), "java/lang/String.html#split-java.lang.String-")
     }
 
     @Throws(MalformedURLException::class)

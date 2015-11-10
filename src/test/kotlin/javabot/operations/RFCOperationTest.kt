@@ -21,10 +21,8 @@ public class RFCOperationTest : BaseTest() {
     @Test
     public fun testMissingRFCNumber() {
         // these should be handled by the factoid operation
-        var response = operation.handleMessage(message("rfc "))
-        Assert.assertEquals(response[0].value, Sofia.unhandledMessage(testUser))
-        response = operation.handleMessage(message("rfc"))
-        Assert.assertEquals(response[0].value, Sofia.unhandledMessage(testUser))
+        Assert.assertEquals(operation.handleMessage(message("rfc "))[0].value, Sofia.rfcInvalid(""))
+        Assert.assertEquals(operation.handleMessage(message("rfc")).size, 0)
     }
 
     @Test
