@@ -12,7 +12,7 @@ public class JSROperation : BotOperation() {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value.toLowerCase()
-        if ("jsr" == message) {
+        if ("jsr" == message.trim()) {
             responses.add(Message(event, Sofia.jsrMissing()))
         } else {
             if (message.startsWith("jsr ")) {

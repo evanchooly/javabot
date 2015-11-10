@@ -1,5 +1,6 @@
 package javabot.operations
 
+import com.antwerkz.sofia.Sofia
 import com.google.inject.Inject
 import javabot.BaseTest
 import javabot.operations.locator.JCPJSRLocator
@@ -31,14 +32,14 @@ public class JSROperationTest : BaseTest() {
     @Test
     public fun testBadJSRRequest() {
         var response = operation.handleMessage(message("jsr 2202213"))
-        Assert.assertEquals(response[0].value, "I'm sorry, I can't find a JSR 2202213")
+        Assert.assertEquals(response[0].value, Sofia.jsrUnknown("2202213"))
     }
 
     @DataProvider(name = "badCommands")
     private fun badCommands(): Array<Array<Any>> {
-        return arrayOf(arrayOf<Any>("~jsr", "Please supply a JSR number to look up."),
-              arrayOf<Any>("~jsr ", "Please supply a JSR number to look up."),
-              arrayOf<Any>("~jsr abc", "'abc' is not a valid JSR reference."))
+        return arrayOf(arrayOf<Any>("jsr", Sofia.jsrMissing()),
+              arrayOf<Any>("jsr ", Sofia.jsrMissing()),
+              arrayOf<Any>("jsr abc", Sofia.jsrInvalid("abc")))
     }
 
     @Test(dataProvider = "badCommands")
