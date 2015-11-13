@@ -4,8 +4,8 @@ import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
 import javabot.operations.GetFactoidOperation
 import org.testng.Assert
-import org.testng.annotations.AfterTest
-import org.testng.annotations.BeforeTest
+import org.testng.annotations.AfterMethod
+import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import javax.inject.Inject
 
@@ -16,18 +16,12 @@ public class SeeLoopTest : BaseTest() {
     @Inject
     protected lateinit var operation: GetFactoidOperation
 
-    @BeforeTest
-    @AfterTest
+    @BeforeMethod
+    @AfterMethod
     private fun deleteSees() {
         factoidDao.delete("test", "see1")
         factoidDao.delete("test", "see2")
         factoidDao.delete("test", "see3")
-    }
-
-    public fun serial() {
-        createCircularSee()
-        createNormalSee()
-        followReferencesCorrectly()
     }
 
     public fun createCircularSee() {

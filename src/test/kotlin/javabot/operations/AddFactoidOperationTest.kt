@@ -33,14 +33,14 @@ public class AddFactoidOperationTest : BaseTest() {
 
     @BeforeMethod
     public fun setUp() {
-        factoidDao.delete(BaseTest.TEST_NICK, "test")
-        factoidDao.delete(BaseTest.TEST_NICK, "ping $1")
-        factoidDao.delete(BaseTest.TEST_NICK, "what")
-        factoidDao.delete(BaseTest.TEST_NICK, "what up")
-        factoidDao.delete(BaseTest.TEST_NICK, "test pong")
-        factoidDao.delete(BaseTest.TEST_NICK, "asdf")
-        factoidDao.delete(BaseTest.TEST_NICK, "12345")
-        factoidDao.delete(BaseTest.TEST_NICK, "replace")
+        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "test")
+        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "ping $1")
+        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "what")
+        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "what up")
+        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "test pong")
+        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "asdf")
+        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "12345")
+        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "replace")
     }
 
     public fun factoidAdd() {

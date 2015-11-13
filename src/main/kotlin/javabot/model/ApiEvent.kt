@@ -108,7 +108,7 @@ public class ApiEvent : AdminEvent {
             val file = downloadZip(api.name + ".jar", api.downloadUrl)
             parser.parse(api, file.absolutePath, object : StringWriter() {
                 override fun write(line: String) {
-                    bot.postMessageToUser(user, line)
+                    bot.privateMessageUser(user, line)
                 }
             })
         }

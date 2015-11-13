@@ -15,6 +15,11 @@ public class KarmaOperation : BotOperation() {
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
+        if(event.tell) {
+            responses.add(Message(event, Sofia.notAllowed()))
+            return responses;
+        }
+
         readKarma(responses, event)
         if (responses.isEmpty()) {
             val message = event.value

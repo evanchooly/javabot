@@ -47,7 +47,7 @@ public class JavabotTestModule : JavabotModule() {
             try {
                 FileInputStream(file).use { stream -> properties.load(stream) }
             } catch (e: IOException) {
-                throw RuntimeException(e.getMessage(), e)
+                throw RuntimeException(e.message, e)
             }
 
         }

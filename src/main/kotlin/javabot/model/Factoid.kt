@@ -11,6 +11,7 @@ import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.Indexed
 import org.mongodb.morphia.annotations.Indexes
 import org.mongodb.morphia.annotations.PrePersist
+import org.pircbotx.User
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.io.UnsupportedEncodingException
@@ -41,9 +42,9 @@ public class Factoid(var name: String = "", var value: String = "", var userName
     @Indexed
     private var upperValue: String? = null
 
-    public fun evaluate(subject: TellSubject?, sender: String, replacedValue: String?): String {
+    public fun evaluate(subject: User?, sender: String, replacedValue: String?): String {
         var message = value
-        val target = if (subject == null) sender else subject.target.nick
+        val target = if (subject == null) sender else subject.nick
         if (subject != null && !message.contains("\$who") && message.startsWith("<reply>")) {
             message = StringBuilder(message).insert(message.indexOf(">") + 1, "\$who, ").toString()
         }
@@ -63,7 +64,7 @@ public class Factoid(var name: String = "", var value: String = "", var userName
         message = message.replace("$^", replaced)
         message = processRandomList(message)
         if (!message.startsWith("<")) {
-            val comparable = if (subject == null) sender else subject.target.nick
+            val comparable = if (subject == null) sender else subject.nick
             message = "$comparable, $name is $message"
         }
         return message.substring(0, Math.min(message.length, 510))

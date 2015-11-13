@@ -66,7 +66,9 @@ public open class BaseTest {
     @Inject
     protected lateinit var messages: Messages
 
-    public val ok: String = "OK, " + TEST_USER_NICK.substring(0, Math.min(TEST_USER_NICK.length(), 16)) + "."
+    public val ok: String = "OK, " + TEST_USER_NICK.substring(0, Math.min(TEST_USER_NICK.length, 16)) + "."
+
+    public val targetUser: User by lazy { userFactory.createUser(TEST_TARGET_NICK, TEST_TARGET_NICK, "hostmask") }
 
     public val testUser: User by lazy { userFactory.createUser(TEST_USER_NICK, TEST_USER_NICK, "hostmask") }
 
@@ -97,12 +99,12 @@ public open class BaseTest {
 
     protected fun enableAllOperations() {
         val bot = this.bot.get()
-        bot.getAllOperations().keySet().forEach({ bot.enableOperation(it) })
+        bot.getAllOperations().keys.forEach({ bot.enableOperation(it) })
     }
 
     protected fun disableAllOperations() {
         val bot = this.bot.get()
-        bot.getAllOperations().keySet().forEach({ bot.disableOperation(it) })
+        bot.getAllOperations().keys.forEach({ bot.disableOperation(it) })
     }
 
     @BeforeMethod
@@ -137,8 +139,8 @@ public open class BaseTest {
     }
 
 
-    protected fun message(value: String, user: User = testUser): Message {
-        return Message(testChannel, user, value)
+    protected fun message(value: String, user: User = testUser, startString: String = ""): Message {
+        return Message(testChannel, user, value).extractContentFromMessage(getIrcBot(), startString)!!
     }
 
     protected fun scanForResponse(messages: List<Message>, target: String) {
@@ -146,11 +148,12 @@ public open class BaseTest {
         for (response in messages) {
             found = found or response.value.contains(target)
         }
-        Assert.assertTrue(found, java.lang.String.format("Did not find \n'%s' in \n'%s'", target, messages.map { it.value }))
+        Assert.assertTrue(found, java.lang.String.format("Did not find \n'%s' in \n'%s'", target, messages.map({ it.value }).joinToString
+        { "\n" }))
     }
 
     companion object {
-        public val TEST_NICK: String = "jbtestuser"
+        public val TEST_TARGET_NICK: String = "jbtestuser"
         public val TEST_USER_NICK: String = "botuser"
         public val TEST_BOT_NICK: String = "testjavabot"
         public val BOT_EMAIL: String = "test@example.com"

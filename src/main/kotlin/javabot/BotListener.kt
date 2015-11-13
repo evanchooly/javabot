@@ -65,7 +65,35 @@ public class BotListener : ListenerAdapter<PircBotX>() {
 
     override fun onMessage(event: MessageEvent<PircBotX>) {
         val javabot = javabotProvider.get()
-        javabot.executors.execute({ javabot.processMessage(Message(event.channel, event.user, event.message)) })
+        val message = Message(event.channel, event.user, event.message)
+        javabot.executors.execute { javabot.processMessage(message) }
+    }
+
+    override fun onPrivateMessage(event: PrivateMessageEvent<PircBotX>) {
+        val javabot = javabotProvider.get()
+        var startStringForPm = ""
+        val message = Message(event.user, event.message)
+        for (startString in javabot.startStrings) {
+            if (message.value.startsWith(startString)) {
+                startStringForPm = startString
+            }
+        }
+
+        if (!throttler.isThrottled(event.user)) {
+            if (adminDao.isAdmin(event.user) || javabot.isOnCommonChannel(event.user)) {
+                val content = message.extractContentFromMessage(getIrcBot(), startStringForPm)
+                if (content != null) {
+                    javabot.executors.execute({
+                        javabot.logMessage(null, event.user, event.message)
+                        try {
+                            javabot.getResponses(content)
+                        } catch (e: NickServViolationException) {
+                            event.user.send().message(e.message)
+                        }
+                    })
+                }
+            }
+        }
     }
 
     override fun onJoin(event: JoinEvent<PircBotX>) {
@@ -139,31 +167,6 @@ public class BotListener : ListenerAdapter<PircBotX>() {
     override fun onNickChange(event: NickChangeEvent<PircBotX>) {
         logsDao.logMessage(Type.NICK, null, event.user, Sofia.userNickChanged(event.oldNick, event.newNick))
         nickServDao.updateNick(event.oldNick, event.newNick)
-    }
-
-    override fun onPrivateMessage(event: PrivateMessageEvent<PircBotX>) {
-        val javabot = javabotProvider.get()
-        var startStringForPm = ""
-        val message = event.message
-        for (startString in javabot.startStrings) {
-            if (message.startsWith(startString)) {
-                startStringForPm = startString
-            }
-        }
-
-        val content = javabot.extractContentFromMessage(message, startStringForPm)
-        if (adminDao.isAdmin(event.user) || javabot.isOnCommonChannel(event.user)) {
-            javabot.executors.execute({
-                javabot.logMessage(null, event.user, event.message)
-                try {
-                    if (!throttler.isThrottled(event.user)) {
-                        javabot.getResponses(Message(event.user, content), event.user)
-                    }
-                } catch (e: NickServViolationException) {
-                    event.user.send().message(e.message)
-                }
-            })
-        }
     }
 
     override fun onAction(event: ActionEvent<PircBotX>) {

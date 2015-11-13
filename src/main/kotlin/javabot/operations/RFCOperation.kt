@@ -49,6 +49,6 @@ public class RFCOperation : BotOperation() {
     }
 
     companion object {
-        public val prefix: String = "rfc "
+        public val prefix: String = "rfc"
     }
 }

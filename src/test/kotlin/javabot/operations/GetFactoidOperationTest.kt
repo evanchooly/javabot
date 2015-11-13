@@ -21,20 +21,20 @@ public class GetFactoidOperationTest : BaseTest() {
     @BeforeClass
     public fun createGets() {
         deleteFactoids()
-        factoidDao.addFactoid(BaseTest.TEST_NICK, "api", "http://java.sun.com/javase/current/docs/api/index.html")
-        factoidDao.addFactoid(BaseTest.TEST_NICK, "replyTest", "<reply>I'm a reply!")
-        factoidDao.addFactoid(BaseTest.TEST_NICK, "stupid", "<reply>\$who, what you've just said is one of the most insanely idiotic " +
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "api", "http://java.sun.com/javase/current/docs/api/index.html")
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "replyTest", "<reply>I'm a reply!")
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "stupid", "<reply>\$who, what you've just said is one of the most insanely idiotic " +
                 "things I have ever heard. At no point in your rambling, incoherent response were you even close to anything that could be" +
                 " considered a rational thought. Everyone in this room is now dumber for having listened to it. I award you no points, and" +
                 " may God have mercy on your soul.")
-        factoidDao.addFactoid(BaseTest.TEST_NICK, "seeTest", "<see>replyTest")
-        factoidDao.addFactoid(BaseTest.TEST_NICK, "noReply", "I'm a reply!")
-        factoidDao.addFactoid(BaseTest.TEST_NICK, "replace $1", "<reply>I replaced you $1")
-        factoidDao.addFactoid(BaseTest.TEST_NICK, "camel $^", "<reply>$^")
-        factoidDao.addFactoid(BaseTest.TEST_NICK, "url $+", "<reply>$+")
-        factoidDao.addFactoid(BaseTest.TEST_NICK, "hey", "<reply>Hello, \$who")
-        factoidDao.addFactoid(BaseTest.TEST_NICK, "coin", "<reply>(heads|tails)")
-        factoidDao.addFactoid(BaseTest.TEST_NICK, "hug $1", "<action>hugs $1")
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "seeTest", "<see>replyTest")
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "noReply", "I'm a reply!")
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "replace $1", "<reply>I replaced you $1")
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "camel $^", "<reply>$^")
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "url $+", "<reply>$+")
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "hey", "<reply>Hello, \$who")
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "coin", "<reply>(heads|tails)")
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "hug $1", "<action>hugs $1")
     }
 
     @AfterClass
@@ -57,7 +57,7 @@ public class GetFactoidOperationTest : BaseTest() {
 
     private fun delete(key: String) {
         while (factoidDao.hasFactoid(key)) {
-            factoidDao.delete(BaseTest.TEST_NICK, key)
+            factoidDao.delete(BaseTest.TEST_TARGET_NICK, key)
         }
     }
 
@@ -114,51 +114,51 @@ public class GetFactoidOperationTest : BaseTest() {
     }
 
     public fun action() {
-        var response = operation.handleMessage(message("hug ${BaseTest.TEST_NICK}"))
-        Assert.assertEquals(response[0].value, "hugs ${BaseTest.TEST_NICK}")
+        var response = operation.handleMessage(message("hug ${BaseTest.TEST_TARGET_NICK}"))
+        Assert.assertEquals(response[0].value, "hugs ${BaseTest.TEST_TARGET_NICK}")
     }
 
     @Test
     public fun tell() {
-        var response = operation.handleMessage(message("tell ${BaseTest.TEST_NICK} about hey"))
-        Assert.assertEquals(response[0].value, "Hello, ${BaseTest.TEST_NICK}")
-        response = operation.handleMessage(message("tell ${BaseTest.TEST_NICK} about camel I am a test"))
-        Assert.assertEquals(response[0].value, "${BaseTest.TEST_NICK}, IAmATest")
-        response = operation.handleMessage(message("tell ${BaseTest.TEST_NICK} about url I am a test"))
-        Assert.assertEquals(response[0].value, "${BaseTest.TEST_NICK}, I+am+a+test")
-        response = operation.handleMessage(message("tell ${BaseTest.TEST_NICK} about stupid"))
-        Assert.assertEquals(response[0].value, "${BaseTest.TEST_NICK}, what you've just said is one of the most " +
+        var response = operation.handleMessage(message("tell ${BaseTest.TEST_TARGET_NICK} about hey"))
+        Assert.assertEquals(response[0].value, "Hello, ${BaseTest.TEST_TARGET_NICK}")
+        response = operation.handleMessage(message("tell ${BaseTest.TEST_TARGET_NICK} about camel I am a test"))
+        Assert.assertEquals(response[0].value, "${BaseTest.TEST_TARGET_NICK}, IAmATest")
+        response = operation.handleMessage(message("tell ${BaseTest.TEST_TARGET_NICK} about url I am a test"))
+        Assert.assertEquals(response[0].value, "${BaseTest.TEST_TARGET_NICK}, I+am+a+test")
+        response = operation.handleMessage(message("tell ${BaseTest.TEST_TARGET_NICK} about stupid"))
+        Assert.assertEquals(response[0].value, "${BaseTest.TEST_TARGET_NICK}, what you've just said is one of the most " +
                 "insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you even close to " +
                 "anything that could be considered a rational thought. Everyone in this room is now dumber for having listened to it. I " +
                 "award you no points, and may God have mercy on your soul.")
-        response = operation.handleMessage(message("~ ${BaseTest.TEST_NICK} seeTest"))
-        Assert.assertEquals(response[0].value, "${BaseTest.TEST_NICK}, I'm a reply!")
-        response = operation.handleMessage(message("~ ${BaseTest.TEST_NICK} bobloblaw"))
-        Assert.assertEquals(response[0].value, Sofia.unhandledMessage(testUser.nick))
-        response = operation.handleMessage(message("~ ${BaseTest.TEST_NICK} api"))
-        Assert.assertEquals(response[0].value, "${BaseTest.TEST_NICK}, api is http://java.sun.com/javase/current/docs/api/index.html")
+        response = operation.handleMessage(message("~~ ${BaseTest.TEST_TARGET_NICK} seeTest", startString = "~"))
+        Assert.assertEquals(response[0].value, "${BaseTest.TEST_TARGET_NICK}, I'm a reply!")
+        response = operation.handleMessage(message("~~ ${BaseTest.TEST_TARGET_NICK} bobloblaw", startString = "~"))
+        Assert.assertEquals(response.size, 0)
+        response = operation.handleMessage(message("~~ ${BaseTest.TEST_TARGET_NICK} api", startString = "~"))
+        Assert.assertEquals(response[0].value, "${BaseTest.TEST_TARGET_NICK}, api is http://java.sun.com/javase/current/docs/api/index.html")
         validate("camel I am a test 2", "IAmATest2")
-        response = operation.handleMessage(message("~ ${BaseTest.TEST_NICK} url I am a test 2"))
-        Assert.assertEquals(response[0].value, "${BaseTest.TEST_NICK}, I+am+a+test+2")
-        //    scanForResponse("~~ %s javadoc String", TEST_NICK), "[JDK: java.lang.String]");
-        //    scanForResponse("~~ %s javadoc String", new IrcUser("jimbob")), "jimbob");
-        response = operation.handleMessage(message("~ ${BaseTest.TEST_NICK} stupid"))
-        Assert.assertEquals(response[0].value, "${BaseTest.TEST_NICK}, what you've just said is one of the most insanely idiotic" +
+        response = operation.handleMessage(message("~~ ${BaseTest.TEST_TARGET_NICK} url I am a test 2", startString = "~"))
+        Assert.assertEquals(response[0].value, "${BaseTest.TEST_TARGET_NICK}, I+am+a+test+2")
+        //    scanForResponse("~~~ %s javadoc String", TEST_NICK), "[JDK: java.lang.String]");
+        //    scanForResponse("~~~ %s javadoc String", new IrcUser("jimbob")), "jimbob");
+        response = operation.handleMessage(message("~~ ${BaseTest.TEST_TARGET_NICK} stupid", startString = "~"))
+        Assert.assertEquals(response[0].value, "${BaseTest.TEST_TARGET_NICK}, what you've just said is one of the most insanely idiotic" +
                 " things I have ever heard. At no point in your rambling, incoherent response were you even close to anything that could " +
                 "be considered a rational thought. Everyone in this room is now dumber for having listened to it. I award you no points, " +
                 "and may God have mercy on your soul.")
 
-        response = operation.handleMessage(message("~${BaseTest.TEST_NICK} seeTest"))
-        Assert.assertEquals(response[0].value, "${BaseTest.TEST_NICK}, I'm a reply!")
-        response = operation.handleMessage(message("~${BaseTest.TEST_NICK} bobloblaw"))
-        Assert.assertEquals(response[0].value, Sofia.unhandledMessage(testUser.nick))
+        response = operation.handleMessage(message("~~${BaseTest.TEST_TARGET_NICK} seeTest", startString = "~"))
+        Assert.assertEquals(response[0].value, "${BaseTest.TEST_TARGET_NICK}, I'm a reply!")
+        response = operation.handleMessage(message("~~${BaseTest.TEST_TARGET_NICK} bobloblaw", startString = "~"))
+        Assert.assertEquals(response.size, 0)
 
-        response = operation.handleMessage(message("~${BaseTest.TEST_NICK} api"))
-        Assert.assertEquals(response[0].value, "${BaseTest.TEST_NICK}, api is http://java.sun.com/javase/current/docs/api/index.html")
-        response = operation.handleMessage(message("~${BaseTest.TEST_NICK} camel I am a test 3"))
-        Assert.assertEquals(response[0].value, "${BaseTest.TEST_NICK}, IAmATest3")
-        response = operation.handleMessage(message("~${BaseTest.TEST_NICK} url I am a test 3"))
-        Assert.assertEquals(response[0].value, "${BaseTest.TEST_NICK}, I+am+a+test+3")
+        response = operation.handleMessage(message("~~${BaseTest.TEST_TARGET_NICK} api", startString = "~~"))
+        Assert.assertEquals(response[0].value, "${BaseTest.TEST_TARGET_NICK}, api is http://java.sun.com/javase/current/docs/api/index.html")
+        response = operation.handleMessage(message("~~${BaseTest.TEST_TARGET_NICK} camel I am a test 3", startString = "~~"))
+        Assert.assertEquals(response[0].value, "${BaseTest.TEST_TARGET_NICK}, IAmATest3")
+        response = operation.handleMessage(message("~~${BaseTest.TEST_TARGET_NICK} url I am a test 3", startString = "~~"))
+        Assert.assertEquals(response[0].value, "${BaseTest.TEST_TARGET_NICK}, I+am+a+test+3")
         validate("stupid", "what you've just said is one of the most insanely idiotic things I have ever heard. At no point in your " +
                 "rambling, incoherent response were you even close to anything that could be considered a rational thought. Everyone in " +
                 "this room is now dumber for having listened to it. I award you no points, and may God have mercy on your soul.")
@@ -166,7 +166,7 @@ public class GetFactoidOperationTest : BaseTest() {
 
     @Test
     public fun longResponse() {
-        factoidDao.addFactoid(BaseTest.TEST_NICK, "yalla $1",
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "yalla $1",
                 "<reply>$1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 !111!!!!!one!!!\n")
         var response = operation.handleMessage(message("yalla I'm a really long repeated spam I'm a really long repeated spam I'm a " +
                 "really long repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long " +
@@ -184,9 +184,8 @@ public class GetFactoidOperationTest : BaseTest() {
     }
 
     private fun validate(factoid: String, response: String) {
-        Assert.assertEquals(
-                operation.handleMessage(message("~  ${BaseTest.TEST_NICK} ${factoid}"))[0].value,
-                "${BaseTest.TEST_NICK}, ${response}")
+        val responses = operation.handleMessage(message("~~ ${BaseTest.TEST_TARGET_NICK} ${factoid}", startString = "~"))
+        Assert.assertEquals(responses[0].value, "${BaseTest.TEST_TARGET_NICK}, ${response}")
     }
 
     protected fun getFoundMessage(factoid: String, value: String): String {

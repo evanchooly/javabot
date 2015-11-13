@@ -259,15 +259,16 @@ public open class Javabot {
                 if (message.value.startsWith(startString)) {
                     try {
                         if (throttler.isThrottled(message.user)) {
-                            postMessageToUser(message.user, Sofia.throttledUser())
+                            privateMessageUser(message.user, Sofia.throttledUser())
                         } else {
-                            val content = extractContentFromMessage(message.value, startString)
-                            if (!content.isEmpty()) {
-                                responses.addAll(getResponses(Message(message, content), message.user))
+
+                            val content = message.extractContentFromMessage(getIrcBot(), startString)
+                            if (content!= null) {
+                                responses.addAll(getResponses(content))
                             }
                         }
                     } catch (e: NickServViolationException) {
-                        postMessageToUser(message.user, e.message!!)
+                        privateMessageUser(message.user, e.message!!)
                     }
 
                 }
@@ -276,7 +277,7 @@ public open class Javabot {
                 responses.addAll(getChannelResponses(message))
             }
             responses.forEach {
-                postMessageToChannel(it, it.value)
+                postMessage(it)
             }
         } else {
             if (LOG.isInfoEnabled) {
@@ -285,45 +286,33 @@ public open class Javabot {
         }
     }
 
-    internal fun extractContentFromMessage(message: String, startString: String): String {
-        var content = message.substring(startString.length).trim()
-        while (!content.isEmpty() && (content[0] == ':' || content[0] == ',')) {
-            content = content.substring(1).trim()
-        }
-        return content
-    }
-
     public fun addIgnore(sender: String) {
         ignores.add(sender)
     }
 
-    private fun postMessageToChannel(event: Message?, message: String) {
-        if (event != null) {
-            if (event is Action) {
-                postAction(event.channel!!, message)
+    private fun postMessage(event: Message) {
+        if (event is Action) {
+            postAction(event.channel!!, event.value)
+        } else {
+            val value = event.massageTell()
+            if (event.channel != null) {
+                logMessage(event.channel, getIrcBot().userBot, value)
+                event.channel.send().message(value)
             } else {
-                val value = event.massageTell(message)
-                if (event.channel != null) {
-                    logMessage(event.channel, getIrcBot().userBot, value)
-                    event.channel.send().message(value)
-                } else {
-                    LOG.debug("channel is null.  sending directly to user: " + event)
-                    postMessageToUser(event.user, value)
-                }
+                LOG.debug("channel is null.  sending directly to user: " + event)
+                privateMessageUser(event.user, value)
             }
         }
     }
 
-    fun postMessageToUser(user: User?, message: String) {
-        if (user != null) {
-            logMessage(null, user, message)
-            user.send().message(message)
-        }
+    fun privateMessageUser(user: User, message: String) {
+        logMessage(null, user, message)
+        user.send().message(message)
     }
 
     private fun postAction(channel: org.pircbotx.Channel, message: String) {
         val bot = ircBot.get().userBot
-        if (channel?.name != bot.nick) {
+        if (channel.name != bot.nick) {
             logsDao.logMessage(Type.ACTION, channel, bot, message)
         }
         channel.send().action(message)
@@ -336,7 +325,7 @@ public open class Javabot {
         }
     }
 
-    public fun getResponses(message: Message, requester: User): List<Message> {
+    public fun getResponses(message: Message): List<Message> {
         val iterator = activeOperations.iterator()
         var responses = arrayListOf<Message>()
         while (iterator.hasNext() && responses.isEmpty()) {
@@ -344,16 +333,15 @@ public open class Javabot {
             try {
                 responses.addAll(next.handleMessage(message))
             } catch (e: Exception) {
-                LOG.error("NPE: message = [$message], requester = [$requester]")
+                LOG.error("NPE: message = [$message], requester = [${message.user}]")
                 e.printStackTrace()
             }
 
         }
 
         if (!responses.isEmpty()) {
-            val sender = getIrcBot().userChannelDao.getUser(requester.nick)
-            postMessageToChannel(Message(message.channel, sender, message.value),
-                    Sofia.unhandledMessage(requester.nick))
+            val sender = getIrcBot().userChannelDao.getUser(message.user.nick)
+            postMessage(Message(message.channel, sender, Sofia.unhandledMessage(message.user.nick)))
         }
         return responses
     }
