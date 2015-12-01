@@ -130,19 +130,10 @@ public open class Javabot {
             if (joined.size != channels.size) {
                 channels.filter({ channel -> !joined.contains(channel.name) }).forEach({ channel ->
                     channel.join(ircBot)
-                    sleep(500)
+                    Thread.sleep(500L)
                 })
             }
         }
-    }
-
-    @SuppressWarnings("EmptyCatchBlock")
-    protected fun sleep(milliseconds: Int) {
-        try {
-            Thread.sleep(milliseconds.toLong())
-        } catch (exception: InterruptedException) {
-        }
-
     }
 
     public fun shutdown() {
@@ -171,7 +162,6 @@ public open class Javabot {
                     e.printStackTrace(System.out)
                 }
             }
-            thread.isDaemon = false
             thread.start()
         } catch (ex: Exception) {
             ex.printStackTrace(System.out)
