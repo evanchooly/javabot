@@ -2,10 +2,6 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import javabot.Message
-import javabot.operations.BotOperation
-
-import java.util.stream.Collectors
-
 import java.lang.String.join
 import java.util.ArrayList
 

@@ -80,7 +80,7 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
             type = JavadocType()
             types.add(type!!)
         }
-        type!!.name = PRIMITIVES.get(baseType)
+        type!!.name = PRIMITIVES[baseType]
     }
 
     override fun visitTypeVariable(typeVariable: String) {
@@ -162,7 +162,7 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
 
     public fun getTypes(): List<JavadocType> {
         if (varargs && !types.isEmpty()) {
-            types.get(types.size - 1).setVarargs(true)
+            types[types.size - 1].setVarargs(true)
         }
         return types
     }
@@ -204,7 +204,7 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
 
         override fun toString(): String {
             if (name == null && typeVariables.size == 1) {
-                return typeVariables.get(0)
+                return typeVariables[0]
             }
             val builder: StringBuilder
             try {

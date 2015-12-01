@@ -2,17 +2,14 @@ package javabot.web.views
 
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
 import javabot.kotlin.web.views.IndexView
-import net.htmlparser.jericho.Element
 import net.htmlparser.jericho.Source
 import org.testng.Assert
 import org.testng.annotations.Test
-
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.util.Locale
-
 import java.lang.String.format
+import java.util.Locale
 
 public class IndexTest : ViewsTest() {
     @Test

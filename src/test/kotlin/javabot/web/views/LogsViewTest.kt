@@ -1,18 +1,10 @@
 package javabot.web.views
 
 import com.antwerkz.sofia.Sofia
-import javabot.dao.ChannelDao
-import javabot.dao.LogsDao
 import javabot.kotlin.web.views.LogsView
-import javabot.model.Channel
 import javabot.model.Logs.Type
-import org.pircbotx.PircBotX
-import org.pircbotx.User
 import org.testng.Assert
 import org.testng.annotations.Test
-
-import javax.inject.Inject
-import javax.inject.Provider
 import java.io.IOException
 import java.time.LocalDateTime
 

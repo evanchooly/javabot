@@ -3,12 +3,9 @@ package javabot.operations
 import com.antwerkz.sofia.Sofia
 import javabot.Message
 import javabot.dao.FactoidDao
-
-import javax.inject.Inject
 import java.time.Duration
-import java.time.Instant
-
 import java.time.Instant.now
+import javax.inject.Inject
 
 public class StatsOperation : BotOperation() {
     @Inject

@@ -1,10 +1,8 @@
 package javabot.dao
 
-import javax.inject.Inject
-
 import javabot.javadoc.JavadocApi
 import javabot.javadoc.criteria.JavadocApiCriteria
-import org.bson.types.ObjectId
+import javax.inject.Inject
 
 public class ApiDao() : BaseDao<JavadocApi>(JavadocApi::class.java) {
     @Inject

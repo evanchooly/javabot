@@ -14,7 +14,7 @@ public open class NickServDao : BaseDao<NickServInfo>(NickServInfo::class.java) 
 
     public fun process(list: List<String>) {
         val info = NickServInfo()
-        val split = list.get(0).split(" ")
+        val split = list[0].split(" ")
         info.nick = split[2].toLowerCase()
         info.account = split[4].substring(0, split[4].indexOf(')')).toLowerCase()
         list.subList(1, list.size).filter({ line -> line.contains(":") }).forEach({ line ->

@@ -26,11 +26,7 @@ public class VersionOperation : BotOperation(), StandardOperation {
             try {
                 val file = File("target/maven-archiver/pom.properties")
                 if (file.exists()) {
-                    return ArtifactDescription.locate("javabot", "core", object : ResourceProvider {
-                        override fun getResourceAsStream(p0: String?): InputStream? {
-                            return FileInputStream(file)
-                        }
-                    }).version
+                    return ArtifactDescription.locate("javabot", "core", { FileInputStream(file) }).version
                 } else {
                     return "UNKNOWN"
                 }

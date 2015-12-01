@@ -32,7 +32,7 @@ public class ChannelDaoTest : BaseServiceTest() {
     public fun stats() {
         val list = channelDao.getStatistics()
         Assert.assertTrue(!list.isEmpty())
-        val activity = list.get(0)
+        val activity = list[0]
         Assert.assertNotSame(activity.total, 0)
         Assert.assertNotNull(activity.getPercent())
     }

@@ -1,13 +1,10 @@
 package javabot.web.views
 
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
-import javabot.dao.ChangeDao
 import javabot.kotlin.web.views.ChangesView
 import javabot.model.Change
 import net.htmlparser.jericho.Source
 import org.testng.annotations.Test
-
-import javax.inject.Inject
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException

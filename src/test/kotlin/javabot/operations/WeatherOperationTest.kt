@@ -2,14 +2,10 @@ package javabot.operations
 
 import com.google.inject.Inject
 import javabot.BaseTest
-import org.testng.Assert
+import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
-
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Date
-
-import org.testng.Assert.assertEquals
 
 /**
  * Integration test for the Weather Operation, will actually attempt to contact the Google API for weather as

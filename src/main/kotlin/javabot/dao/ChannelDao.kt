@@ -5,7 +5,6 @@ import javabot.model.Activity
 import javabot.model.Channel
 import javabot.model.criteria.ChannelCriteria
 import org.apache.commons.lang.StringUtils
-import org.bson.types.ObjectId
 import org.mongodb.morphia.query.QueryImpl
 import java.time.LocalDateTime
 import java.util.ArrayList

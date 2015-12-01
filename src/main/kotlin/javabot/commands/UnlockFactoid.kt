@@ -1,7 +1,6 @@
 package javabot.commands
 
 import com.antwerkz.sofia.Sofia
-import com.beust.jcommander.JCommander
 import com.beust.jcommander.Parameter
 import javabot.Message
 import javabot.dao.FactoidDao

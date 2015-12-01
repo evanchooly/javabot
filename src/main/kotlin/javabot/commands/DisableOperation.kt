@@ -3,7 +3,6 @@ package javabot.commands
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
 import javabot.Message
-import java.util.ArrayList
 
 public class DisableOperation : OperationsCommand() {
     @Parameter(names=arrayOf("-name"), description = "The name of the operation to disable", required = true)

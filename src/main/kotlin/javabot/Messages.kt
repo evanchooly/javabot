@@ -1,9 +1,7 @@
 package javabot
 
-import javax.inject.Singleton
 import java.util.ArrayList
-import java.util.Spliterator
-import java.util.function.Consumer
+import javax.inject.Singleton
 
 @Singleton
 public class Messages : Iterable<String> {
@@ -32,7 +30,7 @@ public class Messages : Iterable<String> {
     }
 
     public fun get(index: Int): String {
-        return messages.get(index)
+        return messages[index]
     }
 
     override fun iterator(): Iterator<String> {

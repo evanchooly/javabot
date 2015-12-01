@@ -2,9 +2,6 @@ package javabot.model
 
 import org.apache.commons.lang.StringUtils
 
-import java.text.SimpleDateFormat
-import java.util.Date
-
 /**
  * Simple model for passing around Weather conditions
  */

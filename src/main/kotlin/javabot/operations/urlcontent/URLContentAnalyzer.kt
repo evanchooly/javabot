@@ -35,7 +35,7 @@ public class URLContentAnalyzer {
     @Throws(ContentException::class)
     private fun checkForBlacklistedSites(url: String) {
         for (pattern in patterns) {
-            if (matchingPatterns.get(pattern)?.matcher(url)?.matches() ?: false) {
+            if (matchingPatterns[pattern]?.matcher(url)?.matches() ?: false) {
                 throw ContentException("Rejected: blacklisted site ${url}")
             }
         }

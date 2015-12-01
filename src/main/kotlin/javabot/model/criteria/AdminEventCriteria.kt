@@ -1,21 +1,18 @@
 package javabot.model.criteria
 
-import com.antwerkz.critter.criteria.BaseCriteria
-import javabot.model.AdminEvent
-import org.mongodb.morphia.Datastore
-import javabot.Javabot
-import org.mongodb.morphia.query.Criteria
-import org.mongodb.morphia.query.FieldEndImpl
-import org.mongodb.morphia.query.QueryImpl
 import com.antwerkz.critter.TypeSafeFieldEnd
-import java.time.LocalDateTime
-import org.bson.types.ObjectId
-import javabot.model.AdminEvent.State
-import javabot.model.EventType
-import org.mongodb.morphia.query.UpdateOperations
-import org.mongodb.morphia.query.UpdateResults
+import com.antwerkz.critter.criteria.BaseCriteria
 import com.mongodb.WriteConcern
 import com.mongodb.WriteResult
+import javabot.Javabot
+import javabot.model.AdminEvent
+import javabot.model.AdminEvent.State
+import javabot.model.EventType
+import org.bson.types.ObjectId
+import org.mongodb.morphia.Datastore
+import org.mongodb.morphia.query.Criteria
+import org.mongodb.morphia.query.UpdateResults
+import java.time.LocalDateTime
 
 public class AdminEventCriteria(ds: Datastore) : BaseCriteria<AdminEvent>(ds, AdminEvent::class.java) {
 

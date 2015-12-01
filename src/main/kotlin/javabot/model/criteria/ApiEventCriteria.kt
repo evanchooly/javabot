@@ -1,26 +1,23 @@
 package javabot.model.criteria
 
-import com.antwerkz.critter.criteria.BaseCriteria
-import javabot.model.ApiEvent
-import org.mongodb.morphia.Datastore
-import javabot.dao.AdminDao
-import org.mongodb.morphia.query.Criteria
-import org.mongodb.morphia.query.FieldEndImpl
-import org.mongodb.morphia.query.QueryImpl
 import com.antwerkz.critter.TypeSafeFieldEnd
-import javabot.dao.ApiDao
-import org.bson.types.ObjectId
+import com.antwerkz.critter.criteria.BaseCriteria
 import com.google.inject.Provider
-import javabot.javadoc.JavadocParser
-import javabot.Javabot
-import java.time.LocalDateTime
-import javabot.model.AdminEvent.State
-import javabot.model.EventType
-import org.mongodb.morphia.query.UpdateOperations
-import org.mongodb.morphia.query.UpdateResults
 import com.mongodb.WriteConcern
 import com.mongodb.WriteResult
+import javabot.Javabot
+import javabot.dao.AdminDao
+import javabot.dao.ApiDao
+import javabot.javadoc.JavadocParser
+import javabot.model.AdminEvent.State
+import javabot.model.ApiEvent
+import javabot.model.EventType
+import org.bson.types.ObjectId
+import org.mongodb.morphia.Datastore
+import org.mongodb.morphia.query.Criteria
+import org.mongodb.morphia.query.UpdateResults
 import org.pircbotx.PircBotX
+import java.time.LocalDateTime
 
 public class ApiEventCriteria(ds: Datastore) : BaseCriteria<ApiEvent>(ds, ApiEvent::class.java) {
 

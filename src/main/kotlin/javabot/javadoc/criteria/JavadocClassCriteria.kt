@@ -1,19 +1,16 @@
 package javabot.javadoc.criteria
 
-import com.antwerkz.critter.criteria.BaseCriteria
-import javabot.javadoc.JavadocClass
-import org.mongodb.morphia.Datastore
-import org.mongodb.morphia.query.Criteria
-import org.mongodb.morphia.query.FieldEndImpl
-import org.mongodb.morphia.query.QueryImpl
 import com.antwerkz.critter.TypeSafeFieldEnd
-import org.bson.types.ObjectId
-import org.mongodb.morphia.query.UpdateOperations
-import org.mongodb.morphia.query.UpdateResults
+import com.antwerkz.critter.criteria.BaseCriteria
 import com.mongodb.WriteConcern
 import com.mongodb.WriteResult
+import javabot.javadoc.JavadocClass
 import javabot.javadoc.JavadocField
 import javabot.javadoc.JavadocMethod
+import org.bson.types.ObjectId
+import org.mongodb.morphia.Datastore
+import org.mongodb.morphia.query.Criteria
+import org.mongodb.morphia.query.UpdateResults
 
 public class JavadocClassCriteria(ds: Datastore) : BaseCriteria<JavadocClass>(ds, JavadocClass::class.java) {
 

@@ -3,8 +3,6 @@ package javabot.operations
 import com.antwerkz.sofia.Sofia
 import javabot.Message
 import javabot.dao.impl.WeatherDao
-import javabot.model.Weather
-
 import javax.inject.Inject
 
 /**

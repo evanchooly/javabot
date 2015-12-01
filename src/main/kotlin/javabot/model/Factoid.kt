@@ -2,7 +2,6 @@ package javabot.model
 
 import com.fasterxml.jackson.annotation.JsonView
 import javabot.json.Views.PUBLIC
-import javabot.operations.TellSubject
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field

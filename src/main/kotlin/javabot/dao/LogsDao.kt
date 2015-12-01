@@ -62,10 +62,10 @@ public class LogsDao : BaseDao<Logs>(Logs::class.java) {
         return list
     }
 
-    public fun findByChannel(name: String, date: LocalDateTime, showAll: Boolean?): List<Logs> {
+    public fun findByChannel(name: String, date: LocalDateTime, showAll: Boolean): List<Logs> {
         val channel = channelDao.get(name)
-        if (channel != null && (showAll!! || channel.logged)) {
-            return dailyLog(name, date, showAll!! || channel.logged)
+        if (channel != null && (showAll || channel.logged)) {
+            return dailyLog(name, date, showAll || channel.logged)
         } else {
             return emptyList()
         }

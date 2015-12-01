@@ -1,18 +1,15 @@
 package javabot.model.criteria
 
-import com.antwerkz.critter.criteria.BaseCriteria
-import javabot.model.Admin
-import org.mongodb.morphia.Datastore
-import org.mongodb.morphia.query.Criteria
-import org.mongodb.morphia.query.FieldEndImpl
-import org.mongodb.morphia.query.QueryImpl
 import com.antwerkz.critter.TypeSafeFieldEnd
-import org.bson.types.ObjectId
-import java.time.LocalDateTime
-import org.mongodb.morphia.query.UpdateOperations
-import org.mongodb.morphia.query.UpdateResults
+import com.antwerkz.critter.criteria.BaseCriteria
 import com.mongodb.WriteConcern
 import com.mongodb.WriteResult
+import javabot.model.Admin
+import org.bson.types.ObjectId
+import org.mongodb.morphia.Datastore
+import org.mongodb.morphia.query.Criteria
+import org.mongodb.morphia.query.UpdateResults
+import java.time.LocalDateTime
 
 public class AdminCriteria(ds: Datastore) : BaseCriteria<Admin>(ds, Admin::class.java) {
 

@@ -19,7 +19,7 @@ public class URLTitleOperationTest : BaseTest() {
     public fun testSimpleUrl(url: String, content: String?) {
         val results = operation.handleChannelMessage(Message(testChannel, testUser, url))
         if (content != null) {
-            Assert.assertEquals(results.get(0).value, content)
+            Assert.assertEquals(results[0].value, content)
         } else {
             Assert.assertTrue(results.isEmpty())
         }

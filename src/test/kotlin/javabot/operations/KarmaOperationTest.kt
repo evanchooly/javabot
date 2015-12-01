@@ -2,10 +2,8 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
-import javabot.Message
 import javabot.dao.ConfigDao
 import javabot.dao.KarmaDao
-import javabot.model.ThrottleItem
 import org.mongodb.morphia.Datastore
 import org.testng.Assert
 import org.testng.annotations.Test

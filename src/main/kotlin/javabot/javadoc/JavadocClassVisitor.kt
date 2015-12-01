@@ -80,7 +80,7 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
             val javadocClass = getJavadocClass()
             if (javadocClass != null && isPublic(access)) {
                 try {
-                    val javadocType = extractTypes(className!!, "", desc, false).get(0)
+                    val javadocType = extractTypes(className!!, "", desc, false)[0]
                     javadocClassDao.save(JavadocField(javadocClass, name, javadocType.toString()))
                 } catch (e: IndexOutOfBoundsException) {
                     throw RuntimeException(e.message, e)

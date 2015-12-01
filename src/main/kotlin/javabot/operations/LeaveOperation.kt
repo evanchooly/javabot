@@ -2,7 +2,6 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import javabot.Message
-import org.slf4j.LoggerFactory
 
 public class LeaveOperation : BotOperation() {
 

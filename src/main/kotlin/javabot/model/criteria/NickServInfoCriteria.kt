@@ -1,18 +1,15 @@
 package javabot.model.criteria
 
-import com.antwerkz.critter.criteria.BaseCriteria
-import javabot.model.NickServInfo
-import org.mongodb.morphia.Datastore
-import org.mongodb.morphia.query.Criteria
-import org.mongodb.morphia.query.FieldEndImpl
-import org.mongodb.morphia.query.QueryImpl
 import com.antwerkz.critter.TypeSafeFieldEnd
-import java.time.LocalDateTime
-import org.bson.types.ObjectId
-import org.mongodb.morphia.query.UpdateOperations
-import org.mongodb.morphia.query.UpdateResults
+import com.antwerkz.critter.criteria.BaseCriteria
 import com.mongodb.WriteConcern
 import com.mongodb.WriteResult
+import javabot.model.NickServInfo
+import org.bson.types.ObjectId
+import org.mongodb.morphia.Datastore
+import org.mongodb.morphia.query.Criteria
+import org.mongodb.morphia.query.UpdateResults
+import java.time.LocalDateTime
 
 public class NickServInfoCriteria(ds: Datastore) : BaseCriteria<NickServInfo>(ds, NickServInfo::class.java) {
 

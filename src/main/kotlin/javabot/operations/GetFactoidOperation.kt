@@ -6,7 +6,6 @@ import javabot.Message
 import javabot.dao.FactoidDao
 import javabot.model.Factoid
 import org.pircbotx.PircBotX
-import org.pircbotx.User
 import org.slf4j.LoggerFactory
 import java.util.HashSet
 import javax.inject.Inject

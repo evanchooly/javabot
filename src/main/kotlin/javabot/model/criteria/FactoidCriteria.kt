@@ -1,18 +1,15 @@
 package javabot.model.criteria
 
-import com.antwerkz.critter.criteria.BaseCriteria
-import javabot.model.Factoid
-import org.mongodb.morphia.Datastore
-import org.bson.types.ObjectId
-import org.mongodb.morphia.query.Criteria
-import org.mongodb.morphia.query.FieldEndImpl
-import org.mongodb.morphia.query.QueryImpl
 import com.antwerkz.critter.TypeSafeFieldEnd
-import java.time.LocalDateTime
-import org.mongodb.morphia.query.UpdateOperations
-import org.mongodb.morphia.query.UpdateResults
+import com.antwerkz.critter.criteria.BaseCriteria
 import com.mongodb.WriteConcern
 import com.mongodb.WriteResult
+import javabot.model.Factoid
+import org.bson.types.ObjectId
+import org.mongodb.morphia.Datastore
+import org.mongodb.morphia.query.Criteria
+import org.mongodb.morphia.query.UpdateResults
+import java.time.LocalDateTime
 
 public class FactoidCriteria(ds: Datastore) : BaseCriteria<Factoid>(ds, Factoid::class.java) {
 

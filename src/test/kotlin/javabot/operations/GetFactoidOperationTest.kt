@@ -1,6 +1,5 @@
 package javabot.operations
 
-import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
 import javabot.dao.FactoidDao
 import org.testng.Assert

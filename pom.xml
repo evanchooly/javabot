@@ -116,7 +116,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--
                         <plugin>
                             <groupId>com.antwerkz.sofia</groupId>
                             <artifactId>sofia-maven</artifactId>
@@ -133,7 +132,6 @@
                                 <outputDirectory>src/main/java</outputDirectory>
                             </configuration>
                         </plugin>
-            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -450,7 +448,7 @@
         <sofia.version>0.15</sofia.version>
         <slf4j.version>1.7.4</slf4j.version>
         <dropwizard.version>0.7.1</dropwizard.version>
-        <kotlin.version>1.0.0-beta-1103</kotlin.version>
+        <kotlin.version>1.0.0-beta-2423</kotlin.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

@@ -1,13 +1,11 @@
 package javabot.dao.impl
 
-import java.net.URL
-import java.net.URLEncoder
-
 import javabot.dao.WeatherHandler
 import javabot.model.Weather
 import org.xml.sax.InputSource
-import org.xml.sax.XMLReader
 import org.xml.sax.helpers.XMLReaderFactory
+import java.net.URL
+import java.net.URLEncoder
 
 /**
  * Implements a weather service Dao using Weather Underground's weather API

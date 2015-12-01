@@ -1,6 +1,5 @@
 package javabot.kotlin.web.auth
 
-import com.google.common.collect.Sets
 import com.sun.jersey.api.core.HttpContext
 import com.sun.jersey.server.impl.inject.AbstractHttpContextInjectable
 import javabot.kotlin.web.JavabotConfiguration
@@ -8,7 +7,6 @@ import javabot.kotlin.web.model.Authority
 import javabot.kotlin.web.model.InMemoryUserCache
 import javabot.kotlin.web.model.User
 import org.slf4j.LoggerFactory
-import java.util.Arrays
 import java.util.UUID
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.core.Response.Status
@@ -36,7 +34,7 @@ class OpenIDRestrictedToInjectable (requiredAuthorities: Array<out Authority>) :
                 throw WebApplicationException(Status.UNAUTHORIZED)
             }
 
-            val sessionToken = UUID.fromString(cookieMap.get(JavabotConfiguration.SESSION_TOKEN_NAME)?.value)
+            val sessionToken = UUID.fromString(cookieMap[JavabotConfiguration.SESSION_TOKEN_NAME]?.value)
             val credentials = OpenIDCredentials(sessionToken, requiredAuthorities)
 
             val user = InMemoryUserCache.INSTANCE.getBySessionToken(credentials.sessionToken.toString())

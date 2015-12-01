@@ -42,7 +42,7 @@ public class WeatherDao {
      */
     private fun commonPlaces(place: String): String {
         val upper = place.toUpperCase()
-        return if (places.containsKey(upper)) places.get(upper)!! else place
+        return if (places.containsKey(upper)) places[upper]!! else place
 
     }
 

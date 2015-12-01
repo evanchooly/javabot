@@ -21,6 +21,6 @@ public class UnixCommandOperation : BotOperation() {
     }
 
     private fun getInsult(): String {
-        return insults.get(random.nextInt(insults.size))
+        return insults[random.nextInt(insults.size)]
     }
 }

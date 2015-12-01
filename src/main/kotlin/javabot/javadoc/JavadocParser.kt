@@ -88,7 +88,7 @@ public class JavadocParser {
             val parent = getJavadocClass(api, pkg, name)
             if (parent == null) {
                 val fqcn = pkg + "." + name
-                var list: MutableList<JavadocClass>? = deferred.get(fqcn)
+                var list: MutableList<JavadocClass>? = deferred[fqcn]
                 if (list == null) {
                     list = ArrayList<JavadocClass>()
                     deferred.put(fqcn, list)
@@ -106,7 +106,7 @@ public class JavadocParser {
                 cls = JavadocClass(api, pkg, name)
                 javadocClassDao.save(cls)
             }
-            val list = deferred.get(pkg + "." + name)
+            val list = deferred[pkg + "." + name]
             if (list != null) {
                 for (subclass in list) {
                     subclass.superClassId = cls.superClassId

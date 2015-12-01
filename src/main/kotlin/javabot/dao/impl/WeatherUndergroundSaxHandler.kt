@@ -71,21 +71,21 @@ public class WeatherUndergroundSaxHandler : DefaultHandler() {
      * @return Weather data, or null if none was parsed
      */
     public fun getWeather(): Weather? {
-        error = error || weatherMap.get("full") == ","
+        error = error || weatherMap["full"] == ","
         if (error) {
             //TODO Log
             return null
         } else {
             val weather = Weather()
-            weather.city = weatherMap.get("full")
-            weather.condition = weatherMap.get("weather")
-            weather.tempf = weatherMap.get("temp_f")
-            weather.tempc = weatherMap.get("temp_c")
-            weather.humidity = weatherMap.get("relative_humidity")
-            weather.wind = weatherMap.get("wind_string")
-            weather.windChill = weatherMap.get("windchill_string")
+            weather.city = weatherMap["full"]
+            weather.condition = weatherMap["weather"]
+            weather.tempf = weatherMap["temp_f"]
+            weather.tempc = weatherMap["temp_c"]
+            weather.humidity = weatherMap["relative_humidity"]
+            weather.wind = weatherMap["wind_string"]
+            weather.windChill = weatherMap["windchill_string"]
 
-            val localTime = weatherMap.get("local_time")
+            val localTime = weatherMap["local_time"]
             if (localTime != null && "" != localTime.trim()) {
                 val tokens = localTime.trim().split(" ")
                 if (tokens.size == 5) {

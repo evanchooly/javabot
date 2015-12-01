@@ -39,7 +39,7 @@ public abstract class MainView(injector: Injector, val request: HttpServletReque
     }
 
     public fun sofia(): Sofia {
-        return Sofia
+        return Sofia()
     }
 
     public abstract fun getChildView(): String

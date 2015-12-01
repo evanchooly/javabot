@@ -1,10 +1,8 @@
 package javabot.dao
 
-import javax.inject.Inject
-
-import javabot.model.Factoid
 import org.testng.Assert
 import org.testng.annotations.Test
+import javax.inject.Inject
 
 public class FactoidDaoTest : BaseServiceTest() {
     @Inject

@@ -1,24 +1,21 @@
 package javabot.model.criteria
 
-import com.antwerkz.critter.criteria.BaseCriteria
-import javabot.model.ChannelEvent
-import org.mongodb.morphia.Datastore
-import org.mongodb.morphia.query.Criteria
-import org.mongodb.morphia.query.FieldEndImpl
-import org.mongodb.morphia.query.QueryImpl
 import com.antwerkz.critter.TypeSafeFieldEnd
-import javabot.dao.ChannelDao
-import javax.inject.Provider
-import javabot.Javabot
-import java.time.LocalDateTime
-import org.bson.types.ObjectId
-import javabot.model.AdminEvent.State
-import javabot.model.EventType
-import org.mongodb.morphia.query.UpdateOperations
-import org.mongodb.morphia.query.UpdateResults
+import com.antwerkz.critter.criteria.BaseCriteria
 import com.mongodb.WriteConcern
 import com.mongodb.WriteResult
+import javabot.Javabot
+import javabot.dao.ChannelDao
+import javabot.model.AdminEvent.State
+import javabot.model.ChannelEvent
+import javabot.model.EventType
+import org.bson.types.ObjectId
+import org.mongodb.morphia.Datastore
+import org.mongodb.morphia.query.Criteria
+import org.mongodb.morphia.query.UpdateResults
 import org.pircbotx.PircBotX
+import java.time.LocalDateTime
+import javax.inject.Provider
 
 public class ChannelEventCriteria(ds: Datastore) : BaseCriteria<ChannelEvent>(ds, ChannelEvent::class.java) {
 

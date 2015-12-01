@@ -12,7 +12,7 @@ public class JCPJSRLocator {
 
     public fun locate(inputs: Map<String, String>): Map<String, String> {
         val retVal = HashMap<String, String>()
-        val urlString = "http://www.jcp.org/en/jsr/detail?id=" + inputs.get("jsr")
+        val urlString = "http://www.jcp.org/en/jsr/detail?id=" + inputs["jsr"]
         retVal.put("url", urlString)
         try {
             HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build().use { client ->
@@ -49,10 +49,10 @@ public class JCPJSRLocator {
         val inputs = HashMap<String, String>()
         inputs.put("jsr", Integer.toString(jsr))
         val outputs = locate(inputs)
-        if (Strings.isNullOrEmpty(outputs.get("title"))) {
+        if (Strings.isNullOrEmpty(outputs["title"])) {
             return ""
         }
-        return "'" + outputs.get("title") + "' can be found at " + outputs.get("url")
+        return "'" + outputs["title"] + "' can be found at " + outputs["url"]
     }
 
     companion object {

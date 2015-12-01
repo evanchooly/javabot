@@ -2,16 +2,13 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import javabot.Message
-
 import java.time.Duration
-import java.time.Instant
 import java.time.LocalDateTime
+import java.time.LocalDateTime.now
 import java.time.Month
 import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
-
-import java.time.LocalDateTime.now
 
 public class DaysToChristmasOperation : BotOperation() {
     override fun handleMessage(event: Message): List<Message> {

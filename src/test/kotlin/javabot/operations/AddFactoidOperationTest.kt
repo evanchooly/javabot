@@ -12,7 +12,6 @@ import org.testng.Assert
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.io.IOException
-import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 

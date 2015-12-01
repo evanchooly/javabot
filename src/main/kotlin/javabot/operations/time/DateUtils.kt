@@ -1,10 +1,8 @@
 package javabot.operations.time
 
-import java.util.Date
-
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
+import java.util.Date
 
 public class DateUtils {
     private val dateFormatter = DateTimeFormat.forPattern("MMMM dd")

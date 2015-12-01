@@ -50,7 +50,7 @@ public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(Jav
         val criteria = JavadocFieldCriteria(ds)
         val classes = getClass(api, className)
         if (!classes.isEmpty()) {
-            val javadocClass = classes.get(0)
+            val javadocClass = classes[0]
             if (javadocClass.id != null) {
                 criteria.javadocClassId(javadocClass.id!!)
             }

@@ -9,7 +9,6 @@ import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.util.EntityUtils
 import org.jsoup.Jsoup
 import java.io.IOException
-import java.lang.String.format
 import javax.inject.Inject
 
 public class URLTitleOperation : BotOperation() {

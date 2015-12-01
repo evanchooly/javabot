@@ -1,6 +1,5 @@
 package javabot.kotlin.web.views
 
-import com.google.common.base.Strings
 import com.google.inject.Injector
 import javabot.dao.util.QueryParam
 import javabot.model.Factoid

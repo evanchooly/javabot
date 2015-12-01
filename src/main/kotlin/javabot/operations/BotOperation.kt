@@ -4,9 +4,7 @@ import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import org.pircbotx.User
-
 import javax.inject.Inject
-import java.util.Random
 
 public abstract class BotOperation {
     @Inject

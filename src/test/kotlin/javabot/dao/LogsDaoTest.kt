@@ -50,7 +50,7 @@ public class LogsDaoTest : BaseTest() {
         val logs = logsDao.findByChannel(chanName, LocalDateTime.now(), true)
 
         Assert.assertFalse(logs.isEmpty(), "Should have one log entry")
-        Assert.assertEquals(logs.get(0).message, Sofia.userParted(user.nick, "i'm out of here!"))
+        Assert.assertEquals(logs[0].message, Sofia.userParted(user.nick, "i'm out of here!"))
     }
 
     companion object {
