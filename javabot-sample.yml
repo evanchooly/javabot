@@ -1,0 +1,46 @@
+server:
+  type: simple
+  applicationContextPath: /  # Default value*
+  adminContextPath: /admincontext  # Default value*
+  connector:
+      type: http
+      port: 80
+  requestLog:
+    appenders:
+      - type: file
+        currentLogFilename: /some/path-web.log
+        threshold: ALL
+        archive: true
+        archivedLogFilenamePattern: /some/path-web-%d.log
+        archivedFileCount: 5
+        timeZone: UTC
+        logFormat: '%date %level [%thread] %logger{10} [%file:%line] %msg%n'
+
+# Logging settings.
+logging:
+
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: INFO
+
+  # Logger-specific levels.
+  loggers:
+#    com.antwerkz: INFO
+
+  appenders:
+    - type: file
+      currentLogFilename: /some/path.log
+      threshold: ALL
+      archive: true
+      archivedLogFilenamePattern: /some/path-%d.log
+      archivedFileCount: 5
+      timeZone: UTC
+      logFormat: '%date %level [%thread] %logger{10} [%file:%line] %msg%n'
+
+oauthSuccessUrl: http://localhost:8080/auth/verify
+
+oauthCfg:
+  - name: googleplus
+    prefix: googleapis.com
+    key: 'something'
+    secret: 'something'
+    permissions: https://www.googleapis.com/auth/userinfo.profile,email

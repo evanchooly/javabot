@@ -25,6 +25,7 @@ import org.pircbotx.PircBotX
 import org.pircbotx.User
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.io.File
 import java.time.LocalDateTime
 import java.util.ArrayList
 import java.util.SortedMap
@@ -171,11 +172,15 @@ public open class Javabot {
 
     public fun startWebApp() {
         if (javabotConfig.startWebApp()) {
-            try {
-                Sofia.logWebappStarting()
-                injector.getInstance<JavabotApplication>(JavabotApplication::class.java).run(arrayOf("server", "javabot.yml"))
-            } catch (e: Exception) {
-                throw RuntimeException(e.message, e)
+            if (File("javabot.yml").exists()) {
+                try {
+                    Sofia.logWebappStarting()
+                    injector.getInstance<JavabotApplication>(JavabotApplication::class.java).run(arrayOf("server", "javabot.yml"))
+                } catch (e: Exception) {
+                    throw RuntimeException(e.message, e)
+                }
+            } else {
+                println(Sofia.configurationWebMissingFile())
             }
 
         } else {
@@ -253,7 +258,7 @@ public open class Javabot {
                         } else {
 
                             val content = message.extractContentFromMessage(getIrcBot(), startString)
-                            if (content!= null) {
+                            if (content != null) {
                                 responses.addAll(getResponses(content))
                             }
                         }

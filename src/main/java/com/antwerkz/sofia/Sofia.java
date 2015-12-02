@@ -273,6 +273,10 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("configuration.unknown.property", locale), arg0);
     }
 
+    public static String configurationWebMissingFile(Locale... locale) {
+        return getMessageValue("configuration.web.missing.file", locale);
+    }
+
     public static String daysUntil(Object arg0, Number arg1, java.util.Date arg2, Locale... locale) {
         return MessageFormat.format(getMessageValue("days.until", locale), arg0, arg1, arg2);
     }
