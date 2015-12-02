@@ -18,18 +18,8 @@ public class LogsDao : BaseDao<Logs>(Logs::class.java) {
     @Inject
     public lateinit var channelDao: ChannelDao
 
-    public fun logMessage(type: Type, channel: Channel?, user: User?, message: String) {
-        val logMessage = Logs()
-        logMessage.type = type
-        if (user != null) {
-            logMessage.nick = user.nick
-        }
-        if (channel != null) {
-            logMessage.channel = channel.name
-        }
-        logMessage.message = message
-        logMessage.updated = LocalDateTime.now()
-        save(logMessage)
+    public fun logMessage(type: Type, channel: Channel?, user: User, message: String) {
+        save(Logs(user.nick, message, type, channel?.name))
     }
 
     public fun isSeen(channel: String, nick: String): Boolean {
@@ -42,7 +32,7 @@ public class LogsDao : BaseDao<Logs>(Logs::class.java) {
         criteria.channel().equal(channel)
         criteria.updated().order(false)
         val logs = criteria.query().get()
-        return if (logs != null) Seen(logs.channel, logs.message, logs.nick, logs.updated) else null
+        return if (logs != null) Seen(logs.channel!!, logs.message, logs.nick, logs.updated) else null
     }
 
     private fun dailyLog(channelName: String, date: LocalDateTime?, logged: Boolean): List<Logs> {

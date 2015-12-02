@@ -13,7 +13,7 @@ class Config : Serializable, Persistent {
 
     var server: String = "irc.freenode.org"
 
-    lateinit var url: String
+    var url: String = ""
 
     var port = 6667
 

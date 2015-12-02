@@ -57,7 +57,6 @@ open class JavabotModule : AbstractModule() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
         }
         return datastore!!
     }

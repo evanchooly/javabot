@@ -24,10 +24,7 @@ public class ChannelEvent : AdminEvent {
     protected constructor() {
     }
 
-    public constructor(channel: String, type: EventType, requestedBy: String) : this(channel, null, type, requestedBy) {
-    }
-
-    public constructor(channel: String, key: String?, type: EventType, requestedBy: String) : super(type, requestedBy) {
+    public constructor(requestedBy: String, type: EventType, channel: String, key: String? = null) : super(requestedBy, type) {
         this.key = key
         this.channel = channel
     }

@@ -1,5 +1,6 @@
 package javabot.model
 
+import javabot.model.Logs.Type
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
@@ -12,21 +13,8 @@ import java.time.LocalDateTime
 
 @Entity(value = "logs", noClassnameStored = true)
 @Indexes(Index(fields = arrayOf(Field("channel"), Field("upperNick"), Field("updated")), options = IndexOptions(name = "seen")))
-public class Logs : Persistent {
-    @Id
-    var id: ObjectId? = null
-
-    lateinit var nick: String
-
-    public var upperNick: String? = null
-
-    lateinit var channel: String
-
-    public var message: String = ""
-
-    lateinit var updated: LocalDateTime
-
-    public enum class Type {
+class Logs : Persistent {
+    enum class Type {
         ACTION,
         BAN,
         DISCONNECTED,
@@ -42,23 +30,48 @@ public class Logs : Persistent {
         NICK
     }
 
-    public var type: Type? = null
+    @Id
+    var id: ObjectId = ObjectId()
+    
+    lateinit var nick: String
 
-    public fun isAction(): Boolean {
+    var channel: String? = null
+
+    lateinit var message: String
+
+    lateinit var updated: LocalDateTime
+
+    lateinit var type: Type
+
+    lateinit var upperNick: String
+
+    private constructor() {
+    }
+
+    constructor(nick: String, message: String, type: Type, channel: String?, updated: LocalDateTime = LocalDateTime.now()) : this() {
+        this.nick = nick
+        this.message = message
+        this.type = type
+        this.updated = updated
+        this.channel = channel
+        upperNick()
+    }
+
+    fun isAction(): Boolean {
         return Type.ACTION == type
     }
 
-    public fun isKick(): Boolean {
+    fun isKick(): Boolean {
         return Type.KICK == type
     }
 
-    public fun isServerMessage(): Boolean {
+    fun isServerMessage(): Boolean {
         return Type.JOIN == type || Type.PART == type || Type.QUIT == type
     }
 
     @PrePersist
-    public fun upperNick() {
-        upperNick = if (nick == null) null else nick.toUpperCase()
+    fun upperNick() {
+        upperNick = nick.toUpperCase()
     }
 
     override fun toString(): String {

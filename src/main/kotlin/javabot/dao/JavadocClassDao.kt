@@ -19,7 +19,7 @@ public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(Jav
         val pkgName = strings.first
         val criteria = JavadocClassCriteria(ds)
         criteria.upperName().equal(strings.second.toUpperCase())
-        api?.let { it.id?.let { id -> criteria.apiId(id) } }
+        api?.let { it.id.let { id -> criteria.apiId(id) } }
         if(pkgName != null) {
             criteria.upperPackageName().equal(pkgName.toUpperCase())
         }
@@ -27,12 +27,12 @@ public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(Jav
     }
 
     @SuppressWarnings("unchecked")
-    public fun getClass(api: JavadocApi, pkg: String, name: String): List<JavadocClass> {
+    public fun getClass(api: JavadocApi?, pkg: String, name: String): List<JavadocClass> {
         val criteria: JavadocClassCriteria
         try {
             criteria = JavadocClassCriteria(ds)
-            if (api.id != null) {
-                criteria.apiId(api.id!!)
+            if (api != null) {
+                criteria.apiId(api.id)
             }
             criteria.upperPackageName().equal(pkg.toUpperCase())
             criteria.upperName().equal(name.toUpperCase())
@@ -51,9 +51,7 @@ public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(Jav
         val classes = getClass(api, className)
         if (!classes.isEmpty()) {
             val javadocClass = classes[0]
-            if (javadocClass.id != null) {
-                criteria.javadocClassId(javadocClass.id!!)
-            }
+            criteria.javadocClassId(javadocClass.id)
             criteria.upperName().equal(fieldName.toUpperCase())
             return criteria.query().asList()
         }
@@ -79,7 +77,7 @@ public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(Jav
 
     private fun getMethods(name: String, signatureTypes: String, javadocClass: JavadocClass): List<JavadocMethod> {
         val criteria = JavadocMethodCriteria(ds)
-        javadocClass.id?.let { criteria.javadocClassId(it) }
+        criteria.javadocClassId(javadocClass.id)
         criteria.upperName().equal(name.toUpperCase())
         if ("*" != signatureTypes) {
             criteria.or(
@@ -97,13 +95,13 @@ public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(Jav
 
     private fun deleteFields(javadocClass: JavadocClass) {
         val criteria = JavadocFieldCriteria(ds)
-        javadocClass.id?.let { criteria.javadocClassId(it) }
+        javadocClass.id.let { criteria.javadocClassId(it) }
         ds.delete(criteria.query())
     }
 
     private fun deleteMethods(javadocClass: JavadocClass) {
         val criteria = JavadocMethodCriteria(ds)
-        javadocClass.id?.let { criteria.javadocClassId(it) }
+        javadocClass.id.let { criteria.javadocClassId(it) }
         ds.delete(criteria.query())
     }
 
@@ -112,23 +110,21 @@ public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(Jav
     }
 
     public fun deleteFor(api: JavadocApi?) {
-        if (api != null) {
-            api.id?.let { apiId ->
-                LOG.debug("Dropping fields from " + api.name)
-                val criteria = JavadocFieldCriteria(ds)
-                criteria.apiId(apiId)
-                ds.delete(criteria.query())
+        api?.let { api ->
+            LOG.debug("Dropping fields from " + api.name)
+            val criteria = JavadocFieldCriteria(ds)
+            criteria.apiId(api.id)
+            ds.delete(criteria.query())
 
-                LOG.debug("Dropping methods from " + api.name)
-                val method = JavadocMethodCriteria(ds)
-                method.apiId(apiId)
-                ds.delete(method.query())
+            LOG.debug("Dropping methods from " + api.name)
+            val method = JavadocMethodCriteria(ds)
+            method.apiId(api.id)
+            ds.delete(method.query())
 
-                LOG.debug("Dropping classes from " + api.name)
-                val klass = JavadocClassCriteria(ds)
-                klass.apiId(apiId)
-                ds.delete(klass.query())
-            }
+            LOG.debug("Dropping classes from " + api.name)
+            val klass = JavadocClassCriteria(ds)
+            klass.apiId(api.id)
+            ds.delete(klass.query())
         }
     }
 

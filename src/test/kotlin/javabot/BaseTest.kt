@@ -8,6 +8,7 @@ import javabot.dao.ChannelDao
 import javabot.dao.EventDao
 import javabot.dao.LogsDao
 import javabot.dao.NickServDao
+import javabot.model.Admin
 import javabot.model.AdminEvent
 import javabot.model.AdminEvent.State
 import javabot.model.Change
@@ -76,11 +77,15 @@ public open class BaseTest {
 
     @BeforeTest
     public fun setup() {
-        val admin = adminDao.getAdminByEmailAddress(BOT_EMAIL)!!
-        admin.ircName = testUser.nick
-        admin.emailAddress = BOT_EMAIL
-        admin.hostName = testUser.hostmask
-        admin.botOwner = true
+        var admin = adminDao.getAdminByEmailAddress(BOT_EMAIL)
+        if (admin == null) {
+            admin = Admin(testUser.nick, BOT_EMAIL, testUser.hostmask, true)
+        } else {
+            admin.ircName = testUser.nick
+            admin.emailAddress = BOT_EMAIL
+            admin.hostName = testUser.hostmask
+            admin.botOwner = true
+        }
         adminDao.save(admin)
 
         var channel: Channel? = channelDao.get(testChannel.name)

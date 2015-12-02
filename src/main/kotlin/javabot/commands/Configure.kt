@@ -29,7 +29,7 @@ public class Configure : AdminCommand() {
                 try {
                     set.invoke(config, if (type == String::class.java) value!!.trim() else Integer.parseInt(value))
                     configDao.save(config)
-                    responses.add(Message(event.user, Sofia.configurationSetProperty(property!!, value!!)))
+                    responses.add(Message(event.user, Sofia.configurationSetProperty(property, value)))
                 } catch (e: ReflectiveOperationException) {
                     responses.add(Message(event.user, e.message!!))
                 } catch (e: NumberFormatException) {
@@ -37,7 +37,7 @@ public class Configure : AdminCommand() {
                 }
 
             } catch (e: NoSuchMethodException) {
-                responses.add(Message(event.user, Sofia.configurationUnknownProperty(property!!)))
+                responses.add(Message(event.user, Sofia.configurationUnknownProperty(property)))
             }
 
         }

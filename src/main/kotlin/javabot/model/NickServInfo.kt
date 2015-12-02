@@ -19,30 +19,30 @@ public class NickServInfo : Persistent {
     var id: ObjectId? = null
 
     @Indexed
-    public var nick: String? = null
+    lateinit var nick: String
 
     @Indexed
-    public var account: String? = null
+    lateinit var account: String
+
+    @Indexed(expireAfterSeconds = 60 * 60 * 24)
+    private val created = now()
 
     public var registered = LocalDateTime.now()
 
     public var userRegistered = registered
 
-    public var lastSeen: LocalDateTime? = null
-
-    @Indexed(expireAfterSeconds = 60 * 60 * 24)
-    private val created = now()
-
     private val extraneous = TreeMap<String, String>()
 
     public var lastAddress: String? = null
+
+    public var lastSeen: LocalDateTime? = null
 
     public constructor() {
     }
 
     public constructor(user: User) {
         nick = user.nick
-        account = null //user.getUserName();
+        account = user.nick
         registered = LocalDateTime.now()
         userRegistered = LocalDateTime.now()
     }
@@ -52,8 +52,8 @@ public class NickServInfo : Persistent {
     }
 
     override fun toString(): String {
-        return format("NickServInfo{id=%s, nick='%s', account='%s', registered=%s, userRegistered=%s, lastSeen=%s," + " lastAddress='%s'}",
-              id, nick, account, registered, userRegistered, lastSeen, lastAddress)
+        return "NickServInfo{id=${id}, nick='${nick}', account='${account}', registered=${registered}, userRegistered=${userRegistered}, " +
+                "lastSeen=${lastSeen}," + " " + "lastAddress='${lastAddress}'}"
     }
 
     public fun toNickServFormat(): List<String> {

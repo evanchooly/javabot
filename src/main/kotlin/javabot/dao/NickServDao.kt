@@ -34,10 +34,10 @@ public open class NickServDao : BaseDao<NickServInfo>(NickServInfo::class.java) 
             }
         })
 
-        var nickServInfo: NickServInfo? = find(info.account!!)
+        var nickServInfo: NickServInfo? = find(info.account)
 
         if (nickServInfo == null) {
-            nickServInfo = find(info.nick!!)
+            nickServInfo = find(info.nick)
         }
 
         if (nickServInfo != null) {

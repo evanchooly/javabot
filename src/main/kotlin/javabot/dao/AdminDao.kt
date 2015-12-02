@@ -5,7 +5,6 @@ import javabot.model.EventType
 import javabot.model.OperationEvent
 import javabot.model.criteria.AdminCriteria
 import org.pircbotx.User
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 public class AdminDao : BaseDao<Admin>(Admin::class.java) {
@@ -36,47 +35,27 @@ public class AdminDao : BaseDao<Admin>(Admin::class.java) {
     public fun getAdminByEmailAddress(email: String): Admin? {
         val criteria = AdminCriteria(ds)
         criteria.emailAddress(email)
-        var admin = criteria.query().get()
-        if (admin == null && count() == 0L) {
-            admin = Admin()
-            admin.emailAddress = email
-            admin.botOwner = true
-            save(admin)
-        }
-        return admin
+
+        return criteria.query().get()
     }
 
     public fun create(ircName: String, userName: String, hostName: String): Admin {
-        val admin = Admin()
-        admin.ircName = ircName
-        admin.emailAddress = userName
-        admin.hostName = hostName
-        admin.updated = LocalDateTime.now()
-        admin.botOwner = findAll().isEmpty()
+        val admin = Admin(ircName, userName, hostName, findAll().isEmpty())
+
         save(admin)
 
         return admin
     }
 
     public fun enableOperation(name: String, admin: Admin) {
-        val event = OperationEvent()
-        event.operation = name
-        event.requestedOn = LocalDateTime.now()
-        event.type = EventType.ADD
-        event.requestedBy = admin.emailAddress
-        save(event)
+        save(OperationEvent(admin.emailAddress, EventType.ADD, name))
         val config = configDao.get()
         config.operations.add(name)
         configDao.save(config)
     }
 
     public fun disableOperation(name: String, admin: Admin) {
-        val event = OperationEvent()
-        event.operation = name
-        event.requestedOn = LocalDateTime.now()
-        event.type = EventType.DELETE
-        event.requestedBy = admin.emailAddress
-        save(event)
+        save(OperationEvent(admin.emailAddress, EventType.DELETE, name))
         val config = configDao.get()
         config.operations.remove(name)
         configDao.save(config)

@@ -43,7 +43,7 @@ public class JavadocTest : BaseTest() {
     @Test(dependsOnMethods = arrayOf("servlets"))
     public fun reloadServlets() {
         val apiName = "Servlet"
-        val event = ApiEvent(EventType.RELOAD, testUser.nick, apiDao.find(apiName)?.id)
+        val event = ApiEvent(testUser.nick, EventType.RELOAD, apiDao.find(apiName)?.id)
         eventDao.save(event)
         waitForEvent(event, "reloading " + apiName, Duration(30, TimeUnit.MINUTES))
         messages.get()
@@ -113,7 +113,7 @@ public class JavadocTest : BaseTest() {
 
     private fun dropApi(apiName: String) {
         bot
-        val event = ApiEvent(EventType.DELETE, testUser.nick, apiName)
+        val event = ApiEvent(testUser.nick, EventType.DELETE, apiName)
         eventDao.save(event)
         waitForEvent(event, "dropping " + apiName, Duration.FIVE_MINUTES)
         Awaitility.await().atMost(60, TimeUnit.SECONDS).until<Any> { apiDao.find(apiName) == null }

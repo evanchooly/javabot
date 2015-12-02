@@ -7,15 +7,10 @@ import javabot.model.Change
 import javabot.model.criteria.ChangeCriteria
 import org.mongodb.morphia.query.Query
 
-import java.time.LocalDateTime
-
 public class ChangeDao : BaseDao<Change>(Change::class.java) {
 
     public fun logChange(message: String) {
-        val change = Change()
-        change.message = message
-        change.changeDate = LocalDateTime.now()
-        save(change)
+        save(Change(message))
     }
 
     public fun logAdd(sender: String, key: String, value: String) {

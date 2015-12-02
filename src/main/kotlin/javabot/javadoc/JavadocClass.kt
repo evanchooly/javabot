@@ -14,7 +14,7 @@ import org.mongodb.morphia.annotations.PrePersist
       Index(fields = arrayOf(Field("apiId"), Field("upperPackageName"), Field("upperName") )))
 public class JavadocClass : JavadocElement {
     @Id
-    var id: ObjectId? = null
+    var id: ObjectId = ObjectId()
 
     public var packageName: String? = null
     public var upperPackageName: String? = null

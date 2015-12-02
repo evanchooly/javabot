@@ -226,11 +226,11 @@ public open class Javabot {
         return disabled
     }
 
-    public fun enableOperation(name: String?) {
+    public fun enableOperation(name: String) {
         val op = getAllOperations()[name]
         if (op != null) {
             val config = configDao.get()
-            config.operations.add(name!!)
+            config.operations.add(name)
             activeOperations.add(op)
             configDao.save(config)
         } else {

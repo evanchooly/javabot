@@ -31,6 +31,16 @@ public class Admin : Serializable, Persistent {
 
     public var updated: LocalDateTime = LocalDateTime.now()
 
+    private constructor() {
+    }
+
+    constructor(ircName: String, userName: String, hostName: String, owner: Boolean) : this() {
+        this.ircName = ircName
+        this.emailAddress = userName
+        this.hostName = hostName
+        this.botOwner = owner
+    }
+
     override fun toString(): String {
         val sb = StringBuilder("Admin{")
         sb.append("id=").append(id)

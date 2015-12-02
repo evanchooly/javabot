@@ -1,11 +1,7 @@
 package javabot.operations.time
 
 public class Tri<T> {
-    var root: Node<T>
-
-    init {
-        root = Node()
-    }
+    private var root: Node<T> = Node()
 
     public fun get(key: String): T? {
 
@@ -22,12 +18,11 @@ public class Tri<T> {
     }
 
     public fun insert(key: String, value: T) {
-        var key = key
-        key = clean(key)
+        var cleaned = clean(key)
 
         var current = root
-        for (i in 0..key.length - 1) {
-            val index = hash(key[i])
+        for (i in 0..cleaned.length - 1) {
+            val index = hash(cleaned[i])
             var node = current.getChild(index)
 
             if (node == null) {
@@ -45,10 +40,6 @@ public class Tri<T> {
 
     private fun hash(c: Char): Int {
         return c.toInt() - OFFSET
-    }
-
-    private fun toChar(index: Int): Char {
-        return (index + OFFSET).toChar()
     }
 
     private inner class Node<T> {

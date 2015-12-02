@@ -43,10 +43,10 @@ public class ApiEvent : AdminEvent {
     @Transient
     lateinit var adminDao: AdminDao
 
-    public constructor() {
+    protected constructor() {
     }
 
-    public constructor(requestedBy: String, name: String, baseUrl: String, downloadUrl: String) : super(EventType.ADD, requestedBy) {
+    public constructor(requestedBy: String, name: String, baseUrl: String, downloadUrl: String) : super(requestedBy, EventType.ADD) {
         this.requestedBy = requestedBy
         this.name = name
         this.baseUrl = baseUrl
@@ -62,11 +62,11 @@ public class ApiEvent : AdminEvent {
         }
     }
 
-    public constructor(type: EventType, requestedBy: String, apiId: ObjectId?) : super(type, requestedBy) {
+    public constructor(requestedBy: String, type: EventType, apiId: ObjectId?) : super(requestedBy, type) {
         this.apiId = apiId
     }
 
-    public constructor(type: EventType, requestedBy: String, name: String) : super(type, requestedBy) {
+    public constructor(requestedBy: String, type: EventType, name: String) : super(requestedBy, type) {
         this.name = name
     }
 
@@ -95,7 +95,7 @@ public class ApiEvent : AdminEvent {
         val api = apiDao.find(apiId)
         if (api != null) {
             apiDao.delete(apiId)
-            api.id = null
+            api.id = ObjectId()
             apiDao.save(api)
             process(api)
         }
@@ -129,6 +129,6 @@ public class ApiEvent : AdminEvent {
     }
 
     override fun toString(): String {
-        return "ApiEvent{name='%s', state=%s, completed=%s, type=%s}".format(name, state, completed, type)
+        return "ApiEvent{name='${name}', state=${state}, completed=${completed}, type=${type}}"
     }
 }

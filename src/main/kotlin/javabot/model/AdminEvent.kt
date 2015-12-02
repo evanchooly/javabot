@@ -14,9 +14,9 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 
 @Entity("events")
-@Indexes(Index(fields = arrayOf(Field("state"), Field("requestedOn") )))
-public open class AdminEvent : Serializable, Persistent {
-    public enum class State {
+@Indexes(Index(fields = arrayOf(Field("state"), Field("requestedOn"))))
+open class AdminEvent : Serializable, Persistent {
+    enum class State {
         NEW,
         PROCESSING,
         COMPLETED,
@@ -28,29 +28,27 @@ public open class AdminEvent : Serializable, Persistent {
     lateinit var bot: Javabot
 
     @Id
-    var id: ObjectId? = null
-
-    lateinit var requestedBy: String
-
-    lateinit var requestedOn: LocalDateTime
+    var id: ObjectId = ObjectId()
 
     @Indexed(expireAfterSeconds = 60 * 60 * 24)
-    public var completed: LocalDateTime? = null
+    var completed: LocalDateTime? = null
 
-    public var state: State = State.NEW
+    var state: State = State.NEW
 
-    public var type: EventType? = null
+    lateinit var requestedBy: String
+    lateinit var requestedOn: LocalDateTime
+    lateinit var type: EventType
 
     protected constructor() {
     }
 
-    public constructor(type: EventType, requestedBy: String) {
-        this.type = type
+    constructor(requestedBy: String, type: EventType, requestedOn: LocalDateTime = LocalDateTime.now()) : this() {
         this.requestedBy = requestedBy
-        requestedOn = LocalDateTime.now()
+        this.requestedOn = requestedOn
+        this.type = type
     }
 
-    public fun handle() {
+    fun handle() {
         when (type) {
             EventType.ADD -> add()
             EventType.DELETE -> delete()
@@ -60,18 +58,18 @@ public open class AdminEvent : Serializable, Persistent {
     }
 
     override fun toString(): String {
-        return "AdminEvent{id=%s, requestedOn=%s, completed=%s, state=%s, type=%s}".format(id, requestedOn, completed, state, type)
+        return "AdminEvent{id=${id}, requestedOn=${requestedOn}, completed=${completed}, state=${state}, type=${type}}"
     }
 
-    public open fun add() {
+    open fun add() {
     }
 
-    public open fun delete() {
+    open fun delete() {
     }
 
-    public open fun update() {
+    open fun update() {
     }
 
-    public open fun reload() {
+    open fun reload() {
     }
 }

@@ -141,11 +141,7 @@ public class AdminResource {
                         @FormParam("emailAddress") emailAddress: String): View {
         var admin: Admin? = adminDao.getAdminByEmailAddress(emailAddress)
         if (admin == null) {
-            admin = Admin()
-            admin.ircName = ircName
-            admin.hostName = hostName
-            admin.emailAddress = emailAddress
-            adminDao.save(admin)
+            adminDao.save(Admin(ircName, emailAddress, hostName, true))
         }
         return index(request, user)
     }
@@ -164,7 +160,7 @@ public class AdminResource {
     public fun deleteApi(@Context request: HttpServletRequest,
                          @Restricted(Authority.ROLE_ADMIN) user: User,
                          @PathParam("id") id: String): View {
-        apiDao.save(ApiEvent(EventType.DELETE, user.email!!, ObjectId(id)))
+        apiDao.save(ApiEvent(user.email!!, EventType.DELETE, ObjectId(id)))
         return index(request, user)
     }
 

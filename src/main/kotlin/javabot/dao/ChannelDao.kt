@@ -20,7 +20,7 @@ public class ChannelDao : BaseDao<Channel>(Channel::class.java) {
 
     @SuppressWarnings("unchecked")
     public fun configuredChannels(): List<String> {
-        return (getQuery() as QueryImpl<Any>).collection.distinct("name") as List<String>
+        return ChannelCriteria(ds).name().distinct() as List<String>
     }
 
     @SuppressWarnings("unchecked")
