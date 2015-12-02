@@ -41,7 +41,6 @@ public class URLTitleOperationTest : BaseTest() {
                 arrayOf("http://javachannel.org/posts/finding-hash-collisions-in-java-strings/", null),
                 arrayOf("http://hastebin.com/askhjahs", null),
                 arrayOf("http://pastebin.com/askhjahs", null),
-                arrayOf("https://www.facebook.com/thechurchofspace", null), // url matches content title too well
                 arrayOf("http://architects.dzone.com/articles/why-programmers-should-have",
                         "title for the url from botuser: \"Why Programmers Should Have a Blog - DZone Agile\""), // url matches title
                 arrayOf("http://facebook.com/foo/bar/blah", null), // doesn't exist on facebook, I hope
