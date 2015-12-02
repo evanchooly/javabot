@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest
 
 @Singleton
 class JavabotApplication : Application<JavabotConfiguration>() {
+    var running = false
 
     companion object {
 
@@ -64,7 +65,10 @@ class JavabotApplication : Application<JavabotConfiguration>() {
               false, "*.html")
 
         environment.healthChecks().register("javabot", JavabotHealthCheck())
+
+        running = true
     }
+
     private class HtmlToResourceFilter : Filter {
 
         @Throws(ServletException::class)

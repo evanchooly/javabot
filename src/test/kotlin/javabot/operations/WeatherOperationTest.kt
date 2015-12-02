@@ -37,14 +37,4 @@ public class WeatherOperationTest : BaseTest() {
     public fun cityWithSpaces() {
         scanForResponse(operation.handleMessage(message("weather New York")), "Weather for")
     }
-
-    @Test
-    @Throws(ParseException::class)
-    public fun parseDateTime() {
-        val dateString = "May 13, 4:57 PM IDT"
-        val `in` = SimpleDateFormat("MMM dd, hh:mm a zzz")
-        val out = SimpleDateFormat("h:mm a")
-        val date = `in`.parse(dateString)
-        assertEquals("9:57 AM", out.format(date))
-    }
 }
