@@ -21,7 +21,7 @@ public class URLTitleOperationTest : BaseTest() {
         if (content != null) {
             Assert.assertEquals(results[0].value, content)
         } else {
-            Assert.assertTrue(results.isEmpty(), "Should be empty: ${results}")
+            Assert.assertTrue(results.isEmpty(), "Results for '${url}' should be empty: ${results}")
         }
     }
 
