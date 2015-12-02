@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.antwerkz.javabot</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>javabot</artifactId>
     <packaging>jar</packaging>
     <version>6.0.0</version>
 
