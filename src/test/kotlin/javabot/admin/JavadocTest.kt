@@ -116,7 +116,9 @@ public class JavadocTest : BaseTest() {
         val event = ApiEvent(testUser.nick, EventType.DELETE, apiName)
         eventDao.save(event)
         waitForEvent(event, "dropping " + apiName, Duration.FIVE_MINUTES)
-        Awaitility.await().atMost(60, TimeUnit.SECONDS).until<Any> { apiDao.find(apiName) == null }
+        Awaitility.await()
+                .atMost(60, TimeUnit.SECONDS)
+                .until<Boolean> { apiDao.find(apiName) == null }
         messages.get()
     }
 

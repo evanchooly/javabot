@@ -7,10 +7,9 @@ import com.jayway.awaitility.core.ConditionTimeoutException
 import javabot.Message
 import javabot.dao.NickServDao
 import javabot.model.NickServInfo
-
-import javax.inject.Inject
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
+import javax.inject.Inject
 
 public class NickServLookup : AdminCommand() {
     @Inject
@@ -39,10 +38,12 @@ public class NickServLookup : AdminCommand() {
         val info = AtomicReference(nickServDao.find(nick))
         if (info.get() == null) {
             pircBot.get().sendIRC().message("NickServ", "info " + nick)
-            Awaitility.await().atMost(10, TimeUnit.SECONDS).until<Any> {
-                info.set(nickServDao.find(nick))
-                info.get() != null
-            }
+            Awaitility.await()
+                    .atMost(10, TimeUnit.SECONDS)
+                    .until<Boolean> {
+                        info.set(nickServDao.find(nick))
+                        info.get() != null
+                    }
         }
         return info.get()
     }

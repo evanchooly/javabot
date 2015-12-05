@@ -16,10 +16,10 @@ public class JavadocClass : JavadocElement {
     @Id
     var id: ObjectId = ObjectId()
 
-    public var packageName: String? = null
-    public var upperPackageName: String? = null
+    lateinit var packageName: String
+    lateinit var upperPackageName: String
     lateinit var name: String
-    public var upperName: String? = null
+    lateinit var upperName: String
     public var superClassId: ObjectId? = null
 //    private val methods = ArrayList<JavadocMethod>()
 //    private val fields = ArrayList<JavadocField>()
@@ -42,7 +42,7 @@ public class JavadocClass : JavadocElement {
     @PrePersist
     public fun uppers() {
         upperName = name.toUpperCase()
-        upperPackageName = packageName!!.toUpperCase()
+        upperPackageName = packageName.toUpperCase()
     }
 
     override fun toString(): String {

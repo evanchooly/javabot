@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 import javax.inject.Provider
 
-public class Throttler: BaseDao<ThrottleItem>(ThrottleItem::class.java) {
+public class Throttler : BaseDao<ThrottleItem>(ThrottleItem::class.java) {
     @Inject
     lateinit var configDao: ConfigDao
 
@@ -53,10 +53,12 @@ public class Throttler: BaseDao<ThrottleItem>(ThrottleItem::class.java) {
             ircBot.get().sendIRC().message("NickServ", "info " + user.nick)
             Sofia.logWaitingForNickserv(user.nick)
             try {
-                Awaitility.await().atMost(15, TimeUnit.SECONDS).until<Any> {
-                    info.set(nickServDao.find(user.nick))
-                    info.get() != null
-                }
+                Awaitility.await()
+                        .atMost(15, TimeUnit.SECONDS)
+                        .until<Boolean> {
+                            info.set(nickServDao.find(user.nick))
+                            info.get() != null
+                        }
             } catch (e: ConditionTimeoutException) {
                 Sofia.logNoNickservEntry(user.nick)
                 throw NickServViolationException(Sofia.unknownUser())

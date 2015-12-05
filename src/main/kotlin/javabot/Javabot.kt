@@ -377,7 +377,9 @@ public open class Javabot {
                 }
                 val bot = injector.getInstance(Javabot::class.java)
                 bot.start()
-                Awaitility.await().forever().until<Any> { !bot.isRunning() }
+                Awaitility.await()
+                        .forever()
+                        .until<Boolean> { !bot.isRunning() }
             } catch (e: Exception) {
                 e.printStackTrace()
             }

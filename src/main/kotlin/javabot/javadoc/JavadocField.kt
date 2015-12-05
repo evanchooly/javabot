@@ -13,12 +13,12 @@ import org.mongodb.morphia.annotations.PrePersist
       Index(fields = arrayOf(Field("apiId"), Field("javadocClassId"), Field("upperName") )))
 public class JavadocField : JavadocElement {
     @Id
-    var id: ObjectId? = null
+    var id: ObjectId = ObjectId()
 
-    public var javadocClassId: ObjectId? = null
-    public var name: String? = null
-    private var upperName: String? = null
-    private var parentClassName: String? = null
+    lateinit var javadocClassId: ObjectId
+    lateinit var name: String
+    lateinit var upperName: String
+    lateinit var parentClassName: String
 
     public var type: String? = null
 
@@ -37,10 +37,12 @@ public class JavadocField : JavadocElement {
         parentClassName = parent.toString()
     }
 
+/*
     public fun setJavadocClassId(javadocClass: JavadocClass) {
         this.javadocClassId = javadocClass.id
         parentClassName = javadocClass.toString()
     }
+*/
 
     @PrePersist
     public fun uppers() {

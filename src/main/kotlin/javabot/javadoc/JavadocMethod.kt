@@ -14,15 +14,14 @@ import org.mongodb.morphia.annotations.PrePersist
 public class JavadocMethod : JavadocElement {
     @Id
     var id: ObjectId? = null
-    public var javadocClassId: ObjectId? = null
+    lateinit var javadocClassId: ObjectId
+    lateinit var name: String
+    lateinit var upperName: String
+    lateinit var longSignatureTypes: String
+    lateinit var shortSignatureTypes: String
+    var paramCount: Int = 0
 
-    public var name: String? = null
-    public var upperName: String? = null
-    public var longSignatureTypes: String? = null
-    public var shortSignatureTypes: String? = null
-    public var paramCount: Int? = null
-
-    private var parentClassName: String? = null
+    lateinit var parentClassName: String
 
     public constructor() {
     }
@@ -60,10 +59,12 @@ public class JavadocMethod : JavadocElement {
         this.directUrl = directUrl
     }
 
+/*
     public fun setJavadocClassId(javadocClass: JavadocClass) {
         this.javadocClassId = javadocClass.id
         parentClassName = javadocClass.toString()
     }
+*/
 
     public fun getShortSignature(): String {
         return "$name($shortSignatureTypes)"
@@ -71,7 +72,7 @@ public class JavadocMethod : JavadocElement {
 
     @PrePersist
     public fun uppers() {
-        upperName = name!!.toUpperCase()
+        upperName = name.toUpperCase()
     }
 
     override fun toString(): String {
