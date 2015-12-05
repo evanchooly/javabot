@@ -4,11 +4,13 @@ import com.google.inject.Injector
 import javabot.dao.ChangeDao
 import javabot.dao.util.QueryParam
 import javabot.model.Change
+import java.time.LocalDateTime
 
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 
-public class ChangesView(injector: Injector, request: HttpServletRequest, page: Int, private val filter: Change) :
+public class ChangesView(injector: Injector, request: HttpServletRequest, page: Int, private val message: String? = null,
+                         private val date: LocalDateTime? = null) :
       PagedView<Change>(injector, request, page) {
     @Inject
     lateinit var changeDao: ChangeDao
@@ -17,12 +19,8 @@ public class ChangesView(injector: Injector, request: HttpServletRequest, page: 
         return "changes.ftl"
     }
 
-    override fun getFilter(): Change? {
-        return filter
-    }
-
     override fun countItems(): Long {
-        return changeDao.count(filter)
+        return changeDao.count(message, date)
     }
 
     override fun getPageUrl(): String {
@@ -30,6 +28,6 @@ public class ChangesView(injector: Injector, request: HttpServletRequest, page: 
     }
 
     override fun getPageItems(): List<Change> {
-        return changeDao.getChanges(QueryParam(getIndex(), PagedView.ITEMS_PER_PAGE, "updated", true), filter)
+        return changeDao.getChanges(QueryParam(getIndex(), PagedView.ITEMS_PER_PAGE, "updated", true), message, date)
     }
 }

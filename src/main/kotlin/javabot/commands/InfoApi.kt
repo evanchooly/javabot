@@ -17,7 +17,7 @@ public class InfoApi : AdminCommand() {
         val responses = arrayListOf<Message>()
         val api = apiDao.find(apiName)
         if (api != null) {
-            responses.add(Message(event, Sofia.apiLocation(api.name, api.baseUrl!!)))
+            responses.add(Message(event, Sofia.apiLocation(api.name, api.baseUrl)))
         } else {
             responses.add(Message(event, Sofia.unknownApi(apiName, event.user.nick)))
         }

@@ -33,13 +33,17 @@ public class Factoid(var name: String = "", var value: String = "", var userName
     var locked: Boolean = false
 
     @Indexed
-    private var upperName: String? = null
+    private lateinit var upperName: String
 
     @Indexed
-    private var upperUserName: String? = null
+    private lateinit var upperUserName: String
 
     @Indexed
-    private var upperValue: String? = null
+    private lateinit var upperValue: String
+
+    init {
+        uppers()
+    }
 
     public fun evaluate(subject: User?, sender: String, replacedValue: String?): String {
         var message = value

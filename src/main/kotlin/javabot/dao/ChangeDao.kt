@@ -6,6 +6,7 @@ import javabot.dao.util.QueryParam
 import javabot.model.Change
 import javabot.model.criteria.ChangeCriteria
 import org.mongodb.morphia.query.Query
+import java.time.LocalDateTime
 
 public class ChangeDao : BaseDao<Change>(Change::class.java) {
 
@@ -23,25 +24,22 @@ public class ChangeDao : BaseDao<Change>(Change::class.java) {
         return criteria.query().countAll() !== 0L
     }
 
-    public fun count(filter: Change): Long {
-        return buildFindQuery(null, filter, true).countAll()
+    public fun count(message: String?, date: LocalDateTime?): Long {
+        return buildFindQuery(null, true, message, date).countAll()
     }
 
     @SuppressWarnings("unchecked")
-    public fun getChanges(qp: QueryParam, filter: Change): List<Change> {
-        return buildFindQuery(qp, filter, true).asList()
+    public fun getChanges(qp: QueryParam, message: String?, date: LocalDateTime?): List<Change> {
+        return buildFindQuery(qp, true, message, date).asList()
     }
 
-    private fun buildFindQuery(qp: QueryParam?, filter: Change, count: Boolean): Query<Change> {
+    private fun buildFindQuery(qp: QueryParam?, count: Boolean, message: String?, date: LocalDateTime?): Query<Change> {
         val criteria = ChangeCriteria(ds)
-        if (filter.id != null) {
-            criteria.id().equal(filter.id)
+        if (message != null) {
+            criteria.message().contains(message)
         }
-        if (filter.message != null) {
-            criteria.message().contains(filter.message)
-        }
-        if (filter.changeDate != null) {
-            criteria.changeDate(filter.changeDate!!)
+        if (date != null) {
+            criteria.changeDate(date)
         }
         criteria.changeDate().order(false)
         if (!count && qp != null) {

@@ -24,10 +24,6 @@ public abstract class PagedView<V>(injector: Injector, request: HttpServletReque
 
     public abstract fun countItems(): Long
 
-    public open fun getFilter(): V? {
-        return null
-    }
-
     public fun getPage(): Int {
         if (page < 1) {
             page = 1

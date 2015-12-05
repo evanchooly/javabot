@@ -12,15 +12,15 @@ import java.time.LocalDateTime
 public class Change : Serializable, Persistent {
 
     @Id
-    var id: ObjectId? = null
-    var message: String? = null
+    var id: ObjectId = ObjectId()
+    lateinit var message: String
     @Indexed(name = "changed")
-    var changeDate: LocalDateTime? = null
+    var changeDate: LocalDateTime = LocalDateTime.now()
 
-    constructor() {
+    private constructor() {
     }
 
-    constructor(message: String, date: LocalDateTime? = LocalDateTime.now()) {
+    constructor(message: String, date: LocalDateTime = LocalDateTime.now()) {
         this.message = message
         this.changeDate = date
     }

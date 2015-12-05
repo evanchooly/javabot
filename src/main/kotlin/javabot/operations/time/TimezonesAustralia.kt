@@ -2,16 +2,15 @@ package javabot.operations.time
 
 public class TimezonesAustralia : Timezones {
 
-    public enum class AustralianState(regionCode: Int, public val abbreviation: String, public val capital: String,
-                                      public val timezone: String) {
-        WESTERN_AUSTRALIA(8, "WA", "Perth", "Australia/Perth"),
-        SOUTH_AUSTRALIA(5, "SA", "Adelaide", "Australia/Adelaide"),
-        NORTH_TERRITORY(3, "NT", "Darwin", "Australia/Darwin"),
-        QUEENSLAND(4, "QLD", "Brisbane", "Australia/Brisbane"),
-        NEW_SOUTH_WALES(2, "NSW", "Sydney", "Australia/Sydney"),
-        AUSTRALIAN_CAPITAL_TERRITORY(1, "ACT", "Canberra", "Australia/Canberra"),
-        VICTORIA(7, "VIC", "Melbourne", "Australia/Victoria"),
-        TASMANIA(6, "TAS", "Hobart", "Australia/Hobart")
+    public enum class AustralianState(public val abbreviation: String, public val capital: String, public val timezone: String) {
+        WESTERN_AUSTRALIA("WA", "Perth", "Australia/Perth"),
+        SOUTH_AUSTRALIA("SA", "Adelaide", "Australia/Adelaide"),
+        NORTH_TERRITORY("NT", "Darwin", "Australia/Darwin"),
+        QUEENSLAND("QLD", "Brisbane", "Australia/Brisbane"),
+        NEW_SOUTH_WALES("NSW", "Sydney", "Australia/Sydney"),
+        AUSTRALIAN_CAPITAL_TERRITORY("ACT", "Canberra", "Australia/Canberra"),
+        VICTORIA("VIC", "Melbourne", "Australia/Victoria"),
+        TASMANIA("TAS", "Hobart", "Australia/Hobart")
 
     }
 

@@ -70,7 +70,7 @@ public class BotResource {
     @Path("/changes")
     @Produces("text/html;charset=ISO-8859-1")
     public fun changes(@Context request: HttpServletRequest, @QueryParam("page") page: Int?, @QueryParam("message") message: String): View {
-        return ChangesView(this@BotResource.injector, request, page ?: 1, Change(message))
+        return ChangesView(this@BotResource.injector, request, page ?: 1, message)
     }
 
     @GET

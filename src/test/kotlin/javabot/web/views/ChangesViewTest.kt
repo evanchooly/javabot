@@ -19,7 +19,7 @@ public class ChangesViewTest : ViewsTest() {
 
         val renderer = FreemarkerViewRenderer()
         var output = ByteArrayOutputStream()
-        renderer.render(ChangesView(injector, MockServletRequest(false), 0, Change()), Locale.getDefault(), output)
+        renderer.render(ChangesView(injector, MockServletRequest(false), 0), Locale.getDefault(), output)
         var source = Source(ByteArrayInputStream(output.toByteArray()))
 
         previousDisabled(source)
@@ -27,7 +27,7 @@ public class ChangesViewTest : ViewsTest() {
         checkRange(source, 1, 30, 30)
 
         output = ByteArrayOutputStream()
-        renderer.render(ChangesView(injector, MockServletRequest(false), 0, Change("change 2", null)), Locale.getDefault(), output)
+        renderer.render(ChangesView(injector, MockServletRequest(false), 0, "change 2"), Locale.getDefault(), output)
         source = Source(ByteArrayInputStream(output.toByteArray()))
 
         previousDisabled(source)

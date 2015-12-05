@@ -18,7 +18,7 @@ public class FactoidsView(injector: Injector, request: HttpServletRequest, page:
         return factoidDao.countFiltered(filter)
     }
 
-    override fun getFilter(): Factoid? {
+    fun getFilter(): Factoid? {
         return filter
     }
 
