@@ -51,7 +51,8 @@ public class JavadocTest : BaseTest() {
     }
 
     private fun checkServlets(apiName: String) {
-        Assert.assertEquals(javadocClassDao.getClass(apiDao.find(apiName), "javax.servlet.http", "HttpServletRequest").size, 1)
+        Assert.assertNotNull(javadocClassDao.getClass(apiDao.find(apiName), "javax.servlet.http", "HttpServletRequest"),
+                "Should find an entry for ${apiName}/javax.servlet.http.HttpServletRequest")
         scanForResponse(operation.handleMessage(message("javadoc HttpServlet")), "javax/servlet/http/HttpServlet.html")
         scanForResponse(operation.handleMessage(message("javadoc HttpServlet.doGet(*)")), "javax/servlet/http/HttpServlet.html#doGet")
         scanForResponse(operation.handleMessage(message("javadoc HttpServletRequest")), "javax/servlet/http/HttpServletRequest.html")
@@ -100,7 +101,8 @@ public class JavadocTest : BaseTest() {
             messages.get()
             api = apiDao.find("JDK")
         }
-        Assert.assertEquals(javadocClassDao.getClass(api, "java.lang", "Integer").size, 1)
+        Assert.assertNotNull(javadocClassDao.getClass(api, "java.lang", "Integer"),
+                "Should find an entry for ${api?.name}/java.lang.Integer")
     }
 
     private fun addApi(apiName: String, apiUrlString: String, downloadUrlString: String) {

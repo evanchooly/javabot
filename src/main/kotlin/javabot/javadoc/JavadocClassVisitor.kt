@@ -41,14 +41,12 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
             }
             className = name.substring(name.lastIndexOf("/") + 1).replace('$', '.')
             if (process && isPublic(access)) {
-                val javadocClass = parser.getOrCreate(parser.api, pkg, className)
+                val javadocClass = parser.getJavadocClass(parser.api, pkg, className)
                 if (superName != null) {
                     val superPkg = getPackage(superName)
                     val parentName = superName.substring(superName.lastIndexOf("/") + 1)
-                    val parent = parser.getOrQueue(parser.api, superPkg, parentName, javadocClass)
-                    if (parent != null) {
-                        javadocClass.setSuperClassId(parent)
-                    }
+                    val parent = parser.getJavadocClass(parser.api, superPkg, parentName)
+                    javadocClass.setSuperClassId(parent)
                     javadocClassDao.save(javadocClass)
                 }
             }
@@ -89,11 +87,7 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
     }
 
     private fun getJavadocClass(): JavadocClass? {
-        val classes = javadocClassDao.getClass(parser.api, pkg, className)
-        if (classes.size == 1) {
-            return classes[0]
-        }
-        throw RuntimeException("Wrong number of classes (${classes.size}) found for ${pkg}.${className}")
+        return parser.getJavadocClass(parser.api, pkg, className)
     }
 
     override fun visitMethod(access: Int, name: String, desc: String?, signature: String?,
@@ -108,17 +102,8 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
             for (type in types) {
                 update(longTypes, shortTypes, type.toString())
             }
-            var methodName: String
-            if ("<init>" == name) {
-                methodName = javadocClass.name
-                if (methodName.contains(".")) {
-                    methodName = methodName.substring(methodName.lastIndexOf(".") + 1)
-                }
-            } else {
-                methodName = name
-            }
-            javadocClassDao.save(JavadocMethod(javadocClass, methodName,
-                    types.size, longTypes, shortTypes))
+            val methodName = if ("<init>" == name) javadocClass.name.split('.').last() else name
+            javadocClassDao.save(JavadocMethod(javadocClass, methodName, types.size, longTypes, shortTypes))
         }
         return null
     }

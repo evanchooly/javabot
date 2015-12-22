@@ -27,7 +27,7 @@ public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(Jav
     }
 
     @SuppressWarnings("unchecked")
-    public fun getClass(api: JavadocApi?, pkg: String, name: String): List<JavadocClass> {
+    public fun getClass(api: JavadocApi?, pkg: String, name: String): JavadocClass? {
         val criteria: JavadocClassCriteria
         try {
             criteria = JavadocClassCriteria(ds)
@@ -42,7 +42,7 @@ public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(Jav
             throw e
         }
 
-        return criteria.query().asList()
+        return criteria.query().get()
     }
 
     @SuppressWarnings("unchecked")

@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
 import java.io.Writer
-import java.util.ArrayList
-import java.util.HashMap
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
@@ -20,20 +18,10 @@ import javax.inject.Provider
 import javax.inject.Singleton
 
 @Singleton
-public class JavadocParser {
-
-    @Inject
-    lateinit var apiDao: ApiDao
-
-    @Inject
-    lateinit var javadocClassDao: JavadocClassDao
-
-    @Inject
-    lateinit var provider: Provider<JavadocClassVisitor>
+class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao: JavadocClassDao,
+                                        val provider: Provider<JavadocClassVisitor> )  {
 
     lateinit var api: JavadocApi
-
-    private val deferred = HashMap<String, MutableList<JavadocClass>?>()
 
     public fun parse(classApi: JavadocApi, location: String, writer: Writer) {
         api = classApi
@@ -83,49 +71,13 @@ public class JavadocParser {
 
     }
 
-    public fun getOrQueue(api: JavadocApi, pkg: String, name: String, newClass: JavadocClass): JavadocClass? {
-        synchronized (deferred) {
-            val parent = getJavadocClass(api, pkg, name)
-            if (parent == null) {
-                val fqcn = pkg + "." + name
-                var list: MutableList<JavadocClass>? = deferred[fqcn]
-                if (list == null) {
-                    list = ArrayList<JavadocClass>()
-                    deferred.put(fqcn, list)
-                }
-                list.add(newClass)
+    public fun getJavadocClass(api: JavadocApi, pkg: String, name: String): JavadocClass {
+        var javadocClass = javadocClassDao.getClass(api, pkg, name)
+            if (javadocClass == null) {
+                javadocClass = JavadocClass(api, pkg, name)
+                javadocClassDao.save(javadocClass)
             }
-            return parent
-        }
-    }
-
-    public fun getOrCreate(api: JavadocApi, pkg: String, name: String): JavadocClass {
-        synchronized (deferred) {
-            var cls = getJavadocClass(api, pkg, name)
-            if (cls == null) {
-                cls = JavadocClass(api, pkg, name)
-                javadocClassDao.save(cls)
-            }
-            val list = deferred[pkg + "." + name]
-            if (list != null) {
-                for (subclass in list) {
-                    subclass.superClassId = cls.superClassId
-                    javadocClassDao.save(subclass)
-                }
-                deferred.remove(pkg + "." + name)
-            }
-            return cls
-        }
-    }
-
-    private fun getJavadocClass(api: JavadocApi, pkg: String, name: String): JavadocClass? {
-        var cls: JavadocClass? = null
-        for (javadocClass in javadocClassDao.getClass(api, pkg, name)) {
-            if (javadocClass.apiId == api.id) {
-                cls = javadocClass
-            }
-        }
-        return cls
+        return javadocClass
     }
 
     private inner class JavadocClassReader(private val jarFile: JarFile, private val entry: JarEntry) : Runnable {
