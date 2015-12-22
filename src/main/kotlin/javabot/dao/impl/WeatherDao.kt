@@ -41,8 +41,7 @@ public class WeatherDao {
      * to specify MX
      */
     private fun commonPlaces(place: String): String {
-        val upper = place.toUpperCase()
-        return if (places.containsKey(upper)) places[upper]!! else place
+        return places[place.toUpperCase()] ?: place
 
     }
 

@@ -12,16 +12,13 @@ public class OpenIDAuthenticator : Authenticator<OpenIDCredentials, User> {
     override fun authenticate(credentials: OpenIDCredentials): Optional<User> {
 
         // Get the User referred to by the API key
-        val user = InMemoryUserCache.INSTANCE.getBySessionToken(credentials.sessionToken.toString())
-        if (!user.isPresent) {
-            return Optional.absent<User>()
-        }
+        val user = InMemoryUserCache.INSTANCE.getBySessionToken(credentials.sessionToken.toString()) ?: return Optional.absent<User>()
 
         // Check that their authorities match their credentials
-        if (!user.get().hasAllAuthorities(credentials.requiredAuthorities)) {
+        if (!user.hasAllAuthorities(credentials.requiredAuthorities)) {
             return Optional.absent<User>()
         }
-        return user
+        return Optional.of(user)
 
     }
 

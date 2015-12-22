@@ -49,15 +49,14 @@ public abstract class MainView(injector: Injector, val request: HttpServletReque
     }
 
     public fun loggedIn(): Boolean {
-        val cookie = getSessionCookie()
-        return cookie != null && InMemoryUserCache.INSTANCE.getBySessionToken(cookie.value).isPresent
+        return InMemoryUserCache.INSTANCE.getBySessionToken(getSessionCookie()?.value) != null
     }
 
     public fun isAdmin(): Boolean {
         val cookie = getSessionCookie()
         if (cookie != null) {
-            val optional = InMemoryUserCache.INSTANCE.getBySessionToken(cookie.value)
-            return optional.isPresent && adminDao.getAdminByEmailAddress(optional.get().email!!) != null
+            val user = InMemoryUserCache.INSTANCE.getBySessionToken(cookie.value)
+            return user != null && adminDao.getAdminByEmailAddress(user.email!!) != null
         } else {
             return false
         }

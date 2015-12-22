@@ -1,6 +1,5 @@
 package javabot.kotlin.web.model
 
-import com.google.common.base.Optional
 import com.google.common.base.Preconditions
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
@@ -13,51 +12,26 @@ enum class InMemoryUserCache {
 
     // A lot of threads will hit this cache
     @Volatile
-    private var userCache: Cache<String, User>? = null
-
-    init {
-        reset(15, TimeUnit.MINUTES)
-    }
-
-    /**
-     * Resets the cache and allows the expiry time to be set (perhaps for testing)
-
-     * @param duration The duration before a user must manually authenticate through a web form due to inactivity
-     * *
-     * @param unit     The [TimeUnit] that duration is expressed in
-     */
-    public fun reset(duration: Int, unit: TimeUnit): InMemoryUserCache {
-
-        // Build the cache
-        if (userCache != null) {
-            userCache!!.invalidateAll()
-        }
-
-        // If there is no activity against a key then we want
-        // it to be expired from the cache, but each fresh write
-        // will reset the expiry timer
-        userCache = CacheBuilder.newBuilder().expireAfterWrite(duration.toLong(), unit).maximumSize(1000).build<String, User>()
-
-        return INSTANCE
-    }
+    var userCache: Cache<String, User> = CacheBuilder.newBuilder()
+            .expireAfterWrite(15, TimeUnit.MINUTES)
+            .maximumSize(1000)
+            .build<String, User>()
 
     /**
      * @param sessionToken The session token to locate the user (not JSESSIONID)
      * *
      * @return The matching User or absent
      */
-    public fun getBySessionToken(sessionToken: String): Optional<User> {
-
+    public fun getBySessionToken(sessionToken: String?): User? {
         // Check the cache
-        val userOptional = Optional.fromNullable(userCache!!.getIfPresent(sessionToken))
+        val user = if (sessionToken != null) userCache.getIfPresent(sessionToken) else null
 
-        if (userOptional.isPresent) {
+        if (user != null) {
             // Ensure we refresh the cache on a check to maintain the session timeout
-            userCache!!.put(sessionToken, userOptional.get())
+            userCache.put(sessionToken, user)
         }
 
-        return userOptional
-
+        return user
     }
 
     /**
@@ -67,42 +41,21 @@ enum class InMemoryUserCache {
 
         Preconditions.checkNotNull(user)
 
-        userCache!!.put(user.sessionToken.toString(), user)
+        userCache.put(user.sessionToken.toString(), user)
     }
 
-    public fun hardDelete(user: User) {
+    public fun getByOpenIDIdentifier(identifier: String?): User? {
 
-        Preconditions.checkNotNull(user)
-        Preconditions.checkNotNull(user.sessionToken)
-
-        userCache!!.invalidate(user.sessionToken)
-    }
-
-    public fun getByOpenIDIdentifier(identifier: String?): Optional<User> {
-
-        val map = userCache!!.asMap()
+        val map = userCache.asMap()
 
         for (entry in map.entries) {
             if (entry.value.openIDIdentifier == identifier) {
-                return Optional.of(entry.value)
+                return entry.value
             }
 
         }
 
-        return Optional.absent<User>()
+        return null
     }
 
-    public fun getByEmailAddress(emailAddress: String): Optional<User> {
-        val map = userCache!!.asMap()
-
-        for (entry in map.entries) {
-
-            if (entry.value.email == emailAddress) {
-                return Optional.of(entry.value)
-            }
-
-        }
-
-        return Optional.absent<User>()
-    }
 }

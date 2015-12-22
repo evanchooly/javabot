@@ -45,14 +45,14 @@ public class Factoid(var name: String = "", var value: String = "", var userName
         uppers()
     }
 
-    public fun evaluate(subject: User?, sender: String, replacedValue: String?): String {
+    public fun evaluate(subject: User?, sender: String, replacedValue: String): String {
         var message = value
         val target = if (subject == null) sender else subject.nick
         if (subject != null && !message.contains("\$who") && message.startsWith("<reply>")) {
             message = StringBuilder(message).insert(message.indexOf(">") + 1, "\$who, ").toString()
         }
         message = message.replace("\$who", target)
-        var replaced = replacedValue!!
+        var replaced = replacedValue
         if (name.endsWith("$1")) {
             replaced = replacedValue
         }

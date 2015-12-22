@@ -51,7 +51,7 @@ public class JavadocTest : BaseTest() {
     }
 
     private fun checkServlets(apiName: String) {
-        Assert.assertEquals(javadocClassDao.getClass(apiDao.find(apiName)!!, "javax.servlet.http", "HttpServletRequest").size, 1)
+        Assert.assertEquals(javadocClassDao.getClass(apiDao.find(apiName), "javax.servlet.http", "HttpServletRequest").size, 1)
         scanForResponse(operation.handleMessage(message("javadoc HttpServlet")), "javax/servlet/http/HttpServlet.html")
         scanForResponse(operation.handleMessage(message("javadoc HttpServlet.doGet(*)")), "javax/servlet/http/HttpServlet.html#doGet")
         scanForResponse(operation.handleMessage(message("javadoc HttpServletRequest")), "javax/servlet/http/HttpServletRequest.html")
@@ -59,7 +59,7 @@ public class JavadocTest : BaseTest() {
                 "javax/servlet/http/HttpServletRequest.html#getMethod")
     }
 
-    @Test
+    @Test(dependsOnMethods = arrayOf("servlets"))
     @Throws(IOException::class)
     public fun javaee() {
         val apiName = "JavaEE7"
@@ -86,7 +86,7 @@ public class JavadocTest : BaseTest() {
     @Throws(MalformedURLException::class)
     public fun jdk() {
         bot
-        if (java.lang.Boolean.valueOf(System.getProperty("dropJDK", "false"))!!) {
+        if (java.lang.Boolean.valueOf(System.getProperty("dropJDK", "false"))) {
             LOG.debug("Dropping JDK API")
             dropApi("JDK")
             LOG.debug("Done")
@@ -100,7 +100,7 @@ public class JavadocTest : BaseTest() {
             messages.get()
             api = apiDao.find("JDK")
         }
-        Assert.assertEquals(javadocClassDao.getClass(api!!, "java.lang", "Integer").size, 1)
+        Assert.assertEquals(javadocClassDao.getClass(api, "java.lang", "Integer").size, 1)
     }
 
     private fun addApi(apiName: String, apiUrlString: String, downloadUrlString: String) {
@@ -115,7 +115,7 @@ public class JavadocTest : BaseTest() {
         bot
         val event = ApiEvent(testUser.nick, EventType.DELETE, apiName)
         eventDao.save(event)
-        waitForEvent(event, "dropping " + apiName, Duration.FIVE_MINUTES)
+//        waitForEvent(event, "dropping " + apiName, Duration(20, TimeUnit.SECONDS))
         Awaitility.await()
                 .atMost(60, TimeUnit.SECONDS)
                 .until<Boolean> { apiDao.find(apiName) == null }

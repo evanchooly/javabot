@@ -83,15 +83,15 @@ public class PublicOAuthResource {
 
             tempUser.authorities.add(Authority.ROLE_PUBLIC)
 
-            val userOptional = InMemoryUserCache.INSTANCE.getByOpenIDIdentifier(tempUser.openIDIdentifier)
-            if (!userOptional.isPresent) {
+            val user = InMemoryUserCache.INSTANCE.getByOpenIDIdentifier(tempUser.openIDIdentifier)
+            if (user == null) {
                 val admin = adminDao.getAdminByEmailAddress(tempUser.email!!)
                 if (admin != null) {
                     tempUser.authorities.add(Authority.ROLE_ADMIN)
                 }
                 InMemoryUserCache.INSTANCE.put(tempUser)
             } else {
-                tempUser = userOptional.get()
+                tempUser = user
             }
 
             return Response.temporaryRedirect(URI("/")).cookie(replaceSessionTokenCookie(Optional.of(tempUser))).build()

@@ -29,6 +29,7 @@ import java.io.File
 import java.time.LocalDateTime
 import java.util.ArrayList
 import java.util.SortedMap
+import java.util.TreeMap
 import java.util.TreeSet
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.Executors
@@ -67,7 +68,7 @@ public open class Javabot {
     @Inject
     private lateinit var javabotConfig: JavabotConfig
 
-    private var allOperationsMap = sortedMapOf<String, BotOperation>()
+    private var allOperationsMap = TreeMap<String, BotOperation>()
 
     val startStrings: Array<String> by lazy {
         arrayOf(getNick(), "~")

@@ -27,7 +27,7 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
 
     lateinit var pkg: String
 
-    private var className: String? = null
+    lateinit var className: String
 
     private val packages = ArrayList<String>()
 
@@ -39,9 +39,9 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
             for (aPackage in packages) {
                 process = process || pkg.startsWith(aPackage)
             }
+            className = name.substring(name.lastIndexOf("/") + 1).replace('$', '.')
             if (process && isPublic(access)) {
-                className = name.substring(name.lastIndexOf("/") + 1).replace('$', '.')
-                val javadocClass = parser.getOrCreate(parser.api, pkg, className!!)
+                val javadocClass = parser.getOrCreate(parser.api, pkg, className)
                 if (superName != null) {
                     val superPkg = getPackage(superName)
                     val parentName = superName.substring(superName.lastIndexOf("/") + 1)
@@ -76,54 +76,49 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
 
     override fun visitField(access: Int, name: String, desc: String, signature: String?,
                             value: Any?): FieldVisitor? {
-        if (className != null) {
-            val javadocClass = getJavadocClass()
-            if (javadocClass != null && isPublic(access)) {
-                try {
-                    val javadocType = extractTypes(className!!, "", desc, false)[0]
-                    javadocClassDao.save(JavadocField(javadocClass, name, javadocType.toString()))
-                } catch (e: IndexOutOfBoundsException) {
-                    throw RuntimeException(e.message, e)
-                }
+        val javadocClass = getJavadocClass()
+        if (javadocClass != null && isPublic(access)) {
+            try {
+                val javadocType = extractTypes(className, "", desc, false)[0]
+                javadocClassDao.save(JavadocField(javadocClass, name, javadocType.toString()))
+            } catch (e: IndexOutOfBoundsException) {
+                throw RuntimeException(e.message, e)
             }
         }
         return null
     }
 
     private fun getJavadocClass(): JavadocClass? {
-        val classes = javadocClassDao.getClass(parser.api, pkg, className!!)
+        val classes = javadocClassDao.getClass(parser.api, pkg, className)
         if (classes.size == 1) {
             return classes[0]
         }
-        throw RuntimeException("Wrong number of classes (%d) found for %s.%s".format(classes.size,
-              pkg, className))
+        throw RuntimeException("Wrong number of classes (${classes.size}) found for ${pkg}.${className}")
     }
 
     override fun visitMethod(access: Int, name: String, desc: String?, signature: String?,
                              exceptions: Array<String>?): MethodVisitor? {
-        if (className != null) {
-            val javadocClass = getJavadocClass()
-            if (javadocClass != null && (isPublic(access) || isProtected(access))) {
-                val types = extractTypes(className!!, name, signature ?: desc,
-                      (access and Opcodes.ACC_VARARGS) == Opcodes.ACC_VARARGS)
+        val javadocClass = getJavadocClass()
+        if (javadocClass != null && (isPublic(access) || isProtected(access))) {
+            val types = extractTypes(className, name, signature ?: desc,
+                    (access and Opcodes.ACC_VARARGS) == Opcodes.ACC_VARARGS)
 
-                val longTypes = ArrayList<String>()
-                val shortTypes = ArrayList<String>()
-                for (type in types) {
-                    update(longTypes, shortTypes, type.toString())
-                }
-                var methodName: String
-                if ("<init>" == name) {
-                    methodName = javadocClass.name
-                    if (methodName.contains(".")) {
-                        methodName = methodName.substring(methodName.lastIndexOf(".") + 1)
-                    }
-                } else {
-                    methodName = name
-                }
-                javadocClassDao.save(JavadocMethod(javadocClass, methodName,
-                        types.size, longTypes, shortTypes))
+            val longTypes = ArrayList<String>()
+            val shortTypes = ArrayList<String>()
+            for (type in types) {
+                update(longTypes, shortTypes, type.toString())
             }
+            var methodName: String
+            if ("<init>" == name) {
+                methodName = javadocClass.name
+                if (methodName.contains(".")) {
+                    methodName = methodName.substring(methodName.lastIndexOf(".") + 1)
+                }
+            } else {
+                methodName = name
+            }
+            javadocClassDao.save(JavadocMethod(javadocClass, methodName,
+                    types.size, longTypes, shortTypes))
         }
         return null
     }

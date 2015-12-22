@@ -38,13 +38,13 @@ class OpenIDRestrictedToInjectable (requiredAuthorities: Array<out Authority>) :
             val credentials = OpenIDCredentials(sessionToken, requiredAuthorities)
 
             val user = InMemoryUserCache.INSTANCE.getBySessionToken(credentials.sessionToken.toString())
-            if (!user.isPresent) {
+            if (user == null) {
                 throw WebApplicationException(Status.UNAUTHORIZED)
             }
-            if (!user.get().hasAllAuthorities(credentials.requiredAuthorities)) {
+            if (user.hasAllAuthorities(credentials.requiredAuthorities)) {
                 throw WebApplicationException(Status.FORBIDDEN)
             }
-            return user.get()
+            return user
         } catch (e: IllegalArgumentException) {
             log.debug("Error decoding credentials", e)
         }

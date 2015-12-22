@@ -77,6 +77,7 @@ public open class BaseTest {
 
     @BeforeTest
     public fun setup() {
+        messages.get()
         var admin = adminDao.getAdminByEmailAddress(BOT_EMAIL)
         if (admin == null) {
             admin = Admin(testUser.nick, BOT_EMAIL, testUser.hostmask, true)
@@ -153,8 +154,8 @@ public open class BaseTest {
         for (response in messages) {
             found = found or response.value.contains(target)
         }
-        Assert.assertTrue(found, java.lang.String.format("Did not find \n'%s' in \n'%s'", target, messages.map({ it.value }).joinToString
-        { "\n" }))
+        Assert.assertTrue(found, java.lang.String.format("Did not find \n'%s' in \n'%s'", target,
+                messages.map({ it.value }).joinToString { "\n" }))
     }
 
     companion object {

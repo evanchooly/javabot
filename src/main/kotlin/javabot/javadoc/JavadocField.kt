@@ -22,7 +22,7 @@ public class JavadocField : JavadocElement {
 
     public var type: String? = null
 
-    public constructor() {
+    private constructor() {
     }
 
     public constructor(parent: JavadocClass, fieldName: String, fieldType: String) {
@@ -46,7 +46,7 @@ public class JavadocField : JavadocElement {
 
     @PrePersist
     public fun uppers() {
-        upperName = name!!.toUpperCase()
+        upperName = name.toUpperCase()
     }
 
     override fun toString(): String {

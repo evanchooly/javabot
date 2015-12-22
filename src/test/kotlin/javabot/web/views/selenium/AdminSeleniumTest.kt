@@ -7,8 +7,8 @@ import org.testng.Assert
 import java.util.concurrent.TimeUnit
 
 public class AdminSeleniumTest {
-    private var driver: WebDriver? = null
-    private var baseUrl: String? = null
+    lateinit private var driver: WebDriver
+    lateinit private var baseUrl: String
     private val acceptNextAlert = true
     private val verificationErrors = StringBuffer()
 
@@ -16,19 +16,19 @@ public class AdminSeleniumTest {
     @Throws(Exception::class)
     public fun setUp() {
         System.setProperty(ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY,
-              "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
+                "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
         //        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
         //        desiredCapabilities.setPlatform(Platform.MAC);
         driver = ChromeDriver()
         baseUrl = "http://localhost:8080/"
-        val manage = driver!!.manage()
+        val manage = driver.manage()
         manage.timeouts().implicitlyWait(30, TimeUnit.SECONDS)
     }
 
     //    @AfterClass
     @Throws(Exception::class)
     public fun tearDown() {
-        driver!!.quit()
+        driver.quit()
         val verificationErrorString = verificationErrors.toString()
         if ("" != verificationErrorString) {
             Assert.fail(verificationErrorString)

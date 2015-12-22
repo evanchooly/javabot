@@ -61,7 +61,7 @@ public class JavadocOperationTest : BaseTest() {
     }
 
     @Throws(MalformedURLException::class)
-    public fun format() {
+    public fun  format() {
         jdk()
         scanForResponse(operation.handleMessage(message("javadoc String.format(*)")),
                 "java/lang/String.html#format-java.util.Locale-java.lang.String-java.lang.Object[]")
