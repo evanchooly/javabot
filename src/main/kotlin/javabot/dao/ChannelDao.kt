@@ -60,6 +60,7 @@ public class ChannelDao : BaseDao<Channel>(Channel::class.java) {
 
     @SuppressWarnings("unchecked")
     public fun getStatistics(): List<Activity> {
+//        val criteria = ActivityCriteria(ds)
         /*
 @NamedQuery(name = ChannelDao.STATISTICS, query = "select new javabot.model.Activity(l.channel, count(l), max(l.updated),"
     + " min(l.updated), (select count(e) from Logs e)) from Logs l "

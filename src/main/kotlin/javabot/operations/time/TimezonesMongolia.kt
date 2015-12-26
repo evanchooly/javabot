@@ -20,7 +20,7 @@ public class TimezonesMongolia : Timezones {
         private val timezones = Tri<String>()
 
         init {
-            for (timezone in Timezones.values) {
+            for (timezone in Timezones.values()) {
                 timezones.insert(timezone.name, timezone.timezone)
             }
         }

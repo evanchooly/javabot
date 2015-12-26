@@ -71,7 +71,7 @@ public class TimezonesUS : Timezones {
         private val timezones = Tri<String>()
 
         init {
-            for (state in UsState.values) {
+            for (state in UsState.values()) {
                 val timezone = state.timezone
                 timezones.insert(state.name.toLowerCase(), timezone)
                 timezones.insert(state.abbreviation.toLowerCase(), timezone)

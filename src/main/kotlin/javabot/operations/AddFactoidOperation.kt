@@ -117,7 +117,7 @@ public class AddFactoidOperation : BotOperation(), StandardOperation {
                                       `is`: Int, key: String) {
         val newValue = message.substring(`is` + 4)
         logDao.logMessage(Type.MESSAGE, event.channel, event.user,
-                Sofia.factoidChanged(event.user.nick, key, factoid.value, newValue, event.channel!!.name))
+                Sofia.factoidChanged(event.user.nick, key, factoid.value, newValue, event.channel?.name ?: "private message"))
         factoid.value = newValue
         factoid.updated = LocalDateTime.now()
         factoid.userName = event.user.nick

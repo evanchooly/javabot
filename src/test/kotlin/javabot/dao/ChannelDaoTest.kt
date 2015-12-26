@@ -1,5 +1,6 @@
 package javabot.dao
 
+import com.mongodb.BasicDBObject
 import javabot.model.Channel
 import org.testng.Assert
 import org.testng.annotations.Test
@@ -30,6 +31,8 @@ public class ChannelDaoTest : BaseServiceTest() {
 
     @Test(enabled = false)
     public fun stats() {
+        val collection = datastore.getCollection(Channel::class.java)
+        collection.remove(BasicDBObject())
         val list = channelDao.getStatistics()
         Assert.assertTrue(!list.isEmpty())
         val activity = list[0]
