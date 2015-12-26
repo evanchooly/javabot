@@ -132,5 +132,7 @@ public class Factoid(var name: String = "", var value: String = "", var userName
 
     companion object {
         private val log = LoggerFactory.getLogger(Factoid::class.java)
+
+        fun of(name: String?, value: String?, userName: String?) = Factoid(name ?: "", value ?: "", userName ?: "")
     }
 }

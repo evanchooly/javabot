@@ -7,7 +7,6 @@ import javabot.kotlin.web.views.FactoidsView
 import javabot.kotlin.web.views.IndexView
 import javabot.kotlin.web.views.KarmaView
 import javabot.kotlin.web.views.LogsView
-import javabot.model.Change
 import javabot.model.Factoid
 import org.slf4j.LoggerFactory
 import java.io.UnsupportedEncodingException
@@ -54,29 +53,30 @@ public class BotResource {
     @Path("/factoids")
     @Produces("text/html;charset=ISO-8859-1")
     public fun factoids(@Context request: HttpServletRequest, @QueryParam("page") page: Int?,
-                        @QueryParam("name") name: String, @QueryParam("value") value: String, @QueryParam("userName") userName: String): View {
-        return FactoidsView(this@BotResource.injector, request, page ?: 1, Factoid(name, value, userName))
+                        @QueryParam("name") name: String?, @QueryParam("value") value: String?, @QueryParam("userName") userName: String?):
+            View {
+        return FactoidsView(this@BotResource.injector, request, page ?: 1, Factoid.of(name, value, userName))
     }
 
     @GET
     @Path("/karma")
     @Produces("text/html;charset=ISO-8859-1")
     public fun karma(@Context request: HttpServletRequest, @QueryParam("page") page: Int?,
-                     @QueryParam("name") name: String, @QueryParam("value") value: Int?, @QueryParam("userName") userName: String): View {
+                     @QueryParam("name") name: String?, @QueryParam("value") value: Int?, @QueryParam("userName") userName: String?): View {
         return KarmaView(this@BotResource.injector, request, page ?: 1)
     }
 
     @GET
     @Path("/changes")
     @Produces("text/html;charset=ISO-8859-1")
-    public fun changes(@Context request: HttpServletRequest, @QueryParam("page") page: Int?, @QueryParam("message") message: String): View {
+    public fun changes(@Context request: HttpServletRequest, @QueryParam("page") page: Int?, @QueryParam("message") message: String?): View {
         return ChangesView(this@BotResource.injector, request, page ?: 1, message)
     }
 
     @GET
     @Path("/logs/{channel}/{date}")
     @Produces("text/html;charset=ISO-8859-1")
-    public fun logs(@Context request: HttpServletRequest, @PathParam("channel") channel: String, @PathParam("date") dateString: String): View {
+    public fun logs(@Context request: HttpServletRequest, @PathParam("channel") channel: String?, @PathParam("date") dateString: String?): View {
         val date: LocalDateTime
         val channelName: String
         try {
