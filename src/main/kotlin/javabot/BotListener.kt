@@ -64,9 +64,8 @@ public class BotListener : ListenerAdapter<PircBotX>() {
     }
 
     override fun onMessage(event: MessageEvent<PircBotX>) {
-        val javabot = javabotProvider.get()
-        val message = Message(event.channel, event.user, event.message)
-        javabot.executors.execute { javabot.processMessage(message) }
+        val bot = javabotProvider.get()
+        bot.executors.execute { bot.processMessage(Message(event.channel, event.user, event.message)) }
     }
 
     override fun onPrivateMessage(event: PrivateMessageEvent<PircBotX>) {
@@ -86,7 +85,10 @@ public class BotListener : ListenerAdapter<PircBotX>() {
                     javabot.executors.execute({
                         javabot.logMessage(null, event.user, event.message)
                         try {
-                            javabot.getResponses(content)
+                            val responses = javabot.getResponses(content)
+                            responses.forEach {
+                                event.user.send().message(it.value)
+                            }
                         } catch (e: NickServViolationException) {
                             event.user.send().message(e.message)
                         }
@@ -98,8 +100,8 @@ public class BotListener : ListenerAdapter<PircBotX>() {
 
     override fun onJoin(event: JoinEvent<PircBotX>) {
         logsDao.logMessage(Logs.Type.JOIN, event.channel, event.user,
-              Sofia.userJoined(event.user.nick, event.user.hostmask,
-                    event.channel.name))
+                Sofia.userJoined(event.user.nick, event.user.hostmask,
+                        event.channel.name))
         if (adminDao.count() == 0L) {
             val users = getIrcBot().userChannelDao.getUsers(event.channel)
             var admin: Admin? = null
@@ -175,7 +177,7 @@ public class BotListener : ListenerAdapter<PircBotX>() {
 
     override fun onKick(event: KickEvent<PircBotX>) {
         logsDao.logMessage(Logs.Type.KICK, event.channel, event.user,
-              " kicked %s (%s)".format(event.recipient.nick, event.reason))
+                " kicked %s (%s)".format(event.recipient.nick, event.reason))
     }
 
     public fun getIrcBot(): PircBotX {

@@ -335,9 +335,8 @@ public open class Javabot {
 
         }
 
-        if (!responses.isEmpty()) {
-            val sender = getIrcBot().userChannelDao.getUser(message.user.nick)
-            postMessage(Message(message.channel, sender, Sofia.unhandledMessage(message.user.nick)))
+        if (responses.isEmpty()) {
+            responses.add(Message(message.channel, message.user, Sofia.unhandledMessage(message.user.nick)))
         }
         return responses
     }

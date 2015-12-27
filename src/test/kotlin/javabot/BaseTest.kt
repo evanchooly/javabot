@@ -77,7 +77,7 @@ public open class BaseTest {
 
     @BeforeTest
     public fun setup() {
-        messages.get()
+        messages.clear()
         var admin = adminDao.getAdminByEmailAddress(BOT_EMAIL)
         if (admin == null) {
             admin = Admin(testUser.nick, BOT_EMAIL, testUser.hostmask, true)
@@ -115,7 +115,7 @@ public open class BaseTest {
 
     @BeforeMethod
     public fun clearMessages() {
-        messages.get()
+        messages.clear()
     }
 
     public fun getIrcBot(): PircBotX {
