@@ -15,10 +15,6 @@ public class KarmaOperation : BotOperation() {
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
-        if(event.tell) {
-            responses.add(Message(event, Sofia.notAllowed()))
-            return responses;
-        }
 
         readKarma(responses, event)
         if (responses.isEmpty()) {
@@ -34,6 +30,11 @@ public class KarmaOperation : BotOperation() {
                 if (operationPointer < 1) {
                     return responses
                 }
+            }
+
+            if(event.tell) {
+                responses.add(Message(event, Sofia.notAllowed()))
+                return responses;
             }
 
             /*

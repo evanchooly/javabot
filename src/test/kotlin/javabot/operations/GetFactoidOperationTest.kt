@@ -152,11 +152,11 @@ public class GetFactoidOperationTest : BaseTest() {
         response = operation.handleMessage(message("~~${BaseTest.TEST_TARGET_NICK} bobloblaw", startString = "~"))
         Assert.assertEquals(response.size, 0)
 
-        response = operation.handleMessage(message("~~${BaseTest.TEST_TARGET_NICK} api", startString = "~~"))
+        response = operation.handleMessage(message("~~${BaseTest.TEST_TARGET_NICK} api", startString = "~"))
         Assert.assertEquals(response[0].value, "${BaseTest.TEST_TARGET_NICK}, api is http://java.sun.com/javase/current/docs/api/index.html")
-        response = operation.handleMessage(message("~~${BaseTest.TEST_TARGET_NICK} camel I am a test 3", startString = "~~"))
+        response = operation.handleMessage(message("~~${BaseTest.TEST_TARGET_NICK} camel I am a test 3", startString = "~"))
         Assert.assertEquals(response[0].value, "${BaseTest.TEST_TARGET_NICK}, IAmATest3")
-        response = operation.handleMessage(message("~~${BaseTest.TEST_TARGET_NICK} url I am a test 3", startString = "~~"))
+        response = operation.handleMessage(message("~~${BaseTest.TEST_TARGET_NICK} url I am a test 3", startString = "~"))
         Assert.assertEquals(response[0].value, "${BaseTest.TEST_TARGET_NICK}, I+am+a+test+3")
         validate("stupid", "what you've just said is one of the most insanely idiotic things I have ever heard. At no point in your " +
                 "rambling, incoherent response were you even close to anything that could be considered a rational thought. Everyone in " +

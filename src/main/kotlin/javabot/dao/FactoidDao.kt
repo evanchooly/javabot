@@ -70,7 +70,7 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
         val criteria = FactoidCriteria(ds)
         criteria.upperName().equal(name.toUpperCase())
         val factoid = criteria.query().get()
-        if (factoid != null) {factoid
+        if (factoid != null) {
             factoid.lastUsed = LocalDateTime.now()
             super.save(factoid)
         }

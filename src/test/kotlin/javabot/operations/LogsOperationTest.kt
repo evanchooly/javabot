@@ -1,10 +1,8 @@
 package javabot.operations
 
 import javabot.BaseTest
-import javabot.Message
 import javabot.model.Logs
 import javabot.model.Logs.Type
-import org.pircbotx.User
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
@@ -49,15 +47,9 @@ public class LogsOperationTest : BaseTest() {
     @Throws(Exception::class)
     public fun testNickSpecificLogsWhenLogs() {
         val uuid = UUID.randomUUID().toString()
-        val user = object : TestUser(uuid) {
-
-        }
-//        bot.get().processMessage(Message(testChannel, user, "Hello I'm $uuid"))
         val list = operation.handleMessage(message("logs ${uuid}"))
         val listSize = list.size
         Assert.assertEquals(listSize, 1)
         Assert.assertTrue(list[0].value.contains(uuid))
     }
-
-    private open inner class TestUser(nick: String) : User(ircBot.get(), ircBot.get().userChannelDao, nick)
 }
