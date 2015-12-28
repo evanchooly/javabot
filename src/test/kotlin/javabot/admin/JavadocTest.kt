@@ -46,7 +46,7 @@ public class JavadocTest : BaseTest() {
         val event = ApiEvent(testUser.nick, EventType.RELOAD, apiDao.find(apiName)?.id)
         eventDao.save(event)
         waitForEvent(event, "reloading " + apiName, Duration(30, TimeUnit.MINUTES))
-        messages.get()
+        messages.clear()
         checkServlets(apiName)
     }
 
@@ -98,7 +98,7 @@ public class JavadocTest : BaseTest() {
                   File(System.getProperty("java.home"), "lib/rt.jar").toURI().toURL().toString())
             eventDao.save(event)
             waitForEvent(event, "adding JDK", Duration(30, TimeUnit.MINUTES))
-            messages.get()
+            messages.clear()
             api = apiDao.find("JDK")
         }
         Assert.assertNotNull(javadocClassDao.getClass(api, "java.lang", "Integer"),
@@ -108,20 +108,17 @@ public class JavadocTest : BaseTest() {
     private fun addApi(apiName: String, apiUrlString: String, downloadUrlString: String) {
         val event = ApiEvent(testUser.nick, apiName, apiUrlString, downloadUrlString)
         eventDao.save(event)
-        waitForEvent(event, "adding " + apiName, Duration(30, TimeUnit.MINUTES))
+        waitForEvent(event, "adding ${apiName}", Duration(5, TimeUnit.MINUTES))
         LOG.debug("done waiting for event to finish")
-        messages.get()
+        messages.clear()
     }
 
     private fun dropApi(apiName: String) {
-        bot
-        val event = ApiEvent(testUser.nick, EventType.DELETE, apiName)
-        eventDao.save(event)
-//        waitForEvent(event, "dropping " + apiName, Duration(20, TimeUnit.SECONDS))
+        eventDao.save(ApiEvent(testUser.nick, EventType.DELETE, apiName))
         Awaitility.await()
                 .atMost(60, TimeUnit.SECONDS)
                 .until<Boolean> { apiDao.find(apiName) == null }
-        messages.get()
+        messages.clear()
     }
 
     companion object {

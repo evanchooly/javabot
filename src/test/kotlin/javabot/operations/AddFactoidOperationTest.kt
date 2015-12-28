@@ -1,7 +1,6 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
-import com.jayway.awaitility.Awaitility
 import javabot.BaseTest
 import javabot.BotListener
 import javabot.dao.FactoidDao
@@ -12,11 +11,10 @@ import org.testng.Assert
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @Test(groups = arrayOf("operations"))
-public class AddFactoidOperationTest : BaseTest() {
+class AddFactoidOperationTest : BaseTest() {
     @Inject
     protected lateinit var factoidDao: FactoidDao
     @Inject
@@ -27,11 +25,11 @@ public class AddFactoidOperationTest : BaseTest() {
     protected lateinit var addFactoidOperation: AddFactoidOperation
     @Inject
     protected lateinit var getFactoidOperation: GetFactoidOperation
-   @Inject
+    @Inject
     protected lateinit var forgetFactoidOperation: ForgetFactoidOperation
 
     @BeforeMethod
-    public fun setUp() {
+    fun setUp() {
         factoidDao.delete(BaseTest.TEST_TARGET_NICK, "test")
         factoidDao.delete(BaseTest.TEST_TARGET_NICK, "ping $1")
         factoidDao.delete(BaseTest.TEST_TARGET_NICK, "what")
@@ -42,7 +40,7 @@ public class AddFactoidOperationTest : BaseTest() {
         factoidDao.delete(BaseTest.TEST_TARGET_NICK, "replace")
     }
 
-    public fun factoidAdd() {
+    fun factoidAdd() {
         var response = addFactoidOperation.handleMessage(message("test pong is pong"))
         Assert.assertEquals(response[0].value, ok)
         response = addFactoidOperation.handleMessage(message("ping \$1 is <action>sends some radar to \$1, awaits a response then forgets" +
@@ -55,7 +53,7 @@ public class AddFactoidOperationTest : BaseTest() {
         Assert.assertEquals(response[0].value, ok)
     }
 
-    public fun replace() {
+    fun replace() {
         var response = addFactoidOperation.handleMessage(message("replace is first entry"))
         Assert.assertEquals(response[0].value, ok)
 
@@ -69,12 +67,12 @@ public class AddFactoidOperationTest : BaseTest() {
         Assert.assertEquals(response[0].value, Sofia.factoidForgotten("replace", testUser.nick))
 
         response = addFactoidOperation.handleMessage(message("no, replace is <reply>second entry"))
-        Assert.assertEquals(response[0].value, Sofia.ok(testUser.nick))
+        Assert.assertEquals(response[0].value, Sofia.factoidUnknown("replace"))
     }
 
     @Test(dependsOnMethods = arrayOf("factoidAdd"))
     @Throws(IOException::class)
-    public fun duplicateAdd() {
+    fun duplicateAdd() {
         val message = "test pong is pong"
         var response = addFactoidOperation.handleMessage(message(message))
         Assert.assertEquals(response[0].value, ok)
@@ -83,19 +81,19 @@ public class AddFactoidOperationTest : BaseTest() {
         forgetFactoidOperation.handleMessage(message("forget test pong"))
     }
 
-    public fun blankValue() {
+    fun blankValue() {
         val response = addFactoidOperation.handleMessage(message("pong is"))
         Assert.assertEquals(response.size, 0)
     }
 
-    public fun addLog() {
+    fun addLog() {
         val response = addFactoidOperation.handleMessage(message("12345 is 12345"))
         Assert.assertEquals(response[0].value, ok)
         Assert.assertTrue(changeDao.findLog(Sofia.factoidAdded(testUser.nick, "12345", "12345")))
         forgetFactoidOperation.handleMessage(message("forget 12345"))
     }
 
-    public fun parensFactoids() {
+    fun parensFactoids() {
         val factoid = "should be the full (/hi there) factoid"
         var response = addFactoidOperation.handleMessage(message("asdf is <reply>" + factoid))
         Assert.assertEquals(response[0].value, ok)
@@ -103,10 +101,9 @@ public class AddFactoidOperationTest : BaseTest() {
         Assert.assertEquals(response[0].value, factoid)
     }
 
-    public fun privMessage() {
-        listener.onPrivateMessage(PrivateMessageEvent(ircBot.get(), testUser, "privMessage is doh!"))
-        Awaitility.await().atMost(10, TimeUnit.SECONDS).until<Boolean> { !messages.isEmpty() }
-        Assert.assertFalse(messages.isEmpty())
+    fun privMessage() {
+        listener.onPrivateMessage(PrivateMessageEvent(ircBot.get(), targetUser, System.currentTimeMillis().toString() + " is doh!"))
+        Assert.assertEquals(messages.get()[0], Sofia.privmsgChange())
     }
 
     private fun getKarma(target: User): Int {

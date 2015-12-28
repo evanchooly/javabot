@@ -70,8 +70,8 @@ public open class Javabot {
 
     private var allOperationsMap = TreeMap<String, BotOperation>()
 
-    val startStrings: Array<String> by lazy {
-        arrayOf(getNick(), "~")
+    val startStrings: List<String> by lazy {
+        listOf(getNick(), "~")
     }
 
     val executors = ThreadPoolExecutor(5, 10, 5L, TimeUnit.MINUTES, ArrayBlockingQueue(50),
@@ -225,7 +225,7 @@ public open class Javabot {
         if (operation != null && operation !is AdminCommand && operation !is StandardOperation) {
             activeOperations.remove(operation)
             val config = configDao.get()
-            config.operations.removeRaw(name)
+            config.operations.remove(name)
             configDao.save(config)
             disabled = true
         }

@@ -132,7 +132,9 @@ public open class BaseTest {
         Awaitility.await(alias)
               .atMost(timeout)
               .pollInterval(5, TimeUnit.SECONDS)
-              .until<Boolean> { done.contains(eventDao.find(event.id)?.state) }
+              .until<Boolean> {
+                  done.contains(eventDao.find(event.id)?.state)
+              }
     }
 
     protected fun registerIrcUser(nick: String, userName: String, host: String): User {

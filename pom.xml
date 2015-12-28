@@ -448,7 +448,7 @@
         <sofia.version>0.15</sofia.version>
         <slf4j.version>1.7.4</slf4j.version>
         <dropwizard.version>0.7.1</dropwizard.version>
-        <kotlin.version>1.0.0-beta-3595</kotlin.version>
+        <kotlin.version>1.0.0-beta-4584</kotlin.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

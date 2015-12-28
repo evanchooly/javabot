@@ -21,7 +21,7 @@ public class ChangeDao : BaseDao<Change>(Change::class.java) {
     public fun findLog(message: String): Boolean {
         val criteria = ChangeCriteria(ds)
         criteria.message().equal(message)
-        return criteria.query().countAll() !== 0L
+        return criteria.query().countAll() != 0L
     }
 
     public fun count(message: String?, date: LocalDateTime?): Long {

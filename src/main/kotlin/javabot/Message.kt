@@ -18,7 +18,7 @@ open class Message(val channel: Channel? = null, val user: User, val value: Stri
     public constructor(message: Message, value: String) : this(message.channel, message.user, value, message.target )
 
     override fun toString(): String {
-        return "Message{" + "channel=" + (if (channel != null) channel.name else "private message") + ", user=" + user.nick + ", message='" + value + '\'' + ", tell=" + tell + '}'
+        return "Message{channel=${channel?.name ?: ""}, user=${user.nick}, message='${value}', tell=${tell}}"
     }
 
     public fun massageTell(): String {

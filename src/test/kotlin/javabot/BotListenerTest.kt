@@ -2,13 +2,12 @@ package javabot
 
 import com.antwerkz.sofia.Sofia
 import com.google.inject.Inject
-import com.google.inject.Provider
-import org.pircbotx.PircBotX
+import com.jayway.awaitility.Duration
+import org.pircbotx.hooks.events.MessageEvent
 import org.pircbotx.hooks.events.PrivateMessageEvent
 import org.testng.Assert
 import org.testng.annotations.Test
-
-import org.testng.Assert.*
+import java.util.concurrent.TimeUnit
 
 class BotListenerTest: BaseTest() {
     @Inject
@@ -16,15 +15,13 @@ class BotListenerTest: BaseTest() {
 
     @Test
     fun testOnMessage() {
-        val event = PrivateMessageEvent(ircBot.get(), testUser, "dude")
-        listener.onPrivateMessage(event)
-        Assert.assertEquals(messages.get()[0], Sofia.unhandledMessage(testUser.nick))
+        listener.onMessage(MessageEvent(ircBot.get(), testChannel, testUser, "~dude"))
+        Assert.assertEquals(messages.get(Duration(10, TimeUnit.MINUTES))[0], Sofia.unhandledMessage(testUser.nick))
     }
 
     @Test
     fun testOnPrivateMessage() {
-        val event = PrivateMessageEvent(ircBot.get(), testUser, "dude")
-        listener.onPrivateMessage(event)
+        listener.onPrivateMessage(PrivateMessageEvent(ircBot.get(), testUser, "dude"))
         Assert.assertEquals(messages.get()[0], Sofia.unhandledMessage(testUser.nick))
     }
 }

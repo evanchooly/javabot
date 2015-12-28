@@ -51,7 +51,6 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
 
     public fun addFactoid(sender: String, key: String, value: String): Factoid {
         val factoid = Factoid(key, value, sender)
-        factoid.id = factoid.id
         factoid.updated = LocalDateTime.now()
         factoid.lastUsed = LocalDateTime.now()
         save(factoid)
@@ -71,7 +70,7 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
         val criteria = FactoidCriteria(ds)
         criteria.upperName().equal(name.toUpperCase())
         val factoid = criteria.query().get()
-        if (factoid != null) {
+        if (factoid != null) {factoid
             factoid.lastUsed = LocalDateTime.now()
             super.save(factoid)
         }

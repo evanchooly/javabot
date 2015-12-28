@@ -26,9 +26,9 @@ public class Factoid(var name: String = "", var value: String = "", var userName
     var id: ObjectId? = null
 
     @JsonView(PUBLIC::class)
-    public var updated: LocalDateTime? = null
+    public var updated: LocalDateTime = LocalDateTime.now()
 
-    public var lastUsed: LocalDateTime? = null
+    public var lastUsed: LocalDateTime = LocalDateTime.now()
 
     var locked: Boolean = false
 
@@ -42,7 +42,7 @@ public class Factoid(var name: String = "", var value: String = "", var userName
     private lateinit var upperValue: String
 
     init {
-        uppers()
+        update()
     }
 
     public fun evaluate(subject: User?, sender: String, replacedValue: String): String {
@@ -119,7 +119,8 @@ public class Factoid(var name: String = "", var value: String = "", var userName
     }
 
     @PrePersist
-    public fun uppers() {
+    public fun update() {
+        updated = LocalDateTime.now()
         upperName = name.toUpperCase()
         upperUserName = userName.toUpperCase()
         upperValue = value.toUpperCase()

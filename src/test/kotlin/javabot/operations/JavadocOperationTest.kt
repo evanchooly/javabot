@@ -32,7 +32,7 @@ public class JavadocOperationTest : BaseTest() {
             eventDao.save(event)
             waitForEvent(event, "adding JDK", Duration(30, TimeUnit.MINUTES))
         }
-        messages.get()
+        messages.clear()
     }
 
     @Throws(MalformedURLException::class)

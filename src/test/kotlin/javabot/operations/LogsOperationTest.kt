@@ -19,7 +19,6 @@ public class LogsOperationTest : BaseTest() {
     @BeforeMethod
     @AfterMethod
     fun clearLogs() {
-        println("Clearing logs")
         logsDao.deleteAllForChannel(testChannel.name)
     }
 
@@ -53,7 +52,7 @@ public class LogsOperationTest : BaseTest() {
         val user = object : TestUser(uuid) {
 
         }
-        bot.get().processMessage(Message(testChannel, user, "Hello I'm $uuid"))
+//        bot.get().processMessage(Message(testChannel, user, "Hello I'm $uuid"))
         val list = operation.handleMessage(message("logs ${uuid}"))
         val listSize = list.size
         Assert.assertEquals(listSize, 1)
