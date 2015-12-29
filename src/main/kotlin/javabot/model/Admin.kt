@@ -31,7 +31,13 @@ public class Admin : Serializable, Persistent {
 
     public var updated: LocalDateTime = LocalDateTime.now()
 
-    private constructor() {
+    constructor() {
+        emailAddress = ""
+    }
+
+    constructor(emailAddress: String) : this() {
+        this.emailAddress = emailAddress
+        this.botOwner = true
     }
 
     constructor(ircName: String, userName: String, hostName: String, owner: Boolean) : this() {

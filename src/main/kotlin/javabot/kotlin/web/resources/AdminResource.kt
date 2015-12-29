@@ -1,14 +1,18 @@
 package javabot.kotlin.web.resources
 
 import com.google.inject.Injector
+import com.sun.jersey.api.core.HttpContext
 import io.dropwizard.views.View
 import javabot.Javabot
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
+import javabot.kotlin.web.JavabotConfiguration
+import javabot.kotlin.web.JavabotConfiguration.Companion
 import javabot.kotlin.web.model.Authority
 import javabot.kotlin.web.auth.Restricted
+import javabot.kotlin.web.model.InMemoryUserCache
 import javabot.kotlin.web.model.User
 import javabot.kotlin.web.views.AdminIndexView
 import javabot.kotlin.web.views.ChannelEditView
@@ -19,6 +23,7 @@ import javabot.model.ApiEvent
 import javabot.model.Channel
 import javabot.model.EventType
 import org.bson.types.ObjectId
+import java.util.UUID
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.Consumes
@@ -27,8 +32,10 @@ import javax.ws.rs.GET
 import javax.ws.rs.POST
 import javax.ws.rs.Path
 import javax.ws.rs.PathParam
+import javax.ws.rs.WebApplicationException
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.MediaType
+import javax.ws.rs.core.Response.Status.UNAUTHORIZED
 
 @Path("/admin")
 public class AdminResource {
@@ -52,7 +59,7 @@ public class AdminResource {
 
     @GET
     public fun index(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User): View {
-        return AdminIndexView(injector, request)
+        return AdminIndexView(injector, request, adminDao.getAdminByEmailAddress(user.email!!))
     }
 
     @GET
@@ -81,6 +88,16 @@ public class AdminResource {
 
         // TODO redirect to / if channel is null
         return ChannelEditView(injector, request, channelDao.get(channel)!!)
+    }
+
+    @POST
+    @Path("/saveChannel")
+    public fun saveChannel(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User,
+                           @FormParam("id") id: String?, @FormParam("name") name: String, @FormParam("key") key: String,
+                           @FormParam("logged") logged: Boolean): View {
+        val channel = if (id == null) Channel(name, key, logged) else Channel(ObjectId(id), name, key, logged)
+        channelDao.save(channel)
+        return index(request, user)
     }
 
     @POST
@@ -122,6 +139,13 @@ public class AdminResource {
         return ConfigurationView(injector, request)
     }
 
+    @GET
+    @Path("/edit/{id}")
+    public fun editAdmin(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User,
+                         @PathParam("id") id: String): View {
+        return AdminIndexView(injector, request, adminDao.getAdminByEmailAddress(user.email!!),
+                adminDao.find(ObjectId(id)))
+    }
 
     @GET
     @Path("/delete/{id}")
@@ -141,8 +165,13 @@ public class AdminResource {
                         @FormParam("emailAddress") emailAddress: String): View {
         var admin: Admin? = adminDao.getAdminByEmailAddress(emailAddress)
         if (admin == null) {
-            adminDao.save(Admin(ircName, emailAddress, hostName, true))
+            admin = Admin(ircName, emailAddress, hostName, true)
+        } else {
+            admin.ircName = ircName
+            admin.hostName = hostName
+            admin.emailAddress = emailAddress
         }
+        adminDao.save(admin)
         return index(request, user)
     }
 
@@ -161,16 +190,6 @@ public class AdminResource {
                          @Restricted(Authority.ROLE_ADMIN) user: User,
                          @PathParam("id") id: String): View {
         apiDao.save(ApiEvent(user.email!!, EventType.DELETE, ObjectId(id)))
-        return index(request, user)
-    }
-
-    @POST
-    @Path("/saveChannel")
-    public fun saveChannel(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User,
-                           @FormParam("id") id: String?, @FormParam("name") name: String, @FormParam("key") key: String,
-                           @FormParam("logged") logged: Boolean): View {
-        val channel = if (id == null) Channel(name, key, logged) else Channel(ObjectId(id), name, key, logged)
-        channelDao.save(channel)
         return index(request, user)
     }
 

@@ -20,7 +20,7 @@ public open class AdminViewTest : ViewsTest() {
     protected fun render(): Source {
         val renderer = FreemarkerViewRenderer()
         val output = ByteArrayOutputStream()
-        renderer.render(AdminIndexView(injector, getRequest()), Locale.getDefault(), output)
+        renderer.render(AdminIndexView(injector, getRequest(), adminDao.findAll()[0]), Locale.getDefault(), output)
         return Source(ByteArrayInputStream(output.toByteArray()))
     }
 

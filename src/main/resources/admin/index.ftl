@@ -2,15 +2,15 @@
     <table class="form">
         <tr class="topRow">
             <td><label for="irc">${sofia().ircName()}</label></td>
-            <td class="right"><input type="text" id="irc" name="ircName"></td>
+            <td class="right"><input type="text" id="irc" name="ircName" value="<#if editing.ircName?? >${editing.ircName}</#if>"></td>
         </tr>
         <tr class="topRow">
             <td><label for="host">${sofia().hostName()}</label></td>
-            <td class="right"><input type="text" id="host" name="hostName"></td>
+            <td class="right"><input type="text" id="host" name="hostName" value="<#if editing.hostName?? >${editing.hostName}</#if>"></td>
         </tr>
         <tr>
             <td><label for="userName">${sofia().email()}</label></td>
-            <td class="right"><input type="text" id="userName" name="emailAddress"></td>
+            <td class="right"><input type="text" id="userName" name="emailAddress" value="<#if editing.emailAddress?? >${editing.emailAddress}</#if>"></td>
         </tr>
         <tr>
             <td colspan="2" class="form-submit right">
@@ -36,6 +36,11 @@
             <td><#if admin.addedBy??>${admin.addedBy}</#if></td>
             <td class="right">${format(admin.updated)}</td>
             <td class="right top">
+                current.botOwner = ${current.botOwner?string("Y", "N")}
+                <br>admin.botOwner = ${admin.botOwner?string("Y", "N")}
+                <br><#if current.botOwner  >
+                    <a href="/admin/edit/${admin.id}"> <img src="/assets/images/boomy/edit.png" alt="Edit"/></a>
+                </#if>
                 <#if !admin.botOwner >
                     <a href="/admin/delete/${admin.id}"> <img src="/assets/images/boomy/delete24.png" alt="Delete"/></a>
                 </#if>

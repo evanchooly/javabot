@@ -139,8 +139,6 @@ public class GetFactoidOperationTest : BaseTest() {
         validate("camel I am a test 2", "IAmATest2")
         response = operation.handleMessage(message("~~ ${BaseTest.TEST_TARGET_NICK} url I am a test 2", startString = "~"))
         Assert.assertEquals(response[0].value, "${BaseTest.TEST_TARGET_NICK}, I+am+a+test+2")
-        //    scanForResponse("~~~ %s javadoc String", TEST_NICK), "[JDK: java.lang.String]");
-        //    scanForResponse("~~~ %s javadoc String", new IrcUser("jimbob")), "jimbob");
         response = operation.handleMessage(message("~~ ${BaseTest.TEST_TARGET_NICK} stupid", startString = "~"))
         Assert.assertEquals(response[0].value, "${BaseTest.TEST_TARGET_NICK}, what you've just said is one of the most insanely idiotic" +
                 " things I have ever heard. At no point in your rambling, incoherent response were you even close to anything that could " +

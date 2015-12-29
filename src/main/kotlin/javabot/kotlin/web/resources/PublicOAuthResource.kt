@@ -8,6 +8,7 @@ import javabot.kotlin.web.JavabotConfiguration
 import javabot.kotlin.web.model.Authority
 import javabot.kotlin.web.model.InMemoryUserCache
 import javabot.kotlin.web.model.User
+import javabot.model.Admin
 import org.brickred.socialauth.SocialAuthConfig
 import org.brickred.socialauth.SocialAuthManager
 import org.brickred.socialauth.util.SocialAuthUtil
@@ -87,6 +88,9 @@ public class PublicOAuthResource {
             if (user == null) {
                 val admin = adminDao.getAdminByEmailAddress(tempUser.email!!)
                 if (admin != null) {
+                    tempUser.authorities.add(Authority.ROLE_ADMIN)
+                } else if(adminDao.count() == 0L){
+                    adminDao.save(Admin(tempUser.email!!))
                     tempUser.authorities.add(Authority.ROLE_ADMIN)
                 }
                 InMemoryUserCache.INSTANCE.put(tempUser)
