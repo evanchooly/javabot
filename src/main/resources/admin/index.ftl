@@ -36,8 +36,6 @@
             <td><#if admin.addedBy??>${admin.addedBy}</#if></td>
             <td class="right">${format(admin.updated)}</td>
             <td class="right top">
-                current.botOwner = ${current.botOwner?string("Y", "N")}
-                <br>admin.botOwner = ${admin.botOwner?string("Y", "N")}
                 <br><#if current.botOwner  >
                     <a href="/admin/edit/${admin.id}"> <img src="/assets/images/boomy/edit.png" alt="Edit"/></a>
                 </#if>
