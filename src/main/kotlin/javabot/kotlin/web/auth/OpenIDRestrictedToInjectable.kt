@@ -6,6 +6,7 @@ import javabot.kotlin.web.JavabotConfiguration
 import javabot.kotlin.web.model.Authority
 import javabot.kotlin.web.model.InMemoryUserCache
 import javabot.kotlin.web.model.User
+import javabot.kotlin.web.resources.AdminResource
 import org.slf4j.LoggerFactory
 import java.util.UUID
 import javax.ws.rs.WebApplicationException
@@ -38,10 +39,8 @@ class OpenIDRestrictedToInjectable (requiredAuthorities: Array<out Authority>) :
             val credentials = OpenIDCredentials(sessionToken, requiredAuthorities)
 
             val user = InMemoryUserCache.INSTANCE.getBySessionToken(credentials.sessionToken.toString())
-            if (user == null) {
-                throw WebApplicationException(Status.UNAUTHORIZED)
-            }
-            if (user.hasAllAuthorities(credentials.requiredAuthorities)) {
+                    ?: throw WebApplicationException(Status.UNAUTHORIZED)
+            if (!user.hasAllAuthorities(credentials.requiredAuthorities)) {
                 throw WebApplicationException(Status.FORBIDDEN)
             }
             return user
