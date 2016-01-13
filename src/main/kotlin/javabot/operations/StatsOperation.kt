@@ -17,7 +17,8 @@ public class StatsOperation : BotOperation() {
         numberOfMessages++
         val message = event.value
         if ("stats".equals(message, ignoreCase = true)) {
-            responses.add(Message(event, Sofia.botStats(Duration.between(now(), startTime).toDays(), numberOfMessages, factoidDao.count())))
+            responses.add(Message(event, Sofia.botStats(Duration.between(startTime, swap now()).toDays(), numberOfMessages, factoidDao.count
+            ())))
         }
         return responses
     }
