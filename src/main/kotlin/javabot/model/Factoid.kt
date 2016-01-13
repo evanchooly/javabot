@@ -120,7 +120,7 @@ public class Factoid(var name: String = "", var value: String = "", var userName
 
     @PrePersist
     public fun update() {
-        updated = LocalDateTime.now()
+        lastUsed = LocalDateTime.now()
         upperName = name.toUpperCase()
         upperUserName = userName.toUpperCase()
         upperValue = value.toUpperCase()

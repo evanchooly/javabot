@@ -75,6 +75,7 @@ public class GetFactoidOperation : BotOperation(), StandardOperation {
         } else {
             responses.add(Message(event, message))
         }
+        factoidDao.save(factoid)
     }
 
     private fun validateTell(responses: MutableList<Message>, event: Message) {
