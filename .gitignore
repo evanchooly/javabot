@@ -19,3 +19,4 @@ target
 test-javabot.properties
 tmp
 dependency-reduced-pom.xml
+*~
