@@ -45,3 +45,21 @@ Developing
 ------
 
 If you use IDEA, make sure you have "Use plugin registry" enabled in your Maven configuration.
+
+Note also that IDEA may not pick up the generated java source as part of the build path; if `Sofia` does not
+resolve after running `mvn compile` at least once, then open up the javabot.iml file and add
+`<sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />` under the `<content>` XML node.
+`<content>` should look like this:
+
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/kotlin" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/kotlin" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+
+To test the web application aspects, you need to copy the `javabot-sample.yml` to `javabot.yml`; this will put the
+web container on port 8081 by default.
