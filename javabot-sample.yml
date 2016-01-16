@@ -4,7 +4,7 @@ server:
   adminContextPath: /admincontext  # Default value*
   connector:
       type: http
-      port: 80
+      port: 8081
   requestLog:
     appenders:
       - type: file
@@ -24,7 +24,7 @@ logging:
 
   # Logger-specific levels.
   loggers:
-#    com.antwerkz: INFO
+    com.antwerkz: INFO
 
   appenders:
     - type: file
