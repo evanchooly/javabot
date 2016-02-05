@@ -29,37 +29,18 @@ import java.util.ArrayList
 import javax.inject.Inject
 import javax.inject.Provider
 
-public class BotListener : ListenerAdapter<PircBotX>() {
 
-    @Inject
-    private lateinit var throttler: Throttler
-
-    @Inject
-    private lateinit var nickServDao: NickServDao
-
-    @Inject
-    private lateinit var logsDao: LogsDao
-
-    @Inject
-    private lateinit var channelDao: ChannelDao
-
-    @Inject
-    private lateinit var adminDao: AdminDao
-
-    @Inject
-    private lateinit var javabotProvider: Provider<Javabot>
-
-    @Inject
-    private lateinit var configDao: ConfigDao
+public class BotListener @Inject constructor(private var throttler: Throttler, private var nickServDao: NickServDao,
+                                             private var logsDao: LogsDao, private var channelDao: ChannelDao,
+                                             private var adminDao: AdminDao, private var javabotProvider: Provider<Javabot>,
+                                             private var configDao: ConfigDao, private var ircBot: Provider<PircBotX>
+) : ListenerAdapter<PircBotX>() {
 
     private val nickServ = ArrayList<String>()
 
-    @Inject
-    private lateinit var ircBot: Provider<PircBotX>
-
     public fun log(string: String) {
-        if (Javabot.LOG.isInfoEnabled) {
-            Javabot.LOG.info(string)
+        if (LOG.isInfoEnabled) {
+            LOG.info(string)
         }
     }
 
