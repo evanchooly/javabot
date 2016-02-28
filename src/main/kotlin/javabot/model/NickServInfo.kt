@@ -12,8 +12,7 @@ import java.time.format.DateTimeFormatter
 import java.util.ArrayList
 import java.util.TreeMap
 
-@Entity(value = "nickserv", noClassnameStored = true)
-public class NickServInfo : Persistent {
+@Entity(value = "nickserv", noClassnameStored = true) class NickServInfo : Persistent {
 
     @Id
     var id: ObjectId? = null
@@ -27,27 +26,27 @@ public class NickServInfo : Persistent {
     @Indexed(expireAfterSeconds = 60 * 60 * 24)
     private val created = now()
 
-    public var registered = LocalDateTime.now()
+    var registered = LocalDateTime.now()
 
-    public var userRegistered = registered
+    var userRegistered = registered
 
     private val extraneous = TreeMap<String, String>()
 
-    public var lastAddress: String? = null
+    var lastAddress: String? = null
 
-    public var lastSeen: LocalDateTime? = null
+    var lastSeen: LocalDateTime? = null
 
-    public constructor() {
+    constructor() {
     }
 
-    public constructor(user: User) {
+    constructor(user: User) {
         nick = user.nick
         account = user.nick
         registered = LocalDateTime.now()
         userRegistered = LocalDateTime.now()
     }
 
-    public fun extra(key: String, value: String) {
+    fun extra(key: String, value: String) {
         extraneous.put(key, value)
     }
 
@@ -56,7 +55,7 @@ public class NickServInfo : Persistent {
                 "lastSeen=${lastSeen}," + " " + "lastAddress='${lastAddress}'}"
     }
 
-    public fun toNickServFormat(): List<String> {
+    fun toNickServFormat(): List<String> {
         //    "Information on cheeser (account cheeser):",
         //    "Registered : Feb 20 21:31:56 2002 (12 years, 10 weeks, 2 days, 04:48:12 ago)",
         //    "Last seen  : now",
@@ -83,6 +82,6 @@ public class NickServInfo : Persistent {
     }
 
     companion object {
-        public val NSERV_DATE_FORMAT: String = "MMM dd HH:mm:ss yyyy"
+        val NSERV_DATE_FORMAT: String = "MMM dd HH:mm:ss yyyy"
     }
 }

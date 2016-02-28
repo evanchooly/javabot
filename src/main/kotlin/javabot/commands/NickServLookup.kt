@@ -6,6 +6,7 @@ import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.core.ConditionTimeoutException
 import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.dao.NickServDao
 import javabot.model.NickServInfo
 import org.pircbotx.PircBotX
@@ -14,8 +15,9 @@ import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 import javax.inject.Provider
 
-class NickServLookup  @Inject constructor(javabot: Provider<Javabot>, ircBot: Provider<PircBotX>, var nickServDao: NickServDao) :
-        AdminCommand(javabot, ircBot) {
+class NickServLookup  @Inject constructor(bot: Javabot, adminDao: AdminDao, ircBot: com.google.inject.Provider<PircBotX>,
+                                          var nickServDao: NickServDao) :
+        AdminCommand(bot, adminDao, ircBot) {
 
     @Parameter(required = true)
     lateinit var nick: String
@@ -39,7 +41,7 @@ class NickServLookup  @Inject constructor(javabot: Provider<Javabot>, ircBot: Pr
     private fun validateNickServAccount(): NickServInfo? {
         val info = AtomicReference(nickServDao.find(nick))
         if (info.get() == null) {
-            pircBot.get().sendIRC().message("NickServ", "info " + nick)
+            ircBot.get().sendIRC().message("NickServ", "info " + nick)
             Awaitility.await()
                     .atMost(10, TimeUnit.SECONDS)
                     .until<Boolean> {

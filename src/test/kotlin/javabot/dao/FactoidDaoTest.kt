@@ -1,5 +1,6 @@
 package javabot.dao
 
+import javabot.model.Factoid
 import org.testng.Assert
 import org.testng.annotations.Test
 import javax.inject.Inject
@@ -33,4 +34,29 @@ class FactoidDaoTest : BaseServiceTest() {
         Assert.assertNotSame(factoid.lastUsed, factoid1?.lastUsed, "Should have a new lastUsed value")
     }
 
+    @Test
+    fun changes() {
+        val key = "test factoid"
+        val value = "test value"
+
+        factoidDao.delete("cheeser", key)
+
+        val factoid = Factoid(key, value, "testng")
+        factoidDao.save(factoid)
+
+        var updated = factoid.updated
+        var used = factoid.lastUsed
+        Assert.assertEquals(factoid.updated, updated);
+        Assert.assertEquals(factoid.lastUsed, used);
+
+        factoidDao.save(factoid)
+        Assert.assertNotEquals(factoid.updated, updated);
+        Assert.assertTrue(factoid.updated.isAfter(updated));
+        Assert.assertEquals(factoid.lastUsed, used);
+
+        factoid.value = "new value"
+        Assert.assertNotEquals(factoid.updated, updated);
+        Assert.assertTrue(factoid.updated.isAfter(updated));
+        Assert.assertEquals(factoid.lastUsed, used);
+    }
 }

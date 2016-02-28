@@ -1,8 +1,8 @@
 package javabot.model.criteria
 
-public object ThrottleItemDescriptor {
+object ThrottleItemDescriptor {
 
-    public val id: String = "id"
-    public val user: String = "user"
-    public val `when`: String = "when"
+    val id: String = "id"
+    val user: String = "user"
+    val `when`: String = "when"
 }

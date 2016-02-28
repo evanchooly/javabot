@@ -289,6 +289,10 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("factoid.added", locale), arg0, arg1, arg2);
     }
 
+    public static String factoidCantBeBlank(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("factoid.cantBeBlank", locale), arg0);
+    }
+
     public static String factoidChanged(Object arg0, Object arg1, Object arg2, Object arg3, Object arg4, Locale... locale) {
         return MessageFormat.format(getMessageValue("factoid.changed", locale), arg0, arg1, arg2, arg3, arg4);
     }

@@ -2,15 +2,16 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
+import com.google.inject.Inject
+import com.google.inject.Provider
 import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 import org.pircbotx.PircBotX
-import javax.inject.Inject
-import javax.inject.Provider
 
-class AddChannel @Inject constructor(javabot: Provider<Javabot>, ircBot: Provider<PircBotX>, var channelDao: ChannelDao) :
-AdminCommand(javabot, ircBot) {
+class AddChannel @Inject constructor(bot: Javabot, adminDao: AdminDao, ircBot: Provider<PircBotX>, var channelDao: ChannelDao) :
+AdminCommand(bot, adminDao, ircBot) {
     @Parameter(required = true)
     lateinit var channelName: String
     @Parameter(required = false)
@@ -36,12 +37,12 @@ AdminCommand(javabot, ircBot) {
                     else
                         Sofia.adminJoiningChannel(channelName)))
             if (channel.key == null) {
-                pircBot.get().sendIRC().joinChannel(channel.name)
+                ircBot.get().sendIRC().joinChannel(channel.name)
             } else {
-                pircBot.get().sendIRC().joinChannel(channel.name, channel.key)
+                ircBot.get().sendIRC().joinChannel(channel.name, channel.key)
             }
 
-            responses.add(Message(pircBot.get().userChannelDao.getChannel(channelName), event, Sofia.adminJoinedChannel(event.user.nick)))
+            responses.add(Message(ircBot.get().userChannelDao.getChannel(channelName), event, Sofia.adminJoinedChannel(event.user.nick)))
         } else {
             responses.add(Message(event, Sofia.adminBadChannelName()))
         }

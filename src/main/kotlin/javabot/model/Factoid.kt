@@ -20,15 +20,13 @@ import java.nio.charset.Charset
 import java.time.LocalDateTime
 
 @Entity(value = "factoids", noClassnameStored = true)
-@Indexes(Index(fields = arrayOf(Field("upperName"), Field("upperUserName"))))
-public class Factoid(var name: String = "", var value: String = "", var userName: String = "") : Serializable, Persistent {
+@Indexes(Index(fields = arrayOf(Field("upperName"), Field("upperUserName")))) class Factoid(var name: String = "", var value: String = "", var userName: String = "") : Serializable, Persistent {
     @Id
     var id: ObjectId? = null
 
-    @JsonView(PUBLIC::class)
-    public var updated: LocalDateTime = LocalDateTime.now()
+    @JsonView(PUBLIC::class) var updated: LocalDateTime = LocalDateTime.now()
 
-    public var lastUsed: LocalDateTime = LocalDateTime.now()
+    var lastUsed: LocalDateTime = LocalDateTime.now()
 
     var locked: Boolean = false
 
@@ -45,7 +43,7 @@ public class Factoid(var name: String = "", var value: String = "", var userName
         update()
     }
 
-    public fun evaluate(subject: User?, sender: String, replacedValue: String): String {
+    fun evaluate(subject: User?, sender: String, replacedValue: String): String {
         var message = value
         val target = if (subject == null) sender else subject.nick
         if (subject != null && !message.contains("\$who") && message.startsWith("<reply>")) {
@@ -118,9 +116,7 @@ public class Factoid(var name: String = "", var value: String = "", var userName
         return result
     }
 
-    @PrePersist
-    public fun update() {
-        lastUsed = LocalDateTime.now()
+    @PrePersist fun update() {
         upperName = name.toUpperCase()
         upperUserName = userName.toUpperCase()
         upperValue = value.toUpperCase()

@@ -1,14 +1,20 @@
 package javabot.operations
 
+import com.google.inject.Inject
+import javabot.BaseTest
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 import java.util.TreeSet
 
-class OperationComparatorTest {
+class OperationComparatorTest : BaseTest() {
+    @Inject
+    lateinit var karma: KarmaOperation
+    @Inject
+    lateinit var factoid: GetFactoidOperation
+    @Inject
+    lateinit var jsr: JSROperation
+
     @Test fun testOperationComparator() {
-        val karma = KarmaOperation()
-        val factoid = GetFactoidOperation()
-        val jsr = JSROperation()
         val comparator = OperationComparator()
         val operations = TreeSet(comparator)
 

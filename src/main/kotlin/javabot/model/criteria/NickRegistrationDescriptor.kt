@@ -1,10 +1,10 @@
 package javabot.model.criteria
 
-public object NickRegistrationDescriptor {
+object NickRegistrationDescriptor {
 
-    public val host: String = "host"
-    public val id: String = "id"
-    public val nick: String = "nick"
-    public val twitterName: String = "twitterName"
-    public val url: String = "url"
+    val host: String = "host"
+    val id: String = "id"
+    val nick: String = "nick"
+    val twitterName: String = "twitterName"
+    val url: String = "url"
 }

@@ -8,7 +8,7 @@ import org.xml.sax.helpers.DefaultHandler
 import java.util.HashMap
 import java.util.HashSet
 
-public class WeatherUndergroundSaxHandler : DefaultHandler() {
+class WeatherUndergroundSaxHandler : DefaultHandler() {
     var collectLocationData = false
     var collectWeatherData = false
     var currentElem = ""
@@ -70,7 +70,7 @@ public class WeatherUndergroundSaxHandler : DefaultHandler() {
 
      * @return Weather data, or null if none was parsed
      */
-    public fun getWeather(): Weather? {
+    fun getWeather(): Weather? {
         error = error || weatherMap["full"] == ","
         if (error) {
             //TODO Log

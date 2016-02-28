@@ -5,11 +5,11 @@ import com.beust.jcommander.Parameter
 import com.google.inject.Inject
 import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import org.pircbotx.PircBotX
-import javax.inject.Provider
 
-class DisableOperation @Inject constructor(javabot: Provider<Javabot>, ircBot: Provider<PircBotX>) :
-        OperationsCommand(javabot, ircBot) {
+class DisableOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, ircBot: com.google.inject.Provider<PircBotX>) :
+        OperationsCommand(bot, adminDao, ircBot) {
     @Parameter(names=arrayOf("-name"), description = "The name of the operation to disable", required = true)
     lateinit var operationName: String
 

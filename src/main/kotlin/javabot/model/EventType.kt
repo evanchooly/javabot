@@ -1,6 +1,6 @@
 package javabot.model
 
-public enum class EventType {
+enum class EventType {
     ADD,
     DELETE,
     UPDATE,

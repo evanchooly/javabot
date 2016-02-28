@@ -1,14 +1,14 @@
 package javabot.model.criteria
 
-public object NickServInfoDescriptor {
+object NickServInfoDescriptor {
 
-    public val account: String = "account"
-    public val created: String = "created"
-    public val extraneous: String = "extraneous"
-    public val id: String = "id"
-    public val lastAddress: String = "lastAddress"
-    public val lastSeen: String = "lastSeen"
-    public val nick: String = "nick"
-    public val registered: String = "registered"
-    public val userRegistered: String = "userRegistered"
+    val account: String = "account"
+    val created: String = "created"
+    val extraneous: String = "extraneous"
+    val id: String = "id"
+    val lastAddress: String = "lastAddress"
+    val lastSeen: String = "lastSeen"
+    val nick: String = "nick"
+    val registered: String = "registered"
+    val userRegistered: String = "userRegistered"
 }

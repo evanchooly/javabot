@@ -30,7 +30,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-public class BotListener @Inject
+class BotListener @Inject
 constructor(private var throttler: Throttler, private var nickServDao: NickServDao,
              private var logsDao: LogsDao, private var channelDao: ChannelDao,
              private var adminDao: AdminDao, private var javabotProvider: Provider<Javabot>,
@@ -39,7 +39,7 @@ constructor(private var throttler: Throttler, private var nickServDao: NickServD
 
     private val nickServ = ArrayList<String>()
 
-    public fun log(string: String) {
+    fun log(string: String) {
         if (LOG.isInfoEnabled) {
             LOG.info(string)
         }
@@ -162,7 +162,7 @@ constructor(private var throttler: Throttler, private var nickServDao: NickServD
                 " kicked %s (%s)".format(event.recipient.nick, event.reason))
     }
 
-    public fun getIrcBot(): PircBotX {
+    fun getIrcBot(): PircBotX {
         return ircBot.get()
     }
 

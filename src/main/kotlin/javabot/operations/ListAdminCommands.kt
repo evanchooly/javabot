@@ -1,16 +1,17 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import com.google.inject.Inject
+import com.google.inject.Provider
 import javabot.Javabot
 import javabot.Message
 import javabot.commands.AdminCommand
+import javabot.dao.AdminDao
 import org.pircbotx.PircBotX
 import java.util.ServiceLoader
-import javax.inject.Inject
-import javax.inject.Provider
 
-class ListAdminCommands @Inject constructor(javabot: Provider<Javabot>, pircBot: Provider<PircBotX>):
-        AdminCommand(javabot, pircBot) {
+class ListAdminCommands @Inject constructor(bot: Javabot, adminDao: AdminDao, ircBot: Provider<PircBotX>):
+        AdminCommand(bot, adminDao, ircBot) {
     override fun execute(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val list = listCommands().map({ it.getCommandName() })

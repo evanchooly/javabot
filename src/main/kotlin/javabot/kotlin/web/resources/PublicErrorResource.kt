@@ -6,7 +6,7 @@ import javabot.kotlin.web.views.ErrorView
 import java.util.Random
 
 class PublicErrorResource {
-    public fun view500(): View {
+    fun view500(): View {
         return ErrorView("/error/500.ftl", getRandomImage(IMAGE_500))
     }
 

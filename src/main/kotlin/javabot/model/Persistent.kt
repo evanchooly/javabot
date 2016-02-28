@@ -1,3 +1,3 @@
 package javabot.model
 
-public interface Persistent {}
+interface Persistent {}

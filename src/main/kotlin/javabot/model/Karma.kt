@@ -11,8 +11,7 @@ import java.io.Serializable
 import java.time.LocalDateTime
 
 @Entity(value = "karma", noClassnameStored = true)
-@Indexes(Index(fields = arrayOf(Field("upperName"))))
-public class Karma : Serializable, Persistent {
+@Indexes(Index(fields = arrayOf(Field("upperName")))) class Karma : Serializable, Persistent {
     @Id
     var id: ObjectId? = null
 
@@ -20,23 +19,22 @@ public class Karma : Serializable, Persistent {
 
     private var upperName: String? = null
 
-    public var value: Int = 0
+    var value: Int = 0
 
     lateinit var userName: String
 
-    public var updated: LocalDateTime? = null
+    var updated: LocalDateTime? = null
 
-    public constructor() {
+    constructor() {
     }
 
-    public constructor(name: String, value: Int, userName: String) {
+    constructor(name: String, value: Int, userName: String) {
         this.name = name
         this.value = value
         this.userName = userName
     }
 
-    @PrePersist
-    public fun uppers() {
+    @PrePersist fun uppers() {
         upperName = name.toUpperCase()
     }
 }

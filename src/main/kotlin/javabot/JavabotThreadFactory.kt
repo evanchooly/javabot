@@ -3,7 +3,7 @@ package javabot
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger
 
-public class JavabotThreadFactory(private val createDaemonThreads: Boolean, private val namePrefix: String) : ThreadFactory {
+class JavabotThreadFactory(private val createDaemonThreads: Boolean, private val namePrefix: String) : ThreadFactory {
     private val threadNumber = AtomicInteger(1)
 
     override fun newThread(runnable: Runnable): Thread {

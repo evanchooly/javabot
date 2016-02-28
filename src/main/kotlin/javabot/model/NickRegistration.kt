@@ -8,8 +8,7 @@ import org.pircbotx.User
 import java.io.Serializable
 import java.util.UUID
 
-@Entity(value = "registrations", noClassnameStored = true)
-public class NickRegistration : Serializable, Persistent {
+@Entity(value = "registrations", noClassnameStored = true) class NickRegistration : Serializable, Persistent {
     @Id
     var id: ObjectId? = null
     var url: String? = null
@@ -17,10 +16,10 @@ public class NickRegistration : Serializable, Persistent {
     var host: String? = null
     var twitterName: String? = null
 
-    public constructor() {
+    constructor() {
     }
 
-    public constructor(sender: User, twitterName: String) {
+    constructor(sender: User, twitterName: String) {
         this.twitterName = twitterName
         url = UUID.randomUUID().toString()
         nick = sender.nick

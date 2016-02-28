@@ -4,14 +4,15 @@ import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
 import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.dao.ConfigDao
 import org.apache.commons.lang.StringUtils
 import org.pircbotx.PircBotX
 import javax.inject.Inject
 import javax.inject.Provider
 
-class Configure @Inject constructor(javabot: Provider<Javabot>, ircBot: Provider<PircBotX>, var configDao: ConfigDao):
-        AdminCommand(javabot, ircBot) {
+class Configure @Inject constructor(bot: Javabot, adminDao: AdminDao, ircBot: com.google.inject.Provider<PircBotX>, var configDao: ConfigDao):
+        AdminCommand(bot, adminDao, ircBot) {
 
     @Parameter(names = arrayOf("--property"))
     var property: String? = null

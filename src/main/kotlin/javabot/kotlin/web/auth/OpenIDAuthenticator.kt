@@ -6,7 +6,7 @@ import io.dropwizard.auth.Authenticator
 import javabot.kotlin.web.model.InMemoryUserCache
 import javabot.kotlin.web.model.User
 
-public class OpenIDAuthenticator : Authenticator<OpenIDCredentials, User> {
+class OpenIDAuthenticator : Authenticator<OpenIDCredentials, User> {
 
     @Throws(AuthenticationException::class)
     override fun authenticate(credentials: OpenIDCredentials): Optional<User> {

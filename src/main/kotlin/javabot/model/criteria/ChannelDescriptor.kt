@@ -1,11 +1,11 @@
 package javabot.model.criteria
 
-public object ChannelDescriptor {
+object ChannelDescriptor {
 
-    public val id: String = "id"
-    public val key: String = "key"
-    public val logged: String = "logged"
-    public val name: String = "name"
-    public val updated: String = "updated"
-    public val upperName: String = "upperName"
+    val id: String = "id"
+    val key: String = "key"
+    val logged: String = "logged"
+    val name: String = "name"
+    val updated: String = "updated"
+    val upperName: String = "upperName"
 }

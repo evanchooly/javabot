@@ -1,15 +1,15 @@
 package javabot.model.criteria
 
-public object FactoidDescriptor {
+object FactoidDescriptor {
 
-    public val id: String = "id"
-    public val lastUsed: String = "lastUsed"
-    public val locked: String = "locked"
-    public val name: String = "name"
-    public val updated: String = "updated"
-    public val upperName: String = "upperName"
-    public val upperUserName: String = "upperUserName"
-    public val upperValue: String = "upperValue"
-    public val userName: String = "userName"
-    public val value: String = "value"
+    val id: String = "id"
+    val lastUsed: String = "lastUsed"
+    val locked: String = "locked"
+    val name: String = "name"
+    val updated: String = "updated"
+    val upperName: String = "upperName"
+    val upperUserName: String = "upperUserName"
+    val upperValue: String = "upperValue"
+    val userName: String = "userName"
+    val value: String = "value"
 }

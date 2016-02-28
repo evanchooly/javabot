@@ -7,13 +7,11 @@ import org.mongodb.morphia.annotations.Indexed
 import org.pircbotx.User
 import java.util.Date
 
-@Entity(value = "throttled", noClassnameStored = true)
-public class ThrottleItem(ircUser: User) : Persistent {
+@Entity(value = "throttled", noClassnameStored = true) class ThrottleItem(ircUser: User) : Persistent {
     @Id
     var id: ObjectId? = null
     var user: String
-    @Indexed(expireAfterSeconds = 60)
-    public var until = Date()
+    @Indexed(expireAfterSeconds = 60) var until = Date()
 
     init {
         user = ircUser.nick

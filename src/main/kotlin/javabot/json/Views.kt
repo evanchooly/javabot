@@ -1,7 +1,7 @@
 package javabot.json
 
-public class Views {
-    public inner class PUBLIC
+class Views {
+    inner class PUBLIC
 
-    public inner class SYSTEM
+    inner class SYSTEM
 }

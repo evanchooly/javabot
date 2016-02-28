@@ -1,17 +1,17 @@
 package javabot.model.criteria
 
-public object ChannelEventDescriptor {
+object ChannelEventDescriptor {
 
-    public val channel: String = "channel"
-    public val channelDao: String = "channelDao"
-    public val ircBot: String = "ircBot"
-    public val key: String = "key"
-    public val logged: String = "logged"
-    public val bot: String = "bot"
-    public val completed: String = "completed"
-    public val id: String = "id"
-    public val requestedBy: String = "requestedBy"
-    public val requestedOn: String = "requestedOn"
-    public val state: String = "state"
-    public val type: String = "type"
+    val channel: String = "channel"
+    val channelDao: String = "channelDao"
+    val ircBot: String = "ircBot"
+    val key: String = "key"
+    val logged: String = "logged"
+    val bot: String = "bot"
+    val completed: String = "completed"
+    val id: String = "id"
+    val requestedBy: String = "requestedBy"
+    val requestedOn: String = "requestedOn"
+    val state: String = "state"
+    val type: String = "type"
 }

@@ -11,15 +11,13 @@ import java.io.Serializable
 import java.time.LocalDateTime
 
 @Entity(value = "shuns", noClassnameStored = true)
-@Indexes(Index(fields = arrayOf(Field("upperNick"))))
-public class Shun : Serializable, Persistent {
+@Indexes(Index(fields = arrayOf(Field("upperNick")))) class Shun : Serializable, Persistent {
     @Id
     var id: ObjectId? = null
 
-    @Indexed(unique = true)
-    public var nick: String? = null
+    @Indexed(unique = true) var nick: String? = null
 
-    public var upperNick: String? = null
+    var upperNick: String? = null
 
-    public var expiry: LocalDateTime? = null
+    var expiry: LocalDateTime? = null
 }

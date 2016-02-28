@@ -9,7 +9,7 @@ import org.mongodb.morphia.converters.DateConverter
 import org.mongodb.morphia.mapping.MappedField
 import org.mongodb.morphia.mapping.MappingException
 
-public class LocalDateTimeConverter : DateConverter(LocalDateTime::class.java) {
+class LocalDateTimeConverter : DateConverter(LocalDateTime::class.java) {
 
     @Throws(MappingException::class)
     override fun decode(targetClass: Class<*>?, value: Any?, optionalExtraInfo: MappedField?): Any? {

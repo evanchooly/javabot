@@ -8,8 +8,7 @@ import org.mongodb.morphia.annotations.Indexed
 import java.io.Serializable
 import java.time.LocalDateTime
 
-@Entity(value = "changes", noClassnameStored = true)
-public class Change : Serializable, Persistent {
+@Entity(value = "changes", noClassnameStored = true) class Change : Serializable, Persistent {
 
     @Id
     var id: ObjectId = ObjectId()

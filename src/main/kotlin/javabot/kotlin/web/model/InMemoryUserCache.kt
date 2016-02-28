@@ -22,7 +22,7 @@ enum class InMemoryUserCache {
      * *
      * @return The matching User or absent
      */
-    public fun getBySessionToken(sessionToken: String?): User? {
+    fun getBySessionToken(sessionToken: String?): User? {
         // Check the cache
         val user = if (sessionToken != null) userCache.getIfPresent(sessionToken) else null
 
@@ -37,14 +37,14 @@ enum class InMemoryUserCache {
     /**
      * @param user         The User to cache
      */
-    public fun put(user: User) {
+    fun put(user: User) {
 
         Preconditions.checkNotNull(user)
 
         userCache.put(user.sessionToken.toString(), user)
     }
 
-    public fun getByOpenIDIdentifier(identifier: String?): User? {
+    fun getByOpenIDIdentifier(identifier: String?): User? {
 
         val map = userCache.asMap()
 

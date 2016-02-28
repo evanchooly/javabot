@@ -5,15 +5,15 @@ import org.apache.commons.lang.StringUtils
 /**
  * Simple model for passing around Weather conditions
  */
-public class Weather {
-    public var city: String? = null
-    public var condition: String? = null
-    public var tempf: String? = null
-    public var tempc: String? = null
-    public var humidity: String? = null
-    public var wind: String? = null
-    public var windChill: String? = null
-    public var localTime: String? = null
+class Weather {
+    var city: String? = null
+    var condition: String? = null
+    var tempf: String? = null
+    var tempc: String? = null
+    var humidity: String? = null
+    var wind: String? = null
+    var windChill: String? = null
+    var localTime: String? = null
 
     private fun replaceDegrees(degrees: String?): String {
         return degrees?.replace('C', C)?.replace('F', F) ?: ""

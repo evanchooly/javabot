@@ -14,193 +14,193 @@ import org.mongodb.morphia.query.Criteria
 import org.mongodb.morphia.query.UpdateResults
 import java.time.LocalDateTime
 
-public class OperationEventCriteria(ds: Datastore) : BaseCriteria<OperationEvent>(ds, OperationEvent::class.java) {
+class OperationEventCriteria(ds: Datastore) : BaseCriteria<OperationEvent>(ds, OperationEvent::class.java) {
 
-    public fun operation(): TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, String> {
+    fun operation(): TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, String> {
         return TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, String>(
               this, query, "operation")
     }
 
-    public fun operation(value: String): Criteria {
+    fun operation(value: String): Criteria {
         return TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, String>(
               this, query, "operation").equal(value)
     }
 
-    public fun bot(): TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, Javabot> {
+    fun bot(): TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, Javabot> {
         return TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, javabot.Javabot>(
               this, query, "bot")
     }
 
-    public fun bot(value: Javabot): Criteria {
+    fun bot(value: Javabot): Criteria {
         return TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, javabot.Javabot>(
               this, query, "bot").equal(value)
     }
 
-    public fun completed(): TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, LocalDateTime> {
+    fun completed(): TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, LocalDateTime> {
         return TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, java.time.LocalDateTime>(
               this, query, "completed")
     }
 
-    public fun completed(value: LocalDateTime): Criteria {
+    fun completed(value: LocalDateTime): Criteria {
         return TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, java.time.LocalDateTime>(
               this, query, "completed").equal(value)
     }
 
-    public fun id(): TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, ObjectId> {
+    fun id(): TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, ObjectId> {
         return TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, org.bson.types.ObjectId>(
               this, query, "id")
     }
 
-    public fun id(value: ObjectId): Criteria {
+    fun id(value: ObjectId): Criteria {
         return TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, org.bson.types.ObjectId>(
               this, query, "id").equal(value)
     }
 
-    public fun requestedBy(): TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, String> {
+    fun requestedBy(): TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, String> {
         return TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, String>(
               this, query, "requestedBy")
     }
 
-    public fun requestedBy(value: String): Criteria {
+    fun requestedBy(value: String): Criteria {
         return TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, String>(
               this, query, "requestedBy").equal(value)
     }
 
-    public fun requestedOn(): TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, LocalDateTime> {
+    fun requestedOn(): TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, LocalDateTime> {
         return TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, java.time.LocalDateTime>(
               this, query, "requestedOn")
     }
 
-    public fun requestedOn(value: LocalDateTime): Criteria {
+    fun requestedOn(value: LocalDateTime): Criteria {
         return TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, java.time.LocalDateTime>(
               this, query, "requestedOn").equal(value)
     }
 
-    public fun state(): TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, State> {
+    fun state(): TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, State> {
         return TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, javabot.model.AdminEvent.State>(
               this, query, "state")
     }
 
-    public fun state(value: State): Criteria {
+    fun state(value: State): Criteria {
         return TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, javabot.model.AdminEvent.State>(
               this, query, "state").equal(value)
     }
 
-    public fun type(): TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, EventType> {
+    fun type(): TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, EventType> {
         return TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, javabot.model.EventType>(
               this, query, "type")
     }
 
-    public fun type(value: EventType): Criteria {
+    fun type(value: EventType): Criteria {
         return TypeSafeFieldEnd<OperationEventCriteria, OperationEvent, javabot.model.EventType>(
               this, query, "type").equal(value)
     }
 
-    public fun getUpdater(): OperationEventUpdater {
+    fun getUpdater(): OperationEventUpdater {
         return OperationEventUpdater()
     }
 
-    public inner class OperationEventUpdater {
+    inner class OperationEventUpdater {
         var updateOperations = ds.createUpdateOperations(OperationEvent::class.java)
 
-        public fun updateAll(): UpdateResults {
+        fun updateAll(): UpdateResults {
             return ds.update(query(), updateOperations, false)
         }
 
-        public fun updateFirst(): UpdateResults {
+        fun updateFirst(): UpdateResults {
             return ds.updateFirst(query(), updateOperations, false)
         }
 
-        public fun updateAll(wc: WriteConcern): UpdateResults {
+        fun updateAll(wc: WriteConcern): UpdateResults {
             return ds.update(query(), updateOperations, false, wc)
         }
 
-        public fun updateFirst(wc: WriteConcern): UpdateResults {
+        fun updateFirst(wc: WriteConcern): UpdateResults {
             return ds.updateFirst(query(), updateOperations, false, wc)
         }
 
-        public fun upsert(): UpdateResults {
+        fun upsert(): UpdateResults {
             return ds.update(query(), updateOperations, true)
         }
 
-        public fun upsert(wc: WriteConcern): UpdateResults {
+        fun upsert(wc: WriteConcern): UpdateResults {
             return ds.update(query(), updateOperations, true, wc)
         }
 
-        public fun remove(): WriteResult {
+        fun remove(): WriteResult {
             return ds.delete(query())
         }
 
-        public fun remove(wc: WriteConcern): WriteResult {
+        fun remove(wc: WriteConcern): WriteResult {
             return ds.delete(query(), wc)
         }
 
-        public fun operation(value: String): OperationEventUpdater {
+        fun operation(value: String): OperationEventUpdater {
             updateOperations.set("operation", value)
             return this
         }
 
-        public fun unsetOperation(): OperationEventUpdater {
+        fun unsetOperation(): OperationEventUpdater {
             updateOperations.unset("operation")
             return this
         }
 
-        public fun bot(value: Javabot): OperationEventUpdater {
+        fun bot(value: Javabot): OperationEventUpdater {
             updateOperations.set("bot", value)
             return this
         }
 
-        public fun unsetBot(): OperationEventUpdater {
+        fun unsetBot(): OperationEventUpdater {
             updateOperations.unset("bot")
             return this
         }
 
-        public fun completed(value: LocalDateTime): OperationEventUpdater {
+        fun completed(value: LocalDateTime): OperationEventUpdater {
             updateOperations.set("completed", value)
             return this
         }
 
-        public fun unsetCompleted(): OperationEventUpdater {
+        fun unsetCompleted(): OperationEventUpdater {
             updateOperations.unset("completed")
             return this
         }
 
-        public fun requestedBy(value: String): OperationEventUpdater {
+        fun requestedBy(value: String): OperationEventUpdater {
             updateOperations.set("requestedBy", value)
             return this
         }
 
-        public fun unsetRequestedBy(): OperationEventUpdater {
+        fun unsetRequestedBy(): OperationEventUpdater {
             updateOperations.unset("requestedBy")
             return this
         }
 
-        public fun requestedOn(value: LocalDateTime): OperationEventUpdater {
+        fun requestedOn(value: LocalDateTime): OperationEventUpdater {
             updateOperations.set("requestedOn", value)
             return this
         }
 
-        public fun unsetRequestedOn(): OperationEventUpdater {
+        fun unsetRequestedOn(): OperationEventUpdater {
             updateOperations.unset("requestedOn")
             return this
         }
 
-        public fun state(value: State): OperationEventUpdater {
+        fun state(value: State): OperationEventUpdater {
             updateOperations.set("state", value)
             return this
         }
 
-        public fun unsetState(): OperationEventUpdater {
+        fun unsetState(): OperationEventUpdater {
             updateOperations.unset("state")
             return this
         }
 
-        public fun type(value: EventType): OperationEventUpdater {
+        fun type(value: EventType): OperationEventUpdater {
             updateOperations.set("type", value)
             return this
         }
 
-        public fun unsetType(): OperationEventUpdater {
+        fun unsetType(): OperationEventUpdater {
             updateOperations.unset("type")
             return this
         }

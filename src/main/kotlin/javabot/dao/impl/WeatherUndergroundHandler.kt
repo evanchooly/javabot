@@ -12,7 +12,7 @@ import java.net.URLEncoder
 
  * @see WeatherDao
  */
-public class WeatherUndergroundHandler : WeatherHandler {
+class WeatherUndergroundHandler : WeatherHandler {
 
     override fun getWeatherFor(place: String): Weather? {
         val handler = WeatherUndergroundSaxHandler()

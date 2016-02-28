@@ -9,8 +9,7 @@ import org.pircbotx.PircBotX
 import javax.inject.Inject
 import javax.inject.Provider
 
-@Entity("events")
-public class ChannelEvent : AdminEvent {
+@Entity("events") class ChannelEvent : AdminEvent {
     @Inject
     @Transient
     lateinit var channelDao: ChannelDao
@@ -24,7 +23,7 @@ public class ChannelEvent : AdminEvent {
     protected constructor() {
     }
 
-    public constructor(requestedBy: String, type: EventType, channel: String, key: String? = null) : super(requestedBy, type) {
+    constructor(requestedBy: String, type: EventType, channel: String, key: String? = null) : super(requestedBy, type) {
         this.key = key
         this.channel = channel
     }

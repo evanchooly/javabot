@@ -1,11 +1,11 @@
 package javabot.model.criteria
 
-public object KarmaDescriptor {
+object KarmaDescriptor {
 
-    public val id: String = "id"
-    public val name: String = "name"
-    public val updated: String = "updated"
-    public val upperName: String = "upperName"
-    public val userName: String = "userName"
-    public val value: String = "value"
+    val id: String = "id"
+    val name: String = "name"
+    val updated: String = "updated"
+    val upperName: String = "upperName"
+    val userName: String = "userName"
+    val value: String = "value"
 }

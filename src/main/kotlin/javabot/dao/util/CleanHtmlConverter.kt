@@ -2,8 +2,8 @@ package javabot.dao.util
 
 import java.util.StringJoiner
 
-public object CleanHtmlConverter {
-    public fun convert(message: String, converter: (String) -> String): String {
+object CleanHtmlConverter {
+    fun convert(message: String, converter: (String) -> String): String {
         var content = message.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
         if (content.contains("http://") || content.contains("https://")) {
             val joiner = StringJoiner(" ")

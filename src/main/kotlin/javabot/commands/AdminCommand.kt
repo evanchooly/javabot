@@ -5,6 +5,7 @@ import com.beust.jcommander.JCommander
 import com.beust.jcommander.Parameters
 import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.operations.BotOperation
 import org.pircbotx.PircBotX
 import org.slf4j.LoggerFactory
@@ -12,8 +13,8 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 @Parameters(separators = "=", optionPrefixes = "--")
-abstract class AdminCommand @Inject constructor(var javabot: Provider<Javabot>, var pircBot: Provider<PircBotX> ) :
-        BotOperation() {
+abstract class AdminCommand @Inject constructor(bot: Javabot, adminDao: AdminDao, var ircBot: Provider<PircBotX> ) :
+        BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         var responses = arrayListOf<Message>()
         var message = event.value
@@ -44,7 +45,7 @@ abstract class AdminCommand @Inject constructor(var javabot: Provider<Javabot>, 
         JCommander(this).parse(*params.subList(1, params.size).toTypedArray())
     }
 
-    public open fun canHandle(message: String): Boolean {
+    open fun canHandle(message: String): Boolean {
         try {
             return message.equals(javaClass.simpleName, ignoreCase = true)
         } catch (e: Exception) {
@@ -54,9 +55,9 @@ abstract class AdminCommand @Inject constructor(var javabot: Provider<Javabot>, 
 
     }
 
-    public abstract fun execute(event: Message): List<Message>
+    abstract fun execute(event: Message): List<Message>
 
-    public fun getCommandName(): String {
+    fun getCommandName(): String {
         var name = javaClass.simpleName
         name = name.substring(0, 1).toLowerCase() + name.substring(1)
         return name

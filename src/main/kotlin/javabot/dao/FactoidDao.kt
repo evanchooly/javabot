@@ -19,24 +19,25 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
     override fun save(entity: Persistent) {
         val factoid = entity as Factoid
         if(factoid.name == "") {
-            throw IllegalArgumentException("Factoid name can not be blank")
+            throw IllegalArgumentException(Sofia.factoidCantBeBlank("name"))
         }
         if(factoid.value == "") {
-            throw IllegalArgumentException("Factoid value can not be blank")
+            throw IllegalArgumentException(Sofia.factoidCantBeBlank("value"))
         }
         if(factoid.userName == "") {
-            throw IllegalArgumentException("Factoid user name can not be blank")
+            throw IllegalArgumentException(Sofia.factoidCantBeBlank("user name"))
         }
         val old = find(entity.id)
-        super.save(entity)
         val formattedValue = CleanHtmlConverter.convert(factoid.value) { s -> Sofia.logsAnchorFormat(s, s) }
         if (old != null) {
             val value: (Any) -> String = { s -> Sofia.logsAnchorFormat(s, s) }
             val oldFormat = CleanHtmlConverter.convert(old.value, value)
             changeDao.logChange("${factoid.userName} changed '${factoid.name}' from '${oldFormat}' to '${formattedValue}'")
+            factoid.updated = LocalDateTime.now()
         } else {
             changeDao.logChange("${factoid.userName} added '${factoid.name}' with '${formattedValue}'")
         }
+        super.save(entity)
     }
 
     fun hasFactoid(key: String): Boolean {

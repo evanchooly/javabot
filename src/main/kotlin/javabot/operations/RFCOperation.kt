@@ -3,8 +3,11 @@ package javabot.operations
 import com.antwerkz.sofia.Sofia
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
+import com.google.inject.Inject
 import com.google.inject.Singleton
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.util.concurrent.ExecutionException
@@ -13,7 +16,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Displays RFC url and title
  */
-@Singleton class RFCOperation : BotOperation() {
+@Singleton class RFCOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao) {
     var rfcTitleCache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(1, TimeUnit.HOURS).recordStats().build(
           object : CacheLoader<String, String>() {
               @SuppressWarnings("NullableProblems")

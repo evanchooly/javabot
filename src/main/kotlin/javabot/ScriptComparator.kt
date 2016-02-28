@@ -4,7 +4,7 @@ import javabot.database.UpgradeScript
 
 import java.util.Comparator
 
-public class ScriptComparator : Comparator<UpgradeScript> {
+class ScriptComparator : Comparator<UpgradeScript> {
     override fun compare(o1: UpgradeScript, o2: UpgradeScript): Int {
         if (o1 === o2) {
             return 0

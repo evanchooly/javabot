@@ -2,19 +2,18 @@ package javabot.model
 
 import org.mongodb.morphia.annotations.Embedded
 
-@Embedded
-public class IrcUser {
-    public var nick: String? = null
-    public var userName: String? = null
-    public var host: String? = null
+@Embedded class IrcUser {
+    var nick: String? = null
+    var userName: String? = null
+    var host: String? = null
 
-    public constructor(nick: String, userName: String, host: String) {
+    constructor(nick: String, userName: String, host: String) {
         this.host = host
         this.nick = nick
         this.userName = userName
     }
 
-    public constructor(nick: String) {
+    constructor(nick: String) {
         this.nick = nick
     }
 

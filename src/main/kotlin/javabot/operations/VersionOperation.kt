@@ -2,14 +2,15 @@ package javabot.operations
 
 import ca.grimoire.maven.ArtifactDescription
 import ca.grimoire.maven.NoArtifactException
-import ca.grimoire.maven.ResourceProvider
 import com.antwerkz.sofia.Sofia
+import com.google.inject.Inject
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import java.io.File
 import java.io.FileInputStream
-import java.io.InputStream
 
-class VersionOperation : BotOperation(), StandardOperation {
+class VersionOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao), StandardOperation {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value

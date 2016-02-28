@@ -1,13 +1,13 @@
 package javabot.model.criteria
 
-public object OperationEventDescriptor {
+object OperationEventDescriptor {
 
-    public val operation: String = "operation"
-    public val bot: String = "bot"
-    public val completed: String = "completed"
-    public val id: String = "id"
-    public val requestedBy: String = "requestedBy"
-    public val requestedOn: String = "requestedOn"
-    public val state: String = "state"
-    public val type: String = "type"
+    val operation: String = "operation"
+    val bot: String = "bot"
+    val completed: String = "completed"
+    val id: String = "id"
+    val requestedBy: String = "requestedBy"
+    val requestedOn: String = "requestedOn"
+    val state: String = "state"
+    val type: String = "type"
 }

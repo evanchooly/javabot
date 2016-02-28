@@ -6,7 +6,7 @@ import com.sun.jersey.core.spi.component.ComponentScope
 import com.sun.jersey.spi.inject.Injectable
 import com.sun.jersey.spi.inject.InjectableProvider
 
-public class RestrictedProvider : InjectableProvider<Restricted, Parameter> {
+class RestrictedProvider : InjectableProvider<Restricted, Parameter> {
 
     override fun getScope(): ComponentScope {
         return ComponentScope.PerRequest

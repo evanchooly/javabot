@@ -2,14 +2,16 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
+import com.google.inject.Provider
 import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import org.pircbotx.PircBotX
 import org.pircbotx.User
 import javax.inject.Inject
 
-class AddAdmin @Inject constructor(javabot: javax.inject.Provider<Javabot>, ircBot: javax.inject.Provider<PircBotX>) :
-        AdminCommand(javabot, ircBot) {
+class AddAdmin @Inject constructor(bot: Javabot, adminDao: AdminDao, ircBot: Provider<PircBotX>) :
+        AdminCommand(bot, adminDao, ircBot) {
     @Parameter(required = true)
     lateinit var userName: String
     @Parameter(required = true)
@@ -33,7 +35,7 @@ class AddAdmin @Inject constructor(javabot: javax.inject.Provider<Javabot>, ircB
     }
 
     fun findUser(name: String): User? {
-        return pircBot.get().userChannelDao.getUser(name)
+        return ircBot.get().userChannelDao.getUser(name)
     }
 
 }

@@ -14,7 +14,7 @@ import javabot.model.Weather
  * from a specific API
 
  */
-public class WeatherDao {
+class WeatherDao {
 
     //add more handlers to the list if there are other weather sources you want
     //the operation to support
@@ -45,7 +45,7 @@ public class WeatherDao {
 
     }
 
-    public fun getWeatherFor(place: String): Weather? {
+    fun getWeatherFor(place: String): Weather? {
         var weather: Weather? = null
 
         //Use each service until one returns something

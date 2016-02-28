@@ -13,7 +13,7 @@ import java.util.UUID
 
  * @since 0.0.1
  */
-public class OpenIDCredentials
+class OpenIDCredentials
 /**
  * @param sessionToken        The session token acting as a surrogate for the OpenID token
  * *
@@ -23,8 +23,8 @@ public class OpenIDCredentials
       sessionToken: UUID,
       requiredAuthorities: Set<Authority>) {
 
-    public val sessionToken: UUID
-    public val requiredAuthorities: Set<Authority>
+    val sessionToken: UUID
+    val requiredAuthorities: Set<Authority>
 
     init {
         this.sessionToken = checkNotNull(sessionToken)

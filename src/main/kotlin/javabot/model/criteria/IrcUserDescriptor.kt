@@ -1,8 +1,8 @@
 package javabot.model.criteria
 
-public object IrcUserDescriptor {
+object IrcUserDescriptor {
 
-    public val host: String = "host"
-    public val nick: String = "nick"
-    public val userName: String = "userName"
+    val host: String = "host"
+    val nick: String = "nick"
+    val userName: String = "userName"
 }

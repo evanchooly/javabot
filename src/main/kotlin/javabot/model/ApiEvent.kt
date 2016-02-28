@@ -17,9 +17,8 @@ import java.net.MalformedURLException
 import java.net.URL
 import javax.inject.Inject
 
-@Entity("events")
-public class ApiEvent : AdminEvent {
-    public var apiId: ObjectId? = null
+@Entity("events") class ApiEvent : AdminEvent {
+    var apiId: ObjectId? = null
 
     lateinit var name: String
 
@@ -46,7 +45,7 @@ public class ApiEvent : AdminEvent {
     protected constructor() {
     }
 
-    public constructor(requestedBy: String, name: String, baseUrl: String, downloadUrl: String) : super(requestedBy, EventType.ADD) {
+    constructor(requestedBy: String, name: String, baseUrl: String, downloadUrl: String) : super(requestedBy, EventType.ADD) {
         this.requestedBy = requestedBy
         this.name = name
         this.baseUrl = baseUrl
@@ -62,11 +61,11 @@ public class ApiEvent : AdminEvent {
         }
     }
 
-    public constructor(requestedBy: String, type: EventType, apiId: ObjectId?) : super(requestedBy, type) {
+    constructor(requestedBy: String, type: EventType, apiId: ObjectId?) : super(requestedBy, type) {
         this.apiId = apiId
     }
 
-    public constructor(requestedBy: String, type: EventType, name: String) : super(requestedBy, type) {
+    constructor(requestedBy: String, type: EventType, name: String) : super(requestedBy, type) {
         this.name = name
     }
 

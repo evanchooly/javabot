@@ -9,6 +9,7 @@ import javabot.dao.FactoidDao
 import javabot.model.Factoid
 import org.pircbotx.PircBotX
 import org.slf4j.LoggerFactory
+import java.time.LocalDateTime
 import java.util.HashSet
 import javax.inject.Inject
 import javax.inject.Provider
@@ -47,6 +48,8 @@ class GetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, 
 
         if (factoid != null) {
             getResponse(responses, event, backtrack, params, factoid)
+            factoid.lastUsed = LocalDateTime.now();
+            factoidDao.save(factoid)
         }
     }
 

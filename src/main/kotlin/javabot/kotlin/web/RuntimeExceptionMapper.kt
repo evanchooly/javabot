@@ -12,8 +12,7 @@ import javax.ws.rs.core.Response.Status
 import javax.ws.rs.ext.ExceptionMapper
 import javax.ws.rs.ext.Provider
 
-@Provider
-public class RuntimeExceptionMapper(configuration: JavabotConfiguration) : ExceptionMapper<RuntimeException> {
+@Provider class RuntimeExceptionMapper(configuration: JavabotConfiguration) : ExceptionMapper<RuntimeException> {
 
     @Context
     private val httpContext: HttpContext? = null

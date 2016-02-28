@@ -1,9 +1,9 @@
 package javabot.model.criteria
 
-public object ShunDescriptor {
+object ShunDescriptor {
 
-    public val expiry: String = "expiry"
-    public val id: String = "id"
-    public val nick: String = "nick"
-    public val upperNick: String = "upperNick"
+    val expiry: String = "expiry"
+    val id: String = "id"
+    val nick: String = "nick"
+    val upperNick: String = "upperNick"
 }

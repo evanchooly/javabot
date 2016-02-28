@@ -11,17 +11,17 @@ import java.lang.String.format
 open class Message(val channel: Channel? = null, val user: User, val value: String, val target: User? = null) {
     val tell: Boolean = target != null
 
-    public constructor(user: User, value: String) : this(null, user, value)
+    constructor(user: User, value: String) : this(null, user, value)
 
-    public constructor(channel: Channel, message: Message, value: String) : this(channel, message.user, value, message.target)
+    constructor(channel: Channel, message: Message, value: String) : this(channel, message.user, value, message.target)
 
-    public constructor(message: Message, value: String) : this(message.channel, message.user, value, message.target)
+    constructor(message: Message, value: String) : this(message.channel, message.user, value, message.target)
 
     override fun toString(): String {
         return "Message{channel=${channel?.name ?: ""}, user=${user.nick}, message='$value', tell=${tell}}"
     }
 
-    public fun massageTell(): String {
+    fun massageTell(): String {
         if (tell && target != null && !value.contains(target.nick)) {
             return format("%s, %s", target.nick, value)
         } else {
