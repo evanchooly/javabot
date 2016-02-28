@@ -15,13 +15,12 @@ import java.io.IOException
 import java.time.LocalDateTime
 import java.util.Locale
 
-public class FactoidsViewTest : ViewsTest() {
+class FactoidsViewTest : ViewsTest() {
     @Inject
     protected lateinit var factoidDao: FactoidDao
 
     @Test
-    @Throws(IOException::class)
-    public fun singleFactoid() {
+    @Throws(IOException::class) fun singleFactoid() {
         createFactoids(1)
         val source = render(0, Factoid())
         previousDisabled(source)
@@ -30,8 +29,7 @@ public class FactoidsViewTest : ViewsTest() {
     }
 
     @Test
-    @Throws(IOException::class)
-    public fun factoidFilter() {
+    @Throws(IOException::class) fun factoidFilter() {
         createFactoids(10)
         var source = render(0, Factoid("name 1", "", ""))
 
@@ -51,8 +49,7 @@ public class FactoidsViewTest : ViewsTest() {
     }
 
     @Test
-    @Throws(IOException::class)
-    public fun factoidBadFilter() {
+    @Throws(IOException::class) fun factoidBadFilter() {
         createFactoids(10)
         val source = render(0, Factoid("bad filter", "", ""))
 
@@ -62,8 +59,7 @@ public class FactoidsViewTest : ViewsTest() {
     }
 
     @Test
-    @Throws(IOException::class)
-    public fun twoFactoidPages() {
+    @Throws(IOException::class) fun twoFactoidPages() {
         val itemCount = (PagedView.ITEMS_PER_PAGE * 1.5).toInt()
         createFactoids(itemCount)
 
@@ -87,7 +83,7 @@ public class FactoidsViewTest : ViewsTest() {
     protected fun render(page: Int, filter: Factoid): Source {
         val renderer = FreemarkerViewRenderer()
         val output = ByteArrayOutputStream()
-        renderer.render(FactoidsView(injector, MockServletRequest(false), page, filter), Locale.getDefault(), output)
+        renderer.render(viewFactory.createFactoidsView(MockServletRequest(false), page, filter), Locale.getDefault(), output)
         return Source(ByteArrayInputStream(output.toByteArray()))
     }
 

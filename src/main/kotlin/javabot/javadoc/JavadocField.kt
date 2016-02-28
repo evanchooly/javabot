@@ -10,8 +10,7 @@ import org.mongodb.morphia.annotations.PrePersist
 
 @Entity(value = "fields", noClassnameStored = true)
 @Indexes(Index(fields = arrayOf(Field("javadocClassId"), Field("upperName") )),
-      Index(fields = arrayOf(Field("apiId"), Field("javadocClassId"), Field("upperName") )))
-public class JavadocField : JavadocElement {
+      Index(fields = arrayOf(Field("apiId"), Field("javadocClassId"), Field("upperName") ))) class JavadocField : JavadocElement {
     @Id
     var id: ObjectId = ObjectId()
 
@@ -20,12 +19,12 @@ public class JavadocField : JavadocElement {
     lateinit var upperName: String
     lateinit var parentClassName: String
 
-    public var type: String? = null
+    var type: String? = null
 
     private constructor() {
     }
 
-    public constructor(parent: JavadocClass, fieldName: String, fieldType: String) {
+    constructor(parent: JavadocClass, fieldName: String, fieldType: String) {
 
         javadocClassId = parent.id
         name = fieldName
@@ -44,8 +43,7 @@ public class JavadocField : JavadocElement {
     }
 */
 
-    @PrePersist
-    public fun uppers() {
+    @PrePersist fun uppers() {
         upperName = name.toUpperCase()
     }
 

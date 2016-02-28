@@ -1,16 +1,15 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.model.criteria.LogsCriteria
 import org.mongodb.morphia.Datastore
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
-public class LogsOperation : BotOperation() {
-
-    @Inject
-    lateinit var ds: Datastore
+class LogsOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var ds: Datastore) : BotOperation(bot, adminDao) {
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

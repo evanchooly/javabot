@@ -1,27 +1,25 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.dao.ChangeDao
 import javabot.dao.FactoidDao
-import javabot.dao.LogsDao
 import javabot.model.Factoid
-import javabot.model.Logs.Type
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
-public class AddFactoidOperation : BotOperation(), StandardOperation {
+class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
+                                              var factoidDao: FactoidDao,
+                                              var changeDao: ChangeDao) :
+        BotOperation(bot, adminDao), StandardOperation {
+
     companion object {
-        public val log: Logger = LoggerFactory.getLogger(AddFactoidOperation::class.java)
+        val log: Logger = LoggerFactory.getLogger(AddFactoidOperation::class.java)
     }
 
-    @Inject
-    lateinit var factoidDao: FactoidDao
-    @Inject
-    lateinit var logDao: LogsDao
-    @Inject
-    lateinit var changeDao: ChangeDao
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

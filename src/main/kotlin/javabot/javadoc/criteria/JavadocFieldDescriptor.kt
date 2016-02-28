@@ -1,15 +1,15 @@
 package javabot.javadoc.criteria
 
-public object JavadocFieldDescriptor {
+object JavadocFieldDescriptor {
 
-    public val id: String = "id"
-    public val javadocClassId: String = "javadocClassId"
-    public val name: String = "name"
-    public val parentClassName: String = "parentClassName"
-    public val type: String = "type"
-    public val upperName: String = "upperName"
-    public val apiId: String = "apiId"
-    public val directUrl: String = "directUrl"
-    public val longUrl: String = "longUrl"
-    public val shortUrl: String = "shortUrl"
+    val id: String = "id"
+    val javadocClassId: String = "javadocClassId"
+    val name: String = "name"
+    val parentClassName: String = "parentClassName"
+    val type: String = "type"
+    val upperName: String = "upperName"
+    val apiId: String = "apiId"
+    val directUrl: String = "directUrl"
+    val longUrl: String = "longUrl"
+    val shortUrl: String = "shortUrl"
 }

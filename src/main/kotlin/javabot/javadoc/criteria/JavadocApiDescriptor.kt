@@ -1,10 +1,10 @@
 package javabot.javadoc.criteria
 
-public object JavadocApiDescriptor {
+object JavadocApiDescriptor {
 
-    public val baseUrl: String = "baseUrl"
-    public val downloadUrl: String = "downloadUrl"
-    public val id: String = "id"
-    public val name: String = "name"
-    public val upperName: String = "upperName"
+    val baseUrl: String = "baseUrl"
+    val downloadUrl: String = "downloadUrl"
+    val id: String = "id"
+    val name: String = "name"
+    val upperName: String = "upperName"
 }

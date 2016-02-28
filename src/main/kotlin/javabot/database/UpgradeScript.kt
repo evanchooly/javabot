@@ -5,11 +5,8 @@ import java.io.IOException
 import java.sql.SQLException
 import javax.inject.Inject
 
-public abstract class UpgradeScript {
-    @Inject
-    lateinit var configDao: ConfigDao
-
-    public fun execute() {
+abstract class UpgradeScript @Inject constructor(var configDao: ConfigDao)  {
+    fun execute() {
         val config = configDao.get()
         if (config.schemaVersion < id()) {
             try {
@@ -22,16 +19,16 @@ public abstract class UpgradeScript {
         }
     }
 
-    public fun registerUpgrade() {
+    fun registerUpgrade() {
         val config = configDao.get()
         config.schemaVersion = id()
         configDao.save(config)
     }
 
-    public abstract fun id(): Int
+    abstract fun id(): Int
 
     @Throws(SQLException::class, IOException::class)
-    public abstract fun doUpgrade()
+    abstract fun doUpgrade()
 
     override fun toString(): String {
         return javaClass.name + ":" + id()

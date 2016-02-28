@@ -1,8 +1,8 @@
 package javabot.operations.time
 
-public class TimezonesRussia : Timezones {
+class TimezonesRussia : Timezones {
 
-    private enum class Timezones(public val timezone: String) {
+    private enum class Timezones(val timezone: String) {
         Kaliningrad("Europe/Kaliningrad"),
         Moscow("Europe/Moscow"),
         Samara("Europe/Samara"),

@@ -12,12 +12,11 @@ import org.testng.annotations.Test
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-public class LogsDaoTest : BaseTest() {
+class LogsDaoTest : BaseTest() {
     @Inject
     protected lateinit var ds: Datastore
 
-    @Test
-    public fun seen() {
+    @Test fun seen() {
         val logsCriteria = LogsCriteria(ds)
         logsCriteria.channel(CHANNEL_NAME)
         logsCriteria.delete()
@@ -34,8 +33,7 @@ public class LogsDaoTest : BaseTest() {
         Assert.assertTrue(logsDao.findByChannel(channel.name, LocalDateTime.now().minusDays(1), false).isEmpty())
     }
 
-    @Test
-    public fun channelEvents() {
+    @Test fun channelEvents() {
         val chanName = "##testChannel"
         channelDao.delete(chanName)
         channelDao.create(chanName, true, null)
@@ -55,6 +53,6 @@ public class LogsDaoTest : BaseTest() {
 
     companion object {
 
-        public val CHANNEL_NAME: String = "#watercooler"
+        val CHANNEL_NAME: String = "#watercooler"
     }
 }

@@ -7,18 +7,14 @@ import javabot.dao.util.QueryParam
 import javabot.model.Factoid
 import javabot.model.Persistent
 import javabot.model.criteria.FactoidCriteria
+import org.mongodb.morphia.Datastore
 import org.mongodb.morphia.query.Query
 import java.time.LocalDateTime
 import java.util.regex.PatternSyntaxException
 import javax.inject.Inject
 
-@SuppressWarnings("ConstantNamingConvention")
-public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
-    @Inject
-    lateinit var changeDao: ChangeDao
-
-    @Inject
-    lateinit var configDao: ConfigDao
+class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao)  :
+        BaseDao<Factoid>(ds, Factoid::class.java) {
 
     override fun save(entity: Persistent) {
         val factoid = entity as Factoid
@@ -43,13 +39,13 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
         }
     }
 
-    public fun hasFactoid(key: String): Boolean {
+    fun hasFactoid(key: String): Boolean {
         val criteria = FactoidCriteria(ds)
         criteria.upperName().equal(key.toUpperCase())
         return criteria.query().get() != null
     }
 
-    public fun addFactoid(sender: String, key: String, value: String): Factoid {
+    fun addFactoid(sender: String, key: String, value: String): Factoid {
         val factoid = Factoid(key, value, sender)
         factoid.updated = LocalDateTime.now()
         factoid.lastUsed = LocalDateTime.now()
@@ -58,7 +54,7 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
         return factoid
     }
 
-    public fun delete(sender: String, key: String) {
+    fun delete(sender: String, key: String) {
         val factoid = getFactoid(key)
         if (factoid != null) {
             delete(factoid.id)
@@ -66,7 +62,7 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
         }
     }
 
-    public fun getFactoid(name: String): Factoid? {
+    fun getFactoid(name: String): Factoid? {
         val criteria = FactoidCriteria(ds)
         criteria.upperName().equal(name.toUpperCase())
         val factoid = criteria.query().get()
@@ -77,7 +73,7 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
         return factoid
     }
 
-    public fun getParameterizedFactoid(name: String): Factoid? {
+    fun getParameterizedFactoid(name: String): Factoid? {
         val criteria = FactoidCriteria(ds)
         criteria.or(
               criteria.upperName().equal(name.toUpperCase() + " \$1"),
@@ -91,15 +87,15 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
         return factoid
     }
 
-    public fun count(): Long {
+    fun count(): Long {
         return ds.createQuery(Factoid::class.java).countAll()
     }
 
-    public fun countFiltered(filter: Factoid): Long {
+    fun countFiltered(filter: Factoid): Long {
         return buildFindQuery(null, filter, true).countAll()
     }
 
-    public fun getFactoidsFiltered(qp: QueryParam, filter: Factoid): List<Factoid> {
+    fun getFactoidsFiltered(qp: QueryParam, filter: Factoid): List<Factoid> {
         return buildFindQuery(qp, filter, false).asList()
     }
 
@@ -137,7 +133,7 @@ public class FactoidDao : BaseDao<Factoid>(Factoid::class.java) {
         return criteria.query()
     }
 
-    public fun deleteAll(): WriteResult {
+    fun deleteAll(): WriteResult {
         return ds.delete(ds.createQuery(Factoid::class.java))
     }
 }

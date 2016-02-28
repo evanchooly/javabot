@@ -1,16 +1,18 @@
 package javabot.commands
 
 import com.antwerkz.sofia.Sofia
+import javabot.Javabot
 import javabot.Message
 import javabot.dao.ChannelDao
 import javabot.dao.util.QueryParam
 import org.apache.commons.lang.StringUtils
+import org.pircbotx.PircBotX
 import java.lang.String.format
 import javax.inject.Inject
+import javax.inject.Provider
 
-public class ListChannels : AdminCommand() {
-    @Inject
-    lateinit var channelDao: ChannelDao
+class ListChannels @Inject constructor(javabot: Provider<Javabot>, ircBot: Provider<PircBotX>, var channelDao: ChannelDao) :
+        AdminCommand (javabot, ircBot) {
 
     override fun execute(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
 
-public class DaysUntilOperation : BotOperation() {
+class DaysUntilOperation : BotOperation() {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         var message = event.value.toLowerCase()

@@ -10,27 +10,23 @@ import org.testng.annotations.Test
 
 import org.testng.Assert.assertNotNull
 
-@Test(groups = arrayOf("operations"))
-public class JSROperationTest : BaseTest() {
+@Test(groups = arrayOf("operations")) class JSROperationTest : BaseTest() {
     @Inject
     protected lateinit var locator: JCPJSRLocator
     @Inject
     protected lateinit var operation: JSROperation
 
-    @Test
-    public fun testLocatorConfig() {
+    @Test fun testLocatorConfig() {
         assertNotNull(locator)
     }
 
-    @Test
-    public fun testJSROperations() {
+    @Test fun testJSROperations() {
         var response = operation.handleMessage(message("jsr 220"))
                 Assert.assertEquals(response[0].value, "'JSR 220: Enterprise JavaBeans 3.0' can be found at http://www.jcp" +
                         ".org/en/jsr/detail?id=220")
     }
 
-    @Test
-    public fun testBadJSRRequest() {
+    @Test fun testBadJSRRequest() {
         var response = operation.handleMessage(message("jsr 2202213"))
         Assert.assertEquals(response[0].value, Sofia.jsrUnknown("2202213"))
     }
@@ -42,8 +38,7 @@ public class JSROperationTest : BaseTest() {
               arrayOf<Any>("jsr abc", Sofia.jsrInvalid("abc")))
     }
 
-    @Test(dataProvider = "badCommands")
-    public fun testNullJSROperations(command: String, result: String) {
+    @Test(dataProvider = "badCommands") fun testNullJSROperations(command: String, result: String) {
         var response = operation.handleMessage(message(command))
         Assert.assertEquals(response[0].value, result)
     }

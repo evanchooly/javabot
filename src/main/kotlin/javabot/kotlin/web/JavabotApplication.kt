@@ -27,19 +27,16 @@ import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 
 @Singleton
-class JavabotApplication : Application<JavabotConfiguration>() {
+class JavabotApplication @Inject constructor( var injector: Injector): Application<JavabotConfiguration>() {
     var running = false
 
     companion object {
 
         @Throws(Exception::class)
-        @JvmStatic public fun main(args: Array<String>) {
+        @JvmStatic fun main(args: Array<String>) {
             Guice.createInjector(JavabotModule()).getInstance(JavabotApplication::class.java).run(arrayOf("server", "javabot.yml"))
         }
     }
-
-    @Inject
-    lateinit var injector: Injector
 
     override fun initialize(bootstrap: Bootstrap<JavabotConfiguration>) {
         bootstrap.addBundle(ViewBundle())

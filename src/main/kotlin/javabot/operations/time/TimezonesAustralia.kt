@@ -1,8 +1,8 @@
 package javabot.operations.time
 
-public class TimezonesAustralia : Timezones {
+class TimezonesAustralia : Timezones {
 
-    public enum class AustralianState(public val abbreviation: String, public val capital: String, public val timezone: String) {
+    enum class AustralianState(val abbreviation: String, val capital: String, val timezone: String) {
         WESTERN_AUSTRALIA("WA", "Perth", "Australia/Perth"),
         SOUTH_AUSTRALIA("SA", "Adelaide", "Australia/Adelaide"),
         NORTH_TERRITORY("NT", "Darwin", "Australia/Darwin"),

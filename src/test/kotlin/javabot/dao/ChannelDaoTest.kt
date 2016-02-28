@@ -5,9 +5,8 @@ import javabot.model.Channel
 import org.testng.Assert
 import org.testng.annotations.Test
 
-public class ChannelDaoTest : BaseServiceTest() {
-    @Test
-    public fun addChannel() {
+class ChannelDaoTest : BaseServiceTest() {
+    @Test fun addChannel() {
         val channel = Channel()
         val name = "##" + System.currentTimeMillis()
         channel.name = name
@@ -16,21 +15,18 @@ public class ChannelDaoTest : BaseServiceTest() {
         Assert.assertNotNull(channelDao.get(name))
     }
 
-    @Test
-    public fun getChannels() {
+    @Test fun getChannels() {
         val channels = channelDao.getChannels()
         Assert.assertTrue(!channels.isEmpty())
 
     }
 
-    @Test
-    public fun currentChannels() {
+    @Test fun currentChannels() {
         val channels = channelDao.configuredChannels()
         Assert.assertTrue(!channels.isEmpty())
     }
 
-    @Test(enabled = false)
-    public fun stats() {
+    @Test(enabled = false) fun stats() {
         val collection = datastore.getCollection(Channel::class.java)
         collection.remove(BasicDBObject())
         val list = channelDao.getStatistics()

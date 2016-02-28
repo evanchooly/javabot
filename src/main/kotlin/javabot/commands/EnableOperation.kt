@@ -2,9 +2,14 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
+import com.google.inject.Inject
+import javabot.Javabot
 import javabot.Message
+import org.pircbotx.PircBotX
+import javax.inject.Provider
 
-public class EnableOperation : OperationsCommand() {
+class EnableOperation @Inject constructor(javabot: Provider<Javabot>, ircBot: Provider<PircBotX>) :
+        OperationsCommand(javabot, ircBot) {
     @Parameter(names = arrayOf("--name"))
     lateinit var operationName: String
 

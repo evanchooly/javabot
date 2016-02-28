@@ -11,10 +11,9 @@ import java.io.IOException
 import java.lang.String.format
 import java.util.Locale
 
-public class IndexTest : ViewsTest() {
+class IndexTest : ViewsTest() {
     @Test
-    @Throws(IOException::class)
-    public fun index() {
+    @Throws(IOException::class) fun index() {
         find(false)
         find(true)
     }
@@ -24,7 +23,7 @@ public class IndexTest : ViewsTest() {
         val renderer = FreemarkerViewRenderer()
         val output = ByteArrayOutputStream()
 
-        renderer.render(IndexView(injector, MockServletRequest(loggedIn)), Locale.getDefault(), output)
+        renderer.render(viewFactory.createIndexView(MockServletRequest(loggedIn)), Locale.getDefault(), output)
         val source = Source(ByteArrayInputStream(output.toByteArray()))
         val a = source.getElementById("id")
         Assert.assertTrue(a == null || loggedIn, format("Should %sfind the newChannel link", if (loggedIn) "" else "not "))

@@ -1,17 +1,17 @@
 package javabot.javadoc.criteria
 
-public object JavadocMethodDescriptor {
+object JavadocMethodDescriptor {
 
-    public val id: String = "id"
-    public val javadocClassId: String = "javadocClassId"
-    public val longSignatureTypes: String = "longSignatureTypes"
-    public val name: String = "name"
-    public val paramCount: String = "paramCount"
-    public val parentClassName: String = "parentClassName"
-    public val shortSignatureTypes: String = "shortSignatureTypes"
-    public val upperName: String = "upperName"
-    public val apiId: String = "apiId"
-    public val directUrl: String = "directUrl"
-    public val longUrl: String = "longUrl"
-    public val shortUrl: String = "shortUrl"
+    val id: String = "id"
+    val javadocClassId: String = "javadocClassId"
+    val longSignatureTypes: String = "longSignatureTypes"
+    val name: String = "name"
+    val paramCount: String = "paramCount"
+    val parentClassName: String = "parentClassName"
+    val shortSignatureTypes: String = "shortSignatureTypes"
+    val upperName: String = "upperName"
+    val apiId: String = "apiId"
+    val directUrl: String = "directUrl"
+    val longUrl: String = "longUrl"
+    val shortUrl: String = "shortUrl"
 }

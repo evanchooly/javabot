@@ -4,9 +4,8 @@ import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 import java.util.TreeSet
 
-public class OperationComparatorTest {
-    @Test
-    public fun testOperationComparator() {
+class OperationComparatorTest {
+    @Test fun testOperationComparator() {
         val karma = KarmaOperation()
         val factoid = GetFactoidOperation()
         val jsr = JSROperation()

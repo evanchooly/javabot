@@ -4,8 +4,10 @@ import com.google.inject.Injector
 import io.dropwizard.views.View
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
 import javabot.BaseTest
+import javabot.kotlin.web.views.ViewFactory
 import net.htmlparser.jericho.Source
 import org.testng.Assert
+import org.testng.annotations.Guice
 
 import javax.inject.Inject
 import java.io.ByteArrayInputStream
@@ -16,7 +18,7 @@ import java.util.Locale
 public open class ViewsTest : BaseTest() {
 
     @Inject
-    protected lateinit var injector: Injector
+    protected lateinit var viewFactory: ViewFactory
 
     protected fun checkRange(source: Source, from: Int, to: Int, of: Int) {
         val content = source.getElementById("currentPage").content.toString().trim()

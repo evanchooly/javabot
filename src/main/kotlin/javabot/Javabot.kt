@@ -6,11 +6,7 @@ import com.google.inject.Injector
 import com.google.inject.Singleton
 import com.jayway.awaitility.Awaitility
 import javabot.commands.AdminCommand
-import javabot.dao.ChannelDao
-import javabot.dao.ConfigDao
-import javabot.dao.EventDao
-import javabot.dao.LogsDao
-import javabot.dao.ShunDao
+import javabot.dao.*
 import javabot.database.UpgradeScript
 import javabot.kotlin.web.JavabotApplication
 import javabot.model.AdminEvent.State
@@ -27,10 +23,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.time.LocalDateTime
-import java.util.ArrayList
-import java.util.SortedMap
-import java.util.TreeMap
-import java.util.TreeSet
+import java.util.*
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadPoolExecutor
@@ -39,34 +32,11 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 @Singleton
-public open class Javabot {
-
-    @Inject
-    private lateinit var configDao: ConfigDao
-
-    @Inject
-    private lateinit var channelDao: ChannelDao
-
-    @Inject
-    private lateinit var logsDao: LogsDao
-
-    @Inject
-    private lateinit var shunDao: ShunDao
-
-    @Inject
-    private lateinit var eventDao: EventDao
-
-    @Inject
-    private lateinit var throttler: Throttler
-
-    @Inject
-    protected lateinit var injector: Injector
-
-    @Inject
-    private lateinit var ircBot: Provider<PircBotX>
-
-    @Inject
-    private lateinit var javabotConfig: JavabotConfig
+open class Javabot @Inject
+    constructor(protected var injector: Injector, private var configDao: ConfigDao, private var channelDao: ChannelDao,
+                private var logsDao: LogsDao, private var shunDao: ShunDao, private var eventDao: EventDao,
+                private var throttler: Throttler, private var ircBot: Provider<PircBotX>,
+                private var javabotConfig: JavabotConfig, private var application: Provider<JavabotApplication>) {
 
     private var allOperationsMap = TreeMap<String, BotOperation>()
 
@@ -91,7 +61,7 @@ public open class Javabot {
         Runtime.getRuntime().addShutdownHook(hook)
     }
 
-    public fun start() {
+    fun start() {
         enableOperations()
         setUpThreads()
         applyUpgradeScripts()
@@ -138,7 +108,7 @@ public open class Javabot {
         }
     }
 
-    public fun shutdown() {
+    fun shutdown() {
         if (!executors.isShutdown) {
             executors.shutdown()
             try {
@@ -155,7 +125,7 @@ public open class Javabot {
         return running
     }
 
-    public fun connect() {
+    fun connect() {
         try {
             val thread = Thread {
                 try {
@@ -171,19 +141,18 @@ public open class Javabot {
 
     }
 
-    public fun startWebApp() {
+    fun startWebApp() {
         if (javabotConfig.startWebApp()) {
             if (File("javabot.yml").exists()) {
                 try {
                     Sofia.logWebappStarting()
-                    injector.getInstance<JavabotApplication>(JavabotApplication::class.java).run(arrayOf("server", "javabot.yml"))
+                    application.get().run(arrayOf("server", "javabot.yml"))
                 } catch (e: Exception) {
                     throw RuntimeException(e.message, e)
                 }
             } else {
                 println(Sofia.configurationWebMissingFile())
             }
-
         } else {
             Sofia.logWebappNotStarting()
         }
@@ -195,15 +164,14 @@ public open class Javabot {
         set.forEach({ it.execute() })
     }
 
-    @SuppressWarnings("unchecked")
-    public fun getAllOperations(): SortedMap<String, BotOperation> {
+    @SuppressWarnings("unchecked") fun getAllOperations(): SortedMap<String, BotOperation> {
         for (op in configDao.list(BotOperation::class.java)) {
             allOperationsMap.put(op.getName(), op)
         }
         return allOperationsMap
     }
 
-    public fun enableOperations() {
+    fun enableOperations() {
         try {
             val allOperations = getAllOperations()
             configDao.get().operations.forEach { klass ->
@@ -219,7 +187,7 @@ public open class Javabot {
 
     }
 
-    public fun disableOperation(name: String?): Boolean {
+    fun disableOperation(name: String?): Boolean {
         var disabled = false
         val operation = getAllOperations()[name]
         if (operation != null && operation !is AdminCommand && operation !is StandardOperation) {
@@ -232,7 +200,7 @@ public open class Javabot {
         return disabled
     }
 
-    public fun enableOperation(name: String) {
+    fun enableOperation(name: String) {
         val op = getAllOperations()[name]
         if (op != null) {
             val config = configDao.get()
@@ -245,7 +213,7 @@ public open class Javabot {
         }
     }
 
-    public fun processMessage(message: Message) {
+    fun processMessage(message: Message) {
         val sender = message.user
         val channel = message.channel
         logsDao.logMessage(Logs.Type.MESSAGE, channel, sender, message.value)
@@ -282,7 +250,7 @@ public open class Javabot {
         }
     }
 
-    public fun addIgnore(sender: String) {
+    fun addIgnore(sender: String) {
         ignores.add(sender)
     }
 
@@ -321,7 +289,7 @@ public open class Javabot {
         }
     }
 
-    public fun getResponses(message: Message): List<Message> {
+    fun getResponses(message: Message): List<Message> {
         val iterator = activeOperations.iterator()
         var responses = arrayListOf<Message>()
         while (iterator.hasNext() && responses.isEmpty()) {
@@ -350,7 +318,7 @@ public open class Javabot {
         return responses
     }
 
-    public open fun isOnCommonChannel(user: User): Boolean {
+    open fun isOnCommonChannel(user: User): Boolean {
         return !ircBot.get().userChannelDao.getChannels(user).isEmpty()
     }
 
@@ -358,18 +326,18 @@ public open class Javabot {
         return !ignores.contains(sender) && !shunDao.isShunned(sender)
     }
 
-    public open fun getNick(): String {
+    open fun getNick(): String {
         return configDao.get().nick
     }
 
-    public open fun getIrcBot(): PircBotX {
+    open fun getIrcBot(): PircBotX {
         return ircBot.get()
     }
 
     companion object {
-        public val LOG: Logger = LoggerFactory.getLogger(Javabot::class.java)
+        val LOG: Logger = LoggerFactory.getLogger(Javabot::class.java)
 
-        @JvmStatic public fun main(args: Array<String>) {
+        @JvmStatic fun main(args: Array<String>) {
             try {
                 val injector = Guice.createInjector(JavabotModule())
                 if (LOG.isInfoEnabled) {

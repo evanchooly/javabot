@@ -10,8 +10,7 @@ import org.mongodb.morphia.annotations.PrePersist
 
 @Entity(value = "methods", noClassnameStored = true)
 @Indexes(Index(fields = arrayOf(Field("apiId"))), Index(fields = arrayOf(Field("javadocClassId"), Field("upperName") )),
-      Index(fields = arrayOf(Field("apiId"), Field("javadocClassId"), Field("upperName") )))
-public class JavadocMethod : JavadocElement {
+      Index(fields = arrayOf(Field("apiId"), Field("javadocClassId"), Field("upperName") ))) class JavadocMethod : JavadocElement {
     @Id
     var id: ObjectId? = null
     lateinit var javadocClassId: ObjectId
@@ -23,10 +22,10 @@ public class JavadocMethod : JavadocElement {
 
     lateinit var parentClassName: String
 
-    public constructor() {
+    constructor() {
     }
 
-    public constructor(parent: JavadocClass, name: String, count: Int,
+    constructor(parent: JavadocClass, name: String, count: Int,
                        longArgs: List<String>, shortArgs: List<String>) {
         this.name = name
         javadocClassId = parent.id
@@ -66,12 +65,11 @@ public class JavadocMethod : JavadocElement {
     }
 */
 
-    public fun getShortSignature(): String {
+    fun getShortSignature(): String {
         return "$name($shortSignatureTypes)"
     }
 
-    @PrePersist
-    public fun uppers() {
+    @PrePersist fun uppers() {
         upperName = name.toUpperCase()
     }
 

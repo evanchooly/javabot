@@ -8,21 +8,18 @@ import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
 import javax.inject.Inject
 
-@Test
-public class ChannelEventTest : BaseTest() {
+@Test class ChannelEventTest : BaseTest() {
     @Inject
     protected lateinit var injector: Injector
 
-    @BeforeTest
-    public fun clearEvents() {
+    @BeforeTest fun clearEvents() {
         for (event in eventDao.findAll()) {
             eventDao.delete(event)
         }
     }
 
     @Test
-    @Throws(InterruptedException::class)
-    public fun addChannel() {
+    @Throws(InterruptedException::class) fun addChannel() {
         bot
         channelDao.delete(channelDao.get("##testChannel"))
         val name = "##testChannel"
@@ -33,8 +30,7 @@ public class ChannelEventTest : BaseTest() {
     }
 
     @Test
-    @Throws(InterruptedException::class)
-    public fun addKeyedChannel() {
+    @Throws(InterruptedException::class) fun addKeyedChannel() {
         bot
         val key = "abcdef"
         val event = ChannelEvent("testng", EventType.ADD, KEYED_CHANNEL, key)
@@ -44,8 +40,7 @@ public class ChannelEventTest : BaseTest() {
     }
 
     @Test
-    @Throws(InterruptedException::class)
-    public fun leave() {
+    @Throws(InterruptedException::class) fun leave() {
         bot
         val event = ChannelEvent("testng", EventType.DELETE, KEYED_CHANNEL)
         eventDao.save(event)
@@ -54,8 +49,7 @@ public class ChannelEventTest : BaseTest() {
     }
 
     @Test
-    @Throws(InterruptedException::class)
-    public fun update() {
+    @Throws(InterruptedException::class) fun update() {
         val name = "##testChannel"
         val event = ChannelEvent("testng", EventType.UPDATE, name, "newKey")
         eventDao.save(event)

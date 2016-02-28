@@ -2,8 +2,10 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import com.google.inject.Inject
+import javabot.Javabot
 import javabot.JavabotConfig
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
 import javabot.javadoc.JavadocApi
@@ -11,15 +13,9 @@ import net.swisstech.bitly.BitlyClient
 import java.util.ArrayList
 import javax.annotation.Nullable
 
-public class JavadocOperation : BotOperation() {
-    @Inject
-    lateinit var apiDao: ApiDao
+class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var apiDao: ApiDao,
+     var dao: JavadocClassDao, var config: JavabotConfig) : BotOperation(bot, adminDao) {
 
-    @Inject
-    lateinit var dao: JavadocClassDao
-
-    @Inject
-    lateinit var config: JavabotConfig
 
     @field:[Nullable Inject(optional = true)]
     var client: BitlyClient? = null
@@ -89,7 +85,7 @@ public class JavadocOperation : BotOperation() {
         return responses
     }
 
-    public fun handle(api: JavadocApi?, key: String): List<String> {
+    fun handle(api: JavadocApi?, key: String): List<String> {
         val urls = ArrayList<String>()
         val openIndex = key.indexOf('(')
         if (openIndex == -1) {

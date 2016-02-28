@@ -1,8 +1,8 @@
 package javabot.operations.time
 
-public class TimezonesMexico : Timezones {
+class TimezonesMexico : Timezones {
 
-    private enum class Timezones(public val timezone: String) {
+    private enum class Timezones(val timezone: String) {
         Tijuana("America/Tijuana"),
         Hermosillo("America/Hermosillo"),
         Chihuahua("Antarctica/Syowa"),

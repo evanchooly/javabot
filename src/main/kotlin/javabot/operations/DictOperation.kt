@@ -1,6 +1,6 @@
 package javabot.operations
 
-public class DictOperation : UrlOperation() {
+class DictOperation : UrlOperation() {
     override fun getBaseUrl(): String {
         return "http://dictionary.reference.com/browse/"
     }

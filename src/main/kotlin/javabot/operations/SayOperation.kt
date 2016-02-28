@@ -2,7 +2,7 @@ package javabot.operations
 
 import javabot.Message
 
-public class SayOperation : BotOperation() {
+class SayOperation : BotOperation() {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value

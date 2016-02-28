@@ -14,16 +14,8 @@ import java.util.Arrays
 import java.util.HashMap
 import javax.inject.Inject
 
-public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
-
-    @Inject
-    lateinit var javadocClassDao: JavadocClassDao
-
-    @Inject
-    lateinit var apiDao: ApiDao
-
-    @Inject
-    lateinit var parser: JavadocParser
+class JavadocClassVisitor @Inject constructor(var javadocClassDao: JavadocClassDao, var apiDao: ApiDao,
+    var parser: JavadocParser): ClassVisitor(Opcodes.ASM5) {
 
     lateinit var pkg: String
 
@@ -113,7 +105,7 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
         shortTypes.add(calculateNameAndPackage(arg).second)
     }
 
-    public fun setPackages(vararg packages: String) {
+    fun setPackages(vararg packages: String) {
         this.packages.addAll(Arrays.asList(*packages))
     }
 
@@ -133,7 +125,7 @@ public class JavadocClassVisitor : ClassVisitor(Opcodes.ASM5) {
             PRIMITIVES.put('Z', "boolean")
         }
 
-        public fun calculateNameAndPackage(value: String): Pair<String?, String> {
+        fun calculateNameAndPackage(value: String): Pair<String?, String> {
             var clsName = value
             while (clsName.contains(".") && Character.isLowerCase(clsName[0])) {
                 clsName = clsName.substring(clsName.indexOf(".") + 1)

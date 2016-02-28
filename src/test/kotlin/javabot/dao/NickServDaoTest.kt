@@ -10,12 +10,11 @@ import java.time.Month
 import java.util.Arrays.asList
 import javax.inject.Inject
 
-@Test
-public class NickServDaoTest : BaseServiceTest() {
+@Test class NickServDaoTest : BaseServiceTest() {
     @Inject
     protected lateinit var botListener: BotListener
 
-    public fun parseNickServResponse() {
+    fun parseNickServResponse() {
         nickServDao.clear()
         val list = asList("Information on cheeser (account cheeser):",
               "Registered : Feb 20 21:31:56 2002 (12 years, 10 weeks, 2 days, 04:48:12 ago)",
@@ -26,7 +25,7 @@ public class NickServDaoTest : BaseServiceTest() {
         nickServDao.process(list)
     }
 
-    public fun privMsg() {
+    fun privMsg() {
         nickServDao.clear()
         for (i in 0..4) {
             send(getNickServInfo("account" + i, "nick" + i, LocalDateTime.of(2014, Month.MARCH, 1, 16, 30),

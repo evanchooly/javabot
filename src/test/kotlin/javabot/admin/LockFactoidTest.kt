@@ -10,20 +10,17 @@ import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 import javax.inject.Inject
 
-@Test
-public class LockFactoidTest : BaseTest() {
+@Test class LockFactoidTest : BaseTest() {
     @Inject
     private lateinit var factoidDao: FactoidDao
     @Inject
     private lateinit var forgetFactoid: ForgetFactoidOperation
 
-    @DataProvider(name = "factoids")
-    public fun names(): Array<Array<String>> {
+    @DataProvider(name = "factoids") fun names(): Array<Array<String>> {
         return arrayOf(arrayOf("lock me"), arrayOf("lockme"))
     }
 
-    @Test(dataProvider = "factoids")
-    public fun lock(name: String) {
+    @Test(dataProvider = "factoids") fun lock(name: String) {
         try {
             factoidDao.delete(testUser.nick, name)
             var factoid = factoidDao.addFactoid(testUser.nick, name, "i should be locked")

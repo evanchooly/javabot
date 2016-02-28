@@ -4,7 +4,7 @@ import javabot.Message
 
 import java.util.Calendar
 
-public class TimeOperation : BotOperation() {
+class TimeOperation : BotOperation() {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value

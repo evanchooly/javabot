@@ -9,6 +9,7 @@ import javabot.dao.ConfigDao
 import javabot.dao.NickServDao
 import javabot.model.ThrottleItem
 import javabot.model.criteria.ThrottleItemCriteria
+import org.mongodb.morphia.Datastore
 import org.pircbotx.PircBotX
 import org.pircbotx.User
 import java.time.Duration.between
@@ -18,25 +19,20 @@ import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 import javax.inject.Provider
 
-public class Throttler : BaseDao<ThrottleItem>(ThrottleItem::class.java) {
-    @Inject
-    lateinit var configDao: ConfigDao
-
-    @Inject
-    lateinit var adminDao: AdminDao
-
-    @Inject
-    lateinit var nickServDao: NickServDao
-
-    @Inject
-    lateinit var ircBot: Provider<PircBotX>
+class Throttler @Inject constructor(
+        ds: Datastore,
+        var configDao: ConfigDao,
+        var adminDao: AdminDao,
+        var nickServDao: NickServDao,
+        var ircBot: Provider<PircBotX> ) :
+        BaseDao<ThrottleItem>(ds, ThrottleItem::class.java) {
 
     /**
      * Check if a user is currently throttled or not.
 
      * @return true if the user is currently throttled and ought to be ignored, false otherwise.
      */
-    public fun isThrottled(user: User): Boolean {
+    fun isThrottled(user: User): Boolean {
         if (!adminDao.isAdmin(user)) {
             validateNickServAccount(user)
             ds.save(ThrottleItem(user))

@@ -2,20 +2,17 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
+import javabot.Javabot
 import javabot.Message
 import javabot.dao.ChannelDao
 import org.pircbotx.PircBotX
 import javax.inject.Inject
 import javax.inject.Provider
 
-public class DropChannel : AdminCommand() {
-    @Inject
-    lateinit var channelDao: ChannelDao
+class DropChannel @Inject constructor(javabot: Provider<Javabot>, ircBot: Provider<PircBotX>, var channelDao: ChannelDao) :
+        AdminCommand (javabot, ircBot) {
 
-    @Inject
-    lateinit var ircBot: Provider<PircBotX>
-
-    @Parameter
+    @Parameter(required = true)
     lateinit var channel: String
 
     override fun execute(event: Message): List<Message> {
@@ -23,7 +20,7 @@ public class DropChannel : AdminCommand() {
         val chan = channelDao.get(channel)
         if (chan != null) {
             channelDao.delete(chan)
-            val deleted = ircBot.get().userChannelDao.getChannel(channel)
+            val deleted = pircBot.get().userChannelDao.getChannel(channel)
             val message = Message(deleted, event.user, event.value)
             responses.add(Message(message, Sofia.channelDeleted(event.user.nick)))
             deleted.send().part(Sofia.channelDeleted(event.user.nick))

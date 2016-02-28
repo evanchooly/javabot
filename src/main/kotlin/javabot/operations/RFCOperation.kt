@@ -13,8 +13,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Displays RFC url and title
  */
-@Singleton
-public class RFCOperation : BotOperation() {
+@Singleton class RFCOperation : BotOperation() {
     var rfcTitleCache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(1, TimeUnit.HOURS).recordStats().build(
           object : CacheLoader<String, String>() {
               @SuppressWarnings("NullableProblems")
@@ -49,6 +48,6 @@ public class RFCOperation : BotOperation() {
     }
 
     companion object {
-        public val prefix: String = "rfc"
+        val prefix: String = "rfc"
     }
 }

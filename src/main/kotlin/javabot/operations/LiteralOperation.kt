@@ -1,13 +1,13 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.dao.FactoidDao
 import javax.inject.Inject
 
-public class LiteralOperation : BotOperation() {
-    @Inject
-    lateinit var dao: FactoidDao
+class LiteralOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var dao: FactoidDao) : BotOperation(bot, adminDao) {
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

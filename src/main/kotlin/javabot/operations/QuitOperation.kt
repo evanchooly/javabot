@@ -1,14 +1,13 @@
 package javabot.operations
 
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.dao.ConfigDao
 
 import javax.inject.Inject
 
-public class QuitOperation : BotOperation() {
-
-    @Inject
-    lateinit var configDao: ConfigDao
+class QuitOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var configDao: ConfigDao) : BotOperation(bot, adminDao) {
 
     override fun handleMessage(event: Message): List<Message> {
         val message = event.value

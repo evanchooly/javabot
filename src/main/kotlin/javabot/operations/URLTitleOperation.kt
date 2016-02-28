@@ -1,6 +1,8 @@
 package javabot.operations
 
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.operations.urlcontent.URLContentAnalyzer
 import javabot.operations.urlcontent.URLFromMessageParser
 import org.apache.http.client.config.RequestConfig
@@ -11,11 +13,8 @@ import org.jsoup.Jsoup
 import java.io.IOException
 import javax.inject.Inject
 
-public class URLTitleOperation : BotOperation() {
-    @Inject
-    lateinit var analyzer: URLContentAnalyzer
-    @Inject
-    lateinit var parser: URLFromMessageParser
+class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var analyzer: URLContentAnalyzer,
+    var parser: URLFromMessageParser) : BotOperation(bot, adminDao) {
 
     override fun handleChannelMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

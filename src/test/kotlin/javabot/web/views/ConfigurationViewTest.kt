@@ -15,20 +15,19 @@ import java.util.Arrays.asList
 import java.util.Locale
 import javax.inject.Inject
 
-public class ConfigurationViewTest : ViewsTest() {
+class ConfigurationViewTest : ViewsTest() {
     @Inject
     protected lateinit var configDao: ConfigDao
 
     @Test
-    @Throws(IOException::class)
-    public fun configuration() {
+    @Throws(IOException::class) fun configuration() {
         var config = configDao.get()
         config.operations = ArrayList<String>()
         configDao.save(config)
 
         val renderer = FreemarkerViewRenderer()
         var output = ByteArrayOutputStream()
-        renderer.render(ConfigurationView(injector, MockServletRequest(false)), Locale.getDefault(), output)
+        renderer.render(viewFactory.createConfigurationView(MockServletRequest(false)), Locale.getDefault(), output)
         var source = Source(ByteArrayInputStream(output.toByteArray()))
 
         val operation = "Javadoc"
@@ -45,7 +44,7 @@ public class ConfigurationViewTest : ViewsTest() {
         configDao.save(config)
 
         output = ByteArrayOutputStream()
-        renderer.render(ConfigurationView(injector, MockServletRequest(false)), Locale.getDefault(), output)
+        renderer.render(viewFactory.createConfigurationView(MockServletRequest(false)), Locale.getDefault(), output)
         source = Source(ByteArrayInputStream(output.toByteArray()))
 
         enable = source.getElementById("enable" + operation)

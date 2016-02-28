@@ -7,14 +7,13 @@ import org.testng.Assert
 import org.testng.annotations.Test
 import javax.inject.Inject
 
-@Test(groups = arrayOf("operations"))
-public class ForgetFactoidOperationTest : BaseTest() {
+@Test(groups = arrayOf("operations")) class ForgetFactoidOperationTest : BaseTest() {
     @Inject
     protected lateinit var factoidDao: FactoidDao
     @Inject
     protected lateinit var operation: ForgetFactoidOperation
 
-    public fun forgetFactoid() {
+    fun forgetFactoid() {
         if (!factoidDao.hasFactoid("afky")) {
             factoidDao.addFactoid(testUser.nick, "afky", "test")
         }
@@ -22,7 +21,7 @@ public class ForgetFactoidOperationTest : BaseTest() {
         Assert.assertEquals(response[0].value, Sofia.factoidForgotten("afky", testUser.nick))
     }
 
-    public fun nonexistentFactoid() {
+    fun nonexistentFactoid() {
         var response = operation.handleMessage(message("forget asdfghjkl"))
         Assert.assertEquals(response[0].value, Sofia.factoidDeleteUnknown("asdfghjkl", testUser.nick))
     }

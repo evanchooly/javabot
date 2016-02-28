@@ -9,8 +9,7 @@ import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import javax.inject.Inject
 
-@Test
-public class SeeLoopTest : BaseTest() {
+@Test class SeeLoopTest : BaseTest() {
     @Inject
     protected lateinit var factoidDao: FactoidDao
     @Inject
@@ -24,7 +23,7 @@ public class SeeLoopTest : BaseTest() {
         factoidDao.delete("test", "see3")
     }
 
-    public fun createCircularSee() {
+    fun createCircularSee() {
         factoidDao.addFactoid(testUser.nick, "see1", "<see>see2")
         factoidDao.addFactoid(testUser.nick, "see2", "<see>see3")
         factoidDao.addFactoid(testUser.nick, "see3", "<see>see1")
@@ -32,7 +31,7 @@ public class SeeLoopTest : BaseTest() {
         Assert.assertEquals(response[0].value, Sofia.factoidLoop("<see>see2"))
     }
 
-    public fun followReferencesCorrectly() {
+    fun followReferencesCorrectly() {
         factoidDao.addFactoid(testUser.nick, "see1", "Bzzt \$who")
         factoidDao.addFactoid(testUser.nick, "see2", "<see>see1")
         factoidDao.addFactoid(testUser.nick, "see3", "<see>see2")
@@ -40,7 +39,7 @@ public class SeeLoopTest : BaseTest() {
         Assert.assertEquals(response[0].value, "${testUser}, see1 is Bzzt ${testUser}")
     }
 
-    public fun createNormalSee() {
+    fun createNormalSee() {
         factoidDao.addFactoid(testUser.nick, "see1", "<see>see2")
         factoidDao.addFactoid(testUser.nick, "see2", "<see>see3")
         factoidDao.addFactoid(testUser.nick, "see3", "w00t")

@@ -29,14 +29,13 @@ class JavadocApi : Persistent {
     private constructor() {
     }
 
-    public constructor(apiName: String, url: String, downloadUrl: String) {
+    constructor(apiName: String, url: String, downloadUrl: String) {
         name = apiName
         baseUrl = if (url.endsWith("/")) url else url + "/"
         this.downloadUrl = downloadUrl
     }
 
-    @PrePersist
-    public fun uppers() {
+    @PrePersist fun uppers() {
         upperName = name.toUpperCase()
     }
 

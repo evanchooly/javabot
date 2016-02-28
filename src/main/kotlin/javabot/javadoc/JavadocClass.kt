@@ -11,8 +11,7 @@ import org.mongodb.morphia.annotations.PrePersist
 @Entity(value = "classes", noClassnameStored = true)
 @Indexes(Index(fields = arrayOf(Field("apiId"))), Index(fields = arrayOf(Field("upperName"))),
       Index(fields = arrayOf(Field("upperPackageName"), Field("upperName") )),
-      Index(fields = arrayOf(Field("apiId"), Field("upperPackageName"), Field("upperName") )))
-public class JavadocClass : JavadocElement {
+      Index(fields = arrayOf(Field("apiId"), Field("upperPackageName"), Field("upperName") ))) class JavadocClass : JavadocElement {
     @Id
     var id: ObjectId = ObjectId()
 
@@ -20,14 +19,14 @@ public class JavadocClass : JavadocElement {
     lateinit var upperPackageName: String
     lateinit var name: String
     lateinit var upperName: String
-    public var superClassId: ObjectId? = null
+    var superClassId: ObjectId? = null
 //    private val methods = ArrayList<JavadocMethod>()
 //    private val fields = ArrayList<JavadocField>()
 
-    public constructor() {
+    constructor() {
     }
 
-    public constructor(api: JavadocApi, pkg: String, name: String) {
+    constructor(api: JavadocApi, pkg: String, name: String) {
         packageName = pkg
         this.name = name
         apiId = api.id
@@ -35,12 +34,11 @@ public class JavadocClass : JavadocElement {
         longUrl = api.baseUrl + "index.html?" + pkg.replace('.', '/') + "/" + name + ".html"
     }
 
-    public fun setSuperClassId(javadocClass: JavadocClass) {
+    fun setSuperClassId(javadocClass: JavadocClass) {
         superClassId = javadocClass.id
     }
 
-    @PrePersist
-    public fun uppers() {
+    @PrePersist fun uppers() {
         upperName = name.toUpperCase()
         upperPackageName = packageName.toUpperCase()
     }

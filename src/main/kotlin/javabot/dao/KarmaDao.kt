@@ -5,14 +5,14 @@ import com.mongodb.WriteResult
 import javabot.dao.util.QueryParam
 import javabot.model.Karma
 import javabot.model.criteria.KarmaCriteria
+import org.mongodb.morphia.Datastore
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-public class KarmaDao : BaseDao<Karma>(Karma::class.java) {
-    @Inject
-    lateinit var changeDao: ChangeDao
+class KarmaDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao)  :
+        BaseDao<Karma>(ds, Karma::class.java) {
 
-    public fun getKarmas(qp: QueryParam): List<Karma> {
+    fun getKarmas(qp: QueryParam): List<Karma> {
         val query = ds.createQuery(Karma::class.java)
         if (qp.hasSort()) {
             query.order((if (qp.sortAsc) "" else "-") + qp.sort)
@@ -22,23 +22,23 @@ public class KarmaDao : BaseDao<Karma>(Karma::class.java) {
         return query.asList()
     }
 
-    public fun save(karma: Karma) {
+    fun save(karma: Karma) {
         karma.updated = LocalDateTime.now()
         super.save(karma)
         changeDao.logChange(Sofia.karmaChanged(karma.userName, karma.name, karma.value))
     }
 
-    public fun find(name: String): Karma? {
+    fun find(name: String): Karma? {
         val criteria = KarmaCriteria(ds)
         criteria.upperName().equal(name.toUpperCase())
         return criteria.query().get()
     }
 
-    public fun count(): Long {
+    fun count(): Long {
         return ds.createQuery(Karma::class.java).countAll()
     }
 
-    public fun deleteAll(): WriteResult {
+    fun deleteAll(): WriteResult {
         return ds.delete(ds.createQuery(Karma::class.java))
     }
 }

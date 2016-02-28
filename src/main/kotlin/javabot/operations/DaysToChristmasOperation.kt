@@ -1,7 +1,9 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
@@ -9,8 +11,9 @@ import java.time.Month
 import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
+import javax.inject.Inject
 
-public class DaysToChristmasOperation : BotOperation() {
+class DaysToChristmasOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         if ("countdown to christmas" == event.value.toLowerCase()) {

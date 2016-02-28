@@ -1,8 +1,8 @@
 package javabot.operations.time
 
-public class TimezonesAntarctica : Timezones {
+class TimezonesAntarctica : Timezones {
 
-    private enum class Timezones(public val timezone: String) {
+    private enum class Timezones(val timezone: String) {
         Palmer("Antarctica/Palmer"),
         Rothera("Antarctica/Rothera"),
         Syowa("Antarctica/Syowa"),

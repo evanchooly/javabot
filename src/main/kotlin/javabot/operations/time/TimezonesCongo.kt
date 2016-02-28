@@ -1,8 +1,8 @@
 package javabot.operations.time
 
-public class TimezonesCongo : Timezones {
+class TimezonesCongo : Timezones {
 
-    private enum class Timezones(public val timezone: String) {
+    private enum class Timezones(val timezone: String) {
         Kinshasa("Africa/Kinshasa"),
         Lubumbashi("Africa/Lubumbashi")
     }

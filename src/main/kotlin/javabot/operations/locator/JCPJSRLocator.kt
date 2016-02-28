@@ -8,9 +8,9 @@ import org.apache.http.util.EntityUtils
 import org.jsoup.Jsoup
 import java.util.HashMap
 
-public class JCPJSRLocator {
+class JCPJSRLocator {
 
-    public fun locate(inputs: Map<String, String>): Map<String, String> {
+    fun locate(inputs: Map<String, String>): Map<String, String> {
         val retVal = HashMap<String, String>()
         val urlString = "http://www.jcp.org/en/jsr/detail?id=" + inputs["jsr"]
         retVal.put("url", urlString)
@@ -45,7 +45,7 @@ public class JCPJSRLocator {
         return retVal
     }
 
-    public fun findInformation(jsr: Int): String {
+    fun findInformation(jsr: Int): String {
         val inputs = HashMap<String, String>()
         inputs.put("jsr", Integer.toString(jsr))
         val outputs = locate(inputs)

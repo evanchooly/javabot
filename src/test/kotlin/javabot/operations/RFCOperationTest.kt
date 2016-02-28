@@ -7,25 +7,21 @@ import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 import javax.inject.Inject
 
-@Test(groups = arrayOf("operations"))
-public class RFCOperationTest : BaseTest() {
+@Test(groups = arrayOf("operations")) class RFCOperationTest : BaseTest() {
     @Inject
     protected lateinit var operation: RFCOperation
 
-    @Test
-    public fun testBadRFCNumber() {
+    @Test fun testBadRFCNumber() {
         var response = operation.handleMessage(message("rfc abd"))
         Assert.assertEquals(response[0].value, Sofia.rfcInvalid("abd"))
     }
 
-    @Test
-    public fun testMissingRFCNumber() {
+    @Test fun testMissingRFCNumber() {
         Assert.assertEquals(operation.handleMessage(message("rfc "))[0].value, Sofia.rfcInvalid(""))
         Assert.assertEquals(operation.handleMessage(message("rfc"))[0].value, Sofia.rfcInvalid(""))
     }
 
-    @Test
-    public fun testHTTPRFC() {
+    @Test fun testHTTPRFC() {
         val hitRate = operation.rfcTitleCache.stats().hitCount()
         var response = operation.handleMessage(message("rfc 2616"))
         Assert.assertEquals(response[0].value,
@@ -36,7 +32,7 @@ public class RFCOperationTest : BaseTest() {
         assertEquals(operation.rfcTitleCache.stats().hitCount(), hitRate + 1)
     }
 
-    public fun testNonexistentRFC() {
+    fun testNonexistentRFC() {
         // sofia: rfc.fail
         var response = operation.handleMessage(message("rfc 2616132"))
         Assert.assertEquals(response[0].value, Sofia.rfcFail("2616132"))

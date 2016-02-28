@@ -1,8 +1,8 @@
 package javabot.operations.time
 
-public class TimezonesSpain : Timezones {
+class TimezonesSpain : Timezones {
 
-    private enum class Timezones(public val timezone: String) {
+    private enum class Timezones(val timezone: String) {
         Canary_Islands("Atlantic/Canary"),
         Ceuta("Africa/Ceuta"),
         Madrid("Europe/Madrid")

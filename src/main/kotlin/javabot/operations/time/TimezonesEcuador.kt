@@ -1,8 +1,8 @@
 package javabot.operations.time
 
-public class TimezonesEcuador : Timezones {
+class TimezonesEcuador : Timezones {
 
-    private enum class Timezones(public val timezone: String) {
+    private enum class Timezones(val timezone: String) {
         Galapagos("Pacific/Galapagos"),
         Guayaquil("America/Guayaquil")
     }

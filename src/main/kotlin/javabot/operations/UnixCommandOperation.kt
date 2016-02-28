@@ -4,7 +4,7 @@ import com.antwerkz.sofia.Sofia
 import javabot.Message
 import java.util.Random
 
-public class UnixCommandOperation : BotOperation() {
+class UnixCommandOperation : BotOperation() {
     private val commands = sortedSetOf("rm","ls","clear")
     private val insults = listOf("genius", "Einstein","pal","buddy")
 

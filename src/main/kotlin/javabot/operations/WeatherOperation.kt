@@ -1,17 +1,16 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.dao.impl.WeatherDao
 import javax.inject.Inject
 
 /**
  * Gets current weather conditions for a place given as a parameter.
  */
-public class WeatherOperation : BotOperation() {
-    @Inject
-    lateinit var weatherDao: WeatherDao
-
+class WeatherOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var weatherDao: WeatherDao) : BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value

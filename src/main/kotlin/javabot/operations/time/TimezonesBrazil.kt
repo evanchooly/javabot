@@ -1,8 +1,8 @@
 package javabot.operations.time
 
-public class TimezonesBrazil : Timezones {
+class TimezonesBrazil : Timezones {
 
-    private enum class Timezones(public val timezone: String) {
+    private enum class Timezones(val timezone: String) {
         Boa_Vista("America/Boa_Vista"),
         Campo_Grande("America/Campo_Grande"),
         Cuiaba("America/Cuiaba"),

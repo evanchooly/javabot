@@ -1,15 +1,15 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.dao.FactoidDao
 import java.time.Duration
 import java.time.Instant.now
 import javax.inject.Inject
 
-public class StatsOperation : BotOperation() {
-    @Inject
-    lateinit var factoidDao: FactoidDao
+class StatsOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) : BotOperation(bot, adminDao) {
     private var numberOfMessages = 0
 
     override fun handleMessage(event: Message): List<Message> {

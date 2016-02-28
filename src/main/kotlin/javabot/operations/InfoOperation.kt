@@ -1,7 +1,9 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.dao.FactoidDao
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -9,10 +11,8 @@ import javax.inject.Inject
 /**
  * Simple operation to pull who added the factoid and when it was added
  */
-public class InfoOperation : BotOperation() {
-
-    @Inject
-    lateinit var factoidDao: FactoidDao
+class InfoOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :
+        BotOperation(bot, adminDao)  {
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
@@ -34,7 +34,7 @@ public class InfoOperation : BotOperation() {
     }
 
     companion object {
-        public val INFO_DATE_FORMAT: String = "dd MMM yyyy' at 'KK:mm"
+        val INFO_DATE_FORMAT: String = "dd MMM yyyy' at 'KK:mm"
     }
 
 }

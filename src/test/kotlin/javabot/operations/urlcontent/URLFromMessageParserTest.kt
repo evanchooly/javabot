@@ -7,7 +7,7 @@ import java.net.URL
 import java.util.ArrayList
 
 
-public class URLFromMessageParserTest {
+class URLFromMessageParserTest {
 
     var parser = URLFromMessageParser()
 
@@ -41,8 +41,7 @@ public class URLFromMessageParserTest {
         return list
     }
 
-    @Test(dataProvider = "messages")
-    public fun testUrlFromMessage(message: String, expected: List<URL>) {
+    @Test(dataProvider = "messages") fun testUrlFromMessage(message: String, expected: List<URL>) {
         assertEquals(parser.urlsFromMessage(message), expected)
     }
 

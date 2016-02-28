@@ -1,8 +1,8 @@
 package javabot.operations.time
 
-public class TimezonesGreenland : Timezones {
+class TimezonesGreenland : Timezones {
 
-    private enum class Timezones(public val timezone: String) {
+    private enum class Timezones(val timezone: String) {
         Thule("America/Thule"),
         Godthab("America/Godthab"),
         Scoresbysund("America/Scoresbysund"),

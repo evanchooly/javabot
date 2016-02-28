@@ -29,17 +29,13 @@ import javax.ws.rs.core.Response
 
 @Path("/auth")
 @Produces(MediaType.TEXT_HTML)
-public class PublicOAuthResource {
+class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
 
-    @Inject
-    lateinit var adminDao: AdminDao
-
-    public var configuration: JavabotConfiguration? = null
+    var configuration: JavabotConfiguration? = null
 
     @GET
     @Path("/login")
-    @Throws(URISyntaxException::class)
-    public fun requestOAuth(@Context request: HttpServletRequest): Response {
+    @Throws(URISyntaxException::class) fun requestOAuth(@Context request: HttpServletRequest): Response {
         val oauthCfg = configuration!!.OAuthCfg
         if (oauthCfg != null) {
             try {
@@ -64,8 +60,7 @@ public class PublicOAuthResource {
      */
     @GET
     @Timed
-    @Path("/verify")
-    public fun verifyOAuthServerResponse(@Context request: HttpServletRequest): Response {
+    @Path("/verify") fun verifyOAuthServerResponse(@Context request: HttpServletRequest): Response {
         val manager = request.session.getAttribute(AUTH_MANAGER) as SocialAuthManager
 
         try {
@@ -139,6 +134,6 @@ public class PublicOAuthResource {
     companion object {
 
         private val log = LoggerFactory.getLogger(PublicOAuthResource::class.java)
-        public val AUTH_MANAGER: String = "authManager"
+        val AUTH_MANAGER: String = "authManager"
     }
 }

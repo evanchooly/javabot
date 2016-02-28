@@ -9,14 +9,12 @@ import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 import javax.inject.Inject
 
-@Test(groups = arrayOf("operations"))
-public class URLTitleOperationTest : BaseTest() {
+@Test(groups = arrayOf("operations")) class URLTitleOperationTest : BaseTest() {
     @Inject
     lateinit private var operation: URLTitleOperation
     private val analyzer = URLContentAnalyzer()
 
-    @Test(dataProvider = "urls")
-    public fun testSimpleUrl(url: String, content: String?) {
+    @Test(dataProvider = "urls") fun testSimpleUrl(url: String, content: String?) {
         val results = operation.handleChannelMessage(Message(testChannel, testUser, url))
         if (content != null) {
             Assert.assertEquals(results[0].value, content)
@@ -25,8 +23,7 @@ public class URLTitleOperationTest : BaseTest() {
         }
     }
 
-    @Test(dataProvider = "urlRulesCheck")
-    public fun testFuzzyContent(url: String, title: String?, pass: Boolean) {
+    @Test(dataProvider = "urlRulesCheck") fun testFuzzyContent(url: String, title: String?, pass: Boolean) {
         assertEquals(analyzer.check(url, title), pass)
     }
 

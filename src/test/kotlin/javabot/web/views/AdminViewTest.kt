@@ -1,16 +1,15 @@
 package javabot.web.views
 
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
-import javabot.kotlin.web.views.AdminIndexView
+import javabot.model.Admin
 import net.htmlparser.jericho.Source
-
-import javax.servlet.http.HttpServletRequest
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.Locale
+import javax.servlet.http.HttpServletRequest
 
-public open class AdminViewTest : ViewsTest() {
+open class AdminViewTest : ViewsTest() {
     protected fun getRequest(): HttpServletRequest {
         return MockServletRequest(true)
     }
@@ -20,7 +19,7 @@ public open class AdminViewTest : ViewsTest() {
     protected fun render(): Source {
         val renderer = FreemarkerViewRenderer()
         val output = ByteArrayOutputStream()
-        renderer.render(AdminIndexView(injector, getRequest(), adminDao.findAll()[0]), Locale.getDefault(), output)
+        renderer.render(viewFactory.createAdminIndexView(getRequest(), adminDao.findAll()[0], Admin()), Locale.getDefault(), output)
         return Source(ByteArrayInputStream(output.toByteArray()))
     }
 

@@ -4,18 +4,20 @@ import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
 import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.core.ConditionTimeoutException
+import javabot.Javabot
 import javabot.Message
 import javabot.dao.NickServDao
 import javabot.model.NickServInfo
+import org.pircbotx.PircBotX
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
+import javax.inject.Provider
 
-public class NickServLookup : AdminCommand() {
-    @Inject
-    lateinit var nickServDao: NickServDao
+class NickServLookup  @Inject constructor(javabot: Provider<Javabot>, ircBot: Provider<PircBotX>, var nickServDao: NickServDao) :
+        AdminCommand(javabot, ircBot) {
 
-    @Parameter
+    @Parameter(required = true)
     lateinit var nick: String
 
     override fun execute(event: Message): List<Message> {

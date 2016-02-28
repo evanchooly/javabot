@@ -9,7 +9,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 
-public class VersionOperation : BotOperation(), StandardOperation {
+class VersionOperation : BotOperation(), StandardOperation {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value
@@ -19,7 +19,7 @@ public class VersionOperation : BotOperation(), StandardOperation {
         return responses
     }
 
-    public fun loadVersion(): String {
+    fun loadVersion(): String {
         try {
             return ArtifactDescription.locate("javabot", "core").version
         } catch (nae: NoArtifactException) {

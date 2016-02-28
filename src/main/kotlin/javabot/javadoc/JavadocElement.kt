@@ -5,17 +5,17 @@ import javabot.model.Persistent
 import net.swisstech.bitly.BitlyClient
 import org.bson.types.ObjectId
 
-public abstract class JavadocElement : Persistent {
+abstract class JavadocElement : Persistent {
 
-    public var apiId: ObjectId? = null
+    var apiId: ObjectId? = null
 
-    public var shortUrl: String? = null
+    var shortUrl: String? = null
 
-    public var longUrl = ""
+    var longUrl = ""
 
-    public var directUrl: String? = null
+    var directUrl: String? = null
 
-    public fun setApi(api: JavadocApi) {
+    fun setApi(api: JavadocApi) {
         this.apiId = api.id
     }
 
@@ -23,7 +23,7 @@ public abstract class JavadocElement : Persistent {
         return client?.shorten()?.setLongUrl(url)?.call()?.data?.url
     }
 
-    public fun getDisplayUrl(hint: String, dao: ApiDao, client: BitlyClient?): String {
+    fun getDisplayUrl(hint: String, dao: ApiDao, client: BitlyClient?): String {
         var url = shortUrl
         if (url == null && client != null) {
             shortUrl = buildShortUrl(client, longUrl) + " [" + dao.find(apiId) + ": " + hint + "]"

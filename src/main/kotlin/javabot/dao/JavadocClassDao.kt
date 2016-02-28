@@ -1,5 +1,6 @@
 package javabot.dao
 
+import com.google.inject.Inject
 import javabot.javadoc.JavadocApi
 import javabot.javadoc.JavadocClass
 import javabot.javadoc.JavadocClassVisitor
@@ -8,13 +9,13 @@ import javabot.javadoc.JavadocMethod
 import javabot.javadoc.criteria.JavadocClassCriteria
 import javabot.javadoc.criteria.JavadocFieldCriteria
 import javabot.javadoc.criteria.JavadocMethodCriteria
+import org.mongodb.morphia.Datastore
 import org.slf4j.LoggerFactory
 import java.util.ArrayList
 
-public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(JavadocClass::class.java) {
+class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass>(ds, JavadocClass::class.java) {
 
-    @SuppressWarnings("unchecked")
-    public fun getClass(api: JavadocApi?, name: String): List<JavadocClass> {
+    @SuppressWarnings("unchecked") fun getClass(api: JavadocApi?, name: String): List<JavadocClass> {
         val strings = JavadocClassVisitor.calculateNameAndPackage(name)
         val pkgName = strings.first
         val criteria = JavadocClassCriteria(ds)
@@ -26,8 +27,7 @@ public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(Jav
         return criteria.query().asList()
     }
 
-    @SuppressWarnings("unchecked")
-    public fun getClass(api: JavadocApi?, pkg: String, name: String): JavadocClass? {
+    @SuppressWarnings("unchecked") fun getClass(api: JavadocApi?, pkg: String, name: String): JavadocClass? {
         val criteria: JavadocClassCriteria
         try {
             criteria = JavadocClassCriteria(ds)
@@ -45,8 +45,7 @@ public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(Jav
         return criteria.query().get()
     }
 
-    @SuppressWarnings("unchecked")
-    public fun getField(api: JavadocApi?, className: String, fieldName: String): List<JavadocField> {
+    @SuppressWarnings("unchecked") fun getField(api: JavadocApi?, className: String, fieldName: String): List<JavadocField> {
         val criteria = JavadocFieldCriteria(ds)
         val classes = getClass(api, className)
         if (!classes.isEmpty()) {
@@ -58,9 +57,8 @@ public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(Jav
         return emptyList()
     }
 
-    @SuppressWarnings("unchecked")
-    public fun getMethods(api: JavadocApi?, className: String, methodName: String,
-                          signatureTypes: String): List<JavadocMethod> {
+    @SuppressWarnings("unchecked") fun getMethods(api: JavadocApi?, className: String, methodName: String,
+                                                  signatureTypes: String): List<JavadocMethod> {
         val classes = getClass(api, className)
         val list = ArrayList(classes)
         val methods = ArrayList<JavadocMethod>()
@@ -87,7 +85,7 @@ public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(Jav
         return criteria.query().asList()
     }
 
-    public fun delete(javadocClass: JavadocClass) {
+    fun delete(javadocClass: JavadocClass) {
         deleteFields(javadocClass)
         deleteMethods(javadocClass)
         super.delete(javadocClass)
@@ -105,11 +103,11 @@ public class JavadocClassDao protected constructor() : BaseDao<JavadocClass>(Jav
         ds.delete(criteria.query())
     }
 
-    public fun countMethods(): Long {
+    fun countMethods(): Long {
         return ds.getCount(JavadocMethod::class.java)
     }
 
-    public fun deleteFor(api: JavadocApi?) {
+    fun deleteFor(api: JavadocApi?) {
         api?.let { api ->
             LOG.debug("Dropping fields from " + api.name)
             val criteria = JavadocFieldCriteria(ds)

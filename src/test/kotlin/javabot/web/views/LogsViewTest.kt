@@ -1,24 +1,21 @@
 package javabot.web.views
 
 import com.antwerkz.sofia.Sofia
-import javabot.kotlin.web.views.LogsView
 import javabot.model.Logs.Type
 import org.testng.Assert
 import org.testng.annotations.Test
 import java.io.IOException
 import java.time.LocalDateTime
 
-public class LogsViewTest : ViewsTest() {
+class LogsViewTest : ViewsTest() {
 
     @Test
-    @Throws(IOException::class)
-    public fun render() {
-        render(LogsView(injector, MockServletRequest(false), "testchannel", LocalDateTime.now()))
+    @Throws(IOException::class) fun render() {
+        render(viewFactory.createLogsView(MockServletRequest(false), "testchannel", LocalDateTime.now()))
     }
 
     @Test
-    @Throws(IOException::class)
-    public fun actions() {
+    @Throws(IOException::class) fun actions() {
         val message = "my type is " + Type.MESSAGE
         val eventChannel = "testchannel"
         val user = testUser
@@ -34,7 +31,7 @@ public class LogsViewTest : ViewsTest() {
         create(Type.QUIT, eventChannel, Sofia.userQuit(user.nick, eventChannel))
         create(Type.PART, eventChannel, Sofia.userParted(user.nick, "i'm done"))
 
-        val rendered = render(LogsView(injector, MockServletRequest(false), eventChannel, LocalDateTime.now())).toString()
+        val rendered = render(viewFactory.createLogsView(MockServletRequest(false), eventChannel, LocalDateTime.now())).toString()
 
         Assert.assertTrue(rendered.contains(Sofia.logsAnchorFormat("http://google.com/", "http://google.com/")),
               "Should find url in logs: \n" + Sofia.logsAnchorFormat("http://google.com/", "http://google.com/"))

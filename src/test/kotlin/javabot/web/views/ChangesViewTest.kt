@@ -1,7 +1,6 @@
 package javabot.web.views
 
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
-import javabot.kotlin.web.views.ChangesView
 import javabot.model.Change
 import net.htmlparser.jericho.Source
 import org.testng.annotations.Test
@@ -11,15 +10,14 @@ import java.io.IOException
 import java.time.LocalDateTime
 import java.util.Locale
 
-public class ChangesViewTest : ViewsTest() {
+class ChangesViewTest : ViewsTest() {
     @Test
-    @Throws(IOException::class)
-    public fun changes() {
+    @Throws(IOException::class) fun changes() {
         createChanges(30)
 
         val renderer = FreemarkerViewRenderer()
         var output = ByteArrayOutputStream()
-        renderer.render(ChangesView(injector, MockServletRequest(false), 0), Locale.getDefault(), output)
+        renderer.render(viewFactory.createChangesView(MockServletRequest(false), 0), Locale.getDefault(), output)
         var source = Source(ByteArrayInputStream(output.toByteArray()))
 
         previousDisabled(source)
@@ -27,7 +25,7 @@ public class ChangesViewTest : ViewsTest() {
         checkRange(source, 1, 30, 30)
 
         output = ByteArrayOutputStream()
-        renderer.render(ChangesView(injector, MockServletRequest(false), 0, "change 2"), Locale.getDefault(), output)
+        renderer.render(viewFactory.createChangesView(MockServletRequest(false), 0, "change 2"), Locale.getDefault(), output)
         source = Source(ByteArrayInputStream(output.toByteArray()))
 
         previousDisabled(source)

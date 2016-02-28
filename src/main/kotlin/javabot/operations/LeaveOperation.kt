@@ -3,7 +3,7 @@ package javabot.operations
 import com.antwerkz.sofia.Sofia
 import javabot.Message
 
-public class LeaveOperation : BotOperation() {
+class LeaveOperation : BotOperation() {
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

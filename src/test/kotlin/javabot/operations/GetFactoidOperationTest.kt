@@ -10,15 +10,13 @@ import java.io.IOException
 import java.util.Arrays
 import javax.inject.Inject
 
-@Test
-public class GetFactoidOperationTest : BaseTest() {
+@Test class GetFactoidOperationTest : BaseTest() {
     @Inject
     protected lateinit var factoidDao: FactoidDao
     @Inject
     protected lateinit var operation: GetFactoidOperation
 
-    @BeforeClass
-    public fun createGets() {
+    @BeforeClass fun createGets() {
         deleteFactoids()
         factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "api", "http://java.sun.com/javase/current/docs/api/index.html")
         factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "replyTest", "<reply>I'm a reply!")
@@ -36,8 +34,7 @@ public class GetFactoidOperationTest : BaseTest() {
         factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "hug $1", "<action>hugs $1")
     }
 
-    @AfterClass
-    public fun deleteFactoids() {
+    @AfterClass fun deleteFactoids() {
         delete("api")
         delete("stupid")
         delete("replyTest")
@@ -60,29 +57,28 @@ public class GetFactoidOperationTest : BaseTest() {
         }
     }
 
-    @Throws(IOException::class)
-    public fun straightGets() {
+    @Throws(IOException::class) fun straightGets() {
         var response = operation.handleMessage(message("api"))
         Assert.assertEquals(response[0].value, getFoundMessage("api", "http://java.sun.com/javase/current/docs/api/index.html"))
         Assert.assertNotNull(factoidDao.getFactoid("api")?.lastUsed)
     }
 
-    public fun replyGets() {
+    fun replyGets() {
         var response = operation.handleMessage(message("replyTest"))
         Assert.assertEquals(response[0].value, REPLY_VALUE)
     }
 
-    public fun seeGets() {
+    fun seeGets() {
         var response = operation.handleMessage(message("seeTest"))
         Assert.assertEquals(response[0].value, REPLY_VALUE)
     }
 
-    public fun seeReplyGets() {
+    fun seeReplyGets() {
         var response = operation.handleMessage(message("seeTest"))
         Assert.assertEquals(response[0].value, REPLY_VALUE)
     }
 
-    public fun parameterReplacement() {
+    fun parameterReplacement() {
         var response = operation.handleMessage(message("replace $testUser"))
         Assert.assertEquals(response[0].value, "I replaced you " + testUser)
         response = operation.handleMessage(message("url what up doc"))
@@ -91,34 +87,32 @@ public class GetFactoidOperationTest : BaseTest() {
         Assert.assertEquals(response[0].value, "IShouldBeCamelCase")
     }
 
-    public fun whoReplacement() {
+    fun whoReplacement() {
         var response = operation.handleMessage(message("hey"))
         Assert.assertEquals(response[0].value, "Hello, " + testUser)
     }
 
-    public fun randomList() {
+    fun randomList() {
         var response = operation.handleMessage(message("coin"))
         Assert.assertTrue(Arrays.asList("heads", "tails").contains(response[0].value))
     }
 
-    @Test(enabled = false)
-    public fun guessFactoid() {
+    @Test(enabled = false) fun guessFactoid() {
         var response = operation.handleMessage(message("bre"))
         Assert.assertEquals(response[0].value, "I guess the factoid 'label line breaks' might be appropriate:")
     }
 
-    public fun noGuess() {
+    fun noGuess() {
         var response = operation.handleMessage(message("apiz"))
         Assert.assertEquals(response.size, 0)
     }
 
-    public fun action() {
+    fun action() {
         var response = operation.handleMessage(message("hug ${BaseTest.TEST_TARGET_NICK}"))
         Assert.assertEquals(response[0].value, "hugs ${BaseTest.TEST_TARGET_NICK}")
     }
 
-    @Test
-    public fun tell() {
+    @Test fun tell() {
         var response = operation.handleMessage(message("tell ${BaseTest.TEST_TARGET_NICK} about hey"))
         Assert.assertEquals(response[0].value, "Hello, ${BaseTest.TEST_TARGET_NICK}")
         response = operation.handleMessage(message("tell ${BaseTest.TEST_TARGET_NICK} about camel I am a test"))
@@ -161,8 +155,7 @@ public class GetFactoidOperationTest : BaseTest() {
                 "this room is now dumber for having listened to it. I award you no points, and may God have mercy on your soul.")
     }
 
-    @Test
-    public fun longResponse() {
+    @Test fun longResponse() {
         factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "yalla $1",
                 "<reply>$1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 !111!!!!!one!!!\n")
         var response = operation.handleMessage(message("yalla I'm a really long repeated spam I'm a really long repeated spam I'm a " +

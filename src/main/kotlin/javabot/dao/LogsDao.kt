@@ -1,32 +1,29 @@
 package javabot.dao
 
+import com.google.inject.Inject
 import javabot.Seen
 import javabot.model.Logs
 import javabot.model.Logs.Type
 import javabot.model.criteria.LogsCriteria
+import org.mongodb.morphia.Datastore
 import org.pircbotx.Channel
 import org.pircbotx.User
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.LocalDateTime
-import javax.inject.Inject
 
-public class LogsDao : BaseDao<Logs>(Logs::class.java) {
-    @Inject
-    public lateinit var dao: ConfigDao
-    @Inject
-    public lateinit var channelDao: ChannelDao
-
-    public fun logMessage(type: Type, channel: Channel?, user: User, message: String) {
+class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channelDao: ChannelDao) :
+        BaseDao<Logs>(ds, Logs::class.java) {
+    fun logMessage(type: Type, channel: Channel?, user: User, message: String) {
         save(Logs(user.nick, message, type, channel?.name))
     }
 
-    public fun isSeen(channel: String, nick: String): Boolean {
+    fun isSeen(channel: String, nick: String): Boolean {
         return getSeen(channel, nick) != null
     }
 
-    public fun getSeen(channel: String, nick: String): Seen? {
+    fun getSeen(channel: String, nick: String): Seen? {
         val criteria = LogsCriteria(ds)
         criteria.upperNick().equal(nick.toUpperCase())
         criteria.channel().equal(channel)
@@ -52,7 +49,7 @@ public class LogsDao : BaseDao<Logs>(Logs::class.java) {
         return list
     }
 
-    public fun findByChannel(name: String, date: LocalDateTime, showAll: Boolean): List<Logs> {
+    fun findByChannel(name: String, date: LocalDateTime, showAll: Boolean): List<Logs> {
         val channel = channelDao.get(name)
         if (channel != null && (showAll || channel.logged)) {
             return dailyLog(name, date, showAll || channel.logged)
@@ -61,13 +58,13 @@ public class LogsDao : BaseDao<Logs>(Logs::class.java) {
         }
     }
 
-    public fun deleteAllForChannel(channel: String) {
+    fun deleteAllForChannel(channel: String) {
         val criteria = LogsCriteria(ds)
         criteria.channel(channel)
         ds.delete(criteria.query())
     }
 
     companion object {
-        public val LOG: Logger = LoggerFactory.getLogger(LogsDao::class.java)
+        val LOG: Logger = LoggerFactory.getLogger(LogsDao::class.java)
     }
 }

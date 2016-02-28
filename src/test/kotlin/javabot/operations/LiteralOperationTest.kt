@@ -7,12 +7,10 @@ import org.testng.annotations.Test
 import java.util.Date
 import javax.inject.Inject
 
-@Test(groups = arrayOf("operations"))
-public class LiteralOperationTest : BaseTest() {
+@Test(groups = arrayOf("operations")) class LiteralOperationTest : BaseTest() {
     @Inject
     private lateinit var operation: LiteralOperation
-    @Test
-    public fun testMissingFactoid() {
+    @Test fun testMissingFactoid() {
         val factoidName = "foo${Date().time}"
         var response = operation.handleMessage(message("literal ${factoidName}"))
         Assert.assertEquals(response[0].value, Sofia.factoidUnknown(factoidName))

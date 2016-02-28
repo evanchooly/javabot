@@ -6,8 +6,7 @@ import org.testng.Assert
 import org.testng.annotations.Test
 import javax.inject.Inject
 
-@Test(enabled = false)
-public class ShunOperationTest : BaseTest() {
+@Test(enabled = false) class ShunOperationTest : BaseTest() {
     @Inject
     private lateinit var operation: ShunOperation
     @Inject
@@ -16,8 +15,7 @@ public class ShunOperationTest : BaseTest() {
     private lateinit var factoidDao: FactoidDao
 
 
-    @Throws(InterruptedException::class)
-    public fun shunMe() {
+    @Throws(InterruptedException::class) fun shunMe() {
         factoidDao.delete(testUser.nick, "shunHey")
         try {
             factoidDao.addFactoid(testUser.nick, "shunHey", "<reply>shunHey")

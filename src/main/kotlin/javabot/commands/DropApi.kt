@@ -2,15 +2,17 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
+import javabot.Javabot
 import javabot.Message
 import javabot.dao.ApiDao
 import javabot.javadoc.JavadocApi
+import org.pircbotx.PircBotX
 import javax.inject.Inject
+import javax.inject.Provider
 
-public class DropApi : AdminCommand() {
-    @Inject
-    lateinit var apiDao: ApiDao
-    @Parameter
+class DropApi @Inject constructor(javabot: Provider<Javabot>, ircBot: Provider<PircBotX>, var apiDao: ApiDao) :
+        AdminCommand(javabot, ircBot) {
+    @Parameter(required = true)
     lateinit var apiName: String
 
     override fun execute(event: Message): List<Message> {

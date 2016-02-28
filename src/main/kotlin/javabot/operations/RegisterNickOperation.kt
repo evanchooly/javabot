@@ -1,15 +1,14 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.dao.ConfigDao
 import javabot.model.NickRegistration
 import javax.inject.Inject
 
-public class RegisterNickOperation : BotOperation() {
-    @Inject
-    lateinit var configDao: ConfigDao
-
+class RegisterNickOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var configDao: ConfigDao) : BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value

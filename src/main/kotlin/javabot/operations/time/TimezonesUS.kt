@@ -1,9 +1,9 @@
 package javabot.operations.time
 
 //TODO handle states with multiple timezones
-public class TimezonesUS : Timezones {
+class TimezonesUS : Timezones {
 
-    public enum class UsState(private val regionCode: Int, public val abbreviation: String, public val capital: String, public val timezone: String) {
+    enum class UsState(private val regionCode: Int, val abbreviation: String, val capital: String, val timezone: String) {
         ALABAMA(1, "AL", "Montgomery", "US/Central"),
         ALASKA(2, "AK", "Juneau", "US/Alaska"),
         ARIZONA(4, "AZ", "Phoenix", "America/Phoenix"),

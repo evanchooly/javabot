@@ -1,17 +1,17 @@
 package javabot.javadoc.criteria
 
-public object JavadocClassDescriptor {
+object JavadocClassDescriptor {
 
-    public val fields: String = "fields"
-    public val id: String = "id"
-    public val methods: String = "methods"
-    public val name: String = "name"
-    public val packageName: String = "packageName"
-    public val superClassId: String = "superClassId"
-    public val upperName: String = "upperName"
-    public val upperPackageName: String = "upperPackageName"
-    public val apiId: String = "apiId"
-    public val directUrl: String = "directUrl"
-    public val longUrl: String = "longUrl"
-    public val shortUrl: String = "shortUrl"
+    val fields: String = "fields"
+    val id: String = "id"
+    val methods: String = "methods"
+    val name: String = "name"
+    val packageName: String = "packageName"
+    val superClassId: String = "superClassId"
+    val upperName: String = "upperName"
+    val upperPackageName: String = "upperPackageName"
+    val apiId: String = "apiId"
+    val directUrl: String = "directUrl"
+    val longUrl: String = "longUrl"
+    val shortUrl: String = "shortUrl"
 }

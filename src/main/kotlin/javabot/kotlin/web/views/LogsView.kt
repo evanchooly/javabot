@@ -1,7 +1,10 @@
 package javabot.kotlin.web.views
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Injector
+import com.google.inject.assistedinject.Assisted
+import javabot.dao.AdminDao
+import javabot.dao.ChannelDao
+import javabot.dao.FactoidDao
 import javabot.dao.LogsDao
 import javabot.dao.util.CleanHtmlConverter
 import javabot.kotlin.web.resources.BotResource
@@ -11,14 +14,19 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 
-public class LogsView(injector: Injector, request: HttpServletRequest, val channel: String, private val date: LocalDateTime) :
-      MainView(injector, request) {
+class LogsView @Inject constructor(
+        adminDao: AdminDao,
+        channelDao: ChannelDao,
+        factoidDao: FactoidDao,
+        var logsDao: LogsDao,
+        @Assisted request: HttpServletRequest,
+        @Assisted val channel: String,
+        @Assisted private val date: LocalDateTime) :
+        MainView(adminDao, channelDao, factoidDao, request) {
     companion object {
-        public val LOG_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm")
+        val LOG_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm")
     }
 
-    @Inject
-    lateinit var logsDao: LogsDao
     val today = BotResource.FORMAT.format(date)
     val yesterday = BotResource.FORMAT.format(date.minusDays(1))
     val tomorrow = BotResource.FORMAT.format(date.plusDays(1))
@@ -30,7 +38,7 @@ public class LogsView(injector: Injector, request: HttpServletRequest, val chann
         return LOG_FORMAT.format(date)
     }
 
-    public fun logs(): List<Logs> {
+    fun logs(): List<Logs> {
         val logs = logsDao.findByChannel(channel, date, isAdmin())
         // filter the log content
         for (log in logs) {

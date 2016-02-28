@@ -6,9 +6,9 @@ import org.apache.commons.lang3.StringUtils
 import java.net.URL
 import java.util.ArrayList
 
-public class URLFromMessageParser {
+class URLFromMessageParser {
 
-    public fun urlsFromMessage(message: String): List<URL> {
+    fun urlsFromMessage(message: String): List<URL> {
         if (isBlank(message)) {
             return listOf()
         }

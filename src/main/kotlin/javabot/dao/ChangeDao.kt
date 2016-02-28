@@ -1,35 +1,36 @@
 package javabot.dao
 
 import com.antwerkz.sofia.Sofia
+import com.google.inject.Inject
 import com.mongodb.WriteResult
 import javabot.dao.util.QueryParam
 import javabot.model.Change
 import javabot.model.criteria.ChangeCriteria
+import org.mongodb.morphia.Datastore
 import org.mongodb.morphia.query.Query
 import java.time.LocalDateTime
 
-public class ChangeDao : BaseDao<Change>(Change::class.java) {
+class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change::class.java) {
 
-    public fun logChange(message: String) {
+    fun logChange(message: String) {
         save(Change(message))
     }
 
-    public fun logAdd(sender: String, key: String, value: String) {
+    fun logAdd(sender: String, key: String, value: String) {
         logChange(Sofia.factoidAdded(sender, key, value))
     }
 
-    public fun findLog(message: String): Boolean {
+    fun findLog(message: String): Boolean {
         val criteria = ChangeCriteria(ds)
         criteria.message().equal(message)
         return criteria.query().countAll() != 0L
     }
 
-    public fun count(message: String?, date: LocalDateTime?): Long {
+    fun count(message: String?, date: LocalDateTime?): Long {
         return buildFindQuery(null, true, message, date).countAll()
     }
 
-    @SuppressWarnings("unchecked")
-    public fun getChanges(qp: QueryParam, message: String?, date: LocalDateTime?): List<Change> {
+    @SuppressWarnings("unchecked") fun getChanges(qp: QueryParam, message: String?, date: LocalDateTime?): List<Change> {
         return buildFindQuery(qp, true, message, date).asList()
     }
 
@@ -49,7 +50,7 @@ public class ChangeDao : BaseDao<Change>(Change::class.java) {
         return criteria.query()
     }
 
-    public fun deleteAll(): WriteResult {
+    fun deleteAll(): WriteResult {
         return ds.delete(ds.createQuery(Change::class.java))
     }
 }

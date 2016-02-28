@@ -2,7 +2,9 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import javabot.Action
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.dao.FactoidDao
 import javabot.model.Factoid
 import org.pircbotx.PircBotX
@@ -11,13 +13,9 @@ import java.util.HashSet
 import javax.inject.Inject
 import javax.inject.Provider
 
-public class GetFactoidOperation : BotOperation(), StandardOperation {
-
-    @Inject
-    lateinit var factoidDao: FactoidDao
-
-    @Inject
-    lateinit var ircBot: Provider<PircBotX>
+class GetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao,
+                                              var ircBot: Provider<PircBotX>) :
+        BotOperation(bot, adminDao), StandardOperation {
 
     override fun getPriority(): Int {
         return Integer.MIN_VALUE

@@ -1,15 +1,14 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.dao.LogsDao
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
-public class SeenOperation : BotOperation() {
-    @Inject
-    lateinit var dao: LogsDao
-
+class SeenOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var dao: LogsDao) : BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value
@@ -27,6 +26,6 @@ public class SeenOperation : BotOperation() {
     }
 
     companion object {
-        public val FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+        val FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
     }
 }

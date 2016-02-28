@@ -4,6 +4,7 @@ import com.antwerkz.sofia.Sofia
 import com.google.inject.AbstractModule
 import com.google.inject.Provider
 import com.google.inject.Provides
+import com.google.inject.assistedinject.FactoryModuleBuilder
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientOptions
 import com.mongodb.ServerAddress
@@ -12,6 +13,7 @@ import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
 import javabot.dao.util.LocalDateTimeConverter
 import javabot.javadoc.JavadocClass
+import javabot.kotlin.web.views.ViewFactory
 import javabot.model.Factoid
 import org.aeonbits.owner.Config.Key
 import org.aeonbits.owner.ConfigFactory
@@ -20,7 +22,6 @@ import org.mongodb.morphia.Morphia
 import org.pircbotx.Configuration.Builder
 import org.pircbotx.PircBotX
 import org.pircbotx.cap.SASLCapHandler
-import java.io.IOException
 import java.util.ArrayList
 import java.util.HashMap
 import javax.inject.Singleton
@@ -43,12 +44,13 @@ open class JavabotModule : AbstractModule() {
         configDaoProvider = binder().getProvider(ConfigDao::class.java)
         channelDaoProvider = binder().getProvider(ChannelDao::class.java)
         botListenerProvider = binder().getProvider(BotListener::class.java)
+        install(FactoryModuleBuilder()
+                .build(ViewFactory::class.java))
     }
 
     @Provides
     @Singleton
-    @Throws(IOException::class)
-    public fun datastore(): Datastore {
+    fun datastore(): Datastore {
         if (datastore == null) {
             datastore = getMorphia().createDatastore(getMongoClient(), javabotConfig().databaseName())
             datastore!!.defaultWriteConcern = WriteConcern.SAFE
@@ -63,7 +65,7 @@ open class JavabotModule : AbstractModule() {
 
     @Provides
     @Singleton
-    public fun getMorphia(): Morphia {
+    fun getMorphia(): Morphia {
         if (morphia == null) {
             morphia = Morphia()
             morphia!!.mapPackage(JavadocClass::class.java.`package`.name)
@@ -75,12 +77,11 @@ open class JavabotModule : AbstractModule() {
 
     @Provides
     @Singleton
-    @Throws(IOException::class)
-    public fun getMongoClient(): MongoClient {
+    fun getMongoClient(): MongoClient {
         if (mongoClient == null) {
             try {
                 mongoClient = MongoClient(ServerAddress(javabotConfig().databaseHost(), javabotConfig().databasePort()),
-                      MongoClientOptions.builder().connectTimeout(2000).build())
+                        MongoClientOptions.builder().connectTimeout(2000).build())
             } catch (e: RuntimeException) {
                 e.printStackTrace()
                 throw RuntimeException(e.message, e)
@@ -95,14 +96,14 @@ open class JavabotModule : AbstractModule() {
         val config = configDaoProvider.get().get()
         val nick = getBotNick()
         val builder = Builder<PircBotX>()
-              .setName(nick)
-              .setLogin(nick)
-              .setAutoNickChange(false)
-              .setCapEnabled(false)
-              .addListener(getBotListener())
-              .setServerHostname(config.server)
-              .setServerPort(config.port)
-              .addCapHandler(SASLCapHandler(nick, config.password))
+                .setName(nick)
+                .setLogin(nick)
+                .setAutoNickChange(false)
+                .setCapEnabled(false)
+                .addListener(getBotListener())
+                .setServerHostname(config.server)
+                .setServerPort(config.port)
+                .addCapHandler(SASLCapHandler(nick, config.password))
 
         return buildBot(builder)
     }
@@ -117,9 +118,8 @@ open class JavabotModule : AbstractModule() {
 
     @Provides
     @Singleton
-    @Throws(IOException::class)
-    public fun javabotConfig(): JavabotConfig {
-        if(config == null) {
+    fun javabotConfig(): JavabotConfig {
+        if (config == null) {
             config = ConfigFactory.create(JavabotConfig::class.java, loadConfigProperties(), System.getProperties(), System.getenv())
             validate(config!!)
         }
@@ -137,7 +137,7 @@ open class JavabotModule : AbstractModule() {
             try {
                 val annotation = method.getDeclaredAnnotation(Key::class.java)
                 if (annotation != null && method.parameterCount == 0 && method.returnType != Void::class.java && method.invoke(
-                      config) == null) {
+                        config) == null) {
                     missingKeys.add(annotation.value)
                 }
             } catch (e: ReflectiveOperationException) {
@@ -151,7 +151,7 @@ open class JavabotModule : AbstractModule() {
         return config
     }
 
-    public fun getBotListener(): BotListener {
+    fun getBotListener(): BotListener {
         return botListenerProvider!!.get()
     }
 }

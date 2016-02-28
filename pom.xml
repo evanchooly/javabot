@@ -238,6 +238,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-assistedinject</artifactId>
+            <version>${guice.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.9.9</version>
@@ -448,7 +454,7 @@
         <sofia.version>0.15</sofia.version>
         <slf4j.version>1.7.4</slf4j.version>
         <dropwizard.version>0.7.1</dropwizard.version>
-        <kotlin.version>1.0.0-beta-4584</kotlin.version>
+        <kotlin.version>1.0.0</kotlin.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

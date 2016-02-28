@@ -2,14 +2,17 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
+import javabot.Javabot
 import javabot.Message
 import javabot.dao.ConfigDao
 import org.apache.commons.lang.StringUtils
+import org.pircbotx.PircBotX
 import javax.inject.Inject
+import javax.inject.Provider
 
-public class Configure : AdminCommand() {
-    @Inject
-    lateinit var configDao: ConfigDao
+class Configure @Inject constructor(javabot: Provider<Javabot>, ircBot: Provider<PircBotX>, var configDao: ConfigDao):
+        AdminCommand(javabot, ircBot) {
+
     @Parameter(names = arrayOf("--property"))
     var property: String? = null
     @Parameter(names = arrayOf("--value"))

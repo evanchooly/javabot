@@ -160,15 +160,15 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
         return sb.toString()
     }
 
-    public fun getTypes(): List<JavadocType> {
+    fun getTypes(): List<JavadocType> {
         if (varargs && !types.isEmpty()) {
             types[types.size - 1].setVarargs(true)
         }
         return types
     }
 
-    public class JavadocType {
-        public var name: String? = null
+    class JavadocType {
+        var name: String? = null
             set(value) {
                 if (field == null) {
                     field = value
@@ -183,22 +183,22 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
 
         private var varargs: Boolean = false
 
-        public constructor() {
+        constructor() {
         }
 
-        public constructor(s: String) {
+        constructor(s: String) {
             name = s
         }
 
-        public fun addTypeVariable(typeVariable: String) {
+        fun addTypeVariable(typeVariable: String) {
             typeVariables.add(typeVariable)
         }
 
-        public fun setArray(array: Boolean) {
+        fun setArray(array: Boolean) {
             this.array = array
         }
 
-        public fun isArray(): Boolean {
+        fun isArray(): Boolean {
             return array
         }
 
@@ -233,7 +233,7 @@ class JavadocSignatureVisitor(private val className: String, private val name: S
             return builder.toString()
         }
 
-        public fun setVarargs(varargs: Boolean) {
+        fun setVarargs(varargs: Boolean) {
             this.varargs = varargs
         }
     }

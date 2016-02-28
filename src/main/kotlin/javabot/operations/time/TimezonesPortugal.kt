@@ -1,8 +1,8 @@
 package javabot.operations.time
 
-public class TimezonesPortugal : Timezones {
+class TimezonesPortugal : Timezones {
 
-    private enum class Timezones(public val timezone: String) {
+    private enum class Timezones(val timezone: String) {
         Azores("Atlantic/Azores"),
         Lisbon("Europe/Lisbon")
     }

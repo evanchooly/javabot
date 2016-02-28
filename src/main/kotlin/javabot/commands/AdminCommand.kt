@@ -12,18 +12,12 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 @Parameters(separators = "=", optionPrefixes = "--")
-public abstract class AdminCommand : BotOperation() {
-
-    @Inject
-    lateinit var javabot: Provider<Javabot>
-
-    @Inject
-    lateinit var pircBot: Provider<PircBotX>
-
+abstract class AdminCommand @Inject constructor(var javabot: Provider<Javabot>, var pircBot: Provider<PircBotX> ) :
+        BotOperation() {
     override fun handleMessage(event: Message): List<Message> {
         var responses = arrayListOf<Message>()
         var message = event.value
-        if (message.toLowerCase().startsWith("admin ")) {
+        if (message.startsWith("admin ", true)) {
             if (isAdminUser(event.user)) {
                 message = message.substring(6)
                 val params = message.split(" ") as MutableList
@@ -60,7 +54,7 @@ public abstract class AdminCommand : BotOperation() {
 
     }
 
-    public abstract fun execute(event: Message) : List<Message>
+    public abstract fun execute(event: Message): List<Message>
 
     public fun getCommandName(): String {
         var name = javaClass.simpleName

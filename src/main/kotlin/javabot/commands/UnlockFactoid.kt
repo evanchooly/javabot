@@ -2,17 +2,18 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
+import javabot.Javabot
 import javabot.Message
 import javabot.dao.FactoidDao
+import org.pircbotx.PircBotX
 import javax.inject.Inject
+import javax.inject.Provider
 
-public class UnlockFactoid : AdminCommand() {
+class UnlockFactoid @Inject constructor(javabot: Provider<Javabot>, ircBot: Provider<PircBotX>,
+    var factoidDao: FactoidDao) : AdminCommand(javabot, ircBot) {
 
     @Parameter
     lateinit var args: MutableList<String>
-
-    @Inject
-    lateinit var factoidDao: FactoidDao
 
 /*
     override

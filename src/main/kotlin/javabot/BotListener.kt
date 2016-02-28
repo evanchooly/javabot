@@ -30,10 +30,11 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 
-public class BotListener @Inject constructor(private var throttler: Throttler, private var nickServDao: NickServDao,
-                                             private var logsDao: LogsDao, private var channelDao: ChannelDao,
-                                             private var adminDao: AdminDao, private var javabotProvider: Provider<Javabot>,
-                                             private var configDao: ConfigDao, private var ircBot: Provider<PircBotX>
+public class BotListener @Inject
+constructor(private var throttler: Throttler, private var nickServDao: NickServDao,
+             private var logsDao: LogsDao, private var channelDao: ChannelDao,
+             private var adminDao: AdminDao, private var javabotProvider: Provider<Javabot>,
+             private var configDao: ConfigDao, private var ircBot: Provider<PircBotX>
 ) : ListenerAdapter<PircBotX>() {
 
     private val nickServ = ArrayList<String>()

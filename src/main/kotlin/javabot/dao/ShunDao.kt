@@ -1,17 +1,19 @@
 package javabot.dao
 
+import com.google.inject.Inject
 import java.time.LocalDateTime
 
 import javabot.model.Shun
 import javabot.model.criteria.ShunCriteria
+import org.mongodb.morphia.Datastore
 
-public class ShunDao : BaseDao<Shun>(Shun::class.java) {
+class ShunDao @Inject constructor(ds: Datastore) : BaseDao<Shun>(ds, Shun::class.java) {
 
-    public fun isShunned(nick: String): Boolean {
+    fun isShunned(nick: String): Boolean {
         return getShun(nick) != null
     }
 
-    public fun getShun(nick: String): Shun? {
+    fun getShun(nick: String): Shun? {
         expireShuns()
         val criteria = ShunCriteria(ds)
         criteria.upperNick().equal(nick.toUpperCase())
@@ -24,7 +26,7 @@ public class ShunDao : BaseDao<Shun>(Shun::class.java) {
         ds.delete(criteria.query())
     }
 
-    public fun addShun(nick: String, until: LocalDateTime) {
+    fun addShun(nick: String, until: LocalDateTime) {
         var shun = getShun(nick)
         if (shun == null) {
             shun = Shun()

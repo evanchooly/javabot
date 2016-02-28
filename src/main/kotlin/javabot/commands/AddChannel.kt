@@ -2,18 +2,15 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
+import javabot.Javabot
 import javabot.Message
 import javabot.dao.ChannelDao
 import org.pircbotx.PircBotX
 import javax.inject.Inject
 import javax.inject.Provider
 
-public class AddChannel : AdminCommand() {
-    @Inject
-    lateinit var channelDao: ChannelDao
-    @Inject
-    lateinit var ircBot: Provider<PircBotX>
-
+class AddChannel @Inject constructor(javabot: Provider<Javabot>, ircBot: Provider<PircBotX>, var channelDao: ChannelDao) :
+AdminCommand(javabot, ircBot) {
     @Parameter(required = true)
     lateinit var channelName: String
     @Parameter(required = false)
@@ -39,12 +36,12 @@ public class AddChannel : AdminCommand() {
                     else
                         Sofia.adminJoiningChannel(channelName)))
             if (channel.key == null) {
-                ircBot.get().sendIRC().joinChannel(channel.name)
+                pircBot.get().sendIRC().joinChannel(channel.name)
             } else {
-                ircBot.get().sendIRC().joinChannel(channel.name, channel.key)
+                pircBot.get().sendIRC().joinChannel(channel.name, channel.key)
             }
 
-            responses.add(Message(ircBot.get().userChannelDao.getChannel(channelName), event, Sofia.adminJoinedChannel(event.user.nick)))
+            responses.add(Message(pircBot.get().userChannelDao.getChannel(channelName), event, Sofia.adminJoinedChannel(event.user.nick)))
         } else {
             responses.add(Message(event, Sofia.adminBadChannelName()))
         }

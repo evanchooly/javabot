@@ -8,14 +8,13 @@ import org.testng.annotations.Test
 import java.lang.String.format
 
 
-@Test
-public class ConfigureTest : BaseTest() {
+@Test class ConfigureTest : BaseTest() {
     @Inject
     protected lateinit var configDao: ConfigDao
     @Inject
     private lateinit var operation: Configure
 
-    public fun change() {
+    fun change() {
         val config = configDao.get()
         val throttleThreshold = config.throttleThreshold
         Assert.assertNotNull(throttleThreshold)

@@ -6,13 +6,12 @@ import org.testng.Assert
 import org.testng.annotations.Test
 import org.testng.internal.Nullable
 
-public class ShortenerTest : BaseTest() {
+class ShortenerTest : BaseTest() {
     @Inject(optional = true)
     @Nullable
     var client: BitlyClient? = null
 
-    @Test
-    public fun shorten() {
+    @Test fun shorten() {
         if (client != null) {
             Assert.assertNotNull(client!!.shorten().setLongUrl("http://www.cnn.com").call().data.url)
         }

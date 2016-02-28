@@ -1,34 +1,33 @@
 package javabot.dao
 
+import com.google.inject.Inject
 import javabot.dao.util.QueryParam
 import javabot.model.Activity
 import javabot.model.Channel
 import javabot.model.criteria.ChannelCriteria
 import org.apache.commons.lang.StringUtils
-import org.mongodb.morphia.query.QueryImpl
+import org.mongodb.morphia.Datastore
 import java.time.LocalDateTime
 import java.util.ArrayList
 
-@SuppressWarnings("ConstantNamingConvention")
-public class ChannelDao : BaseDao<Channel>(Channel::class.java) {
+@SuppressWarnings("ConstantNamingConvention") class ChannelDao @Inject constructor(ds: Datastore) :
+        BaseDao<Channel>(ds, Channel::class.java) {
 
-    public fun delete(name: String) {
+    fun delete(name: String) {
         val channelCriteria = ChannelCriteria(ds)
         channelCriteria.name(name)
         ds.delete(channelCriteria.query())
     }
 
-    @SuppressWarnings("unchecked")
-    public fun configuredChannels(): List<String> {
+    @SuppressWarnings("unchecked") fun configuredChannels(): List<String> {
         return ChannelCriteria(ds).name().distinct() as List<String>
     }
 
-    @SuppressWarnings("unchecked")
-    public fun getChannels(): List<Channel> {
+    @SuppressWarnings("unchecked") fun getChannels(): List<Channel> {
         return getChannels(false)
     }
 
-    public fun getChannels(showAll: Boolean): List<Channel> {
+    fun getChannels(showAll: Boolean): List<Channel> {
         val channelCriteria = ChannelCriteria(ds)
         if (!showAll) {
             channelCriteria.logged().equal(true)
@@ -38,8 +37,7 @@ public class ChannelDao : BaseDao<Channel>(Channel::class.java) {
         return query.asList()
     }
 
-    @SuppressWarnings("unchecked")
-    public fun find(qp: QueryParam): List<Channel> {
+    @SuppressWarnings("unchecked") fun find(qp: QueryParam): List<Channel> {
         var condition = qp.sort
         if (!qp.sortAsc) {
             condition = "-" + condition
@@ -47,20 +45,19 @@ public class ChannelDao : BaseDao<Channel>(Channel::class.java) {
         return getQuery().order(condition).asList()
     }
 
-    public fun isLogged(channel: String): Boolean {
+    fun isLogged(channel: String): Boolean {
         val chan = get(channel)
         return if (chan != null) chan.logged else java.lang.Boolean.FALSE
     }
 
-    public fun get(name: String): Channel? {
+    fun get(name: String): Channel? {
         val criteria = ChannelCriteria(ds)
         criteria.upperName().equal(name.toUpperCase())
         return criteria.query().get()
     }
 
-    @SuppressWarnings("unchecked")
-    public fun getStatistics(): List<Activity> {
-//        val criteria = ActivityCriteria(ds)
+    @SuppressWarnings("unchecked") fun getStatistics(): List<Activity> {
+        //        val criteria = ActivityCriteria(ds)
         /*
 @NamedQuery(name = ChannelDao.STATISTICS, query = "select new javabot.model.Activity(l.channel, count(l), max(l.updated),"
     + " min(l.updated), (select count(e) from Logs e)) from Logs l "
@@ -70,8 +67,7 @@ public class ChannelDao : BaseDao<Channel>(Channel::class.java) {
         //            .getResultList();
     }
 
-    @SuppressWarnings("unchecked")
-    public fun loggedChannels(): List<String> {
+    @SuppressWarnings("unchecked") fun loggedChannels(): List<String> {
         val criteria = ChannelCriteria(ds)
         criteria.logged().equal(true)
         val channels = criteria.query().retrievedFields(true, "name").asList()
@@ -82,7 +78,7 @@ public class ChannelDao : BaseDao<Channel>(Channel::class.java) {
         return names
     }
 
-    public fun create(name: String, logged: Boolean?, key: String?): Channel {
+    fun create(name: String, logged: Boolean?, key: String?): Channel {
         val channel = Channel()
         channel.name = name
         channel.logged = logged ?: java.lang.Boolean.TRUE
@@ -91,7 +87,7 @@ public class ChannelDao : BaseDao<Channel>(Channel::class.java) {
         return channel
     }
 
-    public fun save(channel: Channel) {
+    fun save(channel: Channel) {
         channel.updated = LocalDateTime.now()
         super.save(channel)
     }

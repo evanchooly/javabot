@@ -7,6 +7,7 @@ import javabot.model.Config
 import javabot.model.Logs
 import javabot.model.Persistent
 import javabot.operations.BotOperation
+import org.mongodb.morphia.Datastore
 import org.reflections.Reflections
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Modifier
@@ -14,15 +15,10 @@ import java.util.ArrayList
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-public class ConfigDao protected constructor() : BaseDao<Config>(Config::class.java) {
+class ConfigDao @Inject constructor(ds: Datastore, var injector: Injector, var javabotConfig: JavabotConfig) :
+        BaseDao<Config>(ds, Config::class.java) {
 
-    @Inject
-    lateinit var injector: Injector
-
-    @Inject
-    lateinit var javabotConfig: JavabotConfig
-
-    public fun <T> list(type: Class<T>): List<T> {
+    fun <T> list(type: Class<T>): List<T> {
         val reflections = Reflections("javabot")
 
         val classes = reflections.getSubTypesOf(type)
@@ -41,7 +37,7 @@ public class ConfigDao protected constructor() : BaseDao<Config>(Config::class.j
         return list
     }
 
-    public fun get(): Config {
+    fun get(): Config {
         var config: Config? = ds.createQuery(Config::class.java).get()
         if (config == null) {
             config = create()

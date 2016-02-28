@@ -24,7 +24,7 @@ import java.util.HashMap
 import java.util.Properties
 import javax.inject.Provider
 
-public class JavabotTestModule : JavabotModule() {
+class JavabotTestModule : JavabotModule() {
     lateinit private var botProvider: Provider<TestJavabot>
     lateinit private var botFactoryProvider: Provider<TestBotFactory>
     private val testJavabot: TestJavabot by lazy { botProvider.get() }
@@ -37,7 +37,7 @@ public class JavabotTestModule : JavabotModule() {
         super.configure()
     }
 
-    override protected fun loadConfigProperties(): HashMap<Any, Any> {
+    override fun loadConfigProperties(): HashMap<Any, Any> {
         return HashMap(load(load(Properties(), "javabot.properties"), "test-javabot.properties"))
     }
 
@@ -55,13 +55,12 @@ public class JavabotTestModule : JavabotModule() {
     }
 
     @Provides
-    @Singleton
-    public fun getJavabot(): Javabot {
+    @Singleton fun getJavabot(): Javabot {
         return testJavabot
     }
 
     override fun buildBot(builder: Builder<PircBotX>): PircBotX {
-        builder.setBotFactory(botFactory())
+        builder.botFactory = botFactory()
         return TestPircBotX(builder)
     }
 
@@ -75,13 +74,12 @@ public class JavabotTestModule : JavabotModule() {
             return BaseTest.TEST_BOT_NICK
         }
 
-        @Throws(IOException::class, IrcException::class)
         override fun connect() {
             reconnectStopped = true
         }
     }
 
-    override protected fun getBotNick(): String = BaseTest.TEST_BOT_NICK
+    override fun getBotNick(): String = BaseTest.TEST_BOT_NICK
 
     @Singleton
     private class TestBotFactory : BotFactory() {

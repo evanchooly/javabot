@@ -1,8 +1,8 @@
 package javabot.operations.time
 
-public class TimezonesIndonesia : Timezones {
+class TimezonesIndonesia : Timezones {
 
-    private enum class Timezones(public val timezone: String) {
+    private enum class Timezones(val timezone: String) {
         Jakarta("Asia/Jakarta"),
         Makassar("Asia/Makassar"),
         Jayapura("Asia/Jayapura")

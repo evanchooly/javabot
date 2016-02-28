@@ -1,13 +1,13 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.operations.locator.JCPJSRLocator
 import javax.inject.Inject
 
-public class JSROperation : BotOperation() {
-    @Inject
-    lateinit var locator: JCPJSRLocator
+class JSROperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var locator: JCPJSRLocator) : BotOperation(bot, adminDao) {
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

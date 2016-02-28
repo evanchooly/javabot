@@ -1,8 +1,8 @@
 package javabot.operations.time
 
-public class TimezonesChile : Timezones {
+class TimezonesChile : Timezones {
 
-    private enum class Timezones(public val timezone: String) {
+    private enum class Timezones(val timezone: String) {
         Noronha("Pacific/Easter"),
         Santiago("America/Santiago")
     }

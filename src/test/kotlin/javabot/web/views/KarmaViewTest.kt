@@ -2,30 +2,27 @@ package javabot.web.views
 
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
 import javabot.dao.KarmaDao
-import javabot.kotlin.web.views.KarmaView
 import javabot.model.Karma
 import net.htmlparser.jericho.Source
 import org.testng.annotations.Test
-
-import javax.inject.Inject
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.time.LocalDateTime
 import java.util.Locale
+import javax.inject.Inject
 
-public class KarmaViewTest : ViewsTest() {
+class KarmaViewTest : ViewsTest() {
     @Inject
     protected lateinit var karmaDao: KarmaDao
 
     @Test
-    @Throws(IOException::class)
-    public fun karma() {
+    @Throws(IOException::class) fun karma() {
         createKarma(100)
 
         val renderer = FreemarkerViewRenderer()
         val output = ByteArrayOutputStream()
-        renderer.render(KarmaView(injector, MockServletRequest(false), 0), Locale.getDefault(), output)
+        renderer.render(viewFactory.createKarmaView(MockServletRequest(false), 0), Locale.getDefault(), output)
         val source = Source(ByteArrayInputStream(output.toByteArray()))
 
         previousDisabled(source)

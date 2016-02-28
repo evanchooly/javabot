@@ -13,23 +13,22 @@ import java.time.LocalDateTime
 
 @Entity(value = "admins", noClassnameStored = true)
 @Indexes(Index(fields = arrayOf(Field("emailAddress")), options = IndexOptions(unique = true)),
-      Index(fields = arrayOf(Field("ircName"), Field("hostName"))))
-public class Admin : Serializable, Persistent {
+        Index(fields = arrayOf(Field("ircName"), Field("hostName")))) class Admin : Serializable, Persistent {
     @Id
     var id: ObjectId? = null
 
-    public var botOwner: Boolean = false
+    var botOwner: Boolean = false
 
-    public var hostName: String? = null
+    var hostName: String? = null
 
-    public var ircName: String? = null
+    var ircName: String? = null
 
     @AlsoLoad("userName")
     lateinit var emailAddress: String
 
-    public var addedBy: String? = null
+    var addedBy: String? = null
 
-    public var updated: LocalDateTime = LocalDateTime.now()
+    var updated: LocalDateTime = LocalDateTime.now()
 
     constructor() {
         emailAddress = ""

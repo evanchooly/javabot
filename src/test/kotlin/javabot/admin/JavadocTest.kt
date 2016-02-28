@@ -18,8 +18,7 @@ import java.net.MalformedURLException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-@Test
-public class JavadocTest : BaseTest() {
+@Test class JavadocTest : BaseTest() {
 
     @Inject
     protected lateinit var apiDao: ApiDao
@@ -31,8 +30,7 @@ public class JavadocTest : BaseTest() {
     private lateinit var operation: JavadocOperation
     
     @Test
-    @Throws(IOException::class)
-    public fun servlets() {
+    @Throws(IOException::class) fun servlets() {
         val apiName = "Servlet"
         dropApi(apiName)
         addApi(apiName, "http://tomcat.apache.org/tomcat-7.0-doc/servletapi/",
@@ -40,8 +38,7 @@ public class JavadocTest : BaseTest() {
         checkServlets(apiName)
     }
 
-    @Test(dependsOnMethods = arrayOf("servlets"))
-    public fun reloadServlets() {
+    @Test(dependsOnMethods = arrayOf("servlets")) fun reloadServlets() {
         val apiName = "Servlet"
         val event = ApiEvent(testUser.nick, EventType.RELOAD, apiDao.find(apiName)?.id)
         eventDao.save(event)
@@ -61,8 +58,7 @@ public class JavadocTest : BaseTest() {
     }
 
     @Test(dependsOnMethods = arrayOf("servlets"))
-    @Throws(IOException::class)
-    public fun javaee() {
+    @Throws(IOException::class) fun javaee() {
         val apiName = "JavaEE7"
         dropApi(apiName)
         addApi(apiName, "http://docs.oracle.com/javaee/7/api/", "https://repo1.maven.org/maven2/javax/javaee-api/7.0/javaee-api-7.0.jar")
@@ -84,8 +80,7 @@ public class JavadocTest : BaseTest() {
     }
 
     @Test
-    @Throws(MalformedURLException::class)
-    public fun jdk() {
+    @Throws(MalformedURLException::class) fun jdk() {
         bot
         if (java.lang.Boolean.valueOf(System.getProperty("dropJDK", "false"))) {
             LOG.debug("Dropping JDK API")

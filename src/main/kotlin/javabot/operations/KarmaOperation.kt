@@ -1,17 +1,16 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import javabot.dao.KarmaDao
 import javabot.model.Karma
 import org.slf4j.LoggerFactory
 import java.util.regex.Pattern
 import javax.inject.Inject
 
-public class KarmaOperation : BotOperation() {
-
-    @Inject
-    lateinit var dao: KarmaDao
+class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var dao: KarmaDao) : BotOperation(bot, adminDao) {
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
@@ -95,7 +94,7 @@ public class KarmaOperation : BotOperation() {
         return responses
     }
 
-    public fun readKarma(responses: MutableList<Message>, event: Message) {
+    fun readKarma(responses: MutableList<Message>, event: Message) {
         val message = event.value
         val sender = event.user
         if (message.startsWith("karma ")) {

@@ -1,6 +1,6 @@
 package javabot.operations.time
 
-public interface Timezones {
-    public fun get(province: String): String?
-    public fun getCapital(): String
+interface Timezones {
+    fun get(province: String): String?
+    fun getCapital(): String
 }

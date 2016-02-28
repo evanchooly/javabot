@@ -7,7 +7,7 @@ import org.pircbotx.User
 import org.pircbotx.UserChannelDao
 import org.pircbotx.output.OutputUser
 
-public class TestUser(private val ircBot: PircBotX,
+class TestUser(private val ircBot: PircBotX,
                       userChannelDao: UserChannelDao<User, Channel>,
                       private val messages: Messages,
                       nick: String,

@@ -1,21 +1,26 @@
 package javabot.kotlin.web.views
 
 import com.google.inject.Inject
-import com.google.inject.Injector
+import com.google.inject.assistedinject.Assisted
+import javabot.dao.AdminDao
 import javabot.dao.ApiDao
+import javabot.dao.ChannelDao
+import javabot.dao.FactoidDao
 import javabot.javadoc.JavadocApi
-
 import javax.servlet.http.HttpServletRequest
 
-public class JavadocView(injector: Injector, request: HttpServletRequest) : MainView(injector, request) {
-    @Inject
-    lateinit var apiDao: ApiDao
+class JavadocView @Inject constructor(
+        adminDao: AdminDao,
+        channelDao: ChannelDao,
+        factoidDao: FactoidDao,
+        var apiDao: ApiDao, @Assisted request: HttpServletRequest) :
+        MainView(adminDao, channelDao, factoidDao, request) {
 
     override fun getChildView(): String {
         return "admin/javadoc.ftl"
     }
 
-    public fun apis(): List<JavadocApi> {
+    fun apis(): List<JavadocApi> {
         return apiDao.findAll()
     }
 }

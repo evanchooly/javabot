@@ -30,9 +30,9 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 @Guice(modules = arrayOf(JavabotTestModule::class))
-public open class BaseTest {
+open class BaseTest {
 
-    public var done: EnumSet<State> = EnumSet.of(State.COMPLETED, State.FAILED)
+    var done: EnumSet<State> = EnumSet.of(State.COMPLETED, State.FAILED)
 
     @Inject
     protected lateinit var userFactory: UserFactory
@@ -67,16 +67,15 @@ public open class BaseTest {
     @Inject
     protected lateinit var messages: Messages
 
-    public val ok: String = "OK, " + TEST_USER_NICK.substring(0, Math.min(TEST_USER_NICK.length, 16)) + "."
+    val ok: String = "OK, " + TEST_USER_NICK.substring(0, Math.min(TEST_USER_NICK.length, 16)) + "."
 
-    public val targetUser: User by lazy { userFactory.createUser(TEST_TARGET_NICK, TEST_TARGET_NICK, "hostmask") }
+    val targetUser: User by lazy { userFactory.createUser(TEST_TARGET_NICK, TEST_TARGET_NICK, "hostmask") }
 
-    public val testUser: User by lazy { userFactory.createUser(TEST_USER_NICK, TEST_USER_NICK, "hostmask") }
+    val testUser: User by lazy { userFactory.createUser(TEST_USER_NICK, TEST_USER_NICK, "hostmask") }
 
-    public val testChannel: org.pircbotx.Channel by lazy { getIrcBot().userChannelDao.getChannel("#jbunittest") }
+    val testChannel: org.pircbotx.Channel by lazy { getIrcBot().userChannelDao.getChannel("#jbunittest") }
 
-    @BeforeTest
-    public fun setup() {
+    @BeforeTest fun setup() {
         messages.clear()
         var admin = adminDao.getAdminByEmailAddress(BOT_EMAIL)
         if (admin == null) {
@@ -113,18 +112,16 @@ public open class BaseTest {
         bot.getAllOperations().keys.forEach({ bot.disableOperation(it) })
     }
 
-    @BeforeMethod
-    public fun clearMessages() {
+    @BeforeMethod fun clearMessages() {
         messages.clear()
     }
 
-    public fun getIrcBot(): PircBotX {
+    fun getIrcBot(): PircBotX {
         return ircBot.get()
     }
 
     @AfterSuite
-    @Throws(InterruptedException::class)
-    public fun shutdown() {
+    @Throws(InterruptedException::class) fun shutdown() {
         bot.get().shutdown()
     }
 
@@ -161,9 +158,9 @@ public open class BaseTest {
     }
 
     companion object {
-        public val TEST_TARGET_NICK: String = "jbtestuser"
-        public val TEST_USER_NICK: String = "botuser"
-        public val TEST_BOT_NICK: String = "testjavabot"
-        public val BOT_EMAIL: String = "test@example.com"
+        val TEST_TARGET_NICK: String = "jbtestuser"
+        val TEST_USER_NICK: String = "botuser"
+        val TEST_BOT_NICK: String = "testjavabot"
+        val BOT_EMAIL: String = "test@example.com"
     }
 }

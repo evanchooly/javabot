@@ -3,9 +3,8 @@ package javabot.javadoc
 import org.testng.Assert
 import org.testng.annotations.Test
 
-public class JavadocClassVisitorTest {
-    @Test
-    public fun generics() {
+class JavadocClassVisitorTest {
+    @Test fun generics() {
         compare("(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;", true, "java.lang.String", "java.lang.Object[]")
         compare("(Ljava/util/Map<Ljava/lang/String;Ljava/lang/String;>;)TT;", false, "java.util.Map<String, String>")
         compare("(TV;)V", false, "V")

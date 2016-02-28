@@ -6,15 +6,14 @@ import org.openqa.selenium.chrome.ChromeDriverService
 import org.testng.Assert
 import java.util.concurrent.TimeUnit
 
-public class AdminSeleniumTest {
+class AdminSeleniumTest {
     lateinit private var driver: WebDriver
     lateinit private var baseUrl: String
     private val acceptNextAlert = true
     private val verificationErrors = StringBuffer()
 
     //    @BeforeClass
-    @Throws(Exception::class)
-    public fun setUp() {
+    @Throws(Exception::class) fun setUp() {
         System.setProperty(ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY,
                 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
         //        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
@@ -26,8 +25,7 @@ public class AdminSeleniumTest {
     }
 
     //    @AfterClass
-    @Throws(Exception::class)
-    public fun tearDown() {
+    @Throws(Exception::class) fun tearDown() {
         driver.quit()
         val verificationErrorString = verificationErrors.toString()
         if ("" != verificationErrorString) {
@@ -35,8 +33,7 @@ public class AdminSeleniumTest {
         }
     }
 
-    @Throws(Exception::class)
-    public fun add() {
+    @Throws(Exception::class) fun add() {
         /*
         selenium.open("/");
         selenium.click("link=Admins");

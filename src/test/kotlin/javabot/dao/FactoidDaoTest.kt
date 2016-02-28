@@ -4,20 +4,18 @@ import org.testng.Assert
 import org.testng.annotations.Test
 import javax.inject.Inject
 
-public class FactoidDaoTest : BaseServiceTest() {
+class FactoidDaoTest : BaseServiceTest() {
     @Inject
     protected lateinit var factoidDao: FactoidDao
 
-    @Test(groups = arrayOf("operations"))
-    public fun testInsertfactoid() {
+    @Test(groups = arrayOf("operations")) fun testInsertfactoid() {
         factoidDao.addFactoid("joed2", "test2", "##javabot")
         Assert.assertTrue(factoidDao.hasFactoid("test2"))
         factoidDao.delete("joed2", "test2")
         //Assert.assertFalse(factoidDao.hasFactoid("test2"));
     }
 
-    @Test(groups = arrayOf("operations"))
-    public fun countFactoids() {
+    @Test(groups = arrayOf("operations")) fun countFactoids() {
         val key = "test factoid"
         val value = "test value"
         val count = factoidDao.count()
@@ -27,8 +25,7 @@ public class FactoidDaoTest : BaseServiceTest() {
         factoidDao.delete("cheeser", key)
     }
 
-    @Test
-    public fun testLastUsed() {
+    @Test fun testLastUsed() {
         factoidDao.delete("cheeser", "testing last used")
         val factoid = factoidDao.addFactoid("cheeser", "testing last used", "'sup?")
         Assert.assertNotNull(factoid.lastUsed, "Should have recorded a date")

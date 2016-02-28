@@ -8,14 +8,13 @@ import org.testng.annotations.Test
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-public class InfoOperationTest : BaseTest() {
+class InfoOperationTest : BaseTest() {
     @Inject
     protected lateinit var factoidDao: FactoidDao
     @Inject
     protected lateinit var operation: InfoOperation
 
-    @Test
-    public fun info() {
+    @Test fun info() {
         val key = "whatwhat"
         val value = "ah, yeah"
         val user = "test"

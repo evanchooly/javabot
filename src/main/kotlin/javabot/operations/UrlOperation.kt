@@ -1,12 +1,15 @@
 package javabot.operations
 
+import com.google.inject.Inject
+import javabot.Javabot
 import javabot.Message
+import javabot.dao.AdminDao
 import org.slf4j.LoggerFactory
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.nio.charset.Charset
 
-public abstract class UrlOperation : BotOperation() {
+abstract class UrlOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao) {
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

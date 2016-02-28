@@ -1,18 +1,19 @@
 package javabot.dao
 
+import com.google.inject.Inject
 import javabot.model.NickServInfo
 import javabot.model.criteria.NickServInfoCriteria
+import org.mongodb.morphia.Datastore
 import org.pircbotx.User
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-public open class NickServDao : BaseDao<NickServInfo>(NickServInfo::class.java) {
-
-    public fun clear() {
+open class NickServDao @Inject constructor(ds: Datastore) : BaseDao<NickServInfo>(ds, NickServInfo::class.java) {
+    fun clear() {
         ds.delete(getQuery())
     }
 
-    public fun process(list: List<String>) {
+    fun process(list: List<String>) {
         val info = NickServInfo()
         val split = list[0].split(" ")
         info.nick = split[2].toLowerCase()
@@ -59,7 +60,7 @@ public open class NickServDao : BaseDao<NickServInfo>(NickServInfo::class.java) 
         }
     }
 
-    public open fun find(name: String): NickServInfo? {
+    open fun find(name: String): NickServInfo? {
         val criteria = NickServInfoCriteria(ds)
         criteria.or(
               criteria.nick(name.toLowerCase()),
@@ -67,7 +68,7 @@ public open class NickServDao : BaseDao<NickServInfo>(NickServInfo::class.java) 
         return criteria.query().get()
     }
 
-    public fun updateNick(oldNick: String, newNick: String): NickServInfo {
+    fun updateNick(oldNick: String, newNick: String): NickServInfo {
         var criteria = NickServInfoCriteria(ds)
         criteria.nick(oldNick)
         val updater = criteria.getUpdater()
@@ -78,7 +79,7 @@ public open class NickServDao : BaseDao<NickServInfo>(NickServInfo::class.java) 
         return criteria.query().get()
     }
 
-    public fun unregister(user: User) {
+    fun unregister(user: User) {
         val criteria = NickServInfoCriteria(ds)
         criteria.nick(user.nick)
         criteria.delete()

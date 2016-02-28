@@ -19,11 +19,10 @@ import javax.inject.Singleton
 
 @Singleton
 class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao: JavadocClassDao,
-                                        val provider: Provider<JavadocClassVisitor> )  {
-
+                                        val provider: Provider<JavadocClassVisitor>)  {
     lateinit var api: JavadocApi
 
-    public fun parse(classApi: JavadocApi, location: String, writer: Writer) {
+    fun parse(classApi: JavadocApi, location: String, writer: Writer) {
         api = classApi
         try {
             val tmpDir = File("/tmp")
@@ -71,7 +70,7 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
 
     }
 
-    public fun getJavadocClass(api: JavadocApi, pkg: String, name: String): JavadocClass {
+    fun getJavadocClass(api: JavadocApi, pkg: String, name: String): JavadocClass {
         var javadocClass = javadocClassDao.getClass(api, pkg, name)
             if (javadocClass == null) {
                 javadocClass = JavadocClass(api, pkg, name)

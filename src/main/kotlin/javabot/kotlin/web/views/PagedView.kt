@@ -1,11 +1,16 @@
 package javabot.kotlin.web.views
 
-import com.google.inject.Injector
-
+import javabot.dao.AdminDao
+import javabot.dao.ChannelDao
+import javabot.dao.FactoidDao
 import javax.servlet.http.HttpServletRequest
 
-public abstract class PagedView<V>(injector: Injector, request: HttpServletRequest, private var page: Int) :
-      MainView(injector, request) {
+abstract class PagedView<V>(
+        adminDao: AdminDao,
+        channelDao: ChannelDao,
+        factoidDao: FactoidDao,
+        request: HttpServletRequest, private var page: Int) :
+        MainView(adminDao, channelDao, factoidDao, request) {
     private val itemsPerPage = ITEMS_PER_PAGE
     var itemCount: Long = -1
         get() {
@@ -20,11 +25,11 @@ public abstract class PagedView<V>(injector: Injector, request: HttpServletReque
         return "paged.ftl"
     }
 
-    public abstract fun getPagedView(): String
+    abstract fun getPagedView(): String
 
-    public abstract fun countItems(): Long
+    abstract fun countItems(): Long
 
-    public fun getPage(): Int {
+    fun getPage(): Int {
         if (page < 1) {
             page = 1
         } else if (page > getPageCount()) {
@@ -33,7 +38,7 @@ public abstract class PagedView<V>(injector: Injector, request: HttpServletReque
         return page
     }
 
-    public fun getIndex(): Int {
+    fun getIndex(): Int {
         val index = (getPage() - 1) * getItemsPerPage()
         if (itemCount == 0L) {
             return -1
@@ -44,37 +49,37 @@ public abstract class PagedView<V>(injector: Injector, request: HttpServletReque
         }
     }
 
-    public fun getPageCount(): Int {
+    fun getPageCount(): Int {
         return Math.ceil(1.0 * itemCount / getItemsPerPage()).toInt()
     }
 
-    public fun getItemsPerPage(): Int {
+    fun getItemsPerPage(): Int {
         return itemsPerPage
     }
 
-    public open fun getNextPage(): String? {
+    open fun getNextPage(): String? {
         val nextPage = getPage() + 1
         return if (nextPage <= getPageCount()) getPageUrl() + "?page=" + nextPage else null
     }
 
     protected abstract fun getPageUrl(): String
 
-    public open fun getPreviousPage(): String? {
+    open fun getPreviousPage(): String? {
         val previousPage = if (getPage() == 1) -1 else getPage() - 1
         return if (previousPage > 0) (getPageUrl() + "?page=" + previousPage) else null
     }
 
-    public fun getEndRange(): Long {
+    fun getEndRange(): Long {
         return Math.min(itemCount, getStartRange() + getItemsPerPage() - 1)
     }
 
-    public fun getStartRange(): Long {
+    fun getStartRange(): Long {
         return getIndex() + 1L
     }
 
-    public abstract fun getPageItems(): List<V>
+    abstract fun getPageItems(): List<V>
 
     companion object {
-        public val ITEMS_PER_PAGE: Int = 50
+        val ITEMS_PER_PAGE: Int = 50
     }
 }

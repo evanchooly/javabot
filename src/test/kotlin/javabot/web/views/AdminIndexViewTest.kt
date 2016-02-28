@@ -5,10 +5,9 @@ import org.testng.Assert
 import org.testng.annotations.Test
 import java.io.IOException
 
-public class AdminIndexViewTest : AdminViewTest() {
+class AdminIndexViewTest : AdminViewTest() {
     @Test
-    @Throws(IOException::class)
-    public fun index() {
+    @Throws(IOException::class) fun index() {
         val source = render()
 
         val count = adminDao.count()

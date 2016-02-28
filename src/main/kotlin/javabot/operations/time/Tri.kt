@@ -1,9 +1,9 @@
 package javabot.operations.time
 
-public class Tri<T> {
+class Tri<T> {
     private var root: Node<T> = Node()
 
-    public fun get(key: String): T? {
+    fun get(key: String): T? {
 
         var cleaned = clean(key)
 
@@ -17,7 +17,7 @@ public class Tri<T> {
         return current.value as T
     }
 
-    public fun insert(key: String, value: T) {
+    fun insert(key: String, value: T) {
         var cleaned = clean(key)
 
         var current = root
@@ -44,13 +44,13 @@ public class Tri<T> {
 
     private inner class Node<T> {
         var child = arrayOfNulls<Node<T>>(26)
-        public var value: T? = null
+        var value: T? = null
 
-        public fun getChild(index: Int): Node<T>? {
+        fun getChild(index: Int): Node<T>? {
             return child[index]
         }
 
-        public fun setChild(index: Int, node: Node<T>) {
+        fun setChild(index: Int, node: Node<T>) {
             child[index] = node
         }
     }
