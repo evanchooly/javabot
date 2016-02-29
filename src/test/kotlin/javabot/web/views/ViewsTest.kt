@@ -4,7 +4,7 @@ import com.google.inject.Injector
 import io.dropwizard.views.View
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
 import javabot.BaseTest
-import javabot.kotlin.web.views.ViewFactory
+import javabot.web.views.ViewFactory
 import net.htmlparser.jericho.Source
 import org.testng.Assert
 import org.testng.annotations.Guice

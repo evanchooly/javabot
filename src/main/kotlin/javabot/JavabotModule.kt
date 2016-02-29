@@ -13,7 +13,7 @@ import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
 import javabot.dao.util.LocalDateTimeConverter
 import javabot.javadoc.JavadocClass
-import javabot.kotlin.web.views.ViewFactory
+import javabot.web.views.ViewFactory
 import javabot.model.Factoid
 import org.aeonbits.owner.Config.Key
 import org.aeonbits.owner.ConfigFactory

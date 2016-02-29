@@ -3,12 +3,14 @@
         <th>Name</th>
         <th>Value</th>
         <th>Added By</th>
+        <th>Last Used</th>
         <th class="right">Updated</th>
     </tr>
     <tr>
         <td><input type="text" name="name" value="<#if filter.name??>${filter.name}</#if>"></td>
         <td><input type="text" name="value" value="<#if filter.value??>${filter.value}</#if>"></td>
         <td><input type="text" name="userName" value="<#if filter.userName??>${filter.userName}</#if>"></td>
+        <td>&nbsp;</td>
         <td class="right"><input type="submit" class="submit" name="Submit"></td>
     </tr>
 <#list getPageItems() as factoid>
@@ -21,6 +23,7 @@
         </td>
         <td>${factoid.value?html}</td>
         <td>${factoid.userName}</td>
+        <td>${format(factoid.lastUsed)}</td>
         <td class="right">${format(factoid.updated)}</td>
     </tr>
 </#list>

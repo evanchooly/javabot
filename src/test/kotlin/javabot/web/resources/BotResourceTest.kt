@@ -4,8 +4,8 @@ import com.sun.jersey.api.client.Client
 import com.sun.jersey.api.client.ClientResponse
 import javabot.BaseTest
 import javabot.JavabotConfig
-import javabot.kotlin.web.JavabotApplication
-import javabot.kotlin.web.JavabotConfiguration
+import javabot.web.JavabotApplication
+import javabot.web.JavabotConfiguration
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 import javax.inject.Inject

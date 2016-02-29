@@ -2,7 +2,7 @@ package javabot.web.views
 
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
 import javabot.dao.ConfigDao
-import javabot.kotlin.web.views.ConfigurationView
+import javabot.web.views.ConfigurationView
 import net.htmlparser.jericho.Source
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNotNull

@@ -1,6 +1,6 @@
 package javabot.web.views
 
-import javabot.kotlin.web.views.JavadocView
+import javabot.web.views.JavadocView
 import org.testng.annotations.Test
 import java.io.IOException
 

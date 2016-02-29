@@ -7,7 +7,7 @@ import javabot.dao.ConfigDao
 import javabot.dao.EventDao
 import javabot.dao.LogsDao
 import javabot.dao.ShunDao
-import javabot.kotlin.web.JavabotApplication
+import javabot.web.JavabotApplication
 import javabot.operations.throttle.Throttler
 import org.pircbotx.PircBotX
 import org.pircbotx.User

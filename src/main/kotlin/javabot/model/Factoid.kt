@@ -26,7 +26,7 @@ import java.time.LocalDateTime
 
     @JsonView(PUBLIC::class) var updated: LocalDateTime = LocalDateTime.now()
 
-    var lastUsed: LocalDateTime = LocalDateTime.now()
+    var lastUsed: LocalDateTime? = null
 
     var locked: Boolean = false
 

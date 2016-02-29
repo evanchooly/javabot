@@ -1,6 +1,6 @@
 <table class="zebra-striped">
     <tr>
-        <td class="right top" colspan="4">
+        <td class="right top" colspan="10   ">
             <div id="pagination" class="pagination">
                 <ul>
                     <li id="previousPage" class="prev <#if !previousPage?? >disabled</#if>">

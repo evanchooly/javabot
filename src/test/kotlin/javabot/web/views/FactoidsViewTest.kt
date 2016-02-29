@@ -2,8 +2,8 @@ package javabot.web.views
 
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
 import javabot.dao.FactoidDao
-import javabot.kotlin.web.views.FactoidsView
-import javabot.kotlin.web.views.PagedView
+import javabot.web.views.FactoidsView
+import javabot.web.views.PagedView
 import javabot.model.Factoid
 import net.htmlparser.jericho.Source
 import org.testng.annotations.Test

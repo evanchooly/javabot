@@ -1,7 +1,7 @@
 package javabot.web.views
 
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
-import javabot.kotlin.web.views.IndexView
+import javabot.web.views.IndexView
 import net.htmlparser.jericho.Source
 import org.testng.Assert
 import org.testng.annotations.Test

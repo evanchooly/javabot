@@ -1,10 +1,10 @@
 package javabot.web.views
 
 import javabot.BaseTest
-import javabot.kotlin.web.JavabotConfiguration
-import javabot.kotlin.web.model.Authority
-import javabot.kotlin.web.model.InMemoryUserCache
-import javabot.kotlin.web.model.User
+import javabot.web.JavabotConfiguration
+import javabot.web.model.Authority
+import javabot.web.model.InMemoryUserCache
+import javabot.web.model.User
 import org.brickred.socialauth.util.AccessGrant
 
 import javax.servlet.AsyncContext

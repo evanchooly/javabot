@@ -8,7 +8,7 @@ import com.jayway.awaitility.Awaitility
 import javabot.commands.AdminCommand
 import javabot.dao.*
 import javabot.database.UpgradeScript
-import javabot.kotlin.web.JavabotApplication
+import javabot.web.JavabotApplication
 import javabot.model.AdminEvent.State
 import javabot.model.Logs
 import javabot.model.Logs.Type
