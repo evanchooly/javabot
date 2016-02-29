@@ -53,7 +53,7 @@
         </#switch>
         <td class="time right">
             <a name="${log.id}" />
-            [<a href="#${log.id}">${format(log.updated)}</a>]
+            [<a href="/logs/${encode(channel)}/${today}#${log.id}">${format(log.updated)}</a>]
         </td>
     </tr>
 </#list>
