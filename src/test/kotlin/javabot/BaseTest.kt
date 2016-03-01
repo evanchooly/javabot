@@ -77,15 +77,16 @@ open class BaseTest {
 
     @BeforeTest fun setup() {
         messages.clear()
-        var admin = adminDao.getAdminByEmailAddress(BOT_EMAIL)
-        if (admin == null) {
-            admin = Admin(testUser.nick, BOT_EMAIL, testUser.hostmask, true)
-        } else {
-            admin.ircName = testUser.nick
-            admin.emailAddress = BOT_EMAIL
-            admin.hostName = testUser.hostmask
-            admin.botOwner = true
+        var admin = try {
+            adminDao.getAdminByEmailAddress(BOT_EMAIL)
+        } catch(adminNotFound: RuntimeException) {
+            Admin(testUser.nick, BOT_EMAIL, testUser.hostmask, true)
         }
+        admin.ircName = testUser.nick
+        admin.emailAddress = BOT_EMAIL
+        admin.hostName = testUser.hostmask
+        admin.botOwner = true
+
         adminDao.save(admin)
 
         var channel: Channel? = channelDao.get(testChannel.name)
