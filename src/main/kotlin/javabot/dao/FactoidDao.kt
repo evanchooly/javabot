@@ -29,7 +29,7 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
         }
         val old = find(entity.id)
         val formattedValue = CleanHtmlConverter.convert(factoid.value) { s -> Sofia.logsAnchorFormat(s, s) }
-        if (old != null) {
+        if (old != null && formattedValue != old.value) {
             val value: (Any) -> String = { s -> Sofia.logsAnchorFormat(s, s) }
             val oldFormat = CleanHtmlConverter.convert(old.value, value)
             changeDao.logChange("${factoid.userName} changed '${factoid.name}' from '${oldFormat}' to '${formattedValue}'")
