@@ -47,8 +47,12 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
     }
 
     fun addFactoid(sender: String, key: String, value: String): Factoid {
+        return addFactoid(sender, key, value, LocalDateTime.now())
+    }
+
+    fun addFactoid(sender:String, key:String, value:String, updated:LocalDateTime):Factoid {
         val factoid = Factoid(key, value, sender)
-        factoid.updated = LocalDateTime.now()
+        factoid.updated = updated
         factoid.lastUsed = LocalDateTime.now()
         save(factoid)
         changeDao.logAdd(sender, key, value)
