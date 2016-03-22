@@ -72,7 +72,7 @@ import java.util.stream.Stream
 
     companion object {
         val patterns: Array<String> = arrayOf("astebin", "mysticpaste.com", "pastie", "gist.github.com", "ideone.com",
-              "docs.oracle.com.*api", "git.io")
+              "docs.oracle.com.*api", "git.io", "localhost", "127.0.0.1")
         val matchingPatterns: MutableMap<String, Pattern> = HashMap()
 
         init {

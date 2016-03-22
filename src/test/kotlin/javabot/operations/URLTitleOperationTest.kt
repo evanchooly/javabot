@@ -32,6 +32,8 @@ import javax.inject.Inject
         return arrayOf(
                 arrayOf("http://google.com/", null),
                 arrayOf("http://google.com", null),
+                arrayOf("http://localhost", null),
+                arrayOf("http://127.0.0.1", null),
                 arrayOf("Have you tried to http://google.com", null),
                 arrayOf("http://varietyofsound.wordpress.com has a lot of VSTs", null),
                 arrayOf("Have you tried to http://javachannel.org/", "title for the url from botuser: \"Freenode ##java  enthusiasts united\""),
