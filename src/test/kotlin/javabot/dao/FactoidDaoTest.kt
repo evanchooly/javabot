@@ -50,11 +50,12 @@ class FactoidDaoTest : BaseServiceTest() {
         Assert.assertEquals(factoid.lastUsed, used);
 
         factoidDao.save(factoid)
-        Assert.assertNotEquals(factoid.updated, updated);
-        Assert.assertTrue(factoid.updated.isAfter(updated));
+        // factoid.updated should equal updated, since we didn't change anything
+        Assert.assertEquals(factoid.updated, updated);
         Assert.assertEquals(factoid.lastUsed, used);
 
         factoid.value = "new value"
+        factoidDao.save(factoid)
         Assert.assertNotEquals(factoid.updated, updated);
         Assert.assertTrue(factoid.updated.isAfter(updated));
         Assert.assertEquals(factoid.lastUsed, used);

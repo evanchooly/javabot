@@ -13,18 +13,22 @@ class InfoOperationTest : BaseTest() {
     protected lateinit var factoidDao: FactoidDao
     @Inject
     protected lateinit var operation: InfoOperation
+    @Inject
+    protected lateinit var factoidOperation: GetFactoidOperation
 
     @Test fun info() {
         val key = "whatwhat"
         val value = "ah, yeah"
         val user = "test"
         try {
-            val now = LocalDateTime.now()
-            var factoid = factoidDao.addFactoid(user, key, value)
-            factoid.updated = now
-            factoidDao.save(factoid)
+            val now = LocalDateTime.of(2014,3,23,21,12)
+            var factoid = factoidDao.addFactoid(user, key, value, now)
             val format = now.format(DateTimeFormatter.ofPattern(InfoOperation.INFO_DATE_FORMAT))
             var response = operation.handleMessage(message("info " + key))
+            Assert.assertEquals(response[0].value, "${key} was added by: ${user} on ${format} and has a literal value of: ${value}")
+            response=factoidOperation.handleMessage(message("whatwhat"))
+            Assert.assertEquals(response[0].value, "botuser, whatwhat is ah, yeah")
+            response = operation.handleMessage(message("info " + key))
             Assert.assertEquals(response[0].value, "${key} was added by: ${user} on ${format} and has a literal value of: ${value}")
         } finally {
             var factoid = factoidDao.getFactoid(key)
