@@ -5,6 +5,7 @@ import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ChangeDao
+import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
 import javabot.model.Factoid
 import org.slf4j.Logger
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                                               var factoidDao: FactoidDao,
-                                              var changeDao: ChangeDao) :
+                                              var changeDao: ChangeDao,
+                                              var channelDao: ChannelDao) :
         BotOperation(bot, adminDao), StandardOperation {
 
     companion object {
@@ -72,8 +74,14 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                             factoid.updated = LocalDateTime.now()
                         }
                         if (factoid.id != null) {
-                            changeDao.logFactoidChanged(event.user.nick, factoid.name, factoid.value, message,
-                                    event.channel?.name ?: "private message")
+                            val location: String
+                            if(channel != null ) {
+                                location = if (channelDao.isLogged(channel.name)) channel.name else "private channel"
+                            } else {
+                                location = channel?.name ?: "private message"
+                            }
+
+                            changeDao.logFactoidChanged(event.user.nick, factoid.name, factoid.value, message, location)
                         } else {
                             if (factoidDao.hasFactoid(factoid.name)) {
                                 responses.add(Message(event, Sofia.factoidExists(factoid.name, event.user.nick)))
