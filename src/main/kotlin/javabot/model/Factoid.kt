@@ -24,7 +24,8 @@ import java.time.LocalDateTime
     @Id
     var id: ObjectId? = null
 
-    @JsonView(PUBLIC::class) var updated: LocalDateTime = LocalDateTime.now()
+    @JsonView(PUBLIC::class)
+    var updated: LocalDateTime = LocalDateTime.now()
 
     var lastUsed: LocalDateTime? = null
 

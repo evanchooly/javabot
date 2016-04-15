@@ -1,6 +1,7 @@
 package javabot.dao
 
 import com.antwerkz.sofia.Sofia
+
 import com.google.inject.Inject
 import com.mongodb.WriteResult
 import javabot.dao.util.QueryParam
@@ -12,12 +13,24 @@ import java.time.LocalDateTime
 
 class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change::class.java) {
 
-    fun logChange(message: String) {
-        save(Change(message))
+    fun logFactoidAdded(sender: String, key: String, value: String) {
+        save(Change(Sofia.factoidAdded(sender, key, value)))
     }
 
-    fun logAdd(sender: String, key: String, value: String) {
-        logChange(Sofia.factoidAdded(sender, key, value))
+    fun logFactoidChanged(sender: String, key: String, oldValue: String, newValue: String, channel: String) {
+        save(Change(Sofia.factoidChanged(sender, key, oldValue, newValue, channel)))
+    }
+
+    fun logFactoidRemoved(sender: String, key: String, value: String) {
+        save(Change(Sofia.factoidRemoved(sender, key, value)))
+    }
+
+    fun logKarmaChanged(sender: String, target: String, value: Int) {
+        save(Change(Sofia.karmaChanged(sender, target, value)))
+    }
+
+    fun logChangingLockedFactoid(nick: String?, key: String, channel: String) {
+        save(Change(Sofia.factoidChangingLocked(nick, key, channel)))
     }
 
     fun findLog(message: String): Boolean {

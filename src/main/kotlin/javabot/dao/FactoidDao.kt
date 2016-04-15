@@ -2,7 +2,6 @@ package javabot.dao
 
 import com.antwerkz.sofia.Sofia
 import com.mongodb.WriteResult
-import javabot.dao.util.CleanHtmlConverter
 import javabot.dao.util.QueryParam
 import javabot.model.Factoid
 import javabot.model.Persistent
@@ -13,29 +12,19 @@ import java.time.LocalDateTime
 import java.util.regex.PatternSyntaxException
 import javax.inject.Inject
 
-class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao)  :
+class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
         BaseDao<Factoid>(ds, Factoid::class.java) {
 
     override fun save(entity: Persistent) {
         val factoid = entity as Factoid
-        if(factoid.name == "") {
+        if (factoid.name == "") {
             throw IllegalArgumentException(Sofia.factoidCantBeBlank("name"))
         }
-        if(factoid.value == "") {
+        if (factoid.value == "") {
             throw IllegalArgumentException(Sofia.factoidCantBeBlank("value"))
         }
-        if(factoid.userName == "") {
+        if (factoid.userName == "") {
             throw IllegalArgumentException(Sofia.factoidCantBeBlank("user name"))
-        }
-        val old = find(entity.id)
-        val formattedValue = CleanHtmlConverter.convert(factoid.value) { s -> Sofia.logsAnchorFormat(s, s) }
-        if (old != null && formattedValue != old.value) {
-            val value: (Any) -> String = { s -> Sofia.logsAnchorFormat(s, s) }
-            val oldFormat = CleanHtmlConverter.convert(old.value, value)
-            changeDao.logChange("${factoid.userName} changed '${factoid.name}' from '${oldFormat}' to '${formattedValue}'")
-            factoid.updated = LocalDateTime.now()
-        } else {
-            changeDao.logChange("${factoid.userName} added '${factoid.name}' with '${formattedValue}'")
         }
         super.save(entity)
     }
@@ -50,12 +39,12 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
         return addFactoid(sender, key, value, LocalDateTime.now())
     }
 
-    fun addFactoid(sender:String, key:String, value:String, updated:LocalDateTime):Factoid {
+    fun addFactoid(sender: String, key: String, value: String, updated: LocalDateTime): Factoid {
         val factoid = Factoid(key, value, sender)
         factoid.updated = updated
         factoid.lastUsed = LocalDateTime.now()
         save(factoid)
-        changeDao.logAdd(sender, key, value)
+        changeDao.logFactoidAdded(sender, key, value)
         return factoid
     }
 
@@ -63,7 +52,7 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
         val factoid = getFactoid(key)
         if (factoid != null) {
             delete(factoid.id)
-            changeDao.logChange("${sender} removed '${key}' with a value of '${factoid.value}'")
+            changeDao.logFactoidRemoved(sender, key, factoid.value)
         }
     }
 
@@ -81,9 +70,9 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
     fun getParameterizedFactoid(name: String): Factoid? {
         val criteria = FactoidCriteria(ds)
         criteria.or(
-              criteria.upperName().equal(name.toUpperCase() + " \$1"),
-              criteria.upperName().equal(name.toUpperCase() + " \$^"),
-              criteria.upperName().equal(name.toUpperCase() + " \$+"))
+                criteria.upperName().equal(name.toUpperCase() + " \$1"),
+                criteria.upperName().equal(name.toUpperCase() + " \$^"),
+                criteria.upperName().equal(name.toUpperCase() + " \$+"))
         val factoid = criteria.query().get()
         if (factoid != null) {
             factoid.lastUsed = LocalDateTime.now()
@@ -106,7 +95,7 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
 
     private fun buildFindQuery(qp: QueryParam?, filter: Factoid, count: Boolean): Query<Factoid> {
         val criteria = FactoidCriteria(ds)
-        if(filter.name != "") {
+        if (filter.name != "") {
             try {
                 criteria.upperName().contains(filter.name.toUpperCase())
             } catch (e: PatternSyntaxException) {
@@ -114,7 +103,7 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
             }
         }
 
-        if(filter.userName != "") {
+        if (filter.userName != "") {
             try {
                 criteria.upperUserName().contains(filter.userName.toUpperCase())
             } catch (e: PatternSyntaxException) {
@@ -122,7 +111,7 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
             }
         }
 
-        if(filter.value != "") {
+        if (filter.value != "") {
             try {
                 criteria.upperValue().contains(filter.value.toUpperCase())
             } catch (e: PatternSyntaxException) {

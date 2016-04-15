@@ -25,7 +25,7 @@ class KarmaDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao)  :
     fun save(karma: Karma) {
         karma.updated = LocalDateTime.now()
         super.save(karma)
-        changeDao.logChange(Sofia.karmaChanged(karma.userName, karma.name, karma.value))
+        changeDao.logKarmaChanged(karma.userName, karma.name, karma.value)
     }
 
     fun find(name: String): Karma? {

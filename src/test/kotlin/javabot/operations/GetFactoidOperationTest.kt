@@ -6,7 +6,6 @@ import org.testng.Assert
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
-import java.io.IOException
 import java.util.Arrays
 import javax.inject.Inject
 
@@ -34,7 +33,8 @@ import javax.inject.Inject
         factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "hug $1", "<action>hugs $1")
     }
 
-    @AfterClass fun deleteFactoids() {
+    @AfterClass
+    fun deleteFactoids() {
         delete("api")
         delete("stupid")
         delete("replyTest")
@@ -57,10 +57,21 @@ import javax.inject.Inject
         }
     }
 
-    @Throws(IOException::class) fun straightGets() {
+    fun straightGets() {
         var response = operation.handleMessage(message("api"))
         Assert.assertEquals(response[0].value, getFoundMessage("api", "http://java.sun.com/javase/current/docs/api/index.html"))
         Assert.assertNotNull(factoidDao.getFactoid("api")?.lastUsed)
+    }
+
+    fun dates() {
+        factoidDao.delete(testUser.nick, "dates")
+        val dates = factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "dates", "dates")
+        operation.handleMessage(message("dates"))
+
+        val factoid = factoidDao.getFactoid("dates")!!
+        Assert.assertEquals(factoid.updated, dates.updated)
+        Assert.assertTrue(factoid.lastUsed?.isAfter(dates.lastUsed) ?: false);
+
     }
 
     fun replyGets() {

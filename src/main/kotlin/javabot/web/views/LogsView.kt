@@ -32,9 +32,6 @@ class LogsView @Inject constructor(
     val yesterday = BotResource.FORMAT.format(date.minusDays(1))
     val tomorrow = BotResource.FORMAT.format(date.plusDays(1))
 
-    init {
-    }
-
     override fun format(date: LocalDateTime?): String {
         return if (date != null) LOG_FORMAT.format(date) else ""
     }

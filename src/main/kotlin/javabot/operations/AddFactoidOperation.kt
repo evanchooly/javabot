@@ -9,6 +9,7 @@ import javabot.dao.FactoidDao
 import javabot.model.Factoid
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
@@ -33,47 +34,57 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
             } else {
                 var key = message.substring(0, index)
                 message = message.substring(index + 4).trim()
-                var factoid: Factoid?
+                var factoid: Factoid? = null
 
-                if (key.startsWith("no ") || key.startsWith("no, ")) {
+                val redefine = key.startsWith("no ") || key.startsWith("no, ")
+                if (redefine) {
                     key = key.substring(key.indexOf(" ")).trim()
 
                     factoid = factoidDao.getFactoid(key)
-                    if (factoid != null && factoid.locked && !admin) {
-                        changeDao.logChange(Sofia.changingLockedFactoid(event.user.nick, key))
-                        responses.add(Message(event, Sofia.factoidLocked(event.user.nick)))
+                    if ( factoid == null) {
+                        responses.add(Message(event.channel, event.user, Sofia.factoidUnknown(key)))
                     }
                 } else {
                     if (key.startsWith(",")) {
                         key = message.substring(1)
                     }
-                    factoid = Factoid(key.trim().toLowerCase(), userName = event.user.nick)
-                    factoid.name = factoid.name.dropLastWhile { it in arrayOf('.', '?', '!') }
-                }
-                if ( factoid == null) {
-                    responses.add(Message(event.channel, event.user, Sofia.factoidUnknown(key)))
-                } else if (factoid.name.isEmpty()) {
-                    responses.add(Message(event, Sofia.factoidInvalidName()))
-                } else if (message.isEmpty()) {
-                    responses.add(Message(event, Sofia.factoidInvalidValue()))
-                } else if (factoid.value.startsWith("<see>")) {
-                    factoid.value = factoid.value.toLowerCase()
-                } else {
-                    factoid.value = message
-                    if (factoid.id != null) {
-                        changeDao.logChange(Sofia.factoidChanged(event.user.nick, factoid.name, factoid.value, message,
-                                event.channel?.name ?: "private message"))
-                    } else {
-                        if (factoidDao.hasFactoid(factoid.name)) {
-                            responses.add(Message(event, Sofia.factoidExists(factoid.name, event.user.nick)))
-                        } else {
-                            changeDao.logAdd(event.user.nick, factoid.name, factoid.value)
-                        }
+                    val name = key.trim().toLowerCase()
+                    if (name.isEmpty()) {
+                        responses.add(Message(event, Sofia.factoidInvalidName()))
                     }
-                    if (responses.isEmpty()) {
+                    if (message.isEmpty()) {
+                        responses.add(Message(event, Sofia.factoidInvalidValue()))
+                    } else {
+                        factoid = Factoid(name, userName = event.user.nick)
+                        factoid.name = factoid.name.dropLastWhile { it in arrayOf('.', '?', '!') }
+                    }
+                }
+                if (factoid != null) {
+                    if (factoid.locked && redefine && !admin) {
+                        changeDao.logChangingLockedFactoid(event.user.nick, key, channel?.name ?: "private message")
+                        responses.add(Message(event, Sofia.factoidLocked(event.user.nick)))
+                    } else {
+                        factoid.value = message
+                        if (factoid.value.startsWith("<see>")) {
+                            factoid.value = factoid.value.toLowerCase()
+                        }
+                        if(redefine) {
+                            factoid.updated = LocalDateTime.now()
+                        }
+                        if (factoid.id != null) {
+                            changeDao.logFactoidChanged(event.user.nick, factoid.name, factoid.value, message,
+                                    event.channel?.name ?: "private message")
+                        } else {
+                            if (factoidDao.hasFactoid(factoid.name)) {
+                                responses.add(Message(event, Sofia.factoidExists(factoid.name, event.user.nick)))
+                            } else {
+                                changeDao.logFactoidAdded(event.user.nick, factoid.name, factoid.value)
+                            }
+                        }
                         factoidDao.save(factoid)
                         responses.add(Message(event, Sofia.ok(event.user.nick)))
                     }
+
                 }
             }
         }

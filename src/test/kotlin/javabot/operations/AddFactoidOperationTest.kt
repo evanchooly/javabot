@@ -56,9 +56,11 @@ class AddFactoidOperationTest : BaseTest() {
     fun replace() {
         var response = addFactoidOperation.handleMessage(message("replace is first entry"))
         Assert.assertEquals(response[0].value, ok)
+        val updated = factoidDao.getFactoid("replace")!!.updated
 
         response = addFactoidOperation.handleMessage(message("no, replace is <reply>second entry"))
         Assert.assertEquals(response[0].value, Sofia.ok(testUser.nick))
+        Assert.assertTrue(factoidDao.getFactoid("replace")!!.updated.isAfter(updated));
 
         response = getFactoidOperation.handleMessage(message("replace"))
         Assert.assertEquals(response[0].value, "second entry")

@@ -209,10 +209,6 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("bot.version", locale), arg0);
     }
 
-    public static String changingLockedFactoid(Object arg0, Object arg1, Locale... locale) {
-        return MessageFormat.format(getMessageValue("changing.locked.factoid", locale), arg0, arg1);
-    }
-
     public static String channelDeleted(Object arg0, Locale... locale) {
         return MessageFormat.format(getMessageValue("channel.deleted", locale), arg0);
     }
@@ -297,6 +293,10 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("factoid.changed", locale), arg0, arg1, arg2, arg3, arg4);
     }
 
+    public static String factoidChangingLocked(Object arg0, Object arg1, Object arg2, Locale... locale) {
+        return MessageFormat.format(getMessageValue("factoid.changing.locked", locale), arg0, arg1, arg2);
+    }
+
     public static String factoidDeleteLocked(Object arg0, Locale... locale) {
         return MessageFormat.format(getMessageValue("factoid.delete.locked", locale), arg0);
     }
@@ -331,6 +331,10 @@ public class Sofia {
 
     public static String factoidLoop(Object arg0, Locale... locale) {
         return MessageFormat.format(getMessageValue("factoid.loop", locale), arg0);
+    }
+
+    public static String factoidRemoved(Object arg0, Object arg1, Object arg2, Locale... locale) {
+        return MessageFormat.format(getMessageValue("factoid.removed", locale), arg0, arg1, arg2);
     }
 
     public static String factoidTellSyntax(Object arg0, Locale... locale) {
