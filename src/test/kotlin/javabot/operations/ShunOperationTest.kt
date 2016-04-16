@@ -2,6 +2,8 @@ package javabot.operations
 
 import javabot.BaseTest
 import javabot.dao.FactoidDao
+import javabot.dao.LogsDaoTest
+import javabot.dao.LogsDaoTest.Companion
 import org.testng.Assert
 import org.testng.annotations.Test
 import javax.inject.Inject
@@ -16,9 +18,9 @@ import javax.inject.Inject
 
 
     @Throws(InterruptedException::class) fun shunMe() {
-        factoidDao.delete(testUser.nick, "shunHey")
+        factoidDao.delete(testUser.nick, "shunHey", LogsDaoTest.CHANNEL_NAME)
         try {
-            factoidDao.addFactoid(testUser.nick, "shunHey", "<reply>shunHey")
+            factoidDao.addFactoid(testUser.nick, "shunHey", "<reply>shunHey", LogsDaoTest.CHANNEL_NAME)
             var response = operation.handleMessage(message("shun ${testUser} 5"))
             Assert.assertEquals(response[0].value, "${testUser} is shunned until")
             response = operation.handleMessage(message("shunHey"))
@@ -27,7 +29,7 @@ import javax.inject.Inject
             response = getFactoidOperation.handleMessage(message("shunHey"))
             Assert.assertEquals(response[0].value, "shunHey")
         } finally {
-            factoidDao.delete(testUser.nick, "shunHey")
+            factoidDao.delete(testUser.nick, "shunHey", LogsDaoTest.CHANNEL_NAME)
         }
     }
 }

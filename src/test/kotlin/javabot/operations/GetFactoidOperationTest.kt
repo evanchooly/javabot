@@ -2,6 +2,8 @@ package javabot.operations
 
 import javabot.BaseTest
 import javabot.dao.FactoidDao
+import javabot.dao.LogsDaoTest
+import javabot.dao.LogsDaoTest.Companion
 import org.testng.Assert
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
@@ -17,20 +19,20 @@ import javax.inject.Inject
 
     @BeforeClass fun createGets() {
         deleteFactoids()
-        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "api", "http://java.sun.com/javase/current/docs/api/index.html")
-        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "replyTest", "<reply>I'm a reply!")
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "api", "http://java.sun.com/javase/current/docs/api/index.html", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "replyTest", "<reply>I'm a reply!", LogsDaoTest.CHANNEL_NAME)
         factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "stupid", "<reply>\$who, what you've just said is one of the most insanely idiotic " +
                 "things I have ever heard. At no point in your rambling, incoherent response were you even close to anything that could be" +
                 " considered a rational thought. Everyone in this room is now dumber for having listened to it. I award you no points, and" +
-                " may God have mercy on your soul.")
-        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "seeTest", "<see>replyTest")
-        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "noReply", "I'm a reply!")
-        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "replace $1", "<reply>I replaced you $1")
-        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "camel $^", "<reply>$^")
-        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "url $+", "<reply>$+")
-        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "hey", "<reply>Hello, \$who")
-        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "coin", "<reply>(heads|tails)")
-        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "hug $1", "<action>hugs $1")
+                " may God have mercy on your soul.", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "seeTest", "<see>replyTest", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "noReply", "I'm a reply!", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "replace $1", "<reply>I replaced you $1", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "camel $^", "<reply>$^", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "url $+", "<reply>$+", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "hey", "<reply>Hello, \$who", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "coin", "<reply>(heads|tails)", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "hug $1", "<action>hugs $1", LogsDaoTest.CHANNEL_NAME)
     }
 
     @AfterClass
@@ -53,7 +55,7 @@ import javax.inject.Inject
 
     private fun delete(key: String) {
         while (factoidDao.hasFactoid(key)) {
-            factoidDao.delete(BaseTest.TEST_TARGET_NICK, key)
+            factoidDao.delete(BaseTest.TEST_TARGET_NICK, key, LogsDaoTest.CHANNEL_NAME)
         }
     }
 
@@ -64,8 +66,8 @@ import javax.inject.Inject
     }
 
     fun dates() {
-        factoidDao.delete(testUser.nick, "dates")
-        val dates = factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "dates", "dates")
+        factoidDao.delete(testUser.nick, "dates", LogsDaoTest.CHANNEL_NAME)
+        val dates = factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "dates", "dates", LogsDaoTest.CHANNEL_NAME)
         operation.handleMessage(message("dates"))
 
         val factoid = factoidDao.getFactoid("dates")!!
@@ -168,7 +170,8 @@ import javax.inject.Inject
 
     @Test fun longResponse() {
         factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "yalla $1",
-                "<reply>$1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 !111!!!!!one!!!\n")
+                "<reply>$1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 !111!!!!!one!!!\n",
+                LogsDaoTest.CHANNEL_NAME)
         var response = operation.handleMessage(message("yalla I'm a really long repeated spam I'm a really long repeated spam I'm a " +
                 "really long repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long " +
                 "repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long repeated spam " +

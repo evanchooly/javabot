@@ -13,16 +13,16 @@ import java.time.LocalDateTime
 
 class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change::class.java) {
 
-    fun logFactoidAdded(sender: String, key: String, value: String) {
-        save(Change(Sofia.factoidAdded(sender, key, value)))
+    fun logFactoidAdded(sender: String, key: String, value: String, location: String) {
+        save(Change(Sofia.factoidAdded(sender, key, value, location)))
     }
 
-    fun logFactoidChanged(sender: String, key: String, oldValue: String, newValue: String, channel: String) {
-        save(Change(Sofia.factoidChanged(sender, key, oldValue, newValue, channel)))
+    fun logFactoidChanged(sender: String, key: String, oldValue: String, newValue: String, location: String) {
+        save(Change(Sofia.factoidChanged(sender, key, oldValue, newValue, location)))
     }
 
-    fun logFactoidRemoved(sender: String, key: String, value: String) {
-        save(Change(Sofia.factoidRemoved(sender, key, value)))
+    fun logFactoidRemoved(sender: String, key: String, value: String, location: String) {
+        save(Change(Sofia.factoidRemoved(sender, key, value, location)))
     }
 
     fun logKarmaChanged(sender: String, target: String, value: Int) {

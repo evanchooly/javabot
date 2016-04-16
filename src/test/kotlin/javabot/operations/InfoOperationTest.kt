@@ -3,6 +3,7 @@ package javabot.operations
 import com.google.inject.Inject
 import javabot.BaseTest
 import javabot.dao.FactoidDao
+import javabot.dao.LogsDaoTest
 import org.testng.Assert
 import org.testng.annotations.Test
 import java.time.LocalDateTime
@@ -22,7 +23,7 @@ class InfoOperationTest : BaseTest() {
         val user = "test"
         try {
             val now = LocalDateTime.of(2014,3,23,21,12)
-            var factoid = factoidDao.addFactoid(user, key, value, now)
+            factoidDao.addFactoid(user, key, value, LogsDaoTest.CHANNEL_NAME,  now)
             val format = now.format(DateTimeFormatter.ofPattern(InfoOperation.INFO_DATE_FORMAT))
             var response = operation.handleMessage(message("info " + key))
             Assert.assertEquals(response[0].value, "${key} was added by: ${user} on ${format} and has a literal value of: ${value}")

@@ -281,8 +281,8 @@ public class Sofia {
         return getMessageValue("email", locale);
     }
 
-    public static String factoidAdded(Object arg0, Object arg1, Object arg2, Locale... locale) {
-        return MessageFormat.format(getMessageValue("factoid.added", locale), arg0, arg1, arg2);
+    public static String factoidAdded(Object arg0, Object arg1, Object arg2, Object arg3, Locale... locale) {
+        return MessageFormat.format(getMessageValue("factoid.added", locale), arg0, arg1, arg2, arg3);
     }
 
     public static String factoidCantBeBlank(Object arg0, Locale... locale) {
@@ -333,8 +333,8 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("factoid.loop", locale), arg0);
     }
 
-    public static String factoidRemoved(Object arg0, Object arg1, Object arg2, Locale... locale) {
-        return MessageFormat.format(getMessageValue("factoid.removed", locale), arg0, arg1, arg2);
+    public static String factoidRemoved(Object arg0, Object arg1, Object arg2, Object arg3, Locale... locale) {
+        return MessageFormat.format(getMessageValue("factoid.removed", locale), arg0, arg1, arg2, arg3);
     }
 
     public static String factoidTellSyntax(Object arg0, Locale... locale) {

@@ -35,24 +35,24 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
         return criteria.query().get() != null
     }
 
-    fun addFactoid(sender: String, key: String, value: String): Factoid {
-        return addFactoid(sender, key, value, LocalDateTime.now())
+    fun addFactoid(sender: String, key: String, value: String, location: String): Factoid {
+        return addFactoid(sender, key, value, location, LocalDateTime.now())
     }
 
-    fun addFactoid(sender: String, key: String, value: String, updated: LocalDateTime): Factoid {
+    fun addFactoid(sender: String, key: String, value: String, location: String, updated: LocalDateTime): Factoid {
         val factoid = Factoid(key, value, sender)
         factoid.updated = updated
         factoid.lastUsed = LocalDateTime.now()
         save(factoid)
-        changeDao.logFactoidAdded(sender, key, value)
+        changeDao.logFactoidAdded(sender, key, value, location)
         return factoid
     }
 
-    fun delete(sender: String, key: String) {
+    fun delete(sender: String, key: String, location: String) {
         val factoid = getFactoid(key)
         if (factoid != null) {
             delete(factoid.id)
-            changeDao.logFactoidRemoved(sender, key, factoid.value)
+            changeDao.logFactoidRemoved(sender, key, factoid.value, location)
         }
     }
 

@@ -5,6 +5,8 @@ import javabot.BaseTest
 import javabot.BotListener
 import javabot.dao.FactoidDao
 import javabot.dao.KarmaDao
+import javabot.dao.LogsDaoTest
+import javabot.dao.LogsDaoTest.Companion
 import org.pircbotx.User
 import org.pircbotx.hooks.events.PrivateMessageEvent
 import org.testng.Assert
@@ -30,14 +32,14 @@ class AddFactoidOperationTest : BaseTest() {
 
     @BeforeMethod
     fun setUp() {
-        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "test")
-        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "ping $1")
-        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "what")
-        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "what up")
-        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "test pong")
-        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "asdf")
-        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "12345")
-        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "replace")
+        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "test", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "ping $1", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "what", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "what up", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "test pong", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "asdf", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "12345", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "replace", LogsDaoTest.CHANNEL_NAME)
     }
 
     fun factoidAdd() {
@@ -91,7 +93,7 @@ class AddFactoidOperationTest : BaseTest() {
     fun addLog() {
         val response = addFactoidOperation.handleMessage(message("12345 is 12345"))
         Assert.assertEquals(response[0].value, ok)
-        Assert.assertTrue(changeDao.findLog(Sofia.factoidAdded(testUser.nick, "12345", "12345")))
+        Assert.assertTrue(changeDao.findLog(Sofia.factoidAdded(testUser.nick, "12345", "12345", LogsDaoTest.CHANNEL_NAME)))
         forgetFactoidOperation.handleMessage(message("forget 12345"))
     }
 

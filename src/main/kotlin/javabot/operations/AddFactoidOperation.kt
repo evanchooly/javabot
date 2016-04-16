@@ -8,6 +8,7 @@ import javabot.dao.ChangeDao
 import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
 import javabot.model.Factoid
+import org.pircbotx.Channel
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
@@ -74,19 +75,13 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                             factoid.updated = LocalDateTime.now()
                         }
                         if (factoid.id != null) {
-                            val location: String
-                            if(channel != null ) {
-                                location = if (channelDao.isLogged(channel.name)) channel.name else "private channel"
-                            } else {
-                                location = channel?.name ?: "private message"
-                            }
 
-                            changeDao.logFactoidChanged(event.user.nick, factoid.name, factoid.value, message, location)
+                            changeDao.logFactoidChanged(event.user.nick, factoid.name, factoid.value, message, location(channelDao, channel))
                         } else {
                             if (factoidDao.hasFactoid(factoid.name)) {
                                 responses.add(Message(event, Sofia.factoidExists(factoid.name, event.user.nick)))
                             } else {
-                                changeDao.logFactoidAdded(event.user.nick, factoid.name, factoid.value)
+                                changeDao.logFactoidAdded(event.user.nick, factoid.name, factoid.value, location(channelDao, channel))
                             }
                         }
                         factoidDao.save(factoid)
@@ -100,10 +95,21 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     }
 
 
+
     /**
      * Adding factoids should happen after everything else has had a chance to run. See issue #88.
      */
     override fun getPriority(): Int {
         return 1
     }
+}
+
+fun location(channelDao: ChannelDao, channel: Channel?): String {
+    val location: String
+    if (channel != null ) {
+        location = if (channelDao.isLogged(channel.name)) channel.name else "private channel"
+    } else {
+        location = channel?.name ?: "private message"
+    }
+    return location
 }

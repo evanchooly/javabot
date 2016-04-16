@@ -11,15 +11,11 @@ import java.lang.String.format
 import java.util.Date
 import javax.inject.Inject
 
-@Test(groups = arrayOf("operations")) class KarmaOperationTest : BaseTest() {
+@Test(groups = arrayOf("operations"))
+class KarmaOperationTest : BaseTest() {
     @Inject
     protected lateinit var karmaDao: KarmaDao
 
-    @Inject
-    protected lateinit var ds: Datastore
-
-    @Inject
-    protected lateinit var configDao: ConfigDao
     @Inject
     protected lateinit var operation: KarmaOperation
 

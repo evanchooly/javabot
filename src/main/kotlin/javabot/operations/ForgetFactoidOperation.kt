@@ -4,10 +4,12 @@ import com.antwerkz.sofia.Sofia
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
+import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
+import org.pircbotx.Channel
 import javax.inject.Inject
 
-class ForgetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :
+class ForgetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao, var channelDao: ChannelDao) :
         BotOperation(bot, adminDao), StandardOperation {
 
     override fun handleMessage(event: Message): List<Message> {
@@ -22,18 +24,18 @@ class ForgetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDa
                 if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
                     message = message.substring(0, message.length - 1)
                 }
-                forget(responses, event, message.toLowerCase())
+                forget(channel, responses, event, message.toLowerCase())
             }
         }
         return responses
     }
 
-    protected fun forget(responses: MutableList<Message>, event: Message, key: String) {
+    protected fun forget(channel: Channel?, responses: MutableList<Message>, event: Message, key: String) {
         val factoid = factoidDao.getFactoid(key)
         if (factoid != null) {
             if ((!factoid.locked) || isAdminUser(event.user)) {
                 responses.add(Message(event, Sofia.factoidForgotten(key, event.user.nick)))
-                factoidDao.delete(event.user.nick, key)
+                factoidDao.delete(event.user.nick, key, location(channelDao, channel))
             } else {
                 responses.add(Message(event, Sofia.factoidDeleteLocked(event.user.nick)))
             }

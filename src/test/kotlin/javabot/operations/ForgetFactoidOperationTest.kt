@@ -3,6 +3,8 @@ package javabot.operations
 import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
 import javabot.dao.FactoidDao
+import javabot.dao.LogsDaoTest
+import javabot.dao.LogsDaoTest.Companion
 import org.testng.Assert
 import org.testng.annotations.Test
 import javax.inject.Inject
@@ -15,7 +17,7 @@ import javax.inject.Inject
 
     fun forgetFactoid() {
         if (!factoidDao.hasFactoid("afky")) {
-            factoidDao.addFactoid(testUser.nick, "afky", "test")
+            factoidDao.addFactoid(testUser.nick, "afky", "test", LogsDaoTest.CHANNEL_NAME)
         }
         var response = operation.handleMessage(message("forget afky"))
         Assert.assertEquals(response[0].value, Sofia.factoidForgotten("afky", testUser.nick))
