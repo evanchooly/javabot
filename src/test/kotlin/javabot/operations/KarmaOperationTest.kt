@@ -2,9 +2,7 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
-import javabot.dao.ConfigDao
 import javabot.dao.KarmaDao
-import org.mongodb.morphia.Datastore
 import org.testng.Assert
 import org.testng.annotations.Test
 import java.lang.String.format
@@ -30,7 +28,7 @@ class KarmaOperationTest : BaseTest() {
         val karma = getKarma(userFactory.createUser(target, target, "localhost").nick) + 1
         var response = operation.handleMessage(message("${target} ++"))
                 Assert.assertEquals(response[0].value, Sofia.karmaOthersValue(target, karma, testUser.nick))
-        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma)))
+        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma, testChannel.name)))
         karmaDao.delete(karmaDao.find(target)?.id)
     }
 
@@ -52,7 +50,7 @@ class KarmaOperationTest : BaseTest() {
         val karma = getKarma(target) + 1
         var response = operation.handleMessage(message("${target} ++"))
                 Assert.assertEquals(response[0].value, Sofia.karmaOthersValue(target, karma, testUser.nick))
-        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma)))
+        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma, testChannel.name)))
         karmaDao.delete(karmaDao.find(target)?.id)
     }
 
@@ -61,7 +59,7 @@ class KarmaOperationTest : BaseTest() {
         val karma = getKarma(userFactory.createUser(target, target, "localhost").nick) + 1
         var response = operation.handleMessage(message("${target}++ hey coolio"))
                 Assert.assertEquals(response[0].value, Sofia.karmaOthersValue(target, karma, testUser.nick))
-        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma)))
+        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma, testChannel.name)))
         karmaDao.delete(karmaDao.find(target)?.id)
     }
 
@@ -70,7 +68,7 @@ class KarmaOperationTest : BaseTest() {
         val karma = getKarma(userFactory.createUser(target, target, "localhost").nick) + 1
         var response = operation.handleMessage(message("${target}++"))
                 Assert.assertEquals(response[0].value, Sofia.karmaOthersValue(target, karma, testUser.nick))
-        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma)))
+        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma, testChannel.name)))
         karmaDao.delete(karmaDao.find(target)?.id)
     }
 
@@ -79,7 +77,7 @@ class KarmaOperationTest : BaseTest() {
         val karma = getKarma(userFactory.createUser(target, target, "localhost").nick) + 1
         var response = operation.handleMessage(message("${target}++"))
         Assert.assertEquals(response.size, 0)
-        Assert.assertFalse(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma)))
+        Assert.assertFalse(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma, testChannel.name)))
     }
 
     fun noNameSubKarma() {
@@ -87,7 +85,7 @@ class KarmaOperationTest : BaseTest() {
         val karma = getKarma(userFactory.createUser(target, target, "localhost").nick) - 1
         var response = operation.handleMessage(message("${target}--"))
         Assert.assertEquals(response.size, 0)
-        Assert.assertFalse(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma)))
+        Assert.assertFalse(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma, testChannel.name)))
     }
 
     fun logNew() {
@@ -95,7 +93,7 @@ class KarmaOperationTest : BaseTest() {
         val karma = getKarma(userFactory.createUser(target, target, "localhost").nick) + 1
         var response = operation.handleMessage(message("${target}++"))
                 Assert.assertEquals(response[0].value, Sofia.karmaOthersValue(target, karma, testUser.nick))
-        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma)))
+        Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma, testChannel.name)))
         karmaDao.delete(karmaDao.find(target)?.id)
     }
 

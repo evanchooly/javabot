@@ -389,8 +389,8 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("jsr.unknown", locale), arg0);
     }
 
-    public static String karmaChanged(Object arg0, Object arg1, Number arg2, Locale... locale) {
-        return MessageFormat.format(getMessageValue("karma.changed", locale), arg0, arg1, arg2);
+    public static String karmaChanged(Object arg0, Object arg1, Number arg2, Object arg3, Locale... locale) {
+        return MessageFormat.format(getMessageValue("karma.changed", locale), arg0, arg1, arg2, arg3);
     }
 
     public static String karmaOthersNone(Object arg0, Object arg1, Locale... locale) {

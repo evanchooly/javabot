@@ -93,7 +93,7 @@ class AddFactoidOperationTest : BaseTest() {
     fun addLog() {
         val response = addFactoidOperation.handleMessage(message("12345 is 12345"))
         Assert.assertEquals(response[0].value, ok)
-        Assert.assertTrue(changeDao.findLog(Sofia.factoidAdded(testUser.nick, "12345", "12345", LogsDaoTest.CHANNEL_NAME)))
+        Assert.assertTrue(changeDao.findLog(Sofia.factoidAdded(testUser.nick, "12345", "12345", testChannel.name)))
         forgetFactoidOperation.handleMessage(message("forget 12345"))
     }
 

@@ -1,15 +1,16 @@
 package javabot.dao
 
-import com.antwerkz.sofia.Sofia
 import com.mongodb.WriteResult
 import javabot.dao.util.QueryParam
 import javabot.model.Karma
 import javabot.model.criteria.KarmaCriteria
+import javabot.operations.location
 import org.mongodb.morphia.Datastore
+import org.pircbotx.Channel
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class KarmaDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao)  :
+class KarmaDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var channelDao: ChannelDao)  :
         BaseDao<Karma>(ds, Karma::class.java) {
 
     fun getKarmas(qp: QueryParam): List<Karma> {
@@ -22,10 +23,9 @@ class KarmaDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao)  :
         return query.asList()
     }
 
-    fun save(karma: Karma) {
+    fun save(channel: Channel, karma: Karma) {
         karma.updated = LocalDateTime.now()
         super.save(karma)
-        changeDao.logKarmaChanged(karma.userName, karma.name, karma.value)
     }
 
     fun find(name: String): Karma? {

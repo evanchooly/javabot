@@ -4,13 +4,16 @@ import com.antwerkz.sofia.Sofia
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
+import javabot.dao.ChangeDao
+import javabot.dao.ChannelDao
 import javabot.dao.KarmaDao
 import javabot.model.Karma
 import org.slf4j.LoggerFactory
 import java.util.regex.Pattern
 import javax.inject.Inject
 
-class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var dao: KarmaDao) : BotOperation(bot, adminDao) {
+class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var dao: KarmaDao, var changeDao: ChangeDao,
+                                         var channelDao: ChannelDao) : BotOperation(bot, adminDao) {
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
@@ -31,7 +34,7 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
                 }
             }
 
-            if(event.tell) {
+            if (event.tell) {
                 responses.add(Message(event, Sofia.notAllowed()))
                 return responses;
             }
@@ -87,6 +90,7 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
                     }
                     karma.userName = sender.nick
                     dao.save(karma)
+                    changeDao.logKarmaChanged(karma.userName, karma.name, karma.value, location(channelDao, channel))
                     readKarma(responses, Message(event.channel, event.user, "karma " + nick))
                 }
             }
