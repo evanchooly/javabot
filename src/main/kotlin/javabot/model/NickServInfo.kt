@@ -4,7 +4,6 @@ import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Indexed
-import org.pircbotx.User
 import java.lang.String.format
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
@@ -12,7 +11,8 @@ import java.time.format.DateTimeFormatter
 import java.util.ArrayList
 import java.util.TreeMap
 
-@Entity(value = "nickserv", noClassnameStored = true) class NickServInfo : Persistent {
+@Entity(value = "nickserv", noClassnameStored = true)
+class NickServInfo : Persistent {
 
     @Id
     var id: ObjectId? = null
@@ -39,7 +39,7 @@ import java.util.TreeMap
     constructor() {
     }
 
-    constructor(user: User) {
+    constructor(user: JavabotUser) {
         nick = user.nick
         account = user.nick
         registered = LocalDateTime.now()
@@ -52,7 +52,7 @@ import java.util.TreeMap
 
     override fun toString(): String {
         return "NickServInfo{id=${id}, nick='${nick}', account='${account}', registered=${registered}, userRegistered=${userRegistered}, " +
-                "lastSeen=${lastSeen}," + " " + "lastAddress='${lastAddress}'}"
+                "lastSeen=${lastSeen}, lastAddress='${lastAddress}'}"
     }
 
     fun toNickServFormat(): List<String> {

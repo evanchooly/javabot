@@ -1,5 +1,5 @@
 package javabot.operations
 
-import org.pircbotx.User
+import javabot.model.JavabotUser
 
-data class TellSubject(val target: User, val subject: String)
+data class TellSubject(val target: JavabotUser, val subject: String)

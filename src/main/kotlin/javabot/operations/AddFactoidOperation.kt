@@ -8,7 +8,6 @@ import javabot.dao.ChangeDao
 import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
 import javabot.model.Factoid
-import org.pircbotx.Channel
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
@@ -76,12 +75,12 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                         }
                         if (factoid.id != null) {
 
-                            changeDao.logFactoidChanged(event.user.nick, factoid.name, factoid.value, message, location(channelDao, channel))
+                            changeDao.logFactoidChanged(event.user.nick, factoid.name, factoid.value, message, channelDao.location(channel))
                         } else {
                             if (factoidDao.hasFactoid(factoid.name)) {
                                 responses.add(Message(event, Sofia.factoidExists(factoid.name, event.user.nick)))
                             } else {
-                                changeDao.logFactoidAdded(event.user.nick, factoid.name, factoid.value, location(channelDao, channel))
+                                changeDao.logFactoidAdded(event.user.nick, factoid.name, factoid.value, channelDao.location(channel))
                             }
                         }
                         factoidDao.save(factoid)
@@ -102,14 +101,4 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     override fun getPriority(): Int {
         return 1
     }
-}
-
-fun location(channelDao: ChannelDao, channel: Channel?): String {
-    val location: String
-    if (channel != null ) {
-        location = if (channelDao.isLogged(channel.name)) channel.name else "private channel"
-    } else {
-        location = channel?.name ?: "private message"
-    }
-    return location
 }

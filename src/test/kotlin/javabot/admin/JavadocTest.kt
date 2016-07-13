@@ -50,10 +50,10 @@ import javax.inject.Inject
     private fun checkServlets(apiName: String) {
         Assert.assertNotNull(javadocClassDao.getClass(apiDao.find(apiName), "javax.servlet.http", "HttpServletRequest"),
                 "Should find an entry for ${apiName}/javax.servlet.http.HttpServletRequest")
-        scanForResponse(operation.handleMessage(message("javadoc HttpServlet")), "javax/servlet/http/HttpServlet.html")
-        scanForResponse(operation.handleMessage(message("javadoc HttpServlet.doGet(*)")), "javax/servlet/http/HttpServlet.html#doGet")
-        scanForResponse(operation.handleMessage(message("javadoc HttpServletRequest")), "javax/servlet/http/HttpServletRequest.html")
-        scanForResponse(operation.handleMessage(message("javadoc HttpServletRequest.getMethod()")),
+        scanForResponse(operation.handleMessage(message("~javadoc HttpServlet")), "javax/servlet/http/HttpServlet.html")
+        scanForResponse(operation.handleMessage(message("~javadoc HttpServlet.doGet(*)")), "javax/servlet/http/HttpServlet.html#doGet")
+        scanForResponse(operation.handleMessage(message("~javadoc HttpServletRequest")), "javax/servlet/http/HttpServletRequest.html")
+        scanForResponse(operation.handleMessage(message("~javadoc HttpServletRequest.getMethod()")),
                 "javax/servlet/http/HttpServletRequest.html#getMethod")
     }
 
@@ -62,20 +62,20 @@ import javax.inject.Inject
         val apiName = "JavaEE7"
         dropApi(apiName)
         addApi(apiName, "http://docs.oracle.com/javaee/7/api/", "https://repo1.maven.org/maven2/javax/javaee-api/7.0/javaee-api-7.0.jar")
-        scanForResponse(operation.handleMessage(message("javadoc Annotated")), "javax/enterprise/inject/spi/Annotated.html")
-        scanForResponse(operation.handleMessage(message("javadoc Annotated.getAnnotation(*)")),
+        scanForResponse(operation.handleMessage(message("~javadoc Annotated")), "javax/enterprise/inject/spi/Annotated.html")
+        scanForResponse(operation.handleMessage(message("~javadoc Annotated.getAnnotation(*)")),
                 "javax/enterprise/inject/spi/Annotated.html#getAnnotation")
-        scanForResponse(operation.handleMessage(message("javadoc ContextService")), "javax/enterprise/concurrent/ContextService.html")
-        scanForResponse(operation.handleMessage(message("javadoc ContextService.createContextualProxy(*)")),
+        scanForResponse(operation.handleMessage(message("~javadoc ContextService")), "javax/enterprise/concurrent/ContextService.html")
+        scanForResponse(operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
                 "createContextualProxy(java.lang.Object, java.lang.Class[])")
-        scanForResponse(operation.handleMessage(message("javadoc ContextService.createContextualProxy(*)")),
+        scanForResponse(operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
               "createContextualProxy(java.lang.Object, java.util.Map, java.lang.Class[])")
-        scanForResponse(operation.handleMessage(message("javadoc ContextService.createContextualProxy(*)")),
+        scanForResponse(operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
                 "createContextualProxy(T, java.lang.Class)")
-        scanForResponse(operation.handleMessage(message("javadoc ContextService.createContextualProxy(*)")),
+        scanForResponse(operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
               "createContextualProxy(T, java.util.Map, java.lang.Class)")
-        scanForResponse(operation.handleMessage(message("javadoc PartitionPlan")), "javax/batch/api/partition/PartitionPlan.html")
-        scanForResponse(operation.handleMessage(message("javadoc PartitionPlan.setPartitionProperties(Properties[])")),
+        scanForResponse(operation.handleMessage(message("~javadoc PartitionPlan")), "javax/batch/api/partition/PartitionPlan.html")
+        scanForResponse(operation.handleMessage(message("~javadoc PartitionPlan.setPartitionProperties(Properties[])")),
               "javax/batch/api/partition/PartitionPlan.html#setPartitionProperties(java.util.Properties[])")
     }
 

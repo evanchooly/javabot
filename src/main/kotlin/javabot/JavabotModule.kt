@@ -35,7 +35,7 @@ open class JavabotModule : AbstractModule() {
     private var config: JavabotConfig? = null
 
     private var datastore: Datastore? = null
-    private var botListenerProvider: Provider<BotListener>? = null
+    private var ircAdapterProvider: Provider<IrcAdapter>? = null
 
     lateinit var channelDaoProvider: Provider<ChannelDao>
     lateinit var configDaoProvider: Provider<ConfigDao>
@@ -43,7 +43,7 @@ open class JavabotModule : AbstractModule() {
     override fun configure() {
         configDaoProvider = binder().getProvider(ConfigDao::class.java)
         channelDaoProvider = binder().getProvider(ChannelDao::class.java)
-        botListenerProvider = binder().getProvider(BotListener::class.java)
+        ircAdapterProvider = binder().getProvider(IrcAdapter::class.java)
         install(FactoryModuleBuilder()
                 .build(ViewFactory::class.java))
     }
@@ -151,7 +151,7 @@ open class JavabotModule : AbstractModule() {
         return config
     }
 
-    fun getBotListener(): BotListener {
-        return botListenerProvider!!.get()
+    fun getBotListener(): IrcAdapter {
+        return ircAdapterProvider!!.get()
     }
 }

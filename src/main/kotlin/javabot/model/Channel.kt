@@ -11,12 +11,12 @@ import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.IndexOptions
 import org.mongodb.morphia.annotations.Indexes
 import org.mongodb.morphia.annotations.PrePersist
-import org.pircbotx.PircBotX
 import java.io.Serializable
 import java.time.LocalDateTime
 
 @Entity(value = "channels", noClassnameStored = true)
-@Indexes(Index(fields = arrayOf(Field("upperName")), options = IndexOptions(unique = true, dropDups = true))) class Channel : Serializable, Persistent {
+@Indexes(Index(fields = arrayOf(Field("upperName")), options = IndexOptions(unique = true, dropDups = true)))
+class Channel : Serializable, Persistent {
     @Id
     var id: ObjectId? = null
 
@@ -36,13 +36,18 @@ import java.time.LocalDateTime
     constructor() {
     }
 
-    constructor(name: String, key: String, logged: Boolean) {
+    constructor(name: String, logged: Boolean = true) {
+        this.name = name
+        this.logged = logged
+    }
+
+    constructor(name: String, key: String, logged: Boolean = true) {
         this.name = name
         this.key = key
         this.logged = logged
     }
 
-    constructor(id: ObjectId, name: String, key: String, logged: Boolean) {
+    constructor(id: ObjectId, name: String, key: String, logged: Boolean = true) {
         this.id = id
         this.name = name
         this.key = key
@@ -55,13 +60,5 @@ import java.time.LocalDateTime
 
     @PrePersist fun uppers() {
         upperName = name.toUpperCase()
-    }
-
-    fun join(ircBot: PircBotX) {
-        if (key == null) {
-            ircBot.sendIRC().joinChannel(name)
-        } else {
-            ircBot.sendIRC().joinChannel(name, key)
-        }
     }
 }

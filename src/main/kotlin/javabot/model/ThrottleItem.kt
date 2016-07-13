@@ -4,18 +4,16 @@ import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Indexed
-import org.pircbotx.User
 import java.util.Date
 
-@Entity(value = "throttled", noClassnameStored = true) class ThrottleItem(ircUser: User) : Persistent {
+@Entity(value = "throttled", noClassnameStored = true)
+class ThrottleItem(var user: String) : Persistent {
     @Id
     var id: ObjectId? = null
-    var user: String
-    @Indexed(expireAfterSeconds = 60) var until = Date()
 
-    init {
-        user = ircUser.nick
-    }
+    @Indexed(expireAfterSeconds = 60)
+    var until = Date()
+
     override fun toString(): String {
         return "ThrottleItem{user='%s', until=%s}".format(user, until)
     }

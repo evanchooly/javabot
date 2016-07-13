@@ -6,7 +6,7 @@ import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
-import org.pircbotx.Channel
+import javabot.model.Channel
 import javax.inject.Inject
 
 class ForgetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao, var channelDao: ChannelDao) :
@@ -35,7 +35,7 @@ class ForgetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDa
         if (factoid != null) {
             if ((!factoid.locked) || isAdminUser(event.user)) {
                 responses.add(Message(event, Sofia.factoidForgotten(key, event.user.nick)))
-                factoidDao.delete(event.user.nick, key, location(channelDao, channel))
+                factoidDao.delete(event.user.nick, key, channelDao.location(channel))
             } else {
                 responses.add(Message(event, Sofia.factoidDeleteLocked(event.user.nick)))
             }

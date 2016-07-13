@@ -23,7 +23,7 @@ class JavadocOperationTest : BaseTest() {
         bot
     }
 
-    @Throws(MalformedURLException::class) fun jdk() {
+    fun jdk() {
         val api = apiDao.find("JDK")
         if (api == null) {
             val event = ApiEvent(testUser.nick, "JDK", "http://docs.oracle.com/javase/8/docs/api", "")
@@ -33,50 +33,50 @@ class JavadocOperationTest : BaseTest() {
         messages.clear()
     }
 
-    @Throws(MalformedURLException::class) fun constructors() {
+    fun constructors() {
         jdk()
-        scanForResponse(operation.handleMessage(message("javadoc java.lang.String(char[])")), "java/lang/String.html")
-        scanForResponse(operation.handleMessage(message("javadoc String(char[])")), "java/lang/String.html#String-char[]-")
+        scanForResponse(operation.handleMessage(message("~javadoc java.lang.String(char[])")), "java/lang/String.html")
+        scanForResponse(operation.handleMessage(message("~javadoc String(char[])")), "java/lang/String.html#String-char[]-")
     }
 
-    @Throws(MalformedURLException::class) fun methods() {
+    fun methods() {
         jdk()
-        scanForResponse(operation.handleMessage(message("javadoc String.split(String)")), "java/lang/String.html#split-java.lang.String-")
-        scanForResponse(operation.handleMessage(message("javadoc -jdk String.split(String)")),
+        scanForResponse(operation.handleMessage(message("~javadoc String.split(String)")), "java/lang/String.html#split-java.lang.String-")
+        scanForResponse(operation.handleMessage(message("~javadoc -jdk String.split(String)")),
                 "java/lang/String.html#split-java.lang.String-")
-        scanForResponse(operation.handleMessage(message("javadoc String.split(java.lang.String)")),
+        scanForResponse(operation.handleMessage(message("~javadoc String.split(java.lang.String)")),
                 "java/lang/String.html#split-java.lang.String-")
-        scanForResponse(operation.handleMessage(message("javadoc String.join(*)")), "java/lang/String.html#join-")
-        scanForResponse(operation.handleMessage(message("javadoc String.split(*)")), "java/lang/String.html#split-java.lang.String-")
+        scanForResponse(operation.handleMessage(message("~javadoc String.join(*)")), "java/lang/String.html#join-")
+        scanForResponse(operation.handleMessage(message("~javadoc String.split(*)")), "java/lang/String.html#split-java.lang.String-")
     }
 
-    @Throws(MalformedURLException::class) fun nestedClasses() {
+    fun nestedClasses() {
         jdk()
-        scanForResponse(operation.handleMessage(message("javadoc Map.Entry")), "java/util/Map.Entry.html")
+        scanForResponse(operation.handleMessage(message("~javadoc Map.Entry")), "java/util/Map.Entry.html")
     }
 
-    @Throws(MalformedURLException::class) fun  format() {
+    fun  format() {
         jdk()
-        scanForResponse(operation.handleMessage(message("javadoc String.format(*)")),
+        scanForResponse(operation.handleMessage(message("~javadoc String.format(*)")),
                 "java/lang/String.html#format-java.util.Locale-java.lang.String-java.lang.Object[]")
     }
 
     @Test
-    @Throws(MalformedURLException::class) fun doFinal() {
+    fun doFinal() {
         jdk()
-        scanForResponse(operation.handleMessage(message("javadoc String.valueOf(*)")), Sofia.tooManyResults(testUser.nick))
+        scanForResponse(operation.handleMessage(message("~javadoc String.valueOf(*)")), Sofia.tooManyResults(testUser.nick))
     }
 
-    @Throws(MalformedURLException::class) fun fields() {
+    fun fields() {
         jdk()
-        scanForResponse(operation.handleMessage(message("javadoc System.in")), "java/lang/System.html#in")
-        scanForResponse(operation.handleMessage(message("javadoc Integer.MAX_VALUE")), "java/lang/Integer.html#MAX_VALUE")
-        scanForResponse(operation.handleMessage(message("javadoc -jdk System.in")), "java/lang/System.html#in")
+        scanForResponse(operation.handleMessage(message("~javadoc System.in")), "java/lang/System.html#in")
+        scanForResponse(operation.handleMessage(message("~javadoc Integer.MAX_VALUE")), "java/lang/Integer.html#MAX_VALUE")
+        scanForResponse(operation.handleMessage(message("~javadoc -jdk System.in")), "java/lang/System.html#in")
     }
 
-    @Throws(MalformedURLException::class) fun inherited() {
+    fun inherited() {
         jdk()
-        scanForResponse(operation.handleMessage(message("javadoc ArrayList.listIterator(*)")),
+        scanForResponse(operation.handleMessage(message("~javadoc ArrayList.listIterator(*)")),
                 "java/util/ArrayList.html#listIterator-int-")
     }
 }

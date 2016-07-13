@@ -55,7 +55,8 @@ class JavabotTestModule : JavabotModule() {
     }
 
     @Provides
-    @Singleton fun getJavabot(): Javabot {
+    @Singleton
+    fun getJavabot(): Javabot {
         return testJavabot
     }
 

@@ -6,10 +6,16 @@ import com.google.inject.Injector
 import com.google.inject.Singleton
 import com.jayway.awaitility.Awaitility
 import javabot.commands.AdminCommand
-import javabot.dao.*
+import javabot.dao.AdminDao
+import javabot.dao.ChannelDao
+import javabot.dao.ConfigDao
+import javabot.dao.EventDao
+import javabot.dao.LogsDao
+import javabot.dao.ShunDao
 import javabot.database.UpgradeScript
-import javabot.web.JavabotApplication
 import javabot.model.AdminEvent.State
+import javabot.model.Channel
+import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.Logs.Type
 import javabot.operations.BotOperation
@@ -17,13 +23,15 @@ import javabot.operations.OperationComparator
 import javabot.operations.StandardOperation
 import javabot.operations.throttle.NickServViolationException
 import javabot.operations.throttle.Throttler
-import org.pircbotx.PircBotX
-import org.pircbotx.User
+import javabot.web.JavabotApplication
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.time.LocalDateTime
-import java.util.*
+import java.util.ArrayList
+import java.util.SortedMap
+import java.util.TreeMap
+import java.util.TreeSet
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadPoolExecutor
@@ -33,10 +41,31 @@ import javax.inject.Provider
 
 @Singleton
 open class Javabot @Inject
-    constructor(protected var injector: Injector, private var configDao: ConfigDao, private var channelDao: ChannelDao,
-                private var logsDao: LogsDao, private var shunDao: ShunDao, private var eventDao: EventDao,
-                private var throttler: Throttler, private var ircBot: Provider<PircBotX>,
-                private var javabotConfig: JavabotConfig, private var application: Provider<JavabotApplication>) {
+constructor(private var injector: Injector, private var configDao: ConfigDao, private var channelDao: ChannelDao,
+            private var logsDao: LogsDao, private var shunDao: ShunDao, private var eventDao: EventDao,
+            private var throttler: Throttler, private var adapter: IrcAdapter, private var adminDao: AdminDao,
+            private var javabotConfig: JavabotConfig, private var application: Provider<JavabotApplication>) {
+
+    companion object {
+        val LOG: Logger = LoggerFactory.getLogger(Javabot::class.java)
+
+        @JvmStatic fun main(args: Array<String>) {
+            try {
+                val injector = Guice.createInjector(JavabotModule())
+                if (LOG.isInfoEnabled) {
+                    LOG.info("Starting Javabot")
+                }
+                val bot = injector.getInstance(Javabot::class.java)
+                bot.start()
+                Awaitility.await()
+                        .forever()
+                        .until<Boolean> { !bot.isRunning() }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+    }
 
     private var allOperationsMap = TreeMap<String, BotOperation>()
 
@@ -51,7 +80,7 @@ open class Javabot @Inject
 
     private val ignores = ArrayList<String>()
 
-    val activeOperations = TreeSet(OperationComparator())
+    val activeOperations = sortedSetOf(OperationComparator())
 
     @Volatile private var running = true
 
@@ -71,7 +100,7 @@ open class Javabot @Inject
 
     private fun setUpThreads() {
         eventHandler.scheduleAtFixedRate({ this.processAdminEvents() }, 5, 5, TimeUnit.SECONDS)
-        eventHandler.scheduleAtFixedRate({ this.joinChannels() }, 5, 60, TimeUnit.SECONDS)
+        eventHandler.scheduleAtFixedRate({ this.joinChannels() }, 5, 5, TimeUnit.SECONDS)
     }
 
     protected fun processAdminEvents() {
@@ -94,15 +123,17 @@ open class Javabot @Inject
     }
 
     private fun joinChannels() {
-        val ircBot = this.ircBot.get()
-        val connected = ircBot.isConnected
-        if (connected) {
-            val joined = ircBot.userChannelDao.allChannels.map({ it.name }).toSet()
-            val channels = channelDao.getChannels(true)
+        if (adapter.isConnected()) {
+            val joined = mutableSetOf<String>()
+            val channels = ArrayList(channelDao.getChannels(true))
             if (joined.size != channels.size) {
                 channels.filter({ channel -> !joined.contains(channel.name) }).forEach({ channel ->
-                    channel.join(ircBot)
-                    Thread.sleep(500L)
+                    if (!adapter.isBotOnChannel(channel.name)) {
+                        joinChannel(channel)
+                        Thread.sleep(250L)
+                    } else {
+                        joined.add(channel.name)
+                    }
                 })
             }
         }
@@ -129,7 +160,7 @@ open class Javabot @Inject
         try {
             val thread = Thread {
                 try {
-                    ircBot.get().startBot()
+                    adapter.startBot()
                 } catch (e: Exception) {
                     e.printStackTrace(System.out)
                 }
@@ -164,7 +195,8 @@ open class Javabot @Inject
         set.forEach({ it.execute() })
     }
 
-    @SuppressWarnings("unchecked") fun getAllOperations(): SortedMap<String, BotOperation> {
+    @SuppressWarnings("unchecked")
+    fun getAllOperations(): SortedMap<String, BotOperation> {
         for (op in configDao.list(BotOperation::class.java)) {
             allOperationsMap.put(op.getName(), op)
         }
@@ -218,24 +250,16 @@ open class Javabot @Inject
         val channel = message.channel
         logsDao.logMessage(Logs.Type.MESSAGE, channel, sender, message.value)
         val responses = arrayListOf<Message>()
-        if (isValidSender(sender.nick)) {
-            for (startString in startStrings) {
-                if (message.value.startsWith(startString)) {
-                    try {
-                        if (throttler.isThrottled(message.user)) {
-                            privateMessageUser(message.user, Sofia.throttledUser())
-                        } else {
-
-                            val content = message.extractContentFromMessage(getIrcBot(), startString)
-                            if (content != null) {
-                                responses.addAll(getResponses(content))
-                            }
-                        }
-                    } catch (e: NickServViolationException) {
-                        privateMessageUser(message.user, e.message!!)
-                    }
-
+        if (!ignores.contains(sender.nick) && !shunDao.isShunned(sender.nick)
+                && (message.channel != null || isOnCommonChannel(message.user))) {
+            try {
+                if (throttler.isThrottled(message.user) && !adminDao.isAdmin(message.user)) {
+                    privateMessageUser(sender, Sofia.throttledUser())
+                } else {
+                    responses.addAll(getResponses(message))
                 }
+            } catch (e: NickServViolationException) {
+                privateMessageUser(message.user, e.message!!)
             }
             if (responses.isEmpty()) {
                 responses.addAll(getChannelResponses(message))
@@ -260,8 +284,8 @@ open class Javabot @Inject
         } else {
             val value = event.massageTell()
             if (event.channel != null) {
-                logMessage(event.channel, getIrcBot().userBot, value)
-                event.channel.send().message(value)
+                logMessage(event.channel, event.user, value)
+                adapter.send(event.channel, value)
             } else {
                 LOG.debug("channel is null.  sending directly to user: " + event)
                 privateMessageUser(event.user, value)
@@ -269,29 +293,27 @@ open class Javabot @Inject
         }
     }
 
-    fun privateMessageUser(user: User, message: String) {
+    fun privateMessageUser(user: JavabotUser, message: String) {
         logMessage(null, user, message)
-        user.send().message(message)
+        adapter.send(user, message)
     }
 
-    private fun postAction(channel: org.pircbotx.Channel, message: String) {
-        val bot = ircBot.get().userBot
-        if (channel.name != bot.nick) {
-            logsDao.logMessage(Type.ACTION, channel, bot, message)
+    private fun postAction(channel: Channel, message: String) {
+        if (channel.name != getNick()) {
+            logsDao.logMessage(Type.ACTION, channel, JavabotUser(getNick()), message)
         }
-        channel.send().action(message)
+        adapter.action(channel, message)
     }
 
-    internal fun logMessage(channel: org.pircbotx.Channel?, user: User, message: String) {
-        val sender = ircBot.get().nick
-        if (channel != null && channel.name != sender) {
+    internal fun logMessage(channel: Channel?, user: JavabotUser, message: String) {
+        if (channel?.name != getNick()) {
             logsDao.logMessage(Logs.Type.MESSAGE, channel, user, message)
         }
     }
 
     fun getResponses(message: Message): List<Message> {
         val iterator = activeOperations.iterator()
-        var responses = arrayListOf<Message>()
+        val responses = arrayListOf<Message>()
         while (iterator.hasNext() && responses.isEmpty()) {
             val next = iterator.next()
             try {
@@ -311,47 +333,31 @@ open class Javabot @Inject
 
     private fun getChannelResponses(event: Message): List<Message> {
         val iterator = activeOperations.iterator()
-        var responses = arrayListOf<Message>()
+        val responses = arrayListOf<Message>()
         while (iterator.hasNext() && responses.isEmpty()) {
             responses.addAll(iterator.next().handleChannelMessage(event))
         }
         return responses
     }
 
-    open fun isOnCommonChannel(user: User): Boolean {
-        return !ircBot.get().userChannelDao.getChannels(user).isEmpty()
-    }
-
-    protected fun isValidSender(sender: String): Boolean {
-        return !ignores.contains(sender) && !shunDao.isShunned(sender)
+    open fun isOnCommonChannel(user: JavabotUser): Boolean {
+        return adapter.isOnCommonChannel(user)
     }
 
     open fun getNick(): String {
         return configDao.get().nick
     }
 
-    open fun getIrcBot(): PircBotX {
-        return ircBot.get()
+    fun joinChannel(channel: Channel) {
+        adapter.joinChannel(channel)
     }
 
-    companion object {
-        val LOG: Logger = LoggerFactory.getLogger(Javabot::class.java)
-
-        @JvmStatic fun main(args: Array<String>) {
-            try {
-                val injector = Guice.createInjector(JavabotModule())
-                if (LOG.isInfoEnabled) {
-                    LOG.info("Starting Javabot")
-                }
-                val bot = injector.getInstance(Javabot::class.java)
-                bot.start()
-                Awaitility.await()
-                        .forever()
-                        .until<Boolean> { !bot.isRunning() }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
-        }
+    fun leaveChannel(chan: Channel, user: JavabotUser) {
+        adapter.leave(chan, user)
     }
+
+    fun message(target: String, message: String) {
+        adapter.message(target, message)
+    }
+
 }

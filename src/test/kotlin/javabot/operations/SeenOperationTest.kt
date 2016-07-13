@@ -11,7 +11,7 @@ class SeenOperationTest : BaseTest() {
     private lateinit var operation: SeenOperation
 
     @Test fun seen() {
-        var response = operation.handleMessage(message("seen jimmyjimjim"))
+        var response = operation.handleMessage(message("~seen jimmyjimjim"))
         Assert.assertEquals(response[0].value, Sofia.seenUnknown(testUser.nick, "jimmyjimjim"))
     }
 }

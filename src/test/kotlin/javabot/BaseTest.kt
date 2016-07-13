@@ -13,12 +13,10 @@ import javabot.model.AdminEvent
 import javabot.model.AdminEvent.State
 import javabot.model.Change
 import javabot.model.Channel
+import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.NickServInfo
-import javabot.model.UserFactory
 import org.mongodb.morphia.Datastore
-import org.pircbotx.PircBotX
-import org.pircbotx.User
 import org.testng.Assert
 import org.testng.annotations.AfterSuite
 import org.testng.annotations.BeforeMethod
@@ -35,9 +33,6 @@ open class BaseTest {
     var done: EnumSet<State> = EnumSet.of(State.COMPLETED, State.FAILED)
 
     @Inject
-    protected lateinit var userFactory: UserFactory
-
-    @Inject
     protected lateinit var datastore: Datastore
 
     @Inject
@@ -48,12 +43,6 @@ open class BaseTest {
 
     @Inject
     protected lateinit var logsDao: LogsDao
-
-    @Inject
-    protected lateinit var nickServDao: NickServDao
-
-    @Inject
-    protected lateinit var ircBot: Provider<PircBotX>
 
     @Inject
     protected lateinit var adminDao: AdminDao
@@ -69,15 +58,16 @@ open class BaseTest {
 
     val ok: String = "OK, " + TEST_USER_NICK.substring(0, Math.min(TEST_USER_NICK.length, 16)) + "."
 
-    val targetUser: User by lazy { userFactory.createUser(TEST_TARGET_NICK, TEST_TARGET_NICK, "hostmask") }
+    val targetUser = JavabotUser(TEST_TARGET_NICK, TEST_TARGET_NICK, "hostmask")
 
-    val testUser: User by lazy { userFactory.createUser(TEST_USER_NICK, TEST_USER_NICK, "hostmask") }
+    val testUser = JavabotUser(TEST_USER_NICK, TEST_USER_NICK, "hostmask")
 
-    val testChannel: org.pircbotx.Channel by lazy { getIrcBot().userChannelDao.getChannel("#jbunittest") }
+    val testChannel = Channel("#jbunittest")
 
-    @BeforeTest fun setup() {
+    @BeforeTest
+    fun setup() {
         messages.clear()
-        var admin = try {
+        val admin = try {
             adminDao.getAdminByEmailAddress(BOT_EMAIL)
         } catch(adminNotFound: RuntimeException) {
             Admin(testUser.nick, BOT_EMAIL, testUser.hostmask, true)
@@ -113,16 +103,13 @@ open class BaseTest {
         bot.getAllOperations().keys.forEach({ bot.disableOperation(it) })
     }
 
-    @BeforeMethod fun clearMessages() {
+    @BeforeMethod
+    fun clearMessages() {
         messages.clear()
     }
 
-    fun getIrcBot(): PircBotX {
-        return ircBot.get()
-    }
-
     @AfterSuite
-    @Throws(InterruptedException::class) fun shutdown() {
+    fun shutdown() {
         bot.get().shutdown()
     }
 
@@ -135,18 +122,8 @@ open class BaseTest {
               }
     }
 
-    protected fun registerIrcUser(nick: String, userName: String, host: String): User {
-        val bob = userFactory.createUser(nick, userName, host)
-        val info = NickServInfo(bob)
-        info.registered = info.registered.minusDays(100)
-        nickServDao.clear()
-        nickServDao.save(info)
-        return bob
-    }
-
-
-    protected fun message(value: String, user: User = testUser, startString: String = ""): Message {
-        return Message(testChannel, user, value).extractContentFromMessage(getIrcBot(), startString)!!
+    protected fun message(value: String, user: JavabotUser = testUser): Message {
+        return Message.extractContentFromMessage(testChannel, user, "~", value)
     }
 
     protected fun scanForResponse(messages: List<Message>, target: String) {
@@ -164,4 +141,13 @@ open class BaseTest {
         val TEST_BOT_NICK: String = "testjavabot"
         val BOT_EMAIL: String = "test@example.com"
     }
+}
+
+fun NickServDao.registerIrcUser(nick: String, userName: String, host: String): JavabotUser {
+    val bob = JavabotUser(nick, userName, host)
+    val info = NickServInfo(bob)
+    info.registered = info.registered.minusDays(100)
+    clear()
+    save(info)
+    return bob
 }

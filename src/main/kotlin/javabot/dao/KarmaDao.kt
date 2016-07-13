@@ -2,15 +2,14 @@ package javabot.dao
 
 import com.mongodb.WriteResult
 import javabot.dao.util.QueryParam
+import javabot.model.Channel
 import javabot.model.Karma
 import javabot.model.criteria.KarmaCriteria
-import javabot.operations.location
 import org.mongodb.morphia.Datastore
-import org.pircbotx.Channel
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class KarmaDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var channelDao: ChannelDao)  :
+class KarmaDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var channelDao: ChannelDao) :
         BaseDao<Karma>(ds, Karma::class.java) {
 
     fun getKarmas(qp: QueryParam): List<Karma> {

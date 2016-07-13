@@ -19,12 +19,12 @@ import javax.inject.Inject
         if (!factoidDao.hasFactoid("afky")) {
             factoidDao.addFactoid(testUser.nick, "afky", "test", LogsDaoTest.CHANNEL_NAME)
         }
-        var response = operation.handleMessage(message("forget afky"))
+        var response = operation.handleMessage(message("~forget afky"))
         Assert.assertEquals(response[0].value, Sofia.factoidForgotten("afky", testUser.nick))
     }
 
     fun nonexistentFactoid() {
-        var response = operation.handleMessage(message("forget asdfghjkl"))
+        var response = operation.handleMessage(message("~forget asdfghjkl"))
         Assert.assertEquals(response[0].value, Sofia.factoidDeleteUnknown("asdfghjkl", testUser.nick))
     }
 }

@@ -19,15 +19,15 @@ import java.lang.String.format
         val throttleThreshold = config.throttleThreshold
         Assert.assertNotNull(throttleThreshold)
 
-        var response = operation.handleMessage(message("admin configure"))
+        var response = operation.handleMessage(message("~admin configure"))
         Assert.assertEquals(response[0].value, config.toString())
 
-        response = operation.handleMessage(message("admin configure --property=throttleThreshold --value=15"))
+        response = operation.handleMessage(message("~admin configure --property=throttleThreshold --value=15"))
         Assert.assertEquals(response[0].value, format("Setting %s to %d", "throttleThreshold", 15))
 
         Assert.assertEquals(configDao.get().throttleThreshold, Integer(15))
 
-        response = operation.handleMessage(message("admin configure --property=throttleThreshold --value=10"))
+        response = operation.handleMessage(message("~admin configure --property=throttleThreshold --value=10"))
         Assert.assertEquals(response[0].value, format("Setting %s to %d", "throttleThreshold", 10))
 
         Assert.assertEquals(configDao.get().throttleThreshold, Integer(10))

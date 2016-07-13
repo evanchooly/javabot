@@ -7,16 +7,14 @@ import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.operations.BotOperation
-import org.pircbotx.PircBotX
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
-import javax.inject.Provider
 
 @Parameters(separators = "=", optionPrefixes = "--")
-abstract class AdminCommand @Inject constructor(bot: Javabot, adminDao: AdminDao, var ircBot: Provider<PircBotX> ) :
+abstract class AdminCommand @Inject constructor(bot: Javabot, adminDao: AdminDao) :
         BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
-        var responses = arrayListOf<Message>()
+        val responses = arrayListOf<Message>()
         var message = event.value
         if (message.startsWith("admin ", true)) {
             if (isAdminUser(event.user)) {

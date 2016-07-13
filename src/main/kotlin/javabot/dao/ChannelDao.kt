@@ -19,11 +19,13 @@ import java.util.ArrayList
         ds.delete(channelCriteria.query())
     }
 
-    @SuppressWarnings("unchecked") fun configuredChannels(): List<String> {
+    @SuppressWarnings("unchecked")
+    fun configuredChannels(): List<String> {
         return ChannelCriteria(ds).name().distinct() as List<String>
     }
 
-    @SuppressWarnings("unchecked") fun getChannels(): List<Channel> {
+    @SuppressWarnings("unchecked")
+    fun getChannels(): List<Channel> {
         return getChannels(false)
     }
 
@@ -37,7 +39,8 @@ import java.util.ArrayList
         return query.asList()
     }
 
-    @SuppressWarnings("unchecked") fun find(qp: QueryParam): List<Channel> {
+    @SuppressWarnings("unchecked")
+    fun find(qp: QueryParam): List<Channel> {
         var condition = qp.sort
         if (!qp.sortAsc) {
             condition = "-" + condition
@@ -67,7 +70,8 @@ import java.util.ArrayList
         //            .getResultList();
     }
 
-    @SuppressWarnings("unchecked") fun loggedChannels(): List<String> {
+    @SuppressWarnings("unchecked")
+    fun loggedChannels(): List<String> {
         val criteria = ChannelCriteria(ds)
         criteria.logged().equal(true)
         val channels = criteria.query().retrievedFields(true, "name").asList()
@@ -90,6 +94,16 @@ import java.util.ArrayList
     fun save(channel: Channel) {
         channel.updated = LocalDateTime.now()
         super.save(channel)
+    }
+
+    fun location(channel: Channel?): String {
+        val location: String
+        if (channel != null ) {
+            location = if (isLogged(channel.name)) channel.name else "private channel"
+        } else {
+            location = channel?.name ?: "private message"
+        }
+        return location
     }
 
 }

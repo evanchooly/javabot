@@ -10,7 +10,6 @@ import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.Indexed
 import org.mongodb.morphia.annotations.Indexes
 import org.mongodb.morphia.annotations.PrePersist
-import org.pircbotx.User
 import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.io.UnsupportedEncodingException
@@ -20,7 +19,8 @@ import java.nio.charset.Charset
 import java.time.LocalDateTime
 
 @Entity(value = "factoids", noClassnameStored = true)
-@Indexes(Index(fields = arrayOf(Field("upperName"), Field("upperUserName")))) class Factoid(var name: String = "", var value: String = "", var userName: String = "") : Serializable, Persistent {
+@Indexes(Index(fields = arrayOf(Field("upperName"), Field("upperUserName"))))
+class Factoid(var name: String = "", var value: String = "", var userName: String = "") : Serializable, Persistent {
     @Id
     var id: ObjectId? = null
 
@@ -44,7 +44,7 @@ import java.time.LocalDateTime
         update()
     }
 
-    fun evaluate(subject: User?, sender: String, replacedValue: String): String {
+    fun evaluate(subject: JavabotUser?, sender: String, replacedValue: String): String {
         var message = value
         val target = if (subject == null) sender else subject.nick
         if (subject != null && !message.contains("\$who") && message.startsWith("<reply>")) {
@@ -98,7 +98,7 @@ import java.time.LocalDateTime
         return sb.toString()
     }
 
-    protected fun processRandomList(message: String): String {
+    private fun processRandomList(message: String): String {
         var result = message
         var index = -1
         index = result.indexOf("(", index + 1)
@@ -109,7 +109,7 @@ import java.time.LocalDateTime
             if (choices.size > 1) {
                 val chosen = (Math.random() * choices.size).toInt()
                 result = format("%s%s%s", result.substring(0, index), choices[chosen],
-                      result.substring(index2 + 1))
+                        result.substring(index2 + 1))
             }
             index = result.indexOf("(", index + 1)
             index2 = result.indexOf(")", index + 1)
@@ -125,7 +125,7 @@ import java.time.LocalDateTime
 
     override fun toString(): String {
         return format("Factoid{id=%s, name='%s', value='%s', userName='%s', updated=%s, lastUsed=%s, locked=%s}",
-              id, name, value, userName, updated, lastUsed, locked)
+                id, name, value, userName, updated, lastUsed, locked)
     }
 
     companion object {

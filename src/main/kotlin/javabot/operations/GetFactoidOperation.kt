@@ -7,15 +7,12 @@ import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.FactoidDao
 import javabot.model.Factoid
-import org.pircbotx.PircBotX
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 import java.util.HashSet
 import javax.inject.Inject
-import javax.inject.Provider
 
-class GetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao,
-                                              var ircBot: Provider<PircBotX>) :
+class GetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :
         BotOperation(bot, adminDao), StandardOperation {
 
     override fun getPriority(): Int {
@@ -48,7 +45,7 @@ class GetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, 
 
         if (factoid != null) {
             getResponse(responses, event, backtrack, params, factoid)
-            factoid.lastUsed = LocalDateTime.now();
+            factoid.lastUsed = LocalDateTime.now()
             factoidDao.save(factoid)
         }
     }
@@ -81,7 +78,7 @@ class GetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, 
     private fun validateTell(responses: MutableList<Message>, event: Message) {
         if (event.tell) {
             val channel = event.channel
-            var targetUser = event.target!!
+            val targetUser = event.target!!
             if (targetUser.nick.equals(bot.getNick(), ignoreCase = true)) {
                 responses.add(Message(event, Sofia.botSelfTalk()))
             } else {

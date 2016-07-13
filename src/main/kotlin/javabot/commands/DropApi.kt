@@ -7,12 +7,9 @@ import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.javadoc.JavadocApi
-import org.pircbotx.PircBotX
 import javax.inject.Inject
-import javax.inject.Provider
 
-class DropApi @Inject constructor(bot: Javabot, adminDao: AdminDao, ircBot: Provider<PircBotX>, var apiDao: ApiDao) :
-        AdminCommand(bot, adminDao, ircBot) {
+class DropApi @Inject constructor(bot: Javabot, adminDao: AdminDao, var apiDao: ApiDao) : AdminCommand(bot, adminDao) {
     @Parameter(required = true)
     lateinit var apiName: String
 

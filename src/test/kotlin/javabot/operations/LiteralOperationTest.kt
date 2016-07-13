@@ -12,7 +12,7 @@ import javax.inject.Inject
     private lateinit var operation: LiteralOperation
     @Test fun testMissingFactoid() {
         val factoidName = "foo${Date().time}"
-        var response = operation.handleMessage(message("literal ${factoidName}"))
+        var response = operation.handleMessage(message("~literal ${factoidName}"))
         Assert.assertEquals(response[0].value, Sofia.factoidUnknown(factoidName))
     }
 

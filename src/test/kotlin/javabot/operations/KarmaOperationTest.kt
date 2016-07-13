@@ -3,6 +3,8 @@ package javabot.operations
 import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
 import javabot.dao.KarmaDao
+import javabot.dao.NickServDao
+import javabot.registerIrcUser
 import org.testng.Assert
 import org.testng.annotations.Test
 import java.lang.String.format
@@ -10,23 +12,18 @@ import java.util.Date
 import javax.inject.Inject
 
 @Test(groups = arrayOf("operations"))
-class KarmaOperationTest : BaseTest() {
-    @Inject
-    protected lateinit var karmaDao: KarmaDao
-
-    @Inject
-    protected lateinit var operation: KarmaOperation
-
+class KarmaOperationTest @Inject constructor(val nickServDao: NickServDao, val karmaDao: KarmaDao, val operation: KarmaOperation) :
+        BaseTest() {
     fun noncontiguousNameReadKarma() {
         val target = "foo ${Date().time}"
-        var response = operation.handleMessage(message("karma ${target}"))
+        val response = operation.handleMessage(message("~karma ${target}"))
         Assert.assertEquals(response[0].value, format("%s has no karma, %s", target, testUser))
     }
 
     fun noncontiguousNameAddKarma() {
         val target = "foo ${Date().time}"
-        val karma = getKarma(userFactory.createUser(target, target, "localhost").nick) + 1
-        var response = operation.handleMessage(message("${target} ++"))
+        val karma = getKarma(target) + 1
+        val response = operation.handleMessage(message("~${target} ++"))
                 Assert.assertEquals(response[0].value, Sofia.karmaOthersValue(target, karma, testUser.nick))
         Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma, testChannel.name)))
         karmaDao.delete(karmaDao.find(target)?.id)
@@ -34,21 +31,21 @@ class KarmaOperationTest : BaseTest() {
 
     fun karmaLooksLikeParam() {
         val target = "foo ${Date().time}"
-        var response = operation.handleMessage(message("${target}--bar=as"))
+        val response = operation.handleMessage(message("~${target}--bar=as"))
         Assert.assertEquals(response.size, 0)
     }
 
     fun karmaLooksLikeParamShort() {
-        var response = operation.handleMessage(message("--bar=as"))
+        var response = operation.handleMessage(message("~--bar=as"))
         Assert.assertEquals(response.size, 0)
-        response = operation.handleMessage(message(" --bar=af"))
+        response = operation.handleMessage(message("~ --bar=af"))
         Assert.assertEquals(response.size, 0)
     }
 
     fun noncontiguousNameAddKarmaTrailingSpace() {
         val target = "foo ${Date().time}"
         val karma = getKarma(target) + 1
-        var response = operation.handleMessage(message("${target} ++"))
+        val response = operation.handleMessage(message("~${target} ++"))
                 Assert.assertEquals(response[0].value, Sofia.karmaOthersValue(target, karma, testUser.nick))
         Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma, testChannel.name)))
         karmaDao.delete(karmaDao.find(target)?.id)
@@ -56,8 +53,8 @@ class KarmaOperationTest : BaseTest() {
 
     fun noncontiguousNameAddKarmaWithComment() {
         val target = "foo ${Date().time}"
-        val karma = getKarma(userFactory.createUser(target, target, "localhost").nick) + 1
-        var response = operation.handleMessage(message("${target}++ hey coolio"))
+        val karma = getKarma(target) + 1
+        val response = operation.handleMessage(message("~${target}++ hey coolio"))
                 Assert.assertEquals(response[0].value, Sofia.karmaOthersValue(target, karma, testUser.nick))
         Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma, testChannel.name)))
         karmaDao.delete(karmaDao.find(target)?.id)
@@ -65,8 +62,8 @@ class KarmaOperationTest : BaseTest() {
 
     fun shortNameAddKarma() {
         val target = "a" // shortest possible name
-        val karma = getKarma(userFactory.createUser(target, target, "localhost").nick) + 1
-        var response = operation.handleMessage(message("${target}++"))
+        val karma = getKarma(target) + 1
+        val response = operation.handleMessage(message("~${target}++"))
                 Assert.assertEquals(response[0].value, Sofia.karmaOthersValue(target, karma, testUser.nick))
         Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma, testChannel.name)))
         karmaDao.delete(karmaDao.find(target)?.id)
@@ -74,24 +71,24 @@ class KarmaOperationTest : BaseTest() {
 
     fun noNameAddKarma() {
         val target = "" // no name
-        val karma = getKarma(userFactory.createUser(target, target, "localhost").nick) + 1
-        var response = operation.handleMessage(message("${target}++"))
+        val karma = getKarma(target) + 1
+        val response = operation.handleMessage(message("~${target}++"))
         Assert.assertEquals(response.size, 0)
         Assert.assertFalse(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma, testChannel.name)))
     }
 
     fun noNameSubKarma() {
         val target = "" // no name
-        val karma = getKarma(userFactory.createUser(target, target, "localhost").nick) - 1
-        var response = operation.handleMessage(message("${target}--"))
+        val karma = getKarma(target) - 1
+        val response = operation.handleMessage(message("~${target}--"))
         Assert.assertEquals(response.size, 0)
         Assert.assertFalse(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma, testChannel.name)))
     }
 
     fun logNew() {
         val target = "${Date().time}"
-        val karma = getKarma(userFactory.createUser(target, target, "localhost").nick) + 1
-        var response = operation.handleMessage(message("${target}++"))
+        val karma = getKarma(target) + 1
+        val response = operation.handleMessage(message("~${target}++"))
                 Assert.assertEquals(response[0].value, Sofia.karmaOthersValue(target, karma, testUser.nick))
         Assert.assertTrue(changeDao.findLog(Sofia.karmaChanged(testUser.nick, target, karma, testChannel.name)))
         karmaDao.delete(karmaDao.find(target)?.id)
@@ -99,14 +96,14 @@ class KarmaOperationTest : BaseTest() {
 
     fun logChanged() {
         val target = "javabot"
-        val karma = getKarma(userFactory.createUser(target, target, "localhost").nick) + 1
-        var response = operation.handleMessage(message("${target}++"))
+        val karma = getKarma(target) + 1
+        val response = operation.handleMessage(message("~${target}++"))
                 Assert.assertEquals(response[0].value, Sofia.karmaOthersValue(target, karma, testUser.nick))
     }
 
     fun changeOwnKarma() {
         val karma = getKarma(testUser.nick)
-        var response = operation.handleMessage(message("${testUser}++"))
+        val response = operation.handleMessage(message("~${testUser}++"))
         Assert.assertEquals(response[0].value, "You can't increment your own karma.")
         Assert.assertEquals(response[1].value, "${testUser}, you have a karma level of ${karma - 1}")
         val karma2 = getKarma(testUser.nick)
@@ -114,17 +111,17 @@ class KarmaOperationTest : BaseTest() {
     }
 
     fun queryOwnKarma() {
-        val bill = registerIrcUser("bill", "bill", "localhost")
+        val bill = nickServDao.registerIrcUser("bill", "bill", "localhost")
         val karma = getKarma(bill.nick)
         Assert.assertEquals(karma, 0)
-        var response = operation.handleMessage(message("karma bill", bill))
+        val response = operation.handleMessage(message("~karma bill", bill))
         Assert.assertEquals(response[0].value, Sofia.karmaOwnNone("bill"))
     }
 
     fun karmaChangeWithComments() {
         val target = "L-----D"
         try {
-            var response = operation.handleMessage(message("target google java embedded nosql"))
+            val response = operation.handleMessage(message("~target google java embedded nosql"))
             Assert.assertEquals(response.size, 0, "Should not have gotten a karma message")
         } finally {
             val karma = karmaDao.find(target)

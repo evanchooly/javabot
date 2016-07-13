@@ -16,7 +16,6 @@ import org.bson.types.ObjectId
 import org.mongodb.morphia.Datastore
 import org.mongodb.morphia.query.Criteria
 import org.mongodb.morphia.query.UpdateResults
-import org.pircbotx.PircBotX
 import java.time.LocalDateTime
 
 class ApiEventCriteria(ds: Datastore) : BaseCriteria<ApiEvent>(ds, ApiEvent::class.java) {
@@ -252,11 +251,6 @@ class ApiEventCriteria(ds: Datastore) : BaseCriteria<ApiEvent>(ds, ApiEvent::cla
 
         fun unsetDownloadUrl(): ApiEventUpdater {
             updateOperations.unset("downloadUrl")
-            return this
-        }
-
-        fun ircBot(value: Provider<PircBotX>): ApiEventUpdater {
-            updateOperations.set("ircBot", value)
             return this
         }
 

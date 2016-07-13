@@ -36,7 +36,7 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
 
             if (event.tell) {
                 responses.add(Message(event, Sofia.notAllowed()))
-                return responses;
+                return responses
             }
 
             /*
@@ -90,7 +90,7 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
                     }
                     karma.userName = sender.nick
                     dao.save(karma)
-                    changeDao.logKarmaChanged(karma.userName, karma.name, karma.value, location(channelDao, channel))
+                    changeDao.logKarmaChanged(karma.userName, karma.name, karma.value, channelDao.location(channel))
                     readKarma(responses, Message(event.channel, event.user, "karma " + nick))
                 }
             }

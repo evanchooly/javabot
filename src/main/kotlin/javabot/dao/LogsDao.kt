@@ -2,12 +2,12 @@ package javabot.dao
 
 import com.google.inject.Inject
 import javabot.Seen
+import javabot.model.Channel
+import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.Logs.Type
 import javabot.model.criteria.LogsCriteria
 import org.mongodb.morphia.Datastore
-import org.pircbotx.Channel
-import org.pircbotx.User
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
@@ -15,7 +15,12 @@ import java.time.LocalDateTime
 
 class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channelDao: ChannelDao) :
         BaseDao<Logs>(ds, Logs::class.java) {
-    fun logMessage(type: Type, channel: Channel?, user: User, message: String) {
+
+    companion object {
+        val LOG: Logger = LoggerFactory.getLogger(LogsDao::class.java)
+    }
+
+    fun logMessage(type: Type, channel: Channel?, user: JavabotUser, message: String) {
         save(Logs(user.nick, message, type, channel?.name))
     }
 
@@ -62,9 +67,5 @@ class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channel
         val criteria = LogsCriteria(ds)
         criteria.channel(channel)
         ds.delete(criteria.query())
-    }
-
-    companion object {
-        val LOG: Logger = LoggerFactory.getLogger(LogsDao::class.java)
     }
 }

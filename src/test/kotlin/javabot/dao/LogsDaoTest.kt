@@ -3,6 +3,7 @@ package javabot.dao
 import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
 import javabot.model.Channel
+import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.Logs.Type
 import javabot.model.criteria.LogsCriteria
@@ -12,9 +13,10 @@ import org.testng.annotations.Test
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class LogsDaoTest : BaseTest() {
-    @Inject
-    protected lateinit var ds: Datastore
+class LogsDaoTest(@Inject val ds: Datastore) : BaseTest() {
+    companion object {
+        val CHANNEL_NAME: String = "#watercooler"
+    }
 
     @Test fun seen() {
         val logsCriteria = LogsCriteria(ds)
@@ -25,8 +27,7 @@ class LogsDaoTest : BaseTest() {
         channel.name = CHANNEL_NAME
         channel.logged = true
         channelDao.save(channel)
-        logsDao.logMessage(Type.MESSAGE, ircBot.get().userChannelDao.getChannel(channel.name),
-              userFactory.createUser("ChattyCathy", "ChattyCathy", "localhost"), "test message")
+        logsDao.logMessage(Type.MESSAGE, channel, JavabotUser("ChattyCathy", "ChattyCathy", "localhost"), "test message")
 
         Assert.assertNotNull(logsDao.getSeen(channel.name, "chattycathy"))
         Assert.assertFalse(logsDao.findByChannel(channel.name, LocalDateTime.now(), false).isEmpty())
@@ -36,23 +37,14 @@ class LogsDaoTest : BaseTest() {
     @Test fun channelEvents() {
         val chanName = "##testChannel"
         channelDao.delete(chanName)
-        channelDao.create(chanName, true, null)
+        val channel = channelDao.create(chanName, true, null)
         logsDao.deleteAllForChannel(chanName)
 
-        val bot = ircBot.get()
-        val channel = bot.userChannelDao.getChannel(chanName)
-        val user = bot.userChannelDao.getUser(testUser.nick)
-
-        logsDao.logMessage(Logs.Type.PART, channel, user, Sofia.userParted(user.nick, "i'm out of here!"))
+        logsDao.logMessage(Logs.Type.PART, channel, testUser, Sofia.userParted(testUser.nick, "i'm out of here!"))
 
         val logs = logsDao.findByChannel(chanName, LocalDateTime.now(), true)
 
         Assert.assertFalse(logs.isEmpty(), "Should have one log entry")
-        Assert.assertEquals(logs[0].message, Sofia.userParted(user.nick, "i'm out of here!"))
-    }
-
-    companion object {
-
-        val CHANNEL_NAME: String = "#watercooler"
+        Assert.assertEquals(logs[0].message, Sofia.userParted(testUser.nick, "i'm out of here!"))
     }
 }

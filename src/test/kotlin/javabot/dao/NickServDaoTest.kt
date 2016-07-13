@@ -1,6 +1,8 @@
 package javabot.dao
 
-import javabot.BotListener
+import javabot.IrcAdapter
+import javabot.MockIrcUser
+import javabot.model.JavabotUser
 import javabot.model.NickServInfo
 import org.pircbotx.hooks.events.NoticeEvent
 import org.testng.Assert
@@ -10,10 +12,8 @@ import java.time.Month
 import java.util.Arrays.asList
 import javax.inject.Inject
 
-@Test class NickServDaoTest : BaseServiceTest() {
-    @Inject
-    protected lateinit var botListener: BotListener
-
+@Test
+class NickServDaoTest @Inject constructor(val nickServDao: NickServDao, val ircAdapter: IrcAdapter) : BaseServiceTest() {
     fun parseNickServResponse() {
         nickServDao.clear()
         val list = asList("Information on cheeser (account cheeser):",
@@ -37,8 +37,7 @@ import javax.inject.Inject
     }
 
     private fun send(info: NickServInfo) {
-        val user = ircBot.get().userChannelDao.getUser("nickserv")
-        info.toNickServFormat().forEach({ o -> botListener.onNotice(NoticeEvent(ircBot.get(), user, null, o)) })
+        info.toNickServFormat().forEach({ o -> ircAdapter.onNotice(NoticeEvent(null, MockIrcUser(JavabotUser("nickserv")), null, o)) })
     }
 
     private fun getNickServInfo(account: String, nick: String, registered: LocalDateTime,

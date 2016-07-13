@@ -2,13 +2,14 @@ package javabot.model
 
 import org.mongodb.morphia.annotations.Embedded
 
-@Embedded class IrcUser {
-    var nick: String? = null
-    var userName: String? = null
-    var host: String? = null
+@Embedded
+class JavabotUser {
+    var nick: String = ""
+    var userName: String = ""
+    var hostmask: String = ""
 
     constructor(nick: String, userName: String, host: String) {
-        this.host = host
+        this.hostmask = host
         this.nick = nick
         this.userName = userName
     }
@@ -18,6 +19,6 @@ import org.mongodb.morphia.annotations.Embedded
     }
 
     override fun toString(): String {
-        return nick ?: ""
+        return nick
     }
 }

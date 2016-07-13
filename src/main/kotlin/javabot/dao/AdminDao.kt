@@ -3,10 +3,10 @@ package javabot.dao
 import com.antwerkz.sofia.Sofia
 import javabot.model.Admin
 import javabot.model.EventType
+import javabot.model.JavabotUser
 import javabot.model.OperationEvent
 import javabot.model.criteria.AdminCriteria
 import org.mongodb.morphia.Datastore
-import org.pircbotx.User
 import javax.inject.Inject
 
 class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) : BaseDao<Admin>(ds, Admin::class.java) {
@@ -15,7 +15,7 @@ class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) : Ba
         return ds.createQuery(Admin::class.java).order("userName").asList()
     }
 
-    fun isAdmin(user: User): Boolean {
+    fun isAdmin(user: JavabotUser): Boolean {
         return findAll().isEmpty() || getAdmin(user) != null
     }
 
@@ -26,7 +26,7 @@ class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) : Ba
         return adminCriteria.query().get()
     }
 
-    fun getAdmin(user: User): Admin? {
+    fun getAdmin(user: JavabotUser): Admin? {
         val adminCriteria = AdminCriteria(ds)
         adminCriteria.ircName(user.nick)
         return adminCriteria.query().get()

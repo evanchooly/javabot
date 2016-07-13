@@ -3,8 +3,7 @@ package javabot.operations
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
-import org.pircbotx.User
-import javax.inject.Inject
+import javabot.model.JavabotUser
 
 abstract class BotOperation constructor(var bot: Javabot, var adminDao: AdminDao) {
     /**
@@ -36,7 +35,7 @@ abstract class BotOperation constructor(var bot: Javabot, var adminDao: AdminDao
         return getName()
     }
 
-    protected fun isAdminUser(user: User): Boolean {
+    protected fun isAdminUser(user: JavabotUser): Boolean {
         return adminDao.isAdmin(user)
     }
 }

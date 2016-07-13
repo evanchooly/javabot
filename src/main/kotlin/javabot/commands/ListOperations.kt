@@ -7,13 +7,9 @@ import javabot.dao.AdminDao
 import javabot.dao.ConfigDao
 import javabot.operations.BotOperation
 import org.apache.commons.lang.StringUtils
-import org.pircbotx.PircBotX
-
 import javax.inject.Inject
-import javax.inject.Provider
 
-class ListOperations @Inject constructor(bot: Javabot, adminDao: AdminDao, ircBot: com.google.inject.Provider<PircBotX>, var configDao: ConfigDao) :
-        OperationsCommand(bot, adminDao, ircBot) {
+class ListOperations @Inject constructor(bot: Javabot, adminDao: AdminDao, var configDao: ConfigDao) : OperationsCommand(bot, adminDao) {
 
     override fun execute(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

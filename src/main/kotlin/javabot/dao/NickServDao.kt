@@ -1,10 +1,10 @@
 package javabot.dao
 
 import com.google.inject.Inject
+import javabot.model.JavabotUser
 import javabot.model.NickServInfo
 import javabot.model.criteria.NickServInfoCriteria
 import org.mongodb.morphia.Datastore
-import org.pircbotx.User
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -79,7 +79,7 @@ open class NickServDao @Inject constructor(ds: Datastore) : BaseDao<NickServInfo
         return criteria.query().get()
     }
 
-    fun unregister(user: User) {
+    fun unregister(user: JavabotUser) {
         val criteria = NickServInfoCriteria(ds)
         criteria.nick(user.nick)
         criteria.delete()

@@ -21,12 +21,12 @@ import javax.inject.Inject
         factoidDao.delete(testUser.nick, "shunHey", LogsDaoTest.CHANNEL_NAME)
         try {
             factoidDao.addFactoid(testUser.nick, "shunHey", "<reply>shunHey", LogsDaoTest.CHANNEL_NAME)
-            var response = operation.handleMessage(message("shun ${testUser} 5"))
+            var response = operation.handleMessage(message("~shun ${testUser} 5"))
             Assert.assertEquals(response[0].value, "${testUser} is shunned until")
-            response = operation.handleMessage(message("shunHey"))
+            response = operation.handleMessage(message("~shunHey"))
             Assert.assertTrue(response.isEmpty())
             Thread.sleep(5000)
-            response = getFactoidOperation.handleMessage(message("shunHey"))
+            response = getFactoidOperation.handleMessage(message("~shunHey"))
             Assert.assertEquals(response[0].value, "shunHey")
         } finally {
             factoidDao.delete(testUser.nick, "shunHey", LogsDaoTest.CHANNEL_NAME)

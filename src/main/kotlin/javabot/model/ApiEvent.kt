@@ -1,6 +1,5 @@
 package javabot.model
 
-import com.google.inject.Provider
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.javadoc.JavadocApi
@@ -8,7 +7,6 @@ import javabot.javadoc.JavadocParser
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Transient
-import org.pircbotx.PircBotX
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -25,10 +23,6 @@ import javax.inject.Inject
     lateinit var baseUrl: String
 
     lateinit var downloadUrl: String
-
-    @Inject
-    @Transient
-    lateinit var ircBot: Provider<PircBotX>
 
     @Inject
     @Transient
@@ -55,7 +49,6 @@ import javax.inject.Inject
             } catch (e: MalformedURLException) {
                 throw IllegalArgumentException(e.message, e)
             }
-
         } else {
             this.downloadUrl = downloadUrl
         }
@@ -101,9 +94,9 @@ import javax.inject.Inject
     }
 
     private fun process(api: JavadocApi) {
-        val admin = adminDao.getAdmin(ircBot.get().userChannelDao.getUser(requestedBy))
+        val user = JavabotUser(requestedBy)
+        val admin = adminDao.getAdmin(user)
         if (admin != null) {
-            val user = ircBot.get().userChannelDao.getUser(admin.ircName)
             val file = downloadZip(api.name + ".jar", api.downloadUrl)
             parser.parse(api, file.absolutePath, object : StringWriter() {
                 override fun write(line: String) {

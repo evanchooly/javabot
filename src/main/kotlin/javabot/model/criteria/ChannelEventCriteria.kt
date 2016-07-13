@@ -13,9 +13,7 @@ import org.bson.types.ObjectId
 import org.mongodb.morphia.Datastore
 import org.mongodb.morphia.query.Criteria
 import org.mongodb.morphia.query.UpdateResults
-import org.pircbotx.PircBotX
 import java.time.LocalDateTime
-import javax.inject.Provider
 
 class ChannelEventCriteria(ds: Datastore) : BaseCriteria<ChannelEvent>(ds, ChannelEvent::class.java) {
 
@@ -185,11 +183,6 @@ class ChannelEventCriteria(ds: Datastore) : BaseCriteria<ChannelEvent>(ds, Chann
 
         fun unsetChannelDao(): ChannelEventUpdater {
             updateOperations.unset("channelDao")
-            return this
-        }
-
-        fun ircBot(value: Provider<PircBotX>): ChannelEventUpdater {
-            updateOperations.set("ircBot", value)
             return this
         }
 

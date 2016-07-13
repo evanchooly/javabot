@@ -10,7 +10,7 @@ import org.testng.annotations.Test
     private lateinit var operation: SayOperation
 
     fun testSay() {
-        var response = operation.handleMessage(message("say MAGNIFICENT"))
+        var response = operation.handleMessage(message("~say MAGNIFICENT"))
         Assert.assertEquals(response[0].value, "MAGNIFICENT")
     }
 }

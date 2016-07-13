@@ -3,12 +3,12 @@ package javabot.model
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Id
-import org.pircbotx.User
 
 import java.io.Serializable
 import java.util.UUID
 
-@Entity(value = "registrations", noClassnameStored = true) class NickRegistration : Serializable, Persistent {
+@Entity(value = "registrations", noClassnameStored = true)
+class NickRegistration : Serializable, Persistent {
     @Id
     var id: ObjectId? = null
     var url: String? = null
@@ -19,7 +19,7 @@ import java.util.UUID
     constructor() {
     }
 
-    constructor(sender: User, twitterName: String) {
+    constructor(sender: JavabotUser, twitterName: String) {
         this.twitterName = twitterName
         url = UUID.randomUUID().toString()
         nick = sender.nick

@@ -4,18 +4,17 @@ import com.antwerkz.sofia.Sofia
 import javabot.model.Logs.Type
 import org.testng.Assert
 import org.testng.annotations.Test
-import java.io.IOException
 import java.time.LocalDateTime
 
 class LogsViewTest : ViewsTest() {
 
     @Test
-    @Throws(IOException::class) fun render() {
+    fun render() {
         render(viewFactory.createLogsView(MockServletRequest(false), "testchannel", LocalDateTime.now()))
     }
 
     @Test
-    @Throws(IOException::class) fun actions() {
+    fun actions() {
         val message = "my type is " + Type.MESSAGE
         val eventChannel = "testchannel"
         val user = testUser
@@ -48,11 +47,11 @@ class LogsViewTest : ViewsTest() {
     }
 
     private fun create(type: Type, channelName: String, value: String) {
-        val channel = channelDao.get(channelName)
+        var channel = channelDao.get(channelName)
         if (channel == null) {
-            channelDao.create(channelName, true, null)
+            channel = channelDao.create(channelName, true, null)
         }
 
-        logsDao.logMessage(type, getIrcBot().userChannelDao.getChannel(channelName), testUser, value)
+        logsDao.logMessage(type, channel, testUser, value)
     }
 }

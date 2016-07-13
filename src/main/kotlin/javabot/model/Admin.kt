@@ -13,7 +13,8 @@ import java.time.LocalDateTime
 
 @Entity(value = "admins", noClassnameStored = true)
 @Indexes(Index(fields = arrayOf(Field("emailAddress")), options = IndexOptions(unique = true)),
-        Index(fields = arrayOf(Field("ircName"), Field("hostName")))) class Admin : Serializable, Persistent {
+        Index(fields = arrayOf(Field("ircName"), Field("hostName"))))
+class Admin : Serializable, Persistent {
     @Id
     var id: ObjectId? = null
 

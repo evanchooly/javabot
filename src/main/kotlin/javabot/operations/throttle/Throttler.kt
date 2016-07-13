@@ -3,15 +3,15 @@ package javabot.operations.throttle
 import com.antwerkz.sofia.Sofia
 import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.core.ConditionTimeoutException
+import javabot.Javabot
 import javabot.dao.AdminDao
 import javabot.dao.BaseDao
 import javabot.dao.ConfigDao
 import javabot.dao.NickServDao
+import javabot.model.JavabotUser
 import javabot.model.ThrottleItem
 import javabot.model.criteria.ThrottleItemCriteria
 import org.mongodb.morphia.Datastore
-import org.pircbotx.PircBotX
-import org.pircbotx.User
 import java.time.Duration.between
 import java.time.LocalDateTime.now
 import java.util.concurrent.TimeUnit
@@ -24,7 +24,7 @@ class Throttler @Inject constructor(
         var configDao: ConfigDao,
         var adminDao: AdminDao,
         var nickServDao: NickServDao,
-        var ircBot: Provider<PircBotX> ) :
+        var bot: Provider<Javabot> ) :
         BaseDao<ThrottleItem>(ds, ThrottleItem::class.java) {
 
     /**
@@ -32,10 +32,10 @@ class Throttler @Inject constructor(
 
      * @return true if the user is currently throttled and ought to be ignored, false otherwise.
      */
-    fun isThrottled(user: User): Boolean {
+    fun isThrottled(user: JavabotUser): Boolean {
         if (!adminDao.isAdmin(user)) {
             validateNickServAccount(user)
-            ds.save(ThrottleItem(user))
+            ds.save(ThrottleItem(user.nick))
             val criteria = ThrottleItemCriteria(ds)
             criteria.user(user.nick)
             return criteria.query().countAll() > configDao.get().throttleThreshold
@@ -43,10 +43,10 @@ class Throttler @Inject constructor(
         return false
     }
 
-    private fun validateNickServAccount(user: User) {
+    private fun validateNickServAccount(user: JavabotUser) {
         val info = AtomicReference(nickServDao.find(user.nick))
         if (info.get() == null) {
-            ircBot.get().sendIRC().message("NickServ", "info " + user.nick)
+            bot.get().message("NickServ", "info " + user.nick)
             Sofia.logWaitingForNickserv(user.nick)
             try {
                 Awaitility.await()
