@@ -50,20 +50,15 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
         val LOG: Logger = LoggerFactory.getLogger(Javabot::class.java)
 
         @JvmStatic fun main(args: Array<String>) {
-            try {
-                val injector = Guice.createInjector(JavabotModule())
-                if (LOG.isInfoEnabled) {
-                    LOG.info("Starting Javabot")
-                }
-                val bot = injector.getInstance(Javabot::class.java)
-                bot.start()
-                Awaitility.await()
-                        .forever()
-                        .until<Boolean> { !bot.isRunning() }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            val injector = Guice.createInjector(JavabotModule())
+            if (LOG.isInfoEnabled) {
+                LOG.info("Starting Javabot")
             }
-
+            val bot = injector.getInstance(Javabot::class.java)
+            bot.start()
+            Awaitility.await()
+                    .forever()
+                    .until<Boolean> { !bot.isRunning() }
         }
     }
 
