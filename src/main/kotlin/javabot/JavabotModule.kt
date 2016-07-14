@@ -35,8 +35,8 @@ open class JavabotModule : AbstractModule() {
     private var config: JavabotConfig? = null
 
     private var datastore: Datastore? = null
-    private var ircAdapterProvider: Provider<IrcAdapter>? = null
 
+    lateinit var ircAdapterProvider: Provider<out IrcAdapter>
     lateinit var channelDaoProvider: Provider<ChannelDao>
     lateinit var configDaoProvider: Provider<ConfigDao>
 

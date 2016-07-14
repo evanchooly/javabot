@@ -1,0 +1,61 @@
+package javabot
+
+import com.google.inject.Inject
+import javabot.dao.AdminDao
+import javabot.dao.ChannelDao
+import javabot.dao.ConfigDao
+import javabot.dao.LogsDao
+import javabot.dao.NickServDao
+import javabot.model.Channel
+import javabot.model.JavabotUser
+import org.pircbotx.PircBotX
+import javax.inject.Provider
+
+class MockIrcAdapter @Inject
+constructor(var messages: Messages, nickServDao: NickServDao, logsDao: LogsDao, channelDao: ChannelDao, adminDao: AdminDao,
+            javabot: Provider<Javabot>, configDao: ConfigDao, ircBot: Provider<PircBotX>) :
+        IrcAdapter(nickServDao, logsDao, channelDao, adminDao, javabot, configDao, ircBot) {
+
+    override
+    fun startBot() {
+    }
+
+    override
+    fun isConnected(): Boolean {
+        return true
+    }
+
+    override fun isBotOnChannel(name: String): Boolean {
+        return true
+    }
+
+    override fun send(user: JavabotUser, value: String) {
+        messages.add(value)
+    }
+
+    override
+    fun send(channel: Channel, value: String) {
+        messages.add(value)
+    }
+
+    override fun action(channel: Channel, message: String) {
+        throw UnsupportedOperationException("action")
+    }
+
+    override
+    fun joinChannel(channel: Channel) {
+        throw UnsupportedOperationException("joinChannel")
+    }
+
+    override fun leave(channel: Channel, user: JavabotUser) {
+        throw UnsupportedOperationException("leave")
+    }
+
+    override fun isOnCommonChannel(user: JavabotUser): Boolean {
+        throw UnsupportedOperationException("isOnCommonChannel")
+    }
+
+    override fun message(target: String, message: String) {
+        messages.add(message)
+    }
+}

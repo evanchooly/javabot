@@ -30,7 +30,7 @@ import java.util.ArrayList
 import javax.inject.Inject
 import javax.inject.Provider
 
-class IrcAdapter @Inject
+open class IrcAdapter @Inject
 constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, private var channelDao: ChannelDao,
             private var adminDao: AdminDao, private var javabotProvider: Provider<Javabot>, private var configDao: ConfigDao,
             private var ircBot: Provider<PircBotX>) : ListenerAdapter<PircBotX>() {
@@ -135,36 +135,31 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
     }
 
 
-
-    fun isOnCommonChannel(user: JavabotUser): Boolean {
+    open fun isOnCommonChannel(user: JavabotUser): Boolean {
         val target = ircBot.get().userChannelDao.getUser(user.nick)
         return !ircBot.get().userChannelDao.getChannels(target).isEmpty()
     }
 
-    fun User.toJavabot(): JavabotUser {
-        return JavabotUser(nick, login, hostmask)
-    }
-
-    fun send(channel: Channel, value: String) {
+    open fun send(channel: Channel, value: String) {
         channel.toIrcChannel()
                 .send()
                 .message(value)
     }
 
-    fun send(user: JavabotUser, value: String) {
+    open fun send(user: JavabotUser, value: String) {
         user.toIrcUser()
                 .send()
                 .message(value)
 
     }
 
-    fun action(channel: Channel, message: String) {
+    open fun action(channel: Channel, message: String) {
         channel.toIrcChannel()
                 .send()
                 .action(message)
     }
 
-    fun joinChannel(channel: Channel) {
+    open fun joinChannel(channel: Channel) {
         if (channel.key != null) {
             ircBot.get().sendIRC().joinChannel(channel.name, channel.key)
         } else {
@@ -172,23 +167,24 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
         }
     }
 
-    fun message(target: String, message: String) {
+    open fun message(target: String, message: String) {
         ircBot.get().sendIRC().message(target, message)
     }
 
-    fun isConnected(): Boolean {
+    open fun isConnected(): Boolean {
         return ircBot.get().isConnected
     }
 
+    open
     fun isBotOnChannel(name: String): Boolean {
         return ircBot.get().userChannelDao.channelExists(name)
     }
 
-    fun startBot() {
+    open fun startBot() {
         ircBot.get().startBot()
     }
 
-    fun leave(channel: Channel, user: JavabotUser) {
+    open fun leave(channel: Channel, user: JavabotUser) {
         channel.toIrcChannel()
                 .send()
                 .part(Sofia.channelDeleted(user.nick))
@@ -204,5 +200,9 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
 
     fun org.pircbotx.Channel.toJavabot(): Channel? {
         return channelDao.get(name)
+    }
+
+    fun User.toJavabot(): JavabotUser {
+        return JavabotUser(nick, login, hostmask)
     }
 }
