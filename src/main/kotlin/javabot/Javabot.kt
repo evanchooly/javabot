@@ -6,12 +6,7 @@ import com.google.inject.Injector
 import com.google.inject.Singleton
 import com.jayway.awaitility.Awaitility
 import javabot.commands.AdminCommand
-import javabot.dao.AdminDao
-import javabot.dao.ChannelDao
-import javabot.dao.ConfigDao
-import javabot.dao.EventDao
-import javabot.dao.LogsDao
-import javabot.dao.ShunDao
+import javabot.dao.*
 import javabot.database.UpgradeScript
 import javabot.model.AdminEvent.State
 import javabot.model.Channel
@@ -28,10 +23,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.time.LocalDateTime
-import java.util.ArrayList
-import java.util.SortedMap
-import java.util.TreeMap
-import java.util.TreeSet
+import java.util.*
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadPoolExecutor
@@ -250,10 +242,12 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
         if (!ignores.contains(sender.nick) && !shunDao.isShunned(sender.nick)
                 && (message.channel != null || isOnCommonChannel(message.user))) {
             try {
-                if (throttler.isThrottled(message.user) && !adminDao.isAdmin(message.user)) {
-                    privateMessageUser(sender, Sofia.throttledUser())
-                } else if (message.triggered) {
-                    responses.addAll(getResponses(message))
+                if (message.triggered) {
+                    if (throttler.isThrottled(message.user) && !adminDao.isAdmin(message.user)) {
+                        privateMessageUser(sender, Sofia.throttledUser())
+                    } else {
+                        responses.addAll(getResponses(message))
+                    }
                 }
             } catch (e: NickServViolationException) {
                 privateMessageUser(message.user, e.message!!)
