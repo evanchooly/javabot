@@ -42,20 +42,19 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
     private val nickServ = ArrayList<String>()
 
     override fun onMessage(event: MessageEvent<PircBotX>) {
-        process(event.channel.toJavabot(), event.user.toJavabot(), event.message)
+        process(event.channel.toJavabot(), event.user.toJavabot(), event.message, javabotProvider.get().startString)
     }
 
     override fun onPrivateMessage(event: PrivateMessageEvent<PircBotX?>) {
-        process(null, event.user.toJavabot(), event.message)
+        process(null, event.user.toJavabot(), event.message, "")
     }
 
-    private fun process(channel: Channel?, user: JavabotUser, message: String) {
+    private fun process(channel: Channel?, user: JavabotUser, message: String, start: String) {
         logsDao.logMessage(Type.MESSAGE, channel, user, message)
 
         val javabot = javabotProvider.get()
         javabot.executors.execute({
-            javabot.processMessage(Message.extractContentFromMessage(channel, user, javabot.startString, javabot.nick,
-                    message))
+            javabot.processMessage(Message.extractContentFromMessage(channel, user, start, javabot.nick, message))
         })
     }
 
