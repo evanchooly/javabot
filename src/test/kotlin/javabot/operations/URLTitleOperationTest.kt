@@ -9,12 +9,14 @@ import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 import javax.inject.Inject
 
-@Test(groups = arrayOf("operations")) class URLTitleOperationTest : BaseTest() {
+@Test(groups = arrayOf("operations"))
+class URLTitleOperationTest : BaseTest() {
     @Inject
     lateinit private var operation: URLTitleOperation
     private val analyzer = URLContentAnalyzer()
 
-    @Test(dataProvider = "urls") fun testSimpleUrl(url: String, content: String?) {
+    @Test(dataProvider = "urls")
+    fun testSimpleUrl(url: String, content: String?) {
         val results = operation.handleChannelMessage(Message(testChannel, testUser, url))
         if (content != null) {
             Assert.assertEquals(results[0].value, content)
@@ -23,7 +25,8 @@ import javax.inject.Inject
         }
     }
 
-    @Test(dataProvider = "urlRulesCheck") fun testFuzzyContent(url: String, title: String?, pass: Boolean) {
+    @Test(dataProvider = "urlRulesCheck")
+    fun testFuzzyContent(url: String, title: String?, pass: Boolean) {
         assertEquals(analyzer.check(url, title), pass)
     }
 
@@ -36,7 +39,7 @@ import javax.inject.Inject
                 arrayOf("http://127.0.0.1", null),
                 arrayOf("Have you tried to http://google.com", null),
                 arrayOf("http://varietyofsound.wordpress.com has a lot of VSTs", null),
-                arrayOf("Have you tried to http://javachannel.org/", "title for the url from botuser: \"Freenode ##java  enthusiasts united\""),
+                arrayOf("Have you tried to http://javachannel.org/", "botuser's title: \"Freenode ##java enthusiasts united\""),
                 arrayOf("http://javachannel.org/posts/finding-hash-collisions-in-java-strings/", null),
                 arrayOf("http://hastebin.com/askhjahs", null),
                 arrayOf("http://pastebin.com/askhjahs", null),
@@ -44,15 +47,15 @@ import javax.inject.Inject
                         "title for the url from botuser: \"Why Programmers Should Have a Blog - DZone Agile\""), // url matches title
                 arrayOf("http://facebook.com/foo/bar/blah", null), // doesn't exist on facebook, I hope
                 arrayOf("http://", null),
-                arrayOf("http://docs.oracle.com/javaee/6/tutorial/doc/", "title for the url from botuser: \"- The Java EE 6 Tutorial\""),
+                arrayOf("http://docs.oracle.com/javaee/6/tutorial/doc/", "botuser's title: \"- The Java EE 6 Tutorial\""),
                 arrayOf("https://docs.oracle.com/javaee/7/api/javax/enterprise/inject/Instance.html", null),
                 arrayOf("http://docs.oracle.com/javase/tutorial/java/nutsandbolts/branch.html",
-                        "title for the url from botuser: \"Branching Statements (The Java Tutorials > Learning the Java Language > Language Basics)\""),
+                        "botuser's title: \"Branching Statements (The Java Tutorials > Learning the Java Language > Language Basics)\""),
                 arrayOf("http://git.io/foo", null),
                 arrayOf("Two urls with titles: http://docs.oracle.com/javaee/6/tutorial/doc/ and http://javachannel.org/",
                         "titles for the urls from botuser: \"- The Java EE 6 Tutorial\" | \"Freenode ##java  enthusiasts united\""),
                 arrayOf("Two urls, one with a title: http://javachannel.org/posts/finding-hash-collisions-in-java-strings/  and " +
-                        "http://javachannel.org/", "title for the url from botuser: \"Freenode ##java  enthusiasts united\""))
+                        "http://javachannel.org/", "botuser's title: \"Freenode ##java  enthusiasts united\""))
     }
 
     @DataProvider(name = "urlRulesCheck")

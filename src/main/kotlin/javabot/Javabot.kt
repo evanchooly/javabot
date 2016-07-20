@@ -64,8 +64,12 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
 
     private var allOperationsMap = TreeMap<String, BotOperation>()
 
-    val startStrings: List<String> by lazy {
-        listOf(getNick(), "~")
+    val startString: String by lazy {
+        configDao.get().trigger
+    }
+
+    open val nick: String by lazy {
+        configDao.get().nick
     }
 
     val executors = ThreadPoolExecutor(5, 10, 5L, TimeUnit.MINUTES, ArrayBlockingQueue(50),
@@ -242,8 +246,6 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
 
     fun processMessage(message: Message) {
         val sender = message.user
-        val channel = message.channel
-        logsDao.logMessage(Logs.Type.MESSAGE, channel, sender, message.value)
         val responses = arrayListOf<Message>()
         if (!ignores.contains(sender.nick) && !shunDao.isShunned(sender.nick)
                 && (message.channel != null || isOnCommonChannel(message.user))) {
@@ -294,14 +296,14 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
     }
 
     private fun postAction(channel: Channel, message: String) {
-        if (channel.name != getNick()) {
-            logsDao.logMessage(Type.ACTION, channel, JavabotUser(getNick()), message)
+        if (channel.name != nick) {
+            logsDao.logMessage(Type.ACTION, channel, JavabotUser(nick), message)
         }
         adapter.action(channel, message)
     }
 
     internal fun logMessage(channel: Channel?, user: JavabotUser, message: String) {
-        if (channel?.name != getNick()) {
+        if (channel?.name != nick) {
             logsDao.logMessage(Logs.Type.MESSAGE, channel, user, message)
         }
     }
@@ -337,10 +339,6 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
 
     open fun isOnCommonChannel(user: JavabotUser): Boolean {
         return adapter.isOnCommonChannel(user)
-    }
-
-    open fun getNick(): String {
-        return configDao.get().nick
     }
 
     fun joinChannel(channel: Channel) {

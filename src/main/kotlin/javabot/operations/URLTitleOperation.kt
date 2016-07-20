@@ -38,8 +38,7 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
 
     private fun postMessageToChannel(responses: MutableList<Message>, titlesToPost: List<String>, event: Message) {
         val title = if(titlesToPost.size == 1) "title" else "titles"
-        val url = if(titlesToPost.size == 1) "url" else "urls"
-        responses.add(Message(event, "${title} for the ${url} from ${event.user.nick}: " +
+        responses.add(Message(event, "${event.user.nick}'s ${title}: " +
                 titlesToPost.map({ s -> "\"${s}\"" }).joinToString(" | ")))
     }
 

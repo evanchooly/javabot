@@ -123,7 +123,7 @@ open class BaseTest {
     }
 
     protected fun message(value: String, user: JavabotUser = testUser): Message {
-        return Message.extractContentFromMessage(testChannel, user, "~", value)
+        return Message.extractContentFromMessage(testChannel, user, "~", bot.get().nick, value)
     }
 
     protected fun scanForResponse(messages: List<Message>, target: String) {

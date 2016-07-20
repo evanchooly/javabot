@@ -44,11 +44,9 @@ constructor(var messages: Messages, nickServDao: NickServDao, logsDao: LogsDao, 
 
     override
     fun joinChannel(channel: Channel) {
-        throw UnsupportedOperationException("joinChannel")
     }
 
     override fun leave(channel: Channel, user: JavabotUser) {
-        throw UnsupportedOperationException("leave")
     }
 
     override fun isOnCommonChannel(user: JavabotUser): Boolean {

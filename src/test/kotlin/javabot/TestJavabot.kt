@@ -18,12 +18,10 @@ import javax.inject.Provider
 constructor(injector: Injector, configDao: ConfigDao, channelDao: ChannelDao, logsDao: LogsDao, shunDao: ShunDao,
             adminDao: AdminDao, eventDao: EventDao, throttler: Throttler, adapter: IrcAdapter, javabotConfig: JavabotConfig,
             application: Provider<JavabotApplication>) :
-        Javabot(injector, configDao, channelDao, logsDao, shunDao, eventDao, throttler, adapter, adminDao, javabotConfig, 
+        Javabot(injector, configDao, channelDao, logsDao, shunDao, eventDao, throttler, adapter, adminDao, javabotConfig,
                 application) {
 
-    override fun getNick(): String {
-        return BaseTest.TEST_BOT_NICK
-    }
+    override val nick: String = BaseTest.TEST_BOT_NICK
 
     override fun isOnCommonChannel(user: JavabotUser): Boolean {
         return true

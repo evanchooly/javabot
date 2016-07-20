@@ -19,7 +19,7 @@ import javax.inject.Inject
     }
 
     @Test
-    @Throws(InterruptedException::class) fun addChannel() {
+    fun addChannel() {
         bot
         channelDao.delete(channelDao.get("##testChannel"))
         val name = "##testChannel"
@@ -30,7 +30,7 @@ import javax.inject.Inject
     }
 
     @Test
-    @Throws(InterruptedException::class) fun addKeyedChannel() {
+    fun addKeyedChannel() {
         bot
         val key = "abcdef"
         val event = ChannelEvent("testng", EventType.ADD, KEYED_CHANNEL, key)
@@ -40,7 +40,7 @@ import javax.inject.Inject
     }
 
     @Test
-    @Throws(InterruptedException::class) fun leave() {
+    fun leave() {
         bot
         val event = ChannelEvent("testng", EventType.DELETE, KEYED_CHANNEL)
         eventDao.save(event)
@@ -49,7 +49,7 @@ import javax.inject.Inject
     }
 
     @Test
-    @Throws(InterruptedException::class) fun update() {
+    fun update() {
         val name = "##testChannel"
         val event = ChannelEvent("testng", EventType.UPDATE, name, "newKey")
         eventDao.save(event)

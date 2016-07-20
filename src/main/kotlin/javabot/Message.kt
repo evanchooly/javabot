@@ -8,8 +8,15 @@ import java.lang.String.format
 
 open class Message(val channel: Channel? = null, val user: JavabotUser, val value: String, val target: JavabotUser? = null) {
     companion object {
-        fun extractContentFromMessage(channel: Channel?, user: JavabotUser, startString: String, message: String): Message {
-            var content = message.substring(startString.length).trim()
+        fun extractContentFromMessage(channel: Channel?, user: JavabotUser, startString: String, botNick: String, message: String):
+                Message {
+            var content = message.trim()
+            for (start in arrayOf(startString, botNick)) {
+                if (message.startsWith(start)) {
+                    content = content.substring(start.length).trim()
+                }
+            }
+
             while (!content.isEmpty() && (content[0] == ':' || content[0] == ',')) {
                 content = content.substring(1).trim()
             }

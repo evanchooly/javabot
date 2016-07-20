@@ -13,7 +13,7 @@ import org.testng.annotations.Test
 import java.time.LocalDateTime
 import javax.inject.Inject
 
-class LogsDaoTest(@Inject val ds: Datastore) : BaseTest() {
+class LogsDaoTest @Inject constructor(val ds: Datastore) : BaseTest() {
     companion object {
         val CHANNEL_NAME: String = "#watercooler"
     }

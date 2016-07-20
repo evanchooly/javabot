@@ -79,7 +79,7 @@ class GetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, 
         if (event.tell) {
             val channel = event.channel
             val targetUser = event.target!!
-            if (targetUser.nick.equals(bot.getNick(), ignoreCase = true)) {
+            if (targetUser.nick.equals(bot.nick, ignoreCase = true)) {
                 responses.add(Message(event, Sofia.botSelfTalk()))
             } else {
                 if (channel != null) {
