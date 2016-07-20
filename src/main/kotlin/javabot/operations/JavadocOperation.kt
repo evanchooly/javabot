@@ -59,7 +59,7 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
             val entries = buildResponse(event, urls, urlMessage)
             if (urls.size > RESULT_LIMIT) {
                 responses.add(Message(event, Sofia.tooManyResults(nick)))
-                responses.addAll(entries.map { Message(it.user, it.value )})
+                responses.addAll(entries.map { Message(it.user, it.value)})
             } else {
                 responses.addAll(entries)
             }

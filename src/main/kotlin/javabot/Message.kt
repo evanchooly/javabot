@@ -6,14 +6,20 @@ import javabot.model.JavabotUser
 import javabot.operations.TellSubject
 import java.lang.String.format
 
-open class Message(val channel: Channel? = null, val user: JavabotUser, val value: String, val target: JavabotUser? = null) {
+open class Message(val channel: Channel? = null, val user: JavabotUser, val value: String,
+                   val target: JavabotUser? = null, val triggered: Boolean = false) {
     companion object {
         fun extractContentFromMessage(channel: Channel?, user: JavabotUser, startString: String, botNick: String, message: String):
                 Message {
             var content = message.trim()
+            var trigger = channel == null
             for (start in arrayOf(startString, botNick)) {
                 if (message.startsWith(start)) {
+                    trigger = true
                     content = content.substring(start.length).trim()
+                } else if (message.startsWith(botNick)) {
+                    content = content.substring(botNick.length).trim()
+                    trigger = true
                 }
             }
 
@@ -24,13 +30,13 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
                 val tellSubject = if (content.startsWith("tell ")) parseLonghand(content) else parseShorthand(startString, content)
 
                 if (tellSubject != null) {
-                    return Message(channel, user, tellSubject.subject, tellSubject.target)
+                    return Message(channel, user, tellSubject.subject, tellSubject.target, trigger)
                 } else {
-                    return Message(channel, user, Sofia.factoidTellSyntax(user.nick))
+                    return Message(channel, user, Sofia.factoidTellSyntax(user.nick), triggered = trigger)
                 }
             }
 
-            return Message(channel, user, content)
+            return Message(channel, user, content, triggered = trigger)
         }
 
         private fun isTellCommand(startString: String, value: String): Boolean {
@@ -59,9 +65,10 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
 
     val tell: Boolean = target != null
 
-    constructor(user: JavabotUser, value: String) : this(null, user, value)
+    constructor(user: JavabotUser, value: String, forBot: Boolean = false) : this(null, user, value, triggered = forBot)
 
-    constructor(channel: Channel, message: Message, value: String) : this(channel, message.user, value, message.target)
+    constructor(channel: Channel, message: Message, value: String, forBot: Boolean = false) : this(channel, message.user, value,
+            message.target, forBot)
 
     constructor(message: Message, value: String) : this(message.channel, message.user, value, message.target)
 

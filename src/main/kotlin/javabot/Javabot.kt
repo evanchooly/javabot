@@ -252,7 +252,7 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
             try {
                 if (throttler.isThrottled(message.user) && !adminDao.isAdmin(message.user)) {
                     privateMessageUser(sender, Sofia.throttledUser())
-                } else {
+                } else if (message.triggered) {
                     responses.addAll(getResponses(message))
                 }
             } catch (e: NickServViolationException) {

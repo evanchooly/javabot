@@ -44,7 +44,7 @@ class URLTitleOperationTest : BaseTest() {
                 arrayOf("http://hastebin.com/askhjahs", null),
                 arrayOf("http://pastebin.com/askhjahs", null),
                 arrayOf("http://architects.dzone.com/articles/why-programmers-should-have",
-                        "title for the url from botuser: \"Why Programmers Should Have a Blog - DZone Agile\""), // url matches title
+                        "botuser's title: \"Why Programmers Should Have a Blog - DZone Agile\""), // url matches title
                 arrayOf("http://facebook.com/foo/bar/blah", null), // doesn't exist on facebook, I hope
                 arrayOf("http://", null),
                 arrayOf("http://docs.oracle.com/javaee/6/tutorial/doc/", "botuser's title: \"- The Java EE 6 Tutorial\""),
@@ -53,7 +53,7 @@ class URLTitleOperationTest : BaseTest() {
                         "botuser's title: \"Branching Statements (The Java Tutorials > Learning the Java Language > Language Basics)\""),
                 arrayOf("http://git.io/foo", null),
                 arrayOf("Two urls with titles: http://docs.oracle.com/javaee/6/tutorial/doc/ and http://javachannel.org/",
-                        "titles for the urls from botuser: \"- The Java EE 6 Tutorial\" | \"Freenode ##java  enthusiasts united\""),
+                        "botuser's title: \"- The Java EE 6 Tutorial\" | \"Freenode ##java enthusiasts united\""),
                 arrayOf("Two urls, one with a title: http://javachannel.org/posts/finding-hash-collisions-in-java-strings/  and " +
                         "http://javachannel.org/", "botuser's title: \"Freenode ##java  enthusiasts united\""))
     }
