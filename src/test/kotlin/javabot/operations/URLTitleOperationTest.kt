@@ -39,7 +39,7 @@ class URLTitleOperationTest : BaseTest() {
                 arrayOf("http://127.0.0.1", null),
                 arrayOf("Have you tried to http://google.com", null),
                 arrayOf("http://varietyofsound.wordpress.com has a lot of VSTs", null),
-                arrayOf("Have you tried to http://javachannel.org/", "botuser's title: \"Freenode ##java enthusiasts united\""),
+                arrayOf("Have you tried to http://javachannel.org/", "botuser's title: \"Freenode ##java  enthusiasts united\""),
                 arrayOf("http://javachannel.org/posts/finding-hash-collisions-in-java-strings/", null),
                 arrayOf("http://hastebin.com/askhjahs", null),
                 arrayOf("http://pastebin.com/askhjahs", null),
@@ -53,7 +53,7 @@ class URLTitleOperationTest : BaseTest() {
                         "botuser's title: \"Branching Statements (The Java Tutorials > Learning the Java Language > Language Basics)\""),
                 arrayOf("http://git.io/foo", null),
                 arrayOf("Two urls with titles: http://docs.oracle.com/javaee/6/tutorial/doc/ and http://javachannel.org/",
-                        "botuser's title: \"- The Java EE 6 Tutorial\" | \"Freenode ##java enthusiasts united\""),
+                        "botuser's titles: \"- The Java EE 6 Tutorial\" | \"Freenode ##java  enthusiasts united\""),
                 arrayOf("Two urls, one with a title: http://javachannel.org/posts/finding-hash-collisions-in-java-strings/  and " +
                         "http://javachannel.org/", "botuser's title: \"Freenode ##java  enthusiasts united\""))
     }

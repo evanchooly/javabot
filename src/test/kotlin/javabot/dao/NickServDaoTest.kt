@@ -4,6 +4,7 @@ import javabot.IrcAdapter
 import javabot.MockIrcUser
 import javabot.model.JavabotUser
 import javabot.model.NickServInfo
+import org.pircbotx.PircBotX
 import org.pircbotx.hooks.events.NoticeEvent
 import org.testng.Assert
 import org.testng.annotations.Test
@@ -11,9 +12,11 @@ import java.time.LocalDateTime
 import java.time.Month
 import java.util.Arrays.asList
 import javax.inject.Inject
+import javax.inject.Provider
 
 @Test
-class NickServDaoTest @Inject constructor(val nickServDao: NickServDao, val ircAdapter: IrcAdapter) : BaseServiceTest() {
+class NickServDaoTest @Inject constructor(val nickServDao: NickServDao, val ircAdapter: IrcAdapter,
+                                          private var ircBot: Provider<PircBotX>) : BaseServiceTest() {
     fun parseNickServResponse() {
         nickServDao.clear()
         val list = asList("Information on cheeser (account cheeser):",
@@ -37,7 +40,9 @@ class NickServDaoTest @Inject constructor(val nickServDao: NickServDao, val ircA
     }
 
     private fun send(info: NickServInfo) {
-        info.toNickServFormat().forEach({ o -> ircAdapter.onNotice(NoticeEvent(null, MockIrcUser(JavabotUser("nickserv")), null, o)) })
+        info.toNickServFormat().forEach { o ->
+            ircAdapter.onNotice(NoticeEvent(ircBot.get(), MockIrcUser(JavabotUser("nickserv")), null, o))
+        }
     }
 
     private fun getNickServInfo(account: String, nick: String, registered: LocalDateTime,
