@@ -2,7 +2,6 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
-import javabot.IrcAdapter
 import javabot.dao.KarmaDao
 import javabot.dao.NickServDao
 import javabot.registerIrcUser
@@ -13,7 +12,6 @@ import org.testng.annotations.Test
 import java.lang.String.format
 import java.util.Date
 import javax.inject.Inject
-import javax.inject.Provider
 
 @Test(groups = arrayOf("operations"))
 class KarmaOperationTest @Inject constructor(val nickServDao: NickServDao,

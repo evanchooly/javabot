@@ -1,9 +1,8 @@
 package javabot.web.resources
 
 import io.dropwizard.views.View
-import javabot.web.views.ViewFactory
 import javabot.model.Factoid
-import javabot.model.Factoid.Companion
+import javabot.web.views.ViewFactory
 import org.slf4j.LoggerFactory
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder

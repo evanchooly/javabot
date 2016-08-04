@@ -43,7 +43,7 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
 
     override fun onMessage(event: MessageEvent<PircBotX>) {
         val bot = javabotProvider.get()
-        for (start in bot.startStrings) {
+        for (start in arrayOf(bot.startString, bot.nick)) {
             if (event.message.startsWith(start)) {
                 bot.executors.execute {
                     bot.processMessage(Message.extractContentFromMessage(event.channel.toJavabot(), event.user.toJavabot(), start, event.message))
@@ -53,16 +53,16 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
     }
 
     override fun onPrivateMessage(event: PrivateMessageEvent<PircBotX?>) {
-        val javabot = javabotProvider.get()
+        val bot = javabotProvider.get()
         var start = ""
-        for (startString in javabot.startStrings) {
+        for (startString in arrayOf(bot.startString, bot.nick)) {
             if (event.message.startsWith(startString)) {
                 start = startString
             }
         }
 
-        javabot.executors.execute({
-            javabot.processMessage(Message.extractContentFromMessage(null, event.user.toJavabot(), start, event.message))
+        bot.executors.execute({
+            bot.processMessage(Message.extractContentFromMessage(null, event.user.toJavabot(), start, event.message))
         })
     }
 

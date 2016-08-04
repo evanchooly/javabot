@@ -13,13 +13,21 @@ class MessageTest {
 
     @Test
     fun triggerCharacter() {
-        assertEquals(Message.extractContentFromMessage(channel, user, "~", "~ping").value, "ping")
-        assertEquals(Message.extractContentFromMessage(channel, user, "~", "~flibbity++").value, "flibbity++")
+        check("~", "~ping", "ping")
+        check("~", "~flibbity++", "flibbity++")
+        check("~", "flibbity++", "flibbity++", false)
     }
 
     @Test
     fun botName() {
-        assertEquals(Message.extractContentFromMessage(channel, user, "javabot", "javabot: ping").value, "ping")
-        assertEquals(Message.extractContentFromMessage(channel, user, "javabot", "javabot: flibbity++").value, "flibbity++")
+        check("javabot", "javabot: ping", "ping")
+        check("javabot", "javabot: flibbity++", "flibbity++")
+        check("javabot", "flibbity++", "flibbity++", false)
+    }
+
+    private fun check(start: String, test: String, expected: String, triggered: Boolean = true) {
+        val message = Message.extractContentFromMessage(channel, user, start, test)
+        assertEquals(message.value, expected)
+        assertEquals(message.triggered, triggered)
     }
 }

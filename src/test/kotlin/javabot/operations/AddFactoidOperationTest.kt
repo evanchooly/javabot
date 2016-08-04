@@ -67,9 +67,8 @@ class AddFactoidOperationTest @Inject constructor(val factoidDao: FactoidDao, va
     }
 
     @Test(dependsOnMethods = arrayOf("factoidAdd"))
-    @Throws(IOException::class)
     fun duplicateAdd() {
-        val message = "test pong is pong"
+        val message = "~test pong is pong"
         var response = addFactoidOperation.handleMessage(message(message))
         Assert.assertEquals(response[0].value, ok)
         response = addFactoidOperation.handleMessage(message(message))

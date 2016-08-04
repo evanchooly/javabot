@@ -7,13 +7,16 @@ import javabot.operations.TellSubject
 import org.slf4j.LoggerFactory
 import java.lang.String.format
 
-open class Message(val channel: Channel? = null, val user: JavabotUser, val value: String, val target: JavabotUser? = null) {
+open class Message(val channel: Channel? = null, val user: JavabotUser, val value: String, val target: JavabotUser? = null,
+                   val triggered: Boolean = true) {
     companion object {
         private val LOG = LoggerFactory.getLogger(Message::class.java)
 
         fun extractContentFromMessage(channel: Channel?, user: JavabotUser, startString: String, message: String): Message {
             try {
-                var content = message.substring(startString.length).trim()
+                val triggered = message.startsWith(startString)
+                var content = if (triggered) message.substring(startString.length).trim() else message.trim()
+
                 while (!content.isEmpty() && (content[0] == ':' || content[0] == ',')) {
                     content = content.substring(1).trim()
                 }
@@ -21,13 +24,13 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
                     val tellSubject = if (content.startsWith("tell ")) parseLonghand(content) else parseShorthand(startString, content)
 
                     if (tellSubject != null) {
-                        return Message(channel, user, tellSubject.subject, tellSubject.target)
+                        return Message(channel, user, tellSubject.subject, tellSubject.target, triggered)
                     } else {
-                        return Message(channel, user, Sofia.factoidTellSyntax(user.nick))
+                        return Message(channel, user, Sofia.factoidTellSyntax(user.nick), triggered = triggered)
                     }
                 }
 
-                return Message(channel, user, content)
+                return Message(channel, user, content, triggered = triggered)
             } catch(e: Exception) {
                 LOG.error("Failed to parse: ${message} in channel ${channel}", e)
                 throw e

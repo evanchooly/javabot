@@ -11,7 +11,9 @@ import java.io.Serializable
 import java.time.LocalDateTime
 
 @Entity(value = "karma", noClassnameStored = true)
-@Indexes(Index(fields = arrayOf(Field("upperName")))) class Karma : Serializable, Persistent {
+@Indexes(Index(fields = arrayOf(Field("upperName"))),
+        Index(fields = arrayOf(Field("value"), Field("name"))))
+class Karma : Serializable, Persistent {
     @Id
     var id: ObjectId? = null
 

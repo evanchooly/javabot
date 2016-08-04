@@ -12,11 +12,12 @@ import javax.inject.Inject
 
 @Test class GetFactoidOperationTest : BaseTest() {
     @Inject
-    protected lateinit var factoidDao: FactoidDao
+    private lateinit var factoidDao: FactoidDao
     @Inject
-    protected lateinit var operation: GetFactoidOperation
+    private lateinit var operation: GetFactoidOperation
 
-    @BeforeClass fun createGets() {
+    @BeforeClass
+    fun createGets() {
         deleteFactoids()
         factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "api", "http://java.sun.com/javase/current/docs/api/index.html", LogsDaoTest.CHANNEL_NAME)
         factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "replyTest", "<reply>I'm a reply!", LogsDaoTest.CHANNEL_NAME)
@@ -192,7 +193,7 @@ import javax.inject.Inject
         Assert.assertEquals(responses[0].value, "${BaseTest.TEST_TARGET_NICK}, ${response}")
     }
 
-    protected fun getFoundMessage(factoid: String, value: String): String {
+    private fun getFoundMessage(factoid: String, value: String): String {
         return "${testUser}, ${factoid} is ${value}"
     }
 
