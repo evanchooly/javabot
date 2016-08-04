@@ -91,7 +91,7 @@ class AddFactoidOperationTest @Inject constructor(val factoidDao: FactoidDao, va
 
     fun parensFactoids() {
         val factoid = "should be the full (/hi there) factoid"
-        var response = addFactoidOperation.handleMessage(message("~asdf is <reply>" + factoid))
+        var response = addFactoidOperation.handleMessage(message("~asdf is <reply>$factoid"))
         Assert.assertEquals(response[0].value, ok)
         response = getFactoidOperation.handleMessage(message("~asdf"))
         Assert.assertEquals(response[0].value, factoid)

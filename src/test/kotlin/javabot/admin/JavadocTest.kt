@@ -18,13 +18,14 @@ import java.net.MalformedURLException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-@Test class JavadocTest : BaseTest() {
+@Test
+class JavadocTest : BaseTest() {
 
     @Inject
-    protected lateinit var apiDao: ApiDao
+    private lateinit var apiDao: ApiDao
 
     @Inject
-    protected lateinit var javadocClassDao: JavadocClassDao
+    private lateinit var javadocClassDao: JavadocClassDao
 
     @Inject
     private lateinit var operation: JavadocOperation

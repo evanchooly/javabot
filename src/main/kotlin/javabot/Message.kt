@@ -4,39 +4,34 @@ import com.antwerkz.sofia.Sofia
 import javabot.model.Channel
 import javabot.model.JavabotUser
 import javabot.operations.TellSubject
+import org.slf4j.LoggerFactory
 import java.lang.String.format
 
-open class Message(val channel: Channel? = null, val user: JavabotUser, val value: String,
-                   val target: JavabotUser? = null, val triggered: Boolean = false) {
+open class Message(val channel: Channel? = null, val user: JavabotUser, val value: String, val target: JavabotUser? = null) {
     companion object {
-        fun extractContentFromMessage(channel: Channel?, user: JavabotUser, startString: String, botNick: String, message: String):
-                Message {
-            var content = message.trim()
-            var trigger = channel == null
-            for (start in arrayOf(startString, botNick)) {
-                if (message.startsWith(start)) {
-                    trigger = true
-                    content = content.substring(start.length).trim()
-                } else if (message.startsWith(botNick)) {
-                    content = content.substring(botNick.length).trim()
-                    trigger = true
+        private val LOG = LoggerFactory.getLogger(Message::class.java)
+
+        fun extractContentFromMessage(channel: Channel?, user: JavabotUser, startString: String, message: String): Message {
+            try {
+                var content = message.substring(startString.length).trim()
+                while (!content.isEmpty() && (content[0] == ':' || content[0] == ',')) {
+                    content = content.substring(1).trim()
                 }
-            }
+                if (isTellCommand(startString, content)) {
+                    val tellSubject = if (content.startsWith("tell ")) parseLonghand(content) else parseShorthand(startString, content)
 
-            while (!content.isEmpty() && (content[0] == ':' || content[0] == ',')) {
-                content = content.substring(1).trim()
-            }
-            if (isTellCommand(startString, content)) {
-                val tellSubject = if (content.startsWith("tell ")) parseLonghand(content) else parseShorthand(startString, content)
-
-                if (tellSubject != null) {
-                    return Message(channel, user, tellSubject.subject, tellSubject.target, trigger)
-                } else {
-                    return Message(channel, user, Sofia.factoidTellSyntax(user.nick), triggered = trigger)
+                    if (tellSubject != null) {
+                        return Message(channel, user, tellSubject.subject, tellSubject.target)
+                    } else {
+                        return Message(channel, user, Sofia.factoidTellSyntax(user.nick))
+                    }
                 }
-            }
 
-            return Message(channel, user, content, triggered = trigger)
+                return Message(channel, user, content)
+            } catch(e: Exception) {
+                LOG.error("Failed to parse: ${message} in channel ${channel}", e)
+                throw e
+            }
         }
 
         private fun isTellCommand(startString: String, value: String): Boolean {
@@ -65,10 +60,9 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
 
     val tell: Boolean = target != null
 
-    constructor(user: JavabotUser, value: String, forBot: Boolean = false) : this(null, user, value, triggered = forBot)
+    constructor(user: JavabotUser, value: String) : this(null, user, value)
 
-    constructor(channel: Channel, message: Message, value: String, forBot: Boolean = false) : this(channel, message.user, value,
-            message.target, forBot)
+    constructor(channel: Channel, message: Message, value: String) : this(channel, message.user, value, message.target)
 
     constructor(message: Message, value: String) : this(message.channel, message.user, value, message.target)
 

@@ -8,13 +8,12 @@ import com.google.inject.assistedinject.FactoryModuleBuilder
 import com.mongodb.MongoClient
 import com.mongodb.MongoClientOptions
 import com.mongodb.ServerAddress
-import com.mongodb.WriteConcern
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
 import javabot.dao.util.LocalDateTimeConverter
 import javabot.javadoc.JavadocClass
-import javabot.web.views.ViewFactory
 import javabot.model.Factoid
+import javabot.web.views.ViewFactory
 import org.aeonbits.owner.Config.Key
 import org.aeonbits.owner.ConfigFactory
 import org.mongodb.morphia.Datastore
@@ -53,7 +52,6 @@ open class JavabotModule : AbstractModule() {
     fun datastore(): Datastore {
         if (datastore == null) {
             datastore = getMorphia().createDatastore(getMongoClient(), javabotConfig().databaseName())
-            datastore!!.defaultWriteConcern = WriteConcern.SAFE
             try {
                 datastore!!.ensureIndexes()
             } catch (e: Exception) {
@@ -152,6 +150,6 @@ open class JavabotModule : AbstractModule() {
     }
 
     fun getBotListener(): IrcAdapter {
-        return ircAdapterProvider!!.get()
+        return ircAdapterProvider.get()
     }
 }
