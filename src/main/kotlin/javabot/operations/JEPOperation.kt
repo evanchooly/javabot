@@ -1,42 +1,59 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import com.google.common.cache.CacheBuilder
+import com.google.common.cache.CacheLoader
+import com.google.inject.Singleton
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
-import javabot.operations.locator.JEPLocator
-import javax.inject.Inject
+import org.jsoup.Jsoup
+import java.io.IOException
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.TimeUnit
 
 /**
  * Astute coders might notice a SLIGHT similarity to JSROperation... as in, it's copied and pasted directly
  * with references to JSR stuff being renamed to JEP stuff instead.
  */
-class JEPOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var locator: JEPLocator) : BotOperation(bot, adminDao) {
+@Singleton class JEPOperation @com.google.inject.Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao) {
+    var jepTitleCache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(1, TimeUnit.HOURS).recordStats().build(
+            object : CacheLoader<String, String>() {
+                @SuppressWarnings("NullableProblems")
+                @Throws(IOException::class)
+                override fun load(url: String): String {
+                    val doc = Jsoup.connect(url).get()
+                    return doc.title()
+                }
+            })
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value.toLowerCase()
-        if ("jep" == message.trim()) {
-            responses.add(Message(event, Sofia.jepMissing()))
-        } else {
-            if (message.startsWith("jep ")) {
-                val jepString = message.substring("jep ".length)
-
+        if (message.startsWith(prefix)) {
+            val jepText = message.substring(prefix.length).trim()
+            if(jepText.isEmpty()) {
+                responses.add(Message(event, Sofia.jepMissing()))
+            } else {
                 try {
-                    val jep = Integer.parseInt(jepString)
-                    val response = locator.findInformation(jep)
-                    if (!response.isEmpty()) {
-                        responses.add(Message(event, response))
-                    } else {
-                        responses.add(Message(event, Sofia.jepUnknown(jepString)))
+                    val jep = Integer.parseInt(jepText)
+                    try {
+                        val url = "http://openjdk.java.net/jeps/%d".format(jep)
+                        responses.add(Message(event, Sofia.jepSucceed(jepTitleCache.get(url), url)))
+                    } catch (e: ExecutionException) {
+                        // from jep.fail
+                        responses.add(Message(event, Sofia.jepInvalid(jepText)))
                     }
-                } catch (nfe: NumberFormatException) {
-                    responses.add(Message(event, Sofia.jepInvalid(jepString)))
+
+                } catch (e: NumberFormatException) {
+                    responses.add(Message(event, Sofia.jepInvalid(jepText)))
                 }
             }
         }
-
         return responses
     }
-}
 
+    companion object {
+        val prefix: String = "jep"
+    }
+}

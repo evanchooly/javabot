@@ -27,7 +27,7 @@ import org.testng.annotations.Test
 
     @Test fun testBadJEPRequest() {
         val response = operation.handleMessage(message("~jep 2202213"))
-        Assert.assertEquals(response[0].value, Sofia.jepUnknown("2202213"))
+        Assert.assertEquals(response[0].value, Sofia.jepInvalid("2202213"))
     }
 
     @DataProvider(name = "badCommands")

@@ -17,18 +17,18 @@ import javax.inject.Inject
     }
 
     @Test fun testMissingRFCNumber() {
-        Assert.assertEquals(operation.handleMessage(message("~rfc "))[0].value, Sofia.rfcInvalid(""))
-        Assert.assertEquals(operation.handleMessage(message("~rfc"))[0].value, Sofia.rfcInvalid(""))
+        Assert.assertEquals(operation.handleMessage(message("~rfc "))[0].value, Sofia.rfcMissing())
+        Assert.assertEquals(operation.handleMessage(message("~rfc"))[0].value, Sofia.rfcMissing())
     }
 
     @Test fun testHTTPRFC() {
         val hitRate = operation.rfcTitleCache.stats().hitCount()
         var response = operation.handleMessage(message("~rfc 2616"))
         Assert.assertEquals(response[0].value,
-                Sofia.rfcSucceed("http://www.faqs.org/rfcs/rfc2616.html", "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1 (RFC2616)"))
+                Sofia.rfcSucceed("http://www.rfc-base.org/rfc-2616.html", "RFC 2616 - Hypertext Transfer Protocol HTTP/1.1"))
         response = operation.handleMessage(message("~rfc 2616"))
         Assert.assertEquals(response[0].value,
-                Sofia.rfcSucceed("http://www.faqs.org/rfcs/rfc2616.html", "RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1 (RFC2616)"))
+                Sofia.rfcSucceed("http://www.rfc-base.org/rfc-2616.html", "RFC 2616 - Hypertext Transfer Protocol HTTP/1.1"))
         assertEquals(operation.rfcTitleCache.stats().hitCount(), hitRate + 1)
     }
 

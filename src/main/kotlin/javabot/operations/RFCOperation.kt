@@ -32,20 +32,23 @@ import java.util.concurrent.TimeUnit
         val message = event.value.toLowerCase()
         if (message.startsWith(prefix)) {
             val rfcText = message.substring(prefix.length).trim()
-            try {
-                val rfc = Integer.parseInt(rfcText)
+            if(rfcText.isEmpty()) {
+                responses.add(Message(event, Sofia.rfcMissing()))
+            } else {
                 try {
-                    val url = "http://www.faqs.org/rfcs/rfc%d.html".format(rfc)
-                    responses.add(Message(event, Sofia.rfcSucceed(url, rfcTitleCache.get(url))))
-                } catch (e: ExecutionException) {
-                    // from rfc.fail
-                    responses.add(Message(event, Sofia.rfcFail(rfcText)))
+                    val rfc = Integer.parseInt(rfcText)
+                    try {
+                        val url = "http://www.rfc-base.org/rfc-%d.html".format(rfc)
+                        responses.add(Message(event, Sofia.rfcSucceed(url, rfcTitleCache.get(url))))
+                    } catch (e: ExecutionException) {
+                        // from rfc.fail
+                        responses.add(Message(event, Sofia.rfcFail(rfcText)))
+                    }
+
+                } catch (e: NumberFormatException) {
+                    responses.add(Message(event, Sofia.rfcInvalid(rfcText)))
                 }
-
-            } catch (e: NumberFormatException) {
-                responses.add(Message(event, Sofia.rfcInvalid(rfcText)))
             }
-
         }
         return responses
     }
