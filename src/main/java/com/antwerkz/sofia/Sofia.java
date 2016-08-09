@@ -377,6 +377,18 @@ public class Sofia {
         return getMessageValue("javadoc.url", locale);
     }
 
+    public static String jepInvalid(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("jep.invalid", locale), arg0);
+    }
+
+    public static String jepMissing(Locale... locale) {
+        return getMessageValue("jep.missing", locale);
+    }
+
+    public static String jepUnknown(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("jep.unknown", locale), arg0);
+    }
+
     public static String jsrInvalid(Object arg0, Locale... locale) {
         return MessageFormat.format(getMessageValue("jsr.invalid", locale), arg0);
     }

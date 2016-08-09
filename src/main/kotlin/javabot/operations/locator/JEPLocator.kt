@@ -6,38 +6,30 @@ import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.util.EntityUtils
 import org.jsoup.Jsoup
-import java.util.HashMap
+import java.util.*
 
-class JCPJSRLocator {
+class JEPLocator {
 
     fun locate(inputs: Map<String, String>): Map<String, String> {
         val retVal = HashMap<String, String>()
-        val urlString = "http://www.jcp.org/en/jsr/detail?id=" + inputs["jsr"]
+        val urlString = "http://openjdk.java.net/jeps/" + inputs["jep"]
         retVal.put("url", urlString)
         try {
             HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build().use { client ->
                 val httpget = HttpGet(urlString)
                 val response = client.execute(httpget)
-                val entity = response.entity
-                if (entity != null) {
-                    try {
-                        val data = EntityUtils.toString(entity)
-                        val doc = Jsoup.parse(data)
-                        val title = doc.select("div.header1").first()
-                        val titleText = StringBuilder()
-                        var separator = ""
-                        // we build the content,
-                        // because of that stupid <sup> thing the JCP uses
-                        for (element in title.textNodes()) {
-                            titleText.append(separator).append(element.text().trim())
-                            separator = " "
+                if (response.statusLine.statusCode == 200) {
+                    val entity = response.entity
+                    if (entity != null) {
+                        try {
+                            val data = EntityUtils.toString(entity)
+                            val doc = Jsoup.parse(data)
+                            retVal.put("title", doc.title())
+                        } finally {
+                            EntityUtils.consume(entity)
                         }
-                        retVal.put("title", titleText.toString())
-                    } finally {
-                        EntityUtils.consume(entity)
                     }
                 }
-
             }
         } catch (ignored: Exception) {
         }
@@ -45,9 +37,9 @@ class JCPJSRLocator {
         return retVal
     }
 
-    fun findInformation(jsr: Int): String {
+    fun findInformation(jep: Int): String {
         val inputs = HashMap<String, String>()
-        inputs.put("jsr", Integer.toString(jsr))
+        inputs.put("jep", Integer.toString(jep))
         val outputs = locate(inputs)
         if (Strings.isNullOrEmpty(outputs["title"])) {
             return ""
