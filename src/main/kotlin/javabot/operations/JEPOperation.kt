@@ -13,8 +13,8 @@ import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 
 /**
- * Astute coders might notice a SLIGHT similarity to JSROperation... as in, it's copied and pasted directly
- * with references to JSR stuff being renamed to JEP stuff instead.
+ * Astute coders might notice a SLIGHT similarity to RFCOperation... as in, it's copied and pasted directly
+ * with references to RFC stuff being renamed to JEP stuff instead.
  */
 @Singleton class JEPOperation @com.google.inject.Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao) {
     var jepTitleCache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(1, TimeUnit.HOURS).recordStats().build(
