@@ -8,7 +8,7 @@ import javabot.dao.AdminDao
 import java.io.InputStream
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.jar.Manifest
+import java.util.*
 
 class VersionOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao), StandardOperation {
     var lastInvocationTime = LocalDateTime.of(1992, 10, 17, 9, 0)
@@ -18,7 +18,7 @@ class VersionOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : B
         val message = event.value
         if ("version".equals(message, ignoreCase = true)) {
             if (LocalDateTime.now() > lastInvocationTime.plus(5, ChronoUnit.MINUTES)) {
-                lastInvocationTime=LocalDateTime.now()
+                lastInvocationTime = LocalDateTime.now()
 
                 responses.add(Message(event, Sofia.botVersion(loadVersion())))
             }
@@ -27,13 +27,16 @@ class VersionOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : B
     }
 
     fun loadVersion(): String {
-        val mf = Manifest();
-        val manifestResource: InputStream?=Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/MANIFEST.MF")
-        if(manifestResource!=null) {
-            mf.read(manifestResource);
-            val atts = mf.getMainAttributes();
-            val version:String?=atts.getValue("Implementation-Build")
-            return version ?: "UNKNOWN"
+        val properties= Properties()
+        val versionProperties: InputStream?=this.javaClass.getResourceAsStream("/version.properties")
+        if(versionProperties!=null) {
+            properties.load(versionProperties)
+            val version=properties.getProperty("build.version", "UNKNOWN")
+            if(version.isEmpty()) {
+                return "UNKNOWN"
+            } else {
+                return version
+            }
         } else {
             return "UNKNOWN"
         }

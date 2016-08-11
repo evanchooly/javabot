@@ -34,6 +34,7 @@
                 <excludes>
                     <exclude>javabot.properties</exclude>
                 </excludes>
+                <filtering>true</filtering>
             </resource>
         </resources>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
