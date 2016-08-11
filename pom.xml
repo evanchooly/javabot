@@ -222,7 +222,6 @@
                     <doCheck>true</doCheck>
                     <doUpdate>false</doUpdate>
                 </configuration>
-
             </plugin>
         </plugins>
     </build>
