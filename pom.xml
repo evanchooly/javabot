@@ -9,6 +9,11 @@
 
     <name>javabot</name>
 
+    <scm>
+        <connection>scm:git:git://localhost/${basedir}</connection>
+        <url>https://github.com/evanchooly/javabot</url>
+    </scm>
+
     <repositories>
         <repository>
             <id>stackmagic.github.maven-repo</id>
@@ -116,22 +121,22 @@
                     </execution>
                 </executions>
             </plugin>
-                        <plugin>
-                            <groupId>com.antwerkz.sofia</groupId>
-                            <artifactId>sofia-maven</artifactId>
-                            <version>${sofia.version}</version>
-                            <executions>
-                                <execution>
-                                    <goals>
-                                        <goal>generate</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                            <configuration>
-                                <loggingType>slf4j</loggingType>
-                                <outputDirectory>src/main/java</outputDirectory>
-                            </configuration>
-                        </plugin>
+            <plugin>
+                <groupId>com.antwerkz.sofia</groupId>
+                <artifactId>sofia-maven</artifactId>
+                <version>${sofia.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <loggingType>slf4j</loggingType>
+                    <outputDirectory>src/main/java</outputDirectory>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -162,6 +167,9 @@
                             <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>javabot.Javabot</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <Implementation-Build>${buildNumber}</Implementation-Build>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
@@ -197,6 +205,24 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>true</doCheck>
+                    <doUpdate>false</doUpdate>
+                </configuration>
+
             </plugin>
         </plugins>
     </build>
