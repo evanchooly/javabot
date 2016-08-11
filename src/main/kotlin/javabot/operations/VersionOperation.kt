@@ -5,6 +5,7 @@ import com.google.inject.Inject
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
+import java.io.InputStream
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.jar.Manifest
@@ -27,11 +28,12 @@ class VersionOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : B
 
     fun loadVersion(): String {
         val mf = Manifest();
-        val manifestResource=Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/MANIFEST.MF")
+        val manifestResource: InputStream?=Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/MANIFEST.MF")
         if(manifestResource!=null) {
             mf.read(manifestResource);
             val atts = mf.getMainAttributes();
-            return atts.getValue("Implementation-Build");
+            val version:String?=atts.getValue("Implementation-Build")
+            return version ?: "UNKNOWN"
         } else {
             return "UNKNOWN"
         }
