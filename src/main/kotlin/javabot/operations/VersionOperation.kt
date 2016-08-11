@@ -27,12 +27,10 @@ class VersionOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : B
 
     fun loadVersion(): String {
         val mf = Manifest();
-        val manifestResource=Thread.currentThread().getContextClassLoader().getResourceAsStream("/META-INF/MANIFEST.MF")
+        val manifestResource=Thread.currentThread().getContextClassLoader().getResourceAsStream("META-INF/MANIFEST.MF")
         if(manifestResource!=null) {
             mf.read(manifestResource);
-
             val atts = mf.getMainAttributes();
-
             return atts.getValue("Implementation-Build");
         } else {
             return "UNKNOWN"
