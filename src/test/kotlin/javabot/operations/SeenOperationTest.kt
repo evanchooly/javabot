@@ -12,6 +12,6 @@ class SeenOperationTest : BaseTest() {
 
     @Test fun seen() {
         var response = operation.handleMessage(message("~seen jimmyjimjim"))
-        Assert.assertEquals(response[0].value, Sofia.seenUnknown(testUser.nick, "jimmyjimjim"))
+        Assert.assertEquals(response[0].value, Sofia.seenUnknown(TEST_USER.nick, "jimmyjimjim"))
     }
 }

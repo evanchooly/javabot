@@ -15,42 +15,46 @@ import org.pircbotx.hooks.events.PrivateMessageEvent
 import org.testng.Assert
 import org.testng.annotations.Test
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeUnit.MINUTES
+import java.util.concurrent.TimeUnit.SECONDS
 
 class IrcAdapterTest : BaseTest() {
     @Inject
-    lateinit var listener: IrcAdapter
+    lateinit var ircAdapter: IrcAdapter
     @Inject
     lateinit var factoidDao: FactoidDao
     @Inject
     lateinit var ircBot: Provider<PircBotX>
 
+
+    private val duration = Duration(10, SECONDS)
+
     @Test
     fun testOnMessage() {
-        listener.onMessage(MessageEvent(ircBot.get(), MockIrcChannel(testChannel), MockIrcUser(testUser), "~dude"))
-        Assert.assertEquals(messages.get(Duration(10, TimeUnit.MINUTES))[0], Sofia.unhandledMessage(testUser.nick))
+        ircAdapter.onMessage(MessageEvent(ircBot.get(), MockIrcChannel(TEST_CHANNEL), MockIrcUser(TEST_USER), "~dude"))
+        Assert.assertEquals(messages.get(duration)[0], Sofia.unhandledMessage(TEST_USER.nick))
     }
 
     @Test
     fun testOnPrivateMessage() {
-        listener.onPrivateMessage(PrivateMessageEvent(ircBot.get(), MockIrcUser(testUser), "dude"))
-        Assert.assertEquals(messages.get()[0], Sofia.unhandledMessage(testUser.nick))
+        ircAdapter.onPrivateMessage(PrivateMessageEvent(ircBot.get(), MockIrcUser(TEST_USER), "dude"))
+        Assert.assertEquals(messages.get(duration)[0], Sofia.unhandledMessage(TEST_USER.nick))
     }
 
     @Test
     fun factoidLookup() {
-        factoidDao.delete(testUser.nick, "impact", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.addFactoid(testUser.nick, "impact", "<reply>ouch", LogsDaoTest.CHANNEL_NAME)
-        listener.onMessage(MessageEvent(ircBot.get(), MockIrcChannel(testChannel), MockIrcUser(testUser), "~impact"))
-        Assert.assertEquals(messages.get(Duration(10, TimeUnit.MINUTES))[0], "ouch")
-
+        factoidDao.delete(TEST_USER.nick, "impact", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(TEST_USER.nick, "impact", "<reply>ouch", LogsDaoTest.CHANNEL_NAME)
+        ircAdapter.onMessage(MessageEvent(ircBot.get(), MockIrcChannel(TEST_CHANNEL), MockIrcUser(TEST_USER), "~impact"))
+        Assert.assertEquals(messages.get(duration)[0], "ouch")
     }
 
     @Test
     fun tell() {
-        factoidDao.delete(testUser.nick, "impact", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.addFactoid(testUser.nick, "impact", "<reply>ouch", LogsDaoTest.CHANNEL_NAME)
-        listener.onMessage(MessageEvent(ircBot.get(), MockIrcChannel(testChannel), MockIrcUser(testUser), "~~ ${targetUser.nick} impact"))
-        Assert.assertEquals(messages.get(Duration(10, TimeUnit.MINUTES))[0], "${targetUser.nick}, ouch")
+        factoidDao.delete(TEST_USER.nick, "impact", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(TEST_USER.nick, "impact", "<reply>ouch", LogsDaoTest.CHANNEL_NAME)
+        ircAdapter.onMessage(MessageEvent(ircBot.get(), MockIrcChannel(TEST_CHANNEL), MockIrcUser(TEST_USER), "~~ ${TARGET_USER.nick} impact"))
+        Assert.assertEquals(messages.get(duration)[0], "${TARGET_USER.nick}, ouch")
     }
 
 }

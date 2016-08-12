@@ -17,16 +17,16 @@ class LogsOperationTest : BaseTest() {
     @BeforeMethod
     @AfterMethod
     fun clearLogs() {
-        logsDao.deleteAllForChannel(testChannel.name)
+        logsDao.deleteAllForChannel(TEST_CHANNEL.name)
     }
 
     @Test
-    @Throws(Exception::class) fun testChannelLogs() {
+    @Throws(Exception::class) fun TEST_CHANNELLogs() {
         val query = datastore.createQuery(Logs::class.java)
         datastore.delete(query)
         // Add a known and unique message to the logs so we can validate that we are testing against new data
         val uuid = UUID.randomUUID().toString()
-        logsDao.logMessage(Type.MESSAGE, testChannel, testUser, uuid)
+        logsDao.logMessage(Type.MESSAGE, TEST_CHANNEL, TEST_USER, uuid)
         val list = operation.handleMessage(message("~logs"))
         Assert.assertFalse(list.isEmpty())
         Assert.assertTrue(list[0].value.contains(uuid))

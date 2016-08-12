@@ -24,26 +24,26 @@ import javax.inject.Inject
     }
 
     fun createCircularSee() {
-        factoidDao.addFactoid(testUser.nick, "see1", "<see>see2", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.addFactoid(testUser.nick, "see2", "<see>see3", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.addFactoid(testUser.nick, "see3", "<see>see1", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(TEST_USER.nick, "see1", "<see>see2", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(TEST_USER.nick, "see2", "<see>see3", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(TEST_USER.nick, "see3", "<see>see1", LogsDaoTest.CHANNEL_NAME)
         var response = operation.handleMessage(message("~see1"))
         Assert.assertEquals(response[0].value, Sofia.factoidLoop("<see>see2"))
     }
 
     fun followReferencesCorrectly() {
-        factoidDao.addFactoid(testUser.nick, "see1", "Bzzt \$who", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.addFactoid(testUser.nick, "see2", "<see>see1", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.addFactoid(testUser.nick, "see3", "<see>see2", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(TEST_USER.nick, "see1", "Bzzt \$who", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(TEST_USER.nick, "see2", "<see>see1", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(TEST_USER.nick, "see3", "<see>see2", LogsDaoTest.CHANNEL_NAME)
         var response = operation.handleMessage(message("~see3"))
-        Assert.assertEquals(response[0].value, "${testUser}, see1 is Bzzt ${testUser}")
+        Assert.assertEquals(response[0].value, "${TEST_USER}, see1 is Bzzt ${TEST_USER}")
     }
 
     fun createNormalSee() {
-        factoidDao.addFactoid(testUser.nick, "see1", "<see>see2", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.addFactoid(testUser.nick, "see2", "<see>see3", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.addFactoid(testUser.nick, "see3", "w00t", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(TEST_USER.nick, "see1", "<see>see2", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(TEST_USER.nick, "see2", "<see>see3", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(TEST_USER.nick, "see3", "w00t", LogsDaoTest.CHANNEL_NAME)
         var response = operation.handleMessage(message("~see1"))
-        Assert.assertEquals(response[0].value, "${testUser}, see3 is w00t")
+        Assert.assertEquals(response[0].value, "${TEST_USER}, see3 is w00t")
     }
 }

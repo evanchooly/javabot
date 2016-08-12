@@ -40,11 +40,11 @@ class LogsDaoTest @Inject constructor(val ds: Datastore) : BaseTest() {
         val channel = channelDao.create(chanName, true, null)
         logsDao.deleteAllForChannel(chanName)
 
-        logsDao.logMessage(Logs.Type.PART, channel, testUser, Sofia.userParted(testUser.nick, "i'm out of here!"))
+        logsDao.logMessage(Logs.Type.PART, channel, TEST_USER, Sofia.userParted(TEST_USER.nick, "i'm out of here!"))
 
         val logs = logsDao.findByChannel(chanName, LocalDateTime.now(), true)
 
         Assert.assertFalse(logs.isEmpty(), "Should have one log entry")
-        Assert.assertEquals(logs[0].message, Sofia.userParted(testUser.nick, "i'm out of here!"))
+        Assert.assertEquals(logs[0].message, Sofia.userParted(TEST_USER.nick, "i'm out of here!"))
     }
 }

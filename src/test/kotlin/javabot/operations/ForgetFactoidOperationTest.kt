@@ -17,14 +17,14 @@ import javax.inject.Inject
 
     fun forgetFactoid() {
         if (!factoidDao.hasFactoid("afky")) {
-            factoidDao.addFactoid(testUser.nick, "afky", "test", LogsDaoTest.CHANNEL_NAME)
+            factoidDao.addFactoid(TEST_USER.nick, "afky", "test", LogsDaoTest.CHANNEL_NAME)
         }
         var response = operation.handleMessage(message("~forget afky"))
-        Assert.assertEquals(response[0].value, Sofia.factoidForgotten("afky", testUser.nick))
+        Assert.assertEquals(response[0].value, Sofia.factoidForgotten("afky", TEST_USER.nick))
     }
 
     fun nonexistentFactoid() {
         var response = operation.handleMessage(message("~forget asdfghjkl"))
-        Assert.assertEquals(response[0].value, Sofia.factoidDeleteUnknown("asdfghjkl", testUser.nick))
+        Assert.assertEquals(response[0].value, Sofia.factoidDeleteUnknown("asdfghjkl", TEST_USER.nick))
     }
 }

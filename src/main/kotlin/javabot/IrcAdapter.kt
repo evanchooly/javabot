@@ -30,7 +30,7 @@ import java.util.ArrayList
 import javax.inject.Inject
 import javax.inject.Provider
 
-open class IrcAdapter @Inject
+open class  IrcAdapter @Inject
 constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, private var channelDao: ChannelDao,
             private var adminDao: AdminDao, private var javabotProvider: Provider<Javabot>, private var configDao: ConfigDao,
             private var ircBot: Provider<PircBotX>) : ListenerAdapter<PircBotX>() {
@@ -43,12 +43,10 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
 
     override fun onMessage(event: MessageEvent<PircBotX>) {
         val bot = javabotProvider.get()
-        for (start in arrayOf(bot.startString, bot.nick)) {
-            if (event.message.startsWith(start)) {
-                bot.executors.execute {
-                    bot.processMessage(Message.extractContentFromMessage(event.channel.toJavabot(), event.user.toJavabot(), start, event.message))
-                }
-            }
+        val channel = event.channel.toJavabot()
+        val user = event.user.toJavabot()
+        bot.executors.execute {
+            bot.processMessage(Message.extractContentFromMessage(channel, user, bot.startString, bot.nick, event.message))
         }
     }
 
@@ -62,14 +60,13 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
         }
 
         bot.executors.execute({
-            bot.processMessage(Message.extractContentFromMessage(null, event.user.toJavabot(), start, event.message))
+            bot.processMessage(Message.extractContentFromMessage(null, event.user.toJavabot(), start, bot.nick, event.message))
         })
     }
 
     override fun onJoin(event: JoinEvent<PircBotX>) {
         logsDao.logMessage(Logs.Type.JOIN, event.channel.toJavabot(), event.user.toJavabot(),
-                Sofia.userJoined(event.user.nick, event.user.hostmask,
-                        event.channel.name))
+                Sofia.userJoined(event.user.nick, event.user.hostmask, event.channel.name))
     }
 
     override fun onPart(event: PartEvent<PircBotX>) {

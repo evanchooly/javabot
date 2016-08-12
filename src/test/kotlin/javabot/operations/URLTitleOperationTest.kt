@@ -17,7 +17,7 @@ class URLTitleOperationTest : BaseTest() {
 
     @Test(dataProvider = "urls")
     fun testSimpleUrl(url: String, content: String?) {
-        val results = operation.handleChannelMessage(Message(testChannel, testUser, url))
+        val results = operation.handleChannelMessage(Message(TEST_CHANNEL, TEST_USER, url))
         if (content != null) {
             Assert.assertEquals(results[0].value, content)
         } else {
