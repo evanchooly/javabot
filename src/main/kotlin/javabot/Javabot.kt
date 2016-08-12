@@ -247,6 +247,8 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
     fun processMessage(message: Message) {
         val sender = message.user
         val responses = arrayListOf<Message>()
+        logMessage(message.channel, sender, message.value)
+
         if (!ignores.contains(sender.nick) && !shunDao.isShunned(sender.nick)
                 && (message.channel != null || isOnCommonChannel(message.user))) {
             try {
