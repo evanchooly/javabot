@@ -34,7 +34,7 @@ import javax.ws.rs.ext.Provider
             return handleWebApplicationException(runtime)
         } else {
             log.error(runtime.message, runtime)
-            return Response.status(INTERNAL_SERVER_ERROR).entity(PublicErrorResource().view500()).build()
+            return Response.status(INTERNAL_SERVER_ERROR).entity(PublicErrorResource.view500()).build()
         }
     }
 
@@ -47,19 +47,16 @@ import javax.ws.rs.ext.Provider
             try {
                 return Response.status(TEMPORARY_REDIRECT).location(URI("/auth/login")).build()
             } catch (e: URISyntaxException) {
-                return Response.status(INTERNAL_SERVER_ERROR).entity(PublicErrorResource().view500()).build()
+                return Response.status(INTERNAL_SERVER_ERROR).entity(PublicErrorResource.view500()).build()
             }
 
         } else if (status == FORBIDDEN.statusCode) {
-            return Response.status(FORBIDDEN).build()
-            //                       .entity(new PublicErrorResource().view403())
+            return Response.status(INTERNAL_SERVER_ERROR).entity(PublicErrorResource.view403()).build()
         } else if (status == NOT_FOUND.statusCode) {
-            return Response.status(NOT_FOUND).build()
-
-            //                       .entity(new PublicErrorResource().view404())
+            return Response.status(INTERNAL_SERVER_ERROR).entity(PublicErrorResource.view404()).build()
         } else {
             log.error(exception.message, exception)
-            return Response.status(INTERNAL_SERVER_ERROR).entity(PublicErrorResource().view500()).build()
+            return Response.status(INTERNAL_SERVER_ERROR).entity(PublicErrorResource.view500()).build()
         }
     }
 

@@ -1,6 +1,5 @@
 package javabot.dao
 
-import com.antwerkz.sofia.Sofia
 import javabot.model.Admin
 import javabot.model.EventType
 import javabot.model.JavabotUser
@@ -32,11 +31,11 @@ class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) : Ba
         return adminCriteria.query().get()
     }
 
-    fun getAdminByEmailAddress(email: String): Admin {
+    fun getAdminByEmailAddress(email: String): Admin? {
         val criteria = AdminCriteria(ds)
         criteria.emailAddress(email)
 
-        return criteria.query().get() ?: throw RuntimeException(Sofia.unknownUser())
+        return criteria.query().get()
     }
 
     fun create(ircName: String, userName: String, hostName: String): Admin {

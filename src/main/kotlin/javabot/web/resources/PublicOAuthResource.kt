@@ -38,7 +38,8 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
 
     @GET
     @Path("/login")
-    @Throws(URISyntaxException::class) fun requestOAuth(@Context request: HttpServletRequest): Response {
+    @Throws(URISyntaxException::class)
+    fun requestOAuth(@Context request: HttpServletRequest): Response {
         val oauthCfg = configuration!!.OAuthCfg
         if (oauthCfg != null) {
             try {
@@ -63,7 +64,8 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
      */
     @GET
     @Timed
-    @Path("/verify") fun verifyOAuthServerResponse(@Context request: HttpServletRequest): Response {
+    @Path("/verify")
+    fun verifyOAuthServerResponse(@Context request: HttpServletRequest): Response {
         val manager = request.session.getAttribute(AUTH_MANAGER) as SocialAuthManager
 
         try {

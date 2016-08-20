@@ -34,7 +34,9 @@ class JavabotApplication @Inject constructor(var injector: Injector): Applicatio
 
         @Throws(Exception::class)
         @JvmStatic fun main(args: Array<String>) {
-            Guice.createInjector(JavabotModule()).getInstance(JavabotApplication::class.java).run(arrayOf("server", "javabot.yml"))
+            Guice.createInjector(JavabotModule())
+                    .getInstance(JavabotApplication::class.java)
+                    .run(arrayOf("server", "javabot.yml"))
         }
     }
 
