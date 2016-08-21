@@ -1,20 +1,18 @@
 package javabot.javadoc
 
-import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
-import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.Indexes
 import org.mongodb.morphia.annotations.PrePersist
+import org.mongodb.morphia.annotations.Reference
 
 @Entity(value = "fields", noClassnameStored = true)
-@Indexes(Index(fields = arrayOf(Field("javadocClassId"), Field("upperName") )),
-      Index(fields = arrayOf(Field("apiId"), Field("javadocClassId"), Field("upperName") ))) class JavadocField : JavadocElement {
-    @Id
-    var id: ObjectId = ObjectId()
-
-    lateinit var javadocClassId: ObjectId
+@Indexes(Index(fields = arrayOf(Field("javadocClass"), Field("upperName") )),
+      Index(fields = arrayOf(Field("apiId"), Field("javadocClass"), Field("upperName") )))
+class JavadocField : JavadocElement {
+    @Reference(lazy = true, idOnly = true)
+    lateinit var javadocClass: JavadocClass
     lateinit var name: String
     lateinit var upperName: String
     lateinit var parentClassName: String
@@ -25,23 +23,13 @@ import org.mongodb.morphia.annotations.PrePersist
     }
 
     constructor(parent: JavadocClass, fieldName: String, fieldType: String) {
-
-        javadocClassId = parent.id
+        javadocClass = parent
         name = fieldName
         type = fieldType
         apiId = parent.apiId
-        val url = parent.directUrl + "#" + name
-        longUrl = url
-        directUrl = url
+        url = "${parent.url}#$name"
         parentClassName = parent.toString()
     }
-
-/*
-    public fun setJavadocClassId(javadocClass: JavadocClass) {
-        this.javadocClassId = javadocClass.id
-        parentClassName = javadocClass.toString()
-    }
-*/
 
     @PrePersist fun uppers() {
         upperName = name.toUpperCase()

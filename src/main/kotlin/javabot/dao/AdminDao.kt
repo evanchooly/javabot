@@ -27,7 +27,10 @@ class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) : Ba
 
     fun getAdmin(user: JavabotUser): Admin? {
         val adminCriteria = AdminCriteria(ds)
-        adminCriteria.ircName(user.nick)
+        adminCriteria.or(
+                adminCriteria.ircName(user.nick),
+                adminCriteria.emailAddress(user.userName)
+        )
         return adminCriteria.query().get()
     }
 

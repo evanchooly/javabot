@@ -3,6 +3,7 @@ package javabot.web.views
 import com.antwerkz.sofia.Sofia
 import com.google.inject.assistedinject.Assisted
 import javabot.dao.AdminDao
+import javabot.dao.ApiDao
 import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
 import javabot.dao.LogsDao
@@ -19,11 +20,12 @@ class LogsView @Inject constructor(
         adminDao: AdminDao,
         channelDao: ChannelDao,
         factoidDao: FactoidDao,
+        apiDao: ApiDao,
         var logsDao: LogsDao,
         @Assisted request: HttpServletRequest,
         @Assisted val channel: String,
         @Assisted private val date: LocalDateTime) :
-        MainView(adminDao, channelDao, factoidDao, request) {
+        MainView(adminDao, channelDao, factoidDao, apiDao, request) {
     companion object {
         val LOG_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm")
     }

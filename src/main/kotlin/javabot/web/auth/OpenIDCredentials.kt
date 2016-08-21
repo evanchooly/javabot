@@ -35,8 +35,8 @@ class OpenIDCredentials
         return (31 * sessionToken.hashCode())
     }
 
-    override fun toString(): String {
-        return Objects.toStringHelper(this).add("sessionId", sessionToken).add("authorities", requiredAuthorities).toString()
+    override fun toString(): String{
+        return "OpenIDCredentials(sessionToken=$sessionToken, requiredAuthorities=$requiredAuthorities)"
     }
 
 }

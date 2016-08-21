@@ -4,11 +4,9 @@ import com.google.inject.Inject
 import net.swisstech.bitly.BitlyClient
 import org.testng.Assert
 import org.testng.annotations.Test
-import org.testng.internal.Nullable
 
 class ShortenerTest : BaseTest() {
     @Inject(optional = true)
-    @Nullable
     var client: BitlyClient? = null
 
     @Test fun shorten() {

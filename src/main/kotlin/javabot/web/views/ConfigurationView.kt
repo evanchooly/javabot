@@ -3,6 +3,7 @@ package javabot.web.views
 import com.google.inject.assistedinject.Assisted
 import javabot.Javabot
 import javabot.dao.AdminDao
+import javabot.dao.ApiDao
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
 import javabot.dao.FactoidDao
@@ -18,10 +19,11 @@ class ConfigurationView @Inject constructor(
         adminDao: AdminDao,
         channelDao: ChannelDao,
         factoidDao: FactoidDao,
+        apiDao: ApiDao,
         var configDao: ConfigDao,
         var javabot: Javabot,
         @Assisted request: HttpServletRequest) :
-        MainView(adminDao, channelDao, factoidDao, request) {
+        MainView(adminDao, channelDao, factoidDao, apiDao, request) {
 
 
     val configuration: Config by lazy {

@@ -7,13 +7,14 @@ import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.Indexes
 import org.mongodb.morphia.annotations.PrePersist
+import org.mongodb.morphia.annotations.Reference
 
 @Entity(value = "methods", noClassnameStored = true)
-@Indexes(Index(fields = arrayOf(Field("apiId"))), Index(fields = arrayOf(Field("javadocClassId"), Field("upperName") )),
-      Index(fields = arrayOf(Field("apiId"), Field("javadocClassId"), Field("upperName") ))) class JavadocMethod : JavadocElement {
-    @Id
-    var id: ObjectId? = null
-    lateinit var javadocClassId: ObjectId
+@Indexes(Index(fields = arrayOf(Field("apiId"))), Index(fields = arrayOf(Field("javadocClass"), Field("upperName") )),
+      Index(fields = arrayOf(Field("apiId"), Field("javadocClass"), Field("upperName") )))
+class JavadocMethod : JavadocElement {
+    @Reference(lazy = true, idOnly = true)
+    lateinit var javadocClass: JavadocClass
     lateinit var name: String
     lateinit var upperName: String
     lateinit var longSignatureTypes: String
@@ -28,7 +29,7 @@ import org.mongodb.morphia.annotations.PrePersist
     constructor(parent: JavadocClass, name: String, count: Int,
                        longArgs: List<String>, shortArgs: List<String>) {
         this.name = name
-        javadocClassId = parent.id
+        javadocClass = parent
         apiId = parent.apiId
         parentClassName = parent.toString()
 
@@ -40,36 +41,29 @@ import org.mongodb.morphia.annotations.PrePersist
     }
 
     private fun buildUrl(parent: JavadocClass, longArgs: List<String>) {
-        val parentUrl = parent.directUrl
-        val java8 = parentUrl?.contains("se/8") ?: false
+        val parentUrl = parent.url
+        val modern = parentUrl.contains("se/8") || parentUrl.contains("ee/7")
         val url = StringBuilder()
         for (arg in longArgs) {
             if (url.length != 0) {
-                url.append(if (java8) "-" else ", ")
+                url.append(if (modern) "-" else ", ")
             }
-            url.append(arg.replace("<.*".toRegex(), ""))
+            url.append(arg.replace("<.*?>".toRegex(), ""))
         }
-        var directUrl = if (java8)
+        var directUrl = if (modern)
             parentUrl + "#" + this.name + "-" + url + "-"
         else
             parentUrl + "#" + this.name + "(" + url + ")"
 
-        longUrl = directUrl
-        this.directUrl = directUrl
+        this.url = directUrl
     }
-
-/*
-    public fun setJavadocClassId(javadocClass: JavadocClass) {
-        this.javadocClassId = javadocClass.id
-        parentClassName = javadocClass.toString()
-    }
-*/
 
     fun getShortSignature(): String {
         return "$name($shortSignatureTypes)"
     }
 
-    @PrePersist fun uppers() {
+    @PrePersist
+    fun uppers() {
         upperName = name.toUpperCase()
     }
 

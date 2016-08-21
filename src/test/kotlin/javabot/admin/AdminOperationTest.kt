@@ -11,8 +11,11 @@ import org.testng.Assert
 import org.testng.annotations.Test
 import javax.inject.Inject
 
-class AdminOperationTest @Inject constructor(val listOperation: ListOperations, val disableOperation: DisableOperation,
-    val enableOperation: EnableOperation ): BaseTest() {
+class AdminOperationTest: BaseTest() {
+
+    @Inject lateinit var listOperation: ListOperations
+    @Inject lateinit var disableOperation: DisableOperation
+    @Inject lateinit var enableOperation: EnableOperation
 
     @Test fun disableOperations() {
         val responses = listOperation.handleMessage(message("~admin listOperations"))
@@ -34,8 +37,8 @@ class AdminOperationTest @Inject constructor(val listOperation: ListOperations, 
     fun enableOperations() {
         disableAllOperations()
         val allOperations = bot.get().getAllOperations()
-        for (entry in allOperations.entries) {
-            enableOperation.handleMessage(message("~admin enableOperation --name=${entry.key}"))
+        for ((key) in allOperations) {
+            enableOperation.handleMessage(message("~admin enableOperation --name=${key}"))
         }
     }
 

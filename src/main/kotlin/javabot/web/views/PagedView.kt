@@ -1,6 +1,7 @@
 package javabot.web.views
 
 import javabot.dao.AdminDao
+import javabot.dao.ApiDao
 import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
 import javax.servlet.http.HttpServletRequest
@@ -9,8 +10,9 @@ abstract class PagedView<V>(
         adminDao: AdminDao,
         channelDao: ChannelDao,
         factoidDao: FactoidDao,
+        apiDao: ApiDao,
         request: HttpServletRequest, private var page: Int) :
-        MainView(adminDao, channelDao, factoidDao, request) {
+        MainView(adminDao, channelDao, factoidDao, apiDao, request) {
     private val itemsPerPage = ITEMS_PER_PAGE
     var itemCount: Long = -1
         get() {

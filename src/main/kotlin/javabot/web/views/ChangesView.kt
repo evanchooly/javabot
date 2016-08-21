@@ -2,6 +2,7 @@ package javabot.web.views
 
 import com.google.inject.assistedinject.Assisted
 import javabot.dao.AdminDao
+import javabot.dao.ApiDao
 import javabot.dao.ChangeDao
 import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
@@ -15,12 +16,13 @@ import javax.servlet.http.HttpServletRequest
 class ChangesView @Inject constructor(adminDao: AdminDao,
                                       channelDao: ChannelDao,
                                       factoidDao: FactoidDao,
+                                      apiDao: ApiDao,
                                       var changeDao: ChangeDao,
                                       @Assisted request: HttpServletRequest,
                                       @Assisted page: Int,
                                       @Nullable @Assisted private val message: String?,
                                       @Nullable @Assisted private val date: LocalDateTime?) :
-      PagedView<Change>(adminDao, channelDao, factoidDao, request, page) {
+      PagedView<Change>(adminDao, channelDao, factoidDao, apiDao, request, page) {
 
     override fun getPagedView(): String {
         return "changes.ftl"

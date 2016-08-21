@@ -26,7 +26,8 @@ import javax.ws.rs.core.MediaType
 class BotResource @Inject constructor(var viewFactory: ViewFactory) {
 
     @GET
-    @Produces("text/html;charset=ISO-8859-1") fun index(@Context request: HttpServletRequest): View {
+    @Produces("text/html;charset=ISO-8859-1")
+    fun index(@Context request: HttpServletRequest): View {
         if (request.getParameter("test.exception") != null) {
             throw RuntimeException("Testing 500 pages")
         }
@@ -35,38 +36,43 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
 
     @GET
     @Path("/index")
-    @Produces("text/html;charset=ISO-8859-1") fun indexHtml(@Context request: HttpServletRequest): View {
+    @Produces("text/html;charset=ISO-8859-1")
+    fun indexHtml(@Context request: HttpServletRequest): View {
         return index(request)
     }
 
     @GET
     @Path("/factoids")
-    @Produces("text/html;charset=ISO-8859-1") fun factoids(@Context request: HttpServletRequest, @QueryParam("page") page: Int?,
-                                                           @QueryParam("name") name: String?, @QueryParam("value") value: String?,
-                                                           @QueryParam("userName") userName: String?):
-            View {
+    @Produces("text/html;charset=ISO-8859-1")
+    fun factoids(@Context request: HttpServletRequest, @QueryParam("page") page: Int?,
+                 @QueryParam("name") name: String?, @QueryParam("value") value: String?,
+                 @QueryParam("userName") userName: String?)
+            : View {
         return viewFactory.createFactoidsView(request, page ?: 1, Factoid.of(name, value, userName))
     }
 
     @GET
     @Path("/karma")
-    @Produces("text/html;charset=ISO-8859-1") fun karma(@Context request: HttpServletRequest, @QueryParam("page") page: Int?,
-                                                        @QueryParam("name") name: String?, @QueryParam("value") value: Int?,
-                                                        @QueryParam("userName") userName: String?): View {
+    @Produces("text/html;charset=ISO-8859-1")
+    fun karma(@Context request: HttpServletRequest, @QueryParam("page") page: Int?,
+              @QueryParam("name") name: String?, @QueryParam("value") value: Int?,
+              @QueryParam("userName") userName: String?): View {
         return viewFactory.createKarmaView(request, page ?: 1)
     }
 
     @GET
     @Path("/changes")
-    @Produces("text/html;charset=ISO-8859-1") fun changes(@Context request: HttpServletRequest, @QueryParam("page") page: Int?
-                                                          , @QueryParam("message") message: String?): View {
+    @Produces("text/html;charset=ISO-8859-1")
+    fun changes(@Context request: HttpServletRequest, @QueryParam("page") page: Int?
+                , @QueryParam("message") message: String?): View {
         return viewFactory.createChangesView(request, page ?: 1, message)
     }
 
     @GET
     @Path("/logs/{channel}/{date}")
-    @Produces("text/html;charset=ISO-8859-1") fun logs(@Context request: HttpServletRequest, @PathParam("channel") channel: String?,
-                                                       @PathParam("date") dateString: String?): View {
+    @Produces("text/html;charset=ISO-8859-1")
+    fun logs(@Context request: HttpServletRequest, @PathParam("channel") channel: String?,
+             @PathParam("date") dateString: String?): View {
         val date: LocalDateTime
         val channelName: String
         try {

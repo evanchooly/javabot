@@ -19,12 +19,10 @@ import java.util.ArrayList
         ds.delete(channelCriteria.query())
     }
 
-    @SuppressWarnings("unchecked")
     fun configuredChannels(): List<String> {
         return ChannelCriteria(ds).name().distinct() as List<String>
     }
 
-    @SuppressWarnings("unchecked")
     fun getChannels(): List<Channel> {
         return getChannels(false)
     }
@@ -39,7 +37,6 @@ import java.util.ArrayList
         return query.asList()
     }
 
-    @SuppressWarnings("unchecked")
     fun find(qp: QueryParam): List<Channel> {
         var condition = qp.sort
         if (!qp.sortAsc) {
@@ -59,7 +56,7 @@ import java.util.ArrayList
         return criteria.query().get()
     }
 
-    @SuppressWarnings("unchecked") fun getStatistics(): List<Activity> {
+    fun getStatistics(): List<Activity> {
         //        val criteria = ActivityCriteria(ds)
         /*
 @NamedQuery(name = ChannelDao.STATISTICS, query = "select new javabot.model.Activity(l.channel, count(l), max(l.updated),"
@@ -70,7 +67,6 @@ import java.util.ArrayList
         //            .getResultList();
     }
 
-    @SuppressWarnings("unchecked")
     fun loggedChannels(): List<String> {
         val criteria = ChannelCriteria(ds)
         criteria.logged().equal(true)

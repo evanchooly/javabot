@@ -9,11 +9,8 @@ import org.testng.Assert
 import org.testng.annotations.Test
 import javax.inject.Inject
 
-@Test(groups = arrayOf("operations")) class ForgetFactoidOperationTest : BaseTest() {
-    @Inject
-    protected lateinit var factoidDao: FactoidDao
-    @Inject
-    protected lateinit var operation: ForgetFactoidOperation
+@Test(groups = arrayOf("operations"))
+class ForgetFactoidOperationTest @Inject constructor(var factoidDao: FactoidDao, var operation: ForgetFactoidOperation) : BaseTest() {
 
     fun forgetFactoid() {
         if (!factoidDao.hasFactoid("afky")) {

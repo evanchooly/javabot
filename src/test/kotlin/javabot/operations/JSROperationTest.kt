@@ -11,22 +11,22 @@ import org.testng.annotations.Test
 
 @Test(groups = arrayOf("operations")) class JSROperationTest : BaseTest() {
     @Inject
-    protected lateinit var locator: JCPJSRLocator
+    private lateinit var locator: JCPJSRLocator
     @Inject
-    protected lateinit var operation: JSROperation
+    private lateinit var operation: JSROperation
 
     @Test fun testLocatorConfig() {
         assertNotNull(locator)
     }
 
     @Test fun testJSROperations() {
-        var response = operation.handleMessage(message("~jsr 220"))
-                Assert.assertEquals(response[0].value, "'JSR 220: Enterprise JavaBeans 3.0' can be found at http://www.jcp" +
-                        ".org/en/jsr/detail?id=220")
+        val response = operation.handleMessage(message("~jsr 220"))
+        Assert.assertEquals(response[0].value, "'JSR 220: Enterprise JavaBeans 3.0' can be found at http://www.jcp" +
+                ".org/en/jsr/detail?id=220")
     }
 
     @Test fun testBadJSRRequest() {
-        var response = operation.handleMessage(message("~jsr 2202213"))
+        val response = operation.handleMessage(message("~jsr 2202213"))
         Assert.assertEquals(response[0].value, Sofia.jsrUnknown("2202213"))
     }
 
@@ -37,9 +37,8 @@ import org.testng.annotations.Test
                 arrayOf<Any>("~jsr abc", Sofia.jsrInvalid("abc")))
     }
 
-    @Test(dataProvider = "badCommands")
-    fun testNullJSROperations(command: String, result: String) {
-        var response = operation.handleMessage(message(command))
+    @Test(dataProvider = "badCommands") fun testNullJSROperations(command: String, result: String) {
+        val response = operation.handleMessage(message(command))
         Assert.assertEquals(response[0].value, result)
     }
 

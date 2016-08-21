@@ -11,10 +11,15 @@ import javax.inject.Inject
 
 class ListOperations @Inject constructor(bot: Javabot, adminDao: AdminDao, var configDao: ConfigDao) : OperationsCommand(bot, adminDao) {
 
+    private val operation by lazy {
+        configDao.list(BotOperation::class.java)
+    }
+
     override fun execute(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
+        val list = operation
         responses.add(Message(event, Sofia.adminKnownOperations(event.user.nick,
-                StringUtils.join(configDao.list(BotOperation::class.java).iterator(), ","))))
+                StringUtils.join(list.iterator(), ","))))
 
         listCurrent(event, responses)
         responses.add(Message(event, Sofia.adminOperationInstructions()))

@@ -74,16 +74,22 @@
                     </tr>
                 </#list>
                 </table>
-<#--
-                <tr>
-                    <td>
-                        <a id="${channel.name}"
-                        <#if ${channel.getName().equals(currentChannel)}>  class="current"  </#if>
-                            ">${channel.name}</a>
-                    </td>
-                </tr>
--->
             </div>
+
+            <h3>APIs</h3>
+
+            <div class="boxWrapper">
+                <table class="plain">
+                <#list getAPIs() as api>
+                    <tr>
+                        <td>
+                            <a href="/javadoc/${api.name}/index.html" target="_blank">${api.name}</a>
+                        </td>
+                    </tr>
+                </#list>
+                </table>
+            </div>
+
             <div>
                 <h3>Credits</h3>
                 <ul>

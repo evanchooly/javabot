@@ -1,5 +1,7 @@
 package javabot.javadoc
 
+import javabot.model.ApiEvent
+import javabot.model.ApiEvent.Companion
 import javabot.model.Persistent
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
@@ -24,15 +26,25 @@ class JavadocApi : Persistent {
 
     lateinit var baseUrl: String
 
-    lateinit var downloadUrl: String
+    lateinit var groupId: String
+
+    lateinit var artifactId: String
+
+    lateinit var version: String
 
     private constructor() {
+        groupId = ""
+        artifactId = ""
+        version = ""
     }
 
-    constructor(apiName: String, url: String, downloadUrl: String) {
+    constructor(apiName: String, url: String, groupId: String, artifactId: String, version: String) {
         name = apiName
+        this.groupId = groupId
+        this.artifactId = artifactId
+        this.version = if (name == "JDK") System.getProperty("java.specification.version") else version
         baseUrl = if (url.endsWith("/")) url else url + "/"
-        this.downloadUrl = downloadUrl
+        baseUrl = "${baseUrl}javadoc/$apiName/${this.version}/"
     }
 
     @PrePersist fun uppers() {

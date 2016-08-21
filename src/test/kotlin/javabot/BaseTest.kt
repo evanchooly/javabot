@@ -1,6 +1,7 @@
 package javabot
 
 import com.jayway.awaitility.Awaitility
+
 import com.jayway.awaitility.Duration
 import javabot.dao.AdminDao
 import javabot.dao.ChangeDao
@@ -78,8 +79,9 @@ open class BaseTest {
 
         adminDao.save(admin)
 
-        if (channelDao.get(TEST_CHANNEL.name) == null) {
-            var channel = Channel()
+        var channel: Channel? = channelDao.get(TEST_CHANNEL.name)
+        if (channel == null) {
+            channel = Channel()
             channel.name = TEST_CHANNEL.name
             channel.logged = true
             channelDao.save(channel)
@@ -113,7 +115,7 @@ open class BaseTest {
     protected fun waitForEvent(event: AdminEvent, alias: String, timeout: Duration) {
         Awaitility.await(alias)
               .atMost(timeout)
-              .pollInterval(5, TimeUnit.SECONDS)
+              .pollInterval(10, TimeUnit.SECONDS)
               .until<Boolean> {
                   val found = eventDao.find(event.id)
                   DONE.contains(found?.state)
@@ -121,7 +123,7 @@ open class BaseTest {
     }
 
     protected fun message(value: String, start: String = "~", user: JavabotUser = TEST_USER): Message {
-        return Message.extractContentFromMessage(TEST_CHANNEL, user, start, TEST_BOT_NICK, value)
+        return Message.extractContentFromMessage(TEST_CHANNEL, user, start, bot.get().nick, value)
     }
 
     protected fun scanForResponse(messages: List<Message>, target: String) {

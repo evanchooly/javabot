@@ -14,7 +14,7 @@ class PublicErrorResource {
         fun view403(): View {
             return ErrorView("/error/403.ftl", getRandomImage(IMAGE_403))
         }
-        
+
         fun view404(): View {
             return ErrorView("/error/404.ftl", getRandomImage(IMAGE_404))
         }

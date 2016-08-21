@@ -16,8 +16,7 @@ import javax.inject.Provider
 
 @Test(groups = arrayOf("operations"))
 class AddFactoidOperationTest @Inject constructor(val factoidDao: FactoidDao, val listener: IrcAdapter,
-                                                  private val ircBot: Provider<PircBotX>,
-                                                  val addFactoidOperation: AddFactoidOperation,
+                                                  val addFactoidOperation: AddFactoidOperation, val ircBot: Provider<PircBotX>,
                                                   val getFactoidOperation: GetFactoidOperation,
                                                   val forgetFactoidOperation: ForgetFactoidOperation): BaseTest() {
 

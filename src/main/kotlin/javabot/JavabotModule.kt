@@ -33,8 +33,11 @@ open class JavabotModule : AbstractModule() {
 
     private var config: JavabotConfig? = null
 
-    private var datastore: Datastore? = null
-
+    private val datastore: Datastore by lazy {
+        val ds = getMorphia().createDatastore(getMongoClient(), javabotConfig().databaseName())
+        ds.ensureIndexes()
+        ds
+    }
     lateinit var ircAdapterProvider: Provider<out IrcAdapter>
     lateinit var channelDaoProvider: Provider<ChannelDao>
     lateinit var configDaoProvider: Provider<ConfigDao>
@@ -50,15 +53,7 @@ open class JavabotModule : AbstractModule() {
     @Provides
     @Singleton
     fun datastore(): Datastore {
-        if (datastore == null) {
-            datastore = getMorphia().createDatastore(getMongoClient(), javabotConfig().databaseName())
-            try {
-                datastore!!.ensureIndexes()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-        return datastore!!
+        return datastore
     }
 
     @Provides
@@ -66,8 +61,8 @@ open class JavabotModule : AbstractModule() {
     fun getMorphia(): Morphia {
         if (morphia == null) {
             morphia = Morphia()
-            morphia!!.mapPackage(JavadocClass::class.java.`package`.name)
-            morphia!!.mapPackage(Factoid::class.java.`package`.name)
+            morphia!!.mapPackageFromClass(JavadocClass::class.java)
+            morphia!!.mapPackageFromClass(Factoid::class.java)
             morphia!!.mapper.converters.addConverter(LocalDateTimeConverter::class.java)
         }
         return morphia!!
@@ -77,13 +72,8 @@ open class JavabotModule : AbstractModule() {
     @Singleton
     fun getMongoClient(): MongoClient {
         if (mongoClient == null) {
-            try {
-                mongoClient = MongoClient(ServerAddress(javabotConfig().databaseHost(), javabotConfig().databasePort()),
-                        MongoClientOptions.builder().connectTimeout(2000).build())
-            } catch (e: RuntimeException) {
-                e.printStackTrace()
-                throw RuntimeException(e.message, e)
-            }
+            mongoClient = MongoClient(ServerAddress(javabotConfig().databaseHost(), javabotConfig().databasePort()),
+                MongoClientOptions.builder().connectTimeout(2000).build())
         }
         return mongoClient!!
     }
@@ -126,7 +116,6 @@ open class JavabotModule : AbstractModule() {
 
     protected open fun loadConfigProperties(): HashMap<Any, Any> = HashMap()
 
-    @SuppressWarnings("unchecked")
     protected fun validate(config: JavabotConfig): JavabotConfig {
         val configClass = config.javaClass.interfaces[0] as Class<JavabotConfig>
         val methods = configClass.declaredMethods

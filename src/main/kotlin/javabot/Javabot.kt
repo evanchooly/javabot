@@ -43,7 +43,7 @@ import javax.inject.Provider
 open class Javabot @Inject
 constructor(private var injector: Injector, private var configDao: ConfigDao, private var channelDao: ChannelDao,
             private var logsDao: LogsDao, private var shunDao: ShunDao, private var eventDao: EventDao,
-            private var throttler: Throttler, private var adapter: IrcAdapter, private var adminDao: AdminDao,
+            private var throttler: Throttler, private var adapter: IrcAdapter, protected var adminDao: AdminDao,
             private var javabotConfig: JavabotConfig, private var application: Provider<JavabotApplication>) {
 
     companion object {
@@ -75,6 +75,10 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
     val executors = ThreadPoolExecutor(5, 10, 5L, TimeUnit.MINUTES, ArrayBlockingQueue(50),
             JavabotThreadFactory(true, "javabot-handler-thread-"))
 
+    private val operationsList by lazy {
+        configDao.list(BotOperation::class.java)
+    }
+
     private val eventHandler = Executors.newScheduledThreadPool(2, JavabotThreadFactory(true, "javabot-event-handler"))
 
     private val ignores = ArrayList<String>()
@@ -97,7 +101,7 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
         startWebApp()
     }
 
-    private fun setUpThreads() {
+    fun setUpThreads() {
         eventHandler.scheduleAtFixedRate({ this.processAdminEvents() }, 5, 5, TimeUnit.SECONDS)
         eventHandler.scheduleAtFixedRate({ this.joinChannels() }, 5, 5, TimeUnit.SECONDS)
     }
@@ -194,7 +198,6 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
         set.forEach({ it.execute() })
     }
 
-    @SuppressWarnings("unchecked")
     fun getAllOperations(): SortedMap<String, BotOperation> {
         for (op in configDao.list(BotOperation::class.java)) {
             allOperationsMap.put(op.getName(), op)
@@ -320,8 +323,7 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
             try {
                 responses.addAll(next.handleMessage(message))
             } catch (e: Exception) {
-                LOG.error("NPE: message = [$message], requester = [${message.user}]")
-                e.printStackTrace()
+                LOG.error("NPE: message = [$message], requester = [${message.user}]", e)
             }
 
         }
