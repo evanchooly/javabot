@@ -11,7 +11,6 @@ import org.aeonbits.owner.Config.Sources
 @Sources("file:javabot.properties")
 interface JavabotConfig : Config {
     @Key("javabot.url")
-    @DefaultValue("http://localhost:8080")
     fun url(): String
 
     @Key("javabot.server")
