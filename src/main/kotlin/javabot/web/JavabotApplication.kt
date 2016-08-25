@@ -86,10 +86,6 @@ class JavabotApplication @Inject constructor(var injector: Injector): Applicatio
     }
 
     private class JavadocFilter @Inject constructor(var apiDao: ApiDao, var config: JavabotConfig) : Filter {
-        val gridfs: String by lazy {
-            "gridfs://${config.databaseHost()}:${config.databasePort()}/${config.databaseName()}.javadoc"
-        }
-
         override fun destroy() {
         }
 
@@ -99,7 +95,7 @@ class JavabotApplication @Inject constructor(var injector: Injector): Applicatio
             if(!filePath.startsWith("/")) {
                 filePath = "/" + filePath
             }
-            val path = Paths.get(URI("$gridfs$filePath"))
+            val path = Paths.get(URI("javadoc$filePath"))
 
             if (Files.exists(path)) {
                 response.outputStream.use { stream ->

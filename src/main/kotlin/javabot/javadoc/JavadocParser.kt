@@ -8,19 +8,13 @@ import javabot.dao.JavadocClassDao
 import org.bson.types.ObjectId
 import org.jboss.forge.roaster.Roaster
 import org.slf4j.LoggerFactory
-import org.zeroturnaround.exec.stream.slf4j.Level.INFO
-import org.zeroturnaround.exec.stream.slf4j.Slf4jStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.PrintStream
 import java.io.Writer
-import java.net.URI
 import java.nio.charset.Charset
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
 import java.util.Collections
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
@@ -82,33 +76,15 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
     }
 
     fun buildHtml(api: JavadocApi, file: File, packages: List<String>) {
-        val host = config.databaseHost()
-        val port = config.databasePort()
-        val database = config.databaseName()
-        val uri = URI("gridfs://$host:$port/$database.javadoc/${api.name}")
-        val targetDir = Paths.get(uri)
-        val javadocDir = buildJavadocHtml(packages, file)
-        val javadocPath = javadocDir.toPath()
-        try {
-            javadocDir.walk()
-                    .filter { !it.isDirectory }
-                    .forEach {
-                        val first = Paths.get(it.absolutePath)
-                        val second = targetDir.resolve(javadocPath.relativize(first).toString())
-                        Files.move(first, second, StandardCopyOption.REPLACE_EXISTING)
-                    }
-        } finally {
-            javadocDir.deleteRecursively()
-        }
+        buildJavadocHtml(packages, file, File("javadoc/${api.name}/${api.version}/"))
     }
 
-    private fun buildJavadocHtml(packages: List<String>, jar: File): File {
+    private fun buildJavadocHtml(packages: List<String>, jar: File, javadocDir: File) {
         var tmp = File("/tmp/")
         if (!tmp.exists()) {
             tmp = File(System.getProperty("java.io.tmpdir"))
         }
         val jarTarget = File(tmp, ObjectId().toString())
-        val javadocDir = File(tmp, "javadoc" + ObjectId())
 
         jarTarget.mkdirs()
         javadocDir.mkdirs()
@@ -140,7 +116,6 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
         } finally {
             jarTarget.deleteRecursively()
         }
-        return javadocDir
     }
 
     private fun extractJar(jar: File, jarTarget: File) {

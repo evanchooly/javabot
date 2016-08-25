@@ -13,7 +13,7 @@ import javabot.operations.JavadocOperation
 import org.slf4j.LoggerFactory
 import org.testng.Assert
 import org.testng.annotations.Test
-import java.net.URI
+import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
@@ -38,7 +38,7 @@ class JavadocTest : BaseTest() {
     fun servlets() {
         val apiName = "Servlet"
         dropApi(apiName)
-        addApi(apiName, "javax.servlet", "javax.servlet-api", "3.0.1")
+        addApi(apiName, "javax.servlet", "javax.servlet-api", servletVersion)
         checkServlets(apiName)
     }
 
@@ -56,16 +56,13 @@ class JavadocTest : BaseTest() {
     fun deleteJavadoc() {
         val apiName = "Servlet-html"
         dropApi(apiName)
-        addApi(apiName, "javax.servlet", "javax.servlet-api", "3.0.1")
+        addApi(apiName, "javax.servlet", "javax.servlet-api", servletVersion)
 
-        val host = config.databaseHost()
-        val port = config.databasePort()
-        val database = config.databaseName()
-        val uri = URI("gridfs://$host:$port/$database.javadoc/Servlet-html/javax/servlet/http/HttpServlet.html")
-        Assert.assertTrue(Files.exists(Paths.get(uri)))
+        val file = File("javadoc/Servlet-html/${servletVersion}/javax/servlet/http/HttpServlet.html")
+        Assert.assertTrue(file.exists())
 
         dropApi(apiName)
-        Assert.assertFalse(Files.exists(Paths.get(uri)))
+        Assert.assertFalse(file.exists())
     }
 
     private fun checkServlets(apiName: String) {
@@ -82,10 +79,7 @@ class JavadocTest : BaseTest() {
     }
 
     private fun checkServletFile(result: Boolean) {
-        val host = config.databaseHost()
-        val port = config.databasePort()
-        val database = config.databaseName()
-        val uri = URI("gridfs://$host:$port/$database.javadoc/Servlet/javax/servlet/http/HttpServlet.html")
+        val uri = File("javadoc/Servlet/${servletVersion}/javax/servlet/http/HttpServlet.html").toURI()
         Assert.assertEquals(Files.exists(Paths.get(uri)), result)
     }
 
@@ -151,5 +145,6 @@ class JavadocTest : BaseTest() {
 
     companion object {
         private val LOG = LoggerFactory.getLogger(JavadocTest::class.java)
+        val servletVersion = "3.0.1"
     }
 }

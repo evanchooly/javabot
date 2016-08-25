@@ -21,10 +21,12 @@ class JavadocOperationTest : BaseTest() {
     @BeforeTest
     fun jdk() {
         if (apiDao.find("JDK") == null) {
+            println("JDK javadoc not found.  Generating now.")
             val event = ApiEvent(TEST_USER.nick, "JDK", "", "", "")
             eventDao.save(event)
             waitForEvent(event, "adding JDK", Duration(30, TimeUnit.MINUTES))
             messages.clear()
+            println("JDK javadoc finished.")
         }
     }
 

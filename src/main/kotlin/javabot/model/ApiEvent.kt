@@ -10,11 +10,14 @@ import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Transient
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.StringWriter
-import java.net.URI
 import java.net.URL
+import java.nio.file.FileVisitResult
 import java.nio.file.Files
-import java.nio.file.Paths
+import java.nio.file.Path
+import java.nio.file.SimpleFileVisitor
+import java.nio.file.attribute.BasicFileAttributes
 import javax.inject.Inject
 
 @Entity("events")
@@ -87,11 +90,7 @@ class ApiEvent : AdminEvent {
             api = apiDao.find(name)
         }
         if (api != null) {
-            val host = config.databaseHost()
-            val port = config.databasePort()
-            val database = config.databaseName()
-
-            Files.delete(Paths.get(URI("gridfs://$host:$port/$database.javadoc/${api.name}/")))
+            File("javadoc/${api.name}/").deleteTree()
             apiDao.delete(api)
         }
     }
@@ -147,4 +146,29 @@ fun String.downloadZip(file: File): File {
         openStream.close()
     }
     return file
+}
+
+fun File.deleteTree() {
+    if (exists()) {
+        if (isDirectory) {
+            Files.walkFileTree(toPath(), object : SimpleFileVisitor<Path>() {
+                override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
+                    Files.delete(file)
+                    return FileVisitResult.CONTINUE
+                }
+
+                override fun postVisitDirectory(dir: Path, e: IOException?): FileVisitResult {
+                    if (e == null) {
+                        Files.delete(dir)
+                        return FileVisitResult.CONTINUE
+                    } else {
+                        // directory iteration failed
+                        throw e
+                    }
+                }
+            })
+        } else {
+            throw RuntimeException("deleteTree() can only be called on directories:  ${this}")
+        }
+    }
 }

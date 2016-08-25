@@ -196,18 +196,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.antwerkz.gridfs</groupId>
-            <artifactId>gridfs-provider</artifactId>
-            <version>${gridfs.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.mongodb</groupId>
-                    <artifactId>mongodb-driver</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
             <groupId>com.antwerkz.sofia</groupId>
             <artifactId>sofia-core</artifactId>
             <version>${sofia.version}</version>
@@ -454,6 +442,5 @@
         <jacoco.version>0.7.7.201606060606</jacoco.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <gridfs.version>0.3</gridfs.version>
     </properties>
 </project>
