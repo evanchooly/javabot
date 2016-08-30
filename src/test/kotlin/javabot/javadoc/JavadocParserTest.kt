@@ -19,9 +19,15 @@ class JavadocParserTest : BaseTest() {
     fun testBuildHtml() {
         val downloadUrl = ApiEvent.locateJDK()
         val file = downloadUrl.downloadZip(File("/tmp/JDK.jar"))
-        parser.buildHtml(JavadocApi("JDK", "${config.url()}/javadoc/JDK", "", "", ""), file, listOf("java", "javax"))
-
-        val applet = File("javadoc/JDK/java/applet/Applet.html")
+        // on windows this seems to be in javadoc/JDK/1.8 ---- MAY BE DIFFERENT ON DIFFERENT OSES.
+        // if so, we need to detect the 'problem' and remove the 1.8/ if detected.
+        val appletFilename = "javadoc/JDK/1.8/java/applet/Applet.html"
+        var applet = File(appletFilename)
+        if (!applet.exists()) {
+            parser.buildHtml(JavadocApi("JDK", "${config.url()}/javadoc/JDK/1.8", "", "", ""), file, listOf("java", "javax"))
+        }
+        // not sure if this resets without instantiation or not.
+        applet = File(appletFilename)
         Assert.assertTrue(applet.exists())
     }
 }

@@ -25,8 +25,9 @@ class ApiEvent : AdminEvent {
 
     companion object {
         fun locateJDK(): String {
+            val jreRegex = Regex(".*[/\\\\]jre$")
             var property = System.getProperty("java.home")
-            if (property.endsWith("/jre")) {
+            if (property.matches(jreRegex)) {
                 property = property.dropLast(4)
             }
             return File(property, "src.zip").toURI().toURL().toString()
