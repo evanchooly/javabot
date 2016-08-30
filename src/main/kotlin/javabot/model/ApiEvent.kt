@@ -1,5 +1,6 @@
 package javabot.model
 
+import javabot.JavabotConfig
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.javadoc.JavadocApi
@@ -11,18 +12,40 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.StringWriter
-import java.net.MalformedURLException
 import java.net.URL
+import java.nio.file.FileVisitResult
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.SimpleFileVisitor
+import java.nio.file.attribute.BasicFileAttributes
 import javax.inject.Inject
 
-@Entity("events") class ApiEvent : AdminEvent {
+@Entity("events")
+class ApiEvent : AdminEvent {
+
+    companion object {
+        fun locateJDK(): String {
+            var property = System.getProperty("java.home")
+            if (property.endsWith("/jre")) {
+                property = property.dropLast(4)
+            }
+            return File(property, "src.zip").toURI().toURL().toString()
+        }
+    }
+
     var apiId: ObjectId? = null
 
     lateinit var name: String
 
-    lateinit var baseUrl: String
+    lateinit var groupId: String
 
-    lateinit var downloadUrl: String
+    lateinit var artifactId: String
+
+    lateinit var version: String
+
+    @Inject
+    @Transient
+    lateinit var config: JavabotConfig
 
     @Inject
     @Transient
@@ -36,22 +59,16 @@ import javax.inject.Inject
     @Transient
     lateinit var adminDao: AdminDao
 
-    protected constructor() {
+    constructor() {
     }
 
-    constructor(requestedBy: String, name: String, baseUrl: String, downloadUrl: String) : super(requestedBy, EventType.ADD) {
+    constructor(requestedBy: String, name: String, groupId: String, artifactId: String, version: String) :
+    super(requestedBy, EventType.ADD) {
         this.requestedBy = requestedBy
         this.name = name
-        this.baseUrl = baseUrl
-        if (name == "JDK") {
-            try {
-                this.downloadUrl = File(System.getProperty("java.home"), "lib/rt.jar").toURI().toURL().toString()
-            } catch (e: MalformedURLException) {
-                throw IllegalArgumentException(e.message, e)
-            }
-        } else {
-            this.downloadUrl = downloadUrl
-        }
+        this.groupId = groupId
+        this.artifactId = artifactId
+        this.version = version
     }
 
     constructor(requestedBy: String, type: EventType, apiId: ObjectId?) : super(requestedBy, type) {
@@ -73,12 +90,13 @@ import javax.inject.Inject
             api = apiDao.find(name)
         }
         if (api != null) {
+            File("javadoc/${api.name}/").deleteTree()
             apiDao.delete(api)
         }
     }
 
     override fun add() {
-        val api = JavadocApi(name, baseUrl, downloadUrl)
+        val api = JavadocApi(name, "${config.url()}", groupId, artifactId, version)
         apiDao.save(api)
         process(api)
     }
@@ -86,41 +104,71 @@ import javax.inject.Inject
     override fun reload() {
         val api = apiDao.find(apiId)
         if (api != null) {
-            apiDao.delete(apiId)
-            api.id = ObjectId()
-            apiDao.save(api)
+            name = api.name
+            groupId = api.groupId
+            artifactId = api.artifactId
+            version = if (name == "JDK" ) System.getProperty("java.version") else  api.version
+//            apiDao.delete(apiId)
+//            api.id = ObjectId()
+//            apiDao.save(api)
             process(api)
         }
     }
 
     private fun process(api: JavadocApi) {
-        val user = JavabotUser(requestedBy)
-        val admin = adminDao.getAdmin(user)
+        val downloadUrl = if (name == "JDK") locateJDK() else buildMavenUrl()
+        val admin = adminDao.getAdmin(JavabotUser(requestedBy, requestedBy, ""))
         if (admin != null) {
-            val file = downloadZip(api.name + ".jar", api.downloadUrl)
-            parser.parse(api, file.absolutePath, object : StringWriter() {
-                override fun write(line: String) {
-                    bot.privateMessageUser(user, line)
-                }
-            })
-        }
+            val user = JavabotUser(admin.ircName, admin.emailAddress, admin.hostName)
 
+            parser.parse(api, downloadUrl.downloadZip(File("/tmp/${api.name}.jar")),
+                    object : StringWriter() {
+                        override fun write(line: String) = bot.privateMessageUser(user, line)
+                    })
+        }
     }
 
-    @Throws(IOException::class)
-    private fun downloadZip(fileName: String, zipURL: String): File {
-        val file = File("/tmp/" + fileName)
-        if (!file.exists()) {
-            val fileOutputStream = FileOutputStream(file)
-            val openStream = URL(zipURL).openStream()
-            fileOutputStream.write(openStream.readBytes())
-            fileOutputStream.close()
-            openStream.close()
-        }
-        return file
+    private fun buildMavenUrl(): String {
+        return "https://repo1.maven.org/maven2/${groupId.replace(".", "/")}/${artifactId}/${version}/${artifactId}-${version}-sources.jar"
     }
 
     override fun toString(): String {
         return "ApiEvent{name='${name}', state=${state}, completed=${completed}, type=${type}}"
+    }
+}
+
+fun String.downloadZip(file: File): File {
+    if (!file.exists()) {
+        val fileOutputStream = FileOutputStream(file)
+        val openStream = URL(this).openStream()
+        fileOutputStream.write(openStream.readBytes())
+        fileOutputStream.close()
+        openStream.close()
+    }
+    return file
+}
+
+fun File.deleteTree() {
+    if (exists()) {
+        if (isDirectory) {
+            Files.walkFileTree(toPath(), object : SimpleFileVisitor<Path>() {
+                override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
+                    Files.delete(file)
+                    return FileVisitResult.CONTINUE
+                }
+
+                override fun postVisitDirectory(dir: Path, e: IOException?): FileVisitResult {
+                    if (e == null) {
+                        Files.delete(dir)
+                        return FileVisitResult.CONTINUE
+                    } else {
+                        // directory iteration failed
+                        throw e
+                    }
+                }
+            })
+        } else {
+            throw RuntimeException("deleteTree() can only be called on directories:  ${this}")
+        }
     }
 }

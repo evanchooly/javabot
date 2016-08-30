@@ -1,6 +1,7 @@
 package javabot
 
 import com.jayway.awaitility.Awaitility
+
 import com.jayway.awaitility.Duration
 import javabot.dao.AdminDao
 import javabot.dao.ChangeDao
@@ -30,7 +31,17 @@ import javax.inject.Provider
 @Guice(modules = arrayOf(JavabotTestModule::class))
 open class BaseTest {
 
-    var done: EnumSet<State> = EnumSet.of(State.COMPLETED, State.FAILED)
+    companion object {
+        val TEST_TARGET_NICK: String = "jbtestuser"
+        val TEST_USER_NICK: String = "botuser"
+        val TEST_BOT_NICK: String = "testjavabot"
+        val BOT_EMAIL: String = "test@example.com"
+        val DONE: EnumSet<State> = EnumSet.of(State.COMPLETED, State.FAILED)
+        val OK: String = "OK, " + TEST_USER_NICK.substring(0, Math.min(TEST_USER_NICK.length, 16)) + "."
+        val TARGET_USER = JavabotUser(TEST_TARGET_NICK, TEST_TARGET_NICK, "hostmask")
+        val TEST_USER = JavabotUser(TEST_USER_NICK, TEST_USER_NICK, "hostmask")
+        val TEST_CHANNEL = Channel("#jbunittest")
+    }
 
     @Inject
     protected lateinit var datastore: Datastore
@@ -56,33 +67,22 @@ open class BaseTest {
     @Inject
     protected lateinit var messages: Messages
 
-    val ok: String = "OK, " + TEST_USER_NICK.substring(0, Math.min(TEST_USER_NICK.length, 16)) + "."
-
-    val targetUser = JavabotUser(TEST_TARGET_NICK, TEST_TARGET_NICK, "hostmask")
-
-    val testUser = JavabotUser(TEST_USER_NICK, TEST_USER_NICK, "hostmask")
-
-    val testChannel = Channel("#jbunittest")
 
     @BeforeTest
     fun setup() {
         messages.clear()
-        val admin = try {
-            adminDao.getAdminByEmailAddress(BOT_EMAIL)
-        } catch(adminNotFound: RuntimeException) {
-            Admin(testUser.nick, BOT_EMAIL, testUser.hostmask, true)
-        }
-        admin.ircName = testUser.nick
+        val admin = adminDao.getAdminByEmailAddress(BOT_EMAIL) ?: Admin(TEST_USER.nick, BOT_EMAIL, TEST_USER.hostmask, true)
+        admin.ircName = TEST_USER.nick
         admin.emailAddress = BOT_EMAIL
-        admin.hostName = testUser.hostmask
+        admin.hostName = TEST_USER.hostmask
         admin.botOwner = true
 
         adminDao.save(admin)
 
-        var channel: Channel? = channelDao.get(testChannel.name)
+        var channel: Channel? = channelDao.get(TEST_CHANNEL.name)
         if (channel == null) {
             channel = Channel()
-            channel.name = testChannel.name
+            channel.name = TEST_CHANNEL.name
             channel.logged = true
             channelDao.save(channel)
         }
@@ -90,7 +90,6 @@ open class BaseTest {
         datastore.delete(logsDao.getQuery(Logs::class.java))
         datastore.delete(changeDao.getQuery(Change::class.java))
         bot.get().start()
-        enableAllOperations()
     }
 
     protected fun enableAllOperations() {
@@ -116,14 +115,15 @@ open class BaseTest {
     protected fun waitForEvent(event: AdminEvent, alias: String, timeout: Duration) {
         Awaitility.await(alias)
               .atMost(timeout)
-              .pollInterval(5, TimeUnit.SECONDS)
+              .pollInterval(10, TimeUnit.SECONDS)
               .until<Boolean> {
-                  done.contains(eventDao.find(event.id)?.state)
+                  val found = eventDao.find(event.id)
+                  DONE.contains(found?.state)
               }
     }
 
-    protected fun message(value: String, start: String = "~", user: JavabotUser = testUser): Message {
-        return Message.extractContentFromMessage(testChannel, user, start, value)
+    protected fun message(value: String, start: String = "~", user: JavabotUser = TEST_USER): Message {
+        return Message.extractContentFromMessage(TEST_CHANNEL, user, start, bot.get().nick, value)
     }
 
     protected fun scanForResponse(messages: List<Message>, target: String) {
@@ -132,14 +132,7 @@ open class BaseTest {
             found = found or response.value.contains(target)
         }
         Assert.assertTrue(found, java.lang.String.format("Did not find \n'%s' in \n'%s'", target,
-                messages.map({ it.value }).joinToString { "\n" }))
-    }
-
-    companion object {
-        val TEST_TARGET_NICK: String = "jbtestuser"
-        val TEST_USER_NICK: String = "botuser"
-        val TEST_BOT_NICK: String = "testjavabot"
-        val BOT_EMAIL: String = "test@example.com"
+                messages.map({ it.value }).joinToString("\n")))
     }
 }
 

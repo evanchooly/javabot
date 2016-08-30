@@ -38,7 +38,8 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
 
     @GET
     @Path("/login")
-    @Throws(URISyntaxException::class) fun requestOAuth(@Context request: HttpServletRequest): Response {
+    @Throws(URISyntaxException::class)
+    fun requestOAuth(@Context request: HttpServletRequest): Response {
         val oauthCfg = configuration!!.OAuthCfg
         if (oauthCfg != null) {
             try {
@@ -63,7 +64,8 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
      */
     @GET
     @Timed
-    @Path("/verify") fun verifyOAuthServerResponse(@Context request: HttpServletRequest): Response {
+    @Path("/verify")
+    fun verifyOAuthServerResponse(@Context request: HttpServletRequest): Response {
         val manager = request.session.getAttribute(AUTH_MANAGER) as SocialAuthManager
 
         try {
@@ -74,22 +76,17 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
 
             Sofia.loggingInUser(p)
 
-            var tempUser = User(UUID.randomUUID())
-            tempUser.openIDIdentifier = p.validatedId
-            tempUser.OAuthInfo = provider.accessGrant
-
-            tempUser.email = p.email
-
+            var tempUser = User(UUID.randomUUID(), p.email, p.validatedId, provider.accessGrant)
             tempUser.authorities.add(ROLE_PUBLIC)
 
             val user = INSTANCE.getByOpenIDIdentifier(tempUser.openIDIdentifier)
             if (user == null) {
                 try {
-                    adminDao.getAdminByEmailAddress(tempUser.email!!)
+                    adminDao.getAdminByEmailAddress(tempUser.email)
                     tempUser.authorities.add(ROLE_ADMIN)
                 } catch(e: RuntimeException) {
                     if (adminDao.count() == 0L) {
-                        adminDao.save(Admin(tempUser.email!!))
+                        adminDao.save(Admin(tempUser.email))
                         tempUser.authorities.add(ROLE_ADMIN)
                     }
                 }

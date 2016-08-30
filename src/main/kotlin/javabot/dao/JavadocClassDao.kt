@@ -3,7 +3,7 @@ package javabot.dao
 import com.google.inject.Inject
 import javabot.javadoc.JavadocApi
 import javabot.javadoc.JavadocClass
-import javabot.javadoc.JavadocClassVisitor
+import javabot.javadoc.JavadocClassParser
 import javabot.javadoc.JavadocField
 import javabot.javadoc.JavadocMethod
 import javabot.javadoc.criteria.JavadocClassCriteria
@@ -15,8 +15,8 @@ import java.util.ArrayList
 
 class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass>(ds, JavadocClass::class.java) {
 
-    @SuppressWarnings("unchecked") fun getClass(api: JavadocApi?, name: String): List<JavadocClass> {
-        val strings = JavadocClassVisitor.calculateNameAndPackage(name)
+    fun getClass(api: JavadocApi?, name: String): List<JavadocClass> {
+        val strings = JavadocClassParser.calculateNameAndPackage(name)
         val pkgName = strings.first
         val criteria = JavadocClassCriteria(ds)
         criteria.upperName().equal(strings.second.toUpperCase())
@@ -27,7 +27,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
         return criteria.query().asList()
     }
 
-    @SuppressWarnings("unchecked") fun getClass(api: JavadocApi?, pkg: String, name: String): JavadocClass? {
+    fun getClass(api: JavadocApi?, pkg: String, name: String): JavadocClass? {
         val criteria: JavadocClassCriteria
         try {
             criteria = JavadocClassCriteria(ds)
@@ -37,45 +37,41 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
             criteria.upperPackageName().equal(pkg.toUpperCase())
             criteria.upperName().equal(name.toUpperCase())
         } catch (e: NullPointerException) {
-            LOG.debug("pkg = " + pkg)
-            LOG.debug("name = " + name)
             throw e
         }
 
         return criteria.query().get()
     }
 
-    @SuppressWarnings("unchecked") fun getField(api: JavadocApi?, className: String, fieldName: String): List<JavadocField> {
+    fun getField(api: JavadocApi?, className: String, fieldName: String): List<JavadocField> {
         val criteria = JavadocFieldCriteria(ds)
         val classes = getClass(api, className)
         if (!classes.isEmpty()) {
             val javadocClass = classes[0]
-            criteria.javadocClassId(javadocClass.id)
+            criteria.javadocClass(javadocClass)
             criteria.upperName().equal(fieldName.toUpperCase())
             return criteria.query().asList()
         }
         return emptyList()
     }
 
-    @SuppressWarnings("unchecked") fun getMethods(api: JavadocApi?, className: String, methodName: String,
+    fun getMethods(api: JavadocApi?, className: String, methodName: String,
                                                   signatureTypes: String): List<JavadocMethod> {
         val classes = getClass(api, className)
         val list = ArrayList(classes)
         val methods = ArrayList<JavadocMethod>()
 
-        while (!list.isEmpty()) {
-            val javadocClass = list.removeAt(0)
-            if (javadocClass != null) {
-                methods.addAll(getMethods(methodName, signatureTypes, javadocClass))
-                javadocClass.superClassId?.let { list.add(find(it)) }
-            }
+        list.forEach { klass ->
+            methods.addAll(getMethods(methodName, signatureTypes, klass))
+            klass.parentClass?.let { methods.addAll(getMethods(methodName, signatureTypes, it)) }
+            klass.interfaces.forEach { methods.addAll(getMethods(methodName, signatureTypes, it)) }
         }
         return methods
     }
 
     private fun getMethods(name: String, signatureTypes: String, javadocClass: JavadocClass): List<JavadocMethod> {
         val criteria = JavadocMethodCriteria(ds)
-        criteria.javadocClassId(javadocClass.id)
+        criteria.javadocClass(javadocClass)
         criteria.upperName().equal(name.toUpperCase())
         if ("*" != signatureTypes) {
             criteria.or(
@@ -93,13 +89,13 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
 
     private fun deleteFields(javadocClass: JavadocClass) {
         val criteria = JavadocFieldCriteria(ds)
-        javadocClass.id.let { criteria.javadocClassId(it) }
+        criteria.javadocClass(javadocClass)
         ds.delete(criteria.query())
     }
 
     private fun deleteMethods(javadocClass: JavadocClass) {
         val criteria = JavadocMethodCriteria(ds)
-        javadocClass.id.let { criteria.javadocClassId(it) }
+        criteria.javadocClass(javadocClass)
         ds.delete(criteria.query())
     }
 

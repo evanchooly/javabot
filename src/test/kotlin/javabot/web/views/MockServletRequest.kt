@@ -33,16 +33,12 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
 
     init {
         if (loggedIn) {
-            val tempUser = User(UUID.randomUUID())
-            tempUser.openIDIdentifier = UUID.randomUUID().toString()
-            tempUser.OAuthInfo = AccessGrant()
-            tempUser.email = BaseTest.BOT_EMAIL
+            val tempUser = User(UUID.randomUUID(), BaseTest.BOT_EMAIL, UUID.randomUUID().toString(), AccessGrant())
             tempUser.authorities.add(Authority.ROLE_PUBLIC)
 
             InMemoryUserCache.INSTANCE.put(tempUser)
 
-            cookies = arrayOf(Cookie(JavabotConfiguration.SESSION_TOKEN_NAME,
-                  tempUser.sessionToken.toString()))
+            cookies = arrayOf(Cookie(JavabotConfiguration.SESSION_TOKEN_NAME, tempUser.sessionToken.toString()))
         } else {
             cookies = arrayOf<Cookie>()
         }

@@ -43,7 +43,7 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
         return buildFindQuery(null, true, message, date).countAll()
     }
 
-    @SuppressWarnings("unchecked") fun getChanges(qp: QueryParam, message: String?, date: LocalDateTime?): List<Change> {
+    fun getChanges(qp: QueryParam, message: String?, date: LocalDateTime?): List<Change> {
         return buildFindQuery(qp, true, message, date).asList()
     }
 

@@ -1,6 +1,7 @@
 package javabot.dao
 
 import com.google.inject.Injector
+import com.google.inject.Singleton
 import com.mongodb.BasicDBObject
 import javabot.JavabotConfig
 import javabot.model.Config
@@ -15,6 +16,7 @@ import java.util.ArrayList
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+@Singleton
 class ConfigDao @Inject constructor(ds: Datastore, var injector: Injector, var javabotConfig: JavabotConfig) :
         BaseDao<Config>(ds, Config::class.java) {
 

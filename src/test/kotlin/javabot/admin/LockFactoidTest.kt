@@ -22,14 +22,14 @@ import javax.inject.Inject
 
     @Test(dataProvider = "factoids") fun lock(name: String) {
         try {
-            factoidDao.delete(testUser.nick, name, LogsDaoTest.CHANNEL_NAME)
-            var factoid = factoidDao.addFactoid(testUser.nick, name, "i should be locked", LogsDaoTest.CHANNEL_NAME)
+            factoidDao.delete(TEST_USER.nick, name, LogsDaoTest.CHANNEL_NAME)
+            var factoid = factoidDao.addFactoid(TEST_USER.nick, name, "i should be locked", LogsDaoTest.CHANNEL_NAME)
             factoid.locked = true
             factoidDao.save(factoid)
 
             val bob = nickServDao.registerIrcUser("bob", "bob", "localhost")
 
-            val message = Message(testChannel, bob, "forget ${name}")
+            val message = Message(TEST_CHANNEL, bob, "forget ${name}")
             var response = forgetFactoid.handleMessage(message)
             Assert.assertEquals(response[0].value, Sofia.factoidDeleteLocked(bob.nick))
 
@@ -39,16 +39,16 @@ import javax.inject.Inject
             response = forgetFactoid.handleMessage(message)
             Assert.assertEquals(response[0].value, Sofia.factoidForgotten(name, bob.nick))
 
-            factoid = factoidDao.addFactoid(testUser.nick, name, "i should be locked", LogsDaoTest.CHANNEL_NAME)
+            factoid = factoidDao.addFactoid(TEST_USER.nick, name, "i should be locked", LogsDaoTest.CHANNEL_NAME)
             factoid.locked = true
             factoidDao.save(factoid)
             response = forgetFactoid.handleMessage(message("~forget ${name}"))
-            Assert.assertEquals(response[0].value, Sofia.factoidForgotten(name, testUser.nick))
+            Assert.assertEquals(response[0].value, Sofia.factoidForgotten(name, TEST_USER.nick))
 
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
-            factoidDao.delete(testUser.nick, name, LogsDaoTest.CHANNEL_NAME)
+            factoidDao.delete(TEST_USER.nick, name, LogsDaoTest.CHANNEL_NAME)
 
         }
     }

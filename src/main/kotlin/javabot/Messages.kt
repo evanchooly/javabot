@@ -25,7 +25,7 @@ class Messages(var messages: MutableList<String> = ArrayList()) : Iterable<Strin
                     .until<Boolean>({ !messages.isEmpty() })
         } catch(e: ConditionTimeoutException) {
             if (failOnTimeout) {
-                throw e;
+                throw e
             }
         }
         val list = messages

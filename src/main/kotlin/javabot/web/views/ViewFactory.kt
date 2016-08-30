@@ -23,7 +23,7 @@ interface ViewFactory {
 
     fun createIndexView(request: HttpServletRequest): IndexView
 
-    fun createJavadocView(request: HttpServletRequest): JavadocView
+    fun createJavadocAdminView(request: HttpServletRequest): JavadocAdminView
 
     fun createKarmaView(request: HttpServletRequest, page: Int): KarmaView
 

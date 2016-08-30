@@ -16,7 +16,7 @@ import javax.inject.Provider
 class MockIrcAdapter @Inject
 constructor(var messages: Messages, nickServDao: NickServDao, logsDao: LogsDao, channelDao: ChannelDao, adminDao: AdminDao,
             javabot: Provider<Javabot>, configDao: ConfigDao, ircBot: Provider<PircBotX>) :
-        IrcAdapter(nickServDao, logsDao, channelDao, adminDao, javabot, configDao, ircBot) {
+        OfflineAdapter(nickServDao, logsDao, channelDao, adminDao, javabot, configDao, ircBot) {
 
     override
     fun startBot() {
@@ -29,6 +29,10 @@ constructor(var messages: Messages, nickServDao: NickServDao, logsDao: LogsDao, 
 
     override fun isBotOnChannel(name: String): Boolean {
         return true
+    }
+
+    override fun log(value: String) {
+        messages.add(value)
     }
 
     override fun send(user: JavabotUser, value: String) {

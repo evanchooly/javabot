@@ -14,7 +14,7 @@
         </encoder>
     </appender>
 
-    <logger name="javabot" level="ERROR">
+    <logger name="javabot" level="INFO">
         <appender-ref ref="FILE"/>
     </logger>
 

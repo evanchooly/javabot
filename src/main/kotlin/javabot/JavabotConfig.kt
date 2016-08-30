@@ -7,10 +7,10 @@ import org.aeonbits.owner.Config.LoadPolicy
 import org.aeonbits.owner.Config.LoadType
 import org.aeonbits.owner.Config.Sources
 
-@LoadPolicy(LoadType.MERGE)
-@Sources("file:javabot.properties", "file:javabot-sample.properties") interface JavabotConfig : Config {
+@LoadPolicy(LoadType.FIRST)
+@Sources("file:javabot.properties")
+interface JavabotConfig : Config {
     @Key("javabot.url")
-    @DefaultValue("http://localhost:8080")
     fun url(): String
 
     @Key("javabot.server")

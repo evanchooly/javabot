@@ -449,6 +449,22 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("logs.noneForNick", locale), arg0);
     }
 
+    public static String mavenArtifact(Locale... locale) {
+        return getMessageValue("maven.artifact", locale);
+    }
+
+    public static String mavenDependency(Locale... locale) {
+        return getMessageValue("maven.dependency", locale);
+    }
+
+    public static String mavenGroup(Locale... locale) {
+        return getMessageValue("maven.group", locale);
+    }
+
+    public static String mavenVersion(Locale... locale) {
+        return getMessageValue("maven.version", locale);
+    }
+
     public static String nickservNotResponding(Locale... locale) {
         return getMessageValue("nickserv.not.responding", locale);
     }

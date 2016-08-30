@@ -11,7 +11,6 @@ object JavadocClassDescriptor {
     val upperName: String = "upperName"
     val upperPackageName: String = "upperPackageName"
     val apiId: String = "apiId"
-    val directUrl: String = "directUrl"
-    val longUrl: String = "longUrl"
+    val url: String = "url"
     val shortUrl: String = "shortUrl"
 }

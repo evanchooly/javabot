@@ -18,14 +18,13 @@ class Admin : Serializable, Persistent {
     @Id
     var id: ObjectId? = null
 
-    var botOwner: Boolean = false
+    var hostName: String = ""
 
-    var hostName: String? = null
-
-    var ircName: String? = null
+    var ircName: String = ""
 
     @AlsoLoad("userName")
     lateinit var emailAddress: String
+    var botOwner: Boolean = false
 
     var addedBy: String? = null
 

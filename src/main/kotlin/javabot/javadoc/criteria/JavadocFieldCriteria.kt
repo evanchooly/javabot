@@ -4,6 +4,7 @@ import com.antwerkz.critter.TypeSafeFieldEnd
 import com.antwerkz.critter.criteria.BaseCriteria
 import com.mongodb.WriteConcern
 import com.mongodb.WriteResult
+import javabot.javadoc.JavadocClass
 import javabot.javadoc.JavadocField
 import org.bson.types.ObjectId
 import org.mongodb.morphia.Datastore
@@ -22,14 +23,13 @@ class JavadocFieldCriteria(ds: Datastore) : BaseCriteria<JavadocField>(ds, Javad
               this, query, "id").equal(value)
     }
 
-    fun javadocClassId(): TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, ObjectId> {
-        return TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, org.bson.types.ObjectId>(
-              this, query, "javadocClassId")
+    fun javadocClass(): TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, JavadocClass> {
+        return TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, JavadocClass>(this, query, "JavadocClass")
     }
 
-    fun javadocClassId(value: ObjectId): Criteria {
-        return TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, org.bson.types.ObjectId>(
-              this, query, "javadocClassId").equal(value)
+    fun javadocClass(value: JavadocClass): Criteria {
+        return TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, JavadocClass>(
+              this, query, "javadocClass").equal(value)
     }
 
     fun name(): TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, String> {
@@ -82,24 +82,14 @@ class JavadocFieldCriteria(ds: Datastore) : BaseCriteria<JavadocField>(ds, Javad
               this, query, "apiId").equal(value)
     }
 
-    fun directUrl(): TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, String> {
+    fun url(): TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, String> {
         return TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, String>(
-              this, query, "directUrl")
+              this, query, "url")
     }
 
-    fun directUrl(value: String): Criteria {
+    fun url(value: String): Criteria {
         return TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, String>(
-              this, query, "directUrl").equal(value)
-    }
-
-    fun longUrl(): TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, String> {
-        return TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, String>(
-              this, query, "longUrl")
-    }
-
-    fun longUrl(value: String): Criteria {
-        return TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, String>(
-              this, query, "longUrl").equal(value)
+              this, query, "url").equal(value)
     }
 
     fun shortUrl(): TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, String> {
@@ -211,23 +201,13 @@ class JavadocFieldCriteria(ds: Datastore) : BaseCriteria<JavadocField>(ds, Javad
             return this
         }
 
-        fun directUrl(value: String): JavadocFieldUpdater {
-            updateOperations.set("directUrl", value)
+        fun url(value: String): JavadocFieldUpdater {
+            updateOperations.set("url", value)
             return this
         }
 
-        fun unsetDirectUrl(): JavadocFieldUpdater {
-            updateOperations.unset("directUrl")
-            return this
-        }
-
-        fun longUrl(value: String): JavadocFieldUpdater {
-            updateOperations.set("longUrl", value)
-            return this
-        }
-
-        fun unsetLongUrl(): JavadocFieldUpdater {
-            updateOperations.unset("longUrl")
+        fun unsetUrl(): JavadocFieldUpdater {
+            updateOperations.unset("url")
             return this
         }
 

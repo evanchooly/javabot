@@ -11,7 +11,6 @@ object JavadocMethodDescriptor {
     val shortSignatureTypes: String = "shortSignatureTypes"
     val upperName: String = "upperName"
     val apiId: String = "apiId"
-    val directUrl: String = "directUrl"
-    val longUrl: String = "longUrl"
+    val url: String = "url"
     val shortUrl: String = "shortUrl"
 }

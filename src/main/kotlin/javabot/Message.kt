@@ -12,10 +12,17 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
     companion object {
         private val LOG = LoggerFactory.getLogger(Message::class.java)
 
-        fun extractContentFromMessage(channel: Channel?, user: JavabotUser, startString: String, message: String): Message {
+        fun extractContentFromMessage(channel: Channel?, user: JavabotUser, startString: String, botNick: String, message: String):
+                Message {
             try {
-                val triggered = message.startsWith(startString)
-                var content = if (triggered) message.substring(startString.length).trim() else message.trim()
+                var triggered = false
+                var content = message
+                for (start in arrayOf(startString, botNick)) {
+                    if (message.startsWith(start)) {
+                        triggered = true
+                        content = if (triggered) message.substring(start.length).trim() else message.trim()
+                    }
+                }
 
                 content = content.dropWhile { it in arrayOf(':', ',') }.trim()
 

@@ -23,6 +23,14 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>bintray-evanchooly-maven</id>
+            <name>bintray</name>
+            <url>http://dl.bintray.com/evanchooly/maven</url>
+        </repository>
     </repositories>
 
     <build>
@@ -93,34 +101,20 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.2.201409121644</version>
-                <configuration>
-                    <!--
-                                        <destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
-                                        <dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
-                    -->
-                    <excludes>
-                        <exclude>javabot.model.criteria.*</exclude>
-                        <exclude>javabot.javadoc.criteria.*</exclude>
-                    </excludes>
-                </configuration>
+                <groupId>com.antwerkz.sofia</groupId>
+                <artifactId>sofia-maven</artifactId>
+                <version>${sofia.version}</version>
                 <executions>
                     <execution>
-                        <id>jacoco-initialize</id>
                         <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>jacoco-site</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>report</goal>
+                            <goal>generate</goal>
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <loggingType>slf4j</loggingType>
+                    <outputDirectory>src/main/java</outputDirectory>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>com.antwerkz.sofia</groupId>
@@ -175,34 +169,44 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.2</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.ow2.asm</groupId>
-                        <artifactId>asm-commons</artifactId>
-                        <version>5.0.1</version>
-                    </dependency>
-                </dependencies>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
                 <executions>
                     <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <phase>process-test-resources</phase>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <executions>
+                    <execution>
+                        <id>copy</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <relocations>
-                                <relocation>
-                                    <pattern>org.objectweb.asm</pattern>
-                                    <shadedPattern>javabot.org.objectweb.asm</shadedPattern>
-                                </relocation>
-                            </relocations>
-                            <artifactSet>
-                                <includes>
-                                    <include>org.ow2.asm:*</include>
-                                </includes>
-                            </artifactSet>
+                            <silent>true</silent>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <!-- other configurations here -->
                         </configuration>
                     </execution>
                 </executions>
@@ -232,10 +236,17 @@
             <artifactId>critter-core</artifactId>
             <version>${critter.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.antwerkz.sofia</groupId>
             <artifactId>sofia-core</artifactId>
             <version>${sofia.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>zt-exec</artifactId>
+            <version>1.9</version>
         </dependency>
 
         <dependency>
@@ -407,20 +418,17 @@
             <artifactId>bootstrap</artifactId>
             <version>2.2.1</version>
         </dependency>
-
         <!-- webjars -->
-        <!-- Unit testing dependencies -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>6.8.7</version>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-commons</artifactId>
-            <version>5.0.1</version>
+          <groupId>org.jboss.forge.roaster</groupId>
+          <artifactId>roaster-api</artifactId>
+          <version>${roaster.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss.forge.roaster</groupId>
+          <artifactId>roaster-jdt</artifactId>
+          <version>${roaster.version}</version>
         </dependency>
 
         <dependency>
@@ -441,6 +449,14 @@
             <version>1.0.6</version>
         </dependency>
 
+        <!-- Unit testing dependencies -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.8.7</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-chrome-driver</artifactId>
@@ -454,25 +470,8 @@
             <version>2.44.0</version>
             <scope>test</scope>
         </dependency>
+        <!-- Unit testing dependencies -->
     </dependencies>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.5.2</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.16</version>
-                <configuration>
-                    <linkXRef>false</linkXRef>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
 
     <properties>
         <critter.version>2.1.1</critter.version>
@@ -481,6 +480,8 @@
         <slf4j.version>1.7.4</slf4j.version>
         <dropwizard.version>0.7.1</dropwizard.version>
         <kotlin.version>1.0.3</kotlin.version>
+        <roaster.version>2.19.0.Final</roaster.version>
+        <jacoco.version>0.7.7.201606060606</jacoco.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

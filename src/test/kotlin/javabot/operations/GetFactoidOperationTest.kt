@@ -66,7 +66,7 @@ import javax.inject.Inject
     }
 
     fun dates() {
-        factoidDao.delete(testUser.nick, "dates", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.delete(TEST_USER.nick, "dates", LogsDaoTest.CHANNEL_NAME)
         val dates = factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "dates", "dates", LogsDaoTest.CHANNEL_NAME)
         operation.handleMessage(message("~dates"))
 
@@ -92,8 +92,8 @@ import javax.inject.Inject
     }
 
     fun parameterReplacement() {
-        var response = operation.handleMessage(message("~replace $testUser"))
-        Assert.assertEquals(response[0].value, "I replaced you " + testUser)
+        var response = operation.handleMessage(message("~replace $TEST_USER"))
+        Assert.assertEquals(response[0].value, "I replaced you " + TEST_USER)
         response = operation.handleMessage(message("~url what up doc"))
         Assert.assertEquals(response[0].value, "what+up+doc")
         response = operation.handleMessage(message("~camel i should be camel case"))
@@ -102,7 +102,7 @@ import javax.inject.Inject
 
     fun whoReplacement() {
         val response = operation.handleMessage(message("~hey"))
-        Assert.assertEquals(response[0].value, "Hello, " + testUser)
+        Assert.assertEquals(response[0].value, "Hello, " + TEST_USER)
     }
 
     fun randomList() {
@@ -194,7 +194,7 @@ import javax.inject.Inject
     }
 
     private fun getFoundMessage(factoid: String, value: String): String {
-        return "${testUser}, ${factoid} is ${value}"
+        return "${TEST_USER}, ${factoid} is ${value}"
     }
 
     companion object {

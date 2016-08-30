@@ -17,7 +17,7 @@ class LogsViewTest : ViewsTest() {
     fun actions() {
         val message = "my type is " + Type.MESSAGE
         val eventChannel = "testchannel"
-        val user = testUser
+        val user = TEST_USER
 
         logsDao.deleteAllForChannel(eventChannel)
 
@@ -52,6 +52,6 @@ class LogsViewTest : ViewsTest() {
             channel = channelDao.create(channelName, true, null)
         }
 
-        logsDao.logMessage(type, channel, testUser, value)
+        logsDao.logMessage(type, channel, TEST_USER, value)
     }
 }

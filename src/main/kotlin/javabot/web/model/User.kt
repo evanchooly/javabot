@@ -6,12 +6,8 @@ import org.brickred.socialauth.util.AccessGrant
 import java.util.HashSet
 import java.util.UUID
 
-class User(var sessionToken: UUID?) {
+class User(var sessionToken: UUID?, var email: String, var openIDIdentifier: String, var OAuthInfo: AccessGrant) {
     var authorities: HashSet<Authority> = HashSet()
-
-    var email: String? = null
-    var openIDIdentifier: String? = null
-    var OAuthInfo: AccessGrant? = null
 
     fun hasAllAuthorities(requiredAuthorities: Set<Authority>): Boolean {
         return authorities.containsAll(requiredAuthorities)

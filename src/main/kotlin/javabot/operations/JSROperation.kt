@@ -21,11 +21,7 @@ class JSROperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var loc
                 try {
                     val jsr = Integer.parseInt(jsrString)
                     val response = locator.findInformation(jsr)
-                    if (!response.isEmpty()) {
-                        responses.add(Message(event, response))
-                    } else {
-                        responses.add(Message(event, Sofia.jsrUnknown(jsrString)))
-                    }
+                    responses.add(Message(event, if (!response.isEmpty()) response else Sofia.jsrUnknown(jsrString)))
                 } catch (nfe: NumberFormatException) {
                     responses.add(Message(event, Sofia.jsrInvalid(jsrString)))
                 }
