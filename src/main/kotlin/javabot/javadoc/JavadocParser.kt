@@ -43,8 +43,8 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
                             .filter { it.name.endsWith(".java") && (packages.isEmpty() || packages.any { pkg -> it.name.startsWith(pkg) }) }
                             .map { jarFile.getInputStream(it).readBytes().toString(Charset.forName("UTF-8")) }
                             .forEach { text ->
-                                if (!workQueue.offer(JavadocClassReader(api, text), 3, TimeUnit.MINUTES)) {
-                                    writer.write("Failed to queue class")
+                                if (!workQueue.offer(JavadocClassReader(api, text), 30, TimeUnit.SECONDS)) {
+                                    JavadocClassReader(api, text).run()
                                 }
                             }
                 }
