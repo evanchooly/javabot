@@ -32,7 +32,7 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
 
     fun parse(api: JavadocApi, location: File, writer: Writer) {
         try {
-            val workQueue = LinkedBlockingQueue<Runnable>()
+            val workQueue = LinkedBlockingQueue<Runnable>(250)
             val executor = ThreadPoolExecutor(10, 20, 10, SECONDS, workQueue, JavabotThreadFactory(false, "javadoc-thread-"))
             executor.prestartCoreThread()
             val packages = if ("JDK" == api.name) listOf("java", "javax") else listOf()
