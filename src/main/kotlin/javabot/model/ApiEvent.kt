@@ -12,6 +12,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.StringWriter
+import java.net.URI
 import java.net.URL
 import java.nio.file.FileVisitResult
 import java.nio.file.Files
@@ -24,12 +25,19 @@ import javax.inject.Inject
 class ApiEvent : AdminEvent {
 
     companion object {
-        fun locateJDK(): String {
+        fun locateJDK(): URI {
             var property = System.getProperty("java.home")
             if (property.endsWith("/jre")) {
                 property = property.dropLast(4)
             }
-            return File(property, "src.zip").toURI().toURL().toString()
+            var home = File(property)
+            var file = File(property, "src.zip")
+
+            while (!file.exists()) {
+                home = home.parentFile
+                file = File(home, "src.zip")
+            }
+            return file.toURI()
         }
     }
 
@@ -90,7 +98,7 @@ class ApiEvent : AdminEvent {
             api = apiDao.find(name)
         }
         if (api != null) {
-            File("javadoc/${api.name}/").deleteTree()
+            File("javadoc/${api.name}/${api.version}/").deleteTree()
             apiDao.delete(api)
         }
     }
@@ -121,15 +129,16 @@ class ApiEvent : AdminEvent {
         if (admin != null) {
             val user = JavabotUser(admin.ircName, admin.emailAddress, admin.hostName)
 
-            parser.parse(api, downloadUrl.downloadZip(File("/tmp/${api.name}.jar")),
+            parser.parse(api, downloadUrl.downloadZip(),
                     object : StringWriter() {
                         override fun write(line: String) = bot.privateMessageUser(user, line)
                     })
         }
     }
 
-    private fun buildMavenUrl(): String {
-        return "https://repo1.maven.org/maven2/${groupId.replace(".", "/")}/${artifactId}/${version}/${artifactId}-${version}-sources.jar"
+    private fun buildMavenUrl(): URI {
+        return URI("https://repo1.maven.org/maven2/${groupId.replace(".", "/")}/${artifactId}" +
+                "/${version}/${artifactId}-${version}-sources.jar")
     }
 
     override fun toString(): String {
@@ -137,13 +146,12 @@ class ApiEvent : AdminEvent {
     }
 }
 
-fun String.downloadZip(file: File): File {
-    if (!file.exists()) {
-        val fileOutputStream = FileOutputStream(file)
-        val openStream = URL(this).openStream()
-        fileOutputStream.write(openStream.readBytes())
-        fileOutputStream.close()
-        openStream.close()
+fun URI.downloadZip(): File {
+    val file = File.createTempFile("javadoc-", ".zip")
+    FileOutputStream(file).use { outputStream ->
+        this.toURL().openStream().use { inputStream ->
+            outputStream.write(inputStream.readBytes())
+        }
     }
     return file
 }

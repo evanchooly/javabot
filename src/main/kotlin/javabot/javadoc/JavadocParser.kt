@@ -40,8 +40,15 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
             try {
                 JarFile(location).use { jarFile ->
                     Collections.list(jarFile.entries())
-                            .filter { it.name.endsWith(".java") && (packages.isEmpty() || packages.any { pkg -> it.name.startsWith(pkg) }) }
-                            .map { jarFile.getInputStream(it).readBytes().toString(Charset.forName("UTF-8")) }
+                            .filter { it.name.endsWith(".java") && (packages.isEmpty()
+                                    || packages.any { pkg -> it.name.startsWith(pkg) }) }
+                            .map {
+                                var text: String = ""
+                                jarFile.getInputStream(it).use {
+                                    text = it.readBytes().toString(Charset.forName("UTF-8"))
+                                }
+                                text
+                            }
                             .forEach { text ->
                                 if (!workQueue.offer(JavadocClassReader(api, text), 30, TimeUnit.SECONDS)) {
                                     JavadocClassReader(api, text).run()

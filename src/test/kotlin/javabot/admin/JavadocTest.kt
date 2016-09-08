@@ -1,6 +1,6 @@
 package javabot.admin
 
-import com.jayway.awaitility.Awaitility
+import com.google.inject.Injector
 import com.jayway.awaitility.Duration
 import javabot.BaseTest
 import javabot.JavabotConfig
@@ -21,6 +21,13 @@ import javax.inject.Inject
 
 @Test
 class JavadocTest : BaseTest() {
+    companion object {
+        private val LOG = LoggerFactory.getLogger(JavadocTest::class.java)
+        val servletVersion = "3.0.1"
+    }
+
+    @Inject
+    private lateinit var injector: Injector
 
     @Inject
     private lateinit var apiDao: ApiDao
@@ -115,9 +122,9 @@ class JavadocTest : BaseTest() {
         }
         var api: JavadocApi? = apiDao.find("JDK")
         if (api == null) {
-            val event = ApiEvent(TEST_USER.nick, "JDK", "", "", "")
-            eventDao.save(event)
-            waitForEvent(event, "adding JDK", Duration(30, TimeUnit.MINUTES))
+            val apiEvent = ApiEvent(TEST_USER.nick, "JDK", "", "", "")
+            injector.injectMembers(apiEvent)
+            apiEvent.handle()
             messages.clear()
             api = apiDao.find("JDK")
         }
@@ -128,23 +135,17 @@ class JavadocTest : BaseTest() {
     }
 
     private fun addApi(apiName: String, groupId: String, artifactId: String, version: String) {
-        val event = ApiEvent(TEST_USER.nick, apiName, groupId, artifactId, version)
-        eventDao.save(event)
-        waitForEvent(event, "adding ${apiName}", Duration(5, TimeUnit.MINUTES))
+        val apiEvent = ApiEvent(TEST_USER.nick, apiName, groupId, artifactId, version)
+        injector.injectMembers(apiEvent)
+        apiEvent.handle()
         LOG.debug("done waiting for event to finish")
         messages.clear()
     }
 
     private fun dropApi(apiName: String) {
-        eventDao.save(ApiEvent(TEST_USER.nick, EventType.DELETE, apiName))
-        Awaitility.await()
-                .atMost(60, TimeUnit.SECONDS)
-                .until<Boolean> { apiDao.find(apiName) == null }
+        val apiEvent = ApiEvent(TEST_USER.nick, EventType.DELETE, apiName)
+        injector.injectMembers(apiEvent)
+        apiEvent.handle()
         messages.clear()
-    }
-
-    companion object {
-        private val LOG = LoggerFactory.getLogger(JavadocTest::class.java)
-        val servletVersion = "3.0.1"
     }
 }

@@ -18,7 +18,7 @@ class JavadocParserTest : BaseTest() {
     @Test
     fun testBuildHtml() {
         val downloadUrl = ApiEvent.locateJDK()
-        val file = downloadUrl.downloadZip(File("/tmp/JDK.jar"))
+        val file = downloadUrl.downloadZip()
         parser.buildHtml(JavadocApi("JDK", "${config.url()}/javadoc/JDK", "", "", ""), file, listOf("java", "javax"))
 
         val applet = File("javadoc/JDK/java/applet/Applet.html")

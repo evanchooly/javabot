@@ -12,9 +12,9 @@ class VersionOperationTest : BaseTest() {
 
     @Test
     fun workingVersionTest() {
-        val results = operation.handleChannelMessage(Message(TEST_CHANNEL, TEST_USER, "~version"))
+        val results = operation.handleMessage(message("~version"))
 
         assert(results.size==1)
-        assert(results.get(0).value.startsWith("I am currently running git tag"))
+        assert(results[0].value.startsWith("I am currently running git tag"))
     }
 }

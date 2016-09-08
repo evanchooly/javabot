@@ -13,10 +13,10 @@ import java.util.*
 class VersionOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao), StandardOperation {
     var lastInvocationTime = LocalDateTime.of(1992, 10, 17, 9, 0)
 
-    override fun handleChannelMessage(event: Message): List<Message> {
+    override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value
-        if ("~version".equals(message, ignoreCase = true)) {
+        if ("version".equals(message, ignoreCase = true)) {
             if (LocalDateTime.now() > lastInvocationTime.plus(5, ChronoUnit.MINUTES)) {
                 lastInvocationTime = LocalDateTime.now()
 
