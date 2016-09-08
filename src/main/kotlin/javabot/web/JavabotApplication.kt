@@ -15,22 +15,18 @@ import javabot.JavabotConfig
 import javabot.JavabotModule
 import javabot.OfflineAdapter
 import javabot.dao.ApiDao
-import javabot.dao.NickServDao
 import javabot.web.auth.RestrictedProvider
 import javabot.web.resources.AdminResource
 import javabot.web.resources.BotResource
 import javabot.web.resources.PublicOAuthResource
 import org.eclipse.jetty.server.session.SessionHandler
-import java.io.IOException
-import java.net.URI
+import java.io.File
 import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.EnumSet
 import javax.servlet.DispatcherType
 import javax.servlet.Filter
 import javax.servlet.FilterChain
 import javax.servlet.FilterConfig
-import javax.servlet.ServletException
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
@@ -72,13 +68,16 @@ class JavabotApplication @Inject constructor(var injector: Injector): Applicatio
         environment.jersey().register(RuntimeExceptionMapper(configuration))
         environment.jersey().register(RestrictedProvider())
 
-        environment.servlets().setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true")
         environment.servlets()
-                .addFilter("html", HtmlToResourceFilter())
-                .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), false, "*.html")
+                .setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true")
         environment.servlets()
                 .addFilter("javadoc", injector.getInstance(JavadocFilter::class.java))
                 .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), false, "/javadoc/*")
+/*
+        environment.servlets()
+                .addFilter("html", HtmlToResourceFilter())
+                .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), false, "*.html")
+*/
 
         environment.healthChecks().register("javabot", JavabotHealthCheck())
 
@@ -95,7 +94,7 @@ class JavabotApplication @Inject constructor(var injector: Injector): Applicatio
             if(!filePath.startsWith("/")) {
                 filePath = "/" + filePath
             }
-            val path = Paths.get(URI("javadoc$filePath"))
+            val path = File("javadoc$filePath").toPath()
 
             if (Files.exists(path)) {
                 response.outputStream.use { stream ->
@@ -105,7 +104,6 @@ class JavabotApplication @Inject constructor(var injector: Injector): Applicatio
             } else {
                 (response as HttpServletResponse).sendError(404)
             }
-            chain.doFilter(request, response)
         }
 
         override fun init(filterConfig: FilterConfig?) {
@@ -113,7 +111,6 @@ class JavabotApplication @Inject constructor(var injector: Injector): Applicatio
     }
 
     private class HtmlToResourceFilter : Filter {
-
         override fun init(filterConfig: FilterConfig) {
         }
 

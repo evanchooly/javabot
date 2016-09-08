@@ -83,7 +83,7 @@
                 <#list getAPIs() as api>
                     <tr>
                         <td>
-                            <a href="/javadoc/${api.name}/index.html" target="_blank">${api.name}</a>
+                            <a href="/javadoc/${api.name}/${api.version}/index.html" target="${api.name}">${api.name}</a>
                         </td>
                     </tr>
                 </#list>
