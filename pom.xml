@@ -9,6 +9,12 @@
 
     <name>javabot</name>
 
+    <scm>
+        <connection>scm:git:git://localhost/${basedir}</connection>
+        <url>https://github.com/evanchooly/javabot</url>
+    </scm>
+
+
     <repositories>
         <repository>
             <id>stackmagic.github.maven-repo</id>
@@ -45,7 +51,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>3.5.1</version>
                 <inherited>true</inherited>
                 <configuration>
                     <source>1.8</source>
@@ -185,6 +191,23 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>true</doCheck>
+                    <doUpdate>false</doUpdate>
+                </configuration>
             </plugin>
         </plugins>
     </build>
