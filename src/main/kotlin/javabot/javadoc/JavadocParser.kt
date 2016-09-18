@@ -114,6 +114,12 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
                             "-quiet",
                             "-sourcepath", jarTarget.absolutePath)
                 }
+            val index = File("javadoc/JDK/1.8/index.html")
+            val replaced = index.readText().replace(
+                    "top.classFrame.location = top.targetPage;",
+                    "top.classFrame.location = top.targetPage + location.hash;")
+            index.writeText(replaced)
+
         } catch (e : Exception) {
             log.error(e.message, e)
             log.error(byteArrayOutputStream.toString("UTF-8"))
