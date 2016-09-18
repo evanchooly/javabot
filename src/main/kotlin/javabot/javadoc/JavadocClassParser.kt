@@ -12,6 +12,7 @@ import org.jboss.forge.roaster.model.Method
 import org.jboss.forge.roaster.model.MethodHolder
 import org.jboss.forge.roaster.model.Parameter
 import org.jboss.forge.roaster.model.TypeHolder
+import org.jboss.forge.roaster.model.VisibilityScoped
 import org.jboss.forge.roaster.model.source.JavaSource
 import java.util.ArrayList
 import java.util.HashMap
@@ -54,7 +55,7 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
         for (aPackage in packages) {
             process = process || pkg.startsWith(aPackage)
         }
-        if (process && !source.isPrivate()) {
+        if (process && isVisibleEnough(source)) {
             val className = source.getCanonicalName().replace(source.getPackage() + ".", "")
             val klass = parser.getJavadocClass(api, pkg, className)
             klass.isClass = source.isClass()
@@ -80,8 +81,8 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
     private fun fields(klass: JavadocClass, source: JavaType<*>) {
         if (source is FieldHolder<*>) {
             source.getFields()
+                    .filter { isVisibleEnough(it) }
                     .map { visitField(klass, it) }
-                    .filterNotNull()
                     .forEach { klass.fields.add(it) }
             javadocClassDao.save(klass)
         }
@@ -90,11 +91,13 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
     private fun methods(klass: JavadocClass, source: JavaType<*>) {
         if (source is MethodHolder<*>) {
             source.getMethods()
+                    .filter { isVisibleEnough(it) }
                     .map { parseMethod(klass, it) }
-                    .filterNotNull()
                     .forEach { klass.methods.add(it) }
         }
     }
+
+    private fun isVisibleEnough(it: VisibilityScoped) = it.isPublic || it.isProtected
 
     private fun interfaces(api: JavadocApi, klass: JavadocClass, source: JavaType<*>) {
         if (source is InterfaceCapable) {
@@ -121,27 +124,21 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
         }
     }
 
-    fun visitField(javadocClass: JavadocClass, field: Field<*>): JavadocField? {
-        var entity: JavadocField? = null
-        if (!(field.isPrivate() && field.isPackagePrivate())) {
-            entity = JavadocField(javadocClass, field.getName(), field.getType().toString())
-            javadocClassDao.save(entity)
-        }
+    fun visitField(javadocClass: JavadocClass, field: Field<*>): JavadocField {
+        val entity = JavadocField(javadocClass, field.getName(), field.getType().toString())
+        javadocClassDao.save(entity)
         return entity
     }
 
-    fun parseMethod(klass: JavadocClass, method: Method<*, *>): JavadocMethod? {
-        var entity: JavadocMethod? = null
-        if (!(method.isPrivate() && method.isPackagePrivate())) {
-            val types = method.getParameters()
+    fun parseMethod(klass: JavadocClass, method: Method<*, *>): JavadocMethod {
+        val types = method.getParameters()
 
-            val longTypes = ArrayList<String>()
-            val shortTypes = ArrayList<String>()
-            types.forEach { update(longTypes, shortTypes, it) }
-            val methodName = method.getName()
-            entity = JavadocMethod(klass, methodName, types.size, longTypes, shortTypes)
-            javadocClassDao.save(entity)
-        }
+        val longTypes = ArrayList<String>()
+        val shortTypes = ArrayList<String>()
+        types.forEach { update(longTypes, shortTypes, it) }
+        val methodName = method.getName()
+        val entity = JavadocMethod(klass, methodName, types.size, longTypes, shortTypes)
+        javadocClassDao.save(entity)
         return entity
     }
 

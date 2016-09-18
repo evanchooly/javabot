@@ -42,20 +42,15 @@ class JavadocMethod : JavadocElement {
 
     private fun buildUrl(parent: JavadocClass, longArgs: List<String>) {
         val parentUrl = parent.url
-        val modern = parentUrl.contains("se/8") || parentUrl.contains("ee/7")
         val url = StringBuilder()
         for (arg in longArgs) {
             if (url.length != 0) {
-                url.append(if (modern) "-" else ", ")
+                url.append("-")
             }
             url.append(arg.replace("<.*?>".toRegex(), ""))
         }
-        var directUrl = if (modern)
-            parentUrl + "#" + this.name + "-" + url + "-"
-        else
-            parentUrl + "#" + this.name + "(" + url + ")"
 
-        this.url = directUrl
+        this.url = parentUrl + "#" + this.name + "-" + url + "-"
     }
 
     fun getShortSignature(): String {

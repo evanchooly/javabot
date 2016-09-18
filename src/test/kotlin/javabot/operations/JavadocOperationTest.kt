@@ -5,6 +5,7 @@ import com.jayway.awaitility.Duration
 import javabot.BaseTest
 import javabot.dao.ApiDao
 import javabot.model.ApiEvent
+import org.testng.Assert.assertTrue
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
 import java.util.concurrent.TimeUnit
@@ -67,5 +68,9 @@ class JavadocOperationTest : BaseTest() {
     fun inherited() {
         scanForResponse(operation.handleMessage(message("~javadoc ArrayList.listIterator(*)")),
                 "java/util/ArrayList.html#listIterator(int)")
+    }
+
+    fun packagePrivate() {
+        scanForResponse(operation.handleMessage(message("~javadoc ASCII)")), "I have no documentation for ASCII")
     }
 }

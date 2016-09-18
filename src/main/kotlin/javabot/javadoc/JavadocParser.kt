@@ -82,11 +82,8 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
 
     }
 
-    fun buildHtml(api: JavadocApi, file: File, packages: List<String>) {
-        buildJavadocHtml(packages, file, File("javadoc/${api.name}/${api.version}/"))
-    }
-
-    private fun buildJavadocHtml(packages: List<String>, jar: File, javadocDir: File) {
+    fun buildHtml(api: JavadocApi, jar: File, packages: List<String>) {
+        val javadocDir = File("javadoc/${api.name}/${api.version}/")
         var tmp = File("/tmp/")
         if (!tmp.exists()) {
             tmp = File(System.getProperty("java.io.tmpdir"))

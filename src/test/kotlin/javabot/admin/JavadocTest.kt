@@ -90,7 +90,7 @@ class JavadocTest : BaseTest() {
         Assert.assertEquals(Files.exists(Paths.get(uri)), result)
     }
 
-    @Test(enabled = false)
+    @Test
     fun javaee() {
         val apiName = "JavaEE7"
         dropApi(apiName)
@@ -131,7 +131,7 @@ class JavadocTest : BaseTest() {
         Assert.assertNotNull(javadocClassDao.getClass(api, "java.lang", "Integer"),
                 "Should find an entry for ${api?.name}'s java.lang.Integer")
         scanForResponse(operation.handleMessage(message("~javadoc String.chars()")),
-                "${config.url()}/javadoc/JDK/1.8/index.html?java/lang/CharSequence.html#chars()")
+                "${config.url()}/javadoc/JDK/1.8/index.html?java/lang/CharSequence.html#chars--")
     }
 
     private fun addApi(apiName: String, groupId: String, artifactId: String, version: String) {
