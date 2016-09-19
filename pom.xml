@@ -194,7 +194,7 @@
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
                 <version>1.4</version>
                 <executions>
                     <execution>
@@ -205,7 +205,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <doCheck>true</doCheck>
+                    <doCheck>false</doCheck>
                     <doUpdate>false</doUpdate>
                 </configuration>
             </plugin>

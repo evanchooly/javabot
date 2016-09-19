@@ -57,16 +57,16 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
         }
         if (process && isVisibleEnough(source)) {
             val className = source.getCanonicalName().replace(source.getPackage() + ".", "")
-            val klass = parser.getJavadocClass(api, pkg, className)
-            klass.isClass = source.isClass()
-            klass.isAnnotation = source.isAnnotation()
-            klass.isInterface = source.isInterface()
-            klass.isEnum = source.isEnum()
-            generics(klass, source)
-            extendable(api, klass, source)
-            interfaces(api, klass, source)
-            methods(klass, source)
-            fields(klass, source)
+            val docClass = parser.getJavadocClass(api, pkg, className)
+            docClass.isClass = source.isClass()
+            docClass.isAnnotation = source.isAnnotation()
+            docClass.isInterface = source.isInterface()
+            docClass.isEnum = source.isEnum()
+            generics(docClass, source)
+            extendable(api, docClass, source)
+            interfaces(api, docClass, source)
+            methods(docClass, source)
+            fields(docClass, source)
             nestedTypes(api, packages, source)
         }
     }
@@ -97,7 +97,9 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
         }
     }
 
-    private fun isVisibleEnough(it: VisibilityScoped) = it.isPublic || it.isProtected
+    private fun isVisibleEnough(it: VisibilityScoped): Boolean {
+        return it.isPublic || it.isProtected || (it is JavaType<*> && it.isInterface() && it.getEnclosingType() != null)
+    }
 
     private fun interfaces(api: JavadocApi, klass: JavadocClass, source: JavaType<*>) {
         if (source is InterfaceCapable) {
@@ -110,8 +112,12 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
     }
 
     private fun extendable(api: JavadocApi, klass: JavadocClass, source: JavaType<*>) {
-        if ( source is Extendable<*>) {
-            klass.parentClass = parser.getJavadocClass(api, source.getSuperType())
+        try {
+            if ( source is Extendable<*>) {
+                klass.parentClass = parser.getJavadocClass(api, source.getSuperType())
+            }
+        } catch(e: IllegalStateException) {
+            println("source = ${source}")
         }
     }
 

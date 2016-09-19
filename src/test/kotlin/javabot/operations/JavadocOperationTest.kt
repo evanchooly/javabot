@@ -33,17 +33,17 @@ class JavadocOperationTest : BaseTest() {
 
     fun constructors() {
         scanForResponse(operation.handleMessage(message("~javadoc java.lang.String(char[])")), "java/lang/String.html")
-        scanForResponse(operation.handleMessage(message("~javadoc String(char[])")), "java/lang/String.html#String(char[])")
+        scanForResponse(operation.handleMessage(message("~javadoc String(char[])")), "java/lang/String.html#String-char[]-")
     }
 
     fun methods() {
-        scanForResponse(operation.handleMessage(message("~javadoc String.split(String)")), "java/lang/String.html#split(java.lang.String)")
+        scanForResponse(operation.handleMessage(message("~javadoc String.split(String)")), "java/lang/String.html#split-java.lang.String-")
         scanForResponse(operation.handleMessage(message("~javadoc -jdk String.split(String)")),
-                "java/lang/String.html#split(java.lang.String)")
+                "java/lang/String.html#split-java.lang.String-")
         scanForResponse(operation.handleMessage(message("~javadoc String.split(java.lang.String)")),
-                "java/lang/String.html#split(java.lang.String)")
-        scanForResponse(operation.handleMessage(message("~javadoc String.join(*)")), "java/lang/String.html#join(")
-        scanForResponse(operation.handleMessage(message("~javadoc String.split(*)")), "java/lang/String.html#split(java.lang.String)")
+                "java/lang/String.html#split-java.lang.String-")
+        scanForResponse(operation.handleMessage(message("~javadoc String.join(*)")), "java/lang/String.html#join-")
+        scanForResponse(operation.handleMessage(message("~javadoc String.split(*)")), "java/lang/String.html#split-java.lang.String-")
     }
 
     fun nestedClasses() {
@@ -52,7 +52,7 @@ class JavadocOperationTest : BaseTest() {
 
     fun  format() {
         scanForResponse(operation.handleMessage(message("~javadoc String.format(*)")),
-                "java/lang/String.html#format(java.util.Locale, java.lang.String, java.lang.Object...)")
+                "java/lang/String.html#format-java.util.Locale-java.lang.String-java.lang.Object...-")
     }
 
     fun doFinal() {
@@ -67,7 +67,7 @@ class JavadocOperationTest : BaseTest() {
 
     fun inherited() {
         scanForResponse(operation.handleMessage(message("~javadoc ArrayList.listIterator(*)")),
-                "java/util/ArrayList.html#listIterator(int)")
+                "java/util/ArrayList.html#listIterator-int-")
     }
 
     fun packagePrivate() {
