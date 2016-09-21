@@ -8,11 +8,11 @@ import org.jboss.forge.roaster.model.FieldHolder
 import org.jboss.forge.roaster.model.GenericCapable
 import org.jboss.forge.roaster.model.InterfaceCapable
 import org.jboss.forge.roaster.model.JavaType
+import org.jboss.forge.roaster.model.Member
 import org.jboss.forge.roaster.model.Method
 import org.jboss.forge.roaster.model.MethodHolder
 import org.jboss.forge.roaster.model.Parameter
 import org.jboss.forge.roaster.model.TypeHolder
-import org.jboss.forge.roaster.model.VisibilityScoped
 import org.jboss.forge.roaster.model.source.JavaSource
 import java.util.ArrayList
 import java.util.HashMap
@@ -97,8 +97,12 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
         }
     }
 
-    private fun isVisibleEnough(it: VisibilityScoped): Boolean {
-        return it.isPublic || it.isProtected || (it is JavaType<*> && it.isInterface() && it.getEnclosingType() != null)
+    private fun isVisibleEnough(it: JavaType<*>): Boolean {
+        return it.isPublic() || it.isProtected() ||  it.getEnclosingType() != null
+    }
+
+    private fun isVisibleEnough(it: Member<*>): Boolean {
+        return it.isPublic() || it.isProtected() || it.getOrigin().isInterface()
     }
 
     private fun interfaces(api: JavadocApi, klass: JavadocClass, source: JavaType<*>) {
@@ -112,12 +116,8 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
     }
 
     private fun extendable(api: JavadocApi, klass: JavadocClass, source: JavaType<*>) {
-        try {
-            if ( source is Extendable<*>) {
-                klass.parentClass = parser.getJavadocClass(api, source.getSuperType())
-            }
-        } catch(e: IllegalStateException) {
-            println("source = ${source}")
+        if (source is Extendable<*>) {
+            klass.parentClass = parser.getJavadocClass(api, source.getSuperType())
         }
     }
 
@@ -149,23 +149,27 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
     }
 
     private fun update(longTypes: MutableList<String>, shortTypes: MutableList<String>, arg: Parameter<out JavaType<*>>) {
-        val origin = arg.getOrigin() as JavaSource
-        var value:  String
-        if(origin.getImport(arg.getType().getSimpleName()) != null) {
-            value = arg.getType().getQualifiedName()
-        } else {
-            value = if (arg.getType().getQualifiedName().startsWith("java.lang"))
-                arg.getType().getQualifiedName()
-            else
-                arg.getType().getName()
+        try {
+            val origin = arg.getOrigin() as JavaSource
+            var value:  String
+            if(origin.getImport(arg.getType().getSimpleName()) != null) {
+                value = arg.getType().getQualifiedName()
+            } else {
+                value = if (arg.getType().getQualifiedName().startsWith("java.lang"))
+                    arg.getType().getQualifiedName()
+                else
+                    arg.getType().getName()
+            }
+            if(arg.isVarArgs()) {
+                value += "..."
+            }
+            if(arg.getType().isArray() && !value.endsWith("[]")) {
+                value += "[]"
+            }
+            longTypes.add(value)
+            shortTypes.add(calculateNameAndPackage(value).second)
+        } catch(e: IllegalStateException) {
+            e.printStackTrace()
         }
-        if(arg.isVarArgs()) {
-            value += "..."
-        }
-        if(arg.getType().isArray() && !value.endsWith("[]")) {
-            value += "[]"
-        }
-        longTypes.add(value)
-        shortTypes.add(calculateNameAndPackage(value).second)
     }
 }

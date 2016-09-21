@@ -130,8 +130,14 @@ class JavadocTest : BaseTest() {
         }
         Assert.assertNotNull(javadocClassDao.getClass(api, "java.lang", "Integer"),
                 "Should find an entry for ${api?.name}'s java.lang.Integer")
+        Assert.assertNotNull(javadocClassDao.getClass(api, "java.util", "List"),
+                "Should find an entry for ${api?.name}'s java.util.List")
+        Assert.assertNotNull(javadocClassDao.getClass(api, "java.sql", "ResultSet"),
+                "Should find an entry for ${api?.name}'s java.sql.ResultSet")
         scanForResponse(operation.handleMessage(message("~javadoc String.chars()")),
                 "${config.url()}/javadoc/JDK/1.8/index.html?java/lang/CharSequence.html#chars--")
+        scanForResponse(operation.handleMessage(message("~javadoc ResultSet.getInt(*)")),
+                "${config.url()}/javadoc/JDK/1.8/index.html?java/sql/ResultSet.html#getInt")
     }
 
     private fun addApi(apiName: String, groupId: String, artifactId: String, version: String) {
