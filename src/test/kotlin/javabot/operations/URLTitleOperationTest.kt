@@ -37,6 +37,7 @@ class URLTitleOperationTest : BaseTest() {
                 arrayOf("http://google.com", null),
                 arrayOf("http://localhost", null),
                 arrayOf("http://127.0.0.1", null),
+                // arrayOf("http://a", null), // should work unless DNS gets in the way, as it does for me
                 arrayOf("Have you tried to http://google.com", null),
                 arrayOf("http://varietyofsound.wordpress.com has a lot of VSTs", null),
                 arrayOf("Have you tried to http://javachannel.org/", "botuser's title: \"Freenode ##java  enthusiasts united\""),
