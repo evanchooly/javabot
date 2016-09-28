@@ -33,6 +33,7 @@ class URLTitleOperationTest : BaseTest() {
     @DataProvider(name = "urls")
     fun getUrls(): Array<Array<*>>  {
         return arrayOf(
+                arrayOf("http://refheap.com/", null),
                 arrayOf("http://google.com/", null),
                 arrayOf("http://google.com", null),
                 arrayOf("http://localhost", null),
