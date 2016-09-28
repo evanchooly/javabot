@@ -27,8 +27,8 @@ To build and test Javabot, you'll need to do a few things.
    (Note that if you're on Windows, you may need to add network translation to handle port 27017; see `images/nat
    .png` for how this would look in VirtualBox.)
 
-1. Copy javabot-sample.properties to javabot.properties and update any properties as needed.  If you want to run the web application
- as well, copy javabot-sample.yml to javabot.yml and adjust as necessary. 
+1. Copy `javabot-sample.properties` to `javabot.properties` and update any properties as needed.  If you want to run the web application
+ as well, copy `javabot-sample.yml` to `javabot.yml` and adjust as necessary. 
 
 1. Start mongodb; one example command, which will locate the data files in the
    current directory, is this:  
