@@ -65,7 +65,7 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
                     }
                 }
             } catch (ioe: IOException) {
-                if (loop && url.length > 10 && !url.substring(0, 10).contains("//www.")) {
+                if (loop && !url.take(10).contains("//www.")) {
                     val tUrl = url.replace("//", "//www.")
                     return findTitle(tUrl, false)
                 } else {
