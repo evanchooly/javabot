@@ -1,23 +1,16 @@
 package javabot.model
 
 import javabot.Messages
+import javabot.MockUserHostmask
 import org.pircbotx.Channel
 import org.pircbotx.PircBotX
 import org.pircbotx.User
 import org.pircbotx.UserChannelDao
+import org.pircbotx.UserHostmask
 import org.pircbotx.output.OutputUser
 
-class TestUser(private val ircBot: PircBotX,
-                      userChannelDao: UserChannelDao<User, Channel>,
-                      private val messages: Messages,
-                      nick: String,
-                      login: String?,
-                      host: String?) : User(ircBot, userChannelDao, nick) {
-
-    init {
-        hostmask = host
-        setLogin(login)
-    }
+class TestUser(private val ircBot: PircBotX, private val messages: Messages, nick: String, login: String, host: String) :
+        User(MockUserHostmask(ircBot, nick, login, host)) {
 
     override fun send(): OutputUser {
         return object : OutputUser(ircBot, this@TestUser) {
@@ -25,9 +18,5 @@ class TestUser(private val ircBot: PircBotX,
                 messages.add(message)
             }
         }
-    }
-
-    override fun toString(): String {
-        return nick
     }
 }
