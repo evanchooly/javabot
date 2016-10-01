@@ -83,20 +83,19 @@ open class JavabotModule : AbstractModule() {
     protected open fun createIrcBot(): PircBotX {
         val config = configDaoProvider.get().get()
         val nick = getBotNick()
-        val builder = Builder<PircBotX>()
+        val builder = Builder()
                 .setName(nick)
                 .setLogin(nick)
                 .setAutoNickChange(false)
                 .setCapEnabled(false)
                 .addListener(getBotListener())
-                .setServerHostname(config.server)
-                .setServerPort(config.port)
+                .addServer(config.server, config.port)
                 .addCapHandler(SASLCapHandler(nick, config.password))
 
         return buildBot(builder)
     }
 
-    open fun buildBot(builder: Builder<PircBotX>): PircBotX {
+    open fun buildBot(builder: Builder): PircBotX {
         return PircBotX(builder.buildConfiguration())
     }
 

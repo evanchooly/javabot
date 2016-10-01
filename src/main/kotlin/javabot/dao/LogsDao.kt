@@ -20,8 +20,8 @@ class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channel
         val LOG: Logger = LoggerFactory.getLogger(LogsDao::class.java)
     }
 
-    fun logMessage(type: Type, channel: Channel?, user: JavabotUser, message: String) {
-        save(Logs(user.nick, message, type, channel?.name))
+    fun logMessage(type: Type, channel: Channel?, user: JavabotUser?, message: String) {
+        save(Logs(user?.nick, message, type, channel?.name))
     }
 
     fun isSeen(channel: String, nick: String): Boolean {

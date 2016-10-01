@@ -309,7 +309,7 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
         adapter.action(channel, message)
     }
 
-    internal fun logMessage(channel: Channel?, user: JavabotUser, message: String) {
+    internal fun logMessage(channel: Channel?, user: JavabotUser?, message: String) {
         if (channel?.name != nick) {
             logsDao.logMessage(Logs.Type.MESSAGE, channel, user, message)
         }

@@ -82,14 +82,10 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
             throw RuntimeException(e.message, e)
         }
 
-        try {
-            if ("today" == dateString) {
-                date = LocalDate.now().atStartOfDay()
-            } else {
-                date = LocalDate.parse(dateString, FORMAT).atStartOfDay()
-            }
+        date = try {
+            if ("today" == dateString) LocalDate.now().atStartOfDay() else LocalDate.parse(dateString, FORMAT).atStartOfDay()
         } catch (e: Exception) {
-            date = LocalDate.now().atStartOfDay()
+            LocalDate.now().atStartOfDay()
         }
 
         return viewFactory.createLogsView(request, channelName, date)

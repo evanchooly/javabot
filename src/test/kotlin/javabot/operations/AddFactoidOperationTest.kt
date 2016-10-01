@@ -2,23 +2,18 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
-import javabot.IrcAdapter
-import javabot.MockIrcUser
+import javabot.Message
 import javabot.dao.FactoidDao
 import javabot.dao.LogsDaoTest
-import org.pircbotx.PircBotX
-import org.pircbotx.hooks.events.PrivateMessageEvent
 import org.testng.Assert
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import javax.inject.Inject
-import javax.inject.Provider
 
 @Test(groups = arrayOf("operations"))
-class AddFactoidOperationTest @Inject constructor(val factoidDao: FactoidDao, val listener: IrcAdapter,
-                                                  val addFactoidOperation: AddFactoidOperation, val ircBot: Provider<PircBotX>,
+class AddFactoidOperationTest @Inject constructor(val factoidDao: FactoidDao, val addFactoidOperation: AddFactoidOperation,
                                                   val getFactoidOperation: GetFactoidOperation,
-                                                  val forgetFactoidOperation: ForgetFactoidOperation): BaseTest() {
+                                                  val forgetFactoidOperation: ForgetFactoidOperation) : BaseTest() {
 
     @BeforeMethod
     fun setUp() {
@@ -95,8 +90,7 @@ class AddFactoidOperationTest @Inject constructor(val factoidDao: FactoidDao, va
     }
 
     fun privMessage() {
-        listener.onPrivateMessage(PrivateMessageEvent(ircBot.get(), MockIrcUser(TARGET_USER), System.currentTimeMillis().toString()
-                + " is doh!"))
+        bot.get().processMessage(Message(TARGET_USER, System.currentTimeMillis().toString() + " is doh!"))
         Assert.assertEquals(messages.get()[0], Sofia.privmsgChange())
     }
 }

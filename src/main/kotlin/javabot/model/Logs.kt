@@ -33,7 +33,7 @@ class Logs : Persistent {
     @Id
     var id: ObjectId = ObjectId()
     
-    lateinit var nick: String
+    var nick: String? = null
 
     var channel: String? = null
 
@@ -43,12 +43,12 @@ class Logs : Persistent {
 
     lateinit var type: Type
 
-    lateinit var upperNick: String
+    var upperNick: String? = null
 
     private constructor() {
     }
 
-    constructor(nick: String, message: String, type: Type, channel: String?, updated: LocalDateTime = LocalDateTime.now()) : this() {
+    constructor(nick: String?, message: String, type: Type, channel: String?, updated: LocalDateTime = LocalDateTime.now()) : this() {
         this.nick = nick
         this.message = message
         this.type = type
@@ -71,7 +71,7 @@ class Logs : Persistent {
 
     @PrePersist
     fun upperNick() {
-        upperNick = nick.toUpperCase()
+        upperNick = nick?.toUpperCase()
     }
 
     override fun toString(): String {
