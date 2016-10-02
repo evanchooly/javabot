@@ -12,7 +12,8 @@ import org.mongodb.morphia.annotations.PrePersist
 import java.time.LocalDateTime
 
 @Entity(value = "logs", noClassnameStored = true)
-@Indexes(Index(fields = arrayOf(Field("channel"), Field("upperNick"), Field("updated")), options = IndexOptions(name = "seen")))
+@Indexes(Index(fields = arrayOf(Field("channel"), Field("upperNick"), Field("updated")),
+        options = IndexOptions(name = "seen")))
 class Logs : Persistent {
     enum class Type {
         ACTION,

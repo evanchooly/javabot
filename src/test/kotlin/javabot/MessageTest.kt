@@ -1,12 +1,11 @@
 package javabot
 
-import javabot.BaseTest.Companion
 import javabot.model.Channel
 import javabot.model.JavabotUser
-import org.testng.Assert.*
+import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
-class MessageTest {
+class MessageTest: BaseTest() {
     companion object {
         val channel = Channel("#test")
         val user = JavabotUser("somejoe")
@@ -27,7 +26,7 @@ class MessageTest {
     }
 
     private fun check(start: String, test: String, expected: String, triggered: Boolean = true) {
-        val message = Message.extractContentFromMessage(channel, user, start, BaseTest.TEST_BOT_NICK, test)
+        val message = Message.extractContentFromMessage(bot.get(), channel, user, start, BaseTest.TEST_BOT_NICK, test)
         assertEquals(message.value, expected)
         assertEquals(message.triggered, triggered)
     }

@@ -41,10 +41,10 @@ import javax.inject.Provider
 
 @Singleton
 open class Javabot @Inject
-constructor(private var injector: Injector, private var configDao: ConfigDao, private var channelDao: ChannelDao,
-            private var logsDao: LogsDao, private var shunDao: ShunDao, private var eventDao: EventDao,
-            private var throttler: Throttler, private var adapter: IrcAdapter, protected var adminDao: AdminDao,
-            private var javabotConfig: JavabotConfig, private var application: Provider<JavabotApplication>) {
+    constructor(var injector: Injector, var configDao: ConfigDao, var channelDao: ChannelDao,
+            var logsDao: LogsDao, var shunDao: ShunDao, var eventDao: EventDao,
+            var throttler: Throttler, var adapter: IrcAdapter, var adminDao: AdminDao,
+            var javabotConfig: JavabotConfig, var application: Provider<JavabotApplication>) {
 
     companion object {
         val LOG: Logger = LoggerFactory.getLogger(Javabot::class.java)
@@ -75,10 +75,6 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
     val executors = ThreadPoolExecutor(5, 10, 5L, TimeUnit.MINUTES, ArrayBlockingQueue(50),
             JavabotThreadFactory(true, "javabot-handler-thread-"))
 
-    private val operationsList by lazy {
-        configDao.list(BotOperation::class.java)
-    }
-
     private val eventHandler = Executors.newScheduledThreadPool(2, JavabotThreadFactory(true, "javabot-event-handler"))
 
     private val ignores = ArrayList<String>()
@@ -93,7 +89,7 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
         Runtime.getRuntime().addShutdownHook(hook)
     }
 
-    fun start() {
+    open fun start() {
         enableOperations()
         setUpThreads()
         applyUpgradeScripts()
@@ -125,7 +121,7 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
         }
     }
 
-    private fun joinChannels() {
+    open fun joinChannels() {
         if (adapter.isConnected()) {
             val joined = mutableSetOf<String>()
             val channels = ArrayList(channelDao.getChannels(true))
@@ -155,7 +151,7 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
         }
     }
 
-    private fun isRunning(): Boolean {
+    fun isRunning(): Boolean {
         return running
     }
 
@@ -357,6 +353,10 @@ constructor(private var injector: Injector, private var configDao: ConfigDao, pr
 
     fun message(target: String, message: String) {
         adapter.message(target, message)
+    }
+
+    open fun getUser(nick: String): JavabotUser {
+        return adapter.getUser(nick)
     }
 
 }
