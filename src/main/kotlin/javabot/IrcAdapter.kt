@@ -46,7 +46,7 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
         val channel = event.channel.toJavabot()
         val user = event.user!!.toJavabot()
         bot.executors.execute {
-            bot.processMessage(Message.extractContentFromMessage(channel, user, bot.startString, bot.nick, event.message))
+            bot.processMessage(Message.extractContentFromMessage(bot, channel, user, bot.startString, bot.nick, event.message))
         }
     }
 
@@ -60,7 +60,7 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
         }
 
         bot.executors.execute({
-            bot.processMessage(Message.extractContentFromMessage(null, event.user!!.toJavabot(), start, bot.nick, event.message))
+            bot.processMessage(Message.extractContentFromMessage(bot, null, event.user!!.toJavabot(), start, bot.nick, event.message))
         })
     }
 
@@ -100,7 +100,7 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
     }
 
     override fun onNotice(event: NoticeEvent) {
-        if (event.user?.nick.equals("NickServ", ignoreCase = true)) {
+        if (event.userHostmask.nick.equals("NickServ", ignoreCase = true)) {
             synchronized(nickServ) {
                 val message = event.notice.replace("\u0002", "")
                 if (message == "*** End of Info ***" && !nickServ.isEmpty()) {
@@ -165,6 +165,10 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
 
     open fun message(target: String, message: String) {
         ircBot.get().sendIRC().message(target, message)
+    }
+
+    open fun getUser(nick: String) : JavabotUser {
+        return ircBot.get().userChannelDao.getUser("cheeser").toJavabot()
     }
 
     open fun isConnected(): Boolean {

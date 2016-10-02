@@ -27,4 +27,8 @@ constructor(injector: Injector, configDao: ConfigDao, channelDao: ChannelDao, lo
     override fun isOnCommonChannel(user: JavabotUser): Boolean {
         return true
     }
+
+    override fun getUser(nick: String): JavabotUser {
+        return JavabotUser(nick)
+    }
 }

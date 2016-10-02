@@ -23,7 +23,6 @@ class NickServInfo : Persistent {
     @Indexed
     lateinit var account: String
 
-    @Indexed(expireAfterSeconds = 60 * 60 * 24)
     private val created = now()
 
     var registered = LocalDateTime.now()

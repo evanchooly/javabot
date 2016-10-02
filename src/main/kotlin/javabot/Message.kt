@@ -12,8 +12,8 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
     companion object {
         private val LOG = LoggerFactory.getLogger(Message::class.java)
 
-        fun extractContentFromMessage(channel: Channel?, user: JavabotUser, startString: String, botNick: String, message: String):
-                Message {
+        fun extractContentFromMessage(bot: Javabot, channel: Channel?, user: JavabotUser,
+                                      startString: String, botNick: String, message: String): Message {
             try {
                 var triggered = false
                 var content = message
@@ -27,7 +27,8 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
                 content = content.dropWhile { it in arrayOf(':', ',') }.trim()
 
                 if (isTellCommand(startString, content)) {
-                    val tellSubject = if (content.startsWith("tell ")) parseLonghand(content) else parseShorthand(startString, content)
+                    val tellSubject = if (content.startsWith("tell ")) parseLonghand(bot, content) else parseShorthand(startString,
+                            content)
 
                     if (tellSubject != null) {
                         return Message(channel, user, tellSubject.subject, tellSubject.target, triggered)
@@ -47,11 +48,11 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
             return value.startsWith("tell ") || "" != startString && value.startsWith(startString)
         }
 
-        private fun parseLonghand(content: String): TellSubject? {
+        private fun parseLonghand(bot: Javabot, content: String): TellSubject? {
             val body = content.substring("tell ".length)
             val nick = body.substring(0, body.indexOf(" "))
             val about = body.indexOf("about ") + 5
-            return if (about >= 0) TellSubject(JavabotUser(nick), body.substring(about).trim()) else return null
+            return if (about >= 0) TellSubject(bot.getUser(nick), body.substring(about).trim()) else return null
         }
 
         private fun parseShorthand(startString: String, content: String): TellSubject? {
