@@ -26,10 +26,9 @@ class ApiDao @Inject constructor(ds: Datastore, var classDao: JavadocClassDao) :
         val query = ds.createQuery(JavadocSource::class.java)
                 .filter("api", api.id)
                 .filter("processed", false)
-        val update = ds.createUpdateOperations(JavadocSource::class.java)
-            .set("processed", true)
-        val findAndModify = ds.findAndModify(query, update)
-        return findAndModify
+//        val update = ds.createUpdateOperations(JavadocSource::class.java)
+//            .set("processed", true)
+        return ds.findAndDelete(query)
     }
 
     fun countUnprocessed(api: JavadocApi): Long {
