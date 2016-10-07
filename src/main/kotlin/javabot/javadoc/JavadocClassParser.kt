@@ -8,7 +8,6 @@ import org.jboss.forge.roaster.model.FieldHolder
 import org.jboss.forge.roaster.model.GenericCapable
 import org.jboss.forge.roaster.model.InterfaceCapable
 import org.jboss.forge.roaster.model.JavaType
-import org.jboss.forge.roaster.model.Member
 import org.jboss.forge.roaster.model.Method
 import org.jboss.forge.roaster.model.MethodHolder
 import org.jboss.forge.roaster.model.Parameter
@@ -55,15 +54,16 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
         for (aPackage in packages) {
             process = process || pkg.startsWith(aPackage)
         }
-        if (process && isVisibleEnough(source)) {
+        if (process) {
             val className = source.getCanonicalName().replace(source.getPackage() + ".", "")
             val docClass = parser.getJavadocClass(api, pkg, className)
             docClass.isClass = source.isClass()
             docClass.isAnnotation = source.isAnnotation()
             docClass.isInterface = source.isInterface()
             docClass.isEnum = source.isEnum()
+            docClass.visibility = visibility(source.getVisibility().scope())
             generics(docClass, source)
-            extendable(api, docClass, source)
+//            extendable(api, docClass, source)
             interfaces(api, docClass, source)
             methods(docClass, source)
             fields(docClass, source)
@@ -81,7 +81,6 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
     private fun fields(klass: JavadocClass, source: JavaType<*>) {
         if (source is FieldHolder<*>) {
             source.getFields()
-                    .filter { isVisibleEnough(it) }
                     .map { visitField(klass, it) }
                     .forEach { klass.fields.add(it) }
             javadocClassDao.save(klass)
@@ -91,18 +90,9 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
     private fun methods(klass: JavadocClass, source: JavaType<*>) {
         if (source is MethodHolder<*>) {
             source.getMethods()
-                    .filter { isVisibleEnough(it) }
                     .map { parseMethod(klass, it) }
                     .forEach { klass.methods.add(it) }
         }
-    }
-
-    private fun isVisibleEnough(it: JavaType<*>): Boolean {
-        return it.isPublic() || it.isProtected() ||  it.getEnclosingType() != null
-    }
-
-    private fun isVisibleEnough(it: Member<*>): Boolean {
-        return it.isPublic() || it.isProtected() || it.getOrigin().isInterface()
     }
 
     private fun interfaces(api: JavadocApi, klass: JavadocClass, source: JavaType<*>) {
@@ -117,7 +107,12 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
 
     private fun extendable(api: JavadocApi, klass: JavadocClass, source: JavaType<*>) {
         if (source is Extendable<*>) {
-            klass.parentClass = parser.getJavadocClass(api, source.getSuperType())
+            try {
+                klass.parentClass = parser.getJavadocClass(api, source.getSuperType())
+            } catch(e: Exception) {
+                println("source.getQualifiedName() = ${source.getQualifiedName()}")
+                e.printStackTrace()
+            }
         }
     }
 
@@ -132,6 +127,7 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
 
     fun visitField(javadocClass: JavadocClass, field: Field<*>): JavadocField {
         val entity = JavadocField(javadocClass, field.getName(), field.getType().toString())
+        entity.visibility = visibility(field.getVisibility().scope())
         javadocClassDao.save(entity)
         return entity
     }
@@ -144,6 +140,8 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
         types.forEach { update(longTypes, shortTypes, it) }
         val methodName = method.getName()
         val entity = JavadocMethod(klass, methodName, types.size, longTypes, shortTypes)
+        entity.visibility = visibility(method.getVisibility().scope())
+
         javadocClassDao.save(entity)
         return entity
     }

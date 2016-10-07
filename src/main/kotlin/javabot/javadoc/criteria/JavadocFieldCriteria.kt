@@ -6,6 +6,7 @@ import com.mongodb.WriteConcern
 import com.mongodb.WriteResult
 import javabot.javadoc.JavadocClass
 import javabot.javadoc.JavadocField
+import javabot.javadoc.Visibility
 import org.bson.types.ObjectId
 import org.mongodb.morphia.Datastore
 import org.mongodb.morphia.query.Criteria
@@ -90,6 +91,16 @@ class JavadocFieldCriteria(ds: Datastore) : BaseCriteria<JavadocField>(ds, Javad
     fun url(value: String): Criteria {
         return TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, String>(
               this, query, "url").equal(value)
+    }
+
+    fun visibility(): TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, Visibility> {
+        return TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, Visibility>(
+              this, query, "visibility")
+    }
+
+    fun visibility(value: Visibility): Criteria {
+        return TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, Visibility>(
+              this, query, "visibility").equal(value)
     }
 
     fun shortUrl(): TypeSafeFieldEnd<JavadocFieldCriteria, JavadocField, String> {

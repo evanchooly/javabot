@@ -16,6 +16,8 @@ abstract class JavadocElement : Persistent {
 
     lateinit var url: String
 
+    lateinit var visibility: Visibility
+
     fun setApi(api: JavadocApi) {
         this.apiId = api.id
     }

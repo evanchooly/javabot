@@ -5,8 +5,8 @@ import com.antwerkz.critter.criteria.BaseCriteria
 import com.mongodb.WriteConcern
 import com.mongodb.WriteResult
 import javabot.javadoc.JavadocClass
-import javabot.javadoc.JavadocField
 import javabot.javadoc.JavadocMethod
+import javabot.javadoc.Visibility
 import org.bson.types.ObjectId
 import org.mongodb.morphia.Datastore
 import org.mongodb.morphia.query.Criteria
@@ -19,7 +19,7 @@ class JavadocClassCriteria(ds: Datastore) : BaseCriteria<JavadocClass>(ds, Javad
               this, query, "fields")
     }
 
-    fun fields(value: List<JavadocField>): Criteria {
+    fun fields(value: List<JavadocClass>): Criteria {
         return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, List<Any>>(
               this, query, "fields").equal(value)
     }
@@ -94,6 +94,17 @@ class JavadocClassCriteria(ds: Datastore) : BaseCriteria<JavadocClass>(ds, Javad
               this, query, "upperPackageName").equal(value)
     }
 
+    fun visibility(): TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, Visibility> {
+        return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, Visibility>(
+              this, query, "visibility")
+    }
+
+    fun visibility(value: Visibility): Criteria {
+        return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, Visibility>(
+              this, query, "visibility").equal(value)
+    }
+
+    
     fun apiId(): TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, ObjectId> {
         return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, org.bson.types.ObjectId>(
               this, query, "apiId")
@@ -163,7 +174,7 @@ class JavadocClassCriteria(ds: Datastore) : BaseCriteria<JavadocClass>(ds, Javad
             return ds.delete(query(), wc)
         }
 
-        fun fields(value: List<JavadocField>): JavadocClassUpdater {
+        fun fields(value: List<JavadocClass>): JavadocClassUpdater {
             updateOperations.set("fields", value)
             return this
         }
@@ -173,18 +184,18 @@ class JavadocClassCriteria(ds: Datastore) : BaseCriteria<JavadocClass>(ds, Javad
             return this
         }
 
-        fun addToFields(value: List<JavadocField>): JavadocClassUpdater {
+        fun addToFields(value: List<JavadocClass>): JavadocClassUpdater {
             updateOperations.add("fields", value)
             return this
         }
 
-        fun addToFields(value: List<JavadocField>,
+        fun addToFields(value: List<JavadocClass>,
                                addDups: Boolean): JavadocClassUpdater {
             updateOperations.add("fields", value, addDups)
             return this
         }
 
-        fun addAllToFields(values: List<JavadocField>,
+        fun addAllToFields(values: List<JavadocClass>,
                                   addDups: Boolean): JavadocClassUpdater {
             updateOperations.addAll("fields", values, addDups)
             return this
@@ -200,12 +211,12 @@ class JavadocClassCriteria(ds: Datastore) : BaseCriteria<JavadocClass>(ds, Javad
             return this
         }
 
-        fun removeFromFields(value: List<JavadocField>): JavadocClassUpdater {
+        fun removeFromFields(value: List<JavadocClass>): JavadocClassUpdater {
             updateOperations.removeAll("fields", value)
             return this
         }
 
-        fun removeAllFromFields(values: List<JavadocField>): JavadocClassUpdater {
+        fun removeAllFromFields(values: List<JavadocClass>): JavadocClassUpdater {
             updateOperations.removeAll("fields", values)
             return this
         }

@@ -6,6 +6,8 @@ import javabot.javadoc.JavadocClass
 import javabot.javadoc.JavadocClassParser
 import javabot.javadoc.JavadocField
 import javabot.javadoc.JavadocMethod
+import javabot.javadoc.Visibility.PackagePrivate
+import javabot.javadoc.Visibility.Private
 import javabot.javadoc.criteria.JavadocClassCriteria
 import javabot.javadoc.criteria.JavadocFieldCriteria
 import javabot.javadoc.criteria.JavadocMethodCriteria
@@ -103,6 +105,39 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
         return ds.getCount(JavadocMethod::class.java)
     }
 
+    fun deleteNotVisible(api: JavadocApi) {
+        var classCriteria = JavadocClassCriteria(ds)
+        classCriteria.apiId(api.id)
+        classCriteria.or(
+                classCriteria.visibility(PackagePrivate),
+                classCriteria.visibility(Private)
+        )
+        classCriteria.delete()
+
+        classCriteria = JavadocClassCriteria(ds)
+        classCriteria.apiId(api.id)
+        classCriteria.query().asList()
+                .filter { it.isClass }
+                .forEach {
+                    val methodCriteria = JavadocMethodCriteria(ds)
+                    methodCriteria.apiId(api.id)
+                    methodCriteria.parentClassName(it.packageName + "." + it.name)
+                    methodCriteria.or(
+                            methodCriteria.visibility(PackagePrivate),
+                            methodCriteria.visibility(Private)
+                    )
+                    methodCriteria.delete()
+                }
+
+        val fieldCriteria = JavadocFieldCriteria(ds)
+        fieldCriteria.apiId(api.id)
+        fieldCriteria.or(
+                fieldCriteria.visibility(PackagePrivate),
+                fieldCriteria.visibility(Private)
+        )
+        fieldCriteria.delete()
+    }
+
     fun deleteFor(api: JavadocApi?) {
         api?.let { api ->
             LOG.debug("Dropping fields from " + api.name)
@@ -121,8 +156,8 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
             ds.delete(klass.query())
         }
     }
-
     companion object {
         private val LOG = LoggerFactory.getLogger(JavadocClassDao::class.java)
+
     }
 }

@@ -5,6 +5,10 @@ import javabot.JavabotConfig
 import javabot.JavabotThreadFactory
 import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
+import javabot.javadoc.Visibility.PackagePrivate
+import javabot.javadoc.Visibility.Private
+import javabot.javadoc.Visibility.Protected
+import javabot.javadoc.Visibility.Public
 import org.bson.types.ObjectId
 import org.jboss.forge.roaster.Roaster
 import org.slf4j.LoggerFactory
@@ -34,13 +38,13 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
             executor.prestartCoreThread()
 
             val packages = if ("JDK" == api.name) listOf("java", "javax") else listOf()
+            executor.submit {
+                buildHtml(api, location, packages)
+            }
             (1..executor.corePoolSize).forEach {
                executor.scheduleAtFixedRate(JavadocClassReader(api, apiDao), 0, 1, SECONDS)
             }
 
-            executor.submit {
-                buildHtml(api, location, packages)
-            }
             try {
                 JarFile(location).use { jarFile ->
                     Collections.list(jarFile.entries())
@@ -58,7 +62,6 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
                             }
                 }
 
-
                 Awaitility
                     .waitAtMost(30, MINUTES)
                     .pollInterval(5, SECONDS)
@@ -69,7 +72,7 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
                     }
                 executor.shutdown()
                 executor.awaitTermination(10, TimeUnit.MINUTES)
-
+                javadocClassDao.deleteNotVisible(api)
             } finally {
                 location.delete()
             }
@@ -180,3 +183,13 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
         }
     }
 }
+
+fun visibility(scope: String): Visibility {
+    return when(scope) {
+        "public" -> Public
+        "private" -> Private
+        "protected" -> Protected
+        else -> PackagePrivate
+    }
+}
+
