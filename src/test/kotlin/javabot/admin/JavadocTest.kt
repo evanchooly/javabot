@@ -128,6 +128,7 @@ class JavadocTest : BaseTest() {
             messages.clear()
             api = apiDao.find("JDK")
         }
+        Assert.assertEquals(javadocClassDao.getClass(null, "Map").size, 1)
         Assert.assertNotNull(javadocClassDao.getClass(api, "java.lang", "Integer"),
                 "Should find an entry for ${api?.name}'s java.lang.Integer")
         Assert.assertNotNull(javadocClassDao.getClass(api, "java.util", "List"),

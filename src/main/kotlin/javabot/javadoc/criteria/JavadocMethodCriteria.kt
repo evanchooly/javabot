@@ -6,6 +6,7 @@ import com.mongodb.WriteConcern
 import com.mongodb.WriteResult
 import javabot.javadoc.JavadocClass
 import javabot.javadoc.JavadocMethod
+import javabot.javadoc.Visibility
 import org.bson.types.ObjectId
 import org.mongodb.morphia.Datastore
 import org.mongodb.morphia.query.Criteria
@@ -93,6 +94,16 @@ class JavadocMethodCriteria(ds: Datastore) : BaseCriteria<JavadocMethod>(ds, Jav
               this, query, "upperName").equal(value)
     }
 
+    fun visibility(): TypeSafeFieldEnd<JavadocMethodCriteria, JavadocMethod, Visibility> {
+        return TypeSafeFieldEnd<JavadocMethodCriteria, JavadocMethod, Visibility>(
+              this, query, "visibility")
+    }
+
+    fun visibility(value: Visibility): Criteria {
+        return TypeSafeFieldEnd<JavadocMethodCriteria, JavadocMethod, Visibility>(
+              this, query, "visibility").equal(value)
+    }
+    
     fun apiId(): TypeSafeFieldEnd<JavadocMethodCriteria, JavadocMethod, ObjectId> {
         return TypeSafeFieldEnd<JavadocMethodCriteria, JavadocMethod, org.bson.types.ObjectId>(
               this, query, "apiId")

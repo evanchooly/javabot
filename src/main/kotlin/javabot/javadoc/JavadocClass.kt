@@ -54,3 +54,10 @@ open class JavadocClass : JavadocElement {
         return packageName + "." + name
     }
 }
+
+enum class Visibility {
+    PackagePrivate,
+    Private,
+    Protected,
+    Public
+}
