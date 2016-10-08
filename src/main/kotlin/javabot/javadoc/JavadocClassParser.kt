@@ -81,8 +81,7 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
     private fun fields(klass: JavadocClass, source: JavaType<*>) {
         if (source is FieldHolder<*>) {
             source.getFields()
-                    .map { visitField(klass, it) }
-                    .forEach { klass.fields.add(it) }
+                    .forEach { visitField(klass, it) }
             javadocClassDao.save(klass)
         }
     }
@@ -90,8 +89,7 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
     private fun methods(klass: JavadocClass, source: JavaType<*>) {
         if (source is MethodHolder<*>) {
             source.getMethods()
-                    .map { parseMethod(klass, it) }
-                    .forEach { klass.methods.add(it) }
+                    .forEach { parseMethod(klass, it) }
         }
     }
 
