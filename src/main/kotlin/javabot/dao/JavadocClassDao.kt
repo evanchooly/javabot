@@ -116,18 +116,16 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
 
         classCriteria = JavadocClassCriteria(ds)
         classCriteria.apiId(api.id)
-        classCriteria.query().asList()
-                .filter { it.isClass }
-                .forEach {
-                    val methodCriteria = JavadocMethodCriteria(ds)
-                    methodCriteria.apiId(api.id)
-                    methodCriteria.parentClassName(it.packageName + "." + it.name)
-                    methodCriteria.or(
-                            methodCriteria.visibility(PackagePrivate),
-                            methodCriteria.visibility(Private)
-                    )
-                    methodCriteria.delete()
-                }
+        classCriteria.isClass(true)
+
+        val methodCriteria = JavadocMethodCriteria(ds)
+        methodCriteria.apiId(api.id)
+        methodCriteria.or(
+                methodCriteria.visibility(PackagePrivate),
+                methodCriteria.visibility(Private)
+        )
+        methodCriteria.query().field("javadocClass").`in`(classCriteria.query().asKeyList())
+        methodCriteria.delete()
 
         val fieldCriteria = JavadocFieldCriteria(ds)
         fieldCriteria.apiId(api.id)
