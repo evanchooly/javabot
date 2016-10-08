@@ -27,4 +27,11 @@ class JavadocParserTest : BaseTest() {
         Assert.assertTrue(File("javadoc/JDK/1.8/index.html").readText()
                 .contains("top.classFrame.location = top.targetPage + location.hash;"))
     }
+
+    @Test
+    fun packages() {
+        Assert.assertEquals(JavadocParser.getPackage("java.util.List"), Pair("java.util", "List"))
+        Assert.assertEquals(JavadocParser.getPackage("java.util.Map"), Pair("java.util", "Map"))
+        Assert.assertEquals(JavadocParser.getPackage("java.util.Map.Entry"), Pair("java.util", "Map.Entry"))
+    }
 }

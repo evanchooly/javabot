@@ -29,7 +29,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
         return criteria.query().asList()
     }
 
-    fun getClass(api: JavadocApi?, pkg: String, name: String): JavadocClass? {
+    fun getClass(api: JavadocApi? = null, pkg: String, name: String): JavadocClass? {
         val criteria: JavadocClassCriteria
         try {
             criteria = JavadocClassCriteria(ds)

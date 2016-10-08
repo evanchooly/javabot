@@ -147,13 +147,12 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
     }
 
     fun getJavadocClass(api: JavadocApi, fqcn: String): JavadocClass {
-        val pkgName = getPackage(fqcn)
-        val parentName = fqcn.split('.').last()
-        return getJavadocClass(api, pkgName, parentName)
+        val pair = getPackage(fqcn)
+        return getJavadocClass(api, pair.first, pair.second)
     }
 
     fun getJavadocClass(api: JavadocApi, pkg: String, name: String): JavadocClass {
-        var javadocClass = javadocClassDao.getClass(api, pkg, name)
+        var javadocClass = javadocClassDao.getClass(null, pkg, name)
         if (javadocClass == null) {
             javadocClass = JavadocClass(api, pkg, name)
             javadocClassDao.save(javadocClass)
@@ -178,8 +177,11 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
     companion object {
         private val log = LoggerFactory.getLogger(JavadocParser::class.java)
 
-        fun getPackage(name: String): String {
-            return name.split('.').dropLast(1).joinToString(".")
+        fun getPackage(name: String): Pair<String, String> {
+            val split = name.split('.')
+
+            return Pair(split.takeWhile { it[0].isLowerCase() }.joinToString("."),
+                    split.dropWhile { it[0].isLowerCase() }.joinToString("."))
         }
     }
 }

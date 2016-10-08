@@ -20,10 +20,6 @@ open class JavadocClass : JavadocElement {
     var parentClass: JavadocClass? = null
     @Reference(lazy = true, idOnly = true)
     var interfaces = mutableListOf<JavadocClass>()
-    @Reference(lazy = true, idOnly = true)
-    var methods = mutableListOf<JavadocMethod>()
-    @Reference(lazy = true, idOnly = true)
-    var fields = mutableListOf<JavadocField>()
     var isClass = false
     var isEnum = false
     var isInterface = false

@@ -90,11 +90,12 @@ class JavadocTest : BaseTest() {
         Assert.assertEquals(Files.exists(Paths.get(uri)), result)
     }
 
-    @Test
+    @Test(dependsOnMethods = arrayOf("jdk"))
     fun javaee() {
         val apiName = "JavaEE7"
         dropApi(apiName)
         addApi(apiName, "javax", "javaee-api", "7.0")
+        verifyMapCount()
         scanForResponse(operation.handleMessage(message("~javadoc Annotated")), "javax/enterprise/inject/spi/Annotated.html")
         scanForResponse(operation.handleMessage(message("~javadoc Annotated.getAnnotation(*)")),
                 "javax/enterprise/inject/spi/Annotated.html#getAnnotation")
@@ -128,7 +129,7 @@ class JavadocTest : BaseTest() {
             messages.clear()
             api = apiDao.find("JDK")
         }
-        Assert.assertEquals(javadocClassDao.getClass(null, "Map").size, 1)
+        verifyMapCount()
         Assert.assertNotNull(javadocClassDao.getClass(api, "java.lang", "Integer"),
                 "Should find an entry for ${api?.name}'s java.lang.Integer")
         Assert.assertNotNull(javadocClassDao.getClass(api, "java.util", "List"),
@@ -141,6 +142,17 @@ class JavadocTest : BaseTest() {
                 "${config.url()}/javadoc/JDK/1.8/index.html?java/sql/ResultSet.html#getInt")
     }
 
+    private fun verifyMapCount() {
+        Assert.assertEquals(javadocClassDao.getClass(null, "Map").size, 1)
+    }
+
+    @Test(dependsOnMethods = arrayOf("jdk"))
+    fun guava() {
+        val apiName = "guava"
+        dropApi(apiName)
+        addApi(apiName, "com.google.guava", "guava", "19.0")
+        verifyMapCount()
+    }
     private fun addApi(apiName: String, groupId: String, artifactId: String, version: String) {
         val apiEvent = ApiEvent(TEST_USER.nick, apiName, groupId, artifactId, version)
         injector.injectMembers(apiEvent)
