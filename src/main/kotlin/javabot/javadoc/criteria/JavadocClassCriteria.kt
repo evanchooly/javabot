@@ -104,7 +104,46 @@ class JavadocClassCriteria(ds: Datastore) : BaseCriteria<JavadocClass>(ds, Javad
               this, query, "visibility").equal(value)
     }
 
-    
+    fun isClass(): TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, Boolean> {
+        return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, Boolean>(
+              this, query, "isClass")
+    }
+
+    fun isClass(value: Boolean): Criteria {
+        return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, Boolean>(
+              this, query, "isClass").equal(value)
+    }
+
+    fun isInterface(): TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, Boolean> {
+        return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, Boolean>(
+              this, query, "isInterface")
+    }
+
+    fun isInterface(value: Boolean): Criteria {
+        return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, Boolean>(
+              this, query, "isInterface").equal(value)
+    }
+
+    fun isAnnotation(): TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, Boolean> {
+        return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, Boolean>(
+              this, query, "isAnnotation")
+    }
+
+    fun isAnnotation(value: Boolean): Criteria {
+        return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, Boolean>(
+              this, query, "isAnnotation").equal(value)
+    }
+
+    fun isEnum(): TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, Boolean> {
+        return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, Boolean>(
+              this, query, "isEnum")
+    }
+
+    fun isEnum(value: Boolean): Criteria {
+        return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, Boolean>(
+              this, query, "isEnum").equal(value)
+    }
+
     fun apiId(): TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, ObjectId> {
         return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, org.bson.types.ObjectId>(
               this, query, "apiId")
