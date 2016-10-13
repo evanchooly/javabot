@@ -26,11 +26,11 @@ class JavadocMethodCriteria(ds: Datastore) : BaseCriteria<JavadocMethod>(ds, Jav
 
     fun javadocClass(): TypeSafeFieldEnd<JavadocMethodCriteria, JavadocMethod, ObjectId> {
         return TypeSafeFieldEnd<JavadocMethodCriteria, JavadocMethod, org.bson.types.ObjectId>(
-              this, query, "javadocClassId")
+              this, query, "javadocClass")
     }
 
-    fun javadocClass(value: JavadocClass): Criteria {
-        return TypeSafeFieldEnd<JavadocMethodCriteria, JavadocMethod, JavadocClass>(
+    fun javadocClass(value: ObjectId): Criteria {
+        return TypeSafeFieldEnd<JavadocMethodCriteria, JavadocMethod, ObjectId>(
               this, query, "javadocClass").equal(value)
     }
 

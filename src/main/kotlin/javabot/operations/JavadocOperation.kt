@@ -9,9 +9,8 @@ import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
 import javabot.javadoc.JavadocApi
+import javabot.javadoc.JavadocClass
 import net.swisstech.bitly.BitlyClient
-import org.zeroturnaround.exec.ProcessExecutor
-import java.io.File
 import java.util.ArrayList
 import javax.annotation.Nullable
 
@@ -124,32 +123,52 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
         if (closeIndex != -1) {
             val finalIndex = key.lastIndexOf('.', openIndex)
             val methodName: String
-            var className: String
-            if (finalIndex == -1) {
+            val className = if (finalIndex == -1) {
                 methodName = key.substring(0, openIndex)
-                className = methodName
+                methodName
             } else {
                 methodName = key.substring(finalIndex + 1, openIndex)
-                className = key.substring(0, finalIndex)
+                key.substring(0, finalIndex)
             }
             val signatureTypes = key.substring(openIndex + 1, closeIndex)
             val list = ArrayList<String>()
 
-            //
-            list.addAll(dao.getMethods(api, className, methodName, signatureTypes)
-                    .map{ it.getDisplayUrl(it.toString(), apiDao, bitly) }
-            )
-            //
+            list.addAll(findMethods(api, className, methodName, signatureTypes))
+            val classes = dao.getClass(api, className)
+            list.addAll(findParents(classes)
+                    .flatMap { findMethods(api, it.fqcn, methodName, signatureTypes) })
 
             if (list.isEmpty()) {
-                className = methodName
-                list.addAll(dao.getMethods(api, className, methodName, signatureTypes)
+                list.addAll(dao.getMethods(api, methodName, methodName, signatureTypes)
                         .map { it.getDisplayUrl(it.toString(), apiDao, bitly) }
                 )
             }
 
             urls.addAll(list)
         }
+    }
+
+    private fun findParents(classes: List<JavadocClass>): Set<JavadocClass> {
+        val parents = mutableSetOf<JavadocClass>()
+        for (c in classes) {
+            fun find(name: String) {
+                val list = dao.getClass(null, name)
+                parents.add(list[0])
+                parents.addAll(findParents(list))
+            }
+            if (c.parentClass != null && c.parentClass != c.fqcn) {  // java.lang.Object does this
+                find(c.parentClass!!)
+            }
+            for (i in c.interfaces) {
+                find(i)
+            }
+        }
+        return parents
+    }
+
+    private fun findMethods(api: JavadocApi?, className: String, methodName: String, signatureTypes: String) : List<String> {
+        return dao.getMethods(api, className, methodName, signatureTypes)
+                .map { it.getDisplayUrl(it.toString(), apiDao, bitly) }
     }
 
     private fun displayApiList(responses: MutableList<Message>, event: Message) {

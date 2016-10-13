@@ -27,8 +27,10 @@ import java.util.concurrent.TimeUnit.SECONDS
 import java.util.jar.JarFile
 import javax.inject.Inject
 import javax.inject.Provider
+import javax.inject.Singleton
 import javax.tools.ToolProvider
 
+@Singleton
 class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao: JavadocClassDao,
                                         val provider: Provider<JavadocClassParser>, val config: JavabotConfig) {
 
@@ -146,18 +148,13 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
         }
     }
 
-    fun getJavadocClass(api: JavadocApi, fqcn: String): JavadocClass {
+    fun getJavadocClass(fqcn: String): JavadocClass? {
         val pair = getPackage(fqcn)
-        return getJavadocClass(api, pair.first, pair.second)
+        return getJavadocClass(pair.first, pair.second)
     }
 
-    fun getJavadocClass(api: JavadocApi, pkg: String, name: String): JavadocClass {
-        var javadocClass = javadocClassDao.getClass(null, pkg, name)
-        if (javadocClass == null) {
-            javadocClass = JavadocClass(api, pkg, name)
-            javadocClassDao.save(javadocClass)
-        }
-        return javadocClass
+    fun getJavadocClass(pkg: String, name: String): JavadocClass? {
+        return javadocClassDao.getClass(null, pkg, name)
     }
 
     private inner class JavadocClassReader(private val api: JavadocApi, val apiDao: ApiDao) : Runnable {

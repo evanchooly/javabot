@@ -83,6 +83,15 @@ class JavadocClassCriteria(ds: Datastore) : BaseCriteria<JavadocClass>(ds, Javad
         return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, String>(
               this, query, "upperName").equal(value)
     }
+    fun fqcn(): TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, String> {
+        return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, String>(
+              this, query, "fqcn")
+    }
+
+    fun fqcn(value: String): Criteria {
+        return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, String>(
+              this, query, "fqcn").equal(value)
+    }
 
     fun upperPackageName(): TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, String> {
         return TypeSafeFieldEnd<JavadocClassCriteria, JavadocClass, String>(

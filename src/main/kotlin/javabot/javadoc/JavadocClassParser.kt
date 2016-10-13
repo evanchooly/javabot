@@ -12,11 +12,14 @@ import org.jboss.forge.roaster.model.Method
 import org.jboss.forge.roaster.model.MethodHolder
 import org.jboss.forge.roaster.model.Parameter
 import org.jboss.forge.roaster.model.TypeHolder
+import org.jboss.forge.roaster.model.source.Importer
 import org.jboss.forge.roaster.model.source.JavaSource
 import java.util.ArrayList
 import java.util.HashMap
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDao, var apiDao: ApiDao, var parser: JavadocParser) {
 
     companion object {
@@ -55,16 +58,18 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
             process = process || pkg.startsWith(aPackage)
         }
         if (process) {
-            val className = source.getCanonicalName().replace(source.getPackage() + ".", "")
-            val docClass = parser.getJavadocClass(api, pkg, className)
+            val className = source.getCanonicalName().replace(pkg + ".", "")
+            val docClass = JavadocClass(api, pkg, className)
+            javadocClassDao.save(docClass)
+
             docClass.isClass = source.isClass()
             docClass.isAnnotation = source.isAnnotation()
             docClass.isInterface = source.isInterface()
             docClass.isEnum = source.isEnum()
             docClass.visibility = visibility(source.getVisibility().scope())
-            generics(docClass, source)
-//            extendable(api, docClass, source)
-            interfaces(api, docClass, source)
+//            generics(docClass, source)
+            extendable(docClass, source)
+            interfaces(docClass, source)
             methods(docClass, source)
             fields(docClass, source)
             nestedTypes(api, packages, source)
@@ -93,35 +98,35 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
         }
     }
 
-    private fun interfaces(api: JavadocApi, klass: JavadocClass, source: JavaType<*>) {
+    private fun interfaces(klass: JavadocClass, source: JavaType<*>) {
         if (source is InterfaceCapable) {
+            source as Importer<*>
             source.interfaces
-                    .map { if (it.contains('.')) it else "${source.getPackage()}.${it}" }
-                    .map { parser.getJavadocClass(api, it) }
+                    .map { source.resolveType(it) }
                     .forEach { klass.interfaces.add(it) }
 
         }
     }
 
-    private fun extendable(api: JavadocApi, klass: JavadocClass, source: JavaType<*>) {
+    private fun extendable(klass: JavadocClass, source: JavaType<*>) {
         if (source is Extendable<*>) {
             try {
-                klass.parentClass = parser.getJavadocClass(api, source.getSuperType())
+                klass.parentClass = parser.getJavadocClass(source.getSuperType())?.fqcn
             } catch(e: Exception) {
-                println("source.getQualifiedName() = ${source.getQualifiedName()}")
-                e.printStackTrace()
+                println(e.message + "\nsource.getQualifiedName() = ${source.getQualifiedName()}")
             }
         }
     }
 
+/*
     private fun generics(klass: JavadocClass, source: JavaType<*>) {
         if ( source is GenericCapable<*>) {
             source.getTypeVariables()
-                    //                    .flatMap { it.getBounds() }
                     .map { JavadocType(it) }
-                    .forEach { klass.typeVariables.add(it) }
+//                    .forEach { klass.typeVariables.add(it) }
         }
     }
+*/
 
     fun visitField(javadocClass: JavadocClass, field: Field<*>): JavadocField {
         val entity = JavadocField(javadocClass, field.getName(), field.getType().toString())
