@@ -29,6 +29,16 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
         return criteria.query().asList()
     }
 
+    fun getClassByFqcn(fqcn: String): JavadocClass {
+        val criteria = JavadocClassCriteria(ds)
+        criteria.fqcn().equal(fqcn)
+        try {
+            return criteria.query().get()
+        } catch(e: IllegalStateException) {
+            throw IllegalStateException("fqcn = ${fqcn}", e)
+        }
+    }
+
     fun getClass(api: JavadocApi? = null, pkg: String, name: String): JavadocClass? {
         val criteria: JavadocClassCriteria
         try {
@@ -65,15 +75,24 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
 
         list.forEach { klass ->
             methods.addAll(getMethods(methodName, signatureTypes, klass))
-            klass.parentClass?.let { methods.addAll(getMethods(methodName, signatureTypes, it)) }
-            klass.interfaces.forEach { methods.addAll(getMethods(methodName, signatureTypes, it)) }
+            klass.parentClass?.let { methods.addAll(getMethods(methodName, signatureTypes, getClassByFqcn(it))) }
+            klass.interfaces.forEach {
+                try {
+                    methods.addAll(getMethods(methodName, signatureTypes, getClassByFqcn(it)))
+                } catch(e: IllegalStateException) {
+//                    println("it = ${it}")
+//                    println("klass = ${klass}")
+//                    println("klass.interfaces = ${klass.interfaces}")
+                    throw IllegalStateException("klass = ${klass}", e)
+                }
+            }
         }
         return methods
     }
 
     private fun getMethods(name: String, signatureTypes: String, javadocClass: JavadocClass): List<JavadocMethod> {
         val criteria = JavadocMethodCriteria(ds)
-        criteria.javadocClass(javadocClass)
+        criteria.javadocClass(javadocClass.id)
         criteria.upperName().equal(name.toUpperCase())
         if ("*" != signatureTypes) {
             criteria.or(
@@ -97,7 +116,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
 
     private fun deleteMethods(javadocClass: JavadocClass) {
         val criteria = JavadocMethodCriteria(ds)
-        criteria.javadocClass(javadocClass)
+        criteria.javadocClass(javadocClass.id)
         ds.delete(criteria.query())
     }
 

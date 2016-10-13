@@ -1,13 +1,10 @@
 package javabot.javadoc
 
-import org.bson.types.ObjectId
-import org.mongodb.morphia.annotations.Embedded
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
 import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.Indexes
 import org.mongodb.morphia.annotations.PrePersist
-import org.mongodb.morphia.annotations.Reference
 
 @Entity(value = "classes", noClassnameStored = true)
 @Indexes(Index(fields = arrayOf(Field("apiId"))), Index(fields = arrayOf(Field("upperName"))),
@@ -16,16 +13,14 @@ import org.mongodb.morphia.annotations.Reference
 open class JavadocClass : JavadocElement {
     lateinit var packageName: String
     lateinit var name: String
-    @Reference(lazy = true, idOnly = true)
-    var parentClass: JavadocClass? = null
-    @Reference(lazy = true, idOnly = true)
-    var interfaces = mutableListOf<JavadocClass>()
+    lateinit var fqcn: String
+    var parentClass: String? = null
+    var interfaces = mutableListOf<String>()
     var isClass = false
     var isEnum = false
     var isInterface = false
     var isAnnotation = false
-    @Embedded
-    var typeVariables = mutableListOf<JavadocType>()
+    var typeVariables = mutableListOf<String>()
 
     lateinit var upperPackageName: String
     lateinit var upperName: String
@@ -36,8 +31,9 @@ open class JavadocClass : JavadocElement {
     constructor(api: JavadocApi, pkg: String, name: String) {
         packageName = pkg
         this.name = name
+        fqcn = "$packageName.$name"
         apiId = api.id
-        url = api.baseUrl + "index.html?" + pkg.replace('.', '/') + "/" + name + ".html"
+        url = api.baseUrl + "index.html?" + fqcn.replace('.', '/') + ".html"
     }
 
     @PrePersist

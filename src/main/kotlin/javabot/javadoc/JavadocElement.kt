@@ -8,7 +8,7 @@ import org.mongodb.morphia.annotations.Id
 
 abstract class JavadocElement : Persistent {
     @Id
-    var id: ObjectId? = null
+    lateinit var id: ObjectId
 
     var apiId: ObjectId? = null
 
