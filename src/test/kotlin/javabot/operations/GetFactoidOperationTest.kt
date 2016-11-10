@@ -7,7 +7,7 @@ import org.testng.Assert
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
-import java.util.Arrays
+import java.util.*
 import javax.inject.Inject
 
 @Test class GetFactoidOperationTest : BaseTest() {
@@ -124,6 +124,16 @@ import javax.inject.Inject
     fun action() {
         val response = operation.handleMessage(message("~hug ${BaseTest.TEST_TARGET_NICK}"))
         Assert.assertEquals(response[0].value, "hugs ${BaseTest.TEST_TARGET_NICK}")
+    }
+
+    @Test fun testLeadingSpace() {
+        var response = operation.handleMessage(message("~ tell ${BaseTest.TEST_TARGET_NICK} about hey"))
+        Assert.assertEquals(response[0].value, "Hello, ${BaseTest.TEST_TARGET_NICK}")
+        response = operation.handleMessage(message("~ hey"))
+        Assert.assertEquals(response[0].value, "Hello, ${BaseTest.TEST_USER_NICK}")
+        response = operation.handleMessage(message("~hey"))
+        Assert.assertEquals(response[0].value, "Hello, ${BaseTest.TEST_USER_NICK}")
+
     }
 
     @Test fun tell() {
