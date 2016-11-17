@@ -9,7 +9,6 @@ import com.google.inject.Singleton
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
-import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.net.UnknownHostException
@@ -27,15 +26,14 @@ import java.util.concurrent.TimeUnit
             CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(1, TimeUnit.HOURS).recordStats().build(
                     object : CacheLoader<Int, Pair<String, String>>() {
                         @SuppressWarnings("NullableProblems")
-                        @Throws(IOException::class)
                         override fun load(rfc: Int): Pair<String, String> {
-                            var title: String? = null
-                            var url: String? = null
+                            var title: String? = ""
+                            var url: String = ""
                             rfcServerList
                                     .filterNot { rfcBadServers.contains(it) }
                                     .forEach {
                                         // how I wish return@label worked in the lambda...
-                                        if (title == null) {
+                                        if ("" == title) {
                                             url = it.format(rfc)
                                             try {
                                                 val doc = Jsoup.connect(url).get()
@@ -43,14 +41,10 @@ import java.util.concurrent.TimeUnit
                                                 //} catch(e: ExecutionException) {
                                             } catch(e: UnknownHostException) {
                                                 rfcBadServers.add(it)
-                                            } catch(e: HttpStatusException) {
                                             }
                                         }
                                     }
-                            if (title == null) {
-                                throw IOException("RFC $rfc does not resolve")
-                            }
-                            return Pair(url.orEmpty(), title.orEmpty())
+                            return Pair(url, title ?: throw IOException("RFC $rfc does not resolve"))
                         }
                     })
 
