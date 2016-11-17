@@ -17,6 +17,8 @@ import java.util.concurrent.TimeUnit
  * Displays RFC url and title
  */
 @Singleton class RFCOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao) {
+    val rfcServerList=listOf("http://www.rfc-base.org/rfc-%d.html","https://tools.ietf.org/html/rfc%d")
+
     var rfcTitleCache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(1, TimeUnit.HOURS).recordStats().build(
           object : CacheLoader<String, String>() {
               @SuppressWarnings("NullableProblems")
@@ -37,14 +39,22 @@ import java.util.concurrent.TimeUnit
             } else {
                 try {
                     val rfc = Integer.parseInt(rfcText)
-                    try {
-                        val url = "http://www.rfc-base.org/rfc-%d.html".format(rfc)
-                        responses.add(Message(event, Sofia.rfcSucceed(url, rfcTitleCache.get(url))))
-                    } catch (e: ExecutionException) {
-                        // from rfc.fail
+                    var found=false
+                    rfcServerList.forEach {
+                        // how I wish return@label worked in the lambda...
+                        if(!found) {
+                            val url = it.format(rfc)
+                            try {
+                                val data = rfcTitleCache.get(url)
+                                responses.add(Message(event, Sofia.rfcSucceed(url, data)))
+                                found = true
+                            } catch(e: ExecutionException) {
+                            }
+                        }
+                    }
+                    if(!found) {
                         responses.add(Message(event, Sofia.rfcFail(rfcText)))
                     }
-
                 } catch (e: NumberFormatException) {
                     responses.add(Message(event, Sofia.rfcInvalid(rfcText)))
                 }
