@@ -27,24 +27,19 @@ import java.util.concurrent.TimeUnit
                     object : CacheLoader<Int, Pair<String, String>>() {
                         @SuppressWarnings("NullableProblems")
                         override fun load(rfc: Int): Pair<String, String> {
-                            var title: String? = null
-                            var url: String = ""
                             rfcServerList
                                     .filterNot { rfcBadServers.contains(it) }
                                     .forEach {
                                         // how I wish return@label worked in the lambda...
-                                        if (null == title) {
-                                            url = it.format(rfc)
-                                            try {
-                                                val doc = Jsoup.connect(url).get()
-                                                title = doc.title()
-                                                //} catch(e: ExecutionException) {
-                                            } catch(e: UnknownHostException) {
-                                                rfcBadServers.add(it)
-                                            }
+                                        val url = it.format(rfc)
+                                        try {
+                                            val doc = Jsoup.connect(url).get()
+                                            return Pair(url, doc.title())
+                                        } catch(e: UnknownHostException) {
+                                            rfcBadServers.add(it)
                                         }
                                     }
-                            return Pair(url, title ?: throw IOException("RFC $rfc does not resolve"))
+                            throw IOException("RFC $rfc not retrievable")
                         }
                     })
 
