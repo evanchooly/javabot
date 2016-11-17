@@ -126,6 +126,16 @@ import javax.inject.Inject
         Assert.assertEquals(response[0].value, "hugs ${BaseTest.TEST_TARGET_NICK}")
     }
 
+    @Test fun testLeadingSpace() {
+        var response = operation.handleMessage(message("~ tell ${BaseTest.TEST_TARGET_NICK} about hey"))
+        Assert.assertEquals(response[0].value, "Hello, ${BaseTest.TEST_TARGET_NICK}")
+        response = operation.handleMessage(message("~ hey"))
+        Assert.assertEquals(response[0].value, "Hello, ${BaseTest.TEST_USER_NICK}")
+        response = operation.handleMessage(message("~hey"))
+        Assert.assertEquals(response[0].value, "Hello, ${BaseTest.TEST_USER_NICK}")
+
+    }
+
     @Test fun tell() {
         var response = operation.handleMessage(message("~tell ${BaseTest.TEST_TARGET_NICK} about hey"))
         Assert.assertEquals(response[0].value, "Hello, ${BaseTest.TEST_TARGET_NICK}")
