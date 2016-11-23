@@ -37,7 +37,7 @@ To build and test Javabot, you'll need to do a few things.
 ```
    In Docker, you'd use:
 ```
-    docker run -d -p 27017:27017 --name mongodb dockerfile/mongodb
+    docker run -d -p 27017:27017 --name mongodb mongo
 ```
 1. Build and test.
 
