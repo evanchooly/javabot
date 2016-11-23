@@ -21,7 +21,7 @@ To build and test Javabot, you'll need to do a few things.
    ```
    If you're using [Docker](https://www.docker.com/), you can run a Docker image for MongoDB:
    ```
-      docker pull dockerfile/mongodb
+      docker pull mongo
    ```
 
    (Note that if you're on Windows, you may need to add network translation to handle port 27017; see `images/nat
