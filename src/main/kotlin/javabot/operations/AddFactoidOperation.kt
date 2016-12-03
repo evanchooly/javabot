@@ -40,10 +40,10 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
 
                 val redefine = key.startsWith("no ") || key.startsWith("no, ")
                 if (redefine) {
-                    key = key.substring(key.indexOf(" ")).trim()
+                    key = key.substring(key.indexOf(" ")).trim().toLowerCase()
 
                     factoid = factoidDao.getFactoid(key)
-                    if ( factoid == null) {
+                    if (factoid == null) {
                         responses.add(Message(event.channel, event.user, Sofia.factoidUnknown(key)))
                     }
                 } else {
@@ -57,8 +57,13 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                     if (message.isEmpty()) {
                         responses.add(Message(event, Sofia.factoidInvalidValue()))
                     } else {
-                        factoid = Factoid(name, userName = event.user.nick)
-                        factoid.name = factoid.name.dropLastWhile { it in arrayOf('.', '?', '!') }
+                        factoid = factoidDao.getFactoid(key)
+                        if (factoid != null) {
+                            reponses.add(Message(event, Sofia.factoidExists(factoid.name, event.user.nick)))
+                        } else {
+                            factoid = Factoid(name, userName = event.user.nick)
+                            factoid.name = factoid.name.dropLastWhile { it in arrayOf('.', '?', '!') }
+                        }
                     }
                 }
                 if (factoid != null) {
@@ -74,14 +79,9 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                             factoid.updated = LocalDateTime.now()
                         }
                         if (factoid.id != null) {
-
                             changeDao.logFactoidChanged(event.user.nick, factoid.name, factoid.value, message, channelDao.location(channel))
                         } else {
-                            if (factoidDao.hasFactoid(factoid.name)) {
-                                responses.add(Message(event, Sofia.factoidExists(factoid.name, event.user.nick)))
-                            } else {
-                                changeDao.logFactoidAdded(event.user.nick, factoid.name, factoid.value, channelDao.location(channel))
-                            }
+                            changeDao.logFactoidAdded(event.user.nick, factoid.name, factoid.value, channelDao.location(channel))
                         }
                         factoidDao.save(factoid)
                         responses.add(Message(event, Sofia.ok(event.user.nick)))
