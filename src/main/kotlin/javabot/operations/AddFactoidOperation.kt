@@ -59,7 +59,7 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                     } else {
                         factoid = factoidDao.getFactoid(key)
                         if (factoid != null) {
-                            reponses.add(Message(event, Sofia.factoidExists(factoid.name, event.user.nick)))
+                            responses.add(Message(event, Sofia.factoidExists(factoid.name, event.user.nick)))
                         } else {
                             factoid = Factoid(name, userName = event.user.nick)
                             factoid.name = factoid.name.dropLastWhile { it in arrayOf('.', '?', '!') }
