@@ -140,6 +140,8 @@ class JavadocTest : BaseTest() {
                 "Should find an entry for ${api?.name}'s java.util.Map.Entry")
         Assert.assertNotNull(javadocClassDao.getClass(api, "Map.Entry"),
                 "Should find an entry for ${api?.name}'s java.util.Map.Entry")
+        scanForResponse(operation.handleMessage(message("~javadoc Map.Entry")),
+                "${config.url()}/javadoc/JDK/1.8/index.html?java/util/Map.Entry.html")
         scanForResponse(operation.handleMessage(message("~javadoc String.chars()")),
                 "${config.url()}/javadoc/JDK/1.8/index.html?java/lang/CharSequence.html#chars--")
         scanForResponse(operation.handleMessage(message("~javadoc ResultSet.getInt(*)")),

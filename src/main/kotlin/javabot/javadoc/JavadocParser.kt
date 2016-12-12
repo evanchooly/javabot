@@ -24,6 +24,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeUnit.MINUTES
 import java.util.concurrent.TimeUnit.SECONDS
+import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import javax.inject.Inject
 import javax.inject.Provider
@@ -44,27 +45,15 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
                 buildHtml(api, location, packages)
             }
             (1..executor.corePoolSize).forEach {
-               executor.scheduleAtFixedRate(JavadocClassReader(api, apiDao), 0, 1, SECONDS)
+                executor.scheduleAtFixedRate(JavadocClassReader(api, apiDao), 0, 1, SECONDS)
             }
 
-            try {
-                JarFile(location).use { jarFile ->
-                    Collections.list(jarFile.entries())
-                            .filter { it.name.endsWith(".java") && (packages.isEmpty()
-                                    || packages.any { pkg -> it.name.startsWith(pkg) }) }
-                            .map {
-                                var text: String = ""
-                                jarFile.getInputStream(it).use {
-                                    text = it.readBytes().toString(Charset.forName("UTF-8"))
-                                }
-                                JavadocSource(it.name, api, text)
-                            }
-                            .forEach { source ->
-                                apiDao.save(source)
-                            }
-                }
+            JarFile(location).extractToSource(api,
+                    { it.name.endsWith(".java") },
+                    { apiDao.save(it) }
+            )
 
-                Awaitility
+            Awaitility
                     .waitAtMost(30, MINUTES)
                     .pollInterval(5, SECONDS)
                     .until<Boolean> {
@@ -72,12 +61,10 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
                         writer.write("Waiting on %s work queue to drain.  %d items left".format(api.name, workQueue))
                         workQueue == 0L
                     }
-                executor.shutdown()
-                executor.awaitTermination(10, TimeUnit.MINUTES)
-                javadocClassDao.deleteNotVisible(api)
-            } finally {
-                location.delete()
-            }
+            executor.shutdown()
+            executor.awaitTermination(10, TimeUnit.MINUTES)
+            javadocClassDao.deleteNotVisible(api)
+
             writer.write("Finished importing %s.  %s!".format(api.name, if (apiDao.countUnprocessed(api) == 0L) "SUCCESS" else "FAILURE"))
         } catch (e: IOException) {
             log.error(e.message, e)
@@ -85,8 +72,9 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
         } catch (e: InterruptedException) {
             log.error(e.message, e)
             throw RuntimeException(e.message, e)
+        } finally {
+            location.delete()
         }
-
     }
 
     fun buildHtml(api: JavadocApi, jar: File, packages: List<String>) {
@@ -192,3 +180,16 @@ fun visibility(scope: String): Visibility {
     }
 }
 
+fun JarFile.extractToSource(api: JavadocApi, filter: (JarEntry) -> Boolean, terminal: (JavadocSource) -> Unit) {
+    use { jarFile ->
+        Collections.list(jarFile.entries())
+                .filter(filter)
+                .map {
+                    var text = jarFile . getInputStream(it).use {
+                         it.readBytes().toString(Charset.forName("UTF-8"))
+                    }
+                    JavadocSource(it.name, api, text)
+                }
+                .forEach(terminal)
+    }
+}

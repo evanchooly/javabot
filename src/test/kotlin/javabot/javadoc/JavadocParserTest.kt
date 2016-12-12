@@ -17,12 +17,11 @@ class JavadocParserTest : BaseTest() {
 
     @Test
     fun testBuildHtml() {
-        val downloadUrl = ApiEvent.locateJDK()
-        val file = downloadUrl.downloadZip()
+        val file = ApiEvent.locateJDK().downloadZip()
         parser.buildHtml(JavadocApi("JDK", "${config.url()}/javadoc/JDK", "", "", ""), file, listOf("java", "javax"))
 
-        val applet = File("javadoc/JDK/1.8/java/applet/Applet.html")
-        Assert.assertTrue(applet.exists())
+        Assert.assertTrue(File("javadoc/JDK/1.8/java/applet/Applet.html").exists())
+        Assert.assertTrue(File("javadoc/JDK/1.8/java/util/Map.Entry.html").exists())
 
         Assert.assertTrue(File("javadoc/JDK/1.8/index.html").readText()
                 .contains("top.classFrame.location = top.targetPage + location.hash;"))

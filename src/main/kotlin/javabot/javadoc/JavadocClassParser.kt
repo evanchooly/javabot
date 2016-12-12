@@ -2,6 +2,7 @@ package javabot.javadoc
 
 import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
+import javabot.javadoc.Visibility.Public
 import org.jboss.forge.roaster.model.Extendable
 import org.jboss.forge.roaster.model.Field
 import org.jboss.forge.roaster.model.FieldHolder
@@ -66,7 +67,7 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
             docClass.isAnnotation = source.isAnnotation()
             docClass.isInterface = source.isInterface()
             docClass.isEnum = source.isEnum()
-            docClass.visibility = visibility(source.getVisibility().scope())
+            docClass.visibility = if (source.getEnclosingType().isInterface()) Public else visibility(source.getVisibility().scope())
 //            generics(docClass, source)
             extendable(docClass, source)
             interfaces(docClass, source)
