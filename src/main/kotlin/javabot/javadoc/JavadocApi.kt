@@ -33,7 +33,7 @@ class JavadocApi : Persistent {
     private constructor() {
     }
 
-    constructor(apiName: String, url: String, groupId: String, artifactId: String, version: String) {
+    constructor(apiName: String, url: String, groupId: String = "", artifactId: String = "", version: String = "") {
         name = apiName
         this.groupId = groupId
         this.artifactId = artifactId

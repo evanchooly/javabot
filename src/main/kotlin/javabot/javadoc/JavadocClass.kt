@@ -33,7 +33,7 @@ open class JavadocClass : JavadocElement {
         this.name = name
         fqcn = "$packageName.$name"
         apiId = api.id
-        url = api.baseUrl + "index.html?" + fqcn.replace('.', '/') + ".html"
+        url = "${api.baseUrl}index.html?${packageName.replace('.', '/')}/${name}.html"
     }
 
     @PrePersist

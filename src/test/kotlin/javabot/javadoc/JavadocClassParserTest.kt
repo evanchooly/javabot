@@ -39,6 +39,7 @@ class JavadocClassParserTest : BaseTest() {
 
         Assert.assertNotNull(classDao.getClassByFqcn("java.util.Map"))
         Assert.assertNotNull(classDao.getClassByFqcn("java.util.Map.Entry"))
+        Assert.assertNotNull(classDao.getClass(null, "Map.Entry"))
         Assert.assertNull(classDao.getQuery()
                 .filter("fqcn", "javax.swing.text.html.Map")
                 .get())
