@@ -8,7 +8,6 @@ import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
 import javabot.javadoc.JavadocApi
 import javabot.model.ApiEvent
-import javabot.model.EventType
 import javabot.operations.JavadocOperation
 import org.slf4j.LoggerFactory
 import org.testng.Assert
@@ -52,7 +51,7 @@ class JavadocTest : BaseTest() {
     @Test(dependsOnMethods = arrayOf("servlets"))
     fun reloadServlets() {
         val apiName = "Servlet"
-        val event = ApiEvent(TEST_USER.nick, EventType.RELOAD, apiDao.find(apiName)?.id)
+        val event = ApiEvent.reload(TEST_USER.nick, apiName)
         eventDao.save(event)
         waitForEvent(event, "reloading " + apiName, Duration(30, TimeUnit.MINUTES))
         messages.clear()
@@ -123,7 +122,7 @@ class JavadocTest : BaseTest() {
         }
         var api: JavadocApi? = apiDao.find("JDK")
         if (api == null) {
-            val apiEvent = ApiEvent(TEST_USER.nick, "JDK", "", "", "")
+            val apiEvent = ApiEvent.add(TEST_USER.nick, "JDK")
             injector.injectMembers(apiEvent)
             apiEvent.handle()
             messages.clear()
@@ -152,15 +151,28 @@ class JavadocTest : BaseTest() {
         Assert.assertEquals(javadocClassDao.getClass(null, "Map").size, 1)
     }
 
-    @Test(dependsOnMethods = arrayOf("jdk"))
+    @Test
     fun guava() {
         val apiName = "guava"
         dropApi(apiName)
         addApi(apiName, "com.google.guava", "guava", "19.0")
         verifyMapCount()
     }
+
+    @Test(dependsOnMethods = arrayOf("guava"))
+    fun reload() {
+        val api = apiDao.find("guava")
+        val clazz = javadocClassDao.getClass(api, "ArrayTable")
+        Assert.assertEquals(clazz.size, 1)
+        javadocClassDao.delete(clazz[0])
+        Assert.assertEquals(javadocClassDao.getClass(api, "ArrayTable").size, 0)
+        reloadApi("guava")
+        Assert.assertEquals(javadocClassDao.getClass(api, "ArrayTable").size, 1)
+    }
+
+
     private fun addApi(apiName: String, groupId: String, artifactId: String, version: String) {
-        val apiEvent = ApiEvent(TEST_USER.nick, apiName, groupId, artifactId, version)
+        val apiEvent = ApiEvent.add(TEST_USER.nick, apiName, groupId, artifactId, version)
         injector.injectMembers(apiEvent)
         apiEvent.handle()
         LOG.debug("done waiting for event to finish")
@@ -168,7 +180,14 @@ class JavadocTest : BaseTest() {
     }
 
     private fun dropApi(apiName: String) {
-        val apiEvent = ApiEvent(TEST_USER.nick, EventType.DELETE, apiName)
+        val apiEvent = ApiEvent.drop(TEST_USER.nick, apiName)
+        injector.injectMembers(apiEvent)
+        apiEvent.handle()
+        messages.clear()
+    }
+
+    private fun reloadApi(apiName: String) {
+        val apiEvent = ApiEvent.reload(TEST_USER.nick, apiName)
         injector.injectMembers(apiEvent)
         apiEvent.handle()
         messages.clear()

@@ -5,7 +5,6 @@ import com.jayway.awaitility.Duration
 import javabot.BaseTest
 import javabot.dao.ApiDao
 import javabot.model.ApiEvent
-import org.testng.Assert.assertTrue
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
 import java.util.concurrent.TimeUnit
@@ -23,7 +22,7 @@ class JavadocOperationTest : BaseTest() {
     fun jdk() {
         if (apiDao.find("JDK") == null) {
             println("JDK javadoc not found.  Generating now.")
-            val event = ApiEvent(TEST_USER.nick, "JDK", "", "", "")
+            val event = ApiEvent.add(TEST_USER.nick, "JDK")
             eventDao.save(event)
             waitForEvent(event, "adding JDK", Duration(30, TimeUnit.MINUTES))
             messages.clear()

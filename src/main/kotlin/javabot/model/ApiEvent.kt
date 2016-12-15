@@ -5,6 +5,8 @@ import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.javadoc.JavadocApi
 import javabot.javadoc.JavadocParser
+import javabot.model.EventType.DELETE
+import javabot.model.EventType.RELOAD
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Transient
@@ -39,6 +41,27 @@ class ApiEvent : AdminEvent {
             }
             return file.toURI()
         }
+        
+        fun add(requestedBy: String, name: String, groupId: String = "",
+                artifactId: String = "", version: String = ""): ApiEvent {
+            return ApiEvent(requestedBy, name, groupId, artifactId, version)
+        }
+        
+        fun drop(requestedBy: String, id: ObjectId) : ApiEvent {
+            return ApiEvent(requestedBy, DELETE, id)
+        }
+
+        fun drop(requestedBy: String, name: String) : ApiEvent {
+            return ApiEvent(requestedBy, DELETE, name)
+        }
+
+        fun reload(requestedBy: String, id: ObjectId) : ApiEvent {
+            return ApiEvent(requestedBy, RELOAD, id)
+        }
+
+        fun reload(requestedBy: String, name: String) : ApiEvent {
+            return ApiEvent(requestedBy, RELOAD, name)
+        }
     }
 
     var apiId: ObjectId? = null
@@ -70,7 +93,7 @@ class ApiEvent : AdminEvent {
     constructor() {
     }
 
-    constructor(requestedBy: String, name: String, groupId: String, artifactId: String, version: String) :
+    private constructor(requestedBy: String, name: String, groupId: String, artifactId: String, version: String) :
     super(requestedBy, EventType.ADD) {
         this.requestedBy = requestedBy
         this.name = name
@@ -79,11 +102,11 @@ class ApiEvent : AdminEvent {
         this.version = version
     }
 
-    constructor(requestedBy: String, type: EventType, apiId: ObjectId?) : super(requestedBy, type) {
+    private constructor(requestedBy: String, type: EventType, apiId: ObjectId?) : super(requestedBy, type) {
         this.apiId = apiId
     }
 
-    constructor(requestedBy: String, type: EventType, name: String) : super(requestedBy, type) {
+    private constructor(requestedBy: String, type: EventType, name: String) : super(requestedBy, type) {
         this.name = name
     }
 
@@ -93,29 +116,34 @@ class ApiEvent : AdminEvent {
     }
 
     override fun delete() {
-        var api = apiDao.find(apiId)
-        if (api == null) {
-            api = apiDao.find(name)
-        }
+        var api = findApi()
         if (api != null) {
             File("javadoc/${api.name}/${api.version}/").deleteTree()
             apiDao.delete(api)
         }
     }
 
+    private fun findApi(): JavadocApi? {
+        var api = apiDao.find(apiId)
+        if (api == null) {
+            api = apiDao.find(name)
+        }
+        return api
+    }
+
     override fun add() {
-        val api = JavadocApi(name, "${config.url()}", groupId, artifactId, version)
+        val api = JavadocApi(name, config.url(), groupId, artifactId, version)
         apiDao.save(api)
         process(api)
     }
 
     override fun reload() {
-        val api = apiDao.find(apiId)
+        val api = findApi()
         if (api != null) {
             name = api.name
             groupId = api.groupId
             artifactId = api.artifactId
-            version = if (name == "JDK" ) System.getProperty("java.version") else  api.version
+            version = if (name == "JDK") System.getProperty("java.version") else api.version
 //            apiDao.delete(apiId)
 //            api.id = ObjectId()
 //            apiDao.save(api)

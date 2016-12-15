@@ -1,7 +1,5 @@
 package javabot.javadoc
 
-import javabot.model.ApiEvent
-import javabot.model.ApiEvent.Companion
 import javabot.model.Persistent
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
@@ -20,22 +18,19 @@ class JavadocApi : Persistent {
     @Id
     var id: ObjectId = ObjectId()
 
-    lateinit var name: String
+    var name: String = ""
 
-    private var upperName: String? = null
+    private var upperName: String = ""
 
-    lateinit var baseUrl: String
+    var baseUrl: String = ""
 
-    lateinit var groupId: String
+    var groupId: String = ""
 
-    lateinit var artifactId: String
+    var artifactId: String = ""
 
-    lateinit var version: String
+    var version: String = ""
 
     private constructor() {
-        groupId = ""
-        artifactId = ""
-        version = ""
     }
 
     constructor(apiName: String, url: String, groupId: String, artifactId: String, version: String) {
@@ -47,7 +42,8 @@ class JavadocApi : Persistent {
         baseUrl = "${baseUrl}javadoc/$apiName/${this.version}/"
     }
 
-    @PrePersist fun uppers() {
+    @PrePersist
+    fun uppers() {
         upperName = name.toUpperCase()
     }
 

@@ -9,7 +9,6 @@ import javabot.dao.ConfigDao
 import javabot.model.Admin
 import javabot.model.ApiEvent
 import javabot.model.Channel
-import javabot.model.EventType
 import javabot.web.auth.Restricted
 import javabot.web.model.Authority
 import javabot.web.model.User
@@ -110,7 +109,8 @@ constructor(var viewFactory: ViewFactory, var adminDao: AdminDao, var apiDao: Ap
     }
 
     @GET
-    @Path("/enableOperation/{name}") fun enableOperation(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User,
+    @Path("/enableOperation/{name}")
+    fun enableOperation(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User,
                                                          @PathParam("name") name: String): View {
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         javabot.enableOperation(name)
@@ -118,7 +118,8 @@ constructor(var viewFactory: ViewFactory, var adminDao: AdminDao, var apiDao: Ap
     }
 
     @GET
-    @Path("/disableOperation/{name}") fun disableOperation(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User,
+    @Path("/disableOperation/{name}")
+    fun disableOperation(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User,
                                                            @PathParam("name") name: String): View {
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         javabot.disableOperation(name)
@@ -126,7 +127,8 @@ constructor(var viewFactory: ViewFactory, var adminDao: AdminDao, var apiDao: Ap
     }
 
     @GET
-    @Path("/edit/{id}") fun editAdmin(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User,
+    @Path("/edit/{id}")
+    fun editAdmin(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User,
                                       @PathParam("id") id: String): View {
         val current = adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
 
@@ -134,7 +136,8 @@ constructor(var viewFactory: ViewFactory, var adminDao: AdminDao, var apiDao: Ap
     }
 
     @GET
-    @Path("/delete/{id}") fun deleteAdmin(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User,
+    @Path("/delete/{id}")
+    fun deleteAdmin(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User,
                                           @PathParam("id") id: String): View {
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         val admin = adminDao.find(ObjectId(id))
@@ -174,8 +177,8 @@ constructor(var viewFactory: ViewFactory, var adminDao: AdminDao, var apiDao: Ap
             val groupId = dependency.getElementsByTagName("groupId").item(0).textContent
             val artifactId = dependency.getElementsByTagName("artifactId").item(0).textContent
             val version = dependency.getElementsByTagName("version").item(0).textContent
-            ApiEvent(user.email, if (name != "") name else artifactId, groupId, artifactId, version)
-        } else ApiEvent(user.email, name, "", "", "")
+            ApiEvent.add(user.email, if (name != "") name else artifactId, groupId, artifactId, version)
+        } else ApiEvent.add(user.email, name)
 
         apiDao.save(event)
         return javadoc(request, user)
@@ -187,7 +190,7 @@ constructor(var viewFactory: ViewFactory, var adminDao: AdminDao, var apiDao: Ap
                   @Restricted(Authority.ROLE_ADMIN) user: User,
                   @PathParam("id") id: String): View {
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        apiDao.save(ApiEvent(user.email, EventType.DELETE, ObjectId(id)))
+        apiDao.save(ApiEvent.drop(user.email, ObjectId(id)))
         return javadoc(request, user)
     }
 
@@ -197,7 +200,7 @@ constructor(var viewFactory: ViewFactory, var adminDao: AdminDao, var apiDao: Ap
                   @Restricted(Authority.ROLE_ADMIN) user: User,
                   @PathParam("id") id: String): View {
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        apiDao.save(ApiEvent(user.email, EventType.RELOAD, ObjectId(id)))
+        apiDao.save(ApiEvent.reload(user.email, ObjectId(id)))
         return javadoc(request, user)
     }
 
