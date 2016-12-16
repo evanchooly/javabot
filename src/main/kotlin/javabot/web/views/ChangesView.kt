@@ -37,6 +37,6 @@ class ChangesView @Inject constructor(adminDao: AdminDao,
     }
 
     override fun getPageItems(): List<Change> {
-        return changeDao.getChanges(QueryParam(getIndex(), ITEMS_PER_PAGE, "updated", true), message, date)
+        return changeDao.getChanges(QueryParam(getIndex(), ITEMS_PER_PAGE, "updated"), message, date)
     }
 }

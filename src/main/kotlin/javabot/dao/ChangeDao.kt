@@ -40,14 +40,14 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
     }
 
     fun count(message: String?, date: LocalDateTime?): Long {
-        return buildFindQuery(null, true, message, date).countAll()
+        return buildFindQuery(null, message, date).countAll()
     }
 
     fun getChanges(qp: QueryParam, message: String?, date: LocalDateTime?): List<Change> {
-        return buildFindQuery(qp, true, message, date).asList()
+        return buildFindQuery(qp, message, date).asList()
     }
 
-    private fun buildFindQuery(qp: QueryParam?, count: Boolean, message: String?, date: LocalDateTime?): Query<Change> {
+    private fun buildFindQuery(qp: QueryParam?, message: String?, date: LocalDateTime?): Query<Change> {
         val criteria = ChangeCriteria(ds)
         if (message != null) {
             criteria.message().contains(message)
@@ -56,7 +56,7 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
             criteria.changeDate(date)
         }
         criteria.changeDate().order(false)
-        if (!count && qp != null) {
+        qp?.let {
             criteria.query().offset(qp.first)
             criteria.query().limit(qp.count)
         }
