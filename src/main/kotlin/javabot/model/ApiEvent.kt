@@ -133,7 +133,6 @@ class ApiEvent : AdminEvent {
 
     override fun add() {
         val api = JavadocApi(name, config.url(), groupId, artifactId, version)
-        apiDao.save(api)
         process(api)
     }
 
@@ -147,11 +146,13 @@ class ApiEvent : AdminEvent {
 //            apiDao.delete(apiId)
 //            api.id = ObjectId()
 //            apiDao.save(api)
+            delete()
             process(api)
         }
     }
 
     private fun process(api: JavadocApi) {
+        apiDao.save(api)
         val downloadUrl = if (name == "JDK") locateJDK() else buildMavenUrl()
         val admin = adminDao.getAdmin(JavabotUser(requestedBy, requestedBy, ""))
         if (admin != null) {

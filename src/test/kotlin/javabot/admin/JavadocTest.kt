@@ -156,17 +156,19 @@ class JavadocTest : BaseTest() {
         val apiName = "guava"
         dropApi(apiName)
         addApi(apiName, "com.google.guava", "guava", "19.0")
-        verifyMapCount()
+        val api = apiDao.find("guava")
+        Assert.assertEquals(javadocClassDao.getClass(api, "ArrayTable").size, 1)
     }
 
     @Test(dependsOnMethods = arrayOf("guava"))
     fun reload() {
         val api = apiDao.find("guava")
-        val clazz = javadocClassDao.getClass(api, "ArrayTable")
-        Assert.assertEquals(clazz.size, 1)
-        javadocClassDao.delete(clazz[0])
+        javadocClassDao.delete(javadocClassDao.getClass(api, "AbstractCache")[0])
+        javadocClassDao.delete(javadocClassDao.getClass(api, "ArrayTable")[0])
+        Assert.assertEquals(javadocClassDao.getClass(api, "AbstractCache").size, 0)
         Assert.assertEquals(javadocClassDao.getClass(api, "ArrayTable").size, 0)
         reloadApi("guava")
+        Assert.assertEquals(javadocClassDao.getClass(api, "AbstractCache").size, 1)
         Assert.assertEquals(javadocClassDao.getClass(api, "ArrayTable").size, 1)
     }
 
