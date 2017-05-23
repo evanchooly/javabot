@@ -35,12 +35,14 @@ open class BaseTest {
     companion object {
         val TEST_TARGET_NICK: String = "jbtestuser"
         val TEST_USER_NICK: String = "botuser"
+        val TEST_NON_ADMIN_USER_NICK = "nonadminuser"
         val TEST_BOT_NICK: String = "testjavabot"
         val BOT_EMAIL: String = "test@example.com"
         val DONE: EnumSet<State> = EnumSet.of(State.COMPLETED, State.FAILED)
         val OK: String = "OK, " + TEST_USER_NICK.substring(0, Math.min(TEST_USER_NICK.length, 16)) + "."
         val TARGET_USER = JavabotUser(TEST_TARGET_NICK, TEST_TARGET_NICK, "hostmask")
         val TEST_USER = JavabotUser(TEST_USER_NICK, TEST_USER_NICK, "hostmask")
+        val TEST_NON_ADMIN_USER = JavabotUser(TEST_NON_ADMIN_USER_NICK, TEST_NON_ADMIN_USER_NICK, "hostmask")
         val TEST_CHANNEL = Channel("#jbunittest")
     }
 

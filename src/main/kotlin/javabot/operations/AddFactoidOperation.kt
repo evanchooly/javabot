@@ -39,12 +39,15 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                 var factoid: Factoid? = null
 
                 val redefine = key.startsWith("no ") || key.startsWith("no, ")
+                var exists=false
                 if (redefine) {
                     key = key.substring(key.indexOf(" ")).trim().toLowerCase()
 
                     factoid = factoidDao.getFactoid(key)
                     if (factoid == null) {
                         responses.add(Message(event.channel, event.user, Sofia.factoidUnknown(key)))
+                    } else {
+                        exists = true
                     }
                 } else {
                     if (key.startsWith(",")) {
@@ -60,6 +63,7 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                         factoid = factoidDao.getFactoid(key)
                         if (factoid != null) {
                             responses.add(Message(event, Sofia.factoidExists(factoid.name, event.user.nick)))
+                            exists=true
                         } else {
                             factoid = Factoid(name, userName = event.user.nick)
                             factoid.name = factoid.name.dropLastWhile { it in arrayOf('.', '?', '!') }
@@ -67,7 +71,7 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                     }
                 }
                 if (factoid != null) {
-                    if (factoid.locked && redefine && !admin) {
+                    if (exists && !(factoid.locked && redefine) && !admin) {
                         changeDao.logChangingLockedFactoid(event.user.nick, key, channel?.name ?: "private message")
                         responses.add(Message(event, Sofia.factoidLocked(event.user.nick)))
                     } else {
