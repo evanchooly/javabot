@@ -40,6 +40,7 @@ class AddFactoidOperationTest @Inject constructor(val factoidDao: FactoidDao, va
         Assert.assertEquals(response[0].value, OK)
     }
 
+    @Test
     fun replace() {
         var response = addFactoidOperation.handleMessage(message("~replace is first entry"))
         Assert.assertEquals(response[0].value, OK)
@@ -57,6 +58,27 @@ class AddFactoidOperationTest @Inject constructor(val factoidDao: FactoidDao, va
 
         response = addFactoidOperation.handleMessage(message("~no, replace is <reply>second entry"))
         Assert.assertEquals(response[0].value, Sofia.factoidUnknown("replace"))
+    }
+
+    @Test
+    fun rejectDuplicate() {
+        // clear out factoid first
+        forgetFactoidOperation.handleMessage(message("~forget epesh",user=TEST_NON_ADMIN_USER))
+
+        var response = addFactoidOperation.handleMessage(message("~epesh is cool",user=TEST_NON_ADMIN_USER))
+        Assert.assertEquals(response[0].value, "OK, ${TEST_NON_ADMIN_USER.nick}.")
+        val updated = factoidDao.getFactoid("epesh")!!.updated
+
+        response = addFactoidOperation.handleMessage(message("~epesh is awesome",user=TEST_NON_ADMIN_USER))
+        Assert.assertEquals(response[0].value, Sofia.factoidExists("epesh", TEST_NON_ADMIN_USER.nick))
+        Assert.assertFalse(factoidDao.getFactoid("epesh")!!.updated.isAfter(updated))
+
+        response = getFactoidOperation.handleMessage(message("~epesh",user=TEST_NON_ADMIN_USER))
+        Assert.assertEquals(response[0].value, "${TEST_NON_ADMIN_USER.nick}, epesh is cool")
+
+        response = forgetFactoidOperation.handleMessage(message("~forget epesh",user=TEST_NON_ADMIN_USER))
+        Assert.assertEquals(response[0].value, Sofia.factoidForgotten("epesh", TEST_NON_ADMIN_USER.nick))
+
     }
 
     @Test(dependsOnMethods = arrayOf("factoidAdd"))
