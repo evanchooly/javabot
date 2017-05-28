@@ -39,7 +39,7 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                 var factoid: Factoid? = null
 
                 val redefine = key.startsWith("no ") || key.startsWith("no, ")
-                var exists=false
+                var exists = false
                 if (redefine) {
                     key = key.substring(key.indexOf(" ")).trim().toLowerCase()
 
@@ -63,7 +63,7 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                         factoid = factoidDao.getFactoid(key)
                         if (factoid != null) {
                             responses.add(Message(event, Sofia.factoidExists(factoid.name, event.user.nick)))
-                            exists=true
+                            exists = true
                         } else {
                             factoid = Factoid(name, userName = event.user.nick)
                             factoid.name = factoid.name.dropLastWhile { it in arrayOf('.', '?', '!') }
@@ -71,15 +71,17 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                     }
                 }
                 if (factoid != null) {
-                    if (exists && !(factoid.locked && redefine) && !admin) {
-                        changeDao.logChangingLockedFactoid(event.user.nick, key, channel?.name ?: "private message")
-                        responses.add(Message(event, Sofia.factoidLocked(event.user.nick)))
+                    if (exists && !redefine) {
+                        if (factoid.locked && !admin) {
+                            changeDao.logChangingLockedFactoid(event.user.nick, key, channel?.name ?: "private message")
+                            responses.add(Message(event, Sofia.factoidLocked(event.user.nick)))
+                        }
                     } else {
                         factoid.value = message
                         if (factoid.value.startsWith("<see>")) {
                             factoid.value = factoid.value.toLowerCase()
                         }
-                        if(redefine) {
+                        if (redefine) {
                             factoid.updated = LocalDateTime.now()
                         }
                         if (factoid.id != null) {
@@ -96,7 +98,6 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
         }
         return responses
     }
-
 
 
     /**
