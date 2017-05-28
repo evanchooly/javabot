@@ -1,10 +1,9 @@
 package javabot.operations.urlcontent
 
 import com.google.inject.Singleton
-
-import java.util.HashMap
+import java.io.InputStream
+import java.util.*
 import java.util.regex.Pattern
-import java.util.stream.Stream
 
 @Singleton class URLContentAnalyzer {
 
@@ -33,7 +32,7 @@ import java.util.stream.Stream
 
     @Throws(ContentException::class)
     private fun checkForBlacklistedSites(url: String) {
-        for (pattern in patterns) {
+        matchingPatterns.keys.forEach { pattern ->
             if (matchingPatterns[pattern]?.matcher(url)?.matches() ?: false) {
                 throw ContentException("Rejected: blacklisted site ${url}")
             }
@@ -52,12 +51,12 @@ import java.util.stream.Stream
         // now break down the words in the title.
         val wordsInTitle = title.toLowerCase().split(" ")
         val words = wordsInTitle
-              .map({ s -> s.replace("[\\W]|_".toRegex(), "") })
-              .filter { s -> s.length > 2 }
-              .count()
+                .map({ s -> s.replace("[\\W]|_".toRegex(), "") })
+                .filter { s -> s.length > 2 }
+                .count()
         // generate a ratio of words to occurrences in the title.
         val hits = wordsInTitle
-              .map({ s -> s.replace("[\\W]|_".toRegex(), "") }).filter { s -> s.length > 2 }.filter { s ->
+                .map({ s -> s.replace("[\\W]|_".toRegex(), "") }).filter { s -> s.length > 2 }.filter { s ->
             url.toLowerCase().contains(s.toLowerCase())
         }.count()
 
@@ -71,12 +70,19 @@ import java.util.stream.Stream
     inner class ContentException(message: String) : Exception(message)
 
     companion object {
-        val patterns: Array<String> = arrayOf("astebin", "mysticpaste.com", "pastie", "gist.github.com", "ideone.com",
-              "docs.oracle.com.*api", "git.io", "localhost", "127.0.0.1")
-        val matchingPatterns: MutableMap<String, Pattern> = HashMap()
+        val matchingPatterns: Map<String, Pattern> = readBlacklist()
 
-        init {
-            Stream.of(*patterns).forEach { s -> matchingPatterns.put(s, Pattern.compile(".*$s.*")) }
+        fun readBlacklist(): Map<String, Pattern> {
+            val patternsResource: InputStream? = String::class.java.getResourceAsStream("/blacklist.txt")
+            val patterns: MutableMap<String, Pattern> = HashMap()
+            if (patternsResource != null) {
+                patternsResource.bufferedReader().use {
+                    it.lines().forEach {
+                        patterns.put(it, Pattern.compile(".*$it.*"))
+                    }
+                }
+            }
+            return patterns
         }
     }
 }

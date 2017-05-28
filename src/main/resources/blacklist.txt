@@ -1,0 +1,11 @@
+astebin
+mysticpaste.com
+pastie
+gist.github.com
+ideone.com
+docs.oracle.com.*api
+git.io
+localhost
+127.0.0.1
+refheap
+javap.yawk.at
