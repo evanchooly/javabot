@@ -22,7 +22,7 @@ class KarmaDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var 
         return query.asList()
     }
 
-    fun save(channel: Channel, karma: Karma) {
+    fun save(@Suppress("UNUSED_PARAMETER") channel: Channel, karma: Karma) {
         karma.updated = LocalDateTime.now()
         super.save(karma)
     }

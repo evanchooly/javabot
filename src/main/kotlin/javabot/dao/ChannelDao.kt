@@ -20,6 +20,7 @@ import java.util.ArrayList
     }
 
     fun configuredChannels(): List<String> {
+        @Suppress("UNCHECKED_CAST")
         return ChannelCriteria(ds).name().distinct() as List<String>
     }
 

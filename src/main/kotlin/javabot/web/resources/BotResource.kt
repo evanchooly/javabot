@@ -54,8 +54,10 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
     @GET
     @Path("/karma")
     @Produces("text/html;charset=ISO-8859-1")
-    fun karma(@Context request: HttpServletRequest, @QueryParam("page") page: Int?,
-              @QueryParam("name") name: String?, @QueryParam("value") value: Int?,
+    fun karma(@Context request: HttpServletRequest,
+              @QueryParam("page") page: Int?,
+              @QueryParam("name") name: String?,
+              @QueryParam("value") value: Int?,
               @QueryParam("userName") userName: String?): View {
         return viewFactory.createKarmaView(request, page ?: 1)
     }
@@ -73,19 +75,17 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
     @Produces("text/html;charset=ISO-8859-1")
     fun logs(@Context request: HttpServletRequest, @PathParam("channel") channel: String?,
              @PathParam("date") dateString: String?): View {
-        val date: LocalDateTime
+        val date: LocalDateTime = try {
+            if ("today" == dateString) LocalDate.now().atStartOfDay() else LocalDate.parse(dateString, FORMAT).atStartOfDay()
+        } catch (e: Exception) {
+            LocalDate.now().atStartOfDay()
+        }
         val channelName: String
         try {
             channelName = URLDecoder.decode(channel, "UTF-8")
         } catch (e: UnsupportedEncodingException) {
             LOG.error(e.message, e)
             throw RuntimeException(e.message, e)
-        }
-
-        date = try {
-            if ("today" == dateString) LocalDate.now().atStartOfDay() else LocalDate.parse(dateString, FORMAT).atStartOfDay()
-        } catch (e: Exception) {
-            LocalDate.now().atStartOfDay()
         }
 
         return viewFactory.createLogsView(request, channelName, date)
