@@ -44,7 +44,7 @@ class LinksOperationTest @Inject constructor(val nickServDao: NickServDao,
         val secondKey=response[1].value.split(" ")[0]
         response=operation.handleMessage(message("~list approve ${firstKey}"))
         println(response.joinToString("\n"))
-        response=operation.handleMessage(message("~list approved"))
+        response=operation.handleMessage(message("~list approved 10"))
         assertEquals(response.size, 1)
         println(response.joinToString("\n"))
         response=operation.handleMessage(message("~list unapproved"))

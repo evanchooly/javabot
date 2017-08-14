@@ -64,18 +64,31 @@ class LinksOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
             // invalid command, right?
             responses.add(Message(event, Sofia.linksInvalidListCommand()))
         } else {
+
+            val count =
+                    if (tokens.size == 3) {
+                        try {
+                            tokens[2].toInt()
+                        } catch(e: Exception) {
+                            10
+                        }
+                    } else 10
             when (tokens[1]) {
                 "approved" -> {
                     responses.addAll(dao.approvedLinks(event.channel!!.name).map {
-                        val id=it.id.toString()
-                        Message(event.user, Sofia.linksList(id.substring(id.length-5), it.info))
-                    }.toList())
+                        val id = it.id.toString()
+                        Message(event.user, Sofia.linksList(id.substring(id.length - 5), it.info))
+                    }
+                            .toList()
+                            .take(count))
                 }
                 "unapproved" -> {
                     responses.addAll(dao.unapprovedLinks(event.channel!!.name).map {
-                        val id=it.id.toString()
-                        Message(event.user, Sofia.linksList(id.substring(id.length-5), it.info))
-                    }.toList())
+                        val id = it.id.toString()
+                        Message(event.user, Sofia.linksList(id.substring(id.length - 5), it.info))
+                    }
+                            .toList()
+                            .take(count))
 
                 }
                 "approve" -> {
