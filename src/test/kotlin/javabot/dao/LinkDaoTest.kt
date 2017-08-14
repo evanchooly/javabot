@@ -41,7 +41,7 @@ class LinkDaoTest : BaseServiceTest() {
         assertEquals(retrievedLink.url, linkData.url)
         assertFalse(retrievedLink.approved ?: true)
 
-        linkDao.approveLink(retrievedLink.id.toString().substring(15))
+        linkDao.approveLink("##java", retrievedLink.id.toString().substring(15))
 
         retrievedLink = linkDao[Link(url = linkData.url)]
         assertEquals(retrievedLink.info, linkData.info)
@@ -49,7 +49,7 @@ class LinkDaoTest : BaseServiceTest() {
         assertTrue(retrievedLink.approved ?: false)
 
         try {
-            linkDao.approveLink(linkData.url)
+            linkDao.approveLink("##java", linkData.url)
             fail("should have thrown an exception on re-approval of link")
         } catch(ignored: IllegalArgumentException) {
         }
@@ -65,20 +65,20 @@ class LinkDaoTest : BaseServiceTest() {
         var links=linkDao.findAll()
         assertEquals(links.size, 4)
 
-        links=linkDao.unapprovedLinks()
+        links=linkDao.unapprovedLinks("##java")
         assertEquals(links.size, 4)
 
-        linkDao.approveLink(links[3].id.toString())
+        linkDao.approveLink("##java", links[3].id.toString())
         val nextKey=links[2].id.toString()
-        links=linkDao.unapprovedLinks()
+        links=linkDao.unapprovedLinks("##java")
         println(links.joinToString("\n"))
         assertEquals(links.size, 3)
         assertTrue((links[0].updated?: LocalDateTime.MIN).isAfter(links[2].updated?:LocalDateTime.MIN))
 
-        links=linkDao.approvedLinks()
+        links=linkDao.approvedLinks("##java")
         assertEquals(links.size, 1)
-        linkDao.approveLink(nextKey)
-        links=linkDao.approvedLinks()
+        linkDao.approveLink("##java", nextKey)
+        links=linkDao.approvedLinks("##java")
         println(links.joinToString("\n"))
         assertEquals(links.size, 2)
         assertTrue((links[0].updated?: LocalDateTime.MIN).isBefore(links[1].updated?:LocalDateTime.MIN))

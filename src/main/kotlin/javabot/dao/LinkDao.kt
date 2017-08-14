@@ -34,7 +34,7 @@ class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var c
         val criteria = LinkCriteria(ds)
         if (!filter.channel.isNullOrEmpty()) {
             try {
-                criteria.channel().contains(filter.channel.toUpperCase())
+                criteria.channel().contains(filter.channel)
             } catch (e: PatternSyntaxException) {
                 Sofia.logFactoidInvalidSearchValue(filter.channel)
             }
@@ -68,8 +68,8 @@ class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var c
         return buildFindQuery(null, link, false).get()
     }
 
-    fun approveLink(id: String) {
-        val link = unapprovedLinks()
+    fun approveLink(channel: String, id: String) {
+        val link = unapprovedLinks(channel)
                 .filter {
                     (if (it.id != null) {
                         it.id.toString()
@@ -86,18 +86,18 @@ class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var c
         }
     }
 
-    fun unapprovedLinks(): List<Link> {
+    fun unapprovedLinks(channel: String): List<Link> {
         return buildFindQuery(
                 QueryParam(0, 100, "created", false),
-                Link(approved = false),
+                Link(approved = false, channel = channel),
                 false)
                 .toList()
     }
 
-    fun approvedLinks(): List<Link> {
+    fun approvedLinks(channel: String): List<Link> {
         return buildFindQuery(
                 QueryParam(0, 100, "created", false),
-                Link(approved = true),
+                Link(approved = true, channel = channel),
                 true)
                 .toList()
     }
