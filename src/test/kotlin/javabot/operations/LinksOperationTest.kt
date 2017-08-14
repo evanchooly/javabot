@@ -29,7 +29,7 @@ class LinksOperationTest @Inject constructor(val nickServDao: NickServDao,
     }
 
     @Test
-    fun testListSubmittedLinks() {
+    fun testListLinks() {
         linkDao.deleteAll()
         var response = operation.handleMessage(message("~submit http://foo.com This is a test"))
         assertEquals(response[0].value, Sofia.linksAccepted("http://foo.com", TEST_CHANNEL.name))
@@ -37,5 +37,25 @@ class LinksOperationTest @Inject constructor(val nickServDao: NickServDao,
         response = operation.handleMessage(message("~submit http://bar.com This is another test"))
         assertEquals(response[0].value, Sofia.linksAccepted("http://bar.com", TEST_CHANNEL.name))
         assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 2)
+        response=operation.handleMessage(message("~list unapproved"))
+        assertEquals(response.size, 2)
+        println(response.joinToString("\n"))
+        val firstKey=response[0].value.split(" ")[0]
+        val secondKey=response[1].value.split(" ")[0]
+        response=operation.handleMessage(message("~list approve ${firstKey}"))
+        println(response.joinToString("\n"))
+        response=operation.handleMessage(message("~list approved"))
+        assertEquals(response.size, 1)
+        println(response.joinToString("\n"))
+        response=operation.handleMessage(message("~list unapproved"))
+        println(response.joinToString("\n"))
+        assertEquals(response.size, 1)
+        response=operation.handleMessage(message("~list reject ${secondKey}"))
+        println(response.joinToString("\n"))
+
+        response=operation.handleMessage(message("~list unapproved"))
+        println(response.joinToString("\n"))
+        assertEquals(response.size, 0)
+
     }
 }

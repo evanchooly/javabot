@@ -433,6 +433,46 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("leave.privmsg", locale), arg0);
     }
 
+    public static String linksAccepted(Object arg0, Object arg1, Locale... locale) {
+        return MessageFormat.format(getMessageValue("links.accepted", locale), arg0, arg1);
+    }
+
+    public static String linksApprovedLink(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("links.approvedLink", locale), arg0);
+    }
+
+    public static String linksDeletedLink(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("links.deletedLink", locale), arg0);
+    }
+
+    public static String linksInvalidApproveCommand(Locale... locale) {
+        return getMessageValue("links.invalidApproveCommand", locale);
+    }
+
+    public static String linksInvalidCommand(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("links.invalidCommand", locale), arg0);
+    }
+
+    public static String linksInvalidListCommand(Locale... locale) {
+        return getMessageValue("links.invalidListCommand", locale);
+    }
+
+    public static String linksInvalidRejectCommand(Locale... locale) {
+        return getMessageValue("links.invalidRejectCommand", locale);
+    }
+
+    public static String linksList(Object arg0, Object arg1, Locale... locale) {
+        return MessageFormat.format(getMessageValue("links.list", locale), arg0, arg1);
+    }
+
+    public static String linksNotFound(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("links.notFound", locale), arg0);
+    }
+
+    public static String linksRejected(Locale... locale) {
+        return getMessageValue("links.rejected", locale);
+    }
+
     public static String logsAnchorFormat(Object arg0, Object arg1, Locale... locale) {
         return MessageFormat.format(getMessageValue("logs.anchorFormat", locale), arg0, arg1);
     }
