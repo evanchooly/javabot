@@ -86,6 +86,20 @@ class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var c
         }
     }
 
+    fun rejectUunapprovedLink(channel: String, id: String) {
+        val link = unapprovedLinks(channel)
+                .filter {
+                    (if (it.id != null) {
+                        it.id.toString()
+                    } else "").endsWith(id)
+                }.firstOrNull()
+        if (link != null) {
+            delete(link.id)
+        } else {
+            throw IllegalArgumentException("No matching unapproved link matching id $id")
+        }
+    }
+
     fun unapprovedLinks(channel: String): List<Link> {
         return buildFindQuery(
                 QueryParam(0, 100, "created", false),

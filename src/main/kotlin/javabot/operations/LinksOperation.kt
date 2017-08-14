@@ -48,6 +48,60 @@ class LinksOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
             } else {
                 responses.add(Message(event, Sofia.linksRejected()))
             }
+        } else {
+            if (tokens[0] == "list") {
+                responses.addAll(handleList(event))
+            }
+        }
+
+        return responses
+    }
+
+    private fun handleList(event: Message): List<Message> {
+        val responses: MutableList<Message> = mutableListOf()
+        val tokens = event.value.split(" ")
+        if (tokens.size < 2) {
+            // invalid command, right?
+            responses.add(Message(event, Sofia.linksInvalidListCommand()))
+        } else {
+            when (tokens[1]) {
+                "approved" -> {
+                    responses.addAll(dao.approvedLinks(event.channel!!.name).map {
+                        Message(event, Sofia.linksList(it.id.toString().substring(15), it.info))
+                    }.toList())
+                }
+                "unapproved" -> {
+                    responses.addAll(dao.unapprovedLinks(event.channel!!.name).map {
+                        Message(event, Sofia.linksList(it.id.toString().substring(15), it.info))
+                    }.toList())
+
+                }
+                "approve" -> {
+                    if (tokens.size < 3) {
+                        responses.add(Message(event, Sofia.linksInvalidApproveCommand()))
+                    } else {
+                        try {
+                            dao.approveLink(event.channel!!.name, tokens[2])
+                            responses.add(Message(event, Sofia.linksApprovedLink(tokens[2])))
+                        } catch(e: IllegalArgumentException) {
+                            responses.add(Message(event, Sofia.linksNotFound(tokens[2])))
+                        }
+                    }
+                }
+                "reject" -> {
+                    if (tokens.size < 3) {
+                        responses.add(Message(event, Sofia.linksInvalidRejectCommand()))
+                    } else {
+                        try {
+                            dao.rejectUunapprovedLink(event.channel!!.name, tokens[2])
+                            responses.add(Message(event, Sofia.linksDeletedLink(tokens[2])))
+                        } catch(e: IllegalArgumentException) {
+                            responses.add(Message(event, Sofia.linksNotFound(tokens[2])))
+                        }
+                    }
+                }
+                else -> responses.add(Message(event, Sofia.linksInvalidCommand(tokens[1])))
+            }
         }
         return responses
     }

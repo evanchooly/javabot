@@ -53,6 +53,11 @@ class LinkDaoTest : BaseServiceTest() {
             fail("should have thrown an exception on re-approval of link")
         } catch(ignored: IllegalArgumentException) {
         }
+        try {
+            linkDao.approveLink("##java", "abcdef")
+            fail("should have thrown an exception on approval of nonexistent link")
+        } catch(ignord: IllegalArgumentException) {
+        }
     }
 
     @Test
@@ -62,26 +67,26 @@ class LinkDaoTest : BaseServiceTest() {
             linkDao.addLink("##java", "botuser", "http://$it.com", "this is $it")
         }
         // all links, regardless of status
-        var links=linkDao.findAll()
+        var links = linkDao.findAll()
         assertEquals(links.size, 4)
 
-        links=linkDao.unapprovedLinks("##java")
+        links = linkDao.unapprovedLinks("##java")
         assertEquals(links.size, 4)
 
         linkDao.approveLink("##java", links[3].id.toString())
-        val nextKey=links[2].id.toString()
-        links=linkDao.unapprovedLinks("##java")
+        val nextKey = links[2].id.toString()
+        links = linkDao.unapprovedLinks("##java")
         println(links.joinToString("\n"))
         assertEquals(links.size, 3)
-        assertTrue((links[0].updated?: LocalDateTime.MIN).isAfter(links[2].updated?:LocalDateTime.MIN))
+        assertTrue((links[0].updated ?: LocalDateTime.MIN).isAfter(links[2].updated ?: LocalDateTime.MIN))
 
-        links=linkDao.approvedLinks("##java")
+        links = linkDao.approvedLinks("##java")
         assertEquals(links.size, 1)
         linkDao.approveLink("##java", nextKey)
-        links=linkDao.approvedLinks("##java")
+        links = linkDao.approvedLinks("##java")
         println(links.joinToString("\n"))
         assertEquals(links.size, 2)
-        assertTrue((links[0].updated?: LocalDateTime.MIN).isBefore(links[1].updated?:LocalDateTime.MIN))
+        assertTrue((links[0].updated ?: LocalDateTime.MIN).isBefore(links[1].updated ?: LocalDateTime.MIN))
 
     }
 }
