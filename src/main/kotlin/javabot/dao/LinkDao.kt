@@ -86,7 +86,7 @@ class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var c
         }
     }
 
-    fun rejectUunapprovedLink(channel: String, id: String) {
+    fun rejectUnapprovedLink(channel: String, id: String) {
         val link = unapprovedLinks(channel)
                 .filter {
                     (if (it.id != null) {
