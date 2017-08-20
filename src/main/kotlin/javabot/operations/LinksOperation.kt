@@ -133,10 +133,10 @@ class LinksOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
      * 2. If we NEED a channel, return the retained channel, otherwise use the event channel.
      */
     private fun extractChannel(tokens: MutableList<String>, needsChannel: Boolean, event: Message): String {
-        val internalChannel = if (tokens.isNotEmpty() && isChannelName(tokens[0])) {
+        val internalChannel = if (event.channel!=null && tokens.isNotEmpty() && isChannelName(tokens[0])) {
             val c = tokens[0]
             tokens.removeAt(0)
-            if (!needsChannel && c != event.channel!!.name) {
+            if (!needsChannel && c != event.channel.name) {
                 throw WrongChannelException(c, event.channel.name)
             }
             c
