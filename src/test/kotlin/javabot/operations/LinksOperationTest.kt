@@ -2,6 +2,7 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
+import javabot.MockIrcAdapter
 import javabot.dao.LinkDao
 import org.testng.Assert.*
 import org.testng.annotations.Test
@@ -10,6 +11,7 @@ import javax.inject.Inject
 class LinksOperationTest @Inject constructor(private val linkDao: LinkDao,
                                              val operation: LinksOperation
 ) : BaseTest() {
+
     @Test
     fun testSubmitLink() {
         linkDao.deleteAll()
@@ -29,9 +31,13 @@ class LinksOperationTest @Inject constructor(private val linkDao: LinkDao,
     @Test
     fun testSubmitPrivateMessageLink() {
         linkDao.deleteAll()
-        val response = operation.handleMessage(privateMessage("submit http://foo.com This is a test"))
-        assertEquals(response[0].value, Sofia.linksRejectedNoChannel())
+        var response = operation.handleMessage(privateMessage("submit http://foo.com This is a test"))
+        assertEquals(response[0].value, Sofia.linksNoChannel())
         assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 0)
+
+        response = operation.handleMessage(privateMessage("submit ${TEST_CHANNEL.name} http://foo.com This is a test"))
+        assertEquals(response[0].value, Sofia.linksAccepted("http://foo.com", TEST_CHANNEL.name))
+        assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 1)
     }
 
     @Test
@@ -191,16 +197,29 @@ class LinksOperationTest @Inject constructor(private val linkDao: LinkDao,
 
     @Test
     fun testHelp() {
-        var response = operation.handleMessage(message("list help"))
+        val response = operation.handleMessage(message("list help"))
         //println(response.joinToString("\n"))
         assertEquals(response.size, 6)
     }
 
     @Test
     fun testInvalidCommand() {
-        var response = operation.handleMessage(message("list helf"))
+        val response = operation.handleMessage(message("list helf"))
         //println(response.joinToString("\n"))
         assertEquals(response.size, 1)
         assertEquals(response[0].value, Sofia.linksInvalidCommand("helf"))
     }
+
+    @Test
+    fun testSubmitPrivateMessageLinkNotOnChannel() {
+        val mockIrcAdapter = bot.get().adapter as MockIrcAdapter
+
+        linkDao.deleteAll()
+
+        mockIrcAdapter.disableOperation("isOnChannel")
+        val response = operation.handleMessage(privateMessage("submit ${TEST_CHANNEL.name} http://foo.com This is a test"))
+        assertEquals(response[0].value, Sofia.linksNotOnChannel())
+        assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 0)
+    }
+
 }

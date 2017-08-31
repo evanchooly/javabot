@@ -131,6 +131,16 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
                 " kicked %s (%s)".format(event.recipient?.nick, event.reason))
     }
 
+    open fun isOnChannel(channel: String, nick: String): Boolean {
+        val userChannelDao = ircBot.get().userChannelDao
+        return try {
+            val user=userChannelDao.getUser(nick)
+            user.channels.contains(userChannelDao.getChannel(channel))
+        } catch(u:DaoException) {
+            false
+        }
+    }
+
     open fun isOp(nick: String, channelName: String): Boolean {
         val userChannelDao = ircBot.get().userChannelDao
         return try {

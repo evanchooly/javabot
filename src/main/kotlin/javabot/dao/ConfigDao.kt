@@ -19,7 +19,6 @@ import javax.inject.Inject
 @Singleton
 class ConfigDao @Inject constructor(ds: Datastore, var injector: Injector, var javabotConfig: JavabotConfig) :
         BaseDao<Config>(ds, Config::class.java) {
-
     fun <T> list(type: Class<T>): List<T> {
         val reflections = Reflections("javabot")
 
@@ -29,6 +28,7 @@ class ConfigDao @Inject constructor(ds: Datastore, var injector: Injector, var j
         for (operation in classes) {
             if (!Modifier.isAbstract(operation.modifiers)) {
                 try {
+                    LOG!!.info("adding $operation")
                     list.add(injector.getInstance(operation))
                 } catch (e: Exception) {
                     e.printStackTrace()

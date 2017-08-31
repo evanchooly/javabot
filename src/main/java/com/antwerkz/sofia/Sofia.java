@@ -481,6 +481,10 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("links.notFound", locale), arg0);
     }
 
+    public static String linksNotOnChannel(Locale... locale) {
+        return getMessageValue("links.notOnChannel", locale);
+    }
+
     public static String linksRejectedNoChannel(Locale... locale) {
         return getMessageValue("links.rejectedNoChannel", locale);
     }

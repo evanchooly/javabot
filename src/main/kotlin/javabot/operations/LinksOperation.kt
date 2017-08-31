@@ -30,39 +30,16 @@ class LinksOperation @Inject constructor(bot: Javabot,
      */
     override fun handleMessage(event: Message): List<Message> {
         val responses: MutableList<Message> = mutableListOf()
-        val tokens = event.value.split(" ")
+        val tokens = event.value.split(" ").toMutableList()
         if (tokens.isEmpty()) {
             return emptyList()
         }
-        if (tokens[0].toLowerCase() == "submit") {
-            if (event.channel == null) {
-                responses.add(Message(event, Sofia.linksRejectedNoChannel()))
-            } else {
-                // let's find a url; if it's there, we have a valid link, submit it.
-                val firstUrl = tokens
-                        .map {
-                            try {
-                                URL(it)
-                            } catch (e: Exception) {
-                                null
-                            }
-                        }
-                        .filterNotNull()
-                        .firstOrNull()
-                if (firstUrl != null) {
-                    // we have a url! Submit this puppy as is after stripping off "submit"
-                    dao.addLink(event.channel.name, event.user.userName, firstUrl.toString(), event.value.substring("submit ".length))
-                    responses.add(Message(event, Sofia.linksAccepted(firstUrl, event.channel.name)))
-                } else {
-                    responses.add(Message(event, Sofia.linksRejectedNoUrl()))
-                }
-            }
-        } else {
-            if (tokens[0] == "list") {
-                responses.addAll(handleList(event))
-            }
-        }
 
+        responses.addAll(when (tokens[0].toLowerCase()) {
+            "submit" -> handleSubmit(event)
+            "list" -> handleList(event)
+            else -> emptyList()
+        })
         return responses
     }
 
@@ -99,6 +76,44 @@ class LinksOperation @Inject constructor(bot: Javabot,
                 )
                         .map { Message(event.user, it) }
         )
+    }
+
+    private fun handleSubmit(event: Message): List<Message> {
+        val responses: MutableList<Message> = mutableListOf()
+        val needsChannel = if (event.channel != null) {
+            event.channel.name.isNullOrEmpty()
+        } else true
+
+        val tokens = event.value.split(" ").toMutableList()
+        tokens.removeAt(0) // remove "submit"
+        try {
+            val channel = extractChannel(tokens, needsChannel, event)
+            if (!bot.adapter.isOnChannel(channel, event.user.nick)) {
+                responses.add(Message(event, Sofia.linksNotOnChannel()))
+            } else {
+                // let's find a url; if it's there, we have a valid link, submit it.
+                val firstUrl = tokens
+                        .map {
+                            try {
+                                URL(it)
+                            } catch (e: Exception) {
+                                null
+                            }
+                        }
+                        .filterNotNull()
+                        .firstOrNull()
+                if (firstUrl != null) {
+                    // we have a url! Submit this puppy as is after stripping off "submit"
+                    dao.addLink(channel, event.user.userName, firstUrl.toString(), event.value.substring("submit ".length))
+                    responses.add(Message(event, Sofia.linksAccepted(firstUrl, channel)))
+                } else {
+                    responses.add(Message(event, Sofia.linksRejectedNoUrl()))
+                }
+            }
+        } catch (e: NoChannelException) {
+            responses.add(Message(event, Sofia.linksNoChannel()))
+        }
+        return responses
     }
 
     private fun handleVerb(tokens: MutableList<String>,
