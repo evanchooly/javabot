@@ -7,12 +7,19 @@ import javabot.dao.AdminDao
 import javabot.dao.ChangeDao
 import javabot.dao.ChannelDao
 import javabot.dao.LinkDao
+import javabot.model.JavabotUser
 import javabot.model.Link
+import org.pircbotx.Channel
+import org.pircbotx.User
+import org.pircbotx.UserChannelDao
 import org.slf4j.LoggerFactory
 import java.net.URL
 import javax.inject.Inject
 
-class LinksOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var dao: LinkDao, var changeDao: ChangeDao,
+class LinksOperation @Inject constructor(bot: Javabot,
+                                         adminDao: AdminDao,
+                                         var dao: LinkDao,
+                                         var changeDao: ChangeDao,
                                          var channelDao: ChannelDao) : BotOperation(bot, adminDao) {
     companion object {
         private val log = LoggerFactory.getLogger(LinksOperation::class.java)
@@ -69,7 +76,7 @@ class LinksOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
         tokens.removeAt(0)
         when (tokens[0].toLowerCase()) {
             "approved" -> showMessageLists(tokens, needsChannel, event, responses, dao::approvedLinks, tokens[0])
-            "unapproved" -> showMessageLists(tokens, needsChannel, event, responses, dao::unapprovedLinks, tokens[0])
+            "unapproved" -> showMessageLists(tokens, needsChannel, event, responses, dao::unapprovedLinks, tokens[0], true)
             "approve" -> handleVerb(tokens, needsChannel, event, responses, dao::approveLink, tokens[0])
             "reject" -> handleVerb(tokens, needsChannel, event, responses, dao::rejectUnapprovedLink, tokens[0])
             "help" -> showHelp(event, responses)
@@ -103,12 +110,16 @@ class LinksOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
         tokens.removeAt(0)
         try {
             val channel = extractChannel(tokens, needsChannel, event)
-            val key = extractKey(tokens)
-            try {
-                modifyFunction(channel, key)
-                responses.add(Message(event, "blah blah blah"))
-            } catch (e: IllegalArgumentException) {
-                responses.add(Message(event, Sofia.linksNotFound(key)))
+            if (!bot.adapter.isOp(event.user.nick, channel)) {
+                responses.add(Message(event, "You need to be an op on $channel to do that"))
+            } else {
+                val key = extractKey(tokens)
+                try {
+                    modifyFunction(channel, key)
+                    responses.add(Message(event, "blah blah blah"))
+                } catch (e: IllegalArgumentException) {
+                    responses.add(Message(event, Sofia.linksNotFound(key)))
+                }
             }
         } catch (e: NoChannelException) {
             responses.add(Message(event, Sofia.linksNoChannel()))
@@ -130,28 +141,39 @@ class LinksOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
     /**
      * Ugh. Okay, so:
      * 1. See if the first token is a channel. If it is, pull it off and retain it internally...
-     * 2. If we NEED a channel, return the retained channel, otherwise use the event channel.
-     */
+     * 2. If we have an internal and external channel, they should match. If not, throw a wrong channel message.
+     * 3. If we NEED a channel, and the internal channel is empty, throw a no channel message.
+     * 4. return either the internal channel (if present) or the external channel.
+     * */
     private fun extractChannel(tokens: MutableList<String>, needsChannel: Boolean, event: Message): String {
-        val internalChannel = if (event.channel!=null && tokens.isNotEmpty() && isChannelName(tokens[0])) {
-            val c = tokens[0]
+        // step 1
+        val internalChannel = if (tokens.isNotEmpty() && isChannelName(tokens[0])) {
             tokens.removeAt(0)
-            if (!needsChannel && c != event.channel.name) {
-                throw WrongChannelException(c, event.channel.name)
-            }
-            c
         } else {
             ""
         }
-        return if (needsChannel) {
-            if (internalChannel.isNotEmpty()) {
-                internalChannel
-            } else {
-                throw NoChannelException("no channel specified")
-            }
-        } else {
-            event.channel!!.name
+        // step 2
+        if (event.channel != null && internalChannel.isNotEmpty() && event.channel.name != internalChannel) {
+            throw WrongChannelException(internalChannel, event.channel.name)
         }
+        // step 3
+        if (needsChannel && internalChannel.isNullOrEmpty()) {
+            throw NoChannelException("no channel specified") // how did we get here?!
+        }
+        // step 4
+        val chan = if (internalChannel.isNotEmpty()) {
+            internalChannel
+        } else {
+            if (event.channel != null) {
+                event.channel.name
+            } else {
+                throw NoChannelException("no channel specified") // how did we get here?!
+            }
+        }
+        if (!isValidChannel(chan)) {
+            throw NoChannelException(chan)
+        }
+        return chan
     }
 
     private fun showMessageLists(tokens: MutableList<String>,
@@ -159,23 +181,27 @@ class LinksOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
                                  event: Message,
                                  responses: MutableList<Message>,
                                  listFunction: (String) -> List<Link>,
-                                 status: String) {
+                                 status: String,
+                                 needsOps: Boolean = false) {
         tokens.removeAt(0)
         try {
             val channel = extractChannel(tokens, needsChannel, event)
             val count = getOptionalCount(tokens)
-
-            responses.addAll(
-                    listFunction(channel)
-                            .map {
-                                val id = it.id.toString()
-                                Message(event.user, Sofia.linksList(id.substring(id.length - 5), it.info))
-                            }
-                            .toList()
-                            .take(count)
-            )
-            if (responses.size == 0) {
-                responses.add(Message(event, Sofia.linksNoLinksOfStatus(status, channel)))
+            if (needsOps && !bot.adapter.isOp(event.user.nick, channel)) {
+                responses.add(Message(event, "You need to be an op on $channel to do that"))
+            } else {
+                responses.addAll(
+                        listFunction(channel)
+                                .map {
+                                    val id = it.id.toString()
+                                    Message(event.user, Sofia.linksList(id.substring(id.length - 5), it.info))
+                                }
+                                .toList()
+                                .take(count)
+                )
+                if (responses.size == 0) {
+                    responses.add(Message(event, Sofia.linksNoLinksOfStatus(status, channel)))
+                }
             }
         } catch (e: WrongChannelException) {
             responses.add(Message(event, Sofia.linksWrongChannel(e.channelName)))
@@ -194,6 +220,10 @@ class LinksOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
         } catch (e: Exception) {
             5
         }
+    }
+
+    private fun isValidChannel(token: String): Boolean {
+        return bot.adapter.isChannel(token)
     }
 
     private fun isChannelName(token: String): Boolean {

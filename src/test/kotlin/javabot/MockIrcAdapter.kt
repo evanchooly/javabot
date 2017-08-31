@@ -10,6 +10,7 @@ import javabot.dao.NickServDao
 import javabot.model.Channel
 import javabot.model.JavabotUser
 import org.pircbotx.PircBotX
+import org.pircbotx.exception.DaoException
 import javax.inject.Provider
 
 @Singleton
@@ -61,5 +62,13 @@ constructor(var messages: Messages, nickServDao: NickServDao, logsDao: LogsDao, 
 
     override fun message(target: String, message: String) {
         messages.add(message)
+    }
+
+    override fun isOp(nick: String, channelName: String): Boolean {
+        return nick != "nonadminuser"
+    }
+
+    override fun isChannel(channelName: String): Boolean {
+        return setOf("#jbunittest").contains(channelName)
     }
 }

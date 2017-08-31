@@ -465,12 +465,32 @@ public class Sofia {
         return MessageFormat.format(getMessageValue("links.list", locale), arg0, arg1);
     }
 
+    public static String linksNoChannel(Locale... locale) {
+        return getMessageValue("links.noChannel", locale);
+    }
+
+    public static String linksNoKeySpecified(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("links.noKeySpecified", locale), arg0);
+    }
+
+    public static String linksNoLinksOfStatus(Object arg0, Object arg1, Locale... locale) {
+        return MessageFormat.format(getMessageValue("links.noLinksOfStatus", locale), arg0, arg1);
+    }
+
     public static String linksNotFound(Object arg0, Locale... locale) {
         return MessageFormat.format(getMessageValue("links.notFound", locale), arg0);
     }
 
-    public static String linksRejected(Locale... locale) {
-        return getMessageValue("links.rejected", locale);
+    public static String linksRejectedNoChannel(Locale... locale) {
+        return getMessageValue("links.rejectedNoChannel", locale);
+    }
+
+    public static String linksRejectedNoUrl(Locale... locale) {
+        return getMessageValue("links.rejectedNoUrl", locale);
+    }
+
+    public static String linksWrongChannel(Object arg0, Locale... locale) {
+        return MessageFormat.format(getMessageValue("links.wrongChannel", locale), arg0);
     }
 
     public static String logsAnchorFormat(Object arg0, Object arg1, Locale... locale) {
