@@ -6,11 +6,13 @@ import javabot.dao.LogsDaoTest
 import org.testng.Assert
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
+import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 import java.util.Arrays
 import javax.inject.Inject
 
-@Test class GetFactoidOperationTest : BaseTest() {
+@Test
+class GetFactoidOperationTest : BaseTest() {
     @Inject
     private lateinit var factoidDao: FactoidDao
     @Inject
@@ -126,17 +128,49 @@ import javax.inject.Inject
         Assert.assertEquals(response[0].value, "hugs ${BaseTest.TEST_TARGET_NICK}")
     }
 
-    @Test fun testLeadingSpace() {
-        var response = operation.handleMessage(message("~ tell ${BaseTest.TEST_TARGET_NICK} about hey"))
+    /* unicode whitespaces as per http://www.fileformat.info/info/unicode/category/Zs/list.htm */
+    @DataProvider
+    fun whitespaceProvider(): Array<Array<Any>> {
+        @Suppress("UNCHECKED_CAST")
+        return arrayOf(
+                arrayOf('\u0020'),
+                arrayOf('\u00a0'),
+                arrayOf('\u1680'),
+                arrayOf('\u2000'),
+                arrayOf('\u2001'),
+                arrayOf('\u2002'),
+                arrayOf('\u2003'),
+                arrayOf('\u2004'),
+                arrayOf('\u2005'),
+                arrayOf('\u2006'),
+                arrayOf('\u2007'),
+                arrayOf('\u2008'),
+                arrayOf('\u2009'),
+                arrayOf('\u200a'),
+                arrayOf('\u202f'),
+                arrayOf('\u205f'),
+                arrayOf('\u3000')
+        ) as Array<Array<Any>>
+    }
+
+    /*
+     * This test was changed to test all of the unicode whitespace characters, as per issue #177, trying to
+     * find the problem. The problem remains unfound.
+     */
+    @Test(dataProvider = "whitespaceProvider")
+    fun testLeadingSpace(leader: Char) {
+        var response = operation.handleMessage(message("~${leader}tell ${BaseTest.TEST_TARGET_NICK} about hey"))
         Assert.assertEquals(response[0].value, "Hello, ${BaseTest.TEST_TARGET_NICK}")
-        response = operation.handleMessage(message("~ hey"))
+        response = operation.handleMessage(message("~${leader}hey"))
         Assert.assertEquals(response[0].value, "Hello, ${BaseTest.TEST_USER_NICK}")
         response = operation.handleMessage(message("~hey"))
         Assert.assertEquals(response[0].value, "Hello, ${BaseTest.TEST_USER_NICK}")
-
+        response = operation.handleMessage(message("~${leader}hey"))
+        Assert.assertEquals(response[0].value, "Hello, ${BaseTest.TEST_USER_NICK}")
     }
 
-    @Test fun tell() {
+    @Test
+    fun tell() {
         var response = operation.handleMessage(message("~tell ${BaseTest.TEST_TARGET_NICK} about hey"))
         Assert.assertEquals(response[0].value, "Hello, ${BaseTest.TEST_TARGET_NICK}")
         response = operation.handleMessage(message("~tell ${BaseTest.TEST_TARGET_NICK} about camel I am a test"))
@@ -179,7 +213,8 @@ import javax.inject.Inject
                 "this room is now dumber for having listened to it. I award you no points, and may God have mercy on your soul.")
     }
 
-    @Test fun longResponse() {
+    @Test
+    fun longResponse() {
         factoidDao.addFactoid(BaseTest.TEST_TARGET_NICK, "yalla $1",
                 "<reply>$1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 !111!!!!!one!!!\n",
                 LogsDaoTest.CHANNEL_NAME)
