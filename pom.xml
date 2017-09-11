@@ -62,7 +62,9 @@
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <version>${kotlin.version}</version>
-
+                <configuration>
+                    <jvmTarget>1.8</jvmTarget>
+                </configuration>
                 <executions>
                     <execution>
                         <id>compile</id>
@@ -194,7 +196,7 @@
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>buildnumber-maven-plugin</artifactId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
                 <version>1.4</version>
                 <executions>
                     <execution>
@@ -277,14 +279,14 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <scope>compile</scope>
-            <version>1.1.2</version>
+            <version>${logback.version}</version>
         </dependency>
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <scope>compile</scope>
-            <version>1.1.2</version>
+            <version>${logback.version}</version>
         </dependency>
 
         <dependency>
@@ -326,13 +328,13 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.2.2</version>
+            <version>${mongo.driver.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.mongodb.morphia</groupId>
             <artifactId>morphia</artifactId>
-            <version>1.2.1</version>
+            <version>${morphia.version}</version>
         </dependency>
 
         <dependency>
@@ -402,14 +404,14 @@
         <!-- webjars -->
 
         <dependency>
-          <groupId>org.jboss.forge.roaster</groupId>
-          <artifactId>roaster-api</artifactId>
-          <version>${roaster.version}</version>
+            <groupId>org.jboss.forge.roaster</groupId>
+            <artifactId>roaster-api</artifactId>
+            <version>${roaster.version}</version>
         </dependency>
         <dependency>
-          <groupId>org.jboss.forge.roaster</groupId>
-          <artifactId>roaster-jdt</artifactId>
-          <version>${roaster.version}</version>
+            <groupId>org.jboss.forge.roaster</groupId>
+            <artifactId>roaster-jdt</artifactId>
+            <version>${roaster.version}</version>
         </dependency>
 
         <dependency>
@@ -455,14 +457,17 @@
     </dependencies>
 
     <properties>
+        <morphia.version>1.2.1</morphia.version>
+        <mongo.driver.version>3.5.0</mongo.driver.version>
         <critter.version>2.1.1</critter.version>
         <guice.version>4.0</guice.version>
         <sofia.version>0.15</sofia.version>
-        <slf4j.version>1.7.4</slf4j.version>
+        <slf4j.version>1.7.25</slf4j.version>
         <dropwizard.version>0.7.1</dropwizard.version>
-        <kotlin.version>1.0.5-3</kotlin.version>
+        <kotlin.version>1.1.4</kotlin.version>
         <roaster.version>2.19.0.Final</roaster.version>
         <jacoco.version>0.7.7.201606060606</jacoco.version>
+        <logback.version>1.2.3</logback.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

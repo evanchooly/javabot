@@ -14,6 +14,7 @@ class Tri<T> {
 
             current = node
         }
+        @Suppress("UNCHECKED_CAST")
         return current.value as T
     }
 

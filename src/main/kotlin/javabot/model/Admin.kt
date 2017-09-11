@@ -23,7 +23,8 @@ class Admin : Serializable, Persistent {
     var ircName: String = ""
 
     @AlsoLoad("userName")
-    lateinit var emailAddress: String
+    var emailAddress: String
+
     var botOwner: Boolean = false
 
     var addedBy: String? = null

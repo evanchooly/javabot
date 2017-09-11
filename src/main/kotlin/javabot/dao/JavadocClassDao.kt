@@ -155,8 +155,8 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
         fieldCriteria.delete()
     }
 
-    fun deleteFor(api: JavadocApi?) {
-        api?.let { api ->
+    fun deleteFor(apiRef: JavadocApi?) {
+        apiRef?.let { api ->
             LOG.debug("Dropping fields from " + api.name)
             val criteria = JavadocFieldCriteria(ds)
             criteria.apiId(api.id)

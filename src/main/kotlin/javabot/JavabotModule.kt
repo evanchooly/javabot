@@ -116,6 +116,7 @@ open class JavabotModule : AbstractModule() {
     protected open fun loadConfigProperties(): HashMap<Any, Any> = HashMap()
 
     protected fun validate(config: JavabotConfig): JavabotConfig {
+        @Suppress("UNCHECKED_CAST")
         val configClass = config.javaClass.interfaces[0] as Class<JavabotConfig>
         val methods = configClass.declaredMethods
         val missingKeys = ArrayList<String>()
