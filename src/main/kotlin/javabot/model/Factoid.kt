@@ -117,7 +117,8 @@ class Factoid(var name: String = "", var value: String = "", var userName: Strin
         return result
     }
 
-    @PrePersist fun update() {
+    @PrePersist
+    fun update() {
         upperName = name.toUpperCase()
         upperUserName = userName.toUpperCase()
         upperValue = value.toUpperCase()
@@ -131,6 +132,6 @@ class Factoid(var name: String = "", var value: String = "", var userName: Strin
     companion object {
         private val log = LoggerFactory.getLogger(Factoid::class.java)
 
-        fun of(name: String?, value: String?, userName: String?) = Factoid((name ?: "").trim(), (value ?: "").trim(), userName ?: "")
+        fun of(name: String? = null, value: String? = null, userName: String? = null) = Factoid((name ?: "").trim(), (value ?: "").trim(), (userName ?: "").trim())
     }
 }
