@@ -12,6 +12,12 @@ class FactoidDaoTest : BaseServiceTest() {
     @Test(groups = arrayOf("operations")) fun testInsertfactoid() {
         factoidDao.addFactoid("joed2", "test2", "##javabot", LogsDaoTest.CHANNEL_NAME)
         Assert.assertTrue(factoidDao.hasFactoid("test2"))
+        Assert.assertEquals(factoidDao.countFiltered(Factoid.of("test2")), 1)
+        Assert.assertEquals(factoidDao.countFiltered(Factoid.of("test2 ")), 1)
+        Assert.assertEquals(factoidDao.countFiltered(Factoid.of(" test2 ")), 1)
+        Assert.assertEquals(factoidDao.countFiltered(Factoid.of(" test2")), 1)
+        Assert.assertEquals(factoidDao.countFiltered(Factoid.of("test 2")), 0)
+
         factoidDao.delete("joed2", "test2", LogsDaoTest.CHANNEL_NAME)
         //Assert.assertFalse(factoidDao.hasFactoid("test2"));
     }
