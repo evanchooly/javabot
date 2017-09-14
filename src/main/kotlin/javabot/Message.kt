@@ -70,6 +70,9 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
 
     val tell: Boolean = target != null
 
+    /**
+     * Does this target a user with the message?
+     */
     constructor(user: JavabotUser, value: String) : this(null, user, value)
 
     constructor(channel: Channel, message: Message, value: String) : this(channel, message.user, value, message.target)
