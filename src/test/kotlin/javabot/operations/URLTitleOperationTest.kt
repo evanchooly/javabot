@@ -31,7 +31,7 @@ class URLTitleOperationTest : BaseTest() {
     }
 
     @DataProvider(name = "urls")
-    fun getUrls(): Array<Array<*>>  {
+    fun getUrls(): Array<Array<*>> {
         return arrayOf(
                 arrayOf("http://google.com/", null),
                 arrayOf("http://google.com", null),
@@ -56,18 +56,20 @@ class URLTitleOperationTest : BaseTest() {
                 arrayOf("Two urls with titles: http://docs.oracle.com/javaee/6/tutorial/doc/ and http://javachannel.org/",
                         "botuser's titles: \"- The Java EE 6 Tutorial\" | \"Freenode ##java  enthusiasts united\""),
                 arrayOf("Two urls, one with a title: http://javachannel.org/posts/finding-hash-collisions-in-java-strings/  and " +
-                        "http://javachannel.org/", "botuser's title: \"Freenode ##java  enthusiasts united\""))
+                        "http://javachannel.org/", "botuser's title: \"Freenode ##java  enthusiasts united\""),
+                arrayOf("http://refheap.com", null) // this may change: right now, refheap.com returns a 502
+        )
     }
 
     @DataProvider(name = "urlRulesCheck")
     fun getUrlsForRulesCheck(): Array<Array<*>> {
         return arrayOf(arrayOf("http://pastebin.com", "pastebin for your wastebin", false),
-              arrayOf("http://makemoneyfast.com/super-profit", "make money fast! super profit", false),
-              arrayOf("http://varietyofsound.wordpress.com", "Variety Of Sound", false),
-              arrayOf("http://javachannel.com", "Freenode ##java: for enthusiasts by enthusiasts", true),
-              arrayOf("http://javachannel.com/exceptions", "Freenode ##java: How to properly handle exceptions", true),
-              arrayOf("http://foo.bar.com", "", false),
-              arrayOf("http://foo.bar.com", null, false))
+                arrayOf("http://makemoneyfast.com/super-profit", "make money fast! super profit", false),
+                arrayOf("http://varietyofsound.wordpress.com", "Variety Of Sound", false),
+                arrayOf("http://javachannel.com", "Freenode ##java: for enthusiasts by enthusiasts", true),
+                arrayOf("http://javachannel.com/exceptions", "Freenode ##java: How to properly handle exceptions", true),
+                arrayOf("http://foo.bar.com", "", false),
+                arrayOf("http://foo.bar.com", null, false))
     }
 
 }

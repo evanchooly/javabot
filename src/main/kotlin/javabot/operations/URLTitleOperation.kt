@@ -14,15 +14,15 @@ import java.io.IOException
 import javax.inject.Inject
 
 class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var analyzer: URLContentAnalyzer,
-    var parser: URLFromMessageParser) : BotOperation(bot, adminDao) {
+                                            var parser: URLFromMessageParser) : BotOperation(bot, adminDao) {
 
     override fun handleChannelMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value
         try {
             val titlesToPost = parser.urlsFromMessage(message)
-                  .map({ it.toString() })
-                  .map({ s -> findTitle(s, true) }).filterNotNull()
+                    .map({ it.toString() })
+                    .map({ s -> findTitle(s, true) }).filterNotNull()
             if (titlesToPost.isEmpty()) {
                 return responses
             } else {
@@ -37,7 +37,7 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
     }
 
     private fun postMessageToChannel(responses: MutableList<Message>, titlesToPost: List<String>, event: Message) {
-        val title = if(titlesToPost.size == 1) "title" else "titles"
+        val title = if (titlesToPost.size == 1) "title" else "titles"
         responses.add(Message(event, "${event.user.nick}'s ${title}: " +
                 titlesToPost.map({ s -> "\"${s}\"" }).joinToString(" | ")))
     }
@@ -52,13 +52,13 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
                     val entity = response.entity
 
                     try {
-                        if (!(response.statusLine.statusCode == 404 || response.statusLine.statusCode == 403) && entity != null) {
-
-                            val doc = Jsoup.parse(EntityUtils.toString(entity))
-                            val title = clean(doc.title())
-                            return if ((analyzer.check(url, title))) title else null
-                        } else {
-                            return null
+                        return when (response.statusLine.statusCode) {
+                            404, 403, 502 -> null
+                            else -> if (entity != null) {
+                                val doc = Jsoup.parse(EntityUtils.toString(entity))
+                                val title = clean(doc.title())
+                                if (analyzer.check(url, title)) title else null
+                            } else null
                         }
                     } finally {
                         EntityUtils.consume(entity)
@@ -82,7 +82,7 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
 
     private fun clean(title: String): String {
         val sb = StringBuilder()
-        title.filter({ i -> i.toInt() < 127}).forEach({ i -> sb.append(i.toChar()) })
+        title.filter({ i -> i.toInt() < 127 }).forEach({ i -> sb.append(i.toChar()) })
         return sb.toString()
     }
 
