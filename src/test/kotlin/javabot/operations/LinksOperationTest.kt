@@ -215,4 +215,11 @@ class LinksOperationTest @Inject constructor(private val linkDao: LinkDao,
         assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 0)
     }
 
+    @Test
+    fun testNoResultsAvailable() {
+        val response = operation.handleMessage(privateMessage("list unapproved ${TEST_CHANNEL.name}"))
+
+        assertEquals(response.size, 1)
+        assertEquals(response[0].value, Sofia.linksNoLinksOfStatus("unapproved", TEST_CHANNEL.name))
+    }
 }
