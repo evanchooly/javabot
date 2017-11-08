@@ -38,4 +38,14 @@ abstract class BotOperation constructor(var bot: Javabot, var adminDao: AdminDao
     protected fun isAdminUser(user: JavabotUser): Boolean {
         return adminDao.isAdmin(user)
     }
+
+    protected fun isValidChannel(token: String): Boolean {
+        return bot.adapter.isChannel(token)
+    }
+
+    protected fun isChannelName(token: String): Boolean {
+        return token.matches(Regex("##?\\p{Alpha}\\p{Alpha}*"))
+    }
+
+    protected fun isOp(event: Message, channel: String) = bot.adapter.isOp(event.user.nick, channel)
 }

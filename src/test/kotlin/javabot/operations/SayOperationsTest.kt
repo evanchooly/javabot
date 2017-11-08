@@ -12,5 +12,13 @@ import org.testng.annotations.Test
     fun testSay() {
         var response = operation.handleMessage(message("~say MAGNIFICENT"))
         Assert.assertEquals(response[0].value, "MAGNIFICENT")
+        Assert.assertEquals(response[0].channel!!.name, TEST_CHANNEL.name)
+    }
+
+    fun testOtherChannelSay() {
+        var response=operation.handleMessage(privateMessage("~say ${TEST_CHANNEL.name} hi there"))
+        Assert.assertEquals(response.size, 1)
+        Assert.assertEquals(response[0].value, "hi there")
+        Assert.assertEquals(response[0].channel!!.name, TEST_CHANNEL.name)
     }
 }

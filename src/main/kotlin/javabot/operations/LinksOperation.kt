@@ -116,7 +116,7 @@ class LinksOperation @Inject constructor(bot: Javabot,
         tokens.removeAt(0)
         try {
             val channel = extractChannel(tokens, needsChannel, event)
-            if (!bot.adapter.isOp(event.user.nick, channel)) {
+            if (!isOp(event, channel)) {
                 responses.add(Message(event, "You need to be an op on $channel to do that"))
             } else {
                 val key = extractKey(tokens)
@@ -193,7 +193,7 @@ class LinksOperation @Inject constructor(bot: Javabot,
         try {
             val channel = extractChannel(tokens, needsChannel, event)
             val count = getOptionalCount(tokens)
-            if (needsOps && !bot.adapter.isOp(event.user.nick, channel)) {
+            if (needsOps && !isOp(event, channel)) {
                 responses.add(Message(event, "You need to be an op on $channel to do that"))
             } else {
                 responses.addAll(
@@ -228,13 +228,6 @@ class LinksOperation @Inject constructor(bot: Javabot,
         }
     }
 
-    private fun isValidChannel(token: String): Boolean {
-        return bot.adapter.isChannel(token)
-    }
-
-    private fun isChannelName(token: String): Boolean {
-        return token.matches(Regex("##?\\p{Alpha}\\p{Alpha}*"))
-    }
 }
 
 class WrongChannelException(c: String, val channelName: String) : Throwable(c) {
