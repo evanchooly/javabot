@@ -1,4 +1,4 @@
-package javabot.javadoc
+package javabot.model.javadoc
 
 import javabot.dao.ApiDao
 import javabot.model.Persistent

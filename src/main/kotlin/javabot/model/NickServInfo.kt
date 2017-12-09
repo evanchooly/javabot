@@ -23,20 +23,19 @@ class NickServInfo : Persistent {
     @Indexed
     lateinit var account: String
 
-    private val created = now()
+    private val created: LocalDateTime = now()
 
-    var registered = LocalDateTime.now()
+    var registered: LocalDateTime = LocalDateTime.now()
 
-    var userRegistered = registered
+    var userRegistered: LocalDateTime = registered
 
-    private val extraneous = TreeMap<String, String>()
+    private val extraneous: TreeMap<String, String> = TreeMap<String, String>()
 
     var lastAddress: String? = null
 
     var lastSeen: LocalDateTime? = null
 
-    constructor() {
-    }
+    constructor()
 
     constructor(user: JavabotUser) {
         nick = user.nick

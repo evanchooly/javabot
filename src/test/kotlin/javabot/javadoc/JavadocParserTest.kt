@@ -4,6 +4,7 @@ import javabot.BaseTest
 import javabot.JavabotConfig
 import javabot.model.ApiEvent
 import javabot.model.downloadZip
+import javabot.model.javadoc.JavadocApi
 import org.testng.Assert
 import org.testng.annotations.Test
 import java.io.File

@@ -8,8 +8,8 @@ import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
-import javabot.javadoc.JavadocApi
-import javabot.javadoc.JavadocClass
+import javabot.model.javadoc.JavadocApi
+import javabot.model.javadoc.JavadocClass
 import net.swisstech.bitly.BitlyClient
 import java.util.ArrayList
 import javax.annotation.Nullable

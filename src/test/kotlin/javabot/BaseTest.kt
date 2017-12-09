@@ -11,7 +11,7 @@ import javabot.dao.LogsDao
 import javabot.dao.NickServDao
 import javabot.model.Admin
 import javabot.model.AdminEvent
-import javabot.model.AdminEvent.State
+import javabot.model.State
 import javabot.model.Change
 import javabot.model.Channel
 import javabot.model.JavabotUser

@@ -15,10 +15,10 @@ import org.mongodb.morphia.annotations.Indexes
 )
 class JavabotUser {
     @Id
-    var id = ObjectId()
-    var nick = ""
-    var userName = ""
-    var hostmask = ""
+    var id: ObjectId = ObjectId()
+    var nick: String = ""
+    var userName: String = ""
+    var hostmask: String = ""
     var nickServ: NickServInfo? = null
 
     constructor(nick: String, userName: String, host: String) {

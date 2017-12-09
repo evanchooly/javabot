@@ -6,7 +6,7 @@ import javabot.BaseTest
 import javabot.JavabotConfig
 import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
-import javabot.javadoc.JavadocApi
+import javabot.model.javadoc.JavadocApi
 import javabot.model.ApiEvent
 import javabot.operations.JavadocOperation
 import org.slf4j.LoggerFactory
@@ -148,7 +148,8 @@ class JavadocTest : BaseTest() {
     }
 
     private fun verifyMapCount() {
-        Assert.assertEquals(javadocClassDao.getClass(null, "Map").size, 1)
+        val list = javadocClassDao.getClass(null, "Map")
+        Assert.assertEquals(list.size, 1, "Should have found only 1:  $list")
     }
 
     @Test

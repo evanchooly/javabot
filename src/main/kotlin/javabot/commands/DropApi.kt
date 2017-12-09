@@ -6,7 +6,7 @@ import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
-import javabot.javadoc.JavadocApi
+import javabot.model.javadoc.JavadocApi
 import javax.inject.Inject
 
 class DropApi @Inject constructor(bot: Javabot, adminDao: AdminDao, var apiDao: ApiDao) : AdminCommand(bot, adminDao) {

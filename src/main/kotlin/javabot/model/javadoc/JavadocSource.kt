@@ -1,6 +1,7 @@
-package javabot.javadoc;
+package javabot.model.javadoc;
 
 import javabot.model.Persistent
+import javabot.model.javadoc.JavadocApi
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Field
 import org.mongodb.morphia.annotations.Index
@@ -21,7 +22,7 @@ class JavadocSource(): Persistent {
 
     lateinit var name: String
     lateinit var api: ObjectId
-    var created = Date()
+    var created: Date = Date()
     lateinit var text: String
-    var processed = false
+    var processed: Boolean = false
 }

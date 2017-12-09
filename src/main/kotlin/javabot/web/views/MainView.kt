@@ -1,19 +1,15 @@
 package javabot.web.views
 
 import com.antwerkz.sofia.Sofia
-import com.google.common.base.Charsets
 import io.dropwizard.views.View
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
-import javabot.javadoc.JavadocApi
+import javabot.model.javadoc.JavadocApi
 import javabot.web.JavabotConfiguration
-import javabot.web.JavabotConfiguration.Companion
-import javabot.web.model.InMemoryUserCache
 import javabot.model.Channel
 import javabot.web.model.InMemoryUserCache.INSTANCE
-import java.io.UnsupportedEncodingException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.ArrayList

@@ -1,16 +1,16 @@
 package javabot.dao
 
 import com.google.inject.Inject
-import javabot.javadoc.JavadocApi
-import javabot.javadoc.JavadocClass
+import javabot.model.javadoc.JavadocApi
+import javabot.model.javadoc.JavadocClass
 import javabot.javadoc.JavadocClassParser
-import javabot.javadoc.JavadocField
-import javabot.javadoc.JavadocMethod
-import javabot.javadoc.Visibility.PackagePrivate
-import javabot.javadoc.Visibility.Private
-import javabot.javadoc.criteria.JavadocClassCriteria
-import javabot.javadoc.criteria.JavadocFieldCriteria
-import javabot.javadoc.criteria.JavadocMethodCriteria
+import javabot.model.javadoc.JavadocField
+import javabot.model.javadoc.JavadocMethod
+import javabot.model.javadoc.Visibility.PackagePrivate
+import javabot.model.javadoc.Visibility.Private
+import javabot.model.javadoc.criteria.JavadocClassCriteria
+import javabot.model.javadoc.criteria.JavadocFieldCriteria
+import javabot.model.javadoc.criteria.JavadocMethodCriteria
 import org.mongodb.morphia.Datastore
 import org.slf4j.LoggerFactory
 import java.util.ArrayList
@@ -68,7 +68,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
     }
 
     fun getMethods(api: JavadocApi?, className: String, methodName: String,
-                                                  signatureTypes: String): List<JavadocMethod> {
+                   signatureTypes: String): List<JavadocMethod> {
         val classes = getClass(api, className)
         val list = ArrayList(classes)
         val methods = ArrayList<JavadocMethod>()

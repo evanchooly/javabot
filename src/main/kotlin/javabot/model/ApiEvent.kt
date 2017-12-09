@@ -3,7 +3,7 @@ package javabot.model
 import javabot.JavabotConfig
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
-import javabot.javadoc.JavadocApi
+import javabot.model.javadoc.JavadocApi
 import javabot.javadoc.JavadocParser
 import javabot.model.EventType.DELETE
 import javabot.model.EventType.RELOAD
@@ -15,7 +15,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.StringWriter
 import java.net.URI
-import java.net.URL
 import java.nio.file.FileVisitResult
 import java.nio.file.Files
 import java.nio.file.Path

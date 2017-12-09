@@ -2,7 +2,7 @@ package javabot.dao
 
 import com.google.inject.Inject
 import javabot.model.AdminEvent
-import javabot.model.AdminEvent.State
+import javabot.model.State
 import javabot.model.criteria.AdminEventCriteria
 import org.mongodb.morphia.Datastore
 

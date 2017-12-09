@@ -15,9 +15,9 @@ class Config : Serializable, Persistent {
 
     var url: String = ""
 
-    var port = 6667
+    var port: Int = 6667
 
-    var historyLength = 12
+    var historyLength: Int = 12
 
     var trigger: String = "~"
 
@@ -25,13 +25,13 @@ class Config : Serializable, Persistent {
 
     var password: String? = null
 
-    var schemaVersion = 0
+    var schemaVersion: Int = 0
 
     var operations: MutableList<String> = ArrayList()
 
-    var throttleThreshold = 5
+    var throttleThreshold: Int = 5
 
-    var minimumNickServAge = 14
+    var minimumNickServAge: Int = 14
 
     constructor() {
     }

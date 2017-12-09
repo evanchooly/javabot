@@ -16,12 +16,6 @@ import javax.inject.Inject
 @Entity("events")
 @Indexes(Index(fields = arrayOf(Field("state"), Field("requestedOn"))))
 open class AdminEvent : Serializable, Persistent {
-    enum class State {
-        NEW,
-        PROCESSING,
-        COMPLETED,
-        FAILED
-    }
 
     @Inject
     @Transient
@@ -39,8 +33,7 @@ open class AdminEvent : Serializable, Persistent {
     lateinit var requestedOn: LocalDateTime
     lateinit var type: EventType
 
-    protected constructor() {
-    }
+    protected constructor()
 
     constructor(requestedBy: String, type: EventType, requestedOn: LocalDateTime = LocalDateTime.now()) : this() {
         this.requestedBy = requestedBy
@@ -72,4 +65,11 @@ open class AdminEvent : Serializable, Persistent {
 
     open fun reload() {
     }
+}
+
+enum class State {
+    NEW,
+    PROCESSING,
+    COMPLETED,
+    FAILED
 }

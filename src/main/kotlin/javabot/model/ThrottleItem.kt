@@ -12,7 +12,7 @@ class ThrottleItem(var user: String) : Persistent {
     var id: ObjectId? = null
 
     @Indexed(expireAfterSeconds = 60)
-    var until = Date()
+    var until: Date = Date()
 
     override fun toString(): String {
         return "ThrottleItem{user='%s', until=%s}".format(user, until)

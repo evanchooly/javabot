@@ -22,16 +22,12 @@ open class NickServDao @Inject constructor(ds: Datastore) : BaseDao<NickServInfo
             val i = line.indexOf(':')
             val key = line.substring(0, i).trim()
             val value = line.substring(i + 1).trim()
-            if (key.equals("Registered", true)) {
-                info.registered = extractDate(value)
-            } else if (key.equals("User Reg.", true)) {
-                info.userRegistered = extractDate(value)
-            } else if (key.equals("Last seen", true)) {
-                info.lastSeen = extractDate(value)
-            } else if (key.equals("Last addr", true)) {
-                info.lastAddress = value
-            } else {
-                info.extra(key.replace(".", ""), value)
+            when(key.toUpperCase()) {
+                "REGISTERED" -> info.registered = extractDate(value)
+                "USER REG." -> info.userRegistered = extractDate(value)
+                "LAST SEEN" -> info.lastSeen = extractDate(value)
+                "LAST ADDR" -> info.lastAddress = value
+                else -> info.extra(key.replace(".", ""), value)
             }
         })
 
@@ -52,11 +48,11 @@ open class NickServDao @Inject constructor(ds: Datastore) : BaseDao<NickServInfo
     }
 
     private fun extractDate(line: String): LocalDateTime {
-        if (line.endsWith("now")) {
-            return LocalDateTime.now()
-        } else {
+        return if (!line.endsWith("now")) {
             val dateString = if (line.contains("(")) line.substring(0, line.indexOf(" (")) else line
-            return LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern(NickServInfo.NSERV_DATE_FORMAT))
+            LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern(NickServInfo.NSERV_DATE_FORMAT))
+        } else {
+            LocalDateTime.now()
         }
     }
 
@@ -71,7 +67,7 @@ open class NickServDao @Inject constructor(ds: Datastore) : BaseDao<NickServInfo
     fun updateNick(oldNick: String, newNick: String): NickServInfo {
         var criteria = NickServInfoCriteria(ds)
         criteria.nick(oldNick)
-        val updater = criteria.getUpdater()
+        val updater = criteria.updater()
         updater.nick(newNick)
         updater.updateFirst()
         criteria = NickServInfoCriteria(ds)

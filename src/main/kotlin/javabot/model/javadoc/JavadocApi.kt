@@ -1,4 +1,4 @@
-package javabot.javadoc
+package javabot.model.javadoc
 
 import javabot.model.Persistent
 import org.bson.types.ObjectId

@@ -1,4 +1,4 @@
-package javabot.javadoc
+package javabot.model.javadoc
 
 import org.jboss.forge.roaster.model.TypeVariable
 import org.mongodb.morphia.annotations.Embedded
@@ -6,7 +6,7 @@ import org.mongodb.morphia.annotations.Embedded
 @Embedded
 class JavadocType {
     lateinit var name: String
-    var bounds = mutableListOf<String>()
+    var bounds: MutableList<String> = mutableListOf<String>()
 
     constructor() { }
 

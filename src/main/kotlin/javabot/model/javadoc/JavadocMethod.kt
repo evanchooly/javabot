@@ -1,13 +1,11 @@
-package javabot.javadoc
+package javabot.model.javadoc
 
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
-import org.mongodb.morphia.annotations.Id
 import org.mongodb.morphia.annotations.Index
 import org.mongodb.morphia.annotations.Indexes
 import org.mongodb.morphia.annotations.PrePersist
-import org.mongodb.morphia.annotations.Reference
 
 @Entity(value = "methods", noClassnameStored = true)
 @Indexes(
@@ -28,7 +26,7 @@ class JavadocMethod : JavadocElement {
     }
 
     constructor(parent: JavadocClass, name: String, count: Int,
-                       longArgs: List<String>, shortArgs: List<String>) {
+                longArgs: List<String>, shortArgs: List<String>) {
         this.name = name
         javadocClass = parent.id
         apiId = parent.apiId

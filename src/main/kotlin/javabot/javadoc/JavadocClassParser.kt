@@ -2,11 +2,14 @@ package javabot.javadoc
 
 import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
-import javabot.javadoc.Visibility.Public
+import javabot.model.javadoc.JavadocApi
+import javabot.model.javadoc.JavadocClass
+import javabot.model.javadoc.JavadocField
+import javabot.model.javadoc.JavadocMethod
+import javabot.model.javadoc.Visibility.Public
 import org.jboss.forge.roaster.model.Extendable
 import org.jboss.forge.roaster.model.Field
 import org.jboss.forge.roaster.model.FieldHolder
-import org.jboss.forge.roaster.model.GenericCapable
 import org.jboss.forge.roaster.model.InterfaceCapable
 import org.jboss.forge.roaster.model.JavaType
 import org.jboss.forge.roaster.model.Method
@@ -109,12 +112,16 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
         }
     }
 
-    private fun extendable(klass: JavadocClass, source: JavaType<*>) {
+    private fun extendable(klass: JavadocClass, source: JavaType<*>, retry: Int = 0) {
         if (source is Extendable<*>) {
             try {
                 klass.parentClass = parser.getJavadocClass(source.getSuperType())?.fqcn
-            } catch(e: Exception) {
-                println(e.message + "\nsource.getQualifiedName() = ${source.getQualifiedName()}")
+            } catch (e: Exception) {
+                if (retry < 10) {
+                    extendable(klass, source, retry + 1)
+                } else {
+                    println(e.message + "\nsource.getQualifiedName() = ${source.getQualifiedName()}")
+                }
             }
         }
     }

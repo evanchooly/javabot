@@ -1,8 +1,8 @@
 package javabot.dao
 
-import javabot.javadoc.JavadocApi
-import javabot.javadoc.JavadocSource
-import javabot.javadoc.criteria.JavadocApiCriteria
+import javabot.model.javadoc.JavadocApi
+import javabot.model.javadoc.JavadocSource
+import javabot.model.javadoc.criteria.JavadocApiCriteria
 import org.mongodb.morphia.Datastore
 import javax.inject.Inject
 

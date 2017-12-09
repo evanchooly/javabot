@@ -11,7 +11,7 @@ import com.mongodb.ServerAddress
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
 import javabot.dao.util.LocalDateTimeConverter
-import javabot.javadoc.JavadocClass
+import javabot.model.javadoc.JavadocClass
 import javabot.model.Factoid
 import javabot.web.views.ViewFactory
 import org.aeonbits.owner.Config.Key

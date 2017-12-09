@@ -6,6 +6,7 @@ import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
 import javabot.model.ApiEvent
 import javabot.model.downloadZip
+import javabot.model.javadoc.JavadocApi
 import org.bson.types.ObjectId
 import org.jboss.forge.roaster.Roaster
 import org.testng.Assert

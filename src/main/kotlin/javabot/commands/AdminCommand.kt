@@ -10,7 +10,7 @@ import javabot.operations.BotOperation
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
-@Parameters(separators = "=", optionPrefixes = "--")
+@Parameters(separators = "=")
 abstract class AdminCommand @Inject constructor(bot: Javabot, adminDao: AdminDao) :
         BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {

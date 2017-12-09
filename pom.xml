@@ -211,6 +211,24 @@
                     <doUpdate>false</doUpdate>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.antwerkz.critter</groupId>
+                <artifactId>critter-maven</artifactId>
+                <version>${critter.version}</version>
+                <executions>
+                    <execution>
+                        <id>critter</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <force>true</force>
+                    <sourceDirectory>src/main/kotlin/javabot/model</sourceDirectory>
+                    <outputType>kotlin</outputType>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -457,17 +475,17 @@
     </dependencies>
 
     <properties>
-        <morphia.version>1.2.1</morphia.version>
-        <mongo.driver.version>3.5.0</mongo.driver.version>
-        <critter.version>2.1.1</critter.version>
-        <guice.version>4.0</guice.version>
-        <sofia.version>0.15</sofia.version>
-        <slf4j.version>1.7.25</slf4j.version>
+        <critter.version>3.0.0</critter.version>
         <dropwizard.version>0.7.1</dropwizard.version>
-        <kotlin.version>1.1.4</kotlin.version>
-        <roaster.version>2.19.0.Final</roaster.version>
+        <guice.version>4.0</guice.version>
         <jacoco.version>0.7.7.201606060606</jacoco.version>
+        <kotlin.version>1.2.0</kotlin.version>
         <logback.version>1.2.3</logback.version>
+        <mongo.driver.version>3.5.0</mongo.driver.version>
+        <morphia.version>1.2.1</morphia.version>
+        <roaster.version>2.19.0.Final</roaster.version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <sofia.version>0.15</sofia.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

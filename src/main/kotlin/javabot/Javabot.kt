@@ -11,9 +11,9 @@ import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
 import javabot.dao.EventDao
 import javabot.dao.LogsDao
+import javabot.model.State
 import javabot.dao.ShunDao
 import javabot.database.UpgradeScript
-import javabot.model.AdminEvent.State
 import javabot.model.Channel
 import javabot.model.JavabotUser
 import javabot.model.Logs

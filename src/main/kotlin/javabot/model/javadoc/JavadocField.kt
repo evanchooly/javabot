@@ -1,4 +1,4 @@
-package javabot.javadoc
+package javabot.model.javadoc
 
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Field
