@@ -117,12 +117,12 @@ class LinksOperation @Inject constructor(bot: Javabot,
         try {
             val channel = extractChannel(tokens, needsChannel, event)
             if (!bot.adapter.isOp(event.user.nick, channel)) {
-                responses.add(Message(event, "You need to be an op on $channel to do that"))
+                responses.add(Message(event, Sofia.linksNotAnOp(channel)))
             } else {
                 val key = extractKey(tokens)
                 try {
                     modifyFunction(channel, key)
-                    responses.add(Message(event, "blah blah blah"))
+                    responses.add(Message(event, Sofia.linksVerbApplied(key, "${command.toLowerCase()}d", channel)))
                 } catch (e: IllegalArgumentException) {
                     responses.add(Message(event, Sofia.linksNotFound(key)))
                 }

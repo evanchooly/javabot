@@ -69,6 +69,7 @@ class LinkDaoTest : BaseServiceTest() {
         linkDao.deleteAll()
         listOf("a", "b", "c", "d").forEach {
             linkDao.addLink("##java", "botuser", "http://$it.com", "this is $it")
+            Thread.sleep(100)
         }
         // all links, regardless of status
         var links = linkDao.findAll()
