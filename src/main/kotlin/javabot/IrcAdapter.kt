@@ -67,7 +67,7 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
 
     override fun onJoin(event: JoinEvent) {
         logsDao.logMessage(Logs.Type.JOIN, event.channel.toJavabot(), event.user?.toJavabot(),
-                Sofia.userJoined(event.user?.nick, event.user?.hostmask, event.channel.name))
+                Sofia.userJoined(event.user?.nick!!, event.user?.hostmask!!, event.channel.name))
     }
 
     override fun onPart(event: PartEvent) {

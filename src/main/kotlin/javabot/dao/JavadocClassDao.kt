@@ -156,20 +156,20 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
     }
 
     fun deleteFor(api: JavadocApi?) {
-        api?.let { api ->
-            LOG.debug("Dropping fields from " + api.name)
+        api?.let {
+            LOG.debug("Dropping fields from " + it.name)
             val criteria = JavadocFieldCriteria(ds)
-            criteria.apiId(api.id)
+            criteria.apiId(it.id)
             ds.delete(criteria.query())
 
-            LOG.debug("Dropping methods from " + api.name)
+            LOG.debug("Dropping methods from " + it.name)
             val method = JavadocMethodCriteria(ds)
-            method.apiId(api.id)
+            method.apiId(it.id)
             ds.delete(method.query())
 
-            LOG.debug("Dropping classes from " + api.name)
+            LOG.debug("Dropping classes from " + it.name)
             val klass = JavadocClassCriteria(ds)
-            klass.apiId(api.id)
+            klass.apiId(it.id)
             ds.delete(klass.query())
         }
     }

@@ -12,9 +12,9 @@ import javax.inject.Inject
 class Configure @Inject constructor(bot: Javabot, adminDao: AdminDao, var configDao: ConfigDao): AdminCommand(bot, adminDao) {
 
     @Parameter(names = arrayOf("--property"))
-    var property: String? = null
+    lateinit var property: String
     @Parameter(names = arrayOf("--value"))
-    var value: String? = null
+    lateinit var value: String
 
     override fun execute(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
@@ -23,12 +23,12 @@ class Configure @Inject constructor(bot: Javabot, adminDao: AdminDao, var config
             responses.add(Message(event.user, config.toString()))
         } else {
             try {
-                val name = property!!.substring(0, 1).toUpperCase() + property!!.substring(1)
+                val name = property.substring(0, 1).toUpperCase() + property.substring(1)
                 val get = config.javaClass.getDeclaredMethod("get" + name)
                 val type = get.returnType
                 val set = config.javaClass.getDeclaredMethod("set" + name, type)
                 try {
-                    set.invoke(config, if (type == String::class.java) value!!.trim() else Integer.parseInt(value))
+                    set.invoke(config, if (type == String::class.java) value.trim() else Integer.parseInt(value))
                     configDao.save(config)
                     responses.add(Message(event.user, Sofia.configurationSetProperty(property, value)))
                 } catch (e: ReflectiveOperationException) {

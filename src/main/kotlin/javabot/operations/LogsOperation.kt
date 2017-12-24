@@ -25,9 +25,8 @@ class LogsOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var ds
                 criteria.nick(nickname)
                 criteria.query().limit(50)
             }
-            for (logs in criteria.query().fetch()) {
-                responses.add(Message(event, Sofia.logsEntry(logs.updated.format(DateTimeFormatter.ofPattern("HH:mm")),
-                      logs.nick, logs.message)))
+            criteria.query().fetch().mapTo(responses) {
+                Message(event, Sofia.logsEntry(it.updated.format(DateTimeFormatter.ofPattern("HH:mm")), it.nick!!, it.message))
             }
             if (responses.isEmpty()) {
                 responses.add(Message(event, if (nickname.isEmpty()) Sofia.logsNone() else Sofia.logsNoneForNick(nickname)))

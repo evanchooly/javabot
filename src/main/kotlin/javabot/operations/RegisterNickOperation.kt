@@ -18,10 +18,8 @@ class RegisterNickOperation @Inject constructor(bot: Javabot, adminDao: AdminDao
                 val twitterName = split[1]
                 val registration = NickRegistration(event.user, twitterName)
                 adminDao.save(registration)
-                val config = configDao.get()
-                val eventMessage = Sofia.registerNick(config.url, registration.url, twitterName)
 
-                responses.add(Message(event.user, eventMessage))
+                responses.add(Message(event.user, Sofia.registerNick(configDao.get().url, registration.url ?: "", twitterName)))
             }
         }
         return responses

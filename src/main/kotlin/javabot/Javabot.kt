@@ -51,9 +51,7 @@ open class Javabot @Inject
 
         @JvmStatic fun main(args: Array<String>) {
             val injector = Guice.createInjector(JavabotModule())
-            if (LOG.isInfoEnabled) {
-                LOG.info("Starting Javabot")
-            }
+            Sofia.javabotStart()
             val bot = injector.getInstance(Javabot::class.java)
             bot.start()
             Awaitility.await()

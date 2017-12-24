@@ -66,7 +66,7 @@ class Throttler @Inject constructor(
             Sofia.logNoNickservEntry(user.nick)
             throw NickServViolationException(Sofia.unknownUser())
         }
-        if (nickServInfo.registered == null || between(nickServInfo.registered, now()).toDays() < configDao.get().minimumNickServAge) {
+        if (between(nickServInfo.registered, now()).toDays() < configDao.get().minimumNickServAge) {
             throw NickServViolationException(Sofia.accountTooNew())
         }
     }

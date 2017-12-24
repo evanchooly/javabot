@@ -26,10 +26,6 @@ abstract class MainView(var adminDao: AdminDao, var channelDao: ChannelDao, var 
 
     private val errors = ArrayList<String>()
 
-    fun sofia(): Sofia {
-        return Sofia()
-    }
-
     abstract fun getChildView(): String
 
     fun getFactoidCount(): Long {

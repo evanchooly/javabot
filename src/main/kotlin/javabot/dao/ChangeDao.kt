@@ -29,7 +29,7 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
         save(Change(Sofia.karmaChanged(sender, target, value, location)))
     }
 
-    fun logChangingLockedFactoid(nick: String?, key: String, channel: String) {
+    fun logChangingLockedFactoid(nick: String, key: String, channel: String) {
         save(Change(Sofia.factoidChangingLocked(nick, key, channel)))
     }
 

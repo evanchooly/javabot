@@ -25,16 +25,14 @@ class ConfigDao @Inject constructor(ds: Datastore, var injector: Injector, var j
         val classes = reflections.getSubTypesOf(type)
 
         val list = ArrayList<T>()
-        for (operation in classes) {
-            if (!Modifier.isAbstract(operation.modifiers)) {
-                try {
-                    list.add(injector.getInstance(operation))
-                } catch (e: Exception) {
-                    e.printStackTrace()
+        classes.filterNot { Modifier.isAbstract(it.modifiers) }
+                .forEach {
+                    try {
+                        list.add(injector.getInstance(it))
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
-
-            }
-        }
         return list
     }
 
