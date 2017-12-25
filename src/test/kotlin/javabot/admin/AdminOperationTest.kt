@@ -33,7 +33,7 @@ class AdminOperationTest: BaseTest() {
         }
     }
 
-    @Test(dependsOnMethods = arrayOf("disableOperations"))
+    @Test(dependsOnMethods = ["disableOperations"])
     fun enableOperations() {
         disableAllOperations()
         val allOperations = bot.get().getAllOperations()

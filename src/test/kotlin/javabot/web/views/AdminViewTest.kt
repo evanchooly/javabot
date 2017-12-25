@@ -1,5 +1,6 @@
 package javabot.web.views
 
+import freemarker.template.TemplateModelException
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
 import javabot.model.Admin
 import net.htmlparser.jericho.Source

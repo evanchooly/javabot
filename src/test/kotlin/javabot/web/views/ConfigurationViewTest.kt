@@ -22,7 +22,7 @@ class ConfigurationViewTest : ViewsTest() {
     @Test
     @Throws(IOException::class) fun configuration() {
         var config = configDao.get()
-        config.operations = ArrayList<String>()
+        config.operations = mutableListOf()
         configDao.save(config)
 
         val renderer = FreemarkerViewRenderer()
