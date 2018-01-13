@@ -60,6 +60,7 @@ class ConfigDao @Inject constructor(ds: Datastore, var injector: Injector, var j
         return config
     }
 
+/*
     override fun save(entity: Persistent) {
         if (entity is Config && entity.id != null) {
             val old = get()
@@ -69,6 +70,7 @@ class ConfigDao @Inject constructor(ds: Datastore, var injector: Injector, var j
         }
         super.save(entity)
     }
+*/
 
     private fun updateHistoryIndex(historyLength: Int) {
         val collection = ds.getCollection(Logs::class.java)

@@ -239,12 +239,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.antwerkz.sofia</groupId>
-            <artifactId>sofia-core</artifactId>
-            <version>${sofia.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.zeroturnaround</groupId>
             <artifactId>zt-exec</artifactId>
             <version>1.9</version>

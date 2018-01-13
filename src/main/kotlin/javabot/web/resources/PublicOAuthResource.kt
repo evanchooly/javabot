@@ -81,10 +81,10 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
 
             val user = INSTANCE.getByOpenIDIdentifier(tempUser.openIDIdentifier)
             if (user == null) {
-                try {
-                    adminDao.getAdminByEmailAddress(tempUser.email)
+                val admin = adminDao.getAdminByEmailAddress(tempUser.email)
+                if (admin != null) {
                     tempUser.authorities.add(ROLE_ADMIN)
-                } catch(e: RuntimeException) {
+                } else {
                     if (adminDao.count() == 0L) {
                         adminDao.save(Admin(tempUser.email))
                         tempUser.authorities.add(ROLE_ADMIN)
@@ -97,6 +97,7 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
 
             return Response.temporaryRedirect(URI("/")).cookie(replaceSessionTokenCookie(Optional.of(tempUser))).build()
         } catch (e: Exception) {
+            e.printStackTrace()
             log.error(e.message, e)
         }
 
