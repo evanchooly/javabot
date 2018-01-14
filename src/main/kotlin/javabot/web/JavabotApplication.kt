@@ -84,7 +84,7 @@ class JavabotApplication @Inject constructor(var injector: Injector): Applicatio
         running = true
     }
 
-    private class JavadocFilter @Inject constructor(var apiDao: ApiDao, var config: JavabotConfig) : Filter {
+    class JavadocFilter @Inject constructor(var apiDao: ApiDao, var config: JavabotConfig) : Filter {
         override fun destroy() {
         }
 
