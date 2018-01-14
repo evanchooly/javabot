@@ -20,6 +20,7 @@ import javabot.web.resources.AdminResource
 import javabot.web.resources.BotResource
 import javabot.web.resources.PublicOAuthResource
 import org.eclipse.jetty.server.session.SessionHandler
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.file.Files
 import java.util.EnumSet
@@ -37,6 +38,7 @@ class JavabotApplication @Inject constructor(var injector: Injector): Applicatio
     var running = false
 
     companion object {
+        private val LOG = LoggerFactory.getLogger(JavabotApplication::class.java)
 
         @Throws(Exception::class)
         @JvmStatic fun main(args: Array<String>) {
@@ -69,15 +71,8 @@ class JavabotApplication @Inject constructor(var injector: Injector): Applicatio
         environment.jersey().register(RestrictedProvider())
 
         environment.servlets()
-                .setInitParameter("com.sun.jersey.api.json.POJOMappingFeature", "true")
-        environment.servlets()
                 .addFilter("javadoc", injector.getInstance(JavadocFilter::class.java))
                 .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), false, "/javadoc/*")
-/*
-        environment.servlets()
-                .addFilter("html", HtmlToResourceFilter())
-                .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), false, "*.html")
-*/
 
         environment.healthChecks().register("javabot", JavabotHealthCheck())
 
@@ -109,24 +104,4 @@ class JavabotApplication @Inject constructor(var injector: Injector): Applicatio
         override fun init(filterConfig: FilterConfig?) {
         }
     }
-
-    private class HtmlToResourceFilter : Filter {
-        override fun init(filterConfig: FilterConfig) {
-        }
-
-        override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
-            val replace = (request as HttpServletRequest).requestURI.replace(".html", "")
-            request.getRequestDispatcher(replace).forward(request, response)
-        }
-
-        override fun destroy() {
-        }
-    }
-}
-
-class JavabotWebModule: JavabotModule() {
-    override fun configure() {
-           super.configure()
-           bind(IrcAdapter::class.java).to(OfflineAdapter::class.java)
-       }
 }

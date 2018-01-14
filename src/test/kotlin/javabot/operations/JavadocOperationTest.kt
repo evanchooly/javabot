@@ -5,6 +5,7 @@ import com.jayway.awaitility.Duration
 import javabot.BaseTest
 import javabot.dao.ApiDao
 import javabot.model.ApiEvent
+import org.slf4j.LoggerFactory
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
 import java.util.concurrent.TimeUnit
@@ -12,6 +13,10 @@ import javax.inject.Inject
 
 @Test
 class JavadocOperationTest : BaseTest() {
+    companion object {
+        private val LOG = LoggerFactory.getLogger(JavadocOperationTest::class.java)
+    }
+    
     @Inject
     private lateinit var apiDao: ApiDao
 
@@ -21,12 +26,12 @@ class JavadocOperationTest : BaseTest() {
     @BeforeTest
     fun jdk() {
         if (apiDao.find("JDK") == null) {
-            println("JDK javadoc not found.  Generating now.")
+            LOG.info("JDK javadoc not found.  Generating now.")
             val event = ApiEvent.add(TEST_USER.nick, "JDK")
             eventDao.save(event)
             waitForEvent(event, "adding JDK", Duration(30, TimeUnit.MINUTES))
             messages.clear()
-            println("JDK javadoc finished.")
+            LOG.info("JDK javadoc finished.")
         }
     }
 

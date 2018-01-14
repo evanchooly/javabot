@@ -1,5 +1,6 @@
 package javabot.javadoc
 
+import com.mongodb.MongoException
 import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
 import javabot.model.javadoc.JavadocApi
@@ -18,6 +19,7 @@ import org.jboss.forge.roaster.model.Parameter
 import org.jboss.forge.roaster.model.TypeHolder
 import org.jboss.forge.roaster.model.source.Importer
 import org.jboss.forge.roaster.model.source.JavaSource
+import org.slf4j.LoggerFactory
 import java.util.ArrayList
 import java.util.HashMap
 import javax.inject.Inject
@@ -28,6 +30,7 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
 
     companion object {
         private val PRIMITIVES = HashMap<Char, String>()
+        private val LOG = LoggerFactory.getLogger(JavadocClassParser::class.java)
 
         init {
             PRIMITIVES.put('B', "byte")
@@ -64,19 +67,26 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
         if (process) {
             val className = source.getCanonicalName().replace(pkg + ".", "")
             val docClass = JavadocClass(api, pkg, className)
-            javadocClassDao.save(docClass)
+            try {
+                javadocClassDao.save(docClass)
 
-            docClass.isClass = source.isClass()
-            docClass.isAnnotation = source.isAnnotation()
-            docClass.isInterface = source.isInterface()
-            docClass.isEnum = source.isEnum()
-            docClass.visibility = if (source.getEnclosingType().isInterface()) Public else visibility(source.getVisibility().scope())
+                docClass.isClass = source.isClass()
+                docClass.isAnnotation = source.isAnnotation()
+                docClass.isInterface = source.isInterface()
+                docClass.isEnum = source.isEnum()
+                docClass.visibility = when {
+                    source.getEnclosingType().isInterface() -> Public
+                    else -> visibility(source.getVisibility().scope())
+                }
 //            generics(docClass, source)
-            extendable(docClass, source)
-            interfaces(docClass, source)
-            methods(docClass, source)
-            fields(docClass, source)
-            nestedTypes(api, packages, source)
+                extendable(docClass, source)
+                interfaces(docClass, source)
+                methods(docClass, source)
+                fields(docClass, source)
+                nestedTypes(api, packages, source)
+            } catch (e: MongoException) {
+                LOG.error(e.message, e)
+            }
         }
     }
 
@@ -160,8 +170,8 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
     private fun update(longTypes: MutableList<String>, shortTypes: MutableList<String>, arg: Parameter<out JavaType<*>>) {
         try {
             val origin = arg.getOrigin() as JavaSource
-            var value:  String
-            if(origin.getImport(arg.getType().getSimpleName()) != null) {
+            var value: String
+            if (origin.getImport(arg.getType().getSimpleName()) != null) {
                 value = arg.getType().getQualifiedName()
             } else {
                 value = if (arg.getType().getQualifiedName().startsWith("java.lang"))
@@ -169,15 +179,15 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
                 else
                     arg.getType().getName()
             }
-            if(arg.isVarArgs()) {
+            if (arg.isVarArgs()) {
                 value += "..."
             }
-            if(arg.getType().isArray() && !value.endsWith("[]")) {
+            if (arg.getType().isArray() && !value.endsWith("[]")) {
                 value += "[]"
             }
             longTypes.add(value)
             shortTypes.add(calculateNameAndPackage(value).second)
-        } catch(e: IllegalStateException) {
+        } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
     }

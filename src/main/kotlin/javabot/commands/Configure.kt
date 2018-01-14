@@ -19,7 +19,7 @@ class Configure @Inject constructor(bot: Javabot, adminDao: AdminDao, var config
     override fun execute(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val config = configDao.get()
-        if (StringUtils.isEmpty(property) || StringUtils.isEmpty(value)) {
+        if (!this::property.isInitialized || !this::value.isInitialized) {
             responses.add(Message(event.user, config.toString()))
         } else {
             try {
