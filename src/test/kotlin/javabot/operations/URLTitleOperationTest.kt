@@ -57,6 +57,8 @@ class URLTitleOperationTest : BaseTest() {
                         "botuser's titles: \"- The Java EE 6 Tutorial\" | \"Freenode ##java  enthusiasts united\""),
                 arrayOf("Two urls, one with a title: http://javachannel.org/posts/finding-hash-collisions-in-java-strings/  and " +
                         "http://javachannel.org/", "botuser's title: \"Freenode ##java  enthusiasts united\""),
+                arrayOf("Two urls, duplicated:  http://javachannel.org/ and http://javachannel.org/"
+                        , "botuser's title: \"Freenode ##java  enthusiasts united\""),
                 arrayOf("http://refheap.com", null) // this may change: right now, refheap.com returns a 502
         )
     }

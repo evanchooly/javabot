@@ -22,12 +22,13 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
         try {
             val titlesToPost = parser.urlsFromMessage(message)
                     .map({ it.toString() })
-                    .map({ s -> findTitle(s, true) }).filterNotNull()
-            if (titlesToPost.isEmpty()) {
-                return responses
+                    .distinct()
+                    .mapNotNull({ s -> findTitle(s, true) })
+            return if (titlesToPost.isEmpty()) {
+                responses
             } else {
                 postMessageToChannel(responses, titlesToPost, event)
-                return responses
+                responses
             }
         } catch (ignored: Exception) {
             ignored.printStackTrace()
