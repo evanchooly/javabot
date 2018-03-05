@@ -1,0 +1,8 @@
+mongodb:
+  image: mongo
+  ports:
+    - "27017:27017"
+ircd:
+  image: inspircd/inspircd-docker
+  ports:
+    - "6667:6667"
