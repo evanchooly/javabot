@@ -13,37 +13,49 @@ import java.io.IOException
 /**
  * Displays RFC url and title
  */
-@Singleton class RFCOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao) {
+@Singleton
+class RFCOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value.toLowerCase()
-        if (message.startsWith(prefix)) {
-            val rfcText = message.substring(prefix.length).trim()
-            if (rfcText.isEmpty()) {
+        if (message.startsWith(PREFIX)) {
+            val rfcText = message.substring(PREFIX.length).trim()
+            val parts = rfcText.split(Regex("\\s+"))
+            val rfcNumPart = parts.getOrNull(0)
+            if (rfcNumPart == null || rfcNumPart == "") {
                 responses.add(Message(event, Sofia.rfcMissing()))
             } else {
-                try {
-                    val data = load(Integer.parseInt(rfcText))
-                    responses.add(Message(event, Sofia.rfcSucceed(data.first, data.second)))
-                } catch (e: NumberFormatException) {
+                val rfcNum = rfcNumPart.toIntOrNull()
+                if (rfcNum == null) {
                     responses.add(Message(event, Sofia.rfcInvalid(rfcText)))
-                } catch (e: HttpStatusException) {
-                    responses.add(Message(event, Sofia.rfcFail(rfcText)))
-                } catch (e: IOException) {
-                    responses.add(Message(event, Sofia.rfcFail(rfcText)))
+                } else {
+                    try {
+                        val anchorType = parts.getOrNull(1)
+                        val name = parts.getOrNull(2)
+                        val data = if (name != null && ("section".equals(anchorType, true) || "page".equals(anchorType, true))) {
+                            load(rfcNum, "#$anchorType-$name")
+                        } else {
+                            load(rfcNum)
+                        }
+                        responses.add(Message(event, Sofia.rfcSucceed(data.first, data.second)))
+                    } catch (e: HttpStatusException) {
+                        responses.add(Message(event, Sofia.rfcFail(rfcText)))
+                    } catch (e: IOException) {
+                        responses.add(Message(event, Sofia.rfcFail(rfcText)))
+                    }
                 }
             }
         }
         return responses
     }
 
-    fun load(rfc: Int): Pair<String, String> {
-        val url = "https://tools.ietf.org/html/rfc$rfc"
+    fun load(rfc: Int, anchor: String = ""): Pair<String, String> {
+        val url = "https://tools.ietf.org/html/rfc$rfc$anchor"
         val doc = Jsoup.connect(url).get()
         return Pair(url, doc.title())
     }
 
     companion object {
-        val prefix: String = "rfc"
+        const val PREFIX: String = "rfc"
     }
 }
