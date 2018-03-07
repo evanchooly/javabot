@@ -44,7 +44,7 @@ class Factoid(var name: String = "", var value: String = "", var userName: Strin
         update()
     }
 
-    fun evaluate(subject: JavabotUser?, sender: String, replacedValue: String): String {
+    fun evaluate(subject: JavabotUser?, sender: String, replacedValue: String): String? {
         var message = value
         val target = if (subject == null) sender else subject.nick
         if (subject != null && !message.contains("\$who") && message.startsWith("<reply>")) {
@@ -61,6 +61,11 @@ class Factoid(var name: String = "", var value: String = "", var userName: Strin
         if (name.endsWith(" $^")) {
             replaced = urlencode(camelcase(replacedValue))
         }
+
+        if (replaced.isBlank()) {
+            return null;
+        }
+
         message = message.replace("$1", replaced)
         message = message.replace("$+", replaced)
         message = message.replace("$^", replaced)
