@@ -322,7 +322,7 @@ open class Javabot @Inject
 
         }
 
-        if (responses.isEmpty()) {
+        if (responses.isEmpty() && (!message.value.toLowerCase().startsWith("${nick}'s".toLowerCase()))) {
             responses.add(Message(message.channel, message.user, Sofia.unhandledMessage(message.user.nick)))
         }
         return responses
