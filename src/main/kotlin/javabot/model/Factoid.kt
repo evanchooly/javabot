@@ -61,6 +61,11 @@ class Factoid(var name: String = "", var value: String = "", var userName: Strin
         if (name.endsWith(" $^")) {
             replaced = urlencode(camelcase(replacedValue))
         }
+
+        if (replaced.isBlank()) {
+            return "You were supposed to provide a target for \"$name\", $sender"
+        }
+
         message = message.replace("$1", replaced)
         message = message.replace("$+", replaced)
         message = message.replace("$^", replaced)
