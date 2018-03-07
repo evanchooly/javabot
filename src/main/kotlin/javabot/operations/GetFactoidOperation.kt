@@ -54,6 +54,12 @@ class GetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, 
                             factoid: Factoid) {
         val sender = event.user.nick
         val message = factoid.evaluate(event.target, sender, replacedValue)
+        if (message == null) {
+            if (LOG.isDebugEnabled) {
+                LOG.debug("No response added for GetFactoid: {}", event)
+            }
+            return
+        }
         if (message.startsWith("<see>")) {
             if (backtrack.contains(message)) {
                 responses.add(Message(event, Sofia.factoidLoop(message)))

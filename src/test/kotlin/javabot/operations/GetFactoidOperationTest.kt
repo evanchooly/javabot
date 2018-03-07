@@ -128,6 +128,12 @@ class GetFactoidOperationTest : BaseTest() {
         Assert.assertEquals(response[0].value, "hugs ${BaseTest.TEST_TARGET_NICK}")
     }
 
+    fun actionMissingTarget() {
+        val response = operation.handleMessage(message("~hug "))
+        Assert.assertEquals(response.size, 0,
+                "Not specifying a target should not result in a response.  Response: $response")
+    }
+
     /* unicode whitespaces as per http://www.fileformat.info/info/unicode/category/Zs/list.htm */
     @DataProvider
     fun whitespaceProvider(): Array<Array<Any>> {
