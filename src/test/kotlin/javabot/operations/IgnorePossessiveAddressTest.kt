@@ -10,7 +10,7 @@ import org.testng.Assert.assertNotNull
 import org.testng.annotations.Test
 
 class IgnorePossessiveAddressTest
-@Inject constructor(val ircAdapter: MockIrcAdapter, val javabot: Javabot, val operation: GetFactoidOperation) : BaseTest() {
+@Inject constructor(val ircAdapter: MockIrcAdapter, val javabot: Javabot) : BaseTest() {
     @Test
     fun testConfig() {
         assertNotNull(ircAdapter)
