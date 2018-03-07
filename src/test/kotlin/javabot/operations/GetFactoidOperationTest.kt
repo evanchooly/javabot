@@ -128,6 +128,12 @@ class GetFactoidOperationTest : BaseTest() {
         Assert.assertEquals(response[0].value, "hugs ${BaseTest.TEST_TARGET_NICK}")
     }
 
+    fun actionWithoutTarget() {
+        val response = operation.handleMessage(message("~hug "));
+        Assert.assertEquals(response[0].value,
+                "You were supposed to provide a target for \"hug $1\", ${BaseTest.TEST_USER_NICK}")
+    }
+
     /* unicode whitespaces as per http://www.fileformat.info/info/unicode/category/Zs/list.htm */
     @DataProvider
     fun whitespaceProvider(): Array<Array<Any>> {
