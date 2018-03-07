@@ -1,8 +1,10 @@
 package javabot.operations
 
+import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
 import javabot.dao.FactoidDao
 import javabot.dao.LogsDaoTest
+import org.jsoup.Connection
 import org.testng.Assert
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
@@ -126,6 +128,11 @@ class GetFactoidOperationTest : BaseTest() {
     fun action() {
         val response = operation.handleMessage(message("~hug ${BaseTest.TEST_TARGET_NICK}"))
         Assert.assertEquals(response[0].value, "hugs ${BaseTest.TEST_TARGET_NICK}")
+    }
+
+    fun actionWithoutTarget() {
+        val response = operation.handleMessage(message("~hug "));
+        Assert.assertEquals(response[0].value, Sofia.missingTarget("hug $1", TEST_USER_NICK))
     }
 
     /* unicode whitespaces as per http://www.fileformat.info/info/unicode/category/Zs/list.htm */
