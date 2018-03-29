@@ -35,9 +35,9 @@ class LinksOperation @Inject constructor(bot: Javabot,
         return responses
     }
 
-    fun handleList(event: Message): List<Message> {
+    private fun handleList(event: Message): List<Message> {
         val responses: MutableList<Message> = mutableListOf()
-        val needsChannel = event.channel?.name?.isNullOrEmpty() ?: true
+        val needsChannel = event.channel?.name?.isEmpty() ?: true
 
         val tokens = event.value.split(" ").toMutableList()
         // remove the "list" command, which is handled by the calling method
@@ -72,7 +72,7 @@ class LinksOperation @Inject constructor(bot: Javabot,
     private fun handleSubmit(event: Message): List<Message> {
         val responses: MutableList<Message> = mutableListOf()
         val needsChannel = if (event.channel != null) {
-            event.channel.name.isNullOrEmpty()
+            event.channel.name.isEmpty()
         } else true
 
         val tokens = event.value.split(" ").toMutableList()
@@ -83,15 +83,13 @@ class LinksOperation @Inject constructor(bot: Javabot,
                 responses.add(Message(event, Sofia.linksNotOnChannel()))
             } else {
                 // let's find a url; if it's there, we have a valid link, submit it.
-                val firstUrl = tokens
-                        .map {
-                            try {
-                                URL(it)
-                            } catch (e: Exception) {
-                                null
-                            }
-                        }
-                        .filterNotNull()
+                val firstUrl = tokens.mapNotNull {
+                    try {
+                        URL(it)
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
                         .firstOrNull()
                 if (firstUrl != null) {
                     // we have a url! Submit this puppy as is after stripping off "submit"
@@ -243,11 +241,8 @@ class LinksOperation @Inject constructor(bot: Javabot,
     }
 }
 
-class WrongChannelException(c: String, val channelName: String) : Throwable(c) {
-}
+class WrongChannelException(c: String, val channelName: String) : Throwable(c)
 
-class NoChannelException(s: String) : Throwable(s) {
-}
+class NoChannelException(s: String) : Throwable(s)
 
-class NoMessageKeyException(s: String) : Throwable(s) {
-}
+class NoMessageKeyException(s: String) : Throwable(s)
