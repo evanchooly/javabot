@@ -133,9 +133,9 @@ class LinksOperation @Inject constructor(bot: Javabot,
     }
 
     private fun formatPastTense(input: String): String {
-        val verb=input.toLowerCase()
+        val verb = input.toLowerCase()
         return verb +
-                if("aeiou".indexOf(verb.last())!=-1) "d" else "ed"
+                if ("aeiou".indexOf(verb.last()) != -1) "d" else "ed"
     }
 
     private fun extractKey(tokens: MutableList<String>): String {
@@ -198,7 +198,7 @@ class LinksOperation @Inject constructor(bot: Javabot,
             val channel = extractChannel(tokens, needsChannel, event)
             val count = getOptionalCount(tokens)
             if (needsOps && !bot.adapter.isOp(event.user.nick, channel)) {
-                responses.add(Message(event, "You need to be an op on $channel to do that"))
+                responses.add(Message(event, Sofia.linksNotAnOp(channel)))
             } else {
                 responses.addAll(
                         listFunction(channel)
