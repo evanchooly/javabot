@@ -122,7 +122,7 @@ class LinksOperation @Inject constructor(bot: Javabot,
                 val key = extractKey(tokens)
                 try {
                     modifyFunction(channel, key)
-                    responses.add(Message(event, Sofia.linksVerbApplied(key, "${command.toLowerCase()}d", channel)))
+                    responses.add(Message(event, Sofia.linksVerbApplied(key, formatPastTense(command), channel)))
                 } catch (e: IllegalArgumentException) {
                     responses.add(Message(event, Sofia.linksNotFound(key)))
                 }
@@ -132,6 +132,12 @@ class LinksOperation @Inject constructor(bot: Javabot,
         } catch (e: NoMessageKeyException) {
             responses.add(Message(event, Sofia.linksNoKeySpecified(command)))
         }
+    }
+
+    private fun formatPastTense(input: String): String {
+        val verb=input.toLowerCase()
+        return verb +
+                if("aeiou".indexOf(verb.last())!=-1) "d" else "ed"
     }
 
     private fun extractKey(tokens: MutableList<String>): String {
