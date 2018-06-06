@@ -12,7 +12,7 @@ import javax.inject.Inject
 @Test(groups = arrayOf("operations"))
 class URLTitleOperationTest : BaseTest() {
     @Inject
-    lateinit private var operation: URLTitleOperation
+    private lateinit var operation: URLTitleOperation
     private val analyzer = URLContentAnalyzer()
 
     @Test(dataProvider = "urls")
@@ -59,6 +59,7 @@ class URLTitleOperationTest : BaseTest() {
                         "http://javachannel.org/", "botuser's title: \"Freenode ##java  enthusiasts united\""),
                 arrayOf("Two urls, duplicated:  http://javachannel.org/ and http://javachannel.org/"
                         , "botuser's title: \"Freenode ##java  enthusiasts united\""),
+                arrayOf("https://twitter.com/djspiewak/status/1004038775989678080", "botuser's title: \"Daniel Spiewak on Twitter: \"Random best practice note: just because your language has type inference doesn't mean it's bad to explicitly write types. Types are good! Types are documentation. Don't make future code reviewers play the human compiler game.\"\""),
                 arrayOf("http://refheap.com", null) // this may change: right now, refheap.com returns a 502
         )
     }
