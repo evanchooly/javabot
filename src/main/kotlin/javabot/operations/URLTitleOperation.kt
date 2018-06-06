@@ -46,25 +46,14 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
     private fun findTitle(url: String, loop: Boolean): String? {
         if (analyzer.precheck(url)) {
             try {
-                HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build().use { client ->
-                    val httpget = HttpGet(url)
-                    httpget.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0")
-                    val response = client.execute(httpget)
-                    val entity = response.entity
-
-                    try {
-                        return when (response.statusLine.statusCode) {
-                            404, 403, 502 -> null
-                            else -> if (entity != null) {
-                                val doc = Jsoup.parse(EntityUtils.toString(entity))
-                                val title = clean(doc.title())
-                                if (analyzer.check(url, title)) title else null
-                            } else null
-                        }
-                    } finally {
-                        EntityUtils.consume(entity)
-                    }
-                }
+                val document = Jsoup
+                        .connect(url)
+                        .userAgent("Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/41.0")
+                        .timeout(5000)
+                        .get()
+                var title = document.title()
+                title = clean(title)
+                return if (analyzer.check(url, title)) title else null
             } catch (ioe: IOException) {
                 if (loop && !url.take(10).contains("//www.")) {
                     val tUrl = url.replace("//", "//www.")
@@ -75,7 +64,6 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
             } catch (ignored: IllegalArgumentException) {
                 return null
             }
-
         } else {
             return null
         }
@@ -83,12 +71,7 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
 
     private fun clean(title: String): String {
         val sb = StringBuilder()
-        title.filter({ i -> i.toInt() < 127 }).forEach({ i -> sb.append(i.toChar()) })
+        title.filter({ i -> i.toInt() < 127 }).forEach({ i -> sb.append(i) })
         return sb.toString()
-    }
-
-    companion object {
-
-        val requestConfig = RequestConfig.custom().setConnectionRequestTimeout(5000).setConnectTimeout(5000).setSocketTimeout(5000).build()
     }
 }
