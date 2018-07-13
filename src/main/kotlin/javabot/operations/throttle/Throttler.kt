@@ -34,7 +34,7 @@ class Throttler @Inject constructor(
      */
     fun isThrottled(user: JavabotUser): Boolean {
         if (!adminDao.isAdmin(user)) {
-            validateNickServAccount(user)
+//            validateNickServAccount(user)
             ds.save(ThrottleItem(user.nick))
             val criteria = ThrottleItemCriteria(ds)
             criteria.user(user.nick)
