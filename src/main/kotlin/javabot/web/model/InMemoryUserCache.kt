@@ -24,14 +24,15 @@ enum class InMemoryUserCache {
      * @return The matching User or absent
      */
     fun getBySessionToken(sessionToken: String?): User? {
+        if (sessionToken == null) {
+            return null
+        }
         // Check the cache
-        val user = if (sessionToken != null) userCache.getIfPresent(sessionToken) else null
-
+        val user = userCache.getIfPresent(sessionToken)
         if (user != null) {
             // Ensure we refresh the cache on a check to maintain the session timeout
             userCache.put(sessionToken, user)
         }
-
         return user
     }
 
