@@ -3,13 +3,20 @@ package javabot
 import org.aeonbits.owner.Config
 import org.aeonbits.owner.Config.DefaultValue
 import org.aeonbits.owner.Config.Key
+
 import org.aeonbits.owner.Config.LoadPolicy
 import org.aeonbits.owner.Config.LoadType
 import org.aeonbits.owner.Config.Sources
+import org.aeonbits.owner.Preprocessor
 
 @LoadPolicy(LoadType.FIRST)
 @Sources("file:javabot.properties")
-interface JavabotConfig : Config {
+interface JavabotConfig : Config, Preprocessor {
+
+    override fun process(input: String?): String? {
+        return input?.trim()
+    }
+
     @Key("javabot.url")
     fun url(): String
 

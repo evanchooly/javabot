@@ -56,9 +56,9 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
     @Produces("text/html;charset=ISO-8859-1")
     fun karma(@Context request: HttpServletRequest,
               @QueryParam("page") page: Int?,
-              @QueryParam("name") name: String?,
-              @QueryParam("value") value: Int?,
-              @QueryParam("userName") userName: String?): View {
+              @Suppress("UNUSED_PARAMETER") @QueryParam("name") name: String?,
+              @Suppress("UNUSED_PARAMETER") @QueryParam("value") value: Int?,
+              @Suppress("UNUSED_PARAMETER") @QueryParam("userName") userName: String?): View {
         return viewFactory.createKarmaView(request, page ?: 1)
     }
 
