@@ -1,5 +1,6 @@
 package javabot.model
 
+import com.antwerkz.sofia.Sofia
 import com.fasterxml.jackson.annotation.JsonView
 import javabot.json.Views.PUBLIC
 import org.bson.types.ObjectId
@@ -53,7 +54,9 @@ class Factoid(var name: String = "", var value: String = "", var userName: Strin
         message = message.replace("\$who", target)
         var replaced = replacedValue
         if (name.endsWith("$1")) {
-            replaced = replacedValue
+            if (replaced.isBlank()) {
+                return Sofia.missingTarget(name, sender)
+            }
         }
         if (name.endsWith(" $+")) {
             replaced = urlencode(replacedValue)
@@ -61,6 +64,7 @@ class Factoid(var name: String = "", var value: String = "", var userName: Strin
         if (name.endsWith(" $^")) {
             replaced = urlencode(camelcase(replacedValue))
         }
+
         message = message.replace("$1", replaced)
         message = message.replace("$+", replaced)
         message = message.replace("$^", replaced)
