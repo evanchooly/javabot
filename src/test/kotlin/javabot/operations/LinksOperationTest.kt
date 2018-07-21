@@ -69,7 +69,7 @@ class LinksOperationTest @Inject constructor(private val linkDao: LinkDao,
         response = operation.handleMessage(message("~list unapproved ${TEST_CHANNEL.name}"))
         assertEquals(response.size, 1)
 
-        response=operation.handleMessage(message("~list reject ${TEST_CHANNEL.name} $secondKey"))
+        response = operation.handleMessage(message("~list reject ${TEST_CHANNEL.name} $secondKey"))
         assertEquals(response.size, 1)
         assertEquals(response[0].value, Sofia.linksVerbApplied(secondKey, "rejected", TEST_CHANNEL.name))
 
@@ -210,6 +210,34 @@ class LinksOperationTest @Inject constructor(private val linkDao: LinkDao,
     }
 
     @Test
+    fun testApproveWithoutBeingOp() {
+        val mockIrcAdapter = bot.get().adapter as MockIrcAdapter
+
+        var response = operation.handleMessage(message("~submit http://foo.com This is a test"))
+        assertEquals(response[0].value, Sofia.linksAccepted("http://foo.com", TEST_CHANNEL.name))
+        assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 1)
+
+        response = operation.handleMessage(message("~submit http://bar.com This is another test"))
+        assertEquals(response[0].value, Sofia.linksAccepted("http://bar.com", TEST_CHANNEL.name))
+        assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 2)
+
+        response = operation.handleMessage(message("~list unapproved ${TEST_CHANNEL.name}"))
+        assertEquals(response.size, 2)
+
+        val firstKey = response[0].value.split(" ")[0]
+        val secondKey = response[1].value.split(" ")[0]
+        response = operation.handleMessage(message("~list approve ${TEST_CHANNEL.name} $firstKey"))
+        assertEquals(response.size, 1)
+        assertEquals(response[0].value, Sofia.linksVerbApplied(firstKey, "approved", TEST_CHANNEL.name))
+        mockIrcAdapter.disableOperation("isOp")
+        response = operation.handleMessage(message("~list approve ${TEST_CHANNEL.name} $secondKey"))
+        assertEquals(response.size, 1)
+        assertEquals(response[0].value, Sofia.linksNotAnOp(TEST_CHANNEL.name))
+
+        mockIrcAdapter.resetDisabledOperations()
+    }
+
+    @Test
     fun testSubmitPrivateMessageLinkNotOnChannel() {
         val mockIrcAdapter = bot.get().adapter as MockIrcAdapter
         mockIrcAdapter.disableOperation("isOnChannel")
@@ -217,6 +245,7 @@ class LinksOperationTest @Inject constructor(private val linkDao: LinkDao,
         val response = operation.handleMessage(privateMessage("submit ${TEST_CHANNEL.name} http://foo.com This is a test"))
         assertEquals(response[0].value, Sofia.linksNotOnChannel())
         assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 0)
+        mockIrcAdapter.resetDisabledOperations()
     }
 
     @Test
