@@ -24,6 +24,7 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
                     .map({ it.toString() })
                     .distinct()
                     .mapNotNull({ s -> findTitle(s, true) })
+                    .filter { s -> s.length >= 20 }
             return if (titlesToPost.isEmpty()) {
                 responses
             } else {
@@ -34,7 +35,6 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
             ignored.printStackTrace()
             return responses
         }
-
     }
 
     private fun postMessageToChannel(responses: MutableList<Message>, titlesToPost: List<String>, event: Message) {

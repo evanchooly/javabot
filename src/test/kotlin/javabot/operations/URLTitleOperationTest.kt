@@ -9,7 +9,7 @@ import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 import javax.inject.Inject
 
-@Test(groups = arrayOf("operations"))
+@Test(groups = ["operations"])
 class URLTitleOperationTest : BaseTest() {
     @Inject
     private lateinit var operation: URLTitleOperation
@@ -21,7 +21,7 @@ class URLTitleOperationTest : BaseTest() {
         if (content != null) {
             Assert.assertEquals(results[0].value, content)
         } else {
-            Assert.assertTrue(results.isEmpty(), "Results for '${url}' should be empty: ${results}")
+            Assert.assertTrue(results.isEmpty(), "Results for '$url' should be empty: $results")
         }
     }
 
@@ -60,7 +60,8 @@ class URLTitleOperationTest : BaseTest() {
                 arrayOf("Two urls, duplicated:  http://javachannel.org/ and http://javachannel.org/"
                         , "botuser's title: \"Freenode ##java  enthusiasts united\""),
                 arrayOf("https://twitter.com/djspiewak/status/1004038775989678080", "botuser's title: \"Daniel Spiewak on Twitter: \"Random best practice note: just because your language has type inference doesn't mean it's bad to explicitly write types. Types are good! Types are documentation. Don't make future code reviewers play the human compiler game.\"\""),
-                arrayOf("http://refheap.com", null) // this may change: right now, refheap.com returns a 502
+                arrayOf("http://refheap.com", null), // this may change: right now, refheap.com returns a 502
+                arrayOf("Ignore title if it doesn't contain at least 20 ascii chars https://www.baidu.com/", null)
         )
     }
 
