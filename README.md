@@ -32,13 +32,13 @@ To build and test Javabot, you'll need to do a few things.
 
 1. Start mongodb; one example command, which will locate the data files in the
    current directory, is this:  
-```
+   ```
     mongod --noauth --dbpath .
-```
+   ```
    In Docker, you'd use:
-```
+   ```
     docker run -d -p 27017:27017 --name mongodb mongo
-```
+   ```
 1. Build and test.
 
 Developing
@@ -63,3 +63,34 @@ resolve after running `mvn compile` at least once, then open up the javabot.iml 
 
 To test the web application aspects, you need to copy the `javabot-sample.yml` to `javabot.yml`; this will put the
 web container on port 8081 by default.
+
+Testing on a Live Server
+------
+Freenode maintains a [test instance of their ircd](https://freenode.net/news/testing-the-nets).  This is ideal for quickly running javabot and testing out commands or verifying your configuration.
+
+To quickly get javabot running on a live server, ensure you've followed the steps in the Building section and change javabot.properties as follows:
+
+```
+# Connect to freenode test
+javabot.server=testnet.freenode.net 
+javabot.port=9002
+
+# Give your javabot a unique nick
+javabot.nick=tk-421
+```
+
+Then, start javabot using maven
+```
+mvn clean compile exec:java -DmainClass=javabot.Javabot
+```
+The bot may take attempt to cycle through servers on testnet to connect if they are unavailable.  Once it has been connected, invite it to a channel (e.g. `/invite tk-421 ##tk421-javabot-test`) and issue commands to it.  
+
+Note that usage of testnet is optional and any available irc server should be sufficient.  Javabot's server config can be changed after it has been initialized by connecting directly to mongodb as follows:
+
+```
+$ mongo
+> use javabot-sample
+switched to db javabot-sample
+> db.configuration.update({}, {$set:{"server":"chat.freenode.net","port":6667}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 0 })
+```
