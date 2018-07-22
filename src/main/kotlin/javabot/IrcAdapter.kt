@@ -206,7 +206,7 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
     }
 
     open fun getUser(nick: String): JavabotUser {
-        return ircBot.get().userChannelDao.getUser("cheeser").toJavabot()
+        return ircBot.get().userChannelDao.getUser(nick).toJavabot()
     }
 
     open fun isConnected(): Boolean {
