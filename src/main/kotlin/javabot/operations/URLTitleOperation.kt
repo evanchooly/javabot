@@ -70,7 +70,7 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
         val header = doc.select("meta[property=\"og:title\"]")
         return if (header.isNotEmpty()) {
             val body = doc.getElementsByClass("js-tweet-text-container")
-            if (!body.isEmpty()) {
+            if (body.isNotEmpty()) {
                 String.format("%s: \"%s\"", header.first().attr("content"), body.first().text())
             } else {
                 doc.title()
