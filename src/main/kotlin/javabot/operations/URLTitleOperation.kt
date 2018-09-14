@@ -67,13 +67,15 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
     }
 
     fun parseTitle(doc: Document): String {
-        val body = doc.getElementsByClass("js-tweet-text-container")
         val header = doc.select("meta[property=\"og:title\"]")
-        return if (!body.isEmpty() && !header.isEmpty()) {
-            String.format("%s: \"%s\"", header.first().attr("content"), body.first().text())
-        } else {
-            doc.title()
-        }
+        return if (header.isNotEmpty()) {
+            val body = doc.getElementsByClass("js-tweet-text-container")
+            if (!body.isEmpty()) {
+                String.format("%s: \"%s\"", header.first().attr("content"), body.first().text())
+            } else {
+                doc.title()
+            }
+        } else doc.title()
     }
 
     private fun clean(title: String) = title.replace("[^\\p{InBASIC_LATIN}]".toRegex(), "")
