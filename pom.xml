@@ -287,26 +287,10 @@
             <version>${slf4j.version}</version>
         </dependency>
 
-<!--
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <scope>compile</scope>
-            <version>${logback.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <scope>compile</scope>
-            <version>${logback.version}</version>
-        </dependency>
--->
-
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.7.3</version>
+            <version>${jsoup.version}</version>
         </dependency>
 
         <dependency>
@@ -475,14 +459,14 @@
         <dropwizard.version>0.7.1</dropwizard.version>
         <guice.version>4.0</guice.version>
         <jacoco.version>0.7.7.201606060606</jacoco.version>
-        <kotlin.version>1.2.10</kotlin.version>
+        <kotlin.version>1.2.70</kotlin.version>
         <logback.version>1.2.3</logback.version>
         <mongo.driver.version>3.5.0</mongo.driver.version>
         <morphia.version>1.2.1</morphia.version>
         <roaster.version>2.19.0.Final</roaster.version>
         <slf4j.version>1.7.25</slf4j.version>
         <sofia.version>0.23</sofia.version>
-
+        <jsoup.version>1.11.3</jsoup.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 </project>

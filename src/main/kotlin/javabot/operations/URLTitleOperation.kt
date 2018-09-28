@@ -5,11 +5,8 @@ import javabot.Message
 import javabot.dao.AdminDao
 import javabot.operations.urlcontent.URLContentAnalyzer
 import javabot.operations.urlcontent.URLFromMessageParser
-import org.apache.http.client.config.RequestConfig
-import org.apache.http.client.methods.HttpGet
-import org.apache.http.impl.client.HttpClientBuilder
-import org.apache.http.util.EntityUtils
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import java.io.IOException
 import javax.inject.Inject
 
@@ -51,7 +48,7 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
                         .userAgent("Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/41.0")
                         .timeout(5000)
                         .get()
-                var title = document.title()
+                var title = parseTitle(document)
                 title = clean(title)
                 return if (analyzer.check(url, title)) title else null
             } catch (ioe: IOException) {
@@ -69,9 +66,17 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
         }
     }
 
-    private fun clean(title: String): String {
-        val sb = StringBuilder()
-        title.filter({ i -> i.toInt() < 127 }).forEach({ i -> sb.append(i) })
-        return sb.toString()
+    fun parseTitle(doc: Document): String {
+        val header = doc.select("meta[property=\"og:title\"]")
+        return if (header.isNotEmpty()) {
+            val body = doc.getElementsByClass("js-tweet-text-container")
+            if (body.isNotEmpty()) {
+                String.format("%s: \"%s\"", header.first().attr("content"), body.first().text())
+            } else {
+                doc.title()
+            }
+        } else doc.title()
     }
+
+    private fun clean(title: String) = title.replace("[^\\p{InBASIC_LATIN}]".toRegex(), "")
 }

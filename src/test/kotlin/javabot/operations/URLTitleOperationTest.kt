@@ -61,6 +61,7 @@ class URLTitleOperationTest : BaseTest() {
                         , "botuser's title: \"Freenode ##java  enthusiasts united\""),
                 arrayOf("https://twitter.com/djspiewak/status/1004038775989678080", "botuser's title: \"Daniel Spiewak on Twitter: \"Random best practice note: just because your language has type inference doesn't mean it's bad to explicitly write types. Types are good! Types are documentation. Don't make future code reviewers play the human compiler game.\"\""),
                 arrayOf("http://refheap.com", null), // this may change: right now, refheap.com returns a 502
+                arrayOf("https://twitter.com/OpenJDK/status/1040259287556259842", "botuser's title: \"OpenJDK on Twitter: \"http://openjdk.java.net and some of its subdomains (cr, hg, and mail), along with http://jdk.java.net , are unreachable via http. We're working to fix the problem as quickly as possible.\"\""),
                 arrayOf("Ignore title if it doesn't contain at least 20 ascii chars https://www.baidu.com/", null)
         )
     }
