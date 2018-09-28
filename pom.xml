@@ -287,22 +287,6 @@
             <version>${slf4j.version}</version>
         </dependency>
 
-        <!--
-                <dependency>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                    <scope>compile</scope>
-                    <version>${logback.version}</version>
-                </dependency>
-
-                <dependency>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-core</artifactId>
-                    <scope>compile</scope>
-                    <version>${logback.version}</version>
-                </dependency>
-        -->
-
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
