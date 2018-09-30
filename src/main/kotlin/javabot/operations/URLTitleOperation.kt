@@ -69,7 +69,7 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
     fun parseTitle(doc: Document): String {
         val header = doc.select("meta[property=\"og:title\"]")
         return if (header.isNotEmpty()) {
-            val body = doc.getElementsByClass("js-tweet-text-container")
+            val body = doc.select(".permalink-tweet-container .js-tweet-text-container")
             if (body.isNotEmpty()) {
                 String.format("%s: \"%s\"", header.first().attr("content"), body.first().text())
             } else {
