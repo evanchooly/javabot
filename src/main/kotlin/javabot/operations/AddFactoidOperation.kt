@@ -82,6 +82,7 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                             factoid.value = factoid.value.toLowerCase()
                         }
                         if (redefine) {
+                            factoid.userName = event.user.nick
                             factoid.updated = LocalDateTime.now()
                         }
                         if (factoid.id != null) {
