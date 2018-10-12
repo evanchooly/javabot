@@ -44,13 +44,17 @@ class AddFactoidOperationTest @Inject constructor(val factoidDao: FactoidDao, va
     fun replace() {
         var response = addFactoidOperation.handleMessage(message("~replace is first entry"))
         Assert.assertEquals(response[0].value, OK)
-        val updated = factoidDao.getFactoid("replace")!!.updated
-        val originalUser = factoidDao.getFactoid("replace")!!.userName
+        var factoid = factoidDao.getFactoid("replace")!!
+
+        val updated = factoid.updated
+        Assert.assertEquals(factoid.userName, TEST_USER.nick)
 
         response = addFactoidOperation.handleMessage(message("~no, replace is <reply>second entry", user = TEST_NON_ADMIN_USER))
         Assert.assertEquals(response[0].value, Sofia.ok(TEST_NON_ADMIN_USER.nick))
-        Assert.assertTrue(factoidDao.getFactoid("replace")!!.updated.isAfter(updated))
-        Assert.assertEquals(factoidDao.getFactoid("replace")!!.userName, TEST_NON_ADMIN_USER.nick)
+
+        factoid = factoidDao.getFactoid("replace")!!
+        Assert.assertTrue(factoid.updated.isAfter(updated))
+        Assert.assertEquals(factoid.userName, TEST_NON_ADMIN_USER.nick)
 
         response = getFactoidOperation.handleMessage(message("~replace"))
         Assert.assertEquals(response[0].value, "second entry")
