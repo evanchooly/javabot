@@ -6,14 +6,11 @@ import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ChangeDao
 import javabot.dao.ChannelDao
-import javabot.dao.LinkDao
-import javabot.model.Link
 import java.net.URL
 import javax.inject.Inject
 
 class LinksOperation @Inject constructor(bot: Javabot,
                                          adminDao: AdminDao,
-                                         var dao: LinkDao,
                                          var changeDao: ChangeDao,
                                          var channelDao: ChannelDao) : BotOperation(bot, adminDao) {
 
@@ -29,44 +26,9 @@ class LinksOperation @Inject constructor(bot: Javabot,
 
         responses.addAll(when (tokens[0].toLowerCase()) {
             "submit" -> handleSubmit(event)
-            "list" -> handleList(event)
             else -> emptyList()
         })
         return responses
-    }
-
-    private fun handleList(event: Message): List<Message> {
-        val responses: MutableList<Message> = mutableListOf()
-        val needsChannel = event.channel?.name?.isEmpty() ?: true
-
-        val tokens = event.value.split(" ").toMutableList()
-        // remove the "list" command, which is handled by the calling method
-        tokens.removeAt(0)
-        when (tokens[0].toLowerCase()) {
-            "approved" -> showMessageLists(tokens, needsChannel, event, responses, dao::approvedLinks, tokens[0])
-            "unapproved" -> showMessageLists(tokens, needsChannel, event, responses, dao::unapprovedLinks, tokens[0], true)
-            "approve" -> handleVerb(tokens, needsChannel, event, responses, dao::approveLink, tokens[0])
-            "reject" -> handleVerb(tokens, needsChannel, event, responses, dao::rejectUnapprovedLink, tokens[0])
-            "help" -> showHelp(event, responses)
-            else -> {
-                responses.add(Message(event, Sofia.linksInvalidCommand(tokens[0])))
-            }
-        }
-        return responses
-    }
-
-    private fun showHelp(event: Message, responses: MutableList<Message>) {
-        responses.addAll(
-                listOf(
-                        "Available commands for link management:",
-                        "list approved [channel] [count] - shows the [count] approved links for channel [channel]",
-                        "list unapproved [channel] [count] - shows the [count] unapproved links for channel [channel]",
-                        "list approve [channel] [key] - approves the link with key [key] for channel [channel]",
-                        "list reject [channel] [key] - deletes the link with key [key] for channel [channel]",
-                        "list help - shows this text"
-                )
-                        .map { Message(event.user, it) }
-        )
     }
 
     private fun handleSubmit(event: Message): List<Message> {
@@ -93,7 +55,6 @@ class LinksOperation @Inject constructor(bot: Javabot,
                         .firstOrNull()
                 if (firstUrl != null) {
                     // we have a url! Submit this puppy as is after stripping off "submit"
-                    dao.addLink(channel, event.user.userName, firstUrl.toString(), event.value.substring("submit ".length))
                     responses.add(Message(event, Sofia.linksAccepted(firstUrl, channel)))
                 } else {
                     responses.add(Message(event, Sofia.linksRejectedNoUrl()))
@@ -103,49 +64,6 @@ class LinksOperation @Inject constructor(bot: Javabot,
             responses.add(Message(event, Sofia.linksNoChannel()))
         }
         return responses
-    }
-
-    private fun handleVerb(tokens: MutableList<String>,
-                           needsChannel: Boolean,
-                           event: Message,
-                           responses: MutableList<Message>,
-                           modifyFunction: (String, String) -> Unit,
-                           command: String) {
-        tokens.removeAt(0)
-        try {
-            val channel = extractChannel(tokens, needsChannel, event)
-            if (!bot.adapter.isOp(event.user.nick, channel)) {
-                responses.add(Message(event, Sofia.linksNotAnOp(channel)))
-            } else {
-                val key = extractKey(tokens)
-                try {
-                    modifyFunction(channel, key)
-                    responses.add(Message(event, Sofia.linksVerbApplied(key, formatPastTense(command), channel)))
-                } catch (e: IllegalArgumentException) {
-                    responses.add(Message(event, Sofia.linksNotFound(key)))
-                }
-            }
-        } catch (e: NoChannelException) {
-            responses.add(Message(event, Sofia.linksNoChannel()))
-        } catch (e: NoMessageKeyException) {
-            responses.add(Message(event, Sofia.linksNoKeySpecified(command)))
-        }
-    }
-
-    private fun formatPastTense(input: String): String {
-        val verb = input.toLowerCase()
-        return verb +
-                if ("aeiou".indexOf(verb.last()) != -1) "d" else "ed"
-    }
-
-    private fun extractKey(tokens: MutableList<String>): String {
-        return if (tokens.isNotEmpty()) {
-            val tok = tokens[0]
-            tokens.removeAt(0)
-            tok
-        } else {
-            throw NoMessageKeyException("No message key specified")
-        }
     }
 
     /**
@@ -186,52 +104,6 @@ class LinksOperation @Inject constructor(bot: Javabot,
         return chan
     }
 
-    private fun showMessageLists(tokens: MutableList<String>,
-                                 needsChannel: Boolean,
-                                 event: Message,
-                                 responses: MutableList<Message>,
-                                 listFunction: (String) -> List<Link>,
-                                 status: String,
-                                 needsOps: Boolean = false) {
-        tokens.removeAt(0)
-        try {
-            val channel = extractChannel(tokens, needsChannel, event)
-            val count = getOptionalCount(tokens)
-            if (needsOps && !bot.adapter.isOp(event.user.nick, channel)) {
-                responses.add(Message(event, Sofia.linksNotAnOp(channel)))
-            } else {
-                responses.addAll(
-                        listFunction(channel)
-                                .map {
-                                    val id = it.id.toString()
-                                    Message(event.user, Sofia.linksList(id.substring(id.length - 5), it.info))
-                                }
-                                .toList()
-                                .take(count)
-                )
-                if (responses.size == 0) {
-                    responses.add(Message(event, Sofia.linksNoLinksOfStatus(status, channel)))
-                }
-            }
-        } catch (e: WrongChannelException) {
-            responses.add(Message(event, Sofia.linksWrongChannel(e.channelName)))
-        } catch (e: NoChannelException) {
-            responses.add(Message(event, Sofia.linksNoChannel()))
-        }
-    }
-
-    private fun getOptionalCount(tokens: MutableList<String>): Int {
-        return try {
-            if (tokens.isNotEmpty()) {
-                tokens[0].toInt()
-            } else {
-                5
-            }
-        } catch (e: Exception) {
-            5
-        }
-    }
-
     private fun isValidChannel(token: String): Boolean {
         return bot.adapter.isChannel(token)
     }
@@ -244,5 +116,3 @@ class LinksOperation @Inject constructor(bot: Javabot,
 class WrongChannelException(c: String, val channelName: String) : Throwable(c)
 
 class NoChannelException(s: String) : Throwable(s)
-
-class NoMessageKeyException(s: String) : Throwable(s)
