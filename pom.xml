@@ -331,7 +331,7 @@
 
         <dependency>
             <groupId>${morphia.groupId}</groupId>
-            <artifactId>morphia</artifactId>
+            <artifactId>${morphia.artifactId}</artifactId>
             <version>${morphia.version}</version>
         </dependency>
 
@@ -477,5 +477,6 @@
         <jsoup.version>1.11.3</jsoup.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <morphia.groupId>org.mongodb.morphia</morphia.groupId>
+        <morphia.artifactId>morphia</morphia.artifactId>
     </properties>
 </project>
