@@ -330,7 +330,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.mongodb.morphia</groupId>
+            <groupId>${morphia.groupId}</groupId>
             <artifactId>morphia</artifactId>
             <version>${morphia.version}</version>
         </dependency>
@@ -430,6 +430,14 @@
             <version>1.0.10</version>
         </dependency>
 
+
+        <dependency>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.0.1</version>
+          <type>maven-plugin</type>
+        </dependency>
+
         <!-- Unit testing dependencies -->
         <dependency>
             <groupId>org.testng</groupId>
@@ -468,5 +476,6 @@
         <sofia.version>0.23</sofia.version>
         <jsoup.version>1.11.3</jsoup.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <morphia.groupId>org.mongodb.morphia</morphia.groupId>
     </properties>
 </project>
