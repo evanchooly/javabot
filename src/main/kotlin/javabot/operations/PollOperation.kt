@@ -105,21 +105,19 @@ constructor(bot: Javabot,
                         bot.adapter.send(channel, Sofia.pollWinner(activePoll.question,
                                 activePoll.answers[winner.value - 1]))
                     } else {
-                        try {
-                            val converter = ValueConverters.ENGLISH_INTEGER
-                            val lastEntry = winners.last().first
-                            val (winnerList, enumerator, voteCount) = listOf(
-                                    buildWinnerList(winners, activePoll, lastEntry, if (winners.size > 2) ", " else " "),
-                                    if (winners.size > 2) "each" else "both",
-                                    converter.asWords(winner.value)
-                                            + " vote"
-                                            + if (winner.value != 1) "s" else ""
-                            )
-                            bot.adapter.send(channel,
-                                    Sofia.pollTied(activePoll.question, winnerList, enumerator, voteCount))
-                        } catch (e: Throwable) {
-                            e.printStackTrace()
-                        }
+                        val converter = ValueConverters.ENGLISH_INTEGER
+                        val lastEntry = winners.last().first
+                        val (winnerList, enumerator, voteCount) = listOf(
+                                buildWinnerList(
+                                        winners, activePoll, lastEntry,
+                                        if (winners.size > 2) ", " else " "),
+                                if (winners.size > 2) "each" else "both",
+                                converter.asWords(winner.value)
+                                        + " vote"
+                                        + if (winner.value != 1) "s" else ""
+                        )
+                        bot.adapter.send(channel,
+                                Sofia.pollTied(activePoll.question, winnerList, enumerator, voteCount))
                     }
                 } else {
                     bot.adapter.send(channel, Sofia.pollNoAnswers(activePoll.question))
