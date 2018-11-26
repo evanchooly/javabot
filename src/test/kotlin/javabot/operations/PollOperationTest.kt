@@ -62,6 +62,38 @@ class PollOperationTest
     }
 
     @Test
+    fun createPollWithTie() {
+        testPoll({
+            val random = Random()
+            for (vote in 1..3) {
+                operation.handleMessage(message("~vote $vote", "~",
+                        JavabotUser("v" + random.nextInt(),
+                                "a" + random.nextInt(),
+                                "b@" + random.nextInt())))
+            }
+        },
+                Sofia.pollTied("best ice cream?", "vanilla, strawberry, chocolate", "one vote")
+        )
+    }
+
+    @Test
+    fun createPollWithTiePlural() {
+        testPoll({
+            val random = Random()
+            for (i in 1..2) {
+                for (vote in 1..3) {
+                    operation.handleMessage(message("~vote $vote", "~",
+                            JavabotUser("v" + random.nextInt(),
+                                    "a" + random.nextInt(),
+                                    "b@" + random.nextInt())))
+                }
+            }
+        },
+                Sofia.pollTied("best ice cream?", "vanilla, strawberry, chocolate", "two votes")
+        )
+    }
+
+    @Test
     fun createPollWithNoVotes() {
         testPoll({}, "The poll for \"best ice cream?\" received no votes.")
     }
@@ -101,6 +133,7 @@ class PollOperationTest
     @Test
     fun voteForInvalidChoice() {
         var response = operation.handleMessage(message("~poll ${ICECREAM_POLL}"))
+        assertEquals(response.size, 1)
         response = operation.handleMessage(message("~vote 4"))
         assertEquals(response.size, 1)
         assertEquals(response[0].value, "Vote rejected; 4 is not an option. Votes should be numeric, from 1 to 3.")

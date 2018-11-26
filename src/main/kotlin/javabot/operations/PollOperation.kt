@@ -10,6 +10,7 @@ import javabot.dao.ChannelDao
 import javabot.dao.LinkDao
 import javabot.model.BadVoteOptionException
 import javabot.model.Poll
+import pl.allegro.finance.tradukisto.ValueConverters
 import java.lang.Integer.parseInt
 import java.time.Duration
 import java.util.concurrent.Executors
@@ -62,7 +63,7 @@ constructor(bot: Javabot,
                                     responses.add(Message(event.channel, event,
                                             Sofia.pollBadVoteOption(command[1], 1, poll.answers.size)))
                                 }
-                            } catch(e:Exception) {
+                            } catch (e: Exception) {
                                 responses.add(Message(event.channel, event,
                                         Sofia.pollBadVote(command[1], 1, poll.answers.size)))
                             }
@@ -86,8 +87,30 @@ constructor(bot: Javabot,
             if (channel != null) {
                 val winner = activePoll.results().maxBy { it.value }
                 if (winner != null) {
-                    bot.adapter.send(channel, Sofia.pollWinner(activePoll.question, activePoll.answers[winner.value - 1]))
-
+                    // check for ties!
+                    val winners = activePoll
+                            .results()
+                            .filter { it.value == winner.value }
+                            .toList()
+                    if (winners.size == 1) {
+                        bot.adapter.send(channel, Sofia.pollWinner(activePoll.question,
+                                activePoll.answers[winner.value - 1]))
+                    } else {
+                        try {
+                            val converter = ValueConverters.ENGLISH_INTEGER
+                            bot.adapter.send(channel,
+                                    Sofia.pollTied(activePoll.question,
+                                            winners
+                                                    .map { activePoll.answers[it.first - 1] }
+                                                    .joinToString(", "),
+                                            converter.asWords(winner.value)
+                                                    + " vote"
+                                                    + if (winner.value != 1) "s" else ""
+                                    ))
+                        } catch (e: Throwable) {
+                            e.printStackTrace()
+                        }
+                    }
                 } else {
                     bot.adapter.send(channel, Sofia.pollNoAnswers(activePoll.question))
                 }
@@ -98,7 +121,6 @@ constructor(bot: Javabot,
             *
             * Truth is, it doesn't matter - we can disregard any errors here.
             */
-
         }
     }
 }

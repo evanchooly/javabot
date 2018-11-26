@@ -27,7 +27,7 @@ class TestPollModel {
     fun parsePollFromInput(input: String, question: String, candidates: Array<String>) {
         val poll = Poll.parse(input)
         assertEquals(poll.question, question)
-        assertEquals(poll.answers.size, 3)
+        assertEquals(poll.answers.size, candidates.size)
     }
 
     @Test(dataProvider = "badPolls", expectedExceptions = arrayOf(IllegalArgumentException::class))
