@@ -58,7 +58,7 @@ class PollOperationTest
                                     "b@" + random.nextInt())))
                 }
             }
-        }, "The poll for \"best ice cream?\" has ended, and \"chocolate\" won.")
+        }, Sofia.pollWinner("best ice cream?", "chocolate", "three votes"))
     }
 
     @Test
@@ -105,6 +105,24 @@ class PollOperationTest
             }
         },
                 Sofia.pollTied("best ice cream?", "vanilla, strawberry, and chocolate", "each", "two votes")
+        )
+    }
+
+    @Test
+    fun validateHostMaskForVoting() {
+        testPoll({
+            val random = Random()
+            val hostmask = "b@" + random.nextInt()
+            for (i in 1..2) {
+                for (vote in 1..3) {
+                    operation.handleMessage(message("~vote $vote", "~",
+                            JavabotUser("v" + random.nextInt(),
+                                    "a" + random.nextInt(),
+                                    hostmask)))
+                }
+            }
+        },
+                Sofia.pollWinner("best ice cream?", "chocolate", "one vote")
         )
     }
 

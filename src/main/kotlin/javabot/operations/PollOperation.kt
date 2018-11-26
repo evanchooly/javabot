@@ -102,8 +102,10 @@ constructor(bot: Javabot,
                             .filter { it.value == winner.value }
                             .toList()
                     if (winners.size == 1) {
-                        bot.adapter.send(channel, Sofia.pollWinner(activePoll.question,
-                                activePoll.answers[winner.value - 1]))
+                        bot.adapter.send(channel, Sofia.pollWinner(
+                                activePoll.question,
+                                activePoll.answers[winner.key - 1],
+                                expressVotes(winner.value)))
                     } else {
                         val converter = ValueConverters.ENGLISH_INTEGER
                         val lastEntry = winners.last().first
@@ -112,10 +114,7 @@ constructor(bot: Javabot,
                                         winners, activePoll, lastEntry,
                                         if (winners.size > 2) ", " else " "),
                                 if (winners.size > 2) "each" else "both",
-                                converter.asWords(winner.value)
-                                        + " vote"
-                                        + if (winner.value != 1) "s" else ""
-                        )
+                                expressVotes(winner.value))
                         bot.adapter.send(channel,
                                 Sofia.pollTied(activePoll.question, winnerList, enumerator, voteCount))
                     }
@@ -130,6 +129,14 @@ constructor(bot: Javabot,
             * Truth is, it doesn't matter - we can disregard any errors here.
             */
         }
+    }
+
+    private fun expressVotes(votes: Int): String {
+        val converter = ValueConverters.ENGLISH_INTEGER
+        return converter.asWords(votes) +
+                " vote" +
+                if (votes != 1) "s" else ""
+
     }
 
     private fun buildWinnerList(winners: List<Pair<Int, Int>>, activePoll: Poll, lastEntry: Int, separator: String): String {
