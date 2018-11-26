@@ -145,9 +145,9 @@ constructor(bot: Javabot,
                 .map {
                     val answer = activePoll.answers[it.first - 1]
                     if (it.first == lastEntry) {
-                        "and $answer"
+                        "and \"$answer\""
                     } else {
-                        answer
+                        "\"$answer\""
                     }
                 }
                 .joinToString(separator)

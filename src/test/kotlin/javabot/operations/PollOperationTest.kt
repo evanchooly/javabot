@@ -72,7 +72,7 @@ class PollOperationTest
                                 "b@" + random.nextInt())))
             }
         },
-                Sofia.pollTied("best ice cream?", "vanilla, strawberry, and chocolate", "each", "one vote")
+                Sofia.pollTied("best ice cream?", "\"vanilla\", \"strawberry\", and \"chocolate\"", "each", "one vote")
         )
     }
 
@@ -87,7 +87,7 @@ class PollOperationTest
                                 "b@" + random.nextInt())))
             }
         },
-                Sofia.pollTied("best ice cream?", "strawberry and chocolate", "both", "one vote")
+                Sofia.pollTied("best ice cream?", "\"strawberry\" and \"chocolate\"", "both", "one vote")
         )
     }
 
@@ -104,7 +104,7 @@ class PollOperationTest
                 }
             }
         },
-                Sofia.pollTied("best ice cream?", "vanilla, strawberry, and chocolate", "each", "two votes")
+                Sofia.pollTied("best ice cream?", "\"vanilla\", \"strawberry\", and \"chocolate\"", "each", "two votes")
         )
     }
 
