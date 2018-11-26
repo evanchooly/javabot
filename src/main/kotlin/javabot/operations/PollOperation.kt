@@ -9,10 +9,12 @@ import javabot.dao.ChangeDao
 import javabot.dao.ChannelDao
 import javabot.dao.LinkDao
 import javabot.model.BadVoteOptionException
+import javabot.model.Channel
 import javabot.model.Poll
 import pl.allegro.finance.tradukisto.ValueConverters
 import java.lang.Integer.parseInt
 import java.time.Duration
+import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -31,51 +33,58 @@ constructor(bot: Javabot,
 
     override fun handleMessage(event: Message): List<Message> {
         val responses: MutableList<Message> = mutableListOf()
-        if (event.channel != null) {
-            val submission = event.value.trim()
-            val command = submission.split(" ")
-            if (command.size > 0) {
-                when (command[0].toLowerCase()) {
-                    "poll" -> {
-                        if (polls.containsKey(event.channel.name)) {
-                            responses.add(Message(event.channel, event, Sofia.pollAlreadyExists()))
-                        } else {
-                            try {
-                                val poll = Poll.parse(submission.substring(5), expiration)
-                                polls.put(event.channel.name, poll)
-                                executorService.schedule({
-                                    this.expirePoll(event.channel.name)
-                                }, expiration.toMillis(), TimeUnit.MILLISECONDS)
-                                responses.add(Message(event.channel, event, Sofia.pollAccepted(poll.question)))
-                            } catch (iae: IllegalArgumentException) {
-                                responses.add(Message(event.channel, event, Sofia.pollRejected()))
-                            }
-                        }
+        val submission = event.value.trim()
+        val command = submission.split(" ")
+        if (command.size > 0) {
+            when (command[0].toLowerCase()) {
+                "poll" -> createPoll(responses, event, submission)
+                "vote" -> addVote(command, event, responses)
+            }
+        }
+        return responses
+    }
+
+    private fun addVote(command: List<String>, event: Message, responses: MutableList<Message>) {
+        val channel = event.channel
+        if (channel != null) {
+            if (polls.containsKey(channel.name)) {
+                val poll = polls[channel.name]!! // we know it's there by now
+                try {
+                    val vote = parseInt(command[1])
+                    try {
+                        poll.vote(event.user.hostmask, vote)
+                    } catch (e: BadVoteOptionException) {
+                        responses.add(Message(channel, event,
+                                Sofia.pollBadVoteOption(command[1], 1, poll.answers.size)))
                     }
-                    "vote" -> {
-                        if (polls.containsKey(event.channel.name)) {
-                            val poll = polls[event.channel.name]!! // we know it's there by now
-                            try {
-                                val vote = parseInt(command[1])
-                                try {
-                                    poll.vote(event.user.hostmask, vote)
-                                } catch (e: BadVoteOptionException) {
-                                    responses.add(Message(event.channel, event,
-                                            Sofia.pollBadVoteOption(command[1], 1, poll.answers.size)))
-                                }
-                            } catch (e: Exception) {
-                                responses.add(Message(event.channel, event,
-                                        Sofia.pollBadVote(command[1], 1, poll.answers.size)))
-                            }
-                        } else {
-                            responses.add(Message(event.channel, event, Sofia.pollNoActivePoll()))
-                        }
-                    }
+                } catch (e: Exception) {
+                    responses.add(Message(channel, event,
+                            Sofia.pollBadVote(command[1], 1, poll.answers.size)))
+                }
+            } else {
+                responses.add(Message(channel, event, Sofia.pollNoActivePoll()))
+            }
+        }
+    }
+
+    private fun createPoll(responses: MutableList<Message>, event: Message, submission: String) {
+        val channel = event.channel
+        if (channel != null) {
+            if (polls.containsKey(channel.name)) {
+                responses.add(Message(channel, event, Sofia.pollAlreadyExists()))
+            } else {
+                try {
+                    val poll = Poll.parse(submission.substring(5), expiration)
+                    polls.put(channel.name, poll)
+                    executorService.schedule({
+                        this.expirePoll(channel.name)
+                    }, expiration.toMillis(), TimeUnit.MILLISECONDS)
+                    responses.add(Message(channel, event, Sofia.pollAccepted(poll.question)))
+                } catch (iae: IllegalArgumentException) {
+                    responses.add(Message(channel, event, Sofia.pollRejected()))
                 }
             }
         }
-
-        return responses
     }
 
     private fun expirePoll(name: String) {
@@ -98,15 +107,16 @@ constructor(bot: Javabot,
                     } else {
                         try {
                             val converter = ValueConverters.ENGLISH_INTEGER
+                            val lastEntry = winners.last().first
+                            val (winnerList, enumerator, voteCount) = listOf(
+                                    buildWinnerList(winners, activePoll, lastEntry, if (winners.size > 2) ", " else " "),
+                                    if (winners.size > 2) "each" else "both",
+                                    converter.asWords(winner.value)
+                                            + " vote"
+                                            + if (winner.value != 1) "s" else ""
+                            )
                             bot.adapter.send(channel,
-                                    Sofia.pollTied(activePoll.question,
-                                            winners
-                                                    .map { activePoll.answers[it.first - 1] }
-                                                    .joinToString(", "),
-                                            converter.asWords(winner.value)
-                                                    + " vote"
-                                                    + if (winner.value != 1) "s" else ""
-                                    ))
+                                    Sofia.pollTied(activePoll.question, winnerList, enumerator, voteCount))
                         } catch (e: Throwable) {
                             e.printStackTrace()
                         }
@@ -122,5 +132,18 @@ constructor(bot: Javabot,
             * Truth is, it doesn't matter - we can disregard any errors here.
             */
         }
+    }
+
+    private fun buildWinnerList(winners: List<Pair<Int, Int>>, activePoll: Poll, lastEntry: Int, separator: String): String {
+        return winners
+                .map {
+                    val answer = activePoll.answers[it.first - 1]
+                    if (it.first == lastEntry) {
+                        "and $answer"
+                    } else {
+                        answer
+                    }
+                }
+                .joinToString(separator)
     }
 }

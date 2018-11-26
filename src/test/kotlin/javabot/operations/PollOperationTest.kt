@@ -62,7 +62,7 @@ class PollOperationTest
     }
 
     @Test
-    fun createPollWithTie() {
+    fun createPollWithThreewayTie() {
         testPoll({
             val random = Random()
             for (vote in 1..3) {
@@ -72,7 +72,22 @@ class PollOperationTest
                                 "b@" + random.nextInt())))
             }
         },
-                Sofia.pollTied("best ice cream?", "vanilla, strawberry, chocolate", "one vote")
+                Sofia.pollTied("best ice cream?", "vanilla, strawberry, and chocolate", "each", "one vote")
+        )
+    }
+
+    @Test
+    fun createPollWithDualTie() {
+        testPoll({
+            val random = Random()
+            for (vote in 2..3) {
+                operation.handleMessage(message("~vote $vote", "~",
+                        JavabotUser("v" + random.nextInt(),
+                                "a" + random.nextInt(),
+                                "b@" + random.nextInt())))
+            }
+        },
+                Sofia.pollTied("best ice cream?", "strawberry and chocolate", "both", "one vote")
         )
     }
 
@@ -89,7 +104,7 @@ class PollOperationTest
                 }
             }
         },
-                Sofia.pollTied("best ice cream?", "vanilla, strawberry, chocolate", "two votes")
+                Sofia.pollTied("best ice cream?", "vanilla, strawberry, and chocolate", "each", "two votes")
         )
     }
 
@@ -128,6 +143,18 @@ class PollOperationTest
         val response = operation.handleMessage(message("~vote 1"))
         assertEquals(response.size, 1)
         assertEquals(response[0].value, Sofia.pollNoActivePoll())
+    }
+
+    @Test
+    fun rejectPrivatePoll() {
+        val response = operation.handleMessage(privateMessage("~poll ${ICECREAM_POLL}"))
+        assertEquals(response.size, 0)
+    }
+
+    @Test
+    fun rejectPrivateVote() {
+        val response = operation.handleMessage(privateMessage("~vote 1"))
+        assertEquals(response.size, 0)
     }
 
     @Test
