@@ -26,6 +26,9 @@ constructor(bot: Javabot,
             var changeDao: ChangeDao,
             var channelDao: ChannelDao)
     : BotOperation(bot, adminDao) {
+    companion object {
+        val converter=ValueConverters.ENGLISH_INTEGER
+    }
 
     val polls: MutableMap<String, Poll> = mutableMapOf()
     var expiration: Duration = Duration.ofMinutes(5)
@@ -107,7 +110,6 @@ constructor(bot: Javabot,
                                 activePoll.answers[winner.key - 1],
                                 expressVotes(winner.value)))
                     } else {
-                        val converter = ValueConverters.ENGLISH_INTEGER
                         val lastEntry = winners.last().first
                         val (winnerList, enumerator, voteCount) = listOf(
                                 buildWinnerList(
@@ -132,7 +134,6 @@ constructor(bot: Javabot,
     }
 
     private fun expressVotes(votes: Int): String {
-        val converter = ValueConverters.ENGLISH_INTEGER
         return converter.asWords(votes) +
                 " vote" +
                 if (votes != 1) "s" else ""
