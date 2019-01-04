@@ -4,7 +4,9 @@ import org.apache.commons.lang.StringUtils.isBlank
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.StringUtils
 import java.net.URL
+import java.nio.charset.Charset
 import java.util.ArrayList
+import java.util.stream.Collectors
 
 class URLFromMessageParser {
 
@@ -23,7 +25,9 @@ class URLFromMessageParser {
         }
 
         val list = arrayListOf<URL>()
-        potentialUrlsFound.map({ this.urlFromToken(it) }).filterNotNullTo(list)
+        potentialUrlsFound
+                .map { this.urlFromToken(it) }
+                .filterNotNullTo(list)
         return list
     }
 
@@ -49,17 +53,26 @@ class URLFromMessageParser {
     }
 
     private fun urlFromToken(token: String): URL? {
-        try {
-            return URL(token)
+        return try {
+            val url = URL(token)
+            if (blacklistHosts.contains(url.host)) null else url
         } catch (e: Exception) {
-            return null
+            null
         }
-
     }
 
     companion object {
-
         private val OPEN_PUNCTUATION = charArrayOf('{', '(', '[')
         private val CLOSE_PUNCTUATION = charArrayOf('}', ')', ']')
+        val blacklistHosts = try {
+            this::class.java
+                    .getResourceAsStream("/urlBlacklist.csv")
+                    .bufferedReader(Charsets.UTF_8)
+                    .use {
+                        it.lines().collect(Collectors.toList())
+                    }
+        } catch (ignored: Exception) {
+            emptyList<String>()
+        }
     }
 }

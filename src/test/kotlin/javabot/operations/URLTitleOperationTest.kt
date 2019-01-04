@@ -3,8 +3,10 @@ package javabot.operations
 import javabot.BaseTest
 import javabot.Message
 import javabot.operations.urlcontent.URLContentAnalyzer
+import javabot.operations.urlcontent.URLFromMessageParser
 import org.testng.Assert
 import org.testng.Assert.assertEquals
+import org.testng.Assert.assertTrue
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 import javax.inject.Inject
@@ -60,10 +62,13 @@ class URLTitleOperationTest : BaseTest() {
                 arrayOf("Two urls, duplicated:  http://javachannel.org/ and http://javachannel.org/"
                         , "botuser's title: \"Freenode ##java  enthusiasts united\""),
                 arrayOf("https://twitter.com/djspiewak/status/1004038775989678080", "botuser's title: \"Daniel Spiewak on Twitter: \"Random best practice note: just because your language has type inference doesn't mean it's bad to explicitly write types. Types are good! Types are documentation. Don't make future code reviewers play the human compiler game.\"\""),
-                arrayOf("http://refheap.com", null), // this may change: right now, refheap.com returns a 502
+                arrayOf("http://refheap.com", null), // caught by blacklist
+                arrayOf("https://imagebin/ca", null), // caught by blacklist
+                arrayOf("https://imgur.com", null), // caught by blacklist
                 arrayOf("https://twitter.com/OpenJDK/status/1040259287556259842", "botuser's title: \"OpenJDK on Twitter: \"http://openjdk.java.net and some of its subdomains (cr, hg, and mail), along with http://jdk.java.net , are unreachable via http. We're working to fix the problem as quickly as possible.\"\""),
                 arrayOf("Ignore title if it doesn't contain at least 20 ascii chars https://www.baidu.com/", null),
-                arrayOf("https://twitter.com/DonaldOJDK/status/1045791557901643777", "botuser's title: \"DonaldOJDK on Twitter: \"So simply put, yes there should be javadoc on http://Jdk.java.net , its coming soon (tm).\"\"")
+                arrayOf("https://twitter.com/DonaldOJDK/status/1045791557901643777", "botuser's title: \"DonaldOJDK on Twitter: \"So simply put, yes there should be javadoc on http://Jdk.java.net , its coming soon (tm).\"\""),
+                arrayOf("https://twitter.com/TheOnion/status/1080887787266674690", "botuser's title: \"The Onion on Twitter: \"Meghan McCain Forced To Live Out Socialist Nightmare Of Empathy For Sick Person https://trib.al/6EXfUh5 #OurAnnualYear2018 pic.twitter.com/Qyg7DUpqre\"\"")
         )
     }
 
@@ -78,4 +83,9 @@ class URLTitleOperationTest : BaseTest() {
                 arrayOf("http://foo.bar.com", null, false))
     }
 
+    @Test
+    fun testBlacklist() {
+        // should contain AT LEAST refheap.com or else other tests don't pass
+        assertTrue(URLFromMessageParser.blacklistHosts.contains("refheap.com"))
+    }
 }

@@ -7,10 +7,14 @@ import javabot.operations.urlcontent.URLContentAnalyzer
 import javabot.operations.urlcontent.URLFromMessageParser
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
+import org.jsoup.nodes.TextNode
+import org.jsoup.select.Elements
 import java.io.IOException
 import javax.inject.Inject
 
-class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var analyzer: URLContentAnalyzer,
+class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
+                                            private var analyzer: URLContentAnalyzer,
                                             var parser: URLFromMessageParser) : BotOperation(bot, adminDao) {
 
     override fun handleChannelMessage(event: Message): List<Message> {
@@ -18,9 +22,9 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
         val message = event.value
         try {
             val titlesToPost = parser.urlsFromMessage(message)
-                    .map({ it.toString() })
+                    .map { it.toString() }
                     .distinct()
-                    .mapNotNull({ s -> findTitle(s, true) })
+                    .mapNotNull { s -> findTitle(s, true) }
                     .filter { s -> s.length >= 20 }
             return if (titlesToPost.isEmpty()) {
                 responses
@@ -36,8 +40,8 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
 
     private fun postMessageToChannel(responses: MutableList<Message>, titlesToPost: List<String>, event: Message) {
         val title = if (titlesToPost.size == 1) "title" else "titles"
-        responses.add(Message(event, "${event.user.nick}'s ${title}: " +
-                titlesToPost.map({ s -> "\"${s}\"" }).joinToString(" | ")))
+        responses.add(Message(event, "${event.user.nick}'s $title: " +
+                titlesToPost.joinToString(" | ", transform = { s -> "\"$s\"" })))
     }
 
     private fun findTitle(url: String, loop: Boolean): String? {
@@ -52,11 +56,11 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
                 title = clean(title)
                 return if (analyzer.check(url, title)) title else null
             } catch (ioe: IOException) {
-                if (loop && !url.take(10).contains("//www.")) {
+                return if (loop && !url.take(10).contains("//www.")) {
                     val tUrl = url.replace("//", "//www.")
-                    return findTitle(tUrl, false)
+                    findTitle(tUrl, false)
                 } else {
-                    return null
+                    null
                 }
             } catch (ignored: IllegalArgumentException) {
                 return null
@@ -66,12 +70,23 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, va
         }
     }
 
-    fun parseTitle(doc: Document): String {
+    private fun fixTwitterLinks(elt: Element) {
+        elt.children().forEach { fixTwitterLinks(it) }
+        val twitterLinks = elt.getElementsByAttributeValue("data-pre-embedded", "true")
+        twitterLinks.forEach { link ->
+            link.insertChildren(0, TextNode(" "))
+        }
+    }
+
+    private fun parseTitle(doc: Document): String {
         val header = doc.select("meta[property=\"og:title\"]")
         return if (header.isNotEmpty()) {
-            val body = doc.select(".permalink-tweet-container .js-tweet-text-container")
+            val body: Elements = doc.select(".permalink-tweet-container .js-tweet-text-container") ?: Elements()
             if (body.isNotEmpty()) {
-                String.format("%s: \"%s\"", header.first().attr("content"), body.first().text())
+                body.forEach { fixTwitterLinks(it) }
+                String.format("%s: \"%s\"",
+                        header.first().attr("content"),
+                        body.first().text())
             } else {
                 doc.title()
             }
