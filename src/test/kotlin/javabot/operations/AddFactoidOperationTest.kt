@@ -6,7 +6,9 @@ import javabot.Message
 import javabot.dao.FactoidDao
 import javabot.dao.LogsDaoTest
 import org.testng.Assert
+import org.testng.Assert.assertEquals
 import org.testng.annotations.BeforeMethod
+import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 import javax.inject.Inject
 
@@ -40,16 +42,29 @@ class AddFactoidOperationTest @Inject constructor(val factoidDao: FactoidDao, va
         Assert.assertEquals(response[0].value, OK)
     }
 
-    @Test
-    fun replace() {
-        var response = addFactoidOperation.handleMessage(message("~replace is first entry"))
+
+    @DataProvider
+    fun replaceInput() = arrayOf(
+            arrayOf("no"),
+            arrayOf("No"),
+            arrayOf("nO"),
+            arrayOf("NO") // let's be emphatic!
+    )
+
+    @Test(dataProvider = "replaceInput")
+    fun replace(text: String) {
+        var response = addFactoidOperation.handleMessage(message("~forget replace"))
+        // we want to make sure that the factoid doesn't exist before anything else
+        assertEquals(response.size, 0)
+
+        response = addFactoidOperation.handleMessage(message("~replace is first entry"))
         Assert.assertEquals(response[0].value, OK)
         var factoid = factoidDao.getFactoid("replace")!!
 
         val updated = factoid.updated
         Assert.assertEquals(factoid.userName, TEST_USER.nick)
 
-        response = addFactoidOperation.handleMessage(message("~no, replace is <reply>second entry", user = TEST_NON_ADMIN_USER))
+        response = addFactoidOperation.handleMessage(message("~$text, replace is <reply>second entry", user = TEST_NON_ADMIN_USER))
         Assert.assertEquals(response[0].value, Sofia.ok(TEST_NON_ADMIN_USER.nick))
 
         factoid = factoidDao.getFactoid("replace")!!
@@ -62,7 +77,7 @@ class AddFactoidOperationTest @Inject constructor(val factoidDao: FactoidDao, va
         response = forgetFactoidOperation.handleMessage(message("~forget replace"))
         Assert.assertEquals(response[0].value, Sofia.factoidForgotten("replace", TEST_USER.nick))
 
-        response = addFactoidOperation.handleMessage(message("~no, replace is <reply>second entry"))
+        response = addFactoidOperation.handleMessage(message("~$text, replace is <reply>second entry"))
         Assert.assertEquals(response[0].value, Sofia.factoidUnknown("replace"))
     }
 

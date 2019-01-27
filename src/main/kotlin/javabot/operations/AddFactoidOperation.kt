@@ -38,7 +38,7 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                 message = message.substring(index + 4).trim()
                 var factoid: Factoid? = null
 
-                val redefine = key.startsWith("no ") || key.startsWith("no, ")
+                val redefine = key.startsWith("no ", true) || key.startsWith("no, ", true)
                 var exists = false
                 if (redefine) {
                     key = key.substring(key.indexOf(" ")).trim().toLowerCase()
