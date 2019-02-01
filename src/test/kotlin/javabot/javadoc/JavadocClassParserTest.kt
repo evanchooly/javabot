@@ -2,6 +2,8 @@ package javabot.javadoc
 
 import com.google.inject.Inject
 import javabot.BaseTest
+import javabot.JavabotConfig
+import javabot.JavabotConfigTest
 import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
 import javabot.model.ApiEvent
@@ -11,6 +13,7 @@ import org.bson.types.ObjectId
 import org.jboss.forge.roaster.Roaster
 import org.testng.Assert
 import org.testng.annotations.Test
+import java.io.File
 import java.util.jar.JarFile
 
 class JavadocClassParserTest : BaseTest() {
@@ -20,12 +23,12 @@ class JavadocClassParserTest : BaseTest() {
     lateinit var apiDao: ApiDao
     @Inject
     lateinit var classDao: JavadocClassDao
+    @Inject
+    lateinit var config: JavabotConfig
 
     @Test
     fun testParse() {
-        val api = JavadocApi("testApi", "", "dummy", "dummy", "0.0")
-        api.id = ObjectId("584e2d6a78d3c829e4a9ea45")
-        apiDao.delete(api)
+        val api = JavadocApi("JDK", "${config.url()}/javadoc/JDK")
         apiDao.save(api)
         val query = classDao.getQuery()
                 .filter("apiId", api.id)

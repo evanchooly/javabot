@@ -12,7 +12,8 @@ import org.mongodb.morphia.annotations.PrePersist
 
 @Entity(value = "apis", noClassnameStored = true)
 @Indexes(Index(fields = arrayOf(Field("name")), options = IndexOptions(unique = true)),
-      Index(fields = arrayOf(Field("upperName")), options = IndexOptions(unique = true)))
+         Index(fields = arrayOf(Field("groupId"), Field("artifactId")), options = IndexOptions(unique = true)),
+         Index(fields = arrayOf(Field("upperName")), options = IndexOptions(unique = true)))
 class JavadocApi : Persistent {
 
     @Id
@@ -30,10 +31,9 @@ class JavadocApi : Persistent {
 
     var version: String = ""
 
-    private constructor() {
-    }
+    private constructor()
 
-    constructor(apiName: String, url: String, groupId: String = "", artifactId: String = "", version: String = "") {
+    constructor(apiName: String, url: String, groupId: String = "", artifactId: String = "", version: String = "" ) {
         name = apiName
         this.groupId = groupId
         this.artifactId = artifactId

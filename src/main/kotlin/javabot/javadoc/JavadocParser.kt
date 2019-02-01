@@ -5,23 +5,23 @@ import javabot.JavabotConfig
 import javabot.JavabotThreadFactory
 import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
-import javabot.model.javadoc.Visibility.PackagePrivate
-import javabot.model.javadoc.Visibility.Private
-import javabot.model.javadoc.Visibility.Protected
-import javabot.model.javadoc.Visibility.Public
+import javabot.model.downloadZip
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocSource
 import javabot.model.javadoc.Visibility
+import javabot.model.javadoc.Visibility.PackagePrivate
+import javabot.model.javadoc.Visibility.Private
+import javabot.model.javadoc.Visibility.Protected
+import javabot.model.javadoc.Visibility.Public
 import org.bson.types.ObjectId
-import org.jboss.forge.roaster.Roaster
+import org.jsoup.Jsoup
 import org.slf4j.LoggerFactory
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.PrintStream
 import java.io.Writer
+import java.net.URI
 import java.nio.charset.Charset
 import java.util.Collections
 import java.util.concurrent.ScheduledThreadPoolExecutor
@@ -33,29 +33,40 @@ import java.util.jar.JarFile
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
-import javax.tools.ToolProvider
 
 @Singleton
 class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao: JavadocClassDao,
                                         val provider: Provider<JavadocClassParser>, val config: JavabotConfig) {
 
-    fun parse(api: JavadocApi, location: File, writer: Writer) {
+    fun parse(api: JavadocApi, writer: Writer) {
+        val downloadUri : URI
+        if ("JDK" == api.name) {
+            downloadUri = File(config.jdkJavadoc()).toURI()
+        } else  {
+            downloadUri = api.buildMavenUri()
+        }
+
+        val location = downloadUri.downloadZip()
         try {
+
             val executor = ScheduledThreadPoolExecutor(100, JavabotThreadFactory(false, "javadoc-thread-"))
             executor.prestartCoreThread()
 
-            val packages = if ("JDK" == api.name) listOf("java", "javax") else listOf()
-            executor.submit {
-                buildHtml(api, location, packages)
-            }
-            (1..executor.corePoolSize).forEach {
-                executor.scheduleAtFixedRate(JavadocClassReader(api, apiDao), 0, 1, SECONDS)
-            }
+            val javadocDir = extractJavadocContent(api, location)
 
-            JarFile(location).extractToSource(api,
-                    { it.name.endsWith(".java") },
-                    { apiDao.save(it) }
-            )
+//            (1..executor.corePoolSize).forEach {
+//                executor.scheduleAtFixedRate(JavadocClassReader(api, apiDao), 0, 1, SECONDS)
+//            }
+
+            javadocDir.walkTopDown()
+                .filter { !it.name.contains("-") }
+                .filter { it.extension == "html" }
+//                .filter { !it.name.contains("package-") }
+//                .filter { !it.name.contains("-summary") }
+                .forEach {
+                    processHtml(api, it)
+                }
+
 
             Awaitility
                     .waitAtMost(30, MINUTES)
@@ -81,7 +92,28 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
         }
     }
 
-    fun buildHtml(api: JavadocApi, jar: File, packages: List<String>) {
+    private fun processHtml(api: JavadocApi, file: File) {
+        val document = Jsoup.parse(file.readText())
+        val attribute = document.getElementsByTag("meta")
+            .flatMap { it.attributes() }
+            .filter { it.key == "content" && it.value.contains(" ") && !it.value.contains("/")}
+            .map { it.value }
+            .firstOrNull()
+        if (attribute != null) {
+            val (name, type) = attribute.split(" ")
+            when (type) {
+                "class" -> {
+                    provider.get().parse(api, document)
+                }
+                "interface" -> {
+                    provider.get().parse(api, document)
+                }
+                else -> TODO("handle $type in $file")
+            }
+        }
+    }
+
+    fun extractJavadocContent(api: JavadocApi, jar: File): File {
         val javadocDir = File("javadoc/${api.name}/${api.version}/")
         var tmp = File("/tmp/")
         if (!tmp.exists()) {
@@ -92,27 +124,10 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
         jarTarget.mkdirs()
         javadocDir.mkdirs()
 
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        val printStream = PrintStream(byteArrayOutputStream)
+        extractJar(jar, jarTarget)
+        copyJavadocJar(api, jarTarget, javadocDir)
+
         try {
-            extractJar(jar, jarTarget)
-            val packageNames = if (!packages.isEmpty())
-                packages
-            else jarTarget
-                    .listFiles { it -> it.isDirectory && it.name != "META-INF" }
-                    .map { it.name }
-            Awaitility
-                .await()
-                .atMost(30, MINUTES)
-                .until {
-                    ToolProvider.getSystemDocumentationTool().run(null, printStream, printStream,
-                            "-d", javadocDir.absolutePath,
-                            "-subpackages", packageNames.joinToString(":"),
-                            "-protected",
-                            "-use",
-                            "-quiet",
-                            "-sourcepath", jarTarget.absolutePath)
-                }
             val index = File("javadoc/JDK/1.8/index.html")
             val replaced = index.readText().replace(
                     "top.classFrame.location = top.targetPage;",
@@ -121,10 +136,24 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
 
         } catch (e : Exception) {
             log.error(e.message, e)
-            log.error(byteArrayOutputStream.toString("UTF-8"))
         } finally {
             jarTarget.deleteRecursively()
         }
+
+        return javadocDir
+    }
+
+    private fun copyJavadocJar(api: JavadocApi, jarTarget: File, javadocDir: File) {
+        val sourceRoot = if(api.name == "JDK") {
+            File(jarTarget, "docs/api")
+        } else {
+            jarTarget
+        }
+
+        javadocDir.deleteRecursively()
+        javadocDir.mkdirs()
+        sourceRoot.copyRecursively(javadocDir)
+        sourceRoot.deleteRecursively()
     }
 
     private fun extractJar(jar: File, jarTarget: File) {
@@ -149,18 +178,12 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
         return javadocClassDao.getClass(null, pkg, name)
     }
 
-    private inner class JavadocClassReader(private val api: JavadocApi, val apiDao: ApiDao) : Runnable {
-        override fun run() {
-            try {
-                val javadocSource = apiDao.findUnprocessedSource(api)
-                if (javadocSource != null) {
-                    val packages = if ("JDK" == api.name) arrayOf("java", "javax") else arrayOf<String>()
-                    provider.get().parse(api, Roaster.parse(javadocSource.text), *packages)
-                }
-            } catch(e: Exception) {
-                e.printStackTrace()
-            }
-        }
+    private fun JavadocApi.buildMavenUri()
+            = URI("https://repo1.maven.org/maven2/${groupId.toPath()}/${artifactId}/${version}/${artifactId}-${version}-javadoc.jar")
+
+
+    private fun String.toPath(): String {
+        return this.replace(".", "/")
     }
 
     companion object {
@@ -189,7 +212,7 @@ fun JarFile.extractToSource(api: JavadocApi, filter: (JarEntry) -> Boolean, term
         Collections.list(jarFile.entries())
                 .filter(filter)
                 .map {
-                    var text = jarFile . getInputStream(it).use {
+                    val text = jarFile . getInputStream(it).use {
                          it.readBytes().toString(Charset.forName("UTF-8"))
                     }
                     JavadocSource(it.name, api, text)

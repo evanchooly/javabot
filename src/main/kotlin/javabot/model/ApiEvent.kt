@@ -152,21 +152,14 @@ class ApiEvent : AdminEvent {
 
     private fun process(api: JavadocApi) {
         apiDao.save(api)
-        val downloadUrl = if (name == "JDK") locateJDK() else buildMavenUrl()
         val admin = adminDao.getAdmin(JavabotUser(requestedBy, requestedBy, ""))
         if (admin != null) {
             val user = JavabotUser(admin.ircName, admin.emailAddress, admin.hostName)
 
-            parser.parse(api, downloadUrl.downloadZip(),
-                    object : StringWriter() {
+            parser.parse(api, object : StringWriter() {
                         override fun write(line: String) = bot.privateMessageUser(user, line)
                     })
         }
-    }
-
-    private fun buildMavenUrl(): URI {
-        return URI("https://repo1.maven.org/maven2/${groupId.replace(".", "/")}/${artifactId}" +
-                "/${version}/${artifactId}-${version}-sources.jar")
     }
 
     override fun toString(): String {
@@ -175,7 +168,7 @@ class ApiEvent : AdminEvent {
 }
 
 fun URI.downloadZip(): File {
-    val file = File.createTempFile("javadoc-", ".zip")
+    val file = File("/tmp", path.substringAfterLast("/"))
     FileOutputStream(file).use { outputStream ->
         this.toURL().openStream().use { inputStream ->
             outputStream.write(inputStream.readBytes())

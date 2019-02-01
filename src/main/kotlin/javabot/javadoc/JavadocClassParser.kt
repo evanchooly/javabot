@@ -19,6 +19,7 @@ import org.jboss.forge.roaster.model.Parameter
 import org.jboss.forge.roaster.model.TypeHolder
 import org.jboss.forge.roaster.model.source.Importer
 import org.jboss.forge.roaster.model.source.JavaSource
+import org.jsoup.nodes.Document
 import org.slf4j.LoggerFactory
 import java.util.ArrayList
 import java.util.HashMap
@@ -54,7 +55,7 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
                 null
             }
 
-            return Pair(pkgName, clsName)
+            return pkgName to clsName
         }
     }
 
@@ -87,6 +88,38 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
             } catch (e: MongoException) {
                 LOG.error(e.message, e)
             }
+        }
+    }
+
+    fun parse(api: JavadocApi, document: Document) {
+        val pkg = document.select("""div.subTitle a[href="package-summary.html"]""").text()
+        println("pkg = ${pkg}")
+        val className = document.select("span.typeNameLabel").text()
+        val docClass = JavadocClass(api, pkg, className)
+
+        try {
+            javadocClassDao.save(docClass)
+            val type = document.select("h2.title").text().substringBefore(" ").toLowerCase()
+            when (type) {
+                "class" -> docClass.isClass = true
+                "annotation" -> docClass.isAnnotation = true
+                "interface" -> docClass.isInterface = true
+                "enum" -> docClass.isEnum = true
+                else -> TODO("unknown type: $type")
+            }
+
+//                docClass.visibility = when {
+//                    source.getEnclosingType().isInterface() -> Public
+//                    else -> visibility(source.getVisibility().scope())
+//                }
+//            generics(docClass, source)
+            extendable(docClass, document)
+            interfaces(docClass, document)
+//                methods(docClass, source)
+//                fields(docClass, source)
+//                nestedTypes(api, packages, source)
+        } catch (e: MongoException) {
+            LOG.error(e.message, e)
         }
     }
 
@@ -136,7 +169,31 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
         }
     }
 
-/*
+    private fun extendable(klass: JavadocClass, document: Document) {
+        klass.parentClass = document
+            .select("ul.inheritance")
+            .dropLast(1)
+            .last()
+            .children().first()
+            .children().first().text()
+    }
+
+    private fun interfaces(klass: JavadocClass, document: Document) {
+        val interfaces = document.select("dt")
+            .filter { it.text().trim() == "All Implemented Interfaces:" }
+            .firstOrNull()
+        interfaces?.let {
+            val list = it.nextElementSibling().children().map {
+                    it.selectFirst("a")
+                }.map {
+                    val pkg = it.attr("title").substringAfterLast(" ")
+                    "${pkg}.${it.text()}"
+                }.toMutableList()
+            klass.interfaces.addAll(list)
+        }
+    }
+
+    /*
     private fun generics(klass: JavadocClass, source: JavaType<*>) {
         if ( source is GenericCapable<*>) {
             source.getTypeVariables()

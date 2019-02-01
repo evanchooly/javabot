@@ -74,6 +74,7 @@ open class JavabotModule : AbstractModule() {
         if (mongoClient == null) {
             mongoClient = MongoClient(ServerAddress(javabotConfig().databaseHost(), javabotConfig().databasePort()),
                 MongoClientOptions.builder().connectTimeout(2000).build())
+            mongoClient?.getAddress()
         }
         return mongoClient!!
     }
