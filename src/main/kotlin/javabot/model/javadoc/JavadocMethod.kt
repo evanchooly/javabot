@@ -14,6 +14,7 @@ import org.mongodb.morphia.annotations.PrePersist
         Index(fields = arrayOf(Field("apiId"), Field("javadocClass"), Field("upperName") )))
 class JavadocMethod : JavadocElement {
     lateinit var javadocClass: ObjectId
+    var isConstructor: Boolean = false
     lateinit var name: String
     lateinit var upperName: String
     lateinit var longSignatureTypes: String
@@ -25,20 +26,22 @@ class JavadocMethod : JavadocElement {
     constructor() {
     }
 
-    constructor(parent: JavadocClass, name: String, count: Int,
-                longArgs: List<String>, shortArgs: List<String>) {
+    constructor(parent: JavadocClass, name: String, urlFragment: String, longArgs: List<String>, shortArgs: List<String>) {
         this.name = name
+        isConstructor = name == parent.name
         javadocClass = parent.id
         apiId = parent.apiId
         parentClassName = parent.toString()
 
-        paramCount = count
+        paramCount = longArgs.size
         longArgs.joinToString(", ")
         longSignatureTypes = longArgs.joinToString(", ")
         shortSignatureTypes = shortArgs.joinToString(", ")
-        buildUrl(parent, longArgs)
+//        buildUrl(parent, urlFragment)
+        this.url = "${parent.url}${urlFragment}"
     }
 
+/*
     private fun buildUrl(parent: JavadocClass, longArgs: List<String>) {
         val parentUrl = parent.url
         val url = StringBuilder()
@@ -51,6 +54,7 @@ class JavadocMethod : JavadocElement {
 
         this.url = parentUrl + "#" + this.name + "-" + url + "-"
     }
+*/
 
     fun getShortSignature(): String {
         return "$name($shortSignatureTypes)"

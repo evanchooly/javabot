@@ -7,21 +7,10 @@ import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocField
 import javabot.model.javadoc.JavadocMethod
-import javabot.model.javadoc.Visibility.Public
-import org.jboss.forge.roaster.model.Extendable
 import org.jboss.forge.roaster.model.Field
-import org.jboss.forge.roaster.model.FieldHolder
-import org.jboss.forge.roaster.model.InterfaceCapable
-import org.jboss.forge.roaster.model.JavaType
-import org.jboss.forge.roaster.model.Method
-import org.jboss.forge.roaster.model.MethodHolder
-import org.jboss.forge.roaster.model.Parameter
-import org.jboss.forge.roaster.model.TypeHolder
-import org.jboss.forge.roaster.model.source.Importer
-import org.jboss.forge.roaster.model.source.JavaSource
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
 import org.slf4j.LoggerFactory
-import java.util.ArrayList
 import java.util.HashMap
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -59,6 +48,7 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
         }
     }
 
+/*
     fun parse(api: JavadocApi, source: JavaType<*>, vararg packages: String) {
         val pkg = source.getPackage()
         var process = packages.isEmpty()
@@ -90,6 +80,7 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
             }
         }
     }
+*/
 
     fun parse(api: JavadocApi, document: Document) {
         val pkg = document.select("""div.subTitle a[href="package-summary.html"]""").text()
@@ -115,7 +106,7 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
 //            generics(docClass, source)
             extendable(docClass, document)
             interfaces(docClass, document)
-//                methods(docClass, source)
+            methods(docClass, document)
 //                fields(docClass, source)
 //                nestedTypes(api, packages, source)
         } catch (e: MongoException) {
@@ -123,13 +114,16 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
         }
     }
 
+/*
     private fun nestedTypes(api: JavadocApi, packages: Array<out String>, source: JavaType<*>) {
         if (source is TypeHolder<*>) {
             source.getNestedTypes()
                     .forEach { parse(api, it, *packages) }
         }
     }
+*/
 
+/*
     private fun fields(klass: JavadocClass, source: JavaType<*>) {
         if (source is FieldHolder<*>) {
             source.getFields()
@@ -137,14 +131,18 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
             javadocClassDao.save(klass)
         }
     }
+*/
 
+/*
     private fun methods(klass: JavadocClass, source: JavaType<*>) {
         if (source is MethodHolder<*>) {
             source.getMethods()
                     .forEach { parseMethod(klass, it) }
         }
     }
+*/
 
+/*
     private fun interfaces(klass: JavadocClass, source: JavaType<*>) {
         if (source is InterfaceCapable) {
             source as Importer<*>
@@ -154,7 +152,9 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
 
         }
     }
+*/
 
+/*
     private fun extendable(klass: JavadocClass, source: JavaType<*>, retry: Int = 0) {
         if (source is Extendable<*>) {
             try {
@@ -168,6 +168,7 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
             }
         }
     }
+*/
 
     private fun extendable(klass: JavadocClass, document: Document) {
         klass.parentClass = document
@@ -193,6 +194,41 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
         }
     }
 
+    private fun methods(klass: JavadocClass, document: Document) {
+        val select = document.select("span.memberNameLink")
+            .map {
+                extractMethod(klass, it)
+            }
+        println("select = ${select}")
+    }
+
+    fun extractMethod(klass: JavadocClass, element: Element): JavadocMethod {
+        val link = element.child(0)
+        val name = link.text()
+        val href = link.attr("href")
+        val (longArgs, shortArgs) = extractParameters(href)
+        return JavadocMethod(klass, name, href, longArgs, shortArgs)
+    }
+
+    private fun extractParameters(href: String): Pair<List<String>, List<String>> {
+        val longArgs = mutableListOf<String>()
+        val shortArgs = mutableListOf<String>()
+        val paramText = href.substringAfter("(").substringBefore(")")
+        if (paramText != "") {
+            paramText.split(",").forEach {
+                longArgs.add(it)
+                shortArgs.add(stripPackage(it))
+            }
+        }
+        return longArgs to shortArgs
+    }
+
+    private fun stripPackage(name: String): String {
+        return name.split(".")
+            .dropWhile { !it[0].isUpperCase() }
+            .joinToString(".")
+    }
+
     /*
     private fun generics(klass: JavadocClass, source: JavaType<*>) {
         if ( source is GenericCapable<*>) {
@@ -210,6 +246,7 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
         return entity
     }
 
+/*
     fun parseMethod(klass: JavadocClass, method: Method<*, *>): JavadocMethod {
         val types = method.getParameters()
 
@@ -217,7 +254,7 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
         val shortTypes = ArrayList<String>()
         types.forEach { update(longTypes, shortTypes, it) }
         val methodName = method.getName()
-        val entity = JavadocMethod(klass, methodName, types.size, longTypes, shortTypes)
+        val entity = JavadocMethod(klass, methodName, longTypes, shortTypes)
         entity.visibility = visibility(method.getVisibility().scope())
 
         javadocClassDao.save(entity)
@@ -248,4 +285,5 @@ class JavadocClassParser @Inject constructor(var javadocClassDao: JavadocClassDa
             e.printStackTrace()
         }
     }
+*/
 }
