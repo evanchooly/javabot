@@ -101,14 +101,16 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
             .firstOrNull()
         if (attribute != null) {
             val (name, type) = attribute.split(" ")
-            when (type) {
-                "class" -> {
-                    provider.get().parse(api, document)
+            if (!name.startsWith("jdk.")) {
+                when (type) {
+                    "class" -> {
+                        provider.get().parse(api, document)
+                    }
+                    "interface" -> {
+                        provider.get().parse(api, document)
+                    }
+                    else -> TODO("handle $type in $file")
                 }
-                "interface" -> {
-                    provider.get().parse(api, document)
-                }
-                else -> TODO("handle $type in $file")
             }
         }
     }

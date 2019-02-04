@@ -60,6 +60,6 @@ class JavadocParserTest : BaseTest() {
         datastore.save(api)
 
         val javadocDir = parser.extractJavadocContent(api, File(config.jdkJavadoc()))
-        provider.get().parse(api, Jsoup.parse(File(javadocDir, "java.base/java/util/ArrayList.html"), "UTF-8"))
+        provider.get().parse(api, Jsoup.parse(File(javadocDir, "java.desktop/java/awt/Dimension.html"), "UTF-8"))
     }
 }

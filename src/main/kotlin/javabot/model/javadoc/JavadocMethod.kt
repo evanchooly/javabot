@@ -23,8 +23,7 @@ class JavadocMethod : JavadocElement {
 
     lateinit var parentClassName: String
 
-    constructor() {
-    }
+    constructor()
 
     constructor(parent: JavadocClass, name: String, urlFragment: String, longArgs: List<String>, shortArgs: List<String>) {
         this.name = name
@@ -37,24 +36,8 @@ class JavadocMethod : JavadocElement {
         longArgs.joinToString(", ")
         longSignatureTypes = longArgs.joinToString(", ")
         shortSignatureTypes = shortArgs.joinToString(", ")
-//        buildUrl(parent, urlFragment)
         this.url = "${parent.url}${urlFragment}"
     }
-
-/*
-    private fun buildUrl(parent: JavadocClass, longArgs: List<String>) {
-        val parentUrl = parent.url
-        val url = StringBuilder()
-        for (arg in longArgs) {
-            if (url.length != 0) {
-                url.append("-")
-            }
-            url.append(arg.replace("<.*?>".toRegex(), ""))
-        }
-
-        this.url = parentUrl + "#" + this.name + "-" + url + "-"
-    }
-*/
 
     fun getShortSignature(): String {
         return "$name($shortSignatureTypes)"

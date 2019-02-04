@@ -120,10 +120,6 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
         ds.delete(criteria.query())
     }
 
-    fun countMethods(): Long {
-        return ds.getCount(JavadocMethod::class.java)
-    }
-
     fun deleteNotVisible(api: JavadocApi) {
         var classCriteria = JavadocClassCriteria(ds)
         classCriteria.apiId(api.id)
