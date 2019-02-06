@@ -1,5 +1,6 @@
 package javabot.model.javadoc
 
+import javabot.JavabotConfig
 import javabot.model.Persistent
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
@@ -33,13 +34,12 @@ class JavadocApi : Persistent {
 
     private constructor()
 
-    constructor(apiName: String, url: String, groupId: String = "", artifactId: String = "", version: String = "" ) {
+    constructor(config: JavabotConfig, apiName: String, groupId: String = "", artifactId: String = "", version: String = "") {
         name = apiName
         this.groupId = groupId
         this.artifactId = artifactId
         this.version = if (name == "JDK") System.getProperty("java.specification.version") else version
-        baseUrl = if (url.endsWith("/")) url else url + "/"
-        baseUrl = "${baseUrl}javadoc/$apiName/${this.version}/"
+        baseUrl = "${config.url()}/javadoc/$apiName/${version}/"
     }
 
     @PrePersist

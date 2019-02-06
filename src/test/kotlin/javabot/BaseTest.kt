@@ -29,15 +29,15 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Provider
 
-@Guice(modules = arrayOf(JavabotTestModule::class))
+@Guice(modules = [JavabotTestModule::class])
 open class BaseTest {
 
     companion object {
-        val TEST_TARGET_NICK: String = "jbtestuser"
-        val TEST_USER_NICK: String = "botuser"
-        val TEST_NON_ADMIN_USER_NICK = "nonadminuser"
-        val TEST_BOT_NICK: String = "testjavabot"
-        val BOT_EMAIL: String = "test@example.com"
+        const val TEST_TARGET_NICK: String = "jbtestuser"
+        const val TEST_USER_NICK: String = "botuser"
+        const val TEST_NON_ADMIN_USER_NICK = "nonadminuser"
+        const val TEST_BOT_NICK: String = "testjavabot"
+        const val BOT_EMAIL: String = "test@example.com"
         val DONE: EnumSet<State> = EnumSet.of(State.COMPLETED, State.FAILED)
         val OK: String = "OK, " + TEST_USER_NICK.substring(0, Math.min(TEST_USER_NICK.length, 16)) + "."
         val TARGET_USER = JavabotUser(TEST_TARGET_NICK, TEST_TARGET_NICK, "hostmask")
@@ -110,12 +110,12 @@ open class BaseTest {
 
     protected fun enableAllOperations() {
         val bot = this.bot.get()
-        bot.getAllOperations().keys.forEach({ bot.enableOperation(it) })
+        bot.getAllOperations().keys.forEach { bot.enableOperation(it) }
     }
 
     protected fun disableAllOperations() {
         val bot = this.bot.get()
-        bot.getAllOperations().keys.forEach({ bot.disableOperation(it) })
+        bot.getAllOperations().keys.forEach { bot.disableOperation(it) }
     }
 
     @BeforeMethod
@@ -142,7 +142,7 @@ open class BaseTest {
         return Message.extractContentFromMessage(bot.get(), TEST_CHANNEL, user, start, bot.get().nick, value)
     }
 
-    protected fun privateMessage(value: String, start: String = "~", user: JavabotUser = TEST_USER): Message {
+    protected fun privateMessage(value: String, user: JavabotUser = TEST_USER): Message {
         return Message(user, value)
     }
 
@@ -152,7 +152,7 @@ open class BaseTest {
             found = found or response.value.contains(target)
         }
         Assert.assertTrue(found, java.lang.String.format("Did not find \n'%s' in \n'%s'", target,
-                messages.map({ it.value }).joinToString("\n")))
+                messages.joinToString("\n") { it.value }))
     }
 }
 

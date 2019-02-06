@@ -26,8 +26,6 @@ class ApiDao @Inject constructor(ds: Datastore, var classDao: JavadocClassDao) :
         val query = ds.createQuery(JavadocSource::class.java)
                 .filter("api", api.id)
                 .filter("processed", false)
-//        val update = ds.createUpdateOperations(JavadocSource::class.java)
-//            .set("processed", true)
         return ds.findAndDelete(query)
     }
 
@@ -35,8 +33,7 @@ class ApiDao @Inject constructor(ds: Datastore, var classDao: JavadocClassDao) :
         val query = ds.createQuery(JavadocSource::class.java)
                 .filter("api", api.id)
                 .filter("processed", false)
-        val count = ds.getCount(query)
 
-        return count
+        return ds.getCount(query)
     }
 }

@@ -22,7 +22,7 @@ import javax.inject.Inject
 class JavadocTest : BaseTest() {
     companion object {
         private val LOG = LoggerFactory.getLogger(JavadocTest::class.java)
-        val servletVersion = "3.0.1"
+        const val servletVersion = "3.0.1"
     }
 
     @Inject
@@ -48,12 +48,12 @@ class JavadocTest : BaseTest() {
         checkServlets(apiName)
     }
 
-    @Test(dependsOnMethods = arrayOf("servlets"))
+    @Test(dependsOnMethods = ["servlets"])
     fun reloadServlets() {
         val apiName = "Servlet"
         val event = ApiEvent.reload(TEST_USER.nick, apiName)
         eventDao.save(event)
-        waitForEvent(event, "reloading " + apiName, Duration(30, TimeUnit.MINUTES))
+        waitForEvent(event, "reloading $apiName", Duration(30, TimeUnit.MINUTES))
         messages.clear()
         checkServlets(apiName)
     }
@@ -89,7 +89,7 @@ class JavadocTest : BaseTest() {
         Assert.assertEquals(Files.exists(Paths.get(uri)), result)
     }
 
-    @Test(dependsOnMethods = arrayOf("jdk"))
+    @Test(dependsOnMethods = ["jdk"])
     fun javaee() {
         val apiName = "JavaEE7"
         dropApi(apiName)
@@ -122,7 +122,8 @@ class JavadocTest : BaseTest() {
         }
         var api: JavadocApi? = apiDao.find("JDK")
         if (api == null) {
-            val apiEvent = ApiEvent.add(TEST_USER.nick, "JDK")
+            api = JavadocApi(config, "JDK")
+            val apiEvent = ApiEvent.add(TEST_USER.nick, api)
             injector.injectMembers(apiEvent)
             apiEvent.handle()
             messages.clear()
@@ -161,7 +162,7 @@ class JavadocTest : BaseTest() {
         Assert.assertEquals(javadocClassDao.getClass(api, "ArrayTable").size, 1)
     }
 
-    @Test(dependsOnMethods = arrayOf("guava"))
+    @Test(dependsOnMethods = ["guava"])
     fun reload() {
         val api = apiDao.find("guava")
         javadocClassDao.delete(javadocClassDao.getClass(api, "AbstractCache")[0])
@@ -175,7 +176,7 @@ class JavadocTest : BaseTest() {
 
 
     private fun addApi(apiName: String, groupId: String, artifactId: String, version: String) {
-        val apiEvent = ApiEvent.add(TEST_USER.nick, apiName, groupId, artifactId, version)
+        val apiEvent = ApiEvent.add(TEST_USER.nick, JavadocApi(config, apiName, groupId, artifactId, version))
         injector.injectMembers(apiEvent)
         apiEvent.handle()
         LOG.debug("done waiting for event to finish")

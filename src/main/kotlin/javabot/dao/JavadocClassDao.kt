@@ -1,13 +1,11 @@
 package javabot.dao
 
 import com.google.inject.Inject
+import javabot.javadoc.JavadocClassParser
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
-import javabot.javadoc.JavadocClassParser
 import javabot.model.javadoc.JavadocField
 import javabot.model.javadoc.JavadocMethod
-import javabot.model.javadoc.Visibility.PackagePrivate
-import javabot.model.javadoc.Visibility.Private
 import javabot.model.javadoc.criteria.JavadocClassCriteria
 import javabot.model.javadoc.criteria.JavadocFieldCriteria
 import javabot.model.javadoc.criteria.JavadocMethodCriteria
@@ -29,7 +27,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
         return criteria.query().asList()
     }
 
-    fun getClassByFqcn(fqcn: String): JavadocClass {
+    private fun getClassByFqcn(fqcn: String): JavadocClass {
         val criteria = JavadocClassCriteria(ds)
         criteria.fqcn().equal(fqcn)
         try {
@@ -118,37 +116,6 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
         val criteria = JavadocMethodCriteria(ds)
         criteria.javadocClass(javadocClass.id)
         ds.delete(criteria.query())
-    }
-
-    fun deleteNotVisible(api: JavadocApi) {
-        var classCriteria = JavadocClassCriteria(ds)
-        classCriteria.apiId(api.id)
-        classCriteria.or(
-                classCriteria.visibility(PackagePrivate),
-                classCriteria.visibility(Private)
-        )
-        classCriteria.delete()
-
-        classCriteria = JavadocClassCriteria(ds)
-        classCriteria.apiId(api.id)
-        classCriteria.isClass(true)
-
-        val methodCriteria = JavadocMethodCriteria(ds)
-        methodCriteria.apiId(api.id)
-        methodCriteria.or(
-                methodCriteria.visibility(PackagePrivate),
-                methodCriteria.visibility(Private)
-        )
-        methodCriteria.query().field("javadocClass").`in`(classCriteria.query().asKeyList())
-        methodCriteria.delete()
-
-        val fieldCriteria = JavadocFieldCriteria(ds)
-        fieldCriteria.apiId(api.id)
-        fieldCriteria.or(
-                fieldCriteria.visibility(PackagePrivate),
-                fieldCriteria.visibility(Private)
-        )
-        fieldCriteria.delete()
     }
 
     fun deleteFor(api: JavadocApi?) {

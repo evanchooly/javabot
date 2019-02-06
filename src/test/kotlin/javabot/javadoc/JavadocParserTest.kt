@@ -24,9 +24,7 @@ class JavadocParserTest : BaseTest() {
 
     @Test
     fun testBuildHtml() {
-        parser.extractJavadocContent(
-                JavadocApi("JDK", "${config.url()}/javadoc/JDK"), File(config.jdkJavadoc())
-        )
+        parser.extractJavadocContent(JavadocApi(config, "JDK"), File(config.jdkJavadoc()))
 
         Assert.assertTrue(File("javadoc/JDK/1.8/java/applet/Applet.html").exists())
         Assert.assertTrue(File("javadoc/JDK/1.8/java/util/Map.Entry.html").exists())
@@ -44,7 +42,7 @@ class JavadocParserTest : BaseTest() {
 
     @Test
     fun jdk() {
-        val api = JavadocApi("JDK", "${config.url()}/javadoc/JDK")
+        val api = JavadocApi(config, "JDK")
         apiDao.find("JDK")?.let { apiDao.delete(it) }
         datastore.save(api)
         parser.parse(api, object : StringWriter() {
@@ -56,7 +54,7 @@ class JavadocParserTest : BaseTest() {
     fun targeted() {
         datastore.db.dropDatabase()
 
-        val api = JavadocApi("JDK", "${config.url()}/javadoc/JDK")
+        val api = JavadocApi(config, "JDK")
         datastore.save(api)
 
         val javadocDir = parser.extractJavadocContent(api, File(config.jdkJavadoc()))

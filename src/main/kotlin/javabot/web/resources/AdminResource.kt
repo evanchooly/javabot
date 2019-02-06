@@ -2,11 +2,13 @@ package javabot.web.resources
 
 import io.dropwizard.views.View
 import javabot.Javabot
+import javabot.JavabotConfig
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
 import javabot.model.Admin
+import javabot.model.javadoc.JavadocApi
 import javabot.model.ApiEvent
 import javabot.model.Channel
 import javabot.web.auth.Restricted
@@ -33,7 +35,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 @Path("/admin") class AdminResource
 @Inject
 constructor(var viewFactory: ViewFactory, var adminDao: AdminDao, var apiDao: ApiDao, var configDao: ConfigDao,
-            var channelDao: ChannelDao, var javabot: Javabot) {
+            var channelDao: ChannelDao, var javabot: Javabot, var config: JavabotConfig) {
 
     @GET
     fun index(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User): View {
@@ -177,8 +179,12 @@ constructor(var viewFactory: ViewFactory, var adminDao: AdminDao, var apiDao: Ap
             val groupId = dependency.getElementsByTagName("groupId").item(0).textContent
             val artifactId = dependency.getElementsByTagName("artifactId").item(0).textContent
             val version = dependency.getElementsByTagName("version").item(0).textContent
-            ApiEvent.add(user.email, if (name != "") name else artifactId, groupId, artifactId, version)
-        } else ApiEvent.add(user.email, name)
+            val api = JavadocApi(config, groupId, if (name != "") name else artifactId, version)
+            apiDao.save(api)
+            ApiEvent.add(user.email, api)
+        } else {
+            ApiEvent.add(user.email, JavadocApi(config, name))
+        }
 
         apiDao.save(event)
         return javadoc(request, user)
@@ -190,7 +196,7 @@ constructor(var viewFactory: ViewFactory, var adminDao: AdminDao, var apiDao: Ap
                   @Restricted(Authority.ROLE_ADMIN) user: User,
                   @PathParam("id") id: String): View {
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        apiDao.save(ApiEvent.drop(user.email, ObjectId(id)))
+        apiDao.find(ObjectId(id))?.let{ apiDao.save(ApiEvent.drop(user.email, it))}
         return javadoc(request, user)
     }
 
@@ -200,7 +206,7 @@ constructor(var viewFactory: ViewFactory, var adminDao: AdminDao, var apiDao: Ap
                   @Restricted(Authority.ROLE_ADMIN) user: User,
                   @PathParam("id") id: String): View {
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        apiDao.save(ApiEvent.reload(user.email, ObjectId(id)))
+        apiDao.find(ObjectId(id))?.let{ apiDao.save(ApiEvent.reload(user.email, it))}
         return javadoc(request, user)
     }
 

@@ -3,8 +3,10 @@ package javabot.operations
 import com.antwerkz.sofia.Sofia
 import com.jayway.awaitility.Duration
 import javabot.BaseTest
+import javabot.JavabotConfig
 import javabot.dao.ApiDao
 import javabot.model.ApiEvent
+import javabot.model.javadoc.JavadocApi
 import org.slf4j.LoggerFactory
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
@@ -21,13 +23,18 @@ class JavadocOperationTest : BaseTest() {
     private lateinit var apiDao: ApiDao
 
     @Inject
+    private lateinit var config: JavabotConfig
+
+    @Inject
     private lateinit var operation: JavadocOperation
 
     @BeforeTest
     fun jdk() {
         if (apiDao.find("JDK") == null) {
             LOG.info("JDK javadoc not found.  Generating now.")
-            val event = ApiEvent.add(TEST_USER.nick, "JDK")
+            val api = JavadocApi(config, "JDK")
+            apiDao.save(api)
+            val event = ApiEvent.add(TEST_USER.nick, api)
             eventDao.save(event)
             waitForEvent(event, "adding JDK", Duration(30, TimeUnit.MINUTES))
             messages.clear()
