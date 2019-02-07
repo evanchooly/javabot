@@ -2,7 +2,11 @@ package javabot.javadoc
 
 import javabot.BaseTest
 import javabot.JavabotConfig
+import javabot.admin.JavadocTest
 import javabot.dao.ApiDao
+import javabot.dao.JavadocClassDao
+import javabot.model.javadoc.Java6JavadocSource
+import javabot.model.javadoc.Java8JavadocSource
 import javabot.model.javadoc.JavadocApi
 import org.jsoup.Jsoup
 import org.testng.Assert
@@ -21,6 +25,8 @@ class JavadocParserTest : BaseTest() {
     lateinit var apiDao: ApiDao
     @Inject
     lateinit var provider: Provider<JavadocClassParser>
+    @Inject
+    lateinit var javadocClassDao: JavadocClassDao
 
     @Test
     fun testBuildHtml() {
@@ -45,19 +51,36 @@ class JavadocParserTest : BaseTest() {
         val api = JavadocApi(config, "JDK")
         apiDao.find("JDK")?.let { apiDao.delete(it) }
         datastore.save(api)
-        parser.parse(api, object : StringWriter() {
-            override fun write(line: String) = println(line)
-        })
+        parser.parse(api, SOut)
+    }
+
+    object SOut : StringWriter() {
+        override fun write(line: String) = println(line)
     }
 
     @Test
     fun targeted() {
-        datastore.db.dropDatabase()
+        val apiName = "JDK"
+        apiDao.delete(apiName)
 
-        val api = JavadocApi(config, "JDK")
+        val api = JavadocApi(config, apiName)
         datastore.save(api)
 
         val javadocDir = parser.extractJavadocContent(api, File(config.jdkJavadoc()))
-        provider.get().parse(api, Jsoup.parse(File(javadocDir, "java.desktop/java/awt/Dimension.html"), "UTF-8"))
+        val source = Java8JavadocSource(api, File(javadocDir, "java.desktop/java/awt/Dimension.html").absolutePath)
+        source.parse(javadocClassDao)
+    }
+
+    @Test
+    fun targetedServlet() {
+        val apiName = "Servlet"
+        apiDao.delete(apiName)
+
+        val api = JavadocApi(config, apiName, "javax.servlet", "javax.servlet-api", JavadocTest.servletVersion)
+        datastore.save(api)
+
+        val javadocDir = parser.extractJavadocContent(api, File(config.jdkJavadoc()))
+        val source = Java6JavadocSource(api, File(javadocDir, "java.desktop/java/awt/Dimension.html").absolutePath)
+        source.parse(javadocClassDao)
     }
 }

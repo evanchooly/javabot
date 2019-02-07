@@ -13,7 +13,13 @@ class ApiDao @Inject constructor(ds: Datastore, var classDao: JavadocClassDao) :
         return criteria.query().get()
     }
 
+    fun delete(api: String) {
+        find(api)?.let { delete(it) }
+    }
+
     fun delete(api: JavadocApi) {
+        ds.delete(ds.createQuery(JavadocSource::class.java)
+                .filter("api", api))
         classDao.deleteFor(api)
         super.delete(api)
     }

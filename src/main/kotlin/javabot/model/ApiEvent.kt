@@ -91,6 +91,9 @@ class ApiEvent : AdminEvent {
     }
 
     override fun delete() {
+        if(api == null) {
+            api = apiDao.find(name)
+        }
         api?.let {
             File("javadoc/${it.name}/${it.version}/").deleteTree()
             apiDao.delete(it)

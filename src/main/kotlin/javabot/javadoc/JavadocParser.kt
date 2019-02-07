@@ -6,6 +6,8 @@ import javabot.JavabotThreadFactory
 import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
 import javabot.model.downloadZip
+import javabot.model.javadoc.Java6JavadocSource
+import javabot.model.javadoc.Java8JavadocSource
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocSource
@@ -30,8 +32,7 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
                                         val provider: Provider<JavadocClassParser>, val config: JavabotConfig) {
 
     fun parse(api: JavadocApi, writer: Writer) {
-        val downloadUri : URI
-        downloadUri = if ("JDK" == api.name) {
+        val downloadUri = if ("JDK" == api.name) {
             File(config.jdkJavadoc()).toURI()
         } else  {
             api.buildMavenUri()
@@ -43,21 +44,24 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
             val executor = ScheduledThreadPoolExecutor(100, JavabotThreadFactory(false, "javadoc-thread-"))
             executor.prestartCoreThread()
 
-            (1..executor.corePoolSize).forEach {
+            repeat(executor.corePoolSize) {
                 executor.scheduleAtFixedRate({
                     apiDao.findUnprocessedSource(api)
-                            ?.process(provider.get())
+                            ?.process(javadocClassDao, provider.get())
                 }, 0, 1, SECONDS)
             }
 
-            extractJavadocContent(api, location)
-                    .walkTopDown()
-                    .filter { !it.name.contains("-") }
-                    .filter { it.extension == "html" }
-                    .forEach {
-                        println("saving ${it}")
-                        apiDao.save(JavadocSource(api, it.absolutePath))
-                    }
+            val root = extractJavadocContent(api, location)
+            val type = JavadocType.discover(root)
+            type?.let {
+                root
+                        .walkTopDown()
+                        .filter { !it.path.contains("-") }
+                        .filter { it.extension == "html" }
+                        .forEach {
+                            apiDao.save(type.create(api, it.absolutePath))
+                        }
+            }
 
             Awaitility
                     .waitAtMost(30, MINUTES)
@@ -83,59 +87,57 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
     }
 
     fun extractJavadocContent(api: JavadocApi, jar: File): File {
+
+        val extracted = extractJar(jar)
         val javadocDir = File("javadoc/${api.name}/${api.version}/")
-        var tmp = File("/tmp/")
-        if (!tmp.exists()) {
-            tmp = File(System.getProperty("java.io.tmpdir"))
-        }
-        val jarTarget = File(tmp, ObjectId().toString())
-
-        jarTarget.mkdirs()
-        javadocDir.mkdirs()
-
-        extractJar(jar, jarTarget)
-        copyJavadocJar(api, jarTarget, javadocDir)
 
         try {
-            val index = File("javadoc/JDK/1.8/index.html")
-            val replaced = index.readText().replace(
-                    "top.classFrame.location = top.targetPage;",
-                    "top.classFrame.location = top.targetPage + location.hash;")
-            index.writeText(replaced)
-
+            javadocDir.mkdirs()
+            copyJavadocJar(extracted, javadocDir)
         } catch (e : Exception) {
             log.error(e.message, e)
         } finally {
-            jarTarget.deleteRecursively()
+            extracted.deleteRecursively()
         }
 
         return javadocDir
     }
 
-    private fun copyJavadocJar(api: JavadocApi, jarTarget: File, javadocDir: File) {
-        val sourceRoot = if(api.name == "JDK") {
-            File(jarTarget, "docs/api")
-        } else {
-            jarTarget
-        }
+    private fun copyJavadocJar(extracted: File, javadocDir: File) {
+        val sourceRoot = discoverRoot(extracted)
 
-        javadocDir.deleteRecursively()
         javadocDir.mkdirs()
         sourceRoot.copyRecursively(javadocDir)
-        sourceRoot.deleteRecursively()
     }
 
-    private fun extractJar(jar: File, jarTarget: File) {
+    private fun discoverRoot(extracted: File): File {
+        return extracted
+                .walkTopDown()
+                .filter { it.name == "index.html" }
+                .filter { JavadocType.discover(it.parentFile) != null }
+                .map { it.parentFile }.first()
+    }
+
+    private fun extractJar(jar: File): File {
+        var tmp = File("/tmp/")
+        if (!tmp.exists()) {
+            tmp = File(System.getProperty("java.io.tmpdir"))
+        }
+        val extracted = File(tmp, ObjectId().toString())
+        extracted.mkdirs()
+
         val jarFile = JarFile(jar)
         jarFile.entries().iterator().forEach { entry ->
             if (!entry.isDirectory) {
-                val javaFile = File(jarTarget, entry.name)
+                val javaFile = File(extracted, entry.name)
                 javaFile.parentFile.mkdirs()
                 FileOutputStream(javaFile).use {
                     jarFile.getInputStream(entry).copyTo(it)
                 }
             }
         }
+
+        return extracted
     }
 
     fun getJavadocClass(fqcn: String): JavadocClass? {
@@ -166,3 +168,27 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
         }
     }
 }
+ enum class JavadocType {
+     JAVA6 {
+         override fun create(api: JavadocApi, file: String): JavadocSource {
+             return Java6JavadocSource(api, file)
+         }
+     },
+     JAVA8 {
+         override fun create(api: JavadocApi, file: String): JavadocSource {
+             return Java8JavadocSource(api, file)
+         }
+     };
+
+     companion object {
+         fun discover(root: File) : JavadocType? {
+             return when {
+                 File(root, "element-list").let { it.exists() } -> JAVA8
+                 File(root, "package-list").let { it.exists() } -> JAVA6
+                 else -> null
+             }
+         }
+     }
+
+     abstract fun create(api: JavadocApi, absolutePath: String): JavadocSource
+ }
