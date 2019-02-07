@@ -1,7 +1,7 @@
 package javabot.dao
 
 import com.google.inject.Inject
-import javabot.javadoc.JavadocClassParser
+import javabot.javadoc.JavadocParser
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocField
@@ -16,7 +16,7 @@ import java.util.ArrayList
 class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass>(ds, JavadocClass::class.java) {
 
     fun getClass(api: JavadocApi?, name: String): List<JavadocClass> {
-        val strings = JavadocClassParser.calculateNameAndPackage(name)
+        val strings = JavadocParser.calculateNameAndPackage(name)
         val pkgName = strings.first
         val criteria = JavadocClassCriteria(ds)
         criteria.upperName().equal(strings.second.toUpperCase())

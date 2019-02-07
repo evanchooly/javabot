@@ -24,8 +24,6 @@ class JavadocParserTest : BaseTest() {
     @Inject
     lateinit var apiDao: ApiDao
     @Inject
-    lateinit var provider: Provider<JavadocClassParser>
-    @Inject
     lateinit var javadocClassDao: JavadocClassDao
 
     @Test

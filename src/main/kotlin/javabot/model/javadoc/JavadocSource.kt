@@ -2,7 +2,6 @@ package javabot.model.javadoc
 
 import com.mongodb.MongoException
 import javabot.dao.JavadocClassDao
-import javabot.javadoc.JavadocClassParser
 import javabot.model.Persistent
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -21,7 +20,7 @@ import java.util.Date
 @Indexes(Index(fields = arrayOf(Field("created")), options = IndexOptions(expireAfterSeconds = 7200)))
 abstract class JavadocSource() : Persistent {
     companion object {
-        val LOG = LoggerFactory.getLogger(JavadocClassParser::class.java)
+        val LOG = LoggerFactory.getLogger(JavadocSource::class.java)
     }
 
     constructor(api: JavadocApi, file: String) : this() {
@@ -36,7 +35,7 @@ abstract class JavadocSource() : Persistent {
     lateinit var api: JavadocApi
     var created: Date = Date()
 
-    abstract fun process(dao: JavadocClassDao, parser: JavadocClassParser)
+    abstract fun process(dao: JavadocClassDao)
 
     protected fun extractParameters(href: String): Pair<List<String>, List<String>> {
         val longArgs = mutableListOf<String>()

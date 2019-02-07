@@ -1,7 +1,6 @@
 package javabot.model.javadoc
 
 import javabot.dao.JavadocClassDao
-import javabot.javadoc.JavadocClassParser
 import org.jsoup.nodes.Document
 
 class Java6JavadocSource() : JavadocSource() {
@@ -10,7 +9,7 @@ class Java6JavadocSource() : JavadocSource() {
         this.name = file
     }
 
-    override fun process(dao: JavadocClassDao, parser: JavadocClassParser) {
+    override fun process(dao: JavadocClassDao) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

@@ -29,7 +29,31 @@ import javax.inject.Singleton
 
 @Singleton
 class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao: JavadocClassDao,
-                                        val provider: Provider<JavadocClassParser>, val config: JavabotConfig) {
+                                        val config: JavabotConfig) {
+    companion object {
+        private val LOG = LoggerFactory.getLogger(JavadocParser::class.java)
+
+        fun calculateNameAndPackage(value: String): Pair<String?, String> {
+            var clsName = value
+            while (clsName.contains(".") && Character.isLowerCase(clsName[0])) {
+                clsName = clsName.substring(clsName.indexOf(".") + 1)
+            }
+            val pkgName = if (value != clsName) {
+                value.substring(0, value.indexOf(clsName) - 1)
+            } else {
+                null
+            }
+
+            return pkgName to clsName
+        }
+
+        fun getPackage(name: String): Pair<String, String> {
+            val split = name.split('.')
+
+            return Pair(split.takeWhile { it[0].isLowerCase() }.joinToString("."),
+                    split.dropWhile { it[0].isLowerCase() }.joinToString("."))
+        }
+    }
 
     fun parse(api: JavadocApi, writer: Writer) {
         val downloadUri = if ("JDK" == api.name) {
@@ -47,7 +71,7 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
             repeat(executor.corePoolSize) {
                 executor.scheduleAtFixedRate({
                     apiDao.findUnprocessedSource(api)
-                            ?.process(javadocClassDao, provider.get())
+                            ?.process(javadocClassDao)
                 }, 0, 1, SECONDS)
             }
 
@@ -76,10 +100,10 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
 
             writer.write("Finished importing %s.  %s!".format(api.name, if (apiDao.countUnprocessed(api) == 0L) "SUCCESS" else "FAILURE"))
         } catch (e: IOException) {
-            log.error(e.message, e)
+            LOG.error(e.message, e)
             throw RuntimeException(e.message, e)
         } catch (e: InterruptedException) {
-            log.error(e.message, e)
+            LOG.error(e.message, e)
             throw RuntimeException(e.message, e)
         } finally {
             location.delete()
@@ -95,7 +119,7 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
             javadocDir.mkdirs()
             copyJavadocJar(extracted, javadocDir)
         } catch (e : Exception) {
-            log.error(e.message, e)
+            LOG.error(e.message, e)
         } finally {
             extracted.deleteRecursively()
         }
@@ -155,17 +179,6 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
 
     private fun String.toPath(): String {
         return this.replace(".", "/")
-    }
-
-    companion object {
-        private val log = LoggerFactory.getLogger(JavadocParser::class.java)
-
-        fun getPackage(name: String): Pair<String, String> {
-            val split = name.split('.')
-
-            return Pair(split.takeWhile { it[0].isLowerCase() }.joinToString("."),
-                    split.dropWhile { it[0].isLowerCase() }.joinToString("."))
-        }
     }
 }
  enum class JavadocType {

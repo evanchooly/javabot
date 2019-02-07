@@ -1,7 +1,6 @@
 package javabot.model.javadoc
 
 import javabot.dao.JavadocClassDao
-import javabot.javadoc.JavadocClassParser
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.io.File
@@ -12,7 +11,7 @@ class Java8JavadocSource() : JavadocSource() {
         this.name = file
     }
 
-    override fun process(dao: JavadocClassDao, parser: JavadocClassParser) {
+    override fun process(dao: JavadocClassDao) {
         val document = Jsoup.parse(File(name).readText())
         val attribute = findType(document)
 
