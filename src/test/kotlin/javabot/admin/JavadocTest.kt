@@ -32,7 +32,7 @@ class JavadocTest : BaseTest() {
     private lateinit var apiDao: ApiDao
 
     @Inject
-    private lateinit var javadocClassDao: JavadocClassDao
+    private lateinit var classDao: JavadocClassDao
 
     @Inject
     private lateinit var config: JavabotConfig
@@ -40,7 +40,7 @@ class JavadocTest : BaseTest() {
     @Inject
     private lateinit var operation: JavadocOperation
 
-    @Test
+    @Test(dependsOnMethods = ["coreJavadoc"])
     fun servlets() {
         val apiName = "Servlet"
         dropApi(apiName)
@@ -58,22 +58,9 @@ class JavadocTest : BaseTest() {
         checkServlets(apiName)
     }
 
-    @Test
-    fun deleteJavadoc() {
-        val apiName = "Servlet-html"
-        dropApi(apiName)
-        addApi(apiName, "javax.servlet", "javax.servlet-api", servletVersion)
-
-        val file = File("javadoc/Servlet-html/${servletVersion}/javax/servlet/http/HttpServlet.html")
-        Assert.assertTrue(file.exists())
-
-        dropApi(apiName)
-        Assert.assertFalse(file.exists())
-    }
-
     private fun checkServlets(apiName: String) {
         val api = apiDao.find(apiName)
-        Assert.assertNotNull(javadocClassDao.getClass(api, "javax.servlet.http", "HttpServletRequest"),
+        Assert.assertNotNull(classDao.getClass(api, "javax.servlet.http", "HttpServletRequest"),
                 "Should find an entry for ${apiName}/javax.servlet.http.HttpServletRequest")
 
         scanForResponse(operation.handleMessage(message("~javadoc HttpServlet")), "javax/servlet/http/HttpServlet.html")
@@ -89,7 +76,7 @@ class JavadocTest : BaseTest() {
         Assert.assertEquals(Files.exists(Paths.get(uri)), result)
     }
 
-    @Test(dependsOnMethods = ["jdk"])
+    @Test(dependsOnMethods = ["coreJavadoc"])
     fun javaee() {
         val apiName = "JavaEE7"
         dropApi(apiName)
@@ -100,56 +87,50 @@ class JavadocTest : BaseTest() {
                 "javax/enterprise/inject/spi/Annotated.html#getAnnotation")
         scanForResponse(operation.handleMessage(message("~javadoc ContextService")), "javax/enterprise/concurrent/ContextService.html")
         scanForResponse(operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
-                "createContextualProxy-java.lang.Object-java.lang.Class...-")
+                "createContextualProxy(java.lang.Object, java.lang.Class...)")
         scanForResponse(operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
-                "createContextualProxy-java.lang.Object-java.util.Map-java.lang.Class...-")
+                "createContextualProxy(java.lang.Object, java.util.Map, java.lang.Class...)")
         scanForResponse(operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
-                "createContextualProxy-T-java.lang.Class-")
+                "createContextualProxy(T, java.lang.Class)")
         scanForResponse(operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
-                "createContextualProxy-T-java.util.Map-java.lang.Class-")
+                "createContextualProxy(T, java.util.Map, java.lang.Class)")
         scanForResponse(operation.handleMessage(message("~javadoc PartitionPlan")), "javax/batch/api/partition/PartitionPlan.html")
         scanForResponse(operation.handleMessage(message("~javadoc PartitionPlan.setPartitionProperties(Properties[])")),
-                "javax/batch/api/partition/PartitionPlan.html#setPartitionProperties-java.util.Properties[]-")
+                "javax/batch/api/partition/PartitionPlan.html#setPartitionProperties(java.util.Properties[])")
     }
 
     @Test
-    fun jdk() {
+    fun coreJavadoc() {
         bot
         if (java.lang.Boolean.valueOf(System.getProperty("dropJDK", "false"))) {
             LOG.debug("Dropping JDK API")
             dropApi("JDK")
             LOG.debug("Done")
         }
-        var api: JavadocApi? = apiDao.find("JDK")
+        var api = apiDao.find("JDK")
         if (api == null) {
-            api = JavadocApi(config, "JDK")
-            val apiEvent = ApiEvent.add(TEST_USER.nick, api)
+            val apiEvent = ApiEvent.add(TEST_USER.nick, JavadocApi(config, "JDK", version = "11"))
             injector.injectMembers(apiEvent)
             apiEvent.handle()
             messages.clear()
             api = apiDao.find("JDK")
         }
-        Assert.assertEquals(javadocClassDao.getClass(api, "Map").size, 1)
-        Assert.assertNotNull(javadocClassDao.getClass(api, "java.lang", "Integer"),
-                "Should find an entry for ${api?.name}'s java.lang.Integer")
-        Assert.assertNotNull(javadocClassDao.getClass(api, "java.util", "List"),
-                "Should find an entry for ${api?.name}'s java.util.List")
-        Assert.assertNotNull(javadocClassDao.getClass(api, "java.sql", "ResultSet"),
-                "Should find an entry for ${api?.name}'s java.sql.ResultSet")
-        Assert.assertNotNull(javadocClassDao.getClass(api, "java.util.Map.Entry"),
-                "Should find an entry for ${api?.name}'s java.util.Map.Entry")
-        Assert.assertNotNull(javadocClassDao.getClass(api, "Map.Entry"),
-                "Should find an entry for ${api?.name}'s java.util.Map.Entry")
+        Assert.assertEquals(classDao.getClass(api, "Map").size, 1)
+        Assert.assertNotNull(classDao.getClass(api, "java.lang", "Integer"), "Should find an entry for ${api?.name}'s java.lang.Integer")
+        Assert.assertNotNull(classDao.getClass(api, "java.util", "List"), "Should find an entry for ${api?.name}'s java.util.List")
+        Assert.assertNotNull(classDao.getClass(api, "java.sql", "ResultSet"), "Should find an entry for ${api?.name}'s java.sql.ResultSet")
+        Assert.assertNotNull(classDao.getClass(api, "java.util.Map.Entry"), "Should find an entry for ${api?.name}'s java.util.Map.Entry")
+        Assert.assertNotNull(classDao.getClass(api, "Map.Entry"), "Should find an entry for ${api?.name}'s java.util.Map.Entry")
         scanForResponse(operation.handleMessage(message("~javadoc Map.Entry")),
-                "${config.url()}/javadoc/JDK/1.8/index.html?java/util/Map.Entry.html")
+                "${config.url()}/javadoc/JDK/11/index.html?java/util/Map.Entry.html")
         scanForResponse(operation.handleMessage(message("~javadoc String.chars()")),
-                "${config.url()}/javadoc/JDK/1.8/index.html?java/lang/CharSequence.html#chars--")
+                "${config.url()}/javadoc/JDK/11/index.html?java/lang/CharSequence.html#chars()")
         scanForResponse(operation.handleMessage(message("~javadoc ResultSet.getInt(*)")),
-                "${config.url()}/javadoc/JDK/1.8/index.html?java/sql/ResultSet.html#getInt")
+                "${config.url()}/javadoc/JDK/11/index.html?java/sql/ResultSet.html#getInt")
     }
 
     private fun verifyMapCount() {
-        val list = javadocClassDao.getClass(null, "Map")
+        val list = classDao.getClass(null, "Map")
         Assert.assertEquals(list.size, 1, "Should have found only 1:  $list")
     }
 
@@ -159,19 +140,21 @@ class JavadocTest : BaseTest() {
         dropApi(apiName)
         addApi(apiName, "com.google.guava", "guava", "19.0")
         val api = apiDao.find("guava")
-        Assert.assertEquals(javadocClassDao.getClass(api, "ArrayTable").size, 1)
+        Assert.assertEquals(classDao.getClass(api, "ArrayTable").size, 1)
+        Assert.assertEquals(classDao.getClass(api, "AbstractCache").size, 1)
+        Assert.assertEquals(classDao.getClass(api, "ArrayBasedCharEscaper").size, 1)
     }
 
     @Test(dependsOnMethods = ["guava"])
     fun reload() {
         val api = apiDao.find("guava")
-        javadocClassDao.delete(javadocClassDao.getClass(api, "AbstractCache")[0])
-        javadocClassDao.delete(javadocClassDao.getClass(api, "ArrayTable")[0])
-        Assert.assertEquals(javadocClassDao.getClass(api, "AbstractCache").size, 0)
-        Assert.assertEquals(javadocClassDao.getClass(api, "ArrayTable").size, 0)
+        classDao.delete(classDao.getClass(api, "AbstractCache")[0])
+        classDao.delete(classDao.getClass(api, "ArrayTable")[0])
+        Assert.assertEquals(classDao.getClass(api, "AbstractCache").size, 0)
+        Assert.assertEquals(classDao.getClass(api, "ArrayTable").size, 0)
         reloadApi("guava")
-        Assert.assertEquals(javadocClassDao.getClass(api, "AbstractCache").size, 1)
-        Assert.assertEquals(javadocClassDao.getClass(api, "ArrayTable").size, 1)
+        Assert.assertEquals(classDao.getClass(api, "AbstractCache").size, 1)
+        Assert.assertEquals(classDao.getClass(api, "ArrayTable").size, 1)
     }
 
 

@@ -101,7 +101,9 @@ class ApiEvent : AdminEvent {
     }
 
     private fun findApi(): JavadocApi? {
-        return api
+        return api ?: name?.let {
+            apiDao.find(name)
+        }
     }
 
     override fun add() {
@@ -136,10 +138,14 @@ class ApiEvent : AdminEvent {
 }
 
 fun URI.downloadZip(): File {
-    val file = File("/tmp", path.substringAfterLast("/"))
-    FileOutputStream(file).use { outputStream ->
-        this.toURL().openStream().use { inputStream ->
-            outputStream.write(inputStream.readBytes())
+    val downloads = File("downloads")
+    downloads.mkdir()
+    val file = File(downloads, path.substringAfterLast("/"))
+    if(!file.exists()) {
+        FileOutputStream(file).use { outputStream ->
+            this.toURL().openStream().use { inputStream ->
+                outputStream.write(inputStream.readBytes())
+            }
         }
     }
     return file

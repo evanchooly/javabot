@@ -38,7 +38,7 @@ class JavadocApi : Persistent {
         name = apiName
         this.groupId = groupId
         this.artifactId = artifactId
-        this.version = if (name == "JDK") System.getProperty("java.specification.version") else version
+        this.version = version
         baseUrl = "${config.url()}/javadoc/$apiName/${version}/"
     }
 

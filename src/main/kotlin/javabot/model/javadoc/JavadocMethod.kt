@@ -49,6 +49,6 @@ class JavadocMethod : JavadocElement {
     }
 
     override fun toString(): String {
-        return parentClassName + "." + getShortSignature()
+        return parentClassName + "#" + getShortSignature()
     }
 }

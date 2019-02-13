@@ -17,6 +17,9 @@ import javax.annotation.Nullable
 class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var apiDao: ApiDao,
      var dao: JavadocClassDao, var config: JavabotConfig) : BotOperation(bot, adminDao) {
 
+    companion object {
+        private const val RESULT_LIMIT = 5
+    }
 
     @field:[Nullable Inject(optional = true)]
     var bitly: BitlyClient? = null
@@ -56,7 +59,7 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
         if (!urls.isEmpty()) {
 
             val nick = event.user.nick
-            val urlMessage = StringBuilder(nick + ": ")
+            val urlMessage = StringBuilder("$nick: ")
             val entries = buildResponse(event, urls, urlMessage)
             if (urls.size > RESULT_LIMIT) {
                 responses.add(Message(event, Sofia.tooManyResults(nick)))
@@ -107,15 +110,14 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
             if (Character.isUpperCase(fieldName[0]) && fieldName.toUpperCase() != fieldName) {
                 findClasses(api, urls, key)
             } else {
-                val list = dao.getField(api, className, fieldName)
-                urls.addAll(list.map({ field -> field.getDisplayUrl(field.toString(), apiDao, bitly) }))
+                urls += dao.getField(api, className, fieldName)
+                        .map { it.getDisplayUrl(it.toString(), apiDao, bitly) }
             }
         }
     }
 
     private fun findClasses(api: JavadocApi?, urls: MutableList<String>, key: String) {
-        urls.addAll(dao.getClass(api, key).map(
-                { javadocClass -> javadocClass.getDisplayUrl(javadocClass.toString(), apiDao, bitly) }))
+        urls.addAll(dao.getClass(api, key).map { it.getDisplayUrl(it.toString(), apiDao, bitly) })
     }
 
     private fun parseMethodRequest(urls: MutableList<String>, api: JavadocApi?, key: String, openIndex: Int) {
@@ -152,14 +154,13 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
         val parents = mutableSetOf<JavadocClass>()
         for (c in classes) {
             fun find(name: String) {
-                val list = dao.getClass(null, name)
-                parents.add(list[0])
-                parents.addAll(findParents(list))
+                val list = dao.getClass(name = name)
+                if (!list.isEmpty()) {
+                    parents.add(list[0])
+                    parents.addAll(findParents(list))
+                }
             }
-            if (c.parentClass != null && c.parentClass != c.fqcn) {  // java.lang.Object does this
-                find(c.parentClass!!)
-            }
-            for (i in c.interfaces) {
+            for (i in c.parentTypes) {
                 find(i)
             }
         }
@@ -174,16 +175,11 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
     private fun displayApiList(responses: MutableList<Message>, event: Message) {
         val builder = StringBuilder()
         for (api in apiDao.findAll()) {
-            if (builder.length != 0) {
+            if (builder.isNotEmpty()) {
                 builder.append("; ")
             }
             builder.append(api.name)
         }
         responses.add(Message(event, Sofia.javadocApiList(event.user.nick, builder)))
-    }
-
-    companion object {
-
-        private val RESULT_LIMIT = 5
     }
 }

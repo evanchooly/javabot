@@ -6,11 +6,7 @@ import javabot.JavabotThreadFactory
 import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
 import javabot.model.downloadZip
-import javabot.model.javadoc.Java6JavadocSource
-import javabot.model.javadoc.Java8JavadocSource
 import javabot.model.javadoc.JavadocApi
-import javabot.model.javadoc.JavadocClass
-import javabot.model.javadoc.JavadocSource
 import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -18,18 +14,19 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.Writer
 import java.net.URI
-import java.util.concurrent.ScheduledThreadPoolExecutor
+import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeUnit.MINUTES
 import java.util.concurrent.TimeUnit.SECONDS
 import java.util.jar.JarFile
+import java.util.jar.Manifest
 import javax.inject.Inject
-import javax.inject.Provider
 import javax.inject.Singleton
 
 @Singleton
-class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao: JavadocClassDao,
-                                        val config: JavabotConfig) {
+class JavadocParser @Inject constructor(private val apiDao: ApiDao, private val classDao: JavadocClassDao,
+                                        private val config: JavabotConfig) {
     companion object {
         private val LOG = LoggerFactory.getLogger(JavadocParser::class.java)
 
@@ -47,56 +44,41 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
             return pkgName to clsName
         }
 
-        fun getPackage(name: String): Pair<String, String> {
-            val split = name.split('.')
-
-            return Pair(split.takeWhile { it[0].isLowerCase() }.joinToString("."),
-                    split.dropWhile { it[0].isLowerCase() }.joinToString("."))
-        }
     }
 
     fun parse(api: JavadocApi, writer: Writer) {
-        val downloadUri = if ("JDK" == api.name) {
-            File(config.jdkJavadoc()).toURI()
-        } else  {
-            api.buildMavenUri()
-        }
-
-        val location = downloadUri.downloadZip()
         try {
 
-            val executor = ScheduledThreadPoolExecutor(100, JavabotThreadFactory(false, "javadoc-thread-"))
+            val queue = ArrayBlockingQueue<Runnable>(1000)
+            val executor = ThreadPoolExecutor(100, 100,
+                                              30, SECONDS, queue,
+                                              JavabotThreadFactory(false, "javadoc-thread-"))
             executor.prestartCoreThread()
 
-            repeat(executor.corePoolSize) {
-                executor.scheduleAtFixedRate({
-                    apiDao.findUnprocessedSource(api)
-                            ?.process(javadocClassDao)
-                }, 0, 1, SECONDS)
-            }
-
-            val root = extractJavadocContent(api, location)
+            val root = extractJavadocContent(api)
             val type = JavadocType.discover(root)
-            type?.let {
-                root
-                        .walkTopDown()
-                        .filter { !it.path.contains("-") }
-                        .filter { it.extension == "html" }
-                        .forEach {
-                            apiDao.save(type.create(api, it.absolutePath))
+            root.walkTopDown()
+                    .filter { !it.path.contains("-") }
+                    .filter { it.name != "index.html" }
+                    .filter { it.extension == "html" }
+                    .forEach {
+                        val job = Runnable {
+                            type.create(api, it.absolutePath)
+                                .parse(classDao)
                         }
-            }
+                        queue.offer(job, 30, SECONDS)
+                    }
 
             Awaitility
                     .waitAtMost(30, MINUTES)
                     .pollInterval(5, SECONDS)
                     .until<Boolean> {
-                        val workQueue = apiDao.countUnprocessed(api)
+                        val workQueue = queue.size
                         writer.write("Waiting on %s work queue to drain.  %d items left".format(api.name, workQueue))
-                        workQueue == 0L
+                        workQueue == 0
                     }
             executor.shutdown()
-            executor.awaitTermination(10, TimeUnit.MINUTES)
+            executor.awaitTermination(2, TimeUnit.MINUTES)
 
             writer.write("Finished importing %s.  %s!".format(api.name, if (apiDao.countUnprocessed(api) == 0L) "SUCCESS" else "FAILURE"))
         } catch (e: IOException) {
@@ -105,23 +87,28 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
         } catch (e: InterruptedException) {
             LOG.error(e.message, e)
             throw RuntimeException(e.message, e)
-        } finally {
-            location.delete()
         }
     }
 
-    fun extractJavadocContent(api: JavadocApi, jar: File): File {
+    fun extractJavadocContent(api: JavadocApi): File {
+        val downloadUri = if ("JDK" == api.name) {
+            File(config.jdkJavadoc()).toURI()
+        } else  {
+            api.buildMavenUri()
+        }
 
-        val extracted = extractJar(jar)
         val javadocDir = File("javadoc/${api.name}/${api.version}/")
+        if(!javadocDir.exists()) {
+            val extracted = extractJar(downloadUri.downloadZip())
 
-        try {
-            javadocDir.mkdirs()
-            copyJavadocJar(extracted, javadocDir)
-        } catch (e : Exception) {
-            LOG.error(e.message, e)
-        } finally {
-            extracted.deleteRecursively()
+            try {
+                javadocDir.mkdirs()
+                copyJavadocJar(extracted, javadocDir)
+            } catch (e: Exception) {
+                LOG.error(e.message, e)
+            } finally {
+                extracted.deleteRecursively()
+            }
         }
 
         return javadocDir
@@ -164,15 +151,6 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
         return extracted
     }
 
-    fun getJavadocClass(fqcn: String): JavadocClass? {
-        val pair = getPackage(fqcn)
-        return getJavadocClass(pair.first, pair.second)
-    }
-
-    fun getJavadocClass(pkg: String, name: String): JavadocClass? {
-        return javadocClassDao.getClass(null, pkg, name)
-    }
-
     private fun JavadocApi.buildMavenUri()
             = URI("https://repo1.maven.org/maven2/${groupId.toPath()}/${artifactId}/${version}/${artifactId}-${version}-javadoc.jar")
 
@@ -187,18 +165,40 @@ class JavadocParser @Inject constructor(val apiDao: ApiDao, val javadocClassDao:
              return Java6JavadocSource(api, file)
          }
      },
+     JAVA7 {
+         override fun create(api: JavadocApi, file: String): JavadocSource {
+             return Java7JavadocSource(api, file)
+         }
+     },
      JAVA8 {
          override fun create(api: JavadocApi, file: String): JavadocSource {
              return Java8JavadocSource(api, file)
          }
+     },
+     JAVA11 {
+         override fun create(api: JavadocApi, file: String): JavadocSource {
+             return Java11JavadocSource(api, file)
+         }
      };
 
      companion object {
-         fun discover(root: File) : JavadocType? {
+         fun discover(root: File) : JavadocType {
+             val manFile = File(root, "META-INF/MANIFEST.mf")
+             if(manFile.exists()) {
+                 val manifest = Manifest()
+                 manifest.read(manFile.inputStream())
+                 val jdkVersion = manifest.mainAttributes.getValue("Build-Jdk")
+                 return when {
+                     jdkVersion.startsWith("1.6") -> JAVA6
+                     jdkVersion.startsWith("1.7") -> JAVA7
+                     jdkVersion.startsWith("1.8") -> JAVA8
+                     else -> throw IllegalArgumentException("unknown JDK version for javadoc:  $jdkVersion")
+                 }
+             }
              return when {
-                 File(root, "element-list").let { it.exists() } -> JAVA8
-                 File(root, "package-list").let { it.exists() } -> JAVA6
-                 else -> null
+                 File(root, "package-list").exists() -> JAVA8
+                 File(root, "element-list").exists() -> JAVA11
+                 else -> throw IllegalArgumentException("unknown JDK version for javadoc for $root")
              }
          }
      }

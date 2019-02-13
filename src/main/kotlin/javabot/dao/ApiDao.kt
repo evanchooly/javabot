@@ -1,8 +1,9 @@
 package javabot.dao
 
 import javabot.model.javadoc.JavadocApi
-import javabot.model.javadoc.JavadocSource
+import javabot.javadoc.JavadocSource
 import javabot.model.javadoc.criteria.JavadocApiCriteria
+import javabot.model.javadoc.criteria.JavadocSourceCriteria
 import org.mongodb.morphia.Datastore
 import javax.inject.Inject
 
@@ -29,17 +30,14 @@ class ApiDao @Inject constructor(ds: Datastore, var classDao: JavadocClassDao) :
     }
 
     fun findUnprocessedSource(api: JavadocApi): JavadocSource? {
-        val query = ds.createQuery(JavadocSource::class.java)
-                .filter("api", api.id)
-                .filter("processed", false)
-        return ds.findAndDelete(query)
+        val criteria = JavadocSourceCriteria(ds)
+        criteria.api(api)
+        return ds.findAndDelete(criteria.query())
     }
 
     fun countUnprocessed(api: JavadocApi): Long {
-        val query = ds.createQuery(JavadocSource::class.java)
-                .filter("api", api.id)
-                .filter("processed", false)
-
-        return ds.getCount(query)
+        val criteria = JavadocSourceCriteria(ds)
+        criteria.api(api)
+        return criteria.query().countAll()
     }
 }

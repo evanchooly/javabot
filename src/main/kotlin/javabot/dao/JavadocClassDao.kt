@@ -15,7 +15,7 @@ import java.util.ArrayList
 
 class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass>(ds, JavadocClass::class.java) {
 
-    fun getClass(api: JavadocApi?, name: String): List<JavadocClass> {
+    fun getClass(api: JavadocApi? = null, name: String): List<JavadocClass> {
         val strings = JavadocParser.calculateNameAndPackage(name)
         val pkgName = strings.first
         val criteria = JavadocClassCriteria(ds)
@@ -73,14 +73,13 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
 
         list.forEach { klass ->
             methods.addAll(getMethods(methodName, signatureTypes, klass))
-            klass.parentClass?.let { methods.addAll(getMethods(methodName, signatureTypes, getClassByFqcn(it))) }
-            klass.interfaces.forEach {
+            klass.parentTypes.forEach {
                 try {
-                    methods.addAll(getMethods(methodName, signatureTypes, getClassByFqcn(it)))
+                    methods += getMethods(methodName, signatureTypes, getClassByFqcn(it))
                 } catch(e: IllegalStateException) {
 //                    println("it = ${it}")
 //                    println("klass = ${klass}")
-//                    println("klass.interfaces = ${klass.interfaces}")
+//                    println("klass.parentTypes = ${klass.parentTypes}")
                     throw IllegalStateException("klass = ${klass}", e)
                 }
             }
