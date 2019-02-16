@@ -89,7 +89,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
 
     private fun getMethods(name: String, signatureTypes: String, javadocClass: JavadocClass): List<JavadocMethod> {
         val criteria = JavadocMethodCriteria(ds)
-        criteria.javadocClass(javadocClass.id)
+        criteria.classId(javadocClass.id)
         criteria.upperName().equal(name.toUpperCase())
         if ("*" != signatureTypes) {
             criteria.or(
@@ -113,7 +113,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
 
     private fun deleteMethods(javadocClass: JavadocClass) {
         val criteria = JavadocMethodCriteria(ds)
-        criteria.javadocClass(javadocClass.id)
+        criteria.classId(javadocClass.id)
         ds.delete(criteria.query())
     }
 

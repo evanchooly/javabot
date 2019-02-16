@@ -5,6 +5,7 @@ import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocField
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
 
 class Java11JavadocSource() : JavadocSource() {
     constructor(api: JavadocApi, file: String) : this() {
@@ -17,7 +18,7 @@ class Java11JavadocSource() : JavadocSource() {
     }
 
     override fun className(document: Document): String {
-        val text = document.select("span.typeNameLabel").text()
+        val text = document.select("h2.title").text().substringAfterLast(" ")
         typeParameters = if("<" in text) {
             text.substringAfter("<").substringBefore(">")
                     .split(",")
@@ -29,34 +30,38 @@ class Java11JavadocSource() : JavadocSource() {
     override fun packageName(document: Document): String = document.select("""div.subTitle a[href="package-summary.html"]""").text()
 
     override fun discoverGenerics(document: Document, klass: JavadocClass) {
-        TODO("not implemented")
     }
 
     override fun discoverMembers(javadocClassDao: JavadocClassDao, document: Document, docClass: JavadocClass) {
-        document.select("span.memberNameLink")
-                .map {
-                    val link = it.child(0)
-                    val name = link.text()
-                    val href = link.attr("href")
-                    javadocClassDao.save(
-                            if ("(" in href) extractMethod(docClass, name, href)
-                            else JavadocField(docClass, name, href)
-                    )
-                }
+        fun mapper(): (Element) -> Unit {
+            return {
+                val link = it.child(0)
+                val name = link.text()
+                val href = link.attr("href")
+                javadocClassDao.save(
+                        if ("(" in href) extractMethod(docClass, name, href)
+                        else JavadocField(docClass, name, href)
+                )
+            }
+        }
+
+        document.select("span.memberNameLink").map(mapper())
     }
 
     override fun discoverParentType(document: Document, klass: JavadocClass) {
-        val select = document.select("ul.inheritance")
-        if (select.size != 0) {
-            val last = select.dropLast(1)
-            if (!last.isEmpty()) {
-                klass.parentTypes += last
-                        .last()
-                        .children().first()
-                        .children().first()
-                        .text()
-            }
-        }
+        klass.parentTypes += extractParentType(document)
+            .drop(1)
+    }
+
+    private fun extractParentType(element: Element): List<String> {
+        return element.selectFirst("ul.inheritance")?.let { parent: Element ->
+            val li = parent.select("li")
+            val drop = li.first()
+            val others = if(li.size > 1) {
+                extractParentType(li[1])
+            } else listOf()
+            others + drop.text().substringBefore("<")
+        } ?: listOf()
     }
 
     override fun discoverInterfaces(document: Document, klass: JavadocClass) {

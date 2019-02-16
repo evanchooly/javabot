@@ -1,32 +1,27 @@
 package javabot.javadoc
 
-import com.jayway.awaitility.Awaitility
 import javabot.JavabotConfig
-import javabot.JavabotThreadFactory
-import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
 import javabot.model.downloadZip
 import javabot.model.javadoc.JavadocApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.io.Writer
 import java.net.URI
-import java.util.concurrent.ArrayBlockingQueue
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeUnit.MINUTES
-import java.util.concurrent.TimeUnit.SECONDS
 import java.util.jar.JarFile
 import java.util.jar.Manifest
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class JavadocParser @Inject constructor(private val apiDao: ApiDao, private val classDao: JavadocClassDao,
-                                        private val config: JavabotConfig) {
+class JavadocParser @Inject constructor(private val classDao: JavadocClassDao, private val config: JavabotConfig) {
     companion object {
         private val LOG = LoggerFactory.getLogger(JavadocParser::class.java)
 
@@ -46,45 +41,29 @@ class JavadocParser @Inject constructor(private val apiDao: ApiDao, private val 
 
     }
 
-    fun parse(api: JavadocApi, writer: Writer) {
+    fun parse(api: JavadocApi, writer: Writer) = runBlocking {
         try {
-
-            val queue = ArrayBlockingQueue<Runnable>(1000)
-            val executor = ThreadPoolExecutor(100, 100,
-                                              30, SECONDS, queue,
-                                              JavabotThreadFactory(false, "javadoc-thread-"))
-            executor.prestartCoreThread()
 
             val root = extractJavadocContent(api)
             val type = JavadocType.discover(root)
+            val jobs = mutableListOf<Job>()
             root.walkTopDown()
                     .filter { !it.path.contains("-") }
+                    .filter { it.name != "allclasses.html" }
                     .filter { it.name != "index.html" }
                     .filter { it.extension == "html" }
-                    .forEach {
-                        val job = Runnable {
-                            type.create(api, it.absolutePath)
-                                .parse(classDao)
+                    .forEach { html ->
+                        jobs += GlobalScope.launch {
+//                            println("html = ${html}")
+                            type.create(api, html.absolutePath).parse(classDao)
+//                            println("done with = ${html}")
                         }
-                        queue.offer(job, 30, SECONDS)
                     }
 
-            Awaitility
-                    .waitAtMost(30, MINUTES)
-                    .pollInterval(5, SECONDS)
-                    .until<Boolean> {
-                        val workQueue = queue.size
-                        writer.write("Waiting on %s work queue to drain.  %d items left".format(api.name, workQueue))
-                        workQueue == 0
-                    }
-            executor.shutdown()
-            executor.awaitTermination(2, TimeUnit.MINUTES)
+            jobs.joinAll()
 
-            writer.write("Finished importing %s.  %s!".format(api.name, if (apiDao.countUnprocessed(api) == 0L) "SUCCESS" else "FAILURE"))
-        } catch (e: IOException) {
-            LOG.error(e.message, e)
-            throw RuntimeException(e.message, e)
-        } catch (e: InterruptedException) {
+            writer.write("Finished importing ${api.name}.")
+        } catch (e: Exception) {
             LOG.error(e.message, e)
             throw RuntimeException(e.message, e)
         }
@@ -125,7 +104,6 @@ class JavadocParser @Inject constructor(private val apiDao: ApiDao, private val 
         return extracted
                 .walkTopDown()
                 .filter { it.name == "index.html" }
-                .filter { JavadocType.discover(it.parentFile) != null }
                 .map { it.parentFile }.first()
     }
 
@@ -161,23 +139,23 @@ class JavadocParser @Inject constructor(private val apiDao: ApiDao, private val 
 }
  enum class JavadocType {
      JAVA6 {
-         override fun create(api: JavadocApi, file: String): JavadocSource {
-             return Java6JavadocSource(api, file)
+         override fun create(api: JavadocApi, absolutePath: String): JavadocSource {
+             return Java6JavadocSource(api, absolutePath)
          }
      },
      JAVA7 {
-         override fun create(api: JavadocApi, file: String): JavadocSource {
-             return Java7JavadocSource(api, file)
+         override fun create(api: JavadocApi, absolutePath: String): JavadocSource {
+             return Java7JavadocSource(api, absolutePath)
          }
      },
      JAVA8 {
-         override fun create(api: JavadocApi, file: String): JavadocSource {
-             return Java8JavadocSource(api, file)
+         override fun create(api: JavadocApi, absolutePath: String): JavadocSource {
+             return Java8JavadocSource(api, absolutePath)
          }
      },
      JAVA11 {
-         override fun create(api: JavadocApi, file: String): JavadocSource {
-             return Java11JavadocSource(api, file)
+         override fun create(api: JavadocApi, absolutePath: String): JavadocSource {
+             return Java11JavadocSource(api, absolutePath)
          }
      };
 

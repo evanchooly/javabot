@@ -15,6 +15,7 @@ import org.mongodb.morphia.annotations.IndexOptions
 import org.mongodb.morphia.annotations.Indexes
 import org.slf4j.LoggerFactory
 import java.io.File
+import java.net.URLDecoder
 import java.util.Date
 
 @Entity("JavadocSources")
@@ -79,7 +80,9 @@ abstract class JavadocSource() {
     open fun extractParameters(href: String): Pair<List<String>, List<String>> {
         val longArgs = mutableListOf<String>()
         val shortArgs = mutableListOf<String>()
-        val paramText = href.substringAfter("(").substringBefore(")")
+        val paramText = URLDecoder.decode(href, "UTF-8")
+            .substringAfter("(")
+            .substringBefore(")")
         if (paramText != "") {
             paramText.split(",").forEach {
                 val param = if (it in typeParameters) "java.lang.Object" else it

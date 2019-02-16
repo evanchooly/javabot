@@ -5,6 +5,7 @@ import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocField
 import org.jsoup.nodes.Document
+import java.net.URLDecoder
 
 class Java8JavadocSource() : JavadocSource() {
     constructor(api: JavadocApi, file: String) : this() {
@@ -50,7 +51,9 @@ class Java8JavadocSource() : JavadocSource() {
     override fun extractParameters(href: String): Pair<List<String>, List<String>> {
         val longArgs = mutableListOf<String>()
         val shortArgs = mutableListOf<String>()
-        val paramText = href.substringAfter("-").substringBeforeLast("-")
+        val paramText =  URLDecoder.decode(href, "UTF-8")
+            .substringAfter("-")
+            .substringBeforeLast("-")
         if (paramText != "") {
             paramText.split("-").forEach {
                 val param = if (it in typeParameters) "java.lang.Object" else it

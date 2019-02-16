@@ -243,6 +243,12 @@
             <groupId>com.antwerkz.critter</groupId>
             <artifactId>critter-core</artifactId>
             <version>${critter.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-stdlib</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

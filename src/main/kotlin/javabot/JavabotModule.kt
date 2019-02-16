@@ -27,10 +27,6 @@ import javax.inject.Singleton
 
 open class JavabotModule : AbstractModule() {
 
-    private var mongoClient: MongoClient? = null
-
-    private var morphia: Morphia? = null
-
     private var config: JavabotConfig? = null
 
     private val datastore: Datastore by lazy {
@@ -59,24 +55,19 @@ open class JavabotModule : AbstractModule() {
     @Provides
     @Singleton
     fun getMorphia(): Morphia {
-        if (morphia == null) {
-            morphia = Morphia()
-            morphia!!.mapPackageFromClass(JavadocClass::class.java)
-            morphia!!.mapPackageFromClass(Factoid::class.java)
-            morphia!!.mapper.converters.addConverter(LocalDateTimeConverter::class.java)
+        return Morphia().apply {
+            mapPackageFromClass(JavadocClass::class.java)
+            mapPackageFromClass(Factoid::class.java)
+            mapper.converters.addConverter(LocalDateTimeConverter::class.java)
         }
-        return morphia!!
     }
 
     @Provides
     @Singleton
     fun getMongoClient(): MongoClient {
-        if (mongoClient == null) {
-            mongoClient = MongoClient(ServerAddress(javabotConfig().databaseHost(), javabotConfig().databasePort()),
-                MongoClientOptions.builder().connectTimeout(2000).build())
-            mongoClient?.getAddress()
-        }
-        return mongoClient!!
+        val serverAddress = ServerAddress(javabotConfig().databaseHost(), javabotConfig().databasePort())
+
+        return MongoClient(serverAddress, MongoClientOptions.builder().connectTimeout(2000).build())
     }
 
     @Provides
@@ -100,7 +91,7 @@ open class JavabotModule : AbstractModule() {
         return PircBotX(builder.buildConfiguration())
     }
 
-    open protected fun getBotNick(): String {
+    protected open fun getBotNick(): String {
         return configDaoProvider.get().get().nick
     }
 

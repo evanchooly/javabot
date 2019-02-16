@@ -10,10 +10,10 @@ import org.mongodb.morphia.annotations.PrePersist
 @Entity(value = "methods", noClassnameStored = true)
 @Indexes(
         Index(fields = arrayOf(Field("apiId"))),
-        Index(fields = arrayOf(Field("javadocClass"), Field("upperName") )),
-        Index(fields = arrayOf(Field("apiId"), Field("javadocClass"), Field("upperName") )))
+        Index(fields = arrayOf(Field("classId"), Field("upperName") )),
+        Index(fields = arrayOf(Field("apiId"), Field("classId"), Field("upperName") )))
 class JavadocMethod : JavadocElement {
-    lateinit var javadocClass: ObjectId
+    lateinit var classId: ObjectId
     var isConstructor: Boolean = false
     lateinit var name: String
     lateinit var upperName: String
@@ -28,7 +28,7 @@ class JavadocMethod : JavadocElement {
     constructor(parent: JavadocClass, name: String, urlFragment: String, longArgs: List<String>, shortArgs: List<String>) {
         this.name = name
         isConstructor = name == parent.name
-        javadocClass = parent.id
+        classId = parent.id
         apiId = parent.apiId
         parentClassName = parent.toString()
 

@@ -8,7 +8,6 @@ import javabot.dao.JavadocClassDao
 import javabot.javadoc.JavadocType.JAVA11
 import javabot.javadoc.JavadocType.JAVA6
 import javabot.javadoc.JavadocType.JAVA7
-import javabot.javadoc.JavadocType.JAVA8
 import javabot.model.javadoc.JavadocApi
 import org.testng.Assert
 import org.testng.annotations.Test
@@ -27,19 +26,8 @@ class JavadocParserTest : BaseTest() {
     lateinit var javadocClassDao: JavadocClassDao
 
     @Test
-    fun testBuildHtml() {
-        parser.extractJavadocContent(JavadocApi(config, "JDK"))
-
-        Assert.assertTrue(File("javadoc/JDK/11/java/applet/Applet.html").exists())
-        Assert.assertTrue(File("javadoc/JDK/11/java/util/Map.Entry.html").exists())
-
-        Assert.assertTrue(File("javadoc/JDK/11/index.html").readText()
-                .contains("top.classFrame.location = top.targetPage + location.hash;"))
-    }
-
-    @Test
     fun jdk() {
-        val api = JavadocApi(config, "JDK")
+        val api = JavadocApi(config, "JDK", version="11")
         apiDao.find("JDK")?.let { apiDao.delete(it) }
         datastore.save(api)
         parser.parse(api, SOut)
@@ -54,14 +42,19 @@ class JavadocParserTest : BaseTest() {
         val apiName = "JDK"
         apiDao.delete(apiName)
 
-        val api = JavadocApi(config, apiName)
+        val api = JavadocApi(config, apiName, version = "11")
         datastore.save(api)
 
         val javadocDir = parser.extractJavadocContent(api)
         val type = JavadocType.discover(javadocDir)
         Assert.assertEquals(type, JAVA11)
-        type.create(api, File(javadocDir, "java.base/java/util/Map.html").absolutePath)
-                .parse(javadocClassDao)
+        parse(type, api, javadocDir, "java.base/java/lang/Object.html")
+        parse(type, api, javadocDir, "java.base/java/lang/String.html")
+        parse(type, api, javadocDir, "java.base/java/util/Map.html")
+    }
+
+    private fun parse(type: JavadocType, api: JavadocApi, javadocDir: File, path: String) {
+        type.create(api, File(javadocDir, path).absolutePath).parse(javadocClassDao)
     }
 
     @Test
@@ -75,8 +68,7 @@ class JavadocParserTest : BaseTest() {
         val javadocDir = parser.extractJavadocContent(api)
         val type = JavadocType.discover(javadocDir)
         Assert.assertEquals(type, JAVA6)
-        type.create(api, File(javadocDir, "javax/servlet/http/Cookie.html").absolutePath)
-                .parse(javadocClassDao)
+        parse(type, api, javadocDir, "javax/servlet/http/Cookie.html")
     }
 
     @Test
@@ -90,14 +82,10 @@ class JavadocParserTest : BaseTest() {
         val javadocDir = parser.extractJavadocContent(api)
         val type = JavadocType.discover(javadocDir)
         Assert.assertEquals(type, JAVA7)
-        type.create(api, File(javadocDir, "javax/enterprise/concurrent/ContextService.html").absolutePath)
-            .parse(javadocClassDao)
-        type.create(api, File(javadocDir, "javax/ejb/AsyncResult.html").absolutePath)
-            .parse(javadocClassDao)
-        type.create(api, File(javadocDir, "javax/persistence/Cache.html").absolutePath)
-            .parse(javadocClassDao)
-        type.create(api, File(javadocDir, "javax/jws/soap/InitParam.html").absolutePath)
-                .parse(javadocClassDao)
+        parse(type, api, javadocDir, "javax/enterprise/concurrent/ContextService.html")
+        parse(type, api, javadocDir, "javax/ejb/AsyncResult.html")
+        parse(type, api, javadocDir, "javax/persistence/Cache.html")
+        parse(type, api, javadocDir, "javax/jws/soap/InitParam.html")
     }
 
     @Test
@@ -110,8 +98,7 @@ class JavadocParserTest : BaseTest() {
 
         val javadocDir = parser.extractJavadocContent(api)
         val type = JavadocType.discover(javadocDir)
-        Assert.assertEquals(type, JAVA8)
-        type.create(api, File(javadocDir, "com/google/common/escape/Escapers.Builder.html").absolutePath)
-                .parse(javadocClassDao)
+        Assert.assertEquals(type, JAVA7)
+        parse(type, api, javadocDir, "com/google/common/escape/Escapers.Builder.html")
     }
 }
