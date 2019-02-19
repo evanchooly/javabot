@@ -52,12 +52,12 @@ class JavadocParser @Inject constructor(private val classDao: JavadocClassDao, p
                     .filter { it.name != "index.html" }
                     .filter { it.extension == "html" }
                     .forEach { html ->
-//                        jobs += GlobalScope.launch {
-                            println("html = ${html}")
+                        LOG.debug("html = ${html}")
+                        jobs += GlobalScope.launch {
 //                        Exception("html = ${html}").printStackTrace()
                             type.create(api, html.absolutePath).parse(classDao)
 //                            println("done with = ${html}")
-//                        }
+                        }
                     }
 
             jobs.joinAll()
