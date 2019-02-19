@@ -15,13 +15,12 @@ import java.io.File
 import java.io.StringWriter
 import javax.inject.Inject
 
+@Test(enabled = false)
 class JavadocParserTest : BaseTest() {
     @Inject
     lateinit var parser: JavadocParser
     @Inject
     lateinit var config: JavabotConfig
-    @Inject
-    lateinit var apiDao: ApiDao
     @Inject
     lateinit var javadocClassDao: JavadocClassDao
 
@@ -48,7 +47,8 @@ class JavadocParserTest : BaseTest() {
         val javadocDir = parser.extractJavadocContent(api)
         val type = JavadocType.discover(javadocDir)
         Assert.assertEquals(type, JAVA11)
-        parse(type, api, javadocDir, "java.base/java/lang/Object.html")
+        parse(type, api, javadocDir, "java.base/java/lang/Enum.html")
+        parse(type, api, javadocDir, "java.base/java/util/EnumSet.html")
         parse(type, api, javadocDir, "java.base/java/lang/String.html")
         parse(type, api, javadocDir, "java.base/java/util/Map.html")
     }

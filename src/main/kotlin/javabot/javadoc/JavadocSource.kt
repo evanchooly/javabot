@@ -1,6 +1,5 @@
 package javabot.javadoc
 
-import com.mongodb.MongoException
 import javabot.dao.JavadocClassDao
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
@@ -18,8 +17,6 @@ import java.io.File
 import java.net.URLDecoder
 import java.util.Date
 
-@Entity("JavadocSources")
-@Indexes(Index(fields = arrayOf(Field("created")), options = IndexOptions(expireAfterSeconds = 7200)))
 abstract class JavadocSource() {
     companion object {
         val LOG = LoggerFactory.getLogger(JavadocSource::class.java)
@@ -39,28 +36,24 @@ abstract class JavadocSource() {
     fun parse(javadocClassDao: JavadocClassDao) {
         val document = Jsoup.parse(File(name), "UTF-8")
         val docClass = JavadocClass(api, packageName(document), className(document))
-        if(docClass.packageName.isEmpty() or docClass.name.isEmpty()) {
+        if (docClass.packageName.isEmpty() or docClass.name.isEmpty()) {
             throw IllegalStateException("package or class name is null in $name")
         }
 
-        try {
-            javadocClassDao.save(docClass)
-            updateType(document, docClass)
+        javadocClassDao.save(docClass)
+        updateType(document, docClass)
 
 //                docClass.visibility = when {
 //                    source.getEnclosingType().isInterface() -> Public
 //                    else -> visibility(source.getVisibility().scope())
 //                }
-            discoverGenerics(document, docClass)
-            discoverParentType(document, docClass)
-            discoverInterfaces(document, docClass)
-            discoverMembers(javadocClassDao, document, docClass)
+        discoverGenerics(document, docClass)
+        discoverParentType(document, docClass)
+        discoverInterfaces(document, docClass)
+        discoverMembers(javadocClassDao, document, docClass)
 
 //                nestedTypes(api, packages, source)
-            javadocClassDao.save(docClass)
-        } catch (e: MongoException) {
-            LOG.error(e.message, e)
-        }
+        javadocClassDao.save(docClass)
     }
 
     fun stripPackage(name: String): String {

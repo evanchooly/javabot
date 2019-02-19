@@ -38,10 +38,9 @@ class JavadocParser @Inject constructor(private val classDao: JavadocClassDao, p
 
             return pkgName to clsName
         }
-
     }
 
-    fun parse(api: JavadocApi, writer: Writer) = runBlocking {
+    fun parse(api: JavadocApi, writer: Writer) = runBlocking  {
         try {
 
             val root = extractJavadocContent(api)
@@ -53,11 +52,11 @@ class JavadocParser @Inject constructor(private val classDao: JavadocClassDao, p
                     .filter { it.name != "index.html" }
                     .filter { it.extension == "html" }
                     .forEach { html ->
-                        jobs += GlobalScope.launch {
-//                            println("html = ${html}")
+//                        jobs += GlobalScope.launch {
+                            println("html = ${html}")
                             type.create(api, html.absolutePath).parse(classDao)
 //                            println("done with = ${html}")
-                        }
+//                        }
                     }
 
             jobs.joinAll()

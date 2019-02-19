@@ -18,7 +18,7 @@ class Java11JavadocSource() : JavadocSource() {
     }
 
     override fun className(document: Document): String {
-        val text = document.select("h2.title").text().substringAfterLast(" ")
+        val text = document.select("h2.title").text().substringBefore("<").substringAfterLast(" ")
         typeParameters = if("<" in text) {
             text.substringAfter("<").substringBefore(">")
                     .split(",")

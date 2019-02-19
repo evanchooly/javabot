@@ -1,10 +1,11 @@
 package javabot
 
 import com.antwerkz.sofia.Sofia
+import com.google.inject.Injector
 import com.jayway.awaitility.Awaitility
-
 import com.jayway.awaitility.Duration
 import javabot.dao.AdminDao
+import javabot.dao.ApiDao
 import javabot.dao.ChangeDao
 import javabot.dao.ChannelDao
 import javabot.dao.EventDao
@@ -12,14 +13,17 @@ import javabot.dao.LogsDao
 import javabot.dao.NickServDao
 import javabot.model.Admin
 import javabot.model.AdminEvent
-import javabot.model.State
+import javabot.model.ApiEvent
 import javabot.model.Change
 import javabot.model.Channel
 import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.NickServInfo
+import javabot.model.State
+import javabot.model.javadoc.JavadocApi
 import org.mongodb.morphia.Datastore
 import org.pircbotx.PircBotX
+import org.slf4j.LoggerFactory
 import org.testng.Assert
 import org.testng.annotations.AfterSuite
 import org.testng.annotations.BeforeMethod
@@ -45,6 +49,7 @@ open class BaseTest {
         val TEST_USER = JavabotUser(TEST_USER_NICK, TEST_USER_NICK, "hostmask")
         val TEST_NON_ADMIN_USER = JavabotUser(TEST_NON_ADMIN_USER_NICK, TEST_NON_ADMIN_USER_NICK, "hostmask")
         val TEST_CHANNEL = Channel("#jbunittest")
+        private val LOG = LoggerFactory.getLogger(BaseTest::class.java)
     }
 
     val testIrcChannel: MockIrcChannel by lazy {
@@ -58,7 +63,16 @@ open class BaseTest {
     }
 
     @Inject
+    lateinit var injector: Injector
+
+    @Inject
     protected lateinit var datastore: Datastore
+
+    @Inject
+    private lateinit var config: JavabotConfig
+
+    @Inject
+    protected lateinit var apiDao: ApiDao
 
     @Inject
     protected lateinit var eventDao: EventDao
@@ -87,6 +101,7 @@ open class BaseTest {
 
     @BeforeTest
     fun setup() {
+        LOG.debug("setting up test")
         messages.clear()
         val admin = adminDao.getAdminByEmailAddress(BOT_EMAIL) ?: Admin(TEST_USER.nick, BOT_EMAIL, TEST_USER.hostmask, true)
         admin.ircName = TEST_USER.nick
@@ -154,6 +169,20 @@ open class BaseTest {
         }
         Assert.assertTrue(found, java.lang.String.format("Did not find \n'%s' in \n'%s'", target,
                 messages.joinToString("\n") { it.value }))
+    }
+
+    protected fun loadApi(apiName: String, groupId: String = "", artifactId: String = "", version: String): JavadocApi {
+        return apiDao.find(apiName) ?: {
+            LOG.info("$apiName not found.  Generating now.")
+            val api = JavadocApi(config, apiName, groupId, artifactId, version)
+            apiDao.save(api)
+            val event = ApiEvent.add(TEST_USER.nick, api)
+            injector.injectMembers(event)
+            event.handle()
+            messages.clear()
+            LOG.info("$apiName finished.")
+            api
+        }.invoke()
     }
 }
 

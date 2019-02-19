@@ -1,7 +1,6 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
-import com.jayway.awaitility.Duration
 import javabot.BaseTest
 import javabot.JavabotConfig
 import javabot.dao.ApiDao
@@ -10,36 +9,16 @@ import javabot.model.javadoc.JavadocApi
 import org.slf4j.LoggerFactory
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @Test
 class JavadocOperationTest : BaseTest() {
-    companion object {
-        private val LOG = LoggerFactory.getLogger(JavadocOperationTest::class.java)
-    }
-    
-    @Inject
-    private lateinit var apiDao: ApiDao
-
-    @Inject
-    private lateinit var config: JavabotConfig
-
     @Inject
     private lateinit var operation: JavadocOperation
 
     @BeforeTest
     fun jdk() {
-        if (apiDao.find("JDK") == null) {
-            LOG.info("JDK javadoc not found.  Generating now.")
-            val api = JavadocApi(config, "JDK", version = "11")
-            apiDao.save(api)
-            val event = ApiEvent.add(TEST_USER.nick, api)
-            eventDao.save(event)
-            waitForEvent(event, "adding JDK", Duration(30, TimeUnit.MINUTES))
-            messages.clear()
-            LOG.info("JDK javadoc finished.")
-        }
+        loadApi("JDK", version = "11")
     }
 
     fun constructors() {

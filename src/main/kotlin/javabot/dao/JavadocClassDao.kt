@@ -10,7 +10,6 @@ import javabot.model.javadoc.criteria.JavadocClassCriteria
 import javabot.model.javadoc.criteria.JavadocFieldCriteria
 import javabot.model.javadoc.criteria.JavadocMethodCriteria
 import org.mongodb.morphia.Datastore
-import org.slf4j.LoggerFactory
 import java.util.ArrayList
 
 class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass>(ds, JavadocClass::class.java) {
@@ -115,28 +114,5 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
         val criteria = JavadocMethodCriteria(ds)
         criteria.classId(javadocClass.id)
         ds.delete(criteria.query())
-    }
-
-    fun deleteFor(api: JavadocApi?) {
-        api?.let {
-            LOG.debug("Dropping fields from " + it.name)
-            val criteria = JavadocFieldCriteria(ds)
-            criteria.apiId(it.id)
-            ds.delete(criteria.query())
-
-            LOG.debug("Dropping methods from " + it.name)
-            val method = JavadocMethodCriteria(ds)
-            method.apiId(it.id)
-            ds.delete(method.query())
-
-            LOG.debug("Dropping classes from " + it.name)
-            val klass = JavadocClassCriteria(ds)
-            klass.apiId(it.id)
-            ds.delete(klass.query())
-        }
-    }
-    companion object {
-        private val LOG = LoggerFactory.getLogger(JavadocClassDao::class.java)
-
     }
 }

@@ -1,17 +1,12 @@
 package javabot.model
 
-import com.google.inject.Injector
 import com.jayway.awaitility.Duration
 import javabot.BaseTest
 import org.testng.Assert
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
-import javax.inject.Inject
 
 @Test class ChannelEventTest : BaseTest() {
-    @Inject
-    protected lateinit var injector: Injector
-
     @BeforeTest fun clearEvents() {
         for (event in eventDao.findAll()) {
             eventDao.delete(event)

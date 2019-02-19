@@ -7,6 +7,7 @@ import javabot.javadoc.JavadocParser
 import javabot.model.EventType.DELETE
 import javabot.model.EventType.RELOAD
 import javabot.model.javadoc.JavadocApi
+import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Reference
 import org.mongodb.morphia.annotations.Transient
@@ -49,7 +50,7 @@ class ApiEvent : AdminEvent {
 
     lateinit var name: String
 
-    @Reference(idOnly = true)
+    @Reference(idOnly = true, ignoreMissing = true)
     var api: JavadocApi? = null
 
     @Inject
@@ -68,8 +69,7 @@ class ApiEvent : AdminEvent {
     @Transient
     lateinit var adminDao: AdminDao
 
-    constructor() {
-    }
+    constructor()
 
     private constructor(requestedBy: String, api: JavadocApi) :
     super(requestedBy, EventType.ADD) {
@@ -97,6 +97,7 @@ class ApiEvent : AdminEvent {
         api?.let {
             File("javadoc/${it.name}/${it.version}/").deleteTree()
             apiDao.delete(it)
+            it.id = ObjectId()
         }
     }
 
@@ -107,28 +108,24 @@ class ApiEvent : AdminEvent {
     }
 
     override fun add() {
-        process(api)
+        api?.let {
+            apiDao.save(it)
+            val admin = adminDao.getAdmin(JavabotUser(requestedBy, requestedBy, ""))
+            if (admin != null) {
+                val user = JavabotUser(admin.ircName, admin.emailAddress, admin.hostName)
+
+                parser.parse(it, object : StringWriter() {
+                    override fun write(line: String) = bot.privateMessageUser(user, line)
+                })
+            }
+        }
     }
 
     override fun reload() {
         val api = findApi()
         if (api != null) {
             delete()
-            process(api)
-        }
-    }
-
-    private fun process(api: JavadocApi?) {
-        api?.let {
-            apiDao.save(api)
-            val admin = adminDao.getAdmin(JavabotUser(requestedBy, requestedBy, ""))
-            if (admin != null) {
-                val user = JavabotUser(admin.ircName, admin.emailAddress, admin.hostName)
-
-                parser.parse(api, object : StringWriter() {
-                    override fun write(line: String) = bot.privateMessageUser(user, line)
-                })
-            }
+            add()
         }
     }
 
