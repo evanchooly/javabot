@@ -124,7 +124,7 @@ class JavadocTest : BaseTest() {
         injector.injectMembers(event)
         event.handle()
 
-        Assert.assertEquals(classDao.getClass(api, "AbstractCache").size, 1)
-        Assert.assertEquals(classDao.getClass(api, "ArrayTable").size, 1)
+        Assert.assertEquals(classDao.getClass(event.api, "AbstractCache").size, 1)
+        Assert.assertEquals(classDao.getClass(event.api, "ArrayTable").size, 1)
     }
 }
