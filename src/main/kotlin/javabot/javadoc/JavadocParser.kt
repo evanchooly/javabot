@@ -40,7 +40,7 @@ class JavadocParser @Inject constructor(private val classDao: JavadocClassDao, p
         }
     }
 
-    fun parse(api: JavadocApi, writer: Writer) = runBlocking  {
+    fun parse(api: JavadocApi, writer: Writer)/* = runBlocking*/  {
         try {
 
             val root = extractJavadocContent(api)
@@ -53,14 +53,12 @@ class JavadocParser @Inject constructor(private val classDao: JavadocClassDao, p
                     .filter { it.extension == "html" }
                     .forEach { html ->
                         LOG.debug("html = ${html}")
-                        jobs += GlobalScope.launch {
-//                        Exception("html = ${html}").printStackTrace()
+//                        jobs += GlobalScope.launch {
                             type.create(api, html.absolutePath).parse(classDao)
-//                            println("done with = ${html}")
-                        }
+//                        }
                     }
 
-            jobs.joinAll()
+//            jobs.joinAll()
 
             writer.write("Finished importing ${api.name}.")
         } catch (e: Exception) {
