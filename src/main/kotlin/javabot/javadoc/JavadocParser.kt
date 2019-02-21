@@ -80,7 +80,7 @@ class JavadocParser @Inject constructor(private val classDao: JavadocClassDao, p
 
             try {
                 javadocDir.mkdirs()
-                copyJavadocJar(extracted, javadocDir)
+                copyJavadocJar(api, extracted, javadocDir)
             } catch (e: Exception) {
                 LOG.error(e.message, e)
             } finally {
@@ -91,8 +91,8 @@ class JavadocParser @Inject constructor(private val classDao: JavadocClassDao, p
         return javadocDir
     }
 
-    private fun copyJavadocJar(extracted: File, javadocDir: File) {
-        val sourceRoot = discoverRoot(extracted)
+    private fun copyJavadocJar(api: JavadocApi, extracted: File, javadocDir: File) {
+        val sourceRoot = if(api.name == "JDK") File(extracted, "docs/api") else discoverRoot(extracted)
 
         javadocDir.mkdirs()
         sourceRoot.copyRecursively(javadocDir)

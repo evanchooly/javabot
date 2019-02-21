@@ -24,7 +24,7 @@ class JavadocParserTest : BaseTest() {
     @Inject
     lateinit var javadocClassDao: JavadocClassDao
 
-    @Test(enabled = false)
+    @Test
     fun jdk() {
         val api = JavadocApi(config, "JDK", version="11")
         apiDao.find("JDK")?.let { apiDao.delete(it) }
@@ -36,7 +36,7 @@ class JavadocParserTest : BaseTest() {
         override fun write(line: String) = println(line)
     }
 
-    @Test(enabled = false)
+    @Test
     fun targeted() {
         val apiName = "JDK"
         apiDao.delete(apiName)
@@ -57,7 +57,7 @@ class JavadocParserTest : BaseTest() {
         type.create(api, File(javadocDir, path).absolutePath).parse(javadocClassDao)
     }
 
-    @Test(enabled = false)
+    @Test
     fun targetedServlet() {
         val apiName = "Servlet"
         apiDao.delete(apiName)
@@ -71,7 +71,7 @@ class JavadocParserTest : BaseTest() {
         parse(type, api, javadocDir, "javax/servlet/http/Cookie.html")
     }
 
-    @Test(enabled = false)
+    @Test
     fun targetedJavaEE() {
         val apiName = "JavaEE7"
         apiDao.delete(apiName)
@@ -88,7 +88,7 @@ class JavadocParserTest : BaseTest() {
         parse(type, api, javadocDir, "javax/jws/soap/InitParam.html")
     }
 
-    @Test(enabled = false)
+    @Test
     fun targetedGuava() {
         val apiName = "guava"
         apiDao.delete(apiName)
