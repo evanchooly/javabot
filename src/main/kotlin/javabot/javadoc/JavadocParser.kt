@@ -158,7 +158,7 @@ class JavadocParser @Inject constructor(private val classDao: JavadocClassDao, p
 
      companion object {
          fun discover(root: File) : JavadocType {
-             val manFile = File(root, "META-INF/MANIFEST.mf")
+             val manFile = File(root, "META-INF/MANIFEST.MF")
              if(manFile.exists()) {
                  val manifest = Manifest()
                  manifest.read(manFile.inputStream())
