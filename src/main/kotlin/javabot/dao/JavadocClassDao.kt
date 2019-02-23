@@ -14,11 +14,7 @@ import java.util.ArrayList
 
 class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass>(ds, JavadocClass::class.java) {
 
-    fun count() : Long {
-        val countAll = ds.createQuery(JavadocClass::class.java).countAll()
-        val count = ds.createQuery(JavadocClass::class.java).count()
-        return ds.getCount(JavadocClass::class.java)
-    }
+    fun count() = ds.getCount(JavadocClass::class.java)
 
     fun getClass(api: JavadocApi? = null, name: String): List<JavadocClass> {
         val strings = JavadocParser.calculateNameAndPackage(name)
