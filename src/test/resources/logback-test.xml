@@ -22,6 +22,10 @@
         <appender-ref ref="FILE"/>
     </logger>
 
+    <logger name="com.mongodb.diagnostics" level="ERROR" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+
     <logger name="org.pircbotx.InputParser" level="ERROR" additivity="false">
         <appender-ref ref="FILE"/>
     </logger>
@@ -30,7 +34,7 @@
         <appender-ref ref="FILE"/>
     </logger>
 
-    <root level="ERROR">
+    <root level="DEBUG">
         <appender-ref ref="FILE"/>
     </root>
 </configuration>

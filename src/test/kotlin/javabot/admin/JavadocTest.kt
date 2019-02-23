@@ -34,16 +34,6 @@ class JavadocTest : BaseTest() {
         checkServlets(loadApi(apiName, "javax.servlet", "javax.servlet-api", servletVersion))
     }
 
-    @Test(dependsOnMethods = ["servlets"])
-    fun reloadServlets() {
-        val apiName = "Servlet"
-        val event = ApiEvent.reload(TEST_USER.nick, apiName)
-        injector.injectMembers(event)
-        event.handle()
-        messages.clear()
-        checkServlets(event.api!!)
-    }
-
     private fun checkServlets(api: JavadocApi) {
         Assert.assertNotNull(classDao.getClass(api, "javax.servlet.http", "HttpServletRequest"),
                 "Should find an entry for ${api.name}/javax.servlet.http.HttpServletRequest")
@@ -109,22 +99,37 @@ class JavadocTest : BaseTest() {
     @Test
     fun guava() {
         val apiName = "guava"
-        val api = loadApi(apiName, "com.google.guava", "guava", "19.0")
-        Assert.assertEquals(classDao.getClass(api, "ArrayTable").size, 1)
-        Assert.assertEquals(classDao.getClass(api, "AbstractCache").size, 1)
-        Assert.assertEquals(classDao.getClass(api, "ArrayBasedCharEscaper").size, 1)
+        val guava = loadApi(apiName, "com.google.guava", "guava", "19.0")
+        loadApi("JDK", version = "11")
+        loadApi("JavaEE7", "javax", "javaee-api", "7.0")
+        val javaEECount = classDao.count()
 
-        classDao.delete(classDao.getClass(api, "AbstractCache")[0])
-        classDao.delete(classDao.getClass(api, "ArrayTable")[0])
+        Assert.assertEquals(classDao.getClass(guava, "ArrayTable").size, 1)
+        Assert.assertEquals(classDao.getClass(guava, "AbstractCache").size, 1)
+        Assert.assertEquals(classDao.getClass(guava, "ArrayBasedCharEscaper").size, 1)
+        Assert.assertEquals(classDao.getClass(null, "ArrayList").size, 1)
+        Assert.assertEquals(classDao.getClass(null, "HttpServlet").size, 1)
 
-        Assert.assertEquals(classDao.getClass(api, "AbstractCache").size, 0)
-        Assert.assertEquals(classDao.getClass(api, "ArrayTable").size, 0)
+        classDao.delete(classDao.getClass(guava, "AbstractCache")[0])
+        classDao.delete(classDao.getClass(guava, "ArrayTable")[0])
+
+        Assert.assertEquals(classDao.count(), javaEECount - 2)
+
+        Assert.assertEquals(classDao.getClass(null, "ArrayList").size, 1)
+        Assert.assertEquals(classDao.getClass(null, "HttpServlet").size, 1)
+
+        Assert.assertEquals(classDao.getClass(guava, "AbstractCache").size, 0)
+        Assert.assertEquals(classDao.getClass(guava, "ArrayTable").size, 0)
 
         val event = ApiEvent.reload(TEST_USER.nick, apiName)
         injector.injectMembers(event)
         event.handle()
 
+        Assert.assertEquals(classDao.count(), javaEECount)
+
         Assert.assertEquals(classDao.getClass(event.api, "AbstractCache").size, 1)
         Assert.assertEquals(classDao.getClass(event.api, "ArrayTable").size, 1)
+        Assert.assertEquals(classDao.getClass(null, "ArrayList").size, 1)
+        Assert.assertEquals(classDao.getClass(null, "HttpServlet").size, 1)
     }
 }

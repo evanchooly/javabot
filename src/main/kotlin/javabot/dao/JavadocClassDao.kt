@@ -14,6 +14,12 @@ import java.util.ArrayList
 
 class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass>(ds, JavadocClass::class.java) {
 
+    fun count() : Long {
+        val countAll = ds.createQuery(JavadocClass::class.java).countAll()
+        val count = ds.createQuery(JavadocClass::class.java).count()
+        return ds.getCount(JavadocClass::class.java)
+    }
+
     fun getClass(api: JavadocApi? = null, name: String): List<JavadocClass> {
         val strings = JavadocParser.calculateNameAndPackage(name)
         val pkgName = strings.first
@@ -76,9 +82,9 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
                 try {
                     methods += getMethods(methodName, signatureTypes, getClassByFqcn(it))
                 } catch(e: IllegalStateException) {
-//                    println("it = ${it}")
-//                    println("klass = ${klass}")
-//                    println("klass.parentTypes = ${klass.parentTypes}")
+                    println("it = ${it}")
+                    println("klass = ${klass}")
+                    println("klass.parentTypes = ${klass.parentTypes}")
                     throw IllegalStateException("klass = ${klass}", e)
                 }
             }
@@ -99,20 +105,16 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
     }
 
     fun delete(javadocClass: JavadocClass) {
-        deleteFields(javadocClass)
-        deleteMethods(javadocClass)
+        JavadocFieldCriteria(ds).apply {
+            javadocClass(javadocClass)
+            ds.delete(query())
+        }
+
+        JavadocMethodCriteria(ds).apply {
+            classId(javadocClass.id)
+            ds.delete(query())
+        }
+
         super.delete(javadocClass)
-    }
-
-    private fun deleteFields(javadocClass: JavadocClass) {
-        val criteria = JavadocFieldCriteria(ds)
-        criteria.javadocClass(javadocClass)
-        ds.delete(criteria.query())
-    }
-
-    private fun deleteMethods(javadocClass: JavadocClass) {
-        val criteria = JavadocMethodCriteria(ds)
-        criteria.classId(javadocClass.id)
-        ds.delete(criteria.query())
     }
 }

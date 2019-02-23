@@ -11,6 +11,7 @@ import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
 import org.mongodb.morphia.annotations.Reference
 import org.mongodb.morphia.annotations.Transient
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -46,6 +47,8 @@ class ApiEvent : AdminEvent {
         fun reload(requestedBy: String, name: String) : ApiEvent {
             return ApiEvent(requestedBy, RELOAD, name)
         }
+
+        private val LOG = LoggerFactory.getLogger(ApiEvent::class.java)
     }
 
     lateinit var name: String
@@ -115,7 +118,10 @@ class ApiEvent : AdminEvent {
                 val user = JavabotUser(admin.ircName, admin.emailAddress, admin.hostName)
 
                 parser.parse(it, object : StringWriter() {
-                    override fun write(line: String) = bot.privateMessageUser(user, line)
+                    override fun write(line: String) {
+                        bot.privateMessageUser(user, line)
+                        LOG.debug(line)
+                    }
                 })
             }
         }

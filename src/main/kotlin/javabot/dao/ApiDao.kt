@@ -28,17 +28,17 @@ class ApiDao @Inject constructor(ds: Datastore) : BaseDao<JavadocApi>(ds, Javado
         LOG.debug("Dropping fields from " + api.name)
         val criteria = JavadocFieldCriteria(ds)
         criteria.apiId(api.id)
-        ds.delete(criteria.query())
+        criteria.delete()
 
         LOG.debug("Dropping methods from " + api.name)
         val method = JavadocMethodCriteria(ds)
         method.apiId(api.id)
-        ds.delete(method.query())
+        method.delete()
 
         LOG.debug("Dropping classes from " + api.name)
         val klass = JavadocClassCriteria(ds)
         klass.apiId(api.id)
-        ds.delete(klass.query())
+        klass.delete()
 
         super.delete(api)
     }
