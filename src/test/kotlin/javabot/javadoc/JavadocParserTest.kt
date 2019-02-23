@@ -7,6 +7,7 @@ import javabot.dao.JavadocClassDao
 import javabot.javadoc.JavadocType.JAVA11
 import javabot.javadoc.JavadocType.JAVA6
 import javabot.javadoc.JavadocType.JAVA7
+import javabot.javadoc.JavadocType.JAVA8
 import javabot.model.javadoc.JavadocApi
 import org.testng.Assert
 import org.testng.annotations.Test
@@ -54,12 +55,12 @@ class JavadocParserTest : BaseTest() {
 
     @Test
     fun targetedGuava() {
-        val api = JavadocApi(config, "guava", "com.google.guava", "guava", "19.0")
+        val api = JavadocApi(config, "guava", "com.google.guava", "guava", "22.0")
 
         val javadocDir = parser.extractJavadocContent(api)
         val type = JavadocType.discover(javadocDir)
-        Assert.assertEquals(type, JAVA7)
-//        parse(type, api, javadocDir, "com/google/common/escape/Escapers.Builder.html")
+        Assert.assertEquals(type, JAVA8)
+//        parse(type, api, javadocDir, "com/google/common/collect/ArrayTable.html")
     }
 
     private fun parse(type: JavadocType, api: JavadocApi, javadocDir: File, path: String) {

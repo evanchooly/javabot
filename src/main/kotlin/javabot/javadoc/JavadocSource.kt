@@ -17,20 +17,11 @@ import java.io.File
 import java.net.URLDecoder
 import java.util.Date
 
-abstract class JavadocSource() {
+abstract class JavadocSource(var api: JavadocApi, var name: String) {
     companion object {
         val LOG = LoggerFactory.getLogger(JavadocSource::class.java)
     }
 
-    constructor(api: JavadocApi, file: String) : this() {
-        this.api = api
-        this.name = file
-    }
-
-    lateinit var name: String
-
-    lateinit var api: JavadocApi
-    var created: Date = Date()
     protected var typeParameters: List<String> = listOf()
 
     fun parse(javadocClassDao: JavadocClassDao) {
@@ -43,16 +34,10 @@ abstract class JavadocSource() {
         javadocClassDao.save(docClass)
         updateType(document, docClass)
 
-//                docClass.visibility = when {
-//                    source.getEnclosingType().isInterface() -> Public
-//                    else -> visibility(source.getVisibility().scope())
-//                }
-        discoverGenerics(document, docClass)
         discoverParentType(document, docClass)
         discoverInterfaces(document, docClass)
         discoverMembers(javadocClassDao, document, docClass)
 
-//                nestedTypes(api, packages, source)
         javadocClassDao.save(docClass)
     }
 
@@ -102,9 +87,8 @@ abstract class JavadocSource() {
     protected open fun moduleName(document: Document): String? = null
 
     protected abstract fun className(document: Document): String
-    protected abstract fun packageName(document: Document): String
 
-    protected abstract fun discoverGenerics(document: Document, klass: JavadocClass)
+    protected abstract fun packageName(document: Document): String
     protected abstract fun discoverMembers(javadocClassDao: JavadocClassDao, document: Document, docClass: JavadocClass)
     protected abstract fun discoverParentType(document: Document, klass: JavadocClass)
 

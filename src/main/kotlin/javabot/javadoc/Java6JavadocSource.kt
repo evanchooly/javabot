@@ -6,14 +6,9 @@ import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocField
 import org.jsoup.nodes.Document
 
-class Java6JavadocSource() : JavadocSource() {
+class Java6JavadocSource(api: JavadocApi, file: String) : JavadocSource(api, file) {
     lateinit var packageName: String
     lateinit var type: String
-
-    constructor(api: JavadocApi, file: String) : this() {
-        this.api = api
-        this.name = file
-    }
 
     override fun className(document: Document): String {
         var text = document.select("h2").text()
@@ -27,9 +22,6 @@ class Java6JavadocSource() : JavadocSource() {
     override fun packageName(document: Document): String {
         packageName = document.select("h2 > font").text().trim()
         return packageName
-    }
-
-    override fun discoverGenerics(document: Document, klass: JavadocClass) {
     }
 
     override fun findType(document: Document): String {

@@ -7,12 +7,7 @@ import javabot.model.javadoc.JavadocField
 import org.jsoup.nodes.Document
 import java.net.URLDecoder
 
-class Java8JavadocSource() : JavadocSource() {
-    constructor(api: JavadocApi, file: String) : this() {
-        this.api = api
-        this.name = file
-    }
-
+class Java8JavadocSource(api: JavadocApi, file: String) : JavadocSource(api, file) {
     override fun findType(document: Document): String? {
         return document.select("h2.title").text().substringBefore(" ").toLowerCase()
     }
@@ -29,10 +24,6 @@ class Java8JavadocSource() : JavadocSource() {
 
     override fun packageName(document: Document): String {
         return document.select("""div.header > div.subtitle""").text()
-    }
-
-    override fun discoverGenerics(document: Document, klass: JavadocClass) {
-        TODO("not implemented")
     }
 
     override fun discoverMembers(javadocClassDao: JavadocClassDao, document: Document, docClass: JavadocClass) {

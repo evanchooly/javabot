@@ -7,11 +7,7 @@ import javabot.model.javadoc.JavadocField
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
-class Java11JavadocSource() : JavadocSource() {
-    constructor(api: JavadocApi, file: String) : this() {
-        this.api = api
-        this.name = file
-    }
+class Java11JavadocSource(api: JavadocApi, file: String) : JavadocSource(api, file) {
 
     override fun findType(document: Document): String? {
         return document.select("h2.title").text().substringBefore(" ").toLowerCase()
@@ -32,9 +28,6 @@ class Java11JavadocSource() : JavadocSource() {
     }
 
     override fun packageName(document: Document): String = document.select("""div.subTitle a[href="package-summary.html"]""").text()
-
-    override fun discoverGenerics(document: Document, klass: JavadocClass) {
-    }
 
     override fun discoverMembers(javadocClassDao: JavadocClassDao, document: Document, docClass: JavadocClass) {
         fun mapper(): (Element) -> Unit {

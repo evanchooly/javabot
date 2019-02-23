@@ -99,7 +99,7 @@ class JavadocTest : BaseTest() {
     @Test
     fun guava() {
         val apiName = "guava"
-        val guava = loadApi(apiName, "com.google.guava", "guava", "19.0")
+        val guava = loadApi(apiName, "com.google.guava", "guava", "22.0")
         loadApi("JDK", version = "11")
         loadApi("JavaEE7", "javax", "javaee-api", "7.0")
         val javaEECount = classDao.count()
