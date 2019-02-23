@@ -1,6 +1,5 @@
 package javabot
 
-import com.google.inject.AbstractModule
 import com.google.inject.Guice
 import com.google.inject.Inject
 import com.google.inject.Injector
@@ -29,7 +28,8 @@ constructor(injector: Injector, configDao: ConfigDao, channelDao: ChannelDao,
     companion object {
         val LOG: Logger = LoggerFactory.getLogger(Javabot::class.java)
 
-        @JvmStatic fun main(args: Array<String>) {
+        @JvmStatic
+        fun main() {
             val injector = Guice.createInjector(InteractiveJavabotModule())
             if (LOG.isInfoEnabled) {
                 LOG.info("Starting Javabot")

@@ -54,4 +54,7 @@ interface JavabotConfig : Config, Preprocessor {
     @Key("start.web.app")
     @DefaultValue("true")
     fun startWebApp(): Boolean
+
+    @Key("javadoc.jdk.file")
+    fun jdkJavadoc(): String
 }

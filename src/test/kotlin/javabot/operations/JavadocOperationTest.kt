@@ -1,53 +1,39 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
-import com.jayway.awaitility.Duration
 import javabot.BaseTest
+import javabot.JavabotConfig
 import javabot.dao.ApiDao
 import javabot.model.ApiEvent
+import javabot.model.javadoc.JavadocApi
 import org.slf4j.LoggerFactory
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @Test
 class JavadocOperationTest : BaseTest() {
-    companion object {
-        private val LOG = LoggerFactory.getLogger(JavadocOperationTest::class.java)
-    }
-    
-    @Inject
-    private lateinit var apiDao: ApiDao
-
     @Inject
     private lateinit var operation: JavadocOperation
 
     @BeforeTest
     fun jdk() {
-        if (apiDao.find("JDK") == null) {
-            LOG.info("JDK javadoc not found.  Generating now.")
-            val event = ApiEvent.add(TEST_USER.nick, "JDK")
-            eventDao.save(event)
-            waitForEvent(event, "adding JDK", Duration(30, TimeUnit.MINUTES))
-            messages.clear()
-            LOG.info("JDK javadoc finished.")
-        }
+        loadApi("JDK", version = "11")
     }
 
     fun constructors() {
+        scanForResponse(operation.handleMessage(message("~javadoc String(char[])")), "java/lang/String.html#%3Cinit%3E(char%5B%5D)")
         scanForResponse(operation.handleMessage(message("~javadoc java.lang.String(char[])")), "java/lang/String.html")
-        scanForResponse(operation.handleMessage(message("~javadoc String(char[])")), "java/lang/String.html#String-char[]-")
     }
 
     fun methods() {
-        scanForResponse(operation.handleMessage(message("~javadoc String.split(String)")), "java/lang/String.html#split-java.lang.String-")
+        scanForResponse(operation.handleMessage(message("~javadoc String.split(String)")), "java/lang/String.html#split(java.lang.String)")
         scanForResponse(operation.handleMessage(message("~javadoc -jdk String.split(String)")),
-                "java/lang/String.html#split-java.lang.String-")
+                "java/lang/String.html#split(java.lang.String)")
         scanForResponse(operation.handleMessage(message("~javadoc String.split(java.lang.String)")),
-                "java/lang/String.html#split-java.lang.String-")
-        scanForResponse(operation.handleMessage(message("~javadoc String.join(*)")), "java/lang/String.html#join-")
-        scanForResponse(operation.handleMessage(message("~javadoc String.split(*)")), "java/lang/String.html#split-java.lang.String-")
+                "java/lang/String.html#split(java.lang.String)")
+        scanForResponse(operation.handleMessage(message("~javadoc String.join(*)")), "java/lang/String.html#join(")
+        scanForResponse(operation.handleMessage(message("~javadoc String.split(*)")), "java/lang/String.html#split(java.lang.String)")
     }
 
     fun nestedClasses() {
@@ -56,7 +42,7 @@ class JavadocOperationTest : BaseTest() {
 
     fun  format() {
         scanForResponse(operation.handleMessage(message("~javadoc String.format(*)")),
-                "java/lang/String.html#format-java.util.Locale-java.lang.String-java.lang.Object...-")
+                "java/lang/String.html#format(java.util.Locale,java.lang.String,java.lang.Object...)")
     }
 
     fun doFinal() {
@@ -71,7 +57,7 @@ class JavadocOperationTest : BaseTest() {
 
     fun inherited() {
         scanForResponse(operation.handleMessage(message("~javadoc ArrayList.listIterator(*)")),
-                "java/util/ArrayList.html#listIterator-int-")
+                "java/util/ArrayList.html#listIterator(int)")
     }
 
     fun packagePrivate() {

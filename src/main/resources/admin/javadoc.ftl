@@ -8,10 +8,16 @@
                         <td><input type="text" name="name"/></td>
                     </tr>
                     <tr>
-                        <td class="left">${sofia().mavenDependency()}</td>
-                        <td>
-                            <textarea name="dependency" rows="7" cols="50"></textarea>
-                        </td>
+                        <td class="left">${sofia().mavenGroup   ()}</td>
+                        <td><input type="text" name="groupId"/></td>
+                    </tr>
+                    <tr>
+                        <td class="left">${sofia().mavenArtifact()}</td>
+                        <td><input type="text" name="artifactId"/></td>
+                    </tr>
+                    <tr>
+                        <td class="left">${sofia().mavenVersion()}</td>
+                        <td><input type="text" name="version"/></td>
                     </tr>
                 </table>
             </td>

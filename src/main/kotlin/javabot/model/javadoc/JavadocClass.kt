@@ -15,8 +15,7 @@ open class JavadocClass : JavadocElement {
     lateinit var packageName: String
     lateinit var name: String
     lateinit var fqcn: String
-    var parentClass: String? = null
-    var interfaces: MutableList<String> = mutableListOf()
+    val parentTypes: MutableList<String> = mutableListOf()
     var isClass: Boolean = false
     var isEnum: Boolean = false
     var isInterface: Boolean = false

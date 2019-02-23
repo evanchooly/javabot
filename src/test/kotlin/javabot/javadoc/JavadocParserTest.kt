@@ -2,36 +2,67 @@ package javabot.javadoc
 
 import javabot.BaseTest
 import javabot.JavabotConfig
-import javabot.model.ApiEvent
-import javabot.model.downloadZip
+import javabot.admin.JavadocTest
+import javabot.dao.JavadocClassDao
+import javabot.javadoc.JavadocType.JAVA11
+import javabot.javadoc.JavadocType.JAVA6
+import javabot.javadoc.JavadocType.JAVA7
 import javabot.model.javadoc.JavadocApi
 import org.testng.Assert
 import org.testng.annotations.Test
 import java.io.File
 import javax.inject.Inject
 
+@Test
 class JavadocParserTest : BaseTest() {
     @Inject
     lateinit var parser: JavadocParser
     @Inject
     lateinit var config: JavabotConfig
+    @Inject
+    lateinit var javadocClassDao: JavadocClassDao
 
     @Test
-    fun testBuildHtml() {
-        val file = ApiEvent.locateJDK().downloadZip()
-        parser.buildHtml(JavadocApi("JDK", "${config.url()}/javadoc/JDK"), file, listOf("java", "javax"))
+    fun targeted() {
+        val api = JavadocApi(config, "JDK", version = "11")
 
-        Assert.assertTrue(File("javadoc/JDK/1.8/java/applet/Applet.html").exists())
-        Assert.assertTrue(File("javadoc/JDK/1.8/java/util/Map.Entry.html").exists())
-
-        Assert.assertTrue(File("javadoc/JDK/1.8/index.html").readText()
-                .contains("top.classFrame.location = top.targetPage + location.hash;"))
+        val javadocDir = parser.extractJavadocContent(api)
+        val type = JavadocType.discover(javadocDir)
+        Assert.assertEquals(type, JAVA11)
+//        parse(type, api, javadocDir, "java.base/java/util/Map.html")
     }
 
     @Test
-    fun packages() {
-        Assert.assertEquals(JavadocParser.getPackage("java.util.List"), Pair("java.util", "List"))
-        Assert.assertEquals(JavadocParser.getPackage("java.util.Map"), Pair("java.util", "Map"))
-        Assert.assertEquals(JavadocParser.getPackage("java.util.Map.Entry"), Pair("java.util", "Map.Entry"))
+    fun targetedServlet() {
+        val api = JavadocApi(config, "Servlet", "javax.servlet", "javax.servlet-api", JavadocTest.servletVersion)
+
+        val javadocDir = parser.extractJavadocContent(api)
+        val type = JavadocType.discover(javadocDir)
+        Assert.assertEquals(type, JAVA6)
+//        parse(type, api, javadocDir, "javax/servlet/http/Cookie.html")
+    }
+
+    @Test
+    fun targetedJavaEE() {
+        val api = JavadocApi(config, "JavaEE7", "javax", "javaee-api", "7.0")
+
+        val javadocDir = parser.extractJavadocContent(api)
+        val type = JavadocType.discover(javadocDir)
+        Assert.assertEquals(type, JAVA7)
+//        parse(type, api, javadocDir, "javax/jws/soap/InitParam.html")
+    }
+
+    @Test
+    fun targetedGuava() {
+        val api = JavadocApi(config, "guava", "com.google.guava", "guava", "19.0")
+
+        val javadocDir = parser.extractJavadocContent(api)
+        val type = JavadocType.discover(javadocDir)
+        Assert.assertEquals(type, JAVA7)
+//        parse(type, api, javadocDir, "com/google/common/escape/Escapers.Builder.html")
+    }
+
+    private fun parse(type: JavadocType, api: JavadocApi, javadocDir: File, path: String) {
+        type.create(api, File(javadocDir, path).absolutePath).parse(javadocClassDao)
     }
 }

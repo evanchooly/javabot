@@ -1,5 +1,6 @@
 package javabot.model.javadoc
 
+import javabot.JavabotConfig
 import javabot.model.Persistent
 import org.bson.types.ObjectId
 import org.mongodb.morphia.annotations.Entity
@@ -12,7 +13,8 @@ import org.mongodb.morphia.annotations.PrePersist
 
 @Entity(value = "apis", noClassnameStored = true)
 @Indexes(Index(fields = arrayOf(Field("name")), options = IndexOptions(unique = true)),
-      Index(fields = arrayOf(Field("upperName")), options = IndexOptions(unique = true)))
+         Index(fields = arrayOf(Field("groupId"), Field("artifactId")), options = IndexOptions(unique = true)),
+         Index(fields = arrayOf(Field("upperName")), options = IndexOptions(unique = true)))
 class JavadocApi : Persistent {
 
     @Id
@@ -30,16 +32,14 @@ class JavadocApi : Persistent {
 
     var version: String = ""
 
-    private constructor() {
-    }
+    private constructor()
 
-    constructor(apiName: String, url: String, groupId: String = "", artifactId: String = "", version: String = "") {
+    constructor(config: JavabotConfig, apiName: String, groupId: String = "", artifactId: String = "", version: String = "") {
         name = apiName
         this.groupId = groupId
         this.artifactId = artifactId
-        this.version = if (name == "JDK") System.getProperty("java.specification.version") else version
-        baseUrl = if (url.endsWith("/")) url else url + "/"
-        baseUrl = "${baseUrl}javadoc/$apiName/${this.version}/"
+        this.version = version
+        baseUrl = "${config.url()}/javadoc/$apiName/${version}/"
     }
 
     @PrePersist

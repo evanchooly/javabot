@@ -5,8 +5,13 @@ import javabot.model.Persistent
 import org.bson.types.ObjectId
 import org.mongodb.morphia.Datastore
 import org.mongodb.morphia.query.Query
+import org.slf4j.LoggerFactory
 
 abstract class BaseDao<T : Persistent>(var ds: Datastore, val entityClass: Class<T>) {
+    companion object {
+        private val LOG = LoggerFactory.getLogger(BaseDao::class.java)
+    }
+
     fun getQuery(): Query<T> {
         return getQuery(entityClass)
     }
@@ -24,8 +29,7 @@ abstract class BaseDao<T : Persistent>(var ds: Datastore, val entityClass: Class
     }
 
     private fun loadChecked(id: ObjectId?): T {
-        val persistedObject = find(id) ?: throw EntityNotFoundException(entityClass, id)
-        return persistedObject
+        return find(id) ?: throw EntityNotFoundException(entityClass, id)
     }
 
     open fun save(entity: Persistent) {
@@ -33,8 +37,9 @@ abstract class BaseDao<T : Persistent>(var ds: Datastore, val entityClass: Class
     }
 
     fun delete(entity: Persistent?) {
-        if (entity != null) {
-            ds.delete<Persistent>(entity)
+        entity?.let {
+            LOG.debug("deleting entity:  $entity")
+            ds.delete(it)
         }
     }
 

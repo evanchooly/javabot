@@ -1,24 +1,23 @@
 package javabot.dao
 
 import com.google.inject.Inject
+import javabot.javadoc.JavadocParser
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
-import javabot.javadoc.JavadocClassParser
 import javabot.model.javadoc.JavadocField
 import javabot.model.javadoc.JavadocMethod
-import javabot.model.javadoc.Visibility.PackagePrivate
-import javabot.model.javadoc.Visibility.Private
 import javabot.model.javadoc.criteria.JavadocClassCriteria
 import javabot.model.javadoc.criteria.JavadocFieldCriteria
 import javabot.model.javadoc.criteria.JavadocMethodCriteria
 import org.mongodb.morphia.Datastore
-import org.slf4j.LoggerFactory
 import java.util.ArrayList
 
 class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass>(ds, JavadocClass::class.java) {
 
-    fun getClass(api: JavadocApi?, name: String): List<JavadocClass> {
-        val strings = JavadocClassParser.calculateNameAndPackage(name)
+    fun count() = ds.getCount(JavadocClass::class.java)
+
+    fun getClass(api: JavadocApi? = null, name: String): List<JavadocClass> {
+        val strings = JavadocParser.calculateNameAndPackage(name)
         val pkgName = strings.first
         val criteria = JavadocClassCriteria(ds)
         criteria.upperName().equal(strings.second.toUpperCase())
@@ -29,7 +28,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
         return criteria.query().asList()
     }
 
-    fun getClassByFqcn(fqcn: String): JavadocClass {
+    private fun getClassByFqcn(fqcn: String): JavadocClass {
         val criteria = JavadocClassCriteria(ds)
         criteria.fqcn().equal(fqcn)
         try {
@@ -75,14 +74,13 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
 
         list.forEach { klass ->
             methods.addAll(getMethods(methodName, signatureTypes, klass))
-            klass.parentClass?.let { methods.addAll(getMethods(methodName, signatureTypes, getClassByFqcn(it))) }
-            klass.interfaces.forEach {
+            klass.parentTypes.forEach {
                 try {
-                    methods.addAll(getMethods(methodName, signatureTypes, getClassByFqcn(it)))
+                    methods += getMethods(methodName, signatureTypes, getClassByFqcn(it))
                 } catch(e: IllegalStateException) {
-//                    println("it = ${it}")
-//                    println("klass = ${klass}")
-//                    println("klass.interfaces = ${klass.interfaces}")
+                    println("it = ${it}")
+                    println("klass = ${klass}")
+                    println("klass.parentTypes = ${klass.parentTypes}")
                     throw IllegalStateException("klass = ${klass}", e)
                 }
             }
@@ -92,7 +90,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
 
     private fun getMethods(name: String, signatureTypes: String, javadocClass: JavadocClass): List<JavadocMethod> {
         val criteria = JavadocMethodCriteria(ds)
-        criteria.javadocClass(javadocClass.id)
+        criteria.classId(javadocClass.id)
         criteria.upperName().equal(name.toUpperCase())
         if ("*" != signatureTypes) {
             criteria.or(
@@ -103,78 +101,16 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
     }
 
     fun delete(javadocClass: JavadocClass) {
-        deleteFields(javadocClass)
-        deleteMethods(javadocClass)
-        super.delete(javadocClass)
-    }
-
-    private fun deleteFields(javadocClass: JavadocClass) {
-        val criteria = JavadocFieldCriteria(ds)
-        criteria.javadocClass(javadocClass)
-        ds.delete(criteria.query())
-    }
-
-    private fun deleteMethods(javadocClass: JavadocClass) {
-        val criteria = JavadocMethodCriteria(ds)
-        criteria.javadocClass(javadocClass.id)
-        ds.delete(criteria.query())
-    }
-
-    fun countMethods(): Long {
-        return ds.getCount(JavadocMethod::class.java)
-    }
-
-    fun deleteNotVisible(api: JavadocApi) {
-        var classCriteria = JavadocClassCriteria(ds)
-        classCriteria.apiId(api.id)
-        classCriteria.or(
-                classCriteria.visibility(PackagePrivate),
-                classCriteria.visibility(Private)
-        )
-        classCriteria.delete()
-
-        classCriteria = JavadocClassCriteria(ds)
-        classCriteria.apiId(api.id)
-        classCriteria.isClass(true)
-
-        val methodCriteria = JavadocMethodCriteria(ds)
-        methodCriteria.apiId(api.id)
-        methodCriteria.or(
-                methodCriteria.visibility(PackagePrivate),
-                methodCriteria.visibility(Private)
-        )
-        methodCriteria.query().field("javadocClass").`in`(classCriteria.query().asKeyList())
-        methodCriteria.delete()
-
-        val fieldCriteria = JavadocFieldCriteria(ds)
-        fieldCriteria.apiId(api.id)
-        fieldCriteria.or(
-                fieldCriteria.visibility(PackagePrivate),
-                fieldCriteria.visibility(Private)
-        )
-        fieldCriteria.delete()
-    }
-
-    fun deleteFor(api: JavadocApi?) {
-        api?.let {
-            LOG.debug("Dropping fields from " + it.name)
-            val criteria = JavadocFieldCriteria(ds)
-            criteria.apiId(it.id)
-            ds.delete(criteria.query())
-
-            LOG.debug("Dropping methods from " + it.name)
-            val method = JavadocMethodCriteria(ds)
-            method.apiId(it.id)
-            ds.delete(method.query())
-
-            LOG.debug("Dropping classes from " + it.name)
-            val klass = JavadocClassCriteria(ds)
-            klass.apiId(it.id)
-            ds.delete(klass.query())
+        JavadocFieldCriteria(ds).apply {
+            javadocClass(javadocClass)
+            ds.delete(query())
         }
-    }
-    companion object {
-        private val LOG = LoggerFactory.getLogger(JavadocClassDao::class.java)
 
+        JavadocMethodCriteria(ds).apply {
+            classId(javadocClass.id)
+            ds.delete(query())
+        }
+
+        super.delete(javadocClass)
     }
 }

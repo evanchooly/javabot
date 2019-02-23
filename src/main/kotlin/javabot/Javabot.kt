@@ -49,9 +49,9 @@ open class Javabot @Inject
     companion object {
         val LOG: Logger = LoggerFactory.getLogger(Javabot::class.java)
 
-        @JvmStatic fun main(args: Array<String>) {
-            val injector = Guice.createInjector(JavabotModule())
+        @JvmStatic fun main() {
             Sofia.javabotStart()
+            val injector = Guice.createInjector(JavabotModule())
             val bot = injector.getInstance(Javabot::class.java)
             bot.start()
             Awaitility.await()

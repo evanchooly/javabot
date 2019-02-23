@@ -19,15 +19,13 @@ class JavadocField : JavadocElement {
 
     var type: String? = null
 
-    private constructor() {
-    }
+    private constructor()
 
-    constructor(parent: JavadocClass, fieldName: String, fieldType: String) {
+    constructor(parent: JavadocClass, fieldName: String, urlFragment: String) {
         javadocClass = parent
         name = fieldName
-        type = fieldType
         apiId = parent.apiId
-        url = "${parent.url}#$name"
+        url = "${parent.url}$urlFragment"
         parentClassName = parent.toString()
     }
 
