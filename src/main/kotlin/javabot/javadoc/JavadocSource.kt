@@ -35,7 +35,7 @@ abstract class JavadocSource() {
 
     fun parse(javadocClassDao: JavadocClassDao) {
         val document = Jsoup.parse(File(name), "UTF-8")
-        val docClass = JavadocClass(api, packageName(document), className(document))
+        val docClass = JavadocClass(api, moduleName(document), packageName(document), className(document))
         if (docClass.packageName.isEmpty() or docClass.name.isEmpty()) {
             throw IllegalStateException("package or class name is null in $name")
         }
@@ -98,6 +98,8 @@ abstract class JavadocSource() {
     }
 
     protected fun extractPackageFromElement(a: Element) = a.attr("title").substringAfterLast(" ")
+
+    protected open fun moduleName(document: Document): String? = null
 
     protected abstract fun className(document: Document): String
     protected abstract fun packageName(document: Document): String

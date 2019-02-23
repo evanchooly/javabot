@@ -84,11 +84,11 @@ class JavadocTest : BaseTest() {
         Assert.assertNotNull(classDao.getClass(api, "java.util.Map.Entry"), "Should find an entry for ${api.name}'s java.util.Map.Entry")
         Assert.assertNotNull(classDao.getClass(api, "Map.Entry"), "Should find an entry for ${api.name}'s java.util.Map.Entry")
         scanForResponse(operation.handleMessage(message("~javadoc Map.Entry")),
-                "${config.url()}/javadoc/JDK/11/index.html?java/util/Map.Entry.html")
+                "${config.url()}/javadoc/JDK/11/java.base/java/util/Map.Entry.html")
         scanForResponse(operation.handleMessage(message("~javadoc String.chars()")),
-                "${config.url()}/javadoc/JDK/11/index.html?java/lang/CharSequence.html#chars()")
+                "${config.url()}/javadoc/JDK/11/java.base/java/lang/CharSequence.html#chars()")
         scanForResponse(operation.handleMessage(message("~javadoc ResultSet.getInt(*)")),
-                "${config.url()}/javadoc/JDK/11/index.html?java/sql/ResultSet.html#getInt")
+                "${config.url()}/javadoc/JDK/11/java.sql/java/sql/ResultSet.html#getInt")
     }
 
     private fun verifyMapCount() {

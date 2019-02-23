@@ -17,6 +17,10 @@ class Java11JavadocSource() : JavadocSource() {
         return document.select("h2.title").text().substringBefore(" ").toLowerCase()
     }
 
+    override fun moduleName(document: Document): String? {
+        return document.select("div.subTitle a[href=../../module-summary.html]").text()
+    }
+
     override fun className(document: Document): String {
         val text = document.select("h2.title").text().substringBefore("<").substringAfterLast(" ")
         typeParameters = if("<" in text) {
