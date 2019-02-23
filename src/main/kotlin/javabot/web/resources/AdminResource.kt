@@ -1,5 +1,6 @@
 package javabot.web.resources
 
+import com.antwerkz.sofia.Sofia
 import io.dropwizard.views.View
 import javabot.Javabot
 import javabot.JavabotConfig
@@ -16,9 +17,6 @@ import javabot.web.model.Authority
 import javabot.web.model.User
 import javabot.web.views.ViewFactory
 import org.bson.types.ObjectId
-import org.w3c.dom.Element
-import org.xml.sax.InputSource
-import java.io.StringReader
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.Consumes
@@ -30,7 +28,6 @@ import javax.ws.rs.PathParam
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.MediaType
-import javax.xml.parsers.DocumentBuilderFactory
 
 @Path("/admin") class AdminResource
 @Inject
@@ -169,24 +166,17 @@ constructor(var viewFactory: ViewFactory, var adminDao: AdminDao, var apiDao: Ap
     @POST
     @Path("/addApi")
     fun addApi(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User,
-               @FormParam("name") name: String, @FormParam("dependency") depString: String): View {
+               @FormParam("name") name: String?, @FormParam("group") groupId: String?,
+               @FormParam("artifact") artifactId: String?, @FormParam("version") version: String?): View {
 
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        val event = if (depString != "") {
-            val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(InputSource(StringReader(depString)))
-
-            val dependency = (document.getElementsByTagName("dependency").item(0) as Element)
-            val groupId = dependency.getElementsByTagName("groupId").item(0).textContent
-            val artifactId = dependency.getElementsByTagName("artifactId").item(0).textContent
-            val version = dependency.getElementsByTagName("version").item(0).textContent
-            val api = JavadocApi(config, groupId, if (name != "") name else artifactId, version)
+        version?.let {
+            val apiName = name ?: artifactId ?: throw WebApplicationException(400)
+            val api = JavadocApi(config, apiName,groupId ?: "", artifactId ?: "", version)
             apiDao.save(api)
-            ApiEvent.add(user.email, api)
-        } else {
-            ApiEvent.add(user.email, JavadocApi(config, name))
+            apiDao.save(ApiEvent.add(user.email, api))
         }
 
-        apiDao.save(event)
         return javadoc(request, user)
     }
 
@@ -196,7 +186,7 @@ constructor(var viewFactory: ViewFactory, var adminDao: AdminDao, var apiDao: Ap
                   @Restricted(Authority.ROLE_ADMIN) user: User,
                   @PathParam("id") id: String): View {
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        apiDao.find(ObjectId(id))?.let{ apiDao.save(ApiEvent.drop(user.email, it))}
+        apiDao.delete(ObjectId(id))
         return javadoc(request, user)
     }
 

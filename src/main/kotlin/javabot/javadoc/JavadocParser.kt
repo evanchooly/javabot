@@ -4,11 +4,6 @@ import javabot.JavabotConfig
 import javabot.dao.JavadocClassDao
 import javabot.model.downloadZip
 import javabot.model.javadoc.JavadocApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -40,11 +35,10 @@ class JavadocParser @Inject constructor(private val classDao: JavadocClassDao, p
         }
     }
 
-    fun parse(api: JavadocApi, writer: Writer)/* = runBlocking*/  {
+    fun parse(api: JavadocApi, writer: Writer) {
         try {
             val root = extractJavadocContent(api)
             val type = JavadocType.discover(root)
-            val jobs = mutableListOf<Job>()
             root.walkTopDown()
                     .filter { !it.path.contains("-") }
                     .filter { it.name != "allclasses.html" }
@@ -52,12 +46,8 @@ class JavadocParser @Inject constructor(private val classDao: JavadocClassDao, p
                     .filter { it.extension == "html" }
                     .forEach { html ->
                         LOG.debug("html = ${html}")
-//                        jobs += GlobalScope.launch {
-                            type.create(api, html.absolutePath).parse(classDao)
-//                        }
+                        type.create(api, html.absolutePath).parse(classDao)
                     }
-
-//            jobs.joinAll()
 
             writer.write("Finished importing ${api.name}.")
         } catch (e: Exception) {

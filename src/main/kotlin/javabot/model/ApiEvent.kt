@@ -104,11 +104,7 @@ class ApiEvent : AdminEvent {
         }
     }
 
-    private fun findApi(): JavadocApi? {
-        return api ?: name?.let {
-            apiDao.find(name)
-        }
-    }
+    private fun findApi()= api ?: apiDao.find(name)
 
     override fun add() {
         api?.let {

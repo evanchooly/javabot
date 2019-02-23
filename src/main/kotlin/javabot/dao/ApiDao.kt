@@ -5,6 +5,7 @@ import javabot.model.javadoc.criteria.JavadocApiCriteria
 import javabot.model.javadoc.criteria.JavadocClassCriteria
 import javabot.model.javadoc.criteria.JavadocFieldCriteria
 import javabot.model.javadoc.criteria.JavadocMethodCriteria
+import org.bson.types.ObjectId
 import org.mongodb.morphia.Datastore
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -22,6 +23,10 @@ class ApiDao @Inject constructor(ds: Datastore) : BaseDao<JavadocApi>(ds, Javado
 
     fun delete(api: String) {
         find(api)?.let { delete(it) }
+    }
+
+    override fun delete(id: ObjectId?) {
+        find(id)?.let { delete(it) }
     }
 
     fun delete(api: JavadocApi) {
