@@ -42,7 +42,6 @@ class JavadocParser @Inject constructor(private val classDao: JavadocClassDao, p
 
     fun parse(api: JavadocApi, writer: Writer)/* = runBlocking*/  {
         try {
-
             val root = extractJavadocContent(api)
             val type = JavadocType.discover(root)
             val jobs = mutableListOf<Job>()
