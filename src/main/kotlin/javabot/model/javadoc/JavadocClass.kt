@@ -1,11 +1,11 @@
 package javabot.model.javadoc
 
-import org.mongodb.morphia.annotations.Entity
-import org.mongodb.morphia.annotations.Field
-import org.mongodb.morphia.annotations.Index
-import org.mongodb.morphia.annotations.IndexOptions
-import org.mongodb.morphia.annotations.Indexes
-import org.mongodb.morphia.annotations.PrePersist
+import xyz.morphia.annotations.Entity
+import xyz.morphia.annotations.Field
+import xyz.morphia.annotations.Index
+import xyz.morphia.annotations.IndexOptions
+import xyz.morphia.annotations.Indexes
+import xyz.morphia.annotations.PrePersist
 
 @Entity(value = "classes", noClassnameStored = true)
 @Indexes(Index(fields = arrayOf(Field("apiId"))), Index(fields = arrayOf(Field("upperName"))),

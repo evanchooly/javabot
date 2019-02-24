@@ -7,7 +7,7 @@ import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.Logs.Type
 import javabot.model.criteria.LogsCriteria
-import org.mongodb.morphia.Datastore
+import xyz.morphia.Datastore
 import org.testng.Assert
 import org.testng.annotations.Test
 import java.time.LocalDateTime

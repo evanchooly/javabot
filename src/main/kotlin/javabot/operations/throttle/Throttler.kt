@@ -11,7 +11,7 @@ import javabot.dao.NickServDao
 import javabot.model.JavabotUser
 import javabot.model.ThrottleItem
 import javabot.model.criteria.ThrottleItemCriteria
-import org.mongodb.morphia.Datastore
+import xyz.morphia.Datastore
 import java.time.Duration.between
 import java.time.LocalDateTime.now
 import java.util.concurrent.TimeUnit

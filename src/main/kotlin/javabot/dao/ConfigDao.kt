@@ -8,7 +8,7 @@ import javabot.model.Config
 import javabot.model.Logs
 import javabot.model.Persistent
 import javabot.operations.BotOperation
-import org.mongodb.morphia.Datastore
+import xyz.morphia.Datastore
 import org.reflections.Reflections
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Modifier

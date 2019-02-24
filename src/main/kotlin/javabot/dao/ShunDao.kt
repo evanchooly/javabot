@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 
 import javabot.model.Shun
 import javabot.model.criteria.ShunCriteria
-import org.mongodb.morphia.Datastore
+import xyz.morphia.Datastore
 
 class ShunDao @Inject constructor(ds: Datastore) : BaseDao<Shun>(ds, Shun::class.java) {
 

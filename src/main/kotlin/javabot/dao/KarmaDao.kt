@@ -5,7 +5,7 @@ import javabot.dao.util.QueryParam
 import javabot.model.Channel
 import javabot.model.Karma
 import javabot.model.criteria.KarmaCriteria
-import org.mongodb.morphia.Datastore
+import xyz.morphia.Datastore
 import java.time.LocalDateTime
 import javax.inject.Inject
 

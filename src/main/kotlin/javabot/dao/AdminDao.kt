@@ -5,7 +5,7 @@ import javabot.model.EventType
 import javabot.model.JavabotUser
 import javabot.model.OperationEvent
 import javabot.model.criteria.AdminCriteria
-import org.mongodb.morphia.Datastore
+import xyz.morphia.Datastore
 import javax.inject.Inject
 
 class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) : BaseDao<Admin>(ds, Admin::class.java) {

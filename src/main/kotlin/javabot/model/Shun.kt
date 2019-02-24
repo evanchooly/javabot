@@ -1,12 +1,12 @@
 package javabot.model
 
 import org.bson.types.ObjectId
-import org.mongodb.morphia.annotations.Entity
-import org.mongodb.morphia.annotations.Field
-import org.mongodb.morphia.annotations.Id
-import org.mongodb.morphia.annotations.Index
-import org.mongodb.morphia.annotations.Indexed
-import org.mongodb.morphia.annotations.Indexes
+import xyz.morphia.annotations.Entity
+import xyz.morphia.annotations.Field
+import xyz.morphia.annotations.Id
+import xyz.morphia.annotations.Index
+import xyz.morphia.annotations.Indexed
+import xyz.morphia.annotations.Indexes
 import java.io.Serializable
 import java.time.LocalDateTime
 

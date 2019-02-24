@@ -3,8 +3,8 @@ package javabot.dao
 import javabot.dao.util.EntityNotFoundException
 import javabot.model.Persistent
 import org.bson.types.ObjectId
-import org.mongodb.morphia.Datastore
-import org.mongodb.morphia.query.Query
+import xyz.morphia.Datastore
+import xyz.morphia.query.Query
 import org.slf4j.LoggerFactory
 
 abstract class BaseDao<T : Persistent>(var ds: Datastore, val entityClass: Class<T>) {

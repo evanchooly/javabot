@@ -477,7 +477,7 @@
     </dependencies>
 
     <properties>
-        <critter.version>3.0.0</critter.version>
+        <critter.version>3.0.2</critter.version>
         <dropwizard.version>0.7.1</dropwizard.version>
         <guice.version>4.0</guice.version>
         <jacoco.version>0.7.7.201606060606</jacoco.version>
@@ -488,8 +488,8 @@
         <sofia.version>0.23</sofia.version>
         <jsoup.version>1.11.3</jsoup.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <morphia.groupId>org.mongodb.morphia</morphia.groupId>
-        <morphia.artifactId>morphia</morphia.artifactId>
-        <morphia.version>1.2.1</morphia.version>
+        <morphia.groupId>xyz.morphia.morphia</morphia.groupId>
+        <morphia.artifactId>core</morphia.artifactId>
+        <morphia.version>1.4.0</morphia.version>
     </properties>
 </project>

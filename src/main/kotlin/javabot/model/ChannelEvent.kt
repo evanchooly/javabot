@@ -1,8 +1,8 @@
 package javabot.model
 
 import javabot.dao.ChannelDao
-import org.mongodb.morphia.annotations.Entity
-import org.mongodb.morphia.annotations.Transient
+import xyz.morphia.annotations.Entity
+import xyz.morphia.annotations.Transient
 import javax.inject.Inject
 
 @Entity("events") class ChannelEvent : AdminEvent {

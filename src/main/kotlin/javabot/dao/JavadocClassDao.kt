@@ -9,7 +9,7 @@ import javabot.model.javadoc.JavadocMethod
 import javabot.model.javadoc.criteria.JavadocClassCriteria
 import javabot.model.javadoc.criteria.JavadocFieldCriteria
 import javabot.model.javadoc.criteria.JavadocMethodCriteria
-import org.mongodb.morphia.Datastore
+import xyz.morphia.Datastore
 import java.util.ArrayList
 
 class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass>(ds, JavadocClass::class.java) {

@@ -6,7 +6,7 @@ import javabot.model.Activity
 import javabot.model.Channel
 import javabot.model.criteria.ChannelCriteria
 import org.apache.commons.lang.StringUtils
-import org.mongodb.morphia.Datastore
+import xyz.morphia.Datastore
 import java.time.LocalDateTime
 import java.util.ArrayList
 

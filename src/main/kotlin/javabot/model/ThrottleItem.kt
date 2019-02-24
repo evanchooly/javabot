@@ -1,9 +1,9 @@
 package javabot.model
 
 import org.bson.types.ObjectId
-import org.mongodb.morphia.annotations.Entity
-import org.mongodb.morphia.annotations.Id
-import org.mongodb.morphia.annotations.Indexed
+import xyz.morphia.annotations.Entity
+import xyz.morphia.annotations.Id
+import xyz.morphia.annotations.Indexed
 import java.util.Date
 
 @Entity(value = "throttled", noClassnameStored = true)

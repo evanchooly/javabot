@@ -7,11 +7,11 @@ import javabot.model.javadoc.JavadocMethod
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import org.mongodb.morphia.annotations.Entity
-import org.mongodb.morphia.annotations.Field
-import org.mongodb.morphia.annotations.Index
-import org.mongodb.morphia.annotations.IndexOptions
-import org.mongodb.morphia.annotations.Indexes
+import xyz.morphia.annotations.Entity
+import xyz.morphia.annotations.Field
+import xyz.morphia.annotations.Index
+import xyz.morphia.annotations.IndexOptions
+import xyz.morphia.annotations.Indexes
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.net.URLDecoder

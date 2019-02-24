@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import javabot.model.JavabotUser
 import javabot.model.NickServInfo
 import javabot.model.criteria.NickServInfoCriteria
-import org.mongodb.morphia.Datastore
+import xyz.morphia.Datastore
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

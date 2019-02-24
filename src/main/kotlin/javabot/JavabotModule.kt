@@ -16,8 +16,8 @@ import javabot.model.Factoid
 import javabot.web.views.ViewFactory
 import org.aeonbits.owner.Config.Key
 import org.aeonbits.owner.ConfigFactory
-import org.mongodb.morphia.Datastore
-import org.mongodb.morphia.Morphia
+import xyz.morphia.Datastore
+import xyz.morphia.Morphia
 import org.pircbotx.Configuration.Builder
 import org.pircbotx.PircBotX
 import org.pircbotx.cap.SASLCapHandler

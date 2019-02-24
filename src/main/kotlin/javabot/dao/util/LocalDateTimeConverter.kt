@@ -5,9 +5,9 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.Date
 
-import org.mongodb.morphia.converters.DateConverter
-import org.mongodb.morphia.mapping.MappedField
-import org.mongodb.morphia.mapping.MappingException
+import xyz.morphia.converters.DateConverter
+import xyz.morphia.mapping.MappedField
+import xyz.morphia.mapping.MappingException
 
 class LocalDateTimeConverter : DateConverter(LocalDateTime::class.java) {
 

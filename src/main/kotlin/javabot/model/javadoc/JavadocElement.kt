@@ -4,7 +4,7 @@ import javabot.dao.ApiDao
 import javabot.model.Persistent
 import net.swisstech.bitly.BitlyClient
 import org.bson.types.ObjectId
-import org.mongodb.morphia.annotations.Id
+import xyz.morphia.annotations.Id
 
 abstract class JavadocElement : Persistent {
     @Id

@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonView
 import javabot.json.Views.PUBLIC
 import javabot.json.Views.SYSTEM
 import org.bson.types.ObjectId
-import org.mongodb.morphia.annotations.Entity
-import org.mongodb.morphia.annotations.Field
-import org.mongodb.morphia.annotations.Id
-import org.mongodb.morphia.annotations.Index
-import org.mongodb.morphia.annotations.IndexOptions
-import org.mongodb.morphia.annotations.Indexes
-import org.mongodb.morphia.annotations.PrePersist
+import xyz.morphia.annotations.Entity
+import xyz.morphia.annotations.Field
+import xyz.morphia.annotations.Id
+import xyz.morphia.annotations.Index
+import xyz.morphia.annotations.IndexOptions
+import xyz.morphia.annotations.Indexes
+import xyz.morphia.annotations.PrePersist
 import java.io.Serializable
 import java.time.LocalDateTime
 

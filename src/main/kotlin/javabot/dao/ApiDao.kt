@@ -6,7 +6,7 @@ import javabot.model.javadoc.criteria.JavadocClassCriteria
 import javabot.model.javadoc.criteria.JavadocFieldCriteria
 import javabot.model.javadoc.criteria.JavadocMethodCriteria
 import org.bson.types.ObjectId
-import org.mongodb.morphia.Datastore
+import xyz.morphia.Datastore
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
