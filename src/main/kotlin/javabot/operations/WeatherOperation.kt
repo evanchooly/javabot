@@ -16,8 +16,8 @@ class WeatherOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
         val message = event.value
         if (message.toLowerCase().startsWith("weather ")) {
             val place = message.substring("weather ".length).trim()
-            val result = weatherDao.getWeatherFor(place, bot.javabotConfig)
-            responses.add(Message(event, if (result == null) Sofia.weatherUnknown(place) else result.toString()))
+            val result = weatherDao.getWeatherFor(place)
+            responses.add(Message(event, result?.toString() ?: Sofia.weatherUnknown(place)))
         }
         return responses
     }

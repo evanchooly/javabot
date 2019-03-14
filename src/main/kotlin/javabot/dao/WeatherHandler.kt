@@ -8,6 +8,6 @@ interface WeatherHandler {
      * Gets weather info, or null if none can be found
      * @return Current Weather information, null if not found
      */
-    fun getWeatherFor(place: String, javabotCOnfig:JavabotConfig): Weather?
+    fun getWeatherFor(place: String, javabotConfig:JavabotConfig): Weather?
 
 }

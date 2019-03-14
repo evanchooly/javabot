@@ -2,7 +2,7 @@
 
 package javabot.dao.impl.openweathermap.model
 
-class OWWeather(
+data class OWWeather(
         var coord: OWCoordinates? = null,
         var weather: List<OWCondition>? = null,
         var base: String? = null,
@@ -17,19 +17,19 @@ class OWWeather(
         var cod: Int? = null
 )
 
-class OWCoordinates(
+data class OWCoordinates(
         var lon: Double? = null,
         var lat: Double? = null
 )
 
-class OWCondition(
+data class OWCondition(
         var id: Long? = null,
         var main: String? = null,
         var description: String? = null,
         var icon: String? = null
 )
 
-class OWMain(
+data class OWMain(
         var temp: Double? = null,
         var pressure: Long? = null,
         var humidity: Long? = null,
@@ -37,17 +37,17 @@ class OWMain(
         var temp_max: Double? = null
 )
 
-class OWWind(
+data class OWWind(
         var speed: Double? = null,
         var deg: Long? = null,
         var gust: Double? = null
 )
 
-class OWClouds(
+data class OWClouds(
         var all: Long? = null
 )
 
-class OWSys(
+data class OWSys(
         var type: Long? = null,
         var id: Long? = null,
         var message: Double? = null,

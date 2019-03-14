@@ -59,5 +59,6 @@ interface JavabotConfig : Config, Preprocessor {
     fun jdkJavadoc(): String
 
     @Key("javabot.openweathermap.token")
+    @DefaultValue("")
     fun openweathermapToken():String
 }

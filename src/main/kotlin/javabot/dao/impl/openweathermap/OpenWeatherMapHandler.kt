@@ -19,17 +19,22 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 /**
- * Implements a weather service Dao using Weather Underground's weather API
-
- * @see WeatherDao
+ * Implements a weather service Dao using OpenWeather's weather API.
+ * We may need to eventually think about OWM's terms of service; the free key allows
+ * only 1000 requests a day. This may not be a problem in normal usage, but what
+ * if a malicious bot or user issues 4000 weather requests? They'd get denied (the API
+ * would reject them) but it's still impolite behavior on the part of the bot.
+ *
+ * @see javabot.dao.impl.WeatherDao
  */
 class OpenWeatherMapHandler : WeatherHandler {
     override fun getWeatherFor(place: String, javabotConfig: JavabotConfig): Weather? {
         val mapper = ObjectMapper()
-        return if (javabotConfig.openweathermapToken().isNotEmpty()) {
+        val apiKey = javabotConfig.openweathermapToken()
+        return if (apiKey.isNotEmpty()) {
             try {
                 val location = place.replace(" ", "+")
-                val url = "$API_URL$location&APPID=${javabotConfig.openweathermapToken()}"
+                val url = "$API_URL$location&APPID=$apiKey"
 
                 val weatherResponse = Request
                         .Get(url)
@@ -50,7 +55,11 @@ class OpenWeatherMapHandler : WeatherHandler {
 
                 val zoneId = tzEngine.query(data.coord!!.lat!!, data.coord!!.lon!!)
                 if (zoneId.isPresent) {
-                    weather.localTime = ZonedDateTime.ofInstant(Instant.now(), zoneId.orElse(ZoneId.systemDefault())).format(DateTimeFormatter.RFC_1123_DATE_TIME)
+                    val weatherTime = ZonedDateTime.ofInstant(
+                            Instant.now(),
+                            zoneId.orElse(ZoneId.systemDefault())
+                    )
+                    weather.localTime = weatherTime.format(DateTimeFormatter.RFC_1123_DATE_TIME)
                 }
                 weather
             } catch (e: Throwable) {
