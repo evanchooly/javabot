@@ -30,7 +30,19 @@ class WeatherOperationTest : BaseTest() {
     }
 
     @Test
-    @Throws(Exception::class) fun cityWithSpaces() {
-        scanForResponse(operation.handleMessage(message("~weather New York")), "Weather for")
+    @Throws(Exception::class)
+    fun cityShowTimezone() {
+        val messages = operation.handleMessage(message("~weather London"))
+        scanForResponse(messages, "Weather for")
+        scanForResponse(messages, "GMT")
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun cityWithSpaces() {
+        val messages = operation.handleMessage(message("~weather New York"))
+        //println(messages)
+        scanForResponse(messages, "Weather for")
+        scanForResponse(messages, "-0400")
     }
 }

@@ -1,9 +1,8 @@
 package javabot.dao.impl
 
+import javabot.JavabotConfig
 import java.util.Arrays
-import java.util.HashMap
-
-import javabot.dao.WeatherHandler
+import javabot.dao.impl.openweathermap.OpenWeatherMapHandler
 import javabot.model.Weather
 
 /**
@@ -19,38 +18,15 @@ class WeatherDao {
     //add more handlers to the list if there are other weather sources you want
     //the operation to support
     private val handlers = Arrays.asList(
-          WeatherUndergroundHandler() as WeatherHandler)
+            OpenWeatherMapHandler()
+    )
 
-    private val places = object : HashMap<String, String>() {
-        init {
-            put("NEW YORK", "New York City, NY")
-            put("NYC", "New York City, NY")
-            put("LAS VEGAS", "Las Vegas, NV")
-            put("VEGAS", "Las Vegas, NV")
-            put("LONDON", "London, United Kingdom")
-            put("PARIS", "Paris, France")
-            put("TORONTO", "Toronto, Ontario")
-            put("RALEIGH", "Raleigh, NC")
-        }
-    }
-
-    /**
-     * Some of the weather services will interpret places like "Las Vegas" as a similar place in a country like
-     * Mexico.  Since we'll probably have more people asking for weather in Las Vegas Nevada, the function will return
-     * "Las Vegas, NV" when someone types in "Las Vegas".  If the user really wants Las Vegas Mexico, the user will have
-     * to specify MX
-     */
-    private fun commonPlaces(place: String): String {
-        return places[place.toUpperCase()] ?: place
-
-    }
-
-    fun getWeatherFor(place: String): Weather? {
+    fun getWeatherFor(place: String, javabotConfig: JavabotConfig): Weather? {
         var weather: Weather? = null
 
         //Use each service until one returns something
         for (weatherDao in handlers) {
-            weather = weatherDao.getWeatherFor(commonPlaces(place))
+            weather = weatherDao.getWeatherFor(place, javabotConfig)
             if (weather != null) {
                 break
             }

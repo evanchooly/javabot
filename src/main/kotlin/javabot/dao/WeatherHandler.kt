@@ -1,5 +1,6 @@
 package javabot.dao
 
+import javabot.JavabotConfig
 import javabot.model.Weather
 
 interface WeatherHandler {
@@ -7,6 +8,6 @@ interface WeatherHandler {
      * Gets weather info, or null if none can be found
      * @return Current Weather information, null if not found
      */
-    fun getWeatherFor(place: String): Weather?
+    fun getWeatherFor(place: String, javabotCOnfig:JavabotConfig): Weather?
 
 }
