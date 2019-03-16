@@ -27,10 +27,9 @@ import java.time.format.DateTimeFormatter
  *
  * @see javabot.dao.impl.WeatherDao
  */
-class OpenWeatherMapHandler : WeatherHandler {
-    override fun getWeatherFor(place: String, javabotConfig: JavabotConfig): Weather? {
+class OpenWeatherMapHandler(private val apiKey:String) : WeatherHandler {
+    override fun getWeatherFor(place: String): Weather? {
         val mapper = ObjectMapper()
-        val apiKey = javabotConfig.openweathermapToken()
         return if (apiKey.isNotEmpty()) {
             try {
                 val location = place.replace(" ", "+")
