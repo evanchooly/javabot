@@ -67,8 +67,8 @@ class Weather {
         //    private static char C = '\u2103';
         //    private static char F = '\u2109';
         //    private static char DOT = '\u00B7';
-        private val C = 'C'
-        private val F = 'F'
-        private val SEPARATOR = '|'
+        private const val C = 'C'
+        private const val F = 'F'
+        private const val SEPARATOR = '|'
     }
 }

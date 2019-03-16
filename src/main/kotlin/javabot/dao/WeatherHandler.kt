@@ -1,5 +1,6 @@
 package javabot.dao
 
+import javabot.JavabotConfig
 import javabot.model.Weather
 
 interface WeatherHandler {
