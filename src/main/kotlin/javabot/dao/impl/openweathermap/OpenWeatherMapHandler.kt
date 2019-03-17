@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter
  *
  * @see javabot.dao.impl.WeatherDao
  */
-class OpenWeatherMapHandler(private val apiKey:String) : WeatherHandler {
+class OpenWeatherMapHandler(private val apiKey: String) : WeatherHandler {
     override fun getWeatherFor(place: String): Weather? {
         val mapper = ObjectMapper()
         return if (apiKey.isNotEmpty()) {
@@ -40,19 +40,16 @@ class OpenWeatherMapHandler(private val apiKey:String) : WeatherHandler {
                         .execute()
                         .returnContent().asString()
                 val data = mapper.readValue<OWWeather>(weatherResponse, OWWeather::class.java)
-
-                val weather = Weather()
-                weather.city = "${data.name} (${data.sys!!.country})"
-                weather.humidity = data.main!!.humidity.toString()
-                weather.condition = data.weather!![0].description
-                weather.wind = data.wind!!.speed.toString()
-                val tempK = data.main!!.temp!!
-                val tempC = tempK - 273.15
-                val tempF = (tempC * 9.0 / 5 + 32.0)
-                weather.tempc = "%4d".format(tempC.toInt()).trim()
-                weather.tempf = "%4d".format(tempF.toInt()).trim()
-
                 val zoneId = tzEngine.query(data.coord!!.lat!!, data.coord!!.lon!!)
+
+                val weather = Weather(
+                        city = "${data.name} (${data.sys!!.country})",
+                        humidity = data.main!!.humidity.toString(),
+                        condition = data.weather!![0].description,
+                        wind = data.wind!!.speed.toString(),
+                        tempCelsius = data.main!!.temp!! - 273.15
+                )
+
                 if (zoneId.isPresent) {
                     val weatherTime = ZonedDateTime.ofInstant(
                             Instant.now(),
