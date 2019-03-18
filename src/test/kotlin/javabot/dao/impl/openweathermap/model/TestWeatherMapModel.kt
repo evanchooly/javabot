@@ -3,6 +3,7 @@ package javabot.dao.impl.openweathermap.model
 import com.fasterxml.jackson.databind.ObjectMapper
 import javabot.BaseTest
 import javabot.JavabotConfig
+import javabot.dao.weather.openweathermap.model.OWWeather
 import org.apache.http.client.fluent.Request
 import org.testng.annotations.Test
 import javax.inject.Inject

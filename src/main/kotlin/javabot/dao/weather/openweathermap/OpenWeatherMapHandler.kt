@@ -1,18 +1,12 @@
-package javabot.dao.impl.openweathermap
+package javabot.dao.weather.openweathermap
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import javabot.JavabotConfig
 import javabot.dao.WeatherHandler
-import javabot.dao.impl.openweathermap.model.OWWeather
+import javabot.dao.geocode.GeocodeDao
+import javabot.dao.weather.openweathermap.model.OWWeather
 import javabot.model.Weather
 import net.iakovlev.timeshape.TimeZoneEngine
 import org.apache.http.client.fluent.Request
-import org.apache.http.client.methods.HttpGet
-import org.apache.http.impl.client.HttpClients
-import org.apache.http.util.EntityUtils
-import org.xml.sax.InputSource
-import java.net.URL
-import java.net.URLEncoder
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -27,13 +21,18 @@ import java.time.format.DateTimeFormatter
  *
  * @see javabot.dao.impl.WeatherDao
  */
-class OpenWeatherMapHandler(private val apiKey: String) : WeatherHandler {
+class OpenWeatherMapHandler(
+        private val geocodeDao: GeocodeDao,
+        private val apiKey: String
+) : WeatherHandler {
     override fun getWeatherFor(place: String): Weather? {
         val mapper = ObjectMapper()
         return if (apiKey.isNotEmpty()) {
             try {
                 val location = place.replace(" ", "+")
-                val url = "$API_URL$location&APPID=$apiKey"
+                // will throw an exception if the lat/long is empty. We WANT this. It'll exit cleanly.
+                val (latitude, longitude) = geocodeDao.getLatitudeAndLongitudeFor(location)
+                val url = "$API_URL?APPID=$apiKey&lat=$latitude&lon=$longitude"
 
                 val weatherResponse = Request
                         .Get(url)
@@ -67,7 +66,7 @@ class OpenWeatherMapHandler(private val apiKey: String) : WeatherHandler {
     }
 
     companion object {
-        private const val API_URL = "http://api.openweathermap.org/data/2.5/weather?q="
+        private const val API_URL = "http://api.openweathermap.org/data/2.5/weather"
         private val tzEngine: TimeZoneEngine = TimeZoneEngine.initialize()
     }
 }

@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package javabot.dao.impl.openweathermap.model
+package javabot.dao.weather.openweathermap.model
 
 data class OWWeather(
         var coord: OWCoordinates? = null,

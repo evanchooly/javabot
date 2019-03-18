@@ -1,14 +1,15 @@
-package javabot.dao.impl
+package javabot.dao.weather
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.inject.Inject
 import javabot.JavabotConfig
+import javabot.dao.geocode.GeocodeDao
+import javabot.dao.weather.openweathermap.OpenWeatherMapHandler
 import java.util.Arrays
-import javabot.dao.impl.openweathermap.OpenWeatherMapHandler
 import javabot.model.Weather
 
-class WeatherDao @Inject constructor(javabotConfig: JavabotConfig) {
+class WeatherDao @Inject constructor(javabotConfig: JavabotConfig, private val geocodeDao: GeocodeDao) {
     companion object {
         val translations: Map<String, String> = WeatherDao::class.java
                 .getResourceAsStream("/weatherTranslations.json")
@@ -25,7 +26,7 @@ class WeatherDao @Inject constructor(javabotConfig: JavabotConfig) {
     //add more handlers to the list if there are other weather sources you want
     //the operation to support
     private val handlers = Arrays.asList(
-            OpenWeatherMapHandler(javabotConfig.openweathermapToken())
+            OpenWeatherMapHandler(geocodeDao, javabotConfig.openweathermapToken())
     )
 
     private fun placeTranslation(location: String): String {

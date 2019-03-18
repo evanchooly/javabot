@@ -4,7 +4,7 @@ import com.antwerkz.sofia.Sofia
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
-import javabot.dao.impl.WeatherDao
+import javabot.dao.weather.WeatherDao
 import javax.inject.Inject
 
 /**
