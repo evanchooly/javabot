@@ -5,7 +5,7 @@ import com.google.common.util.concurrent.RateLimiter
 import javabot.dao.WeatherHandler
 import javabot.dao.geocode.GeocodeDao
 import javabot.dao.weather.openweathermap.model.OWWeather
-import javabot.model.Weather
+import javabot.dao.weather.Weather
 import net.iakovlev.timeshape.TimeZoneEngine
 import org.apache.http.client.fluent.Request
 import java.time.Instant

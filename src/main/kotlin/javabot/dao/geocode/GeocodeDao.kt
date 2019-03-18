@@ -28,7 +28,7 @@ class GeocodeDao @Inject constructor(private val javabotConfig: JavabotConfig) {
                                     val mapper = ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                                     val location = key.replace(" ", "+")
                                     val geocodeResponse = Request
-                                            .Get("${baseUrl}$location")
+                                            .Get("$baseUrl$location")
                                             .execute()
                                             .returnContent().asString()
                                     val response = mapper.readValue(geocodeResponse, GeocodeResponse::class.java)

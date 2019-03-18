@@ -1,4 +1,4 @@
-package javabot.model
+package javabot.dao.weather
 
 /**
  * Simple model for passing around Weather conditions
@@ -37,6 +37,6 @@ data class Weather(
     }
 
     companion object {
-        private const val SEPARATOR = '|'
+        private val SEPARATOR = '|'
     }
 }
