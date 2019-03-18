@@ -1,6 +1,7 @@
 package javabot.dao.weather.openweathermap
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.common.util.concurrent.RateLimiter
 import javabot.dao.WeatherHandler
 import javabot.dao.geocode.GeocodeDao
 import javabot.dao.weather.openweathermap.model.OWWeather
@@ -19,45 +20,53 @@ import java.time.format.DateTimeFormatter
  * if a malicious bot or user issues 4000 weather requests? They'd get denied (the API
  * would reject them) but it's still impolite behavior on the part of the bot.
  *
- * @see javabot.dao.impl.WeatherDao
+ * @see javabot.dao.weather.WeatherDao
  */
 class OpenWeatherMapHandler(
         private val geocodeDao: GeocodeDao,
         private val apiKey: String
 ) : WeatherHandler {
+    // allow one a second - it's actually 60/sec on OWM but who cares
+    @Suppress("UnstableApiUsage")
+    private val rateLimiter = RateLimiter.create(60.0)
+
     override fun getWeatherFor(place: String): Weather? {
         val mapper = ObjectMapper()
         return if (apiKey.isNotEmpty()) {
-            try {
-                val location = place.replace(" ", "+")
-                // will throw an exception if the lat/long is empty. We WANT this. It'll exit cleanly.
-                val loc = geocodeDao.getLatitudeAndLongitudeFor(location) ?: throw Exception()
-                val url = "$API_URL?APPID=$apiKey&lat=${loc.latitude}&lon=${loc.longitude}"
+            if (rateLimiter.tryAcquire()) {
+                try {
+                    val location = place.replace(" ", "+")
+                    // will throw an exception if the lat/long is empty. We WANT this. It'll exit cleanly.
+                    val loc = geocodeDao.getLatitudeAndLongitudeFor(location) ?: throw Exception()
+                    val url = "$API_URL?APPID=$apiKey&lat=${loc.latitude}&lon=${loc.longitude}"
 
-                val weatherResponse = Request
-                        .Get(url)
-                        .execute()
-                        .returnContent().asString()
-                val data = mapper.readValue<OWWeather>(weatherResponse, OWWeather::class.java)
-                val zoneId = tzEngine.query(data.coord!!.lat!!, data.coord!!.lon!!)
+                    val weatherResponse = Request
+                            .Get(url)
+                            .execute()
+                            .returnContent().asString()
+                    val data = mapper.readValue<OWWeather>(weatherResponse, OWWeather::class.java)
+                    val zoneId = tzEngine.query(data.coord!!.lat!!, data.coord!!.lon!!)
 
-                val weather = Weather(
-                        city = loc.address,
-                        humidity = data.main!!.humidity.toString(),
-                        condition = data.weather!![0].description,
-                        wind = data.wind!!.speed.toString(),
-                        tempCelsius = data.main!!.temp!! - 273.15
-                )
-
-                if (zoneId.isPresent) {
-                    val weatherTime = ZonedDateTime.ofInstant(
-                            Instant.now(),
-                            zoneId.orElse(ZoneId.systemDefault())
+                    val weather = Weather(
+                            city = loc.address,
+                            humidity = data.main!!.humidity.toString(),
+                            condition = data.weather!![0].description,
+                            wind = data.wind!!.speed.toString(),
+                            tempCelsius = data.main!!.temp!! - 273.15
                     )
-                    weather.localTime = weatherTime.format(DateTimeFormatter.RFC_1123_DATE_TIME)
+
+                    if (zoneId.isPresent) {
+                        val weatherTime = ZonedDateTime.ofInstant(
+                                Instant.now(),
+                                zoneId.orElse(ZoneId.systemDefault())
+                        )
+                        weather.localTime = weatherTime.format(DateTimeFormatter.RFC_1123_DATE_TIME)
+                    }
+                    weather
+                } catch (e: Throwable) {
+                    null
                 }
-                weather
-            } catch (e: Throwable) {
+            } else {
                 null
             }
         } else {
