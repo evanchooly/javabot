@@ -9,7 +9,7 @@ import org.apache.http.client.fluent.Request
 
 class GeocodeDao @Inject constructor(private val javabotConfig: JavabotConfig) {
     val baseUrl = "https://maps.googleapis.com/maps/api/geocode/json?key=${javabotConfig.googleAPI()}&address="
-    fun getLatitudeAndLongitudeFor(place: String): List<Double> {
+    fun getLatitudeAndLongitudeFor(place: String): GeoLocation? {
         return if (javabotConfig.googleAPI().isNotEmpty() && place.isNotEmpty()) {
             val mapper = ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             val location = place.replace(" ", "+")
@@ -20,12 +20,17 @@ class GeocodeDao @Inject constructor(private val javabotConfig: JavabotConfig) {
             val response = mapper.readValue(geocodeResponse, GeocodeResponse::class.java)
             val geoLocation = response.results?.get(0)?.geometry?.location
             if (geoLocation != null) {
-                listOf(geoLocation.lat ?: 0.0, geoLocation.lng ?: 0.0)
+                GeoLocation(
+                        geoLocation.lat ?: 0.0,
+                        geoLocation.lng ?: 0.0,
+                        response.results?.get(0)?.formatted_address ?: "")
             } else {
-                emptyList()
+                null
             }
         } else {
-            emptyList()
+            null
         }
     }
 }
+
+data class GeoLocation(val latitude: Double, val longitude: Double, val address: String)

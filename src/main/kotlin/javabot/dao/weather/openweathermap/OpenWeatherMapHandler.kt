@@ -31,8 +31,8 @@ class OpenWeatherMapHandler(
             try {
                 val location = place.replace(" ", "+")
                 // will throw an exception if the lat/long is empty. We WANT this. It'll exit cleanly.
-                val (latitude, longitude) = geocodeDao.getLatitudeAndLongitudeFor(location)
-                val url = "$API_URL?APPID=$apiKey&lat=$latitude&lon=$longitude"
+                val loc = geocodeDao.getLatitudeAndLongitudeFor(location) ?: throw Exception()
+                val url = "$API_URL?APPID=$apiKey&lat=${loc.latitude}&lon=${loc.longitude}"
 
                 val weatherResponse = Request
                         .Get(url)
@@ -42,7 +42,7 @@ class OpenWeatherMapHandler(
                 val zoneId = tzEngine.query(data.coord!!.lat!!, data.coord!!.lon!!)
 
                 val weather = Weather(
-                        city = "${data.name} (${data.sys!!.country})",
+                        city = loc.address,
                         humidity = data.main!!.humidity.toString(),
                         condition = data.weather!![0].description,
                         wind = data.wind!!.speed.toString(),

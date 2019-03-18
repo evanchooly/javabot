@@ -52,6 +52,6 @@ class WeatherOperationTest : BaseTest() {
         var messages = operation.handleMessage(message("~weather brooklyn"))
         println(messages)
         scanForResponse(messages, "Weather for")
-        scanForResponse(messages, "Brooklyn (US)")
+        scanForResponse(messages, "Brooklyn, NY, USA")
     }
 }

@@ -13,9 +13,4 @@ class TestGeocodeModel {
             println(mapper.readValue(inputStream, GeocodeResponse::class.java))
         }
     }
-
-    @Test
-    fun testAssignment() {
-        val (lat, long) = emptyList<Double>()
-    }
 }
