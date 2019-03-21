@@ -45,4 +45,13 @@ class WeatherOperationTest : BaseTest() {
         scanForResponse(messages, "Weather for")
         scanForResponse(messages, "-0400")
     }
+
+    @Test
+    @Throws(Exception::class)
+    fun cityUseTranslation() {
+        var messages = operation.handleMessage(message("~weather brooklyn"))
+        //println(messages)
+        scanForResponse(messages, "Weather for")
+        scanForResponse(messages, "Brooklyn, NY, USA")
+    }
 }

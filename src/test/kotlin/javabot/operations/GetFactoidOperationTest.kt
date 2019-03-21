@@ -10,6 +10,7 @@ import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
+import java.time.ZoneOffset
 import java.util.Arrays
 import javax.inject.Inject
 
@@ -75,7 +76,7 @@ class GetFactoidOperationTest : BaseTest() {
         operation.handleMessage(message("~dates"))
 
         val factoid = factoidDao.getFactoid("dates")!!
-        Assert.assertEquals(factoid.updated, dates.updated)
+        Assert.assertEquals(factoid.updated.toEpochSecond(ZoneOffset.UTC), dates.updated.toEpochSecond(ZoneOffset.UTC))
         Assert.assertTrue(factoid.lastUsed?.isAfter(dates.lastUsed) ?: false);
 
     }

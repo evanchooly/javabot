@@ -1,0 +1,69 @@
+{
+  "results" : [
+    {
+      "address_components" : [
+        {
+          "long_name" : "Youngsville",
+          "short_name" : "Youngsville",
+          "types" : [ "locality", "political" ]
+        },
+        {
+          "long_name" : "Youngsville",
+          "short_name" : "Youngsville",
+          "types" : [ "administrative_area_level_3", "political" ]
+        },
+        {
+          "long_name" : "Franklin County",
+          "short_name" : "Franklin County",
+          "types" : [ "administrative_area_level_2", "political" ]
+        },
+        {
+          "long_name" : "North Carolina",
+          "short_name" : "NC",
+          "types" : [ "administrative_area_level_1", "political" ]
+        },
+        {
+          "long_name" : "United States",
+          "short_name" : "US",
+          "types" : [ "country", "political" ]
+        },
+        {
+          "long_name" : "27596",
+          "short_name" : "27596",
+          "types" : [ "postal_code" ]
+        }
+      ],
+      "formatted_address" : "Youngsville, NC 27596, USA",
+      "geometry" : {
+        "bounds" : {
+          "northeast" : {
+            "lat" : 36.0428699,
+            "lng" : -78.467516
+          },
+          "southwest" : {
+            "lat" : 36.0060548,
+            "lng" : -78.492193
+          }
+        },
+        "location" : {
+          "lat" : 36.0248732,
+          "lng" : -78.4744439
+        },
+        "location_type" : "APPROXIMATE",
+        "viewport" : {
+          "northeast" : {
+            "lat" : 36.0428699,
+            "lng" : -78.467516
+          },
+          "southwest" : {
+            "lat" : 36.0060548,
+            "lng" : -78.492193
+          }
+        }
+      },
+      "place_id" : "ChIJhz4xM5xSrIkR-asWyru7erE",
+      "types" : [ "locality", "political" ]
+    }
+  ],
+  "status" : "OK"
+}
