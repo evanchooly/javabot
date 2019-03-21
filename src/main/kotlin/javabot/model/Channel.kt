@@ -15,7 +15,7 @@ import java.io.Serializable
 import java.time.LocalDateTime
 
 @Entity(value = "channels", noClassnameStored = true)
-@Indexes(Index(fields = arrayOf(Field("upperName")), options = IndexOptions(unique = true, dropDups = true)))
+@Indexes(Index(fields = arrayOf(Field("upperName")), options = IndexOptions(unique = true)))
 class Channel : Serializable, Persistent {
     @Id
     var id: ObjectId? = null

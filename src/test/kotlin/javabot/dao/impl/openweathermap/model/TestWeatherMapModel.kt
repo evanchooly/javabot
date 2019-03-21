@@ -60,16 +60,16 @@ class TestWeatherMapModel @Inject constructor(private val javabotConfig: Javabot
 }
 """.trimIndent()
         val weatherModel = mapper.readValue(input, OWWeather::class.java)
-        println(weatherModel?.weather?.get(0)?.description)
+        //println(weatherModel?.weather?.get(0)?.description)
         val place = "London, UK".replace(" ", "+")
         val API_URL = "http://api.openweathermap.org/data/2.5/weather?q="
         val url="$API_URL$place&APPID=${javabotConfig.openweathermapToken()}"
-        println(url)
+        //println(url)
         val weatherResponse = Request
                 .Get(url)
                 .execute()
                 .returnContent()
-        println(weatherResponse)
-        println(mapper.readValue(weatherResponse.asString(), OWWeather::class.java))
+        //println(weatherResponse)
+        mapper.readValue(weatherResponse.asString(), OWWeather::class.java)
     }
 }

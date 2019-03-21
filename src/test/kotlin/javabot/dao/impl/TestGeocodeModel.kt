@@ -10,7 +10,7 @@ class TestGeocodeModel {
     fun testDeserializeGeocodeModel() {
         val mapper=ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         this::class.java.getResourceAsStream("/geocode-response.json").use { inputStream ->
-            println(mapper.readValue(inputStream, GeocodeResponse::class.java))
+            mapper.readValue(inputStream, GeocodeResponse::class.java)
         }
     }
 }

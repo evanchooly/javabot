@@ -1,5 +1,6 @@
 package javabot.dao.weather.openweathermap
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.util.concurrent.RateLimiter
 import javabot.dao.WeatherHandler
@@ -31,7 +32,7 @@ class OpenWeatherMapHandler(
     private val rateLimiter = RateLimiter.create(60.0)
 
     override fun getWeatherFor(place: String): Weather? {
-        val mapper = ObjectMapper()
+        val mapper = ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         return if (apiKey.isNotEmpty()) {
             if (rateLimiter.tryAcquire()) {
                 try {
@@ -64,6 +65,7 @@ class OpenWeatherMapHandler(
                     }
                     weather
                 } catch (e: Throwable) {
+                    e.printStackTrace()
                     null
                 }
             } else {

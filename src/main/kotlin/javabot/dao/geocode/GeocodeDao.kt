@@ -32,7 +32,12 @@ class GeocodeDao @Inject constructor(private val javabotConfig: JavabotConfig) {
                                             .execute()
                                             .returnContent().asString()
                                     val response = mapper.readValue(geocodeResponse, GeocodeResponse::class.java)
-                                    val geoLocation = response.results?.get(0)?.geometry?.location
+                                    val results = response.results ?: emptyList()
+                                    val geoLocation = if (results.isNotEmpty()) {
+                                        results.get(0).geometry?.location
+                                    } else {
+                                        null
+                                    }
                                     if (geoLocation != null) {
                                         GeoLocation(
                                                 geoLocation.lat ?: 0.0,
@@ -53,7 +58,7 @@ class GeocodeDao @Inject constructor(private val javabotConfig: JavabotConfig) {
             )
 
     fun getLatitudeAndLongitudeFor(place: String): GeoLocation? {
-        return cache[place]
+        return cache.get(place)
     }
 }
 
