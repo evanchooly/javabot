@@ -41,7 +41,13 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     private fun postMessageToChannel(responses: MutableList<Message>, titlesToPost: List<String>, event: Message) {
         val title = if (titlesToPost.size == 1) "title" else "titles"
         responses.add(Message(event, "${event.user.nick}'s $title: " +
-                titlesToPost.joinToString(" | ", transform = { s -> "\"$s\"" })))
+                titlesToPost.joinToString(" | ", transform = { s ->
+                    if (s.length > 250) {
+                        "\"${s.substring(0, 260)}...}\""
+                    } else {
+                        "\"$s\""
+                    }
+                })))
     }
 
     private fun findTitle(url: String, loop: Boolean): String? {
