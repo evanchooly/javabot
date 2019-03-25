@@ -5,7 +5,7 @@ import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.model.criteria.LogsCriteria
-import xyz.morphia.Datastore
+import dev.morphia.Datastore
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 

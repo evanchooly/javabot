@@ -1,12 +1,12 @@
 package javabot.model
 
 import org.bson.types.ObjectId
-import xyz.morphia.annotations.Entity
-import xyz.morphia.annotations.Field
-import xyz.morphia.annotations.Id
-import xyz.morphia.annotations.Index
-import xyz.morphia.annotations.IndexOptions
-import xyz.morphia.annotations.Indexes
+import dev.morphia.annotations.Entity
+import dev.morphia.annotations.Field
+import dev.morphia.annotations.Id
+import dev.morphia.annotations.Index
+import dev.morphia.annotations.IndexOptions
+import dev.morphia.annotations.Indexes
 
 @Entity("users")
 @Indexes(

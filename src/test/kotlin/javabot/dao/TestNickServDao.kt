@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import com.google.inject.Provider
 import javabot.model.JavabotUser
 import javabot.model.NickServInfo
-import xyz.morphia.Datastore
+import dev.morphia.Datastore
 import org.pircbotx.PircBotX
 
 import java.time.LocalDateTime

@@ -1,6 +1,6 @@
 package javabot.model
 
-import xyz.morphia.annotations.Entity
+import dev.morphia.annotations.Entity
 import java.io.Serializable
 import java.text.DecimalFormat
 import java.time.LocalDateTime

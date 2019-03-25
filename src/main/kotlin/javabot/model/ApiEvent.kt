@@ -8,9 +8,9 @@ import javabot.model.EventType.DELETE
 import javabot.model.EventType.RELOAD
 import javabot.model.javadoc.JavadocApi
 import org.bson.types.ObjectId
-import xyz.morphia.annotations.Entity
-import xyz.morphia.annotations.Reference
-import xyz.morphia.annotations.Transient
+import dev.morphia.annotations.Entity
+import dev.morphia.annotations.Reference
+import dev.morphia.annotations.Transient
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileOutputStream

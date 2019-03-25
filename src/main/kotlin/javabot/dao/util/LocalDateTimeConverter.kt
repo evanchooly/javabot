@@ -5,9 +5,9 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.Date
 
-import xyz.morphia.converters.DateConverter
-import xyz.morphia.mapping.MappedField
-import xyz.morphia.mapping.MappingException
+import dev.morphia.converters.DateConverter
+import dev.morphia.mapping.MappedField
+import dev.morphia.mapping.MappingException
 
 class LocalDateTimeConverter : DateConverter(LocalDateTime::class.java) {
 

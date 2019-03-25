@@ -7,8 +7,8 @@ import com.mongodb.WriteResult
 import javabot.dao.util.QueryParam
 import javabot.model.Change
 import javabot.model.criteria.ChangeCriteria
-import xyz.morphia.Datastore
-import xyz.morphia.query.Query
+import dev.morphia.Datastore
+import dev.morphia.query.Query
 import java.time.LocalDateTime
 
 class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change::class.java) {

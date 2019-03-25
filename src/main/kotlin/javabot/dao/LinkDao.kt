@@ -6,8 +6,8 @@ import javabot.dao.util.QueryParam
 import javabot.model.Link
 import javabot.model.Persistent
 import javabot.model.criteria.LinkCriteria
-import xyz.morphia.Datastore
-import xyz.morphia.query.Query
+import dev.morphia.Datastore
+import dev.morphia.query.Query
 import java.time.LocalDateTime
 import java.util.regex.PatternSyntaxException
 import javax.inject.Inject

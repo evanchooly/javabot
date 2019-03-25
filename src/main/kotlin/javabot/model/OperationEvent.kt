@@ -1,6 +1,6 @@
 package javabot.model
 
-import xyz.morphia.annotations.Entity
+import dev.morphia.annotations.Entity
 
 @Entity("events") class OperationEvent(requestedBy: String, type: EventType, var operation: String) : AdminEvent(requestedBy, type) {
 

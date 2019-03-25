@@ -21,7 +21,7 @@ import javabot.model.Logs
 import javabot.model.NickServInfo
 import javabot.model.State
 import javabot.model.javadoc.JavadocApi
-import xyz.morphia.Datastore
+import dev.morphia.Datastore
 import org.pircbotx.PircBotX
 import org.slf4j.LoggerFactory
 import org.testng.Assert

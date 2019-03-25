@@ -1,8 +1,8 @@
 package javabot.model
 
 import org.bson.types.ObjectId
-import xyz.morphia.annotations.Entity
-import xyz.morphia.annotations.Id
+import dev.morphia.annotations.Entity
+import dev.morphia.annotations.Id
 
 import java.io.Serializable
 import java.util.UUID

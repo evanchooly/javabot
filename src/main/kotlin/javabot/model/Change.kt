@@ -1,9 +1,9 @@
 package javabot.model
 
 import org.bson.types.ObjectId
-import xyz.morphia.annotations.Entity
-import xyz.morphia.annotations.Id
-import xyz.morphia.annotations.Indexed
+import dev.morphia.annotations.Entity
+import dev.morphia.annotations.Id
+import dev.morphia.annotations.Indexed
 
 import java.io.Serializable
 import java.time.LocalDateTime

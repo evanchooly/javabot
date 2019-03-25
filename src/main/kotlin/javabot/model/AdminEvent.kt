@@ -2,13 +2,13 @@ package javabot.model
 
 import javabot.Javabot
 import org.bson.types.ObjectId
-import xyz.morphia.annotations.Entity
-import xyz.morphia.annotations.Field
-import xyz.morphia.annotations.Id
-import xyz.morphia.annotations.Index
-import xyz.morphia.annotations.Indexed
-import xyz.morphia.annotations.Indexes
-import xyz.morphia.annotations.Transient
+import dev.morphia.annotations.Entity
+import dev.morphia.annotations.Field
+import dev.morphia.annotations.Id
+import dev.morphia.annotations.Index
+import dev.morphia.annotations.Indexed
+import dev.morphia.annotations.Indexes
+import dev.morphia.annotations.Transient
 import java.io.Serializable
 import java.time.LocalDateTime
 import javax.inject.Inject

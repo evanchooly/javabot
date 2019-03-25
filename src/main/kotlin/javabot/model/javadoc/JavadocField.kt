@@ -1,11 +1,11 @@
 package javabot.model.javadoc
 
-import xyz.morphia.annotations.Entity
-import xyz.morphia.annotations.Field
-import xyz.morphia.annotations.Index
-import xyz.morphia.annotations.Indexes
-import xyz.morphia.annotations.PrePersist
-import xyz.morphia.annotations.Reference
+import dev.morphia.annotations.Entity
+import dev.morphia.annotations.Field
+import dev.morphia.annotations.Index
+import dev.morphia.annotations.Indexes
+import dev.morphia.annotations.PrePersist
+import dev.morphia.annotations.Reference
 
 @Entity(value = "fields", noClassnameStored = true)
 @Indexes(Index(fields = arrayOf(Field("javadocClass"), Field("upperName") )),

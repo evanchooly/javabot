@@ -7,7 +7,7 @@ import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.Logs.Type
 import javabot.model.criteria.LogsCriteria
-import xyz.morphia.Datastore
+import dev.morphia.Datastore
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
