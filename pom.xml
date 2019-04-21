@@ -487,15 +487,15 @@
         <dropwizard.version>0.7.1</dropwizard.version>
         <guice.version>4.0</guice.version>
         <jacoco.version>0.8.3</jacoco.version>
-        <kotlin.version>1.3.21</kotlin.version>
+        <kotlin.version>1.3.30</kotlin.version>
         <logback.version>1.2.3</logback.version>
-        <mongo.driver.version>3.5.0</mongo.driver.version>
+        <mongo.driver.version>3.9.0</mongo.driver.version>
         <slf4j.version>1.7.25</slf4j.version>
         <sofia.version>0.23</sofia.version>
         <jsoup.version>1.11.3</jsoup.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <morphia.groupId>dev.morphia.morphia</morphia.groupId>
         <morphia.artifactId>core</morphia.artifactId>
-        <morphia.version>1.4.1</morphia.version>
+        <morphia.version>1.5.1</morphia.version>
     </properties>
 </project>
