@@ -17,7 +17,7 @@ class ShunDao @Inject constructor(ds: Datastore) : BaseDao<Shun>(ds, Shun::class
         expireShuns()
         val criteria = ShunCriteria(ds)
         criteria.upperNick().equal(nick.toUpperCase())
-        return criteria.query().get()
+        return criteria.query().first()
     }
 
     private fun expireShuns() {

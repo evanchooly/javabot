@@ -7,6 +7,7 @@ import javabot.model.ApiEvent
 import javabot.model.javadoc.JavadocApi
 import javabot.operations.JavadocOperation
 import org.testng.Assert
+import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 import java.io.File
 import java.nio.file.Files
@@ -28,10 +29,10 @@ class JavadocTest : BaseTest() {
     @Inject
     private lateinit var operation: JavadocOperation
 
-    @Test(dependsOnMethods = ["coreJavadoc"])
-    fun servlets() {
-        val apiName = "Servlet"
-        checkServlets(loadApi(apiName, "javax.servlet", "javax.servlet-api", servletVersion))
+    @BeforeClass
+    fun drops() {
+        apiDao.delete("Servlet")
+        apiDao.delete("JavaEE7")
     }
 
     private fun checkServlets(api: JavadocApi) {
@@ -54,7 +55,7 @@ class JavadocTest : BaseTest() {
     @Test(dependsOnMethods = ["coreJavadoc"])
     fun javaee() {
         val apiName = "JavaEE7"
-        loadApi(apiName, "javax", "javaee-api", "7.0")
+        val api = loadApi(apiName, "javax", "javaee-api", "7.0")
         verifyMapCount()
         scanForResponse(operation.handleMessage(message("~javadoc Annotated")), "javax/enterprise/inject/spi/Annotated.html")
         scanForResponse(operation.handleMessage(message("~javadoc Annotated.getAnnotation(*)")),
@@ -71,6 +72,8 @@ class JavadocTest : BaseTest() {
         scanForResponse(operation.handleMessage(message("~javadoc PartitionPlan")), "javax/batch/api/partition/PartitionPlan.html")
         scanForResponse(operation.handleMessage(message("~javadoc PartitionPlan.setPartitionProperties(Properties[])")),
                 "javax/batch/api/partition/PartitionPlan.html#setPartitionProperties(java.util.Properties[])")
+
+        checkServlets(api)
     }
 
     @Test

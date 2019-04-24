@@ -5,6 +5,7 @@ import javabot.model.JavabotUser
 import javabot.model.NickServInfo
 import javabot.model.criteria.NickServInfoCriteria
 import dev.morphia.Datastore
+import dev.morphia.UpdateOptions
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -61,7 +62,7 @@ open class NickServDao @Inject constructor(ds: Datastore) : BaseDao<NickServInfo
         criteria.or(
               criteria.nick(name.toLowerCase()),
               criteria.account(name.toLowerCase()))
-        return criteria.query().get()
+        return criteria.query().first()
     }
 
     fun updateNick(oldNick: String, newNick: String): NickServInfo {
@@ -69,10 +70,10 @@ open class NickServDao @Inject constructor(ds: Datastore) : BaseDao<NickServInfo
         criteria.nick(oldNick)
         val updater = criteria.updater()
         updater.nick(newNick)
-        updater.updateFirst()
+        updater.update(UpdateOptions().multi(false))
         criteria = NickServInfoCriteria(ds)
         criteria.nick(newNick)
-        return criteria.query().get()
+        return criteria.query().first()
     }
 
     fun unregister(user: JavabotUser) {

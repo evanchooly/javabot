@@ -1,17 +1,19 @@
 package javabot.dao
 
 import com.google.inject.Inject
+import dev.morphia.Datastore
+import dev.morphia.query.Sort
 import javabot.dao.util.QueryParam
 import javabot.model.Activity
 import javabot.model.Channel
 import javabot.model.criteria.ChannelCriteria
 import org.apache.commons.lang.StringUtils
-import dev.morphia.Datastore
 import java.time.LocalDateTime
 import java.util.ArrayList
 
-@SuppressWarnings("ConstantNamingConvention") class ChannelDao @Inject constructor(ds: Datastore) :
-        BaseDao<Channel>(ds, Channel::class.java) {
+@Suppress("DEPRECATION")
+@SuppressWarnings("ConstantNamingConvention")
+class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Channel::class.java) {
 
     fun delete(name: String) {
         val channelCriteria = ChannelCriteria(ds)
@@ -19,9 +21,9 @@ import java.util.ArrayList
         ds.delete(channelCriteria.query())
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun configuredChannels(): List<String> {
-        @Suppress("UNCHECKED_CAST")
-        return ChannelCriteria(ds).name().distinct() as List<String>
+        return ds.getCollection(Channel::class.java).distinct(ChannelCriteria.upperName) as List<String>
     }
 
     fun getChannels(): List<Channel> {
@@ -34,16 +36,12 @@ import java.util.ArrayList
             channelCriteria.logged().equal(true)
         }
         val query = channelCriteria.query()
-        query.order("name")
-        return query.asList()
+        query.order(Sort.ascending("name"))
+        return query.find().toList()
     }
 
     fun find(qp: QueryParam): List<Channel> {
-        var condition = qp.sort
-        if (!qp.sortAsc) {
-            condition = "-" + condition
-        }
-        return getQuery().order(condition).asList()
+        return getQuery().order(qp.toSort()).find().toList()
     }
 
     fun isLogged(channel: String): Boolean {
@@ -54,7 +52,7 @@ import java.util.ArrayList
     fun get(name: String): Channel? {
         val criteria = ChannelCriteria(ds)
         criteria.upperName().equal(name.toUpperCase())
-        return criteria.query().get()
+        return criteria.query().first()
     }
 
     fun getStatistics(): List<Activity> {
@@ -71,7 +69,7 @@ import java.util.ArrayList
     fun loggedChannels(): List<String> {
         val criteria = ChannelCriteria(ds)
         criteria.logged().equal(true)
-        val channels = criteria.query().retrievedFields(true, "name").asList()
+        val channels = criteria.query().retrievedFields(true, "name").find().toList()
         val names = ArrayList<String>()
         for (channel in channels) {
             names.add(channel.name)
@@ -95,12 +93,11 @@ import java.util.ArrayList
 
     fun location(channel: Channel?): String {
         val location: String
-        if (channel != null ) {
+        if (channel != null) {
             location = if (isLogged(channel.name)) channel.name else "private channel"
         } else {
             location = channel?.name ?: "private message"
         }
         return location
     }
-
 }

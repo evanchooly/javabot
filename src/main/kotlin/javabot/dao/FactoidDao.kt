@@ -7,6 +7,7 @@ import javabot.model.Factoid
 import javabot.model.Persistent
 import javabot.model.criteria.FactoidCriteria
 import dev.morphia.Datastore
+import dev.morphia.query.FindOptions
 import dev.morphia.query.Query
 import java.time.LocalDateTime
 import java.util.regex.PatternSyntaxException
@@ -32,7 +33,7 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
     fun hasFactoid(key: String): Boolean {
         val criteria = FactoidCriteria(ds)
         criteria.upperName().equal(key.toUpperCase())
-        return criteria.query().get() != null
+        return criteria.query().first() != null
     }
 
     fun addFactoid(sender: String, key: String, value: String, location: String): Factoid {
@@ -59,7 +60,7 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
     fun getFactoid(name: String): Factoid? {
         val criteria = FactoidCriteria(ds)
         criteria.upperName().equal(name.toUpperCase())
-        val factoid = criteria.query().get()
+        val factoid = criteria.query().first()
         if (factoid != null) {
             factoid.lastUsed = LocalDateTime.now()
             super.save(factoid)
@@ -73,7 +74,7 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
                 criteria.upperName().equal(name.toUpperCase() + " \$1"),
                 criteria.upperName().equal(name.toUpperCase() + " \$^"),
                 criteria.upperName().equal(name.toUpperCase() + " \$+"))
-        val factoid = criteria.query().get()
+        val factoid = criteria.query().first()
         if (factoid != null) {
             factoid.lastUsed = LocalDateTime.now()
             super.save(factoid)
@@ -82,18 +83,25 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
     }
 
     fun count(): Long {
-        return ds.createQuery(Factoid::class.java).countAll()
+        return ds.createQuery(Factoid::class.java).count()
     }
 
     fun countFiltered(filter: Factoid): Long {
-        return buildFindQuery(null, filter, true).countAll()
+        return buildFindQuery(filter).count()
     }
 
     fun getFactoidsFiltered(qp: QueryParam, filter: Factoid): List<Factoid> {
-        return buildFindQuery(qp, filter, false).asList()
+        val query = buildFindQuery(filter)
+        if (qp.hasSort()) {
+            query.order(qp.toSort("upper"))
+        }
+        val options = FindOptions()
+        options.skip(qp.first)
+        options.limit(qp.count)
+        return query.find(options).toList()
     }
 
-    private fun buildFindQuery(qp: QueryParam?, filter: Factoid, count: Boolean): Query<Factoid> {
+    private fun buildFindQuery(filter: Factoid): Query<Factoid> {
         val criteria = FactoidCriteria(ds)
         if (filter.name != "") {
             try {
@@ -119,11 +127,6 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
             }
         }
 
-        if (!count && qp != null && qp.hasSort()) {
-            criteria.query().order((if (qp.sortAsc) "" else "-") + "upper" + qp.sort)
-            criteria.query().offset(qp.first)
-            criteria.query().limit(qp.count)
-        }
         return criteria.query()
     }
 

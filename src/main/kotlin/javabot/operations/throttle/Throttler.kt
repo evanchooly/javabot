@@ -38,7 +38,7 @@ class Throttler @Inject constructor(
             ds.save(ThrottleItem(user.nick))
             val criteria = ThrottleItemCriteria(ds)
             criteria.user(user.nick)
-            return criteria.query().countAll() > configDao.get().throttleThreshold
+            return criteria.query().count() > configDao.get().throttleThreshold
         }
         return false
     }

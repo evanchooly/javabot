@@ -7,7 +7,7 @@ import dev.morphia.Datastore
 import dev.morphia.query.Query
 import org.slf4j.LoggerFactory
 
-abstract class BaseDao<T : Persistent>(var ds: Datastore, val entityClass: Class<T>) {
+abstract class BaseDao<T : Persistent>(val ds: Datastore, val entityClass: Class<T>) {
     companion object {
         private val LOG = LoggerFactory.getLogger(BaseDao::class.java)
     }
@@ -21,11 +21,11 @@ abstract class BaseDao<T : Persistent>(var ds: Datastore, val entityClass: Class
     }
 
     fun find(id: ObjectId?): T? {
-        return ds.createQuery(entityClass).filter("_id", id).get()
+        return ds.createQuery(entityClass).filter("_id", id).first()
     }
 
     open fun findAll(): List<T> {
-        return ds.createQuery(entityClass).asList()
+        return ds.createQuery(entityClass).find().toList()
     }
 
     private fun loadChecked(id: ObjectId?): T {

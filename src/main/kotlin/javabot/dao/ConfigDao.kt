@@ -3,12 +3,11 @@ package javabot.dao
 import com.google.inject.Injector
 import com.google.inject.Singleton
 import com.mongodb.BasicDBObject
+import dev.morphia.Datastore
 import javabot.JavabotConfig
 import javabot.model.Config
 import javabot.model.Logs
-import javabot.model.Persistent
 import javabot.operations.BotOperation
-import dev.morphia.Datastore
 import org.reflections.Reflections
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Modifier
@@ -37,7 +36,7 @@ class ConfigDao @Inject constructor(ds: Datastore, var injector: Injector, var j
     }
 
     fun get(): Config {
-        var config: Config? = ds.createQuery(Config::class.java).get()
+        var config: Config? = ds.createQuery(Config::class.java).first()
         if (config == null) {
             config = create()
         }

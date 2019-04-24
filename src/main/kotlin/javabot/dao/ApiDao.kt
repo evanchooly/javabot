@@ -7,6 +7,7 @@ import javabot.model.javadoc.criteria.JavadocFieldCriteria
 import javabot.model.javadoc.criteria.JavadocMethodCriteria
 import org.bson.types.ObjectId
 import dev.morphia.Datastore
+import dev.morphia.query.Sort
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -18,7 +19,7 @@ class ApiDao @Inject constructor(ds: Datastore) : BaseDao<JavadocApi>(ds, Javado
     fun find(name: String): JavadocApi? {
         val criteria = JavadocApiCriteria(ds)
         criteria.upperName().equal(name.toUpperCase())
-        return criteria.query().get()
+        return criteria.query().first()
     }
 
     fun delete(api: String) {
@@ -49,6 +50,6 @@ class ApiDao @Inject constructor(ds: Datastore) : BaseDao<JavadocApi>(ds, Javado
     }
 
     override fun findAll(): List<JavadocApi> {
-        return ds.createQuery(JavadocApi::class.java).order("name").asList()
+        return ds.createQuery(JavadocApi::class.java).order(Sort.ascending("name")).find().toList()
     }
 }

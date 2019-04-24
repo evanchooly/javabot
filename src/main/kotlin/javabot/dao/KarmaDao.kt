@@ -1,11 +1,11 @@
 package javabot.dao
 
 import com.mongodb.WriteResult
+import dev.morphia.Datastore
+import dev.morphia.query.FindOptions
 import javabot.dao.util.QueryParam
-import javabot.model.Channel
 import javabot.model.Karma
 import javabot.model.criteria.KarmaCriteria
-import dev.morphia.Datastore
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -15,11 +15,12 @@ class KarmaDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var 
     fun getKarmas(qp: QueryParam): List<Karma> {
         val query = ds.createQuery(Karma::class.java)
         if (qp.hasSort()) {
-            query.order((if (qp.sortAsc) "" else "-") + qp.sort)
+            query.order(qp.toSort())
         }
-        query.offset(qp.first)
-        query.limit(qp.count)
-        return query.asList()
+        val options = FindOptions()
+        options.skip(qp.first)
+        options.limit(qp.count)
+        return query.find(options).toList()
     }
 
     fun save(karma: Karma) {
@@ -30,11 +31,11 @@ class KarmaDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var 
     fun find(name: String): Karma? {
         val criteria = KarmaCriteria(ds)
         criteria.upperName().equal(name.toUpperCase())
-        return criteria.query().get()
+        return criteria.query().first()
     }
 
     fun count(): Long {
-        return ds.createQuery(Karma::class.java).countAll()
+        return ds.createQuery(Karma::class.java).count()
     }
 
     fun deleteAll(): WriteResult {

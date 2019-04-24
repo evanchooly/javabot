@@ -16,46 +16,37 @@ class GeocodeDao @Inject constructor(private val javabotConfig: JavabotConfig) {
     private val limiter = CallLimiter.create() // limit to 850 every day
     private val baseUrl = "https://maps.googleapis.com/maps/api/geocode/json?key=${javabotConfig.googleAPI()}&address="
 
-    val cache: LoadingCache<String, GeoLocation> = CacheBuilder
-            .newBuilder()
-            .maximumSize(1000)
-            .expireAfterAccess(10, TimeUnit.MINUTES)
-            .build(
-                    object : CacheLoader<String, GeoLocation>() {
-                        override fun load(key: String): GeoLocation {
-                            return if (javabotConfig.googleAPI().isNotEmpty() && key.isNotEmpty()) {
-                                if (limiter.tryAcquire()) {
-                                    val mapper = ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                                    val location = key.replace(" ", "+")
-                                    val geocodeResponse = Request
-                                            .Get("$baseUrl$location")
-                                            .execute()
-                                            .returnContent().asString()
-                                    val response = mapper.readValue(geocodeResponse, GeocodeResponse::class.java)
-                                    val results = response.results ?: emptyList()
-                                    val geoLocation = if (results.isNotEmpty()) {
-                                        results.get(0).geometry?.location
-                                    } else {
-                                        null
-                                    }
-                                    if (geoLocation != null) {
+    val cache: LoadingCache<String, GeoLocation> =
+            CacheBuilder.newBuilder().maximumSize(1000).expireAfterAccess(10, TimeUnit.MINUTES)
+                .build(object : CacheLoader<String, GeoLocation>() {
+                    override fun load(key: String): GeoLocation? {
+                        return if (javabotConfig.googleAPI().isNotEmpty() && key.isNotEmpty()) {
+                            if (limiter.tryAcquire()) {
+                                val mapper = ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                                val location = key.replace(" ", "+")
+                                val geocodeResponse = Request.Get("$baseUrl$location").execute().returnContent().asString()
+                                val response = mapper.readValue(geocodeResponse, GeocodeResponse::class.java)
+                                val results = response.results ?: emptyList()
+                                if (results.isNotEmpty()) {
+                                    results[0].geometry?.location?.let {
                                         GeoLocation(
-                                                geoLocation.lat ?: 0.0,
-                                                geoLocation.lng ?: 0.0,
-                                                response.results?.get(0)?.formatted_address ?: "")
-                                    } else {
-                                        throw Exception("Geocode service did not return a location reference for $key")
+                                                it.lat ?: 0.0,
+                                                it.lng ?: 0.0,
+                                                response.results?.get(0)?.formatted_address ?: ""
+                                        )
                                     }
                                 } else {
-                                    throw Exception("Too many requests: geocode service is limited to ${limiter.allowed} " +
-                                            "for every ${limiter.span} ${limiter.period}")
+                                    null
                                 }
                             } else {
-                                throw Exception("Geocode service has no API key defined. See javabot.properties.")
+                                throw Exception("Too many requests: geocode service is limited to ${limiter.allowed} for " +
+                                                        "every ${limiter.span} ${limiter.period}")
                             }
+                        } else {
+                            throw Exception("Geocode service has no API key defined. See javabot.properties.")
                         }
                     }
-            )
+                })
 
     fun getLatitudeAndLongitudeFor(place: String): GeoLocation? {
         return cache.get(place)

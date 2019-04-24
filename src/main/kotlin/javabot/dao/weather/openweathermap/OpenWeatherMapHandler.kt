@@ -5,13 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.util.concurrent.RateLimiter
 import javabot.dao.WeatherHandler
 import javabot.dao.geocode.GeocodeDao
-import javabot.dao.weather.openweathermap.model.OWWeather
 import javabot.dao.weather.Weather
+import javabot.dao.weather.openweathermap.model.OWWeather
 import net.iakovlev.timeshape.TimeZoneEngine
 import org.apache.http.client.fluent.Request
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.time.Instant
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.ZonedDateTime.ofInstant
 import java.time.format.DateTimeFormatter
 
 /**
@@ -24,29 +25,32 @@ import java.time.format.DateTimeFormatter
  * @see javabot.dao.weather.WeatherDao
  */
 class OpenWeatherMapHandler(
-        private val geocodeDao: GeocodeDao,
-        private val apiKey: String
+    private val geocodeDao: GeocodeDao, private val apiKey: String
 ) : WeatherHandler {
+
+    companion object {
+        private const val API_URL = "http://api.openweathermap.org/data/2.5/weather"
+        private val tzEngine: TimeZoneEngine = TimeZoneEngine.initialize()
+        val LOG: Logger = LoggerFactory.getLogger(OpenWeatherMapHandler::class.java)
+    }
+
     // allow one a second - it's actually 60/sec on OWM but who cares
     @Suppress("UnstableApiUsage")
     private val rateLimiter = RateLimiter.create(60.0)
 
     override fun getWeatherFor(place: String): Weather? {
-        val mapper = ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         return if (apiKey.isNotEmpty()) {
             if (rateLimiter.tryAcquire()) {
+                val mapper = ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 try {
                     val location = place.replace(" ", "+")
                     // will throw an exception if the lat/long is empty. We WANT this. It'll exit cleanly.
-                    val loc = geocodeDao.getLatitudeAndLongitudeFor(location) ?: throw Exception()
+                    val loc = geocodeDao.getLatitudeAndLongitudeFor(location) ?: return null
+
                     val url = "$API_URL?APPID=$apiKey&lat=${loc.latitude}&lon=${loc.longitude}"
 
-                    val weatherResponse = Request
-                            .Get(url)
-                            .execute()
-                            .returnContent().asString()
+                    val weatherResponse = Request.Get(url).execute().returnContent().asString()
                     val data = mapper.readValue<OWWeather>(weatherResponse, OWWeather::class.java)
-                    val zoneId = tzEngine.query(data.coord!!.lat!!, data.coord!!.lon!!)
 
                     val weather = Weather(
                             city = loc.address,
@@ -56,16 +60,13 @@ class OpenWeatherMapHandler(
                             tempCelsius = data.main!!.temp!! - 273.15
                     )
 
-                    if (zoneId.isPresent) {
-                        val weatherTime = ZonedDateTime.ofInstant(
-                                Instant.now(),
-                                zoneId.orElse(ZoneId.systemDefault())
-                        )
-                        weather.localTime = weatherTime.format(DateTimeFormatter.RFC_1123_DATE_TIME)
+                    val zoneId = tzEngine.query(data.coord!!.lat!!, data.coord!!.lon!!)
+                    zoneId.ifPresent {
+                        weather.localTime = ofInstant(Instant.now(), it).format(DateTimeFormatter.RFC_1123_DATE_TIME)
                     }
                     weather
                 } catch (e: Throwable) {
-                    e.printStackTrace()
+                    LOG.debug(e.message, e)
                     null
                 }
             } else {
@@ -74,10 +75,5 @@ class OpenWeatherMapHandler(
         } else {
             null
         }
-    }
-
-    companion object {
-        private const val API_URL = "http://api.openweathermap.org/data/2.5/weather"
-        private val tzEngine: TimeZoneEngine = TimeZoneEngine.initialize()
     }
 }

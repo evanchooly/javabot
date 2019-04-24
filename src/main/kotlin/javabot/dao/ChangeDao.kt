@@ -8,6 +8,7 @@ import javabot.dao.util.QueryParam
 import javabot.model.Change
 import javabot.model.criteria.ChangeCriteria
 import dev.morphia.Datastore
+import dev.morphia.query.FindOptions
 import dev.morphia.query.Query
 import java.time.LocalDateTime
 
@@ -36,18 +37,21 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
     fun findLog(message: String): Boolean {
         val criteria = ChangeCriteria(ds)
         criteria.message().equal(message)
-        return criteria.query().countAll() != 0L
+        return criteria.query().count() != 0L
     }
 
     fun count(message: String?, date: LocalDateTime?): Long {
-        return buildFindQuery(null, message, date).countAll()
+        return buildFindQuery(message, date).count()
     }
 
     fun getChanges(qp: QueryParam, message: String?, date: LocalDateTime?): List<Change> {
-        return buildFindQuery(qp, message, date).asList()
+        val findOptions = FindOptions()
+        findOptions.skip(qp.first)
+        findOptions.limit(qp.count)
+        return buildFindQuery(message, date).find(findOptions).toList()
     }
 
-    private fun buildFindQuery(qp: QueryParam?, message: String?, date: LocalDateTime?): Query<Change> {
+    private fun buildFindQuery(message: String?, date: LocalDateTime?): Query<Change> {
         val criteria = ChangeCriteria(ds)
         if (message != null) {
             criteria.message().contains(message)
@@ -56,10 +60,6 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
             criteria.changeDate(date)
         }
         criteria.changeDate().order(false)
-        qp?.let {
-            criteria.query().offset(qp.first)
-            criteria.query().limit(qp.count)
-        }
         return criteria.query()
     }
 

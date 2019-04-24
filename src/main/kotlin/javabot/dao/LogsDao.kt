@@ -1,20 +1,20 @@
 package javabot.dao
 
 import com.google.inject.Inject
+import dev.morphia.Datastore
+import dev.morphia.query.Sort
 import javabot.Seen
 import javabot.model.Channel
 import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.Logs.Type
 import javabot.model.criteria.LogsCriteria
-import dev.morphia.Datastore
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channelDao: ChannelDao) :
-        BaseDao<Logs>(ds, Logs::class.java) {
+class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channelDao: ChannelDao) : BaseDao<Logs>(ds, Logs::class.java) {
 
     companion object {
         val LOG: Logger = LoggerFactory.getLogger(LogsDao::class.java)
@@ -33,8 +33,7 @@ class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channel
         criteria.upperNick().equal(nick.toUpperCase())
         criteria.channel().equal(channel)
         criteria.updated().order(false)
-        val logs = criteria.query().get()
-        return if (logs != null) Seen(logs.channel!!, logs.message, logs.nick, logs.updated) else null
+        return criteria.query().first()?.let { Seen(it.channel!!, it.message, it.nick, it.updated) }
     }
 
     private fun dailyLog(channelName: String, date: LocalDateTime?, logged: Boolean): List<Logs> {
@@ -47,9 +46,10 @@ class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channel
             val nextMidnight = tomorrow.atStartOfDay()
             val lastMidnight = start.atStartOfDay()
             criteria.and(
-                  criteria.updated().lessThanOrEq(nextMidnight),
-                  criteria.updated().greaterThanOrEq(lastMidnight))
-            list = criteria.query().order("updated").asList()
+                    criteria.updated().lessThanOrEq(nextMidnight),
+                    criteria.updated().greaterThanOrEq(lastMidnight)
+            )
+            list = criteria.query().order(Sort.ascending("updated")).find().toList()
         }
         return list
     }

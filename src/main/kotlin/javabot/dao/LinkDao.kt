@@ -2,18 +2,18 @@ package javabot.dao
 
 import com.antwerkz.sofia.Sofia
 import com.mongodb.WriteResult
+import dev.morphia.Datastore
+import dev.morphia.query.FindOptions
+import dev.morphia.query.internal.MorphiaCursor
 import javabot.dao.util.QueryParam
 import javabot.model.Link
 import javabot.model.Persistent
 import javabot.model.criteria.LinkCriteria
-import dev.morphia.Datastore
-import dev.morphia.query.Query
 import java.time.LocalDateTime
 import java.util.regex.PatternSyntaxException
 import javax.inject.Inject
 
-class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
-        BaseDao<Link>(ds, Link::class.java) {
+class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) : BaseDao<Link>(ds, Link::class.java) {
     override fun save(entity: Persistent) {
         val link = entity as Link
         link.updated = LocalDateTime.now()
@@ -28,7 +28,7 @@ class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var c
         save(Link(channel, user, url, text, false))
     }
 
-    private fun buildFindQuery(qp: QueryParam?, filter: Link, count: Boolean): Query<Link> {
+    private fun buildFindQuery(qp: QueryParam?, filter: Link, count: Boolean): MorphiaCursor<Link> {
         val criteria = LinkCriteria(ds)
         if (filter.channel != "") {
             try {
@@ -48,51 +48,43 @@ class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var c
 
         criteria.approved().equal(filter.approved)
 
-        if (!count && qp != null && qp.hasSort()) {
-            criteria.query().order((if (qp.sortAsc) "" else "-") + qp.sort)
-            criteria.query().offset(qp.first)
-            criteria.query().limit(qp.count)
+        val options = FindOptions()
+        if (!count && qp != null) {
+            if (qp.hasSort()) {
+                criteria.query().order(qp.toSort())
+            }
+            options.skip(qp.first)
+            options.limit(qp.count)
         }
-        return criteria.query()
+        return criteria.query().find(options)
     }
 
     fun get(link: Link): Link? {
-        return buildFindQuery(null, link, false).get()
+        return buildFindQuery(null, link, false).tryNext()
     }
 
     fun approveLink(channel: String, id: String) {
-        unapprovedLinks(channel)
-                .filter { it.id.toString().endsWith(id) }
-                .firstOrNull()
-                ?.let {
-                    it.approved = true
-                    save(it)
-                } ?: throw IllegalArgumentException("No matching unapproved link matching id $id")
-
+        unapprovedLinks(channel).firstOrNull { it.id.toString().endsWith(id) }?.let {
+            it.approved = true
+            save(it)
+        } ?: throw IllegalArgumentException("No matching unapproved link matching id $id")
     }
 
     fun rejectUnapprovedLink(channel: String, id: String) {
-        unapprovedLinks(channel)
-                .filter { it.id.toString().endsWith(id) }
-                .firstOrNull()
-                ?.let {
-                    delete(it.id)
-                } ?: throw IllegalArgumentException("No matching unapproved link matching id $id")
+        unapprovedLinks(channel).firstOrNull { it.id.toString().endsWith(id) }?.let {
+            delete(it.id)
+        } ?: throw IllegalArgumentException("No matching unapproved link matching id $id")
     }
 
     fun unapprovedLinks(channel: String): List<Link> {
         return buildFindQuery(
-                QueryParam(0, 100, "created", false),
-                Link(channel = channel),
-                false)
-                .toList()
+                QueryParam(0, 100, "created", false), Link(channel = channel), false
+        ).toList()
     }
 
     fun approvedLinks(channel: String): List<Link> {
         return buildFindQuery(
-                QueryParam(0, 100, "created", false),
-                Link(approved = true, channel = channel),
-                true)
-                .toList()
+                QueryParam(0, 100, "created", false), Link(approved = true, channel = channel), true
+        ).toList()
     }
 }

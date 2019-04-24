@@ -483,7 +483,7 @@
     </dependencies>
 
     <properties>
-        <critter.version>3.0.4</critter.version>
+        <critter.version>3.0.5</critter.version>
         <dropwizard.version>0.7.1</dropwizard.version>
         <guice.version>4.0</guice.version>
         <jacoco.version>0.8.3</jacoco.version>

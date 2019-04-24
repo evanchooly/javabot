@@ -6,12 +6,13 @@ import javabot.model.JavabotUser
 import javabot.model.OperationEvent
 import javabot.model.criteria.AdminCriteria
 import dev.morphia.Datastore
+import dev.morphia.query.Sort
 import javax.inject.Inject
 
 class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) : BaseDao<Admin>(ds, Admin::class.java) {
 
     override fun findAll(): List<Admin> {
-        return ds.createQuery(Admin::class.java).order("userName").asList()
+        return ds.createQuery(Admin::class.java).order(Sort.ascending("userName")).find().toList()
     }
 
     fun isAdmin(user: JavabotUser): Boolean {
@@ -22,7 +23,7 @@ class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) : Ba
         val adminCriteria = AdminCriteria(ds)
         adminCriteria.ircName().equal(ircName)
         adminCriteria.hostName().equal(hostName)
-        return adminCriteria.query().get()
+        return adminCriteria.query().first()
     }
 
     fun getAdmin(user: JavabotUser): Admin? {
@@ -31,14 +32,14 @@ class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) : Ba
                 adminCriteria.ircName(user.nick),
                 adminCriteria.emailAddress(user.userName)
         )
-        return adminCriteria.query().get()
+        return adminCriteria.query().first()
     }
 
     fun getAdminByEmailAddress(email: String): Admin? {
         val criteria = AdminCriteria(ds)
         criteria.emailAddress(email)
 
-        return criteria.query().get()
+        return criteria.query().first()
     }
 
     fun create(ircName: String, userName: String, hostName: String): Admin {
@@ -64,6 +65,6 @@ class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) : Ba
     }
 
     fun count(): Long {
-        return getQuery().countAll()
+        return getQuery().count()
     }
 }

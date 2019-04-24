@@ -10,11 +10,12 @@ import javabot.model.javadoc.criteria.JavadocClassCriteria
 import javabot.model.javadoc.criteria.JavadocFieldCriteria
 import javabot.model.javadoc.criteria.JavadocMethodCriteria
 import dev.morphia.Datastore
+import dev.morphia.query.QueryException
 import java.util.ArrayList
 
 class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass>(ds, JavadocClass::class.java) {
 
-    fun count() = ds.getCount(JavadocClass::class.java)
+    fun count() = ds.find(JavadocClass::class.java).count()
 
     fun getClass(api: JavadocApi? = null, name: String): List<JavadocClass> {
         val strings = JavadocParser.calculateNameAndPackage(name)
@@ -25,14 +26,14 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
         if(pkgName != null) {
             criteria.upperPackageName().equal(pkgName.toUpperCase())
         }
-        return criteria.query().asList()
+        return criteria.query().find().toList()
     }
 
     private fun getClassByFqcn(fqcn: String): JavadocClass {
         val criteria = JavadocClassCriteria(ds)
         criteria.fqcn().equal(fqcn)
         try {
-            return criteria.query().get()
+            return criteria.query().first() ?: throw QueryException("Could not find class by fqcn: $fqcn")
         } catch(e: IllegalStateException) {
             throw IllegalStateException("fqcn = ${fqcn}", e)
         }
@@ -51,7 +52,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
             throw e
         }
 
-        return criteria.query().get()
+        return criteria.query().first()
     }
 
     fun getField(api: JavadocApi?, className: String, fieldName: String): List<JavadocField> {
@@ -61,7 +62,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
             val javadocClass = classes[0]
             criteria.javadocClass(javadocClass)
             criteria.upperName().equal(fieldName.toUpperCase())
-            return criteria.query().asList()
+            return criteria.query().find().toList()
         }
         return emptyList()
     }
@@ -97,7 +98,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
                   criteria.shortSignatureTypes().equal(signatureTypes),
                   criteria.longSignatureTypes().equal(signatureTypes))
         }
-        return criteria.query().asList()
+        return criteria.query().find().toList()
     }
 
     fun delete(javadocClass: JavadocClass) {
