@@ -1,0 +1,7 @@
+! version = 2.0
+
++ browse *
+- single star called
+
++ browse * *
+- double star called

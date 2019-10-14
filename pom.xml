@@ -480,6 +480,36 @@
             <scope>test</scope>
         </dependency>
         <!-- Unit testing dependencies -->
+
+        <!-- rivescript -->
+        <dependency>
+            <groupId>com.rivescript</groupId>
+            <artifactId>rivescript-core</artifactId>
+            <version>${rivescript.version}</version>
+        </dependency>
+
+
+        <!-- java 11 required dependencies thanks to JPMS -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.2.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>2.2.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.2.11</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1.1</version>
+        </dependency>
     </dependencies>
 
     <properties>
@@ -497,5 +527,6 @@
         <morphia.groupId>dev.morphia.morphia</morphia.groupId>
         <morphia.artifactId>core</morphia.artifactId>
         <morphia.version>1.5.1</morphia.version>
+        <rivescript.version>0.11.0</rivescript.version>
     </properties>
 </project>
