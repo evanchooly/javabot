@@ -490,7 +490,7 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>4.2.1</version>
+            <version>${okhttp.version}</version>
         </dependency>
 
         <!-- java 11 required dependencies thanks to JPMS -->
@@ -532,5 +532,6 @@
         <morphia.artifactId>core</morphia.artifactId>
         <morphia.version>1.5.1</morphia.version>
         <rivescript.version>0.11.0</rivescript.version>
+        <okhttp.version>4.2.1</okhttp.version>
     </properties>
 </project>

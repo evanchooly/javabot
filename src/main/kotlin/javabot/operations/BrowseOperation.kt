@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.inject.Inject
-import com.rivescript.Config
-import com.rivescript.RiveScript
 import javabot.Javabot
 import javabot.JavabotConfig
 import javabot.Message
@@ -14,9 +12,7 @@ import javabot.operations.browse.BrowseResult
 import javabot.service.HttpService
 import javabot.service.RiveScriptService
 import javabot.service.UrlCacheService
-import net.swisstech.bitly.BitlyClient
 import okhttp3.OkHttpClient
-import javax.annotation.Nullable
 
 class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                                           private val httpService: HttpService,
@@ -28,24 +24,12 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     }
 
     private val client = OkHttpClient()
-    @field:[Nullable Inject(optional = true)]
-    var bitly: BitlyClient? = null
-        get() {
-            if (field == null) {
-                field = if (config.bitlyToken() != "") BitlyClient(config.bitlyToken()) else null
-            }
-            return field
-        }
 
     init {
-        RiveScript::class.java.getResourceAsStream("/rive/browse.rive").use {
-            rivescript.loadInputStream(it)
-        }
+        rivescript.load("/rive/browse.rive")
 
         rivescript.setSubroutine("browseSingle") { rs, args -> callService(args[0]) }
         rivescript.setSubroutine("browseDouble") { rs, args -> callService(args[0], args[1]) }
-        // must be the last operation in the constructor after scripts are loaded
-        rivescript.sortReplies()
     }
 
     private fun correctReference(cardinality: Int, text: String): String {
