@@ -31,23 +31,18 @@ class HttpService {
             params: Map<String, String> = emptyMap(),
             headers: Map<String, String> = emptyMap()
     ): String {
-        return try {
-            val httpUrl = url.toHttpUrl()
-            val builder = httpUrl.newBuilder()
-            params.forEach { builder.addQueryParameter(it.key, it.value) }
-            val request = Request.Builder().url(builder.build())
-                    .headers(headers.toHeaders())
-                    .build()
-            client.newCall(request).execute().use { response ->
-                if (response.isSuccessful) {
-                    (response.body ?: throw HttpServiceException()).string()
-                } else {
-                    throw HttpServiceException("${response.code} ${response.message}")
-                }
+        val httpUrl = url.toHttpUrl()
+        val builder = httpUrl.newBuilder()
+        params.forEach { builder.addQueryParameter(it.key, it.value) }
+        val request = Request.Builder().url(builder.build())
+                .headers(headers.toHeaders())
+                .build()
+        client.newCall(request).execute().use { response ->
+            if (response.isSuccessful) {
+                return (response.body ?: throw HttpServiceException()).string()
+            } else {
+                throw HttpServiceException("${response.code} ${response.message}")
             }
-        } catch (e: HttpServiceException) {
-            throw e
         }
     }
-
 }
