@@ -4,4 +4,4 @@
 - <call>browseSingle <star1></call>
 
 + browse * *
-- <call>browseDouble <star2> <star1></call>
+- <call>browseDouble <star1> <star2></call>

@@ -29,7 +29,7 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
         rivescript.load("/rive/browse.rive")
 
         rivescript.setSubroutine("browseSingle") { rs, args -> callService(args[0]) }
-        rivescript.setSubroutine("browseDouble") { rs, args -> callService(args[0], args[1]) }
+        rivescript.setSubroutine("browseDouble") { rs, args -> callService(args[1], args[0]) }
     }
 
     private fun correctReference(cardinality: Int, text: String): String {
@@ -53,20 +53,31 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
             )
             val data = ObjectMapper().configure(JsonParser.Feature.ALLOW_COMMENTS, true)
                     .readValue(sourceData, typeReference) as Array<BrowseResult>
-            data
-                    .map { urlCacheService.shorten("https://java-browser.yawk.at${it.uri}")+" [${it.binding}]" }
-                    .joinToString(
-                            separator = ", ",
-                            prefix = correctReference(data.size, "Reference")
-                                    + " matching '$clazz' can be found at: ")
+            if (data.size > 0) {
+                data
+                        .map { urlCacheService.shorten("https://java-browser.yawk.at${it.uri}") + " [${it.binding}]" }
+                        .joinToString(
+                                separator = ", ",
+                                prefix = correctReference(data.size, "Reference")
+                                        + " matching '$clazz' can be found at: ")
+            } else {
+                "No source matching `$clazz` " +
+                        if (module != null) {
+                            "and module `$module` "
+                        } else {
+                            ""
+                        }
+            } +
+                    "found."
         } catch (e: Throwable) {
             e.printStackTrace()
 
-            return "ERR: not found"
+            "ERR: not found"
         }
     }
 
     override fun handleMessage(event: Message): List<Message> {
+        val message = event.value.toLowerCase()
         return listOfNotNull(rivescript.reply(event.user.nick, event.value))
                 .filter { !it.startsWith("ERR:") }
                 .map {
