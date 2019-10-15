@@ -2,20 +2,28 @@ package javabot.service
 
 import com.google.inject.Singleton
 import okhttp3.Headers.Companion.toHeaders
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.TimeUnit
-import okhttp3.HttpUrl.Companion.toHttpUrl
 
-class HttpServiceException(message:String="No message") : Exception(message)
+class HttpServiceException(message: String = "No message") : Exception(message)
 
 @Singleton
 class HttpService {
     private val client = OkHttpClient()
             .newBuilder()
-            .callTimeout(60, TimeUnit.SECONDS)
-            .readTimeout(60, TimeUnit.SECONDS)
-            .connectTimeout(60, TimeUnit.SECONDS)
+            .callTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(5, TimeUnit.SECONDS)
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .addInterceptor { chain ->
+                val request = chain.request()
+                val requestWithUserAgent = request.newBuilder()
+                        .removeHeader("User-Agent")
+                        .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36")
+                        .build()
+                chain.proceed(requestWithUserAgent)
+            }
             .build()
 
     fun get(

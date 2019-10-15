@@ -1,17 +1,18 @@
 package javabot
 
 import com.google.inject.Inject
-import net.swisstech.bitly.BitlyClient
-import org.testng.Assert
+import javabot.service.UrlCacheService
 import org.testng.annotations.Test
+import kotlin.test.assertNotNull
 
 class ShortenerTest : BaseTest() {
-    @Inject(optional = true)
-    var client: BitlyClient? = null
+    @Inject
+    val urlCache: UrlCacheService? = null
 
-    @Test fun shorten() {
-        if (client != null) {
-            Assert.assertNotNull(client!!.shorten().setLongUrl("http://www.cnn.com").call().data.url)
-        }
+    @Test
+    fun shorten() {
+        val service = urlCache
+        assertNotNull(service)
+        assertNotNull(service.shorten("http://www.cnn.com/"))
     }
 }
