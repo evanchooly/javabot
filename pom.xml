@@ -487,7 +487,11 @@
             <artifactId>rivescript-core</artifactId>
             <version>${rivescript.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.2.1</version>
+        </dependency>
 
         <!-- java 11 required dependencies thanks to JPMS -->
         <dependency>

@@ -1,0 +1,10 @@
+// 20191014172709
+// https://java-browser.yawk.at/api/javabotSearch/v1?term=Files&artifact=guava
+
+[
+  {
+    "artifactId": "com.google.guava/guava/27.1-jre",
+    "binding": "com.google.common.io.Files",
+    "uri": "/com.google.guava/guava/27.1-jre/com/google/common/io/Files.java#com.google.common.io.Files"
+  }
+]
