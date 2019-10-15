@@ -24,7 +24,7 @@ class HttpService {
             headers: Map<String, String> = emptyMap()
     ): String {
         return try {
-            val httpUrl = url.toHttpUrl()//HttpUrl.parse(url)
+            val httpUrl = url.toHttpUrl()
             val builder = httpUrl.newBuilder()
             params.forEach { builder.addQueryParameter(it.key, it.value) }
             val request = Request.Builder().url(builder.build())
