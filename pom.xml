@@ -313,12 +313,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>fluent-hc</artifactId>
-            <version>4.5.7</version>
-        </dependency>
-
-        <dependency>
             <groupId>net.iakovlev</groupId>
             <artifactId>timeshape</artifactId>
             <version>2018d.6</version>
