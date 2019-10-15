@@ -3,7 +3,7 @@ package javabot.operations
 import com.antwerkz.sofia.Sofia
 import com.google.inject.Inject
 import javabot.BaseTest
-import javabot.operations.locator.JCPJSRLocator
+import javabot.service.JCPJSRLocator
 import org.testng.Assert
 import org.testng.Assert.assertNotNull
 import org.testng.annotations.DataProvider

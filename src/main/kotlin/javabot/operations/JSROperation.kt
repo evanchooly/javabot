@@ -4,7 +4,7 @@ import com.antwerkz.sofia.Sofia
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
-import javabot.operations.locator.JCPJSRLocator
+import javabot.service.JCPJSRLocator
 import javax.inject.Inject
 
 class JSROperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var locator: JCPJSRLocator) : BotOperation(bot, adminDao) {
