@@ -28,8 +28,8 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     init {
         rivescript.load("/rive/browse.rive")
 
-        rivescript.setSubroutine("browseSingle") { rs, args -> callService(args[0]) }
-        rivescript.setSubroutine("browseDouble") { rs, args -> callService(args[1], args[0]) }
+        rivescript.setSubroutine("browseSingle") { _, args -> callService(args[0]) }
+        rivescript.setSubroutine("browseDouble") { _, args -> callService(args[1], args[0]) }
     }
 
     private fun correctReference(cardinality: Int, text: String): String {
@@ -77,7 +77,6 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     }
 
     override fun handleMessage(event: Message): List<Message> {
-        val message = event.value.toLowerCase()
         return listOfNotNull(rivescript.reply(event.user.nick, event.value))
                 .filter { !it.startsWith("ERR:") }
                 .map {
