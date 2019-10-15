@@ -21,6 +21,7 @@ class URLTitleOperationTest : BaseTest() {
     fun testSimpleUrl(url: String, content: String?) {
         val results = operation.handleChannelMessage(Message(TEST_CHANNEL, TEST_USER, url))
         if (content != null) {
+            assertTrue(results.isNotEmpty())
             Assert.assertEquals(results[0].value, content)
         } else {
             Assert.assertTrue(results.isEmpty(), "Results for '$url' should be empty: $results")
@@ -35,6 +36,8 @@ class URLTitleOperationTest : BaseTest() {
     @DataProvider(name = "urls")
     fun getUrls(): Array<Array<*>> {
         return arrayOf(
+                // this would be nice to fix, but we need to figure out how bloomberg is detecting the bot
+                arrayOf("https://www.bloomberg.com/graphics/2019-android-global-smartphone-growth/", "botuser's title: \"Bloomberg - Are you a robot?\""),
                 arrayOf("http://google.com/", null),
                 arrayOf("http://google.com", null),
                 arrayOf("http://localhost", null),

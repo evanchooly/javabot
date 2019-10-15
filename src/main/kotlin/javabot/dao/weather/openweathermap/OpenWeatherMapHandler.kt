@@ -7,8 +7,8 @@ import javabot.dao.WeatherHandler
 import javabot.dao.geocode.GeocodeDao
 import javabot.dao.weather.Weather
 import javabot.dao.weather.openweathermap.model.OWWeather
+import javabot.service.HttpService
 import net.iakovlev.timeshape.TimeZoneEngine
-import org.apache.http.client.fluent.Request
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.Instant
@@ -25,7 +25,7 @@ import java.time.format.DateTimeFormatter
  * @see javabot.dao.weather.WeatherDao
  */
 class OpenWeatherMapHandler(
-    private val geocodeDao: GeocodeDao, private val apiKey: String
+        private val geocodeDao: GeocodeDao, private val apiKey: String, val httpService: HttpService
 ) : WeatherHandler {
 
     companion object {
@@ -49,7 +49,7 @@ class OpenWeatherMapHandler(
 
                     val url = "$API_URL?APPID=$apiKey&lat=${loc.latitude}&lon=${loc.longitude}"
 
-                    val weatherResponse = Request.Get(url).execute().returnContent().asString()
+                    val weatherResponse = httpService.get(url)
                     val data = mapper.readValue<OWWeather>(weatherResponse, OWWeather::class.java)
 
                     val weather = Weather(
