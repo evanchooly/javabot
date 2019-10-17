@@ -480,6 +480,29 @@
             <scope>test</scope>
         </dependency>
         <!-- Unit testing dependencies -->
+
+        <!-- JPMS compatibility for Java 9 and later -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <!-- JPMS compatibility for Java 9 and later -->
     </dependencies>
 
     <properties>
@@ -497,5 +520,7 @@
         <morphia.groupId>dev.morphia.morphia</morphia.groupId>
         <morphia.artifactId>core</morphia.artifactId>
         <morphia.version>1.5.1</morphia.version>
+        <jaxb.version>2.2.11</jaxb.version>
+        <activation.version>1.1.1</activation.version>
     </properties>
 </project>
