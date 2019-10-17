@@ -12,6 +12,7 @@ import org.pircbotx.UserHostmask
 import org.pircbotx.hooks.events.MessageEvent
 import org.pircbotx.hooks.events.PrivateMessageEvent
 import org.testng.Assert
+import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 import java.util.concurrent.TimeUnit.SECONDS
 
@@ -46,6 +47,31 @@ class IrcAdapterTest : BaseTest() {
                 "~impact", ImmutableMap.of()))
         Assert.assertEquals(messages.get(duration)[0], "ouch")
     }
+
+    @Suppress("UNCHECKED_CAST")
+    @DataProvider
+    fun unicodeProvider(): Array<Array<Any>> =
+            arrayOf(arrayOf("\u00c3foo", "Afoo"),
+                    arrayOf("\u00e3foo", "afoo"),
+                    arrayOf("\u00f1foo", "nfoo"),
+                    arrayOf("\u00f5foo", "ofoo")) as Array<Array<Any>>
+
+    /**
+     * This is related to issue 259: unicode chars like ã, ñ, õ as ~a, ~n, ~o
+     */
+    @Test(dataProvider = "unicodeProvider")
+    fun factoidLookupWithUnicode(input: String, conversion: String) {
+        fun testWithValue(key: String) {
+            factoidDao.delete(TEST_USER.nick, conversion, LogsDaoTest.CHANNEL_NAME)
+            factoidDao.addFactoid(TEST_USER.nick, conversion, "<reply>something", LogsDaoTest.CHANNEL_NAME)
+            ircAdapter.onMessage(MessageEvent(ircBot.get(), testIrcChannel, testIrcChannel.name, testIrcHostmask, testIrcUser,
+                    key, ImmutableMap.of()))
+            Assert.assertEquals(messages.get(duration)[0], "something")
+        }
+        testWithValue("~$conversion")
+        testWithValue(input)
+    }
+
 
     @Test
     fun tell() {

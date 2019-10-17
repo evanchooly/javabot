@@ -11,16 +11,31 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
                    val triggered: Boolean = true) {
     companion object {
         private val LOG = LoggerFactory.getLogger(Message::class.java)
+        /**
+         * This is related to issue 259: unicode chars like ã, ñ, õ as ~a, ~n, ~o
+         */
+        private val initialCharConversions = mapOf(
+                "\u00e3" to "a",
+                "\u00c3" to "A",
+                "\u00f1" to "n",
+                "\u00f5" to "o"
+        )
 
         fun extractContentFromMessage(bot: Javabot, channel: Channel?, user: JavabotUser,
                                       startString: String, botNick: String, message: String): Message {
             try {
                 var triggered = false
                 var content = message
+                // need to adjust for european keyboard typos
+                initialCharConversions.forEach {
+                    if (content.startsWith(it.key)) {
+                        content = startString + it.value + content.substring(1)
+                    }
+                }
                 for (start in arrayOf(startString, botNick)) {
-                    if (message.startsWith(start)) {
+                    if (content.startsWith(start)) {
                         triggered = true
-                        content = if (triggered) message.substring(start.length).trim() else message.trim()
+                        content = if (triggered) content.substring(start.length).trim() else content.trim()
                     }
                 }
 
@@ -38,7 +53,7 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
                 }
 
                 return Message(channel, user, content, triggered = triggered)
-            } catch(e: Exception) {
+            } catch (e: Exception) {
                 LOG.error("Failed to parse: ${message} in channel ${channel}", e)
                 throw e
             }
