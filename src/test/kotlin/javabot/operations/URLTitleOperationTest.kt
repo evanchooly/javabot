@@ -92,4 +92,13 @@ class URLTitleOperationTest : BaseTest() {
         // should contain AT LEAST refheap.com or else other tests don't pass
         assertTrue(URLFromMessageParser.blacklistHosts.contains("refheap.com"))
     }
+
+    @Test
+    fun testLongContentRestriction() {
+        val url = "https://m.facebook.com/story.php?story_fbid=2097200947043549&id=516762978420695"
+        val results = operation.handleChannelMessage(Message(TEST_CHANNEL, TEST_USER, url))
+        assertEquals(results.size, 1)
+        println(results[0].value.length)
+        assertTrue(results[0].value.length<301)
+    }
 }
