@@ -6,17 +6,18 @@ import com.rivescript.RiveScript
 
 @Singleton
 class RiveScriptService : RiveScript(Config.utf8()) {
-    var updated=true
+    var updated = true
     fun load(resource: String) {
         this::class.java.getResourceAsStream(resource).use {
             loadInputStream(it)
         }
-        updated=true
+        updated = true
     }
 
     override fun reply(username: String?, message: String?): String {
-        if(updated) {
+        if (updated) {
             sortReplies()
+            updated = false
         }
         return super.reply(username, message)
     }

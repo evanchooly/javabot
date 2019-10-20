@@ -7,7 +7,6 @@ import com.google.inject.Inject
 import com.google.inject.Singleton
 import javabot.JavabotConfig
 import net.swisstech.bitly.BitlyClient
-import javax.annotation.Nullable
 
 @Singleton
 class UrlCacheService @Inject constructor(private val config: JavabotConfig) {
@@ -15,7 +14,7 @@ class UrlCacheService @Inject constructor(private val config: JavabotConfig) {
         return urlCache[url]
     }
 
-    @field:[Nullable Inject(optional = true)]
+    @field:[Inject(optional = true)]
     var bitly: BitlyClient? = null
         get() {
             if (field == null) {

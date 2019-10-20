@@ -12,7 +12,6 @@ import javabot.operations.browse.BrowseResult
 import javabot.service.HttpService
 import javabot.service.RiveScriptService
 import javabot.service.UrlCacheService
-import okhttp3.OkHttpClient
 
 class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                                           private val httpService: HttpService,
@@ -22,8 +21,6 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     companion object {
         val typeReference = object : TypeReference<Array<BrowseResult>>() {}
     }
-
-    private val client = OkHttpClient()
 
     init {
         rivescript.load("/rive/browse.rive")
@@ -70,8 +67,6 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
             } +
                     "found."
         } catch (e: Throwable) {
-            e.printStackTrace()
-
             "ERR: not found"
         }
     }
