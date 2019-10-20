@@ -1,0 +1,20 @@
+// 20191014172550
+// https://java-browser.yawk.at/api/javabotSearch/v1?term=Files
+
+[
+  {
+    "artifactId": "org.testng/testng/6.14.3",
+    "binding": "org.testng.reporters.Files",
+    "uri": "/org.testng/testng/6.14.3/org/testng/reporters/Files.java#org.testng.reporters.Files"
+  },
+  {
+    "artifactId": "java/13",
+    "binding": "java.nio.file.Files",
+    "uri": "/java/13/java.base/java/nio/file/Files.java#java.nio.file.Files"
+  },
+  {
+    "artifactId": "com.google.guava/guava/27.1-jre",
+    "binding": "com.google.common.io.Files",
+    "uri": "/com.google.guava/guava/27.1-jre/com/google/common/io/Files.java#com.google.common.io.Files"
+  }
+]

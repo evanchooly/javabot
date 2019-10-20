@@ -313,12 +313,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>fluent-hc</artifactId>
-            <version>4.5.7</version>
-        </dependency>
-
-        <dependency>
             <groupId>net.iakovlev</groupId>
             <artifactId>timeshape</artifactId>
             <version>2018d.6</version>
@@ -475,11 +469,45 @@
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
+            <artifactId>kotlin-test-testng</artifactId>
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- Unit testing dependencies -->
+
+        <!-- rivescript -->
+        <dependency>
+            <groupId>com.rivescript</groupId>
+            <artifactId>rivescript-core</artifactId>
+            <version>${rivescript.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okhttp.version}</version>
+        </dependency>
+
+        <!-- java 11 required dependencies thanks to JPMS -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>${activation.version}</version>
+        </dependency>
     </dependencies>
 
     <properties>
@@ -487,7 +515,7 @@
         <dropwizard.version>0.7.1</dropwizard.version>
         <guice.version>4.0</guice.version>
         <jacoco.version>0.8.3</jacoco.version>
-        <kotlin.version>1.3.30</kotlin.version>
+        <kotlin.version>1.3.50</kotlin.version>
         <logback.version>1.2.3</logback.version>
         <mongo.driver.version>3.9.0</mongo.driver.version>
         <slf4j.version>1.7.25</slf4j.version>
@@ -497,5 +525,9 @@
         <morphia.groupId>dev.morphia.morphia</morphia.groupId>
         <morphia.artifactId>core</morphia.artifactId>
         <morphia.version>1.5.1</morphia.version>
+        <rivescript.version>0.11.0</rivescript.version>
+        <okhttp.version>4.2.1</okhttp.version>
+        <jaxb.version>2.2.11</jaxb.version>
+        <activation.version>1.1.1</activation.version>
     </properties>
 </project>

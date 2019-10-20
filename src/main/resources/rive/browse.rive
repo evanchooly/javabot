@@ -1,0 +1,7 @@
+! version = 2.0
+
++ browse *
+- <call>browseSingle <star1></call>
+
++ browse * *
+- <call>browseDouble <star1> <star2></call>

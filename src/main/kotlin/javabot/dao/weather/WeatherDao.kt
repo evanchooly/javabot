@@ -6,9 +6,10 @@ import com.google.inject.Inject
 import javabot.JavabotConfig
 import javabot.dao.geocode.GeocodeDao
 import javabot.dao.weather.openweathermap.OpenWeatherMapHandler
-import java.util.Arrays
+import javabot.service.HttpService
+import java.util.*
 
-class WeatherDao @Inject constructor(javabotConfig: JavabotConfig, private val geocodeDao: GeocodeDao) {
+class WeatherDao @Inject constructor(javabotConfig: JavabotConfig, private val geocodeDao: GeocodeDao, private val httpService: HttpService) {
     companion object {
         val translations: Map<String, String> = WeatherDao::class.java
                 .getResourceAsStream("/weatherTranslations.json")
@@ -25,7 +26,7 @@ class WeatherDao @Inject constructor(javabotConfig: JavabotConfig, private val g
     //add more handlers to the list if there are other weather sources you want
     //the operation to support
     private val handlers = Arrays.asList(
-            OpenWeatherMapHandler(geocodeDao, javabotConfig.openweathermapToken())
+            OpenWeatherMapHandler(geocodeDao, javabotConfig.openweathermapToken(), httpService)
     )
 
     private fun placeTranslation(location: String): String {
