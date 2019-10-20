@@ -6,32 +6,29 @@ import javabot.model.JavabotUser
 import javabot.operations.TellSubject
 import org.slf4j.LoggerFactory
 import java.lang.String.format
+import java.text.Normalizer
 
 open class Message(val channel: Channel? = null, val user: JavabotUser, val value: String, val target: JavabotUser? = null,
                    val triggered: Boolean = true) {
     companion object {
         private val LOG = LoggerFactory.getLogger(Message::class.java)
-        /**
-         * This is related to issue 259: unicode chars like ã, ñ, õ as ~a, ~n, ~o
-         */
-        private val initialCharConversions = mapOf(
-                "\u00e3" to "a",
-                "\u00c3" to "A",
-                "\u00f1" to "n",
-                "\u00f5" to "o"
-        )
+
+        private fun normalized(input: String): String {
+            val content = Normalizer.normalize(input, Normalizer.Form.NFD)
+            return if (content.length > 1 && content[1] == '\u0303') {
+                "~" + content.substring(0, 1).replace(Regex("\\p{M}"), "") + content.substring(2)
+            } else {
+                input
+            }
+        }
 
         fun extractContentFromMessage(bot: Javabot, channel: Channel?, user: JavabotUser,
                                       startString: String, botNick: String, message: String): Message {
             try {
                 var triggered = false
-                var content = message
-                // need to adjust for european keyboard typos
-                initialCharConversions.forEach {
-                    if (content.startsWith(it.key)) {
-                        content = startString + it.value + content.substring(1)
-                    }
-                }
+
+                var content = normalized(message)
+
                 for (start in arrayOf(startString, botNick)) {
                     if (content.startsWith(start)) {
                         triggered = true
