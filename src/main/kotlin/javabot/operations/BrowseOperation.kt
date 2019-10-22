@@ -63,8 +63,7 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                             "and module `$module` "
                         } else {
                             ""
-                        } +
-                        "found."
+                        }
             }
         } catch (e: Throwable) {
             "ERR: not found"
