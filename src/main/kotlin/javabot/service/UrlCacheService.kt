@@ -9,8 +9,8 @@ import javabot.JavabotConfig
 import net.swisstech.bitly.BitlyClient
 
 @Singleton
-class UrlCacheService @Inject constructor(private val config: JavabotConfig) {
-    fun shorten(url: String): String {
+open class UrlCacheService @Inject constructor(private val config: JavabotConfig) {
+    open fun shorten(url: String): String {
         return urlCache[url]
     }
 

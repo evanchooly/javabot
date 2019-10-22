@@ -14,10 +14,10 @@ import javabot.service.RiveScriptService
 import javabot.service.UrlCacheService
 
 class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
-                                          private val httpService: HttpService,
-                                          var config: JavabotConfig,
-                                          private val urlCacheService: UrlCacheService,
-                                          private val rivescript: RiveScriptService) : BotOperation(bot, adminDao) {
+                                          val httpService: HttpService,
+                                          val config: JavabotConfig,
+                                          val urlCacheService: UrlCacheService,
+                                          val rivescript: RiveScriptService) : BotOperation(bot, adminDao) {
     companion object {
         val typeReference = object : TypeReference<Array<BrowseResult>>() {}
     }
@@ -63,7 +63,8 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                             "and module `$module` "
                         } else {
                             ""
-                        }
+                        } +
+                        "found."
             }
         } catch (e: Throwable) {
             "ERR: not found"
