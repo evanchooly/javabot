@@ -121,11 +121,7 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                 doc.title()
             }
         } else {
-            val title = doc.title()
-            if (title.equals("youtube", true)) {
-                println("youtube!!!!!!")
-            }
-            title
+            doc.title()
         }
     }
 
