@@ -1,5 +1,6 @@
 package javabot.operations
 
+import com.antwerkz.sofia.Sofia
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -71,10 +72,14 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
         )
         return try {
             if ("browse".equals(command, true) && part1 != null) {
-                if (part2 != null) {
-                    listOf(Message(event, callService(part2, part1)))
+                if ("-help".equals(part1, true)) {
+                    listOf(Message(event, Sofia.browseHelp()))
                 } else {
-                    listOf(Message(event, callService(part1)))
+                    if (part2 != null) {
+                        listOf(Message(event, callService(part2, part1)))
+                    } else {
+                        listOf(Message(event, callService(part1)))
+                    }
                 }
             } else {
                 emptyList()

@@ -1,5 +1,6 @@
 package javabot.operations
 
+import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
 import org.testng.annotations.Test
 import javax.inject.Inject
@@ -71,4 +72,11 @@ class BrowseOperationTest @Inject constructor(val browseOperation: BrowseOperati
         assertEquals("No source matching `FilesMcGee` and module `guavaMcGee` found.", response[0].value)
     }
 
+
+    @Test
+    fun testBrowseHelp() {
+        val response = browseOperation.handleMessage(message("~browse -help"))
+        assertEquals(1, response.size)
+        assertEquals(Sofia.browseHelp(), response[0].value)
+    }
 }
