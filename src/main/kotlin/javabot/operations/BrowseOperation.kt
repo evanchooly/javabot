@@ -10,23 +10,14 @@ import javabot.Message
 import javabot.dao.AdminDao
 import javabot.operations.browse.BrowseResult
 import javabot.service.HttpService
-import javabot.service.RiveScriptService
 import javabot.service.UrlCacheService
 
 class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                                           val httpService: HttpService,
                                           val config: JavabotConfig,
-                                          val urlCacheService: UrlCacheService,
-                                          val rivescript: RiveScriptService) : BotOperation(bot, adminDao) {
+                                          val urlCacheService: UrlCacheService) : BotOperation(bot, adminDao) {
     companion object {
         val typeReference = object : TypeReference<Array<BrowseResult>>() {}
-    }
-
-    init {
-        rivescript.load("/rive/browse.rive")
-
-        rivescript.setSubroutine("browseSingle") { _, args -> callService(args[0]) }
-        rivescript.setSubroutine("browseDouble") { _, args -> callService(args[1], args[0]) }
     }
 
     private fun correctReference(cardinality: Int, text: String): String {
@@ -63,7 +54,8 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                             "and module `$module` "
                         } else {
                             ""
-                        }
+                        } +
+                        "found."
             }
         } catch (e: Throwable) {
             "ERR: not found"
@@ -71,10 +63,21 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     }
 
     override fun handleMessage(event: Message): List<Message> {
-        return listOfNotNull(rivescript.reply(event.user.nick, event.value))
-                .filter { !it.startsWith("ERR:") }
-                .map {
-                    Message(event, it)
-                }
+        val tokens = event.value.split("\\s".toRegex())
+        val (command, part1, part2) = listOf(
+                if (tokens.isNotEmpty()) tokens[0] else null,
+                if (tokens.size > 1) tokens[1] else null,
+                if (tokens.size > 2) tokens[2] else null
+        )
+        return if (command.equals("browse", true) && part1 != null) {
+            println("command: $command, part1=$part1, part2=$part2")
+            if (part2 != null) {
+                listOf(Message(event, callService(part2, part1)))
+            } else {
+                listOf(Message(event, callService(part1)))
+            }
+        } else {
+            emptyList()
+        }
     }
 }
