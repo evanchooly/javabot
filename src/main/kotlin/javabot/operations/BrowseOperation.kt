@@ -41,7 +41,7 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
             )
             val data = ObjectMapper().configure(JsonParser.Feature.ALLOW_COMMENTS, true)
                     .readValue(sourceData, typeReference) as Array<BrowseResult>
-            if (data.size > 0) {
+            if (data.isNotEmpty()) {
                 data
                         .map { urlCacheService.shorten("https://java-browser.yawk.at${it.uri}") + " [${it.binding}]" }
                         .joinToString(
@@ -58,7 +58,7 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                         "found."
             }
         } catch (e: Throwable) {
-            "ERR: not found"
+            throw e
         }
     }
 
@@ -69,14 +69,18 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                 if (tokens.size > 1) tokens[1] else null,
                 if (tokens.size > 2) tokens[2] else null
         )
-        return if (command.equals("browse", true) && part1 != null) {
-            println("command: $command, part1=$part1, part2=$part2")
-            if (part2 != null) {
-                listOf(Message(event, callService(part2, part1)))
+        return try {
+            if (command.equals("browse", true) && part1 != null) {
+
+                if (part2 != null) {
+                    listOf(Message(event, callService(part2, part1)))
+                } else {
+                    listOf(Message(event, callService(part1)))
+                }
             } else {
-                listOf(Message(event, callService(part1)))
+                emptyList()
             }
-        } else {
+        } catch (_: Throwable) {
             emptyList()
         }
     }
