@@ -70,8 +70,7 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                 if (tokens.size > 2) tokens[2] else null
         )
         return try {
-            if (command.equals("browse", true) && part1 != null) {
-
+            if ("browse".equals(command, true) && part1 != null) {
                 if (part2 != null) {
                     listOf(Message(event, callService(part2, part1)))
                 } else {
