@@ -90,13 +90,13 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
         val v = URLEncodedUtils.parse(URI(url), "UTF-8").firstOrNull { it.name == "v" } ?: return ""
 
         val data = httpService.get("http://youtube.com/get_video_info?video_id=${v.value}")
+        // parse returns a List of field/value pairs
         val playerResponseField = URLEncodedUtils.parse(data, StandardCharsets.UTF_8)
                 .firstOrNull { it.name == "player_response" } ?: return ""
 
         val map: Map<String, *> = ObjectMapper().readValue(playerResponseField.value, Map::class.java) as Map<String, *>
-        val videoDetails: Map<String, String?> = (map.entries
-                .firstOrNull { it.key == "videoDetails" } ?: return ""
-                ).value as Map<String, String?>
+        val videoDetails: Map<String, String?> = (map["videoDetails"] ?: return "") as Map<String, String>
+
         return videoDetails["title"] ?: ""
     }
 
