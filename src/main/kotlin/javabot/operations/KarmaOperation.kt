@@ -59,15 +59,25 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
             if (operationPointer != message.length - 2 && message[operationPointer + 2] != ' ') {
                 return responses
             }
-            val nick: String
-            try {
-                nick = message.substring(0, operationPointer).trim().toLowerCase()
-            } catch (e: StringIndexOutOfBoundsException) {
-                log.info("message = " + message, e)
-                throw e
-            }
+            val nick: String =
+                    try {
+                        val temp = message.substring(0, operationPointer).trim().toLowerCase()
+                        // got an empty nick; spaces only?
+                        if (temp.isEmpty()) {
+                            // need to check for special case where bot was *addressed* for karma
+                            if (event.addressed == true) {
+                                bot.nick
+                            } else {
+                                ""
+                            }
+                        } else {
+                            temp
+                        }
+                    } catch (e: StringIndexOutOfBoundsException) {
+                        log.info("message = " + message, e)
+                        throw e
+                    }
 
-            // got an empty nick; spaces only?
             if (!nick.isEmpty()) {
                 if (channel == null || !channel.name.startsWith("#")) {
                     responses.add(Message(event, Sofia.privmsgChange()))
@@ -98,7 +108,7 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
         return responses
     }
 
-    fun readKarma(responses: MutableList<Message>, event: Message) {
+    private fun readKarma(responses: MutableList<Message>, event: Message) {
         val message = event.value
         val sender = event.user
         if (message.startsWith("karma ")) {

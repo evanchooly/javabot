@@ -9,12 +9,12 @@ import java.lang.String.format
 import java.text.Normalizer
 
 open class Message(val channel: Channel? = null, val user: JavabotUser, val value: String, val target: JavabotUser? = null,
-                   val triggered: Boolean = true) {
+                   val triggered: Boolean = true, val addressed: Boolean = false) {
     companion object {
         private val LOG = LoggerFactory.getLogger(Message::class.java)
 
         private fun normalized(input: String): String {
-            val content = Normalizer.normalize(input, Normalizer.Form.NFD)
+            val content = Normalizer.normalize(input.trim(), Normalizer.Form.NFD)
             return if (content.length > 1 && content[1] == '\u0303') {
                 "~" + content.substring(0, 1).replace(Regex("\\p{M}"), "") + content.substring(2)
             } else {
@@ -26,13 +26,17 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
                                       startString: String, botNick: String, message: String): Message {
             try {
                 var triggered = false
+                var addressed = false
 
                 var content = normalized(message)
 
                 for (start in arrayOf(startString, botNick)) {
                     if (content.startsWith(start)) {
                         triggered = true
-                        content = if (triggered) content.substring(start.length).trim() else content.trim()
+                        if (start.equals(botNick, true)) {
+                            addressed = true
+                        }
+                        content = content.substring(start.length).trim()
                     }
                 }
 
@@ -49,7 +53,7 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
                     }
                 }
 
-                return Message(channel, user, content, triggered = triggered)
+                return Message(channel, user, content, triggered = triggered, addressed = addressed)
             } catch (e: Exception) {
                 LOG.error("Failed to parse: ${message} in channel ${channel}", e)
                 throw e
@@ -57,7 +61,10 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
         }
 
         private fun isTellCommand(startString: String, value: String): Boolean {
-            return value.startsWith("tell ") || "" != startString && value.startsWith(startString)
+            return value.startsWith("tell ") || "" != startString &&
+                    (value.startsWith(startString) &&
+                            (value.substring(startString.length).startsWith(" ") ||
+                                    value.substring(startString.length).startsWith(":")))
         }
 
         private fun parseLonghand(bot: Javabot, content: String): TellSubject? {

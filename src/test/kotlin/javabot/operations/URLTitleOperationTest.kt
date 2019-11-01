@@ -38,6 +38,7 @@ class URLTitleOperationTest : BaseTest() {
                 // this would be nice to fix, but we need to figure out how bloomberg is detecting the bot
                 arrayOf("https://www.bloomberg.com/graphics/2019-android-global-smartphone-growth/", "botuser's title: \"Bloomberg - Are you a robot?\""),
                 arrayOf("https://www.youtube.com/watch?v=LD4kSBpxatM", "botuser's title: \"Jimi Hendrix - Hey Joe (live)\""),
+                arrayOf("https://www.youtube.com/watch?v=LDtM", "botuser's title: \"Jimi Hendrix - Hey Joe (live)\""),
                 arrayOf("http://google.com/", null),
                 arrayOf("http://google.com", null),
                 arrayOf("http://localhost", null),
