@@ -61,10 +61,14 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
         }
 
         private fun isTellCommand(startString: String, value: String): Boolean {
+            fun hasLeadingSeparator(thing: String): Boolean {
+                val trimmedString = thing.substring(startString.length)
+                return trimmedString.startsWith(" ") ||
+                        trimmedString.startsWith(":")
+            }
+
             return value.startsWith("tell ") || "" != startString &&
-                    (value.startsWith(startString) &&
-                            (value.substring(startString.length).startsWith(" ") ||
-                                    value.substring(startString.length).startsWith(":")))
+                    (value.startsWith(startString) && hasLeadingSeparator(value))
         }
 
         private fun parseLonghand(bot: Javabot, content: String): TellSubject? {
