@@ -4,7 +4,6 @@ import javabot.BaseTest
 import javabot.Message
 import javabot.operations.urlcontent.URLContentAnalyzer
 import javabot.operations.urlcontent.URLFromMessageParser
-import org.testng.Assert
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertTrue
 import org.testng.annotations.DataProvider
@@ -22,9 +21,9 @@ class URLTitleOperationTest : BaseTest() {
         val results = operation.handleChannelMessage(Message(TEST_CHANNEL, TEST_USER, url))
         if (content != null) {
             assertTrue(results.isNotEmpty())
-            Assert.assertEquals(results[0].value, content)
+            assertEquals(results[0].value, content)
         } else {
-            Assert.assertTrue(results.isEmpty(), "Results for '$url' should be empty: $results")
+            assertTrue(results.isEmpty(), "Results for '$url' should be empty: $results")
         }
     }
 
@@ -38,6 +37,8 @@ class URLTitleOperationTest : BaseTest() {
         return arrayOf(
                 // this would be nice to fix, but we need to figure out how bloomberg is detecting the bot
                 arrayOf("https://www.bloomberg.com/graphics/2019-android-global-smartphone-growth/", "botuser's title: \"Bloomberg - Are you a robot?\""),
+                arrayOf("https://www.youtube.com/watch?v=LD4kSBpxatM", "botuser's title: \"Jimi Hendrix - Hey Joe (live)\""),
+                arrayOf("https://www.youtube.com/watch?v=LDtM", "botuser's title: \"Jimi Hendrix - Hey Joe (live)\""),
                 arrayOf("http://google.com/", null),
                 arrayOf("http://google.com", null),
                 arrayOf("http://localhost", null),
@@ -64,7 +65,7 @@ class URLTitleOperationTest : BaseTest() {
                         "http://javachannel.org/", "botuser's title: \"Freenode ##java  enthusiasts united\""),
                 arrayOf("Two urls, duplicated:  http://javachannel.org/ and http://javachannel.org/"
                         , "botuser's title: \"Freenode ##java  enthusiasts united\""),
-                arrayOf("https://twitter.com/djspiewak/status/1004038775989678080", "botuser's title: \"Daniel Spiewak on Twitter: \"Random best practice note: just because your language has type inference doesn't mean it's bad to explicitly write types. Types are good! Types are documentation. Don't make future code reviewers play the human compiler game.\"\""),
+                arrayOf("https://twitter.com/djspiewak/status/1004038775989678080", "botuser's title: \"Daniel Spiewak on Twitter: \"Random best practice note: just because your language has type inference doesn't mean it's bad to explicitly write types. Types are good! Types are documentation. Don't make future code reviewers play the human c...\"\""),
                 arrayOf("http://refheap.com", null), // caught by blacklist
                 arrayOf("https://imagebin/ca", null), // caught by blacklist
                 arrayOf("https://imgur.com", null), // caught by blacklist
