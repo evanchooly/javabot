@@ -30,36 +30,32 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     }
 
     private fun callService(clazz: String, module: String? = null): String {
-        return try {
-            val sourceData = httpService.get(
-                    "https://java-browser.yawk.at/api/javabotSearch/v1",
-                    mapOf(
-                            "term" to clazz,
-                            "artifact" to module
-                    )
-                            .mapNotNull { it.value?.let { value -> it.key to value } }
-                            .toMap()
-            )
-            val data = ObjectMapper().configure(JsonParser.Feature.ALLOW_COMMENTS, true)
-                    .readValue(sourceData, typeReference) as Array<BrowseResult>
-            if (data.isNotEmpty()) {
-                data
-                        .map { urlCacheService.shorten("https://java-browser.yawk.at${it.uri}") + " [${it.binding}]" }
-                        .joinToString(
-                                separator = ", ",
-                                prefix = correctReference(data.size, "Reference")
-                                        + " matching '$clazz' can be found at: ")
-            } else {
-                "No source matching `$clazz` " +
-                        if (module != null) {
-                            "and module `$module` "
-                        } else {
-                            ""
-                        } +
-                        "found."
-            }
-        } catch (e: Throwable) {
-            throw e
+        val sourceData = httpService.get(
+                "https://java-browser.yawk.at/api/javabotSearch/v1",
+                mapOf(
+                        "term" to clazz,
+                        "artifact" to module
+                )
+                        .mapNotNull { it.value?.let { value -> it.key to value } }
+                        .toMap()
+        )
+        val data = ObjectMapper().configure(JsonParser.Feature.ALLOW_COMMENTS, true)
+                .readValue(sourceData, typeReference) as Array<BrowseResult>
+        return if (data.isNotEmpty()) {
+            data
+                    .map { urlCacheService.shorten("https://java-browser.yawk.at${it.uri}") + " [${it.binding}]" }
+                    .joinToString(
+                            separator = ", ",
+                            prefix = correctReference(data.size, "Reference")
+                                    + " matching '$clazz' can be found at: ")
+        } else {
+            "No source matching `$clazz` " +
+                    if (module != null) {
+                        "and module `$module` "
+                    } else {
+                        ""
+                    } +
+                    "found."
         }
     }
 

@@ -65,7 +65,7 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
                         // got an empty nick; spaces only?
                         if (temp.isEmpty()) {
                             // need to check for special case where bot was *addressed* for karma
-                            if (event.addressed == true) {
+                            if (event.addressed) {
                                 bot.nick
                             } else {
                                 ""
@@ -74,7 +74,7 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
                             temp
                         }
                     } catch (e: StringIndexOutOfBoundsException) {
-                        log.info("message = " + message, e)
+                        log.info("message = $message", e)
                         throw e
                     }
 

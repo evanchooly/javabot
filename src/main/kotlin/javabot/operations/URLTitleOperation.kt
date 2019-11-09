@@ -50,9 +50,9 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
         responses.add(Message(event, "${event.user.nick}'s $title: " +
                 titlesToPost.joinToString(" | ", transform = { s ->
                     if (s.length > 240) {
-                        "\"${s.substring(0, 240)}...\"\""
+                        """"${s.substring(0, 239)}...""""
                     } else {
-                        "\"$s\""
+                        """"$s""""
                     }
                 })))
     }
@@ -60,14 +60,14 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     private fun findTitle(url: String, loop: Boolean): String? {
         if (analyzer.precheck(url)) {
             try {
-                if (URL(url).host.contains("youtube.com", true)) {
+                return if (URL(url).host.contains("youtube.com", true)) {
                     // youtube needs special handling.
-                    return findYoutubeTitle(url)
+                    findYoutubeTitle(url)
                 } else {
                     val document = Jsoup.parse(httpService.get(url))
                     var title = parseTitle(document)
                     title = clean(title)
-                    return if (analyzer.check(url, title)) title else null
+                    if (analyzer.check(url, title)) title else null
                 }
             } catch (ioe: IOException) {
                 return if (loop && !url.take(10).contains("//www.")) {
