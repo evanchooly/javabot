@@ -125,5 +125,5 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
         }
     }
 
-    private fun clean(title: String) = title.replace("[^\\p{InBASIC_LATIN}]".toRegex(), "")
+    private fun clean(title: String) = title // IRC can handle real characters
 }
