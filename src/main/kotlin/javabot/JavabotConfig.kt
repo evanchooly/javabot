@@ -1,12 +1,7 @@
 package javabot
 
 import org.aeonbits.owner.Config
-import org.aeonbits.owner.Config.DefaultValue
-import org.aeonbits.owner.Config.Key
-
-import org.aeonbits.owner.Config.LoadPolicy
-import org.aeonbits.owner.Config.LoadType
-import org.aeonbits.owner.Config.Sources
+import org.aeonbits.owner.Config.*
 import org.aeonbits.owner.Preprocessor
 
 @LoadPolicy(LoadType.FIRST)
@@ -60,9 +55,25 @@ interface JavabotConfig : Config, Preprocessor {
 
     @Key("javabot.openweathermap.token")
     @DefaultValue("")
-    fun openweathermapToken():String
+    fun openweathermapToken(): String
 
     @Key("javabot.googleapi")
     @DefaultValue("")
-    fun googleAPI():String
+    fun googleAPI(): String
+
+    @Key("twitter.consumerKey")
+    @DefaultValue("")
+    fun twitterConsumerKey(): String
+
+    @Key("twitter.consumerSecret")
+    @DefaultValue("")
+    fun twitterConsumerSecret(): String
+
+    @Key("twitter.accessToken")
+    @DefaultValue("")
+    fun twitterAccessToken(): String
+
+    @Key("twitter.accessTokenSecret")
+    @DefaultValue("")
+    fun twitterAccessTokenSecret(): String
 }

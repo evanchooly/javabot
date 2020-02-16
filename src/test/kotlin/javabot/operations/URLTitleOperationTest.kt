@@ -69,10 +69,10 @@ class URLTitleOperationTest : BaseTest() {
                 arrayOf("http://refheap.com", null), // caught by blacklist
                 arrayOf("https://imagebin/ca", null), // caught by blacklist
                 arrayOf("https://imgur.com", null), // caught by blacklist
-                arrayOf("https://twitter.com/OpenJDK/status/1040259287556259842", "botuser's title: \"OpenJDK on Twitter: \"http://openjdk.java.net and some of its subdomains (cr, hg, and mail), along with http://jdk.java.net , are unreachable via http. We're working to fix the problem as quickly as possible.\"\""),
+                arrayOf("https://twitter.com/OpenJDK/status/1040259287556259842", "botuser's title: \"OpenJDK on Twitter: \"http://openjdk.java.net and some of its subdomains (cr, hg, and mail), along with http://jdk.java.net, are unreachable via http. We're working to fix the problem as quickly as possible.\"\""),
                 arrayOf("Ignore title if it doesn't contain at least 20 ascii chars https://www.baidu.com/", null),
-                arrayOf("https://twitter.com/DonaldOJDK/status/1045791557901643777", "botuser's title: \"DonaldOJDK on Twitter: \"So simply put, yes there should be javadoc on http://Jdk.java.net , it’s coming soon (tm).\"\""),
-                arrayOf("https://twitter.com/TheOnion/status/1080887787266674690", "botuser's title: \"The Onion on Twitter: \"Meghan McCain Forced To Live Out Socialist Nightmare Of Empathy For Sick Person https://trib.al/6EXfUh5 #OurAnnualYear2018 pic.twitter.com/Qyg7DUpqre\"\""),
+                arrayOf("https://twitter.com/DonaldOJDK/status/1045791557901643777", "botuser's title: \"DonaldOJDK on Twitter: \"@jodastephen So simply put, yes there should be javadoc on http://Jdk.java.net, it’s coming soon (tm).\"\""),
+                arrayOf("https://twitter.com/TheOnion/status/1080887787266674690", "botuser's title: \"The Onion on Twitter: \"Meghan McCain Forced To Live Out Socialist Nightmare Of Empathy For Sick Person https://trib.al/6EXfUh5 #OurAnnualYear2018 https://t.co/Qyg7DUpqre\"\""),
                 arrayOf("http://thepasteb.in/foo", null) // caught by blacklist; note that this site is shuttered
         )
     }
@@ -99,6 +99,6 @@ class URLTitleOperationTest : BaseTest() {
         val url = "https://m.facebook.com/story.php?story_fbid=2097200947043549&id=516762978420695"
         val results = operation.handleChannelMessage(Message(TEST_CHANNEL, TEST_USER, url))
         assertEquals(results.size, 1)
-        assertTrue(results[0].value.length<301)
+        assertTrue(results[0].value.length < 301)
     }
 }
