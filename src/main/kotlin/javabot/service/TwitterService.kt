@@ -36,8 +36,8 @@ class TwitterService @Inject constructor(private val config: JavabotConfig) {
         if (isEnabled()) {
             val status = twitter?.showStatus(id)
             if (status != null) {
-                var text: String? = status.text ?: return null
-                status.urlEntities.forEach { text = text?.replace(it.url, it.expandedURL) }
+                var text: String = status.text ?: return null
+                status.urlEntities.forEach { text = text.replace(it.url, it.expandedURL) }
                 return "${status.user.name} on Twitter: \"$text\""
             }
         }
