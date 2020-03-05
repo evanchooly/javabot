@@ -7,6 +7,7 @@ import javabot.dao.AdminDao
 import javabot.operations.urlcontent.URLContentAnalyzer
 import javabot.operations.urlcontent.URLFromMessageParser
 import javabot.service.HttpService
+import javabot.service.TwitterService
 import org.apache.http.client.utils.URLEncodedUtils
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -19,10 +20,13 @@ import java.net.URL
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
+
 class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
-                                            private var analyzer: URLContentAnalyzer,
-                                            var parser: URLFromMessageParser,
-                                            private val httpService: HttpService) : BotOperation(bot, adminDao) {
+                                            private val analyzer: URLContentAnalyzer,
+                                            private val parser: URLFromMessageParser,
+                                            private val httpService: HttpService,
+                                            private val twitterService: TwitterService)
+    : BotOperation(bot, adminDao) {
 
     override fun handleChannelMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
@@ -60,15 +64,18 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     private fun findTitle(url: String, loop: Boolean): String? {
         if (analyzer.precheck(url)) {
             try {
-                return if (URL(url).host.contains("youtube.com", true)) {
+                val typedUrl = URL(url)
+                if (typedUrl.host.contains("youtube.com", true)) {
                     // youtube needs special handling.
-                    findYoutubeTitle(url)
-                } else {
-                    val document = Jsoup.parse(httpService.get(url))
-                    var title = parseTitle(document)
-                    title = clean(title)
-                    if (analyzer.check(url, title)) title else null
+                    return findYoutubeTitle(url)
                 }
+                if (typedUrl.host.contains("twitter.com", true)) {
+                    return findTwitterTitle(url)
+                }
+                val document = Jsoup.parse(httpService.get(url))
+                var title = parseTitle(document)
+                title = clean(title)
+                return if (analyzer.check(url, title)) title else null
             } catch (ioe: IOException) {
                 return if (loop && !url.take(10).contains("//www.")) {
                     val tUrl = url.replace("//", "//www.")
@@ -98,6 +105,21 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
         val videoDetails: Map<String, String?> = (map["videoDetails"] ?: return "") as Map<String, String>
 
         return videoDetails["title"] ?: ""
+    }
+
+    private fun findTwitterTitle(url: String): String {
+        if (twitterService.isEnabled()) {
+            if (url.contains("status")) {
+                val regex = Regex("status/\\d++")
+                val match = regex.find(url) // if match isn't null, we have a status number now, woo
+                if (match != null) {
+                    val id = (match.value.substring("status/".length)).toLong()
+                    return twitterService.getStatus(id) ?: ""
+                }
+            }
+            // what happens if it's actually a twitter user? Who cares, we haven't seen that yet in use, right?
+        }
+        return ""
     }
 
     private fun fixTwitterLinks(elt: Element) {
