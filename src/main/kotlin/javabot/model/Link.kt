@@ -6,7 +6,7 @@ import dev.morphia.annotations.Id
 import java.io.Serializable
 import java.time.LocalDateTime
 
-@Entity(value = "links", noClassnameStored = true)
+@Entity(value = "links", useDiscriminator = false)
 class Link(var channel: String = "", var username: String = "", var url: String = "", var info: String = "", var approved: Boolean = false)
     : Serializable, Persistent {
 

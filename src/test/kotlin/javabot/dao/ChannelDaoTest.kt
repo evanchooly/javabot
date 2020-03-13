@@ -27,10 +27,10 @@ class ChannelDaoTest : BaseServiceTest() {
 
     @Test(enabled = false)
     fun stats() {
-        val collection = datastore.getCollection(Channel::class.java)
-        collection.remove(BasicDBObject())
+        datastore.find(Channel::class.java)
+                .remove()
         val list = channelDao.getStatistics()
-        Assert.assertTrue(!list.isEmpty())
+        Assert.assertTrue(list.isNotEmpty())
         val activity = list[0]
         Assert.assertNotSame(activity.total, 0)
         Assert.assertNotNull(activity.getPercent())

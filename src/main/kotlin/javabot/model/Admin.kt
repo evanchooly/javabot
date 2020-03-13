@@ -11,7 +11,7 @@ import dev.morphia.annotations.Indexes
 import java.io.Serializable
 import java.time.LocalDateTime
 
-@Entity(value = "admins", noClassnameStored = true)
+@Entity(value = "admins", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("emailAddress")), options = IndexOptions(unique = true)),
         Index(fields = arrayOf(Field("ircName"), Field("hostName"))))
 class Admin : Serializable, Persistent {

@@ -5,19 +5,16 @@ import com.google.inject.AbstractModule
 import com.google.inject.Provider
 import com.google.inject.Provides
 import com.google.inject.assistedinject.FactoryModuleBuilder
-import com.mongodb.MongoClient
-import com.mongodb.MongoClientOptions
-import com.mongodb.ServerAddress
+import dev.morphia.Datastore
+import dev.morphia.Morphia
+import dev.morphia.mapping.MapperOptions
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
-import javabot.dao.util.LocalDateTimeConverter
-import javabot.model.javadoc.JavadocClass
 import javabot.model.Factoid
+import javabot.model.javadoc.JavadocClass
 import javabot.web.views.ViewFactory
 import org.aeonbits.owner.Config.Key
 import org.aeonbits.owner.ConfigFactory
-import dev.morphia.Datastore
-import dev.morphia.Morphia
 import org.pircbotx.Configuration.Builder
 import org.pircbotx.PircBotX
 import org.pircbotx.cap.SASLCapHandler
@@ -29,11 +26,6 @@ open class JavabotModule : AbstractModule() {
 
     private var config: JavabotConfig? = null
 
-    private val datastore: Datastore by lazy {
-        val ds = getMorphia().createDatastore(getMongoClient(), javabotConfig().databaseName())
-        ds.ensureIndexes()
-        ds
-    }
     lateinit var ircAdapterProvider: Provider<out IrcAdapter>
     lateinit var channelDaoProvider: Provider<ChannelDao>
     lateinit var configDaoProvider: Provider<ConfigDao>
@@ -49,25 +41,16 @@ open class JavabotModule : AbstractModule() {
     @Provides
     @Singleton
     fun datastore(): Datastore {
+        val databaseName: String = javabotConfig().databaseName()
+        val datastore = Morphia.createDatastore(databaseName, MapperOptions.DEFAULT)
+
+        datastore.mapper.mapPackageFromClass(JavadocClass::class.java)
+        datastore.mapper.mapPackageFromClass(Factoid::class.java)
+        datastore.ensureIndexes()
+
+
+
         return datastore
-    }
-
-    @Provides
-    @Singleton
-    fun getMorphia(): Morphia {
-        return Morphia().apply {
-            mapPackageFromClass(JavadocClass::class.java)
-            mapPackageFromClass(Factoid::class.java)
-            mapper.converters.addConverter(LocalDateTimeConverter::class.java)
-        }
-    }
-
-    @Provides
-    @Singleton
-    fun getMongoClient(): MongoClient {
-        val serverAddress = ServerAddress(javabotConfig().databaseHost(), javabotConfig().databasePort())
-
-        return MongoClient(serverAddress, MongoClientOptions.builder().connectTimeout(2000).build())
     }
 
     @Provides

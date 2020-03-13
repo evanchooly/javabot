@@ -1,15 +1,17 @@
 package javabot.dao
 
 import com.antwerkz.sofia.Sofia
-
 import com.google.inject.Inject
-import com.mongodb.WriteResult
-import javabot.dao.util.QueryParam
-import javabot.model.Change
-import javabot.model.criteria.ChangeCriteria
+import com.mongodb.client.result.DeleteResult
 import dev.morphia.Datastore
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Query
+import dev.morphia.query.Sort.descending
+import dev.morphia.query.experimental.filters.Filters.`in`
+import dev.morphia.query.experimental.filters.Filters.eq
+import dev.morphia.query.experimental.filters.Filters.regex
+import javabot.dao.util.QueryParam
+import javabot.model.Change
 import java.time.LocalDateTime
 
 class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change::class.java) {
@@ -35,9 +37,10 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
     }
 
     fun findLog(message: String): Boolean {
-        val criteria = ChangeCriteria(ds)
-        criteria.message().equal(message)
-        return criteria.query().count() != 0L
+        val query = ds.find(Change::class.java)
+                .filter(eq("message", message))
+
+        return query.count() != 0L
     }
 
     fun count(message: String?, date: LocalDateTime?): Long {
@@ -45,25 +48,28 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
     }
 
     fun getChanges(qp: QueryParam, message: String?, date: LocalDateTime?): List<Change> {
-        val findOptions = FindOptions()
-        findOptions.skip(qp.first)
-        findOptions.limit(qp.count)
-        return buildFindQuery(message, date).find(findOptions).toList()
+        return buildFindQuery(message, date)
+                .execute(FindOptions()
+                        .skip(qp.first)
+                        .limit(qp.count)
+                        .sort(descending("changeDate")))
+                .toList()
     }
 
     private fun buildFindQuery(message: String?, date: LocalDateTime?): Query<Change> {
-        val criteria = ChangeCriteria(ds)
+        val query = ds.find(Change::class.java)
         if (message != null) {
-            criteria.message().contains(message)
+            query.filter(regex("message")
+                    .pattern(message))
         }
         if (date != null) {
-            criteria.changeDate(date)
+            query.filter(eq("changeDate", date))
         }
-        criteria.changeDate().order(false)
-        return criteria.query()
+        return query
     }
 
-    fun deleteAll(): WriteResult {
-        return ds.delete(ds.createQuery(Change::class.java))
+    fun deleteAll(): DeleteResult {
+        return ds.find(Change::class.java)
+                .remove()
     }
 }

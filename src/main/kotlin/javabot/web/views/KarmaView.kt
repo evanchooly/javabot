@@ -29,7 +29,7 @@ class KarmaView @Inject constructor(
     }
 
     override fun getPageItems(): List<Karma> {
-        return karmaDao.getKarmas(QueryParam(getIndex(), ITEMS_PER_PAGE, "value", false))
+        return karmaDao.list(QueryParam(getIndex(), ITEMS_PER_PAGE, "value", false))
     }
 
     override fun getPagedView(): String {

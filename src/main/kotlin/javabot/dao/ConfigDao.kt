@@ -2,17 +2,19 @@ package javabot.dao
 
 import com.google.inject.Injector
 import com.google.inject.Singleton
-import com.mongodb.BasicDBObject
+import com.mongodb.client.model.IndexOptions
 import dev.morphia.Datastore
 import javabot.JavabotConfig
 import javabot.model.Config
 import javabot.model.Logs
 import javabot.operations.BotOperation
+import org.bson.Document
 import org.reflections.Reflections
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Modifier
 import java.util.ArrayList
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeUnit.SECONDS
 import javax.inject.Inject
 
 @Singleton
@@ -36,7 +38,7 @@ class ConfigDao @Inject constructor(ds: Datastore, var injector: Injector, var j
     }
 
     fun get(): Config {
-        var config: Config? = ds.createQuery(Config::class.java).first()
+        var config: Config? = ds.find(Config::class.java).first()
         if (config == null) {
             config = create()
         }
@@ -72,18 +74,18 @@ class ConfigDao @Inject constructor(ds: Datastore, var injector: Injector, var j
 */
 
     private fun updateHistoryIndex(historyLength: Int) {
-        val collection = ds.getCollection(Logs::class.java)
+        val collection = ds.mapper.getCollection(Logs::class.java)
         try {
             collection.dropIndex("updated_1")
         } catch (e: Exception) {
             // no such index yet?
         }
 
-        val keys = BasicDBObject()
-        keys.put("expireAfterSeconds", TimeUnit.DAYS.toSeconds((historyLength * 31).toLong()))
-        keys.put("background", java.lang.Boolean.TRUE)
+        val options = IndexOptions()
+        options.expireAfter(TimeUnit.DAYS.toSeconds((historyLength * 31).toLong()), SECONDS)
+        options.background(java.lang.Boolean.TRUE)
         try {
-            collection.createIndex(BasicDBObject("updated", 1), keys)
+            collection.createIndex(Document("updated", 1), options)
         } catch (e: Exception) {
             LOG.error(e.message, e)
         }

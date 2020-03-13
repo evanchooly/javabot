@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter
 import java.util.ArrayList
 import java.util.TreeMap
 
-@Entity(value = "nickserv", noClassnameStored = true)
+@Entity(value = "nickserv", useDiscriminator = false)
 class NickServInfo : Persistent {
 
     @Id

@@ -1,46 +1,39 @@
 package javabot.dao
 
+import dev.morphia.Datastore
+import dev.morphia.query.FindOptions
+import dev.morphia.query.Sort
+import dev.morphia.query.experimental.filters.Filters.eq
+import dev.morphia.query.experimental.filters.Filters.or
 import javabot.model.Admin
 import javabot.model.EventType
 import javabot.model.JavabotUser
 import javabot.model.OperationEvent
-import javabot.model.criteria.AdminCriteria
-import dev.morphia.Datastore
-import dev.morphia.query.Sort
 import javax.inject.Inject
 
 class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) : BaseDao<Admin>(ds, Admin::class.java) {
 
     override fun findAll(): List<Admin> {
-        return ds.createQuery(Admin::class.java).order(Sort.ascending("userName")).find().toList()
+        return ds.find(Admin::class.java)
+                .execute(FindOptions()
+                        .sort(Sort.ascending("userName")))
+                .toList()
     }
 
-    fun isAdmin(user: JavabotUser): Boolean {
-        return findAll().isEmpty() || getAdmin(user) != null
-    }
+    fun isAdmin(user: JavabotUser): Boolean = findAll().isEmpty() || getAdmin(user) != null
 
-    fun getAdmin(ircName: String, hostName: String): Admin? {
-        val adminCriteria = AdminCriteria(ds)
-        adminCriteria.ircName().equal(ircName)
-        adminCriteria.hostName().equal(hostName)
-        return adminCriteria.query().first()
-    }
+    fun getAdmin(ircName: String, hostName: String) = ds.find(Admin::class.java)
+            .filter(eq("ircName", ircName),
+                    eq("hostName", hostName)).first()
 
-    fun getAdmin(user: JavabotUser): Admin? {
-        val adminCriteria = AdminCriteria(ds)
-        adminCriteria.or(
-                adminCriteria.ircName(user.nick),
-                adminCriteria.emailAddress(user.userName)
-        )
-        return adminCriteria.query().first()
-    }
+    fun getAdmin(user: JavabotUser) = ds.find(Admin::class.java)
+            .filter(or(
+                    eq("ircName", user.nick),
+                    eq("emailAddress", user.userName))).first()
 
-    fun getAdminByEmailAddress(email: String): Admin? {
-        val criteria = AdminCriteria(ds)
-        criteria.emailAddress(email)
-
-        return criteria.query().first()
-    }
+    fun getAdminByEmailAddress(email: String) = ds.find(Admin::class.java)
+            .filter(eq("emailAddress", email))
+            .first()
 
     fun create(ircName: String, userName: String, hostName: String): Admin {
         val admin = Admin(ircName, userName, hostName, findAll().isEmpty())

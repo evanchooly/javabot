@@ -11,7 +11,7 @@ import dev.morphia.annotations.IndexOptions
 import dev.morphia.annotations.Indexes
 import dev.morphia.annotations.PrePersist
 
-@Entity(value = "apis", noClassnameStored = true)
+@Entity(value = "apis", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("name")), options = IndexOptions(unique = true)),
          Index(fields = arrayOf(Field("groupId"), Field("artifactId")), options = IndexOptions(unique = true)),
          Index(fields = arrayOf(Field("upperName")), options = IndexOptions(unique = true)))

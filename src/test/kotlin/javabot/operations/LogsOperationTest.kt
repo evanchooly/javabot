@@ -21,9 +21,10 @@ class LogsOperationTest : BaseTest() {
     }
 
     @Test
-    @Throws(Exception::class) fun TEST_CHANNELLogs() {
-        val query = datastore.createQuery(Logs::class.java)
-        datastore.delete(query)
+    @Throws(Exception::class)
+    fun TEST_CHANNELLogs() {
+        datastore.find(Logs::class.java)
+                .delete()
         // Add a known and unique message to the logs so we can validate that we are testing against new data
         val uuid = UUID.randomUUID().toString()
         logsDao.logMessage(Type.MESSAGE, TEST_CHANNEL, TEST_USER, uuid)
@@ -33,7 +34,8 @@ class LogsOperationTest : BaseTest() {
     }
 
     @Test
-    @Throws(Exception::class) fun testNickSpecificLogsWhenNoLogsForNick() {
+    @Throws(Exception::class)
+    fun testNickSpecificLogsWhenNoLogsForNick() {
         // We generate unique user names so that existing data in the DB doesn't interfere with this unit test
         val uuid = UUID.randomUUID().toString()
         val list = operation.handleMessage(message("~logs ${uuid}"))
@@ -42,7 +44,8 @@ class LogsOperationTest : BaseTest() {
     }
 
     @Test
-    @Throws(Exception::class) fun testNickSpecificLogsWhenLogs() {
+    @Throws(Exception::class)
+    fun testNickSpecificLogsWhenLogs() {
         val uuid = UUID.randomUUID().toString()
         val list = operation.handleMessage(message("~logs ${uuid}"))
         val listSize = list.size

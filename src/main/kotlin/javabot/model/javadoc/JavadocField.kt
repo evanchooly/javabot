@@ -7,7 +7,7 @@ import dev.morphia.annotations.Indexes
 import dev.morphia.annotations.PrePersist
 import dev.morphia.annotations.Reference
 
-@Entity(value = "fields", noClassnameStored = true)
+@Entity(value = "fields", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("javadocClass"), Field("upperName") )),
       Index(fields = arrayOf(Field("apiId"), Field("javadocClass"), Field("upperName") )))
 class JavadocField : JavadocElement {

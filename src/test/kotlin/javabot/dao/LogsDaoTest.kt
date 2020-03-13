@@ -1,13 +1,14 @@
 package javabot.dao
 
 import com.antwerkz.sofia.Sofia
+import dev.morphia.Datastore
+import dev.morphia.query.experimental.filters.Filters
 import javabot.BaseTest
 import javabot.model.Channel
 import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.Logs.Type
-import javabot.model.criteria.LogsCriteria
-import dev.morphia.Datastore
+import javabot.model.Logs.Type.PART
 import org.testng.Assert
 import org.testng.annotations.Test
 import java.time.LocalDateTime
@@ -18,10 +19,11 @@ class LogsDaoTest @Inject constructor(val ds: Datastore) : BaseTest() {
         val CHANNEL_NAME: String = "#watercooler"
     }
 
-    @Test fun seen() {
-        val logsCriteria = LogsCriteria(ds)
-        logsCriteria.channel(CHANNEL_NAME)
-        logsCriteria.delete()
+    @Test
+    fun seen() {
+        ds.find(Logs::class.java)
+                .filter(Filters.eq("channel", CHANNEL_NAME))
+                .delete()
         channelDao.delete(channelDao.get(CHANNEL_NAME))
         val channel = Channel()
         channel.name = CHANNEL_NAME
@@ -34,13 +36,14 @@ class LogsDaoTest @Inject constructor(val ds: Datastore) : BaseTest() {
         Assert.assertTrue(logsDao.findByChannel(channel.name, LocalDateTime.now().minusDays(1), false).isEmpty())
     }
 
-    @Test fun channelEvents() {
+    @Test
+    fun channelEvents() {
         val chanName = "##testChannel"
         channelDao.delete(chanName)
         val channel = channelDao.create(chanName, true, null)
         logsDao.deleteAllForChannel(chanName)
 
-        logsDao.logMessage(Logs.Type.PART, channel, TEST_USER, Sofia.userParted(TEST_USER.nick, "i'm out of here!"))
+        logsDao.logMessage(PART, channel, TEST_USER, Sofia.userParted(TEST_USER.nick, "i'm out of here!"))
 
         val logs = logsDao.findByChannel(chanName, LocalDateTime.now(), true)
 

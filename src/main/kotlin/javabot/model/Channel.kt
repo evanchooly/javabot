@@ -14,7 +14,7 @@ import dev.morphia.annotations.PrePersist
 import java.io.Serializable
 import java.time.LocalDateTime
 
-@Entity(value = "channels", noClassnameStored = true)
+@Entity(value = "channels", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("upperName")), options = IndexOptions(unique = true)))
 class Channel : Serializable, Persistent {
     @Id

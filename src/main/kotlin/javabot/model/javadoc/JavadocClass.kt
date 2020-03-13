@@ -7,7 +7,7 @@ import dev.morphia.annotations.IndexOptions
 import dev.morphia.annotations.Indexes
 import dev.morphia.annotations.PrePersist
 
-@Entity(value = "classes", noClassnameStored = true)
+@Entity(value = "classes", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("apiId"))), Index(fields = arrayOf(Field("upperName"))),
       Index(fields = arrayOf(Field("upperPackageName"), Field("upperName") )),
       Index(fields = arrayOf(Field("apiId"), Field("upperPackageName"), Field("upperName") ), options = IndexOptions(unique = true)))

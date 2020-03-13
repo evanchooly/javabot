@@ -1,14 +1,15 @@
 package javabot.dao
 
 import com.antwerkz.sofia.Sofia
-import com.mongodb.WriteResult
-import javabot.dao.util.QueryParam
-import javabot.model.Factoid
-import javabot.model.Persistent
-import javabot.model.criteria.FactoidCriteria
+import com.mongodb.client.result.DeleteResult
 import dev.morphia.Datastore
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Query
+import dev.morphia.query.experimental.filters.Filters.eq
+import dev.morphia.query.experimental.filters.Filters.or
+import javabot.dao.util.QueryParam
+import javabot.model.Factoid
+import javabot.model.Persistent
 import java.time.LocalDateTime
 import java.util.regex.PatternSyntaxException
 import javax.inject.Inject
@@ -30,11 +31,9 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
         super.save(entity)
     }
 
-    fun hasFactoid(key: String): Boolean {
-        val criteria = FactoidCriteria(ds)
-        criteria.upperName().equal(key.toUpperCase())
-        return criteria.query().first() != null
-    }
+    fun hasFactoid(key: String) = ds.find(Factoid::class.java)
+            .filter(eq("upperName", key.toUpperCase()))
+            .first() != null
 
     fun addFactoid(sender: String, key: String, value: String, location: String): Factoid {
         return addFactoid(sender, key, value, location, LocalDateTime.now())
@@ -58,9 +57,9 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
     }
 
     fun getFactoid(name: String): Factoid? {
-        val criteria = FactoidCriteria(ds)
-        criteria.upperName().equal(name.toUpperCase())
-        val factoid = criteria.query().first()
+        val criteria = ds.find(Factoid::class.java)
+                .filter(eq("upperName", name.toUpperCase()))
+        val factoid = criteria.first()
         if (factoid != null) {
             factoid.lastUsed = LocalDateTime.now()
             super.save(factoid)
@@ -69,12 +68,12 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
     }
 
     fun getParameterizedFactoid(name: String): Factoid? {
-        val criteria = FactoidCriteria(ds)
-        criteria.or(
-                criteria.upperName().equal(name.toUpperCase() + " \$1"),
-                criteria.upperName().equal(name.toUpperCase() + " \$^"),
-                criteria.upperName().equal(name.toUpperCase() + " \$+"))
-        val factoid = criteria.query().first()
+        val factoid = ds.find(Factoid::class.java)
+                .filter(or(
+                        eq("upperName", name.toUpperCase() + " \$1"),
+                        eq("upperName", name.toUpperCase() + " \$^"),
+                        eq("upperName", name.toUpperCase() + " \$+")))
+                .first()
         if (factoid != null) {
             factoid.lastUsed = LocalDateTime.now()
             super.save(factoid)
@@ -83,7 +82,7 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
     }
 
     fun count(): Long {
-        return ds.createQuery(Factoid::class.java).count()
+        return ds.find(Factoid::class.java).count()
     }
 
     fun countFiltered(filter: Factoid): Long {
@@ -92,20 +91,22 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
 
     fun getFactoidsFiltered(qp: QueryParam, filter: Factoid): List<Factoid> {
         val query = buildFindQuery(filter)
-        if (qp.hasSort()) {
-            query.order(qp.toSort("upper"))
-        }
         val options = FindOptions()
-        options.skip(qp.first)
-        options.limit(qp.count)
-        return query.find(options).toList()
+                .skip(qp.first)
+                .limit(qp.count)
+        if (qp.hasSort()) {
+            options.sort(qp.toSort("upper"))
+        }
+        return query
+                .execute(options)
+                .toList()
     }
 
     private fun buildFindQuery(filter: Factoid): Query<Factoid> {
-        val criteria = FactoidCriteria(ds)
+        val query = ds.find(Factoid::class.java)
         if (filter.name != "") {
             try {
-                criteria.upperName().contains(filter.name.toUpperCase())
+                query.filter(eq("upperName", filter.name.toUpperCase()))
             } catch (e: PatternSyntaxException) {
                 Sofia.logFactoidInvalidSearchValue(filter.name)
             }
@@ -113,7 +114,7 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
 
         if (filter.userName != "") {
             try {
-                criteria.upperUserName().contains(filter.userName.toUpperCase())
+                query.filter(eq("upperUserName", filter.userName.toUpperCase()))
             } catch (e: PatternSyntaxException) {
                 Sofia.logFactoidInvalidSearchValue(filter.userName)
             }
@@ -121,16 +122,17 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
 
         if (filter.value != "") {
             try {
-                criteria.upperValue().contains(filter.value.toUpperCase())
+                query.filter(eq("upperValue", filter.value.toUpperCase()))
             } catch (e: PatternSyntaxException) {
                 Sofia.logFactoidInvalidSearchValue(filter.value)
             }
         }
 
-        return criteria.query()
+        return query
     }
 
-    fun deleteAll(): WriteResult {
-        return ds.delete(ds.createQuery(Factoid::class.java))
+    fun deleteAll(): DeleteResult {
+        return ds.find(Factoid::class.java)
+                .remove()
     }
 }

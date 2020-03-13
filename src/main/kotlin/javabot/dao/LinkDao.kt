@@ -1,14 +1,15 @@
 package javabot.dao
 
 import com.antwerkz.sofia.Sofia
-import com.mongodb.WriteResult
+import com.mongodb.client.result.DeleteResult
 import dev.morphia.Datastore
 import dev.morphia.query.FindOptions
+import dev.morphia.query.experimental.filters.Filters
+import dev.morphia.query.experimental.filters.Filters.regex
 import dev.morphia.query.internal.MorphiaCursor
 import javabot.dao.util.QueryParam
 import javabot.model.Link
 import javabot.model.Persistent
-import javabot.model.criteria.LinkCriteria
 import java.time.LocalDateTime
 import java.util.regex.PatternSyntaxException
 import javax.inject.Inject
@@ -20,8 +21,8 @@ class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var c
         super.save(link)
     }
 
-    fun deleteAll(): WriteResult {
-        return ds.delete(ds.createQuery(Link::class.java))
+    fun deleteAll(): DeleteResult {
+        return ds.find(Link::class.java).remove()
     }
 
     fun addLink(channel: String, user: String, url: String, text: String) {
@@ -29,10 +30,11 @@ class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var c
     }
 
     private fun buildFindQuery(qp: QueryParam?, filter: Link, count: Boolean): MorphiaCursor<Link> {
-        val criteria = LinkCriteria(ds)
+        val query = ds.find(Link::class.java)
         if (filter.channel != "") {
             try {
-                criteria.channel().contains(filter.channel)
+                query.filter(regex("channel")
+                                .pattern(filter.channel))
             } catch (e: PatternSyntaxException) {
                 Sofia.logFactoidInvalidSearchValue(filter.channel)
             }
@@ -40,23 +42,24 @@ class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var c
 
         if (filter.url != "") {
             try {
-                criteria.url().contains(filter.url)
+                query.filter(regex("url")
+                        .pattern(filter.url))
             } catch (e: PatternSyntaxException) {
                 Sofia.logFactoidInvalidSearchValue(filter.url)
             }
         }
 
-        criteria.approved().equal(filter.approved)
+        query.filter(Filters.eq("approved", filter.approved))
 
         val options = FindOptions()
         if (!count && qp != null) {
             if (qp.hasSort()) {
-                criteria.query().order(qp.toSort())
+                options.sort(qp.toSort())
             }
             options.skip(qp.first)
             options.limit(qp.count)
         }
-        return criteria.query().find(options)
+        return query.execute(options)
     }
 
     fun get(link: Link): Link? {
