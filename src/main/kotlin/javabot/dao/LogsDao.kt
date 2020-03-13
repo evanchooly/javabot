@@ -2,6 +2,7 @@ package javabot.dao
 
 import com.google.inject.Inject
 import dev.morphia.Datastore
+import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
 import dev.morphia.query.experimental.filters.Filters.eq
@@ -51,7 +52,7 @@ class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channel
             val criteria = ds.find(Logs::class.java)
                     .filter(eq("channel", channelName),
                             lte("updated", nextMidnight),
-                            gte("udated", lastMidnight))
+                            gte("updated", lastMidnight))
             list = criteria.execute(FindOptions()
                             .sort(Sort.ascending("updated")))
                     .toList()
@@ -71,6 +72,6 @@ class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channel
     fun deleteAllForChannel(channel: String) {
         ds.find(Logs::class.java)
                 .filter(eq("channel", channel))
-                .remove()
+                .remove(DeleteOptions().multi(true))
     }
 }

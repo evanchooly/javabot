@@ -3,6 +3,7 @@ package javabot.dao
 import com.antwerkz.sofia.Sofia
 import com.mongodb.client.result.DeleteResult
 import dev.morphia.Datastore
+import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
 import dev.morphia.query.experimental.filters.Filters
 import dev.morphia.query.experimental.filters.Filters.regex
@@ -22,7 +23,7 @@ class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var c
     }
 
     fun deleteAll(): DeleteResult {
-        return ds.find(Link::class.java).remove()
+        return ds.find(Link::class.java).remove(DeleteOptions().multi(true))
     }
 
     fun addLink(channel: String, user: String, url: String, text: String) {

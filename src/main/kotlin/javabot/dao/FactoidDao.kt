@@ -3,6 +3,7 @@ package javabot.dao
 import com.antwerkz.sofia.Sofia
 import com.mongodb.client.result.DeleteResult
 import dev.morphia.Datastore
+import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Query
 import dev.morphia.query.experimental.filters.Filters.eq
@@ -133,6 +134,6 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
 
     fun deleteAll(): DeleteResult {
         return ds.find(Factoid::class.java)
-                .remove()
+                .remove(DeleteOptions().multi(true))
     }
 }

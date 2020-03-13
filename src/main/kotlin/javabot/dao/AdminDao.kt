@@ -16,7 +16,7 @@ class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) : Ba
     override fun findAll(): List<Admin> {
         return ds.find(Admin::class.java)
                 .execute(FindOptions()
-                        .sort(Sort.ascending("userName")))
+                        .sort(Sort.ascending("ircName")))
                 .toList()
     }
 

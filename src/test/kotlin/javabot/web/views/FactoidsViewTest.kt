@@ -2,22 +2,19 @@ package javabot.web.views
 
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
 import javabot.dao.FactoidDao
-import javabot.web.views.FactoidsView
-import javabot.web.views.PagedView
 import javabot.model.Factoid
 import net.htmlparser.jericho.Source
 import org.testng.annotations.Test
-
-import javax.inject.Inject
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.time.LocalDateTime
 import java.util.Locale
+import javax.inject.Inject
 
 class FactoidsViewTest : ViewsTest() {
     @Inject
-    protected lateinit var factoidDao: FactoidDao
+    lateinit var factoidDao: FactoidDao
 
     @Test
     @Throws(IOException::class) fun singleFactoid() {
@@ -80,7 +77,7 @@ class FactoidsViewTest : ViewsTest() {
     }
 
     @Throws(IOException::class)
-    protected fun render(page: Int, filter: Factoid): Source {
+    fun render(page: Int, filter: Factoid): Source {
         val renderer = FreemarkerViewRenderer()
         val output = ByteArrayOutputStream()
         renderer.render(viewFactory.createFactoidsView(MockServletRequest(false), page, filter), Locale.getDefault(), output)
@@ -89,8 +86,8 @@ class FactoidsViewTest : ViewsTest() {
 
     private fun createFactoids(count: Int) {
         factoidDao.deleteAll()
-        for (i in 0..count - 1) {
-            val factoid = Factoid("name " + i, "value " + i, "userName " + i)
+        for (i in 0 until count) {
+            val factoid = Factoid("name $i", "value $i", "userName $i")
             factoid.updated = LocalDateTime.now()
             factoidDao.save(factoid)
         }

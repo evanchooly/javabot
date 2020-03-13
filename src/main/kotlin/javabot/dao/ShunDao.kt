@@ -2,6 +2,7 @@ package javabot.dao
 
 import com.google.inject.Inject
 import dev.morphia.Datastore
+import dev.morphia.DeleteOptions
 import dev.morphia.query.experimental.filters.Filters
 import javabot.model.Shun
 import java.time.LocalDateTime
@@ -22,7 +23,7 @@ class ShunDao @Inject constructor(ds: Datastore) : BaseDao<Shun>(ds, Shun::class
     private fun expireShuns() {
         ds.find(Shun::class.java)
                 .filter(Filters.lt("expiry", LocalDateTime.now()))
-                .remove()
+                .remove(DeleteOptions().multi(true))
     }
 
     fun addShun(nick: String, until: LocalDateTime) {

@@ -241,12 +241,7 @@
         <dependency>
             <groupId>dev.morphia.morphia</groupId>
             <artifactId>morphia-core</artifactId>
-            <version>2.0.0-BETA1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy</artifactId>
-            <version>1.10.1</version>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -319,7 +314,7 @@
         <dependency>
             <groupId>net.iakovlev</groupId>
             <artifactId>timeshape</artifactId>
-            <version>2018d.6</version>
+            <version>2019b.8</version>
         </dependency>
 
         <dependency>

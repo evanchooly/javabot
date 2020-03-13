@@ -19,9 +19,9 @@ class URLFromMessageParser {
         var idxHttp = message.indexOf("http")
         while (idxHttp >= 0) {
             val idxSpace = message.indexOf(' ', idxHttp)
-            val url = if ((idxSpace == -1)) message.substring(idxHttp) else message.substring(idxHttp, idxSpace)
+            val url = if (idxSpace == -1) message.substring(idxHttp) else message.substring(idxHttp, idxSpace)
             potentialUrlsFound.add(stripPunctuation(message, url, idxHttp))
-            idxHttp = if ((idxSpace == -1)) -1 else message.indexOf("http", idxSpace)
+            idxHttp = if (idxSpace == -1) -1 else message.indexOf("http", idxSpace)
         }
 
         val list = arrayListOf<URL>()

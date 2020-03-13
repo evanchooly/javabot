@@ -34,7 +34,7 @@ class WeatherOperationTest : BaseTest() {
     fun cityShowTimezone() {
         val messages = operation.handleMessage(message("~weather London"))
         scanForResponse(messages, "Weather for")
-        scanForResponse(messages, "+0100")
+        scanForResponse(messages, "GMT")
     }
 
     @Test

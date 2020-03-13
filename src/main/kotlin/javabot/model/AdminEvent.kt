@@ -6,6 +6,7 @@ import dev.morphia.annotations.Entity
 import dev.morphia.annotations.Field
 import dev.morphia.annotations.Id
 import dev.morphia.annotations.Index
+import dev.morphia.annotations.IndexOptions
 import dev.morphia.annotations.Indexed
 import dev.morphia.annotations.Indexes
 import dev.morphia.annotations.Transient
@@ -24,7 +25,7 @@ open class AdminEvent : Serializable, Persistent {
     @Id
     var id: ObjectId = ObjectId()
 
-    @Indexed(expireAfterSeconds = 60 * 60 * 24)
+    @Indexed(options = IndexOptions(expireAfterSeconds = 60 * 60 * 24))
     var completed: LocalDateTime? = null
 
     var state: State = State.NEW
@@ -33,7 +34,7 @@ open class AdminEvent : Serializable, Persistent {
     lateinit var requestedOn: LocalDateTime
     lateinit var type: EventType
 
-    protected constructor()
+    constructor()
 
     constructor(requestedBy: String, type: EventType, requestedOn: LocalDateTime = LocalDateTime.now()) : this() {
         this.requestedBy = requestedBy
