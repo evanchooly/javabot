@@ -530,7 +530,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <morphia.groupId>dev.morphia.morphia</morphia.groupId>
         <morphia.artifactId>core</morphia.artifactId>
-        <morphia.version>1.5.1</morphia.version>
+        <morphia.version>1.5.8</morphia.version>
         <rivescript.version>0.11.0</rivescript.version>
         <okhttp.version>4.2.1</okhttp.version>
         <jaxb.version>2.2.11</jaxb.version>
