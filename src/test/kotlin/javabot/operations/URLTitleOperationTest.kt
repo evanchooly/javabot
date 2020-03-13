@@ -35,8 +35,6 @@ class URLTitleOperationTest : BaseTest() {
     @DataProvider(name = "urls")
     fun getUrls(): Array<Array<*>> {
         return arrayOf(
-                // this would be nice to fix, but we need to figure out how bloomberg is detecting the bot
-                arrayOf("https://www.bloomberg.com/graphics/2019-android-global-smartphone-growth/", "botuser's title: \"Bloomberg - Are you a robot?\""),
                 arrayOf("https://www.youtube.com/watch?v=LD4kSBpxatM", "botuser's title: \"Jimi Hendrix - Hey Joe (live)\""),
                 arrayOf("https://www.youtube.com/watch?v=LDtM", null),
                 arrayOf("http://google.com/", null),
@@ -50,8 +48,6 @@ class URLTitleOperationTest : BaseTest() {
                 arrayOf("http://javachannel.org/posts/finding-hash-collisions-in-java-strings/", null),
                 arrayOf("http://hastebin.com/askhjahs", null),
                 arrayOf("http://pastebin.com/askhjahs", null),
-                arrayOf("http://architects.dzone.com/articles/why-programmers-should-have",
-                        "botuser's title: \"Why Programmers Should Have a Blog - DZone Agile\""), // url matches title
                 arrayOf("http://facebook.com/foo/bar/blah", null), // doesn't exist on facebook, I hope
                 arrayOf("http://", null),
                 arrayOf("http://docs.oracle.com/javaee/6/tutorial/doc/", "botuser's title: \"- The Java EE 6 Tutorial\""),
