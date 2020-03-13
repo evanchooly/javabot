@@ -2,6 +2,7 @@ package javabot.dao
 
 import com.mongodb.client.result.DeleteResult
 import dev.morphia.Datastore
+import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
 import dev.morphia.query.experimental.filters.Filters
 import javabot.dao.util.QueryParam
@@ -36,6 +37,6 @@ class KarmaDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var 
     }
 
     fun deleteAll(): DeleteResult {
-        return ds.find(Karma::class.java).remove()
+        return ds.find(Karma::class.java).remove(DeleteOptions().multi(true))
     }
 }

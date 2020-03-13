@@ -25,7 +25,6 @@
                     <ul class="plain">
                         <li><a href="/">Home Page</a></li>
                         <li><a href="/factoids">Factoids</a>: ${factoidCount} </li>
-                        <!--<li><a wicket:id="activity_link"><span wicket:id="stats">[stats]</span></a></li>-->
                         <li><a href="/karma">Karma Ranking</a></li>
                         <li><a href="/changes">Changelog</a></li>
                     </ul>

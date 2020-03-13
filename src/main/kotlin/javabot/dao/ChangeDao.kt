@@ -4,6 +4,7 @@ import com.antwerkz.sofia.Sofia
 import com.google.inject.Inject
 import com.mongodb.client.result.DeleteResult
 import dev.morphia.Datastore
+import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Query
 import dev.morphia.query.Sort.descending
@@ -70,6 +71,6 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
 
     fun deleteAll(): DeleteResult {
         return ds.find(Change::class.java)
-                .remove()
+                .remove(DeleteOptions().multi(true))
     }
 }
