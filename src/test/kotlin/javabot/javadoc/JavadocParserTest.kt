@@ -14,14 +14,13 @@ import org.testng.annotations.Test
 import java.io.File
 import javax.inject.Inject
 
-@Test
 class JavadocParserTest : BaseTest() {
     @Inject
-    lateinit var parser: JavadocParser
+    private lateinit var parser: JavadocParser
     @Inject
-    lateinit var config: JavabotConfig
+    private lateinit var config: JavabotConfig
     @Inject
-    lateinit var javadocClassDao: JavadocClassDao
+    private lateinit var javadocClassDao: JavadocClassDao
 
     @Test
     fun targeted() {
