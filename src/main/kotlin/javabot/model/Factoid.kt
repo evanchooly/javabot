@@ -19,7 +19,7 @@ import java.net.URLEncoder
 import java.nio.charset.Charset
 import java.time.LocalDateTime
 
-@Entity(value = "factoids", noClassnameStored = true)
+@Entity(value = "factoids", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("upperName"), Field("upperUserName"))))
 class Factoid(var name: String = "", var value: String = "", var userName: String = "") : Serializable, Persistent {
     @Id

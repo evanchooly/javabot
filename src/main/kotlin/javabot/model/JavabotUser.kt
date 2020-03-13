@@ -21,6 +21,8 @@ class JavabotUser {
     var hostmask: String = ""
     var nickServ: NickServInfo? = null
 
+    constructor()
+
     constructor(nick: String, userName: String, host: String) {
         this.hostmask = host
         this.nick = nick

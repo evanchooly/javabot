@@ -1,70 +1,64 @@
 package javabot.dao
 
 import com.google.inject.Inject
+import dev.morphia.Datastore
+import dev.morphia.query.QueryException
+import dev.morphia.query.experimental.filters.Filters.eq
+import dev.morphia.query.experimental.filters.Filters.or
 import javabot.javadoc.JavadocParser
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocField
 import javabot.model.javadoc.JavadocMethod
-import javabot.model.javadoc.criteria.JavadocClassCriteria
-import javabot.model.javadoc.criteria.JavadocFieldCriteria
-import javabot.model.javadoc.criteria.JavadocMethodCriteria
-import dev.morphia.Datastore
-import dev.morphia.query.QueryException
-import java.util.ArrayList
 
-class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass>(ds, JavadocClass::class.java) {
+class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>(ds, JavadocClass::class.java) {
 
     fun count() = ds.find(JavadocClass::class.java).count()
 
     fun getClass(api: JavadocApi? = null, name: String): List<JavadocClass> {
         val strings = JavadocParser.calculateNameAndPackage(name)
         val pkgName = strings.first
-        val criteria = JavadocClassCriteria(ds)
-        criteria.upperName().equal(strings.second.toUpperCase())
-        api?.let { it.id.let { id -> criteria.apiId(id) } }
-        if(pkgName != null) {
-            criteria.upperPackageName().equal(pkgName.toUpperCase())
+        val query = ds.find(JavadocClass::class.java)
+                .filter(eq("upperName", strings.second.toUpperCase()))
+        api?.id.let { id ->
+            query.filter(eq("apiId", id))
         }
-        return criteria.query().find().toList()
+        if (pkgName != null) {
+            query.filter(eq("upperPackageName", pkgName.toUpperCase()))
+        }
+        return query.execute().toList()
     }
 
     private fun getClassByFqcn(fqcn: String): JavadocClass {
-        val criteria = JavadocClassCriteria(ds)
-        criteria.fqcn().equal(fqcn)
         try {
-            return criteria.query().first() ?: throw QueryException("Could not find class by fqcn: $fqcn")
-        } catch(e: IllegalStateException) {
+            return ds.find(JavadocClass::class.java)
+                    .filter(eq("fqcn", fqcn))
+                    .first() ?: throw QueryException("Could not find class by fqcn: $fqcn")
+        } catch (e: IllegalStateException) {
             throw IllegalStateException("fqcn = ${fqcn}", e)
         }
     }
 
     fun getClass(api: JavadocApi? = null, pkg: String, name: String): JavadocClass? {
-        val criteria: JavadocClassCriteria
-        try {
-            criteria = JavadocClassCriteria(ds)
-            if (api != null) {
-                criteria.apiId(api.id)
-            }
-            criteria.upperPackageName().equal(pkg.toUpperCase())
-            criteria.upperName().equal(name.toUpperCase())
-        } catch (e: NullPointerException) {
-            throw e
+        val query = ds.find(JavadocClass::class.java)
+        if (api != null) {
+            query.filter(eq("apiId", api.id))
         }
+        query.filter(eq("upperPackageName", pkg.toUpperCase()))
+                .filter(eq("upperName", name.toUpperCase()))
 
-        return criteria.query().first()
+        return query.first()
     }
 
     fun getField(api: JavadocApi?, className: String, fieldName: String): List<JavadocField> {
-        val criteria = JavadocFieldCriteria(ds)
         val classes = getClass(api, className)
-        if (!classes.isEmpty()) {
-            val javadocClass = classes[0]
-            criteria.javadocClass(javadocClass)
-            criteria.upperName().equal(fieldName.toUpperCase())
-            return criteria.query().find().toList()
-        }
-        return emptyList()
+        return if (classes.isNotEmpty()) {
+            ds.find(JavadocField::class.java)
+                    .filter(eq("javadocClass", classes[0]))
+                    .filter(eq("upperName", fieldName.toUpperCase()))
+                    .execute()
+                    .toList()
+        } else emptyList()
     }
 
     fun getMethods(api: JavadocApi?, className: String, methodName: String,
@@ -78,7 +72,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
             klass.parentTypes.forEach {
                 try {
                     methods += getMethods(methodName, signatureTypes, getClassByFqcn(it))
-                } catch(e: IllegalStateException) {
+                } catch (e: IllegalStateException) {
                     println("it = ${it}")
                     println("klass = ${klass}")
                     println("klass.parentTypes = ${klass.parentTypes}")
@@ -90,27 +84,25 @@ class JavadocClassDao @Inject constructor(ds: Datastore)  : BaseDao<JavadocClass
     }
 
     private fun getMethods(name: String, signatureTypes: String, javadocClass: JavadocClass): List<JavadocMethod> {
-        val criteria = JavadocMethodCriteria(ds)
-        criteria.classId(javadocClass.id)
-        criteria.upperName().equal(name.toUpperCase())
+        val query = ds.find(JavadocMethod::class.java)
+                .filter(eq("classId", javadocClass.id))
+                .filter(eq("upperName", name.toUpperCase()))
         if ("*" != signatureTypes) {
-            criteria.or(
-                  criteria.shortSignatureTypes().equal(signatureTypes),
-                  criteria.longSignatureTypes().equal(signatureTypes))
+            query.filter(or(
+                    eq("shortSignatureTypes", signatureTypes),
+                    eq("longSignatureTypes", signatureTypes)))
         }
-        return criteria.query().find().toList()
+        return query.execute().toList()
     }
 
     fun delete(javadocClass: JavadocClass) {
-        JavadocFieldCriteria(ds).apply {
-            javadocClass(javadocClass)
-            ds.delete(query())
-        }
+        ds.find(JavadocField::class.java)
+                .filter(eq("javadocClass", javadocClass))
+                .delete()
 
-        JavadocMethodCriteria(ds).apply {
-            classId(javadocClass.id)
-            ds.delete(query())
-        }
+        ds.find(JavadocMethod::class.java)
+                .filter(eq("classId", javadocClass.id))
+                .delete()
 
         super.delete(javadocClass)
     }

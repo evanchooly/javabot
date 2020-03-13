@@ -7,7 +7,7 @@ import dev.morphia.annotations.Id
 import java.io.Serializable
 import java.util.UUID
 
-@Entity(value = "registrations", noClassnameStored = true)
+@Entity(value = "registrations", useDiscriminator = false)
 class NickRegistration : Serializable, Persistent {
     @Id
     var id: ObjectId? = null

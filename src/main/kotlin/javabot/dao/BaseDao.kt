@@ -1,10 +1,11 @@
 package javabot.dao
 
+import dev.morphia.Datastore
+import dev.morphia.query.Query
+import dev.morphia.query.experimental.filters.Filters.eq
 import javabot.dao.util.EntityNotFoundException
 import javabot.model.Persistent
 import org.bson.types.ObjectId
-import dev.morphia.Datastore
-import dev.morphia.query.Query
 import org.slf4j.LoggerFactory
 
 abstract class BaseDao<T : Persistent>(val ds: Datastore, val entityClass: Class<T>) {
@@ -12,25 +13,17 @@ abstract class BaseDao<T : Persistent>(val ds: Datastore, val entityClass: Class
         private val LOG = LoggerFactory.getLogger(BaseDao::class.java)
     }
 
-    fun getQuery(): Query<T> {
-        return getQuery(entityClass)
-    }
+    fun getQuery(): Query<T> = getQuery(entityClass)
 
-    fun <U> getQuery(clazz: Class<U>): Query<U> {
-        return ds.createQuery(clazz)
-    }
+    fun <U> getQuery(clazz: Class<U>): Query<U> = ds.find(clazz)
 
-    fun find(id: ObjectId?): T? {
-        return ds.createQuery(entityClass).filter("_id", id).first()
-    }
+    fun find(id: ObjectId?): T? = ds.find(entityClass)
+            .filter(eq("_id", id))
+            .first()
 
-    open fun findAll(): List<T> {
-        return ds.createQuery(entityClass).find().toList()
-    }
+    open fun findAll(): List<T> = ds.find(entityClass).execute().toList()
 
-    private fun loadChecked(id: ObjectId?): T {
-        return find(id) ?: throw EntityNotFoundException(entityClass, id)
-    }
+    private fun loadChecked(id: ObjectId?) = find(id) ?: throw EntityNotFoundException(entityClass, id)
 
     open fun save(entity: Persistent) {
         ds.save(entity)

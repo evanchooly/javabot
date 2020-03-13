@@ -1,13 +1,14 @@
 package javabot.dao
 
-import javabot.model.javadoc.JavadocApi
-import javabot.model.javadoc.criteria.JavadocApiCriteria
-import javabot.model.javadoc.criteria.JavadocClassCriteria
-import javabot.model.javadoc.criteria.JavadocFieldCriteria
-import javabot.model.javadoc.criteria.JavadocMethodCriteria
-import org.bson.types.ObjectId
 import dev.morphia.Datastore
+import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
+import dev.morphia.query.experimental.filters.Filters.eq
+import javabot.model.javadoc.JavadocApi
+import javabot.model.javadoc.JavadocClass
+import javabot.model.javadoc.JavadocField
+import javabot.model.javadoc.JavadocMethod
+import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
 
@@ -16,11 +17,9 @@ class ApiDao @Inject constructor(ds: Datastore) : BaseDao<JavadocApi>(ds, Javado
         private val LOG = LoggerFactory.getLogger(ApiDao::class.java)
     }
 
-    fun find(name: String): JavadocApi? {
-        val criteria = JavadocApiCriteria(ds)
-        criteria.upperName().equal(name.toUpperCase())
-        return criteria.query().first()
-    }
+    fun find(name: String) = ds.find(JavadocApi::class.java)
+            .filter(eq("upperName", name.toUpperCase()))
+            .first()
 
     fun delete(api: String) {
         find(api)?.let { delete(it) }
@@ -32,24 +31,28 @@ class ApiDao @Inject constructor(ds: Datastore) : BaseDao<JavadocApi>(ds, Javado
 
     fun delete(api: JavadocApi) {
         LOG.debug("Dropping fields from " + api.name)
-        val criteria = JavadocFieldCriteria(ds)
-        criteria.apiId(api.id)
-        criteria.delete()
+
+        ds.find(JavadocField::class.java)
+                .filter(eq("apiId", api.id))
+                .delete()
 
         LOG.debug("Dropping methods from " + api.name)
-        val method = JavadocMethodCriteria(ds)
-        method.apiId(api.id)
-        method.delete()
+        ds.find(JavadocMethod::class.java)
+                .filter(eq("apiId", api.id))
+                .delete()
 
         LOG.debug("Dropping classes from " + api.name)
-        val klass = JavadocClassCriteria(ds)
-        klass.apiId(api.id)
-        klass.delete()
+        ds.find(JavadocClass::class.java)
+                .filter(eq("apiId", api.id))
+                .delete()
 
         super.delete(api)
     }
 
     override fun findAll(): List<JavadocApi> {
-        return ds.createQuery(JavadocApi::class.java).order(Sort.ascending("name")).find().toList()
+        return ds.find(JavadocApi::class.java)
+                .execute(FindOptions()
+                        .sort(Sort.ascending("name")))
+                .toList()
     }
 }

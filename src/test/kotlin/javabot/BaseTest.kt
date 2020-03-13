@@ -119,8 +119,8 @@ open class BaseTest {
             channelDao.save(channel)
         }
 
-        datastore.delete(logsDao.getQuery(Logs::class.java))
-        datastore.delete(changeDao.getQuery(Change::class.java))
+        logsDao.getQuery(Logs::class.java).delete()
+        changeDao.getQuery(Change::class.java).delete()
         bot.get().start()
     }
 

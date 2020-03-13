@@ -10,7 +10,7 @@ import dev.morphia.annotations.PrePersist
 import java.io.Serializable
 import java.time.LocalDateTime
 
-@Entity(value = "karma", noClassnameStored = true)
+@Entity(value = "karma", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("upperName"))),
         Index(fields = arrayOf(Field("value"), Field("name"))))
 class Karma : Serializable, Persistent {

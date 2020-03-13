@@ -8,9 +8,10 @@ import org.testng.annotations.Test
 import java.lang.String.format
 
 
-@Test class ConfigureTest : BaseTest() {
+@Test
+class ConfigureTest : BaseTest() {
     @Inject
-    protected lateinit var configDao: ConfigDao
+    private lateinit var configDao: ConfigDao
     @Inject
     private lateinit var operation: Configure
 
@@ -25,11 +26,11 @@ import java.lang.String.format
         response = operation.handleMessage(message("~admin configure --property=throttleThreshold --value=15"))
         Assert.assertEquals(response[0].value, format("Setting %s to %d", "throttleThreshold", 15))
 
-        Assert.assertEquals(configDao.get().throttleThreshold, Integer(15))
+        Assert.assertEquals(configDao.get().throttleThreshold, 15)
 
         response = operation.handleMessage(message("~admin configure --property=throttleThreshold --value=10"))
         Assert.assertEquals(response[0].value, format("Setting %s to %d", "throttleThreshold", 10))
 
-        Assert.assertEquals(configDao.get().throttleThreshold, Integer(10))
+        Assert.assertEquals(configDao.get().throttleThreshold, 10)
     }
 }

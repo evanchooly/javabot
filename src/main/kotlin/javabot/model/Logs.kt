@@ -11,7 +11,7 @@ import dev.morphia.annotations.Indexes
 import dev.morphia.annotations.PrePersist
 import java.time.LocalDateTime
 
-@Entity(value = "logs", noClassnameStored = true)
+@Entity(value = "logs", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("channel"), Field("upperNick"), Field("updated")),
         options = IndexOptions(name = "seen")))
 class Logs : Persistent {

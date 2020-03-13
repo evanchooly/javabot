@@ -2,13 +2,16 @@ package javabot.dao
 
 import com.google.inject.Inject
 import dev.morphia.Datastore
+import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
+import dev.morphia.query.experimental.filters.Filters.eq
+import dev.morphia.query.experimental.filters.Filters.gte
+import dev.morphia.query.experimental.filters.Filters.lte
 import javabot.Seen
 import javabot.model.Channel
 import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.Logs.Type
-import javabot.model.criteria.LogsCriteria
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
@@ -29,11 +32,13 @@ class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channel
     }
 
     fun getSeen(channel: String, nick: String): Seen? {
-        val criteria = LogsCriteria(ds)
-        criteria.upperNick().equal(nick.toUpperCase())
-        criteria.channel().equal(channel)
-        criteria.updated().order(false)
-        return criteria.query().first()?.let { Seen(it.channel!!, it.message, it.nick, it.updated) }
+        val criteria = ds.find(Logs::class.java)
+                .filter(eq("upperNick", nick.toUpperCase()),
+                        eq("channel", channel))
+        val first = criteria.first(FindOptions()
+                .sort(Sort.descending("updated")))
+
+        return first?.let { Seen(it.channel!!, it.message, it.nick, it.updated) }
     }
 
     private fun dailyLog(channelName: String, date: LocalDateTime?, logged: Boolean): List<Logs> {
@@ -41,15 +46,15 @@ class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channel
         if (logged) {
             val start = if (date == null) LocalDate.now() else date.toLocalDate()
             val tomorrow = start.plusDays(1)
-            val criteria = LogsCriteria(ds)
-            criteria.channel(channelName)
             val nextMidnight = tomorrow.atStartOfDay()
             val lastMidnight = start.atStartOfDay()
-            criteria.and(
-                    criteria.updated().lessThanOrEq(nextMidnight),
-                    criteria.updated().greaterThanOrEq(lastMidnight)
-            )
-            list = criteria.query().order(Sort.ascending("updated")).find().toList()
+            val criteria = ds.find(Logs::class.java)
+                    .filter(eq("channel", channelName),
+                            lte("updated", nextMidnight),
+                            gte("udated", lastMidnight))
+            list = criteria.execute(FindOptions()
+                            .sort(Sort.ascending("updated")))
+                    .toList()
         }
         return list
     }
@@ -64,8 +69,8 @@ class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channel
     }
 
     fun deleteAllForChannel(channel: String) {
-        val criteria = LogsCriteria(ds)
-        criteria.channel(channel)
-        ds.delete(criteria.query())
+        ds.find(Logs::class.java)
+                .filter(eq("channel", channel))
+                .remove()
     }
 }
