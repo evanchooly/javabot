@@ -10,8 +10,10 @@ import javabot.JavabotConfig
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.operations.browse.BrowseResult
+import javabot.service.HTTP_OPTIONS
 import javabot.service.HttpService
 import javabot.service.UrlCacheService
+import java.time.Duration
 
 class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                                           val httpService: HttpService,
@@ -37,7 +39,12 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                         "artifact" to module
                 )
                         .mapNotNull { it.value?.let { value -> it.key to value } }
-                        .toMap()
+                        .toMap(),
+                emptyMap(),
+                mapOf(
+                        HTTP_OPTIONS.READ_TIMEOUT to Duration.ofSeconds(45),
+                        HTTP_OPTIONS.CALL_TIMEOUT to Duration.ofSeconds(45)
+                )
         )
         val data = ObjectMapper().configure(JsonParser.Feature.ALLOW_COMMENTS, true)
                 .readValue(sourceData, typeReference) as Array<BrowseResult>
