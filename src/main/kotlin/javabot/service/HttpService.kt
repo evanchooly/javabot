@@ -82,7 +82,7 @@ class HttpService {
                 .execute()
                 .use { response ->
                     if (response.isSuccessful) {
-                        return (response.body ?: throw HttpServiceException()).string()
+                        return (response.body?.string() ?: throw HttpServiceException())
                     } else {
                         throw HttpServiceException("${response.code} ${response.message}")
                     }
