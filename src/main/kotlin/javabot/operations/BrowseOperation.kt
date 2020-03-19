@@ -33,15 +33,14 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
 
     private fun callService(clazz: String, module: String? = null): String {
         val sourceData = httpService.get(
-                "https://java-browser.yawk.at/api/javabotSearch/v1",
-                mapOf(
+                url = "https://java-browser.yawk.at/api/javabotSearch/v1",
+                headers = mapOf(
                         "term" to clazz,
                         "artifact" to module
                 )
                         .mapNotNull { it.value?.let { value -> it.key to value } }
                         .toMap(),
-                emptyMap(),
-                mapOf(
+                options = mapOf(
                         HTTP_OPTIONS.READ_TIMEOUT to Duration.ofSeconds(45),
                         HTTP_OPTIONS.CALL_TIMEOUT to Duration.ofSeconds(45)
                 )
