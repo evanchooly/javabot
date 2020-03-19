@@ -34,7 +34,7 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     private fun callService(clazz: String, module: String? = null): String {
         val sourceData = httpService.get(
                 url = "https://java-browser.yawk.at/api/javabotSearch/v1",
-                headers = mapOf(
+                params = mapOf(
                         "term" to clazz,
                         "artifact" to module
                 )

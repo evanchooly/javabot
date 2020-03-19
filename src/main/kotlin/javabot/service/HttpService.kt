@@ -64,14 +64,20 @@ class HttpService {
         val request = Request.Builder().url(builder.build())
                 .headers(headers.toHeaders())
                 .build()
-        val localRequest = client.newBuilder()
 
-        options.forEach { action ->
-            action.key.apply(localRequest, action.value)
+        // if options aren't empty, build a local copy of the request.
+        // otherwise, use the global client options as is.
+        if (!options.isEmpty()) {
+            val localRequest = client.newBuilder()
+
+            options.forEach { action ->
+                action.key.apply(localRequest, action.value)
+            }
+
+            localRequest.build()
+        } else {
+            client
         }
-
-        localRequest
-                .build()
                 .newCall(request)
                 .execute()
                 .use { response ->
