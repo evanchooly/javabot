@@ -6,6 +6,9 @@ import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 /**
@@ -43,12 +46,10 @@ class WeatherOperationTest : BaseTest() {
     fun cityWithSpaces() {
         val messages = operation.handleMessage(message("~weather New York"))
         scanForResponse(messages, "Weather for")
-        val offset = if (TimeZone.getTimeZone("America/New York").inDaylightTime(Date())) {
-            "-0400" // EDT
-        } else {
-            "-0500" // EST
-        }
-        scanForResponse(messages, offset)
+        val o= ZoneId.of("America/New_York")
+        val zdt=ZonedDateTime.now(o)
+        val zo=zdt.format(DateTimeFormatter.ofPattern("Z"))
+        scanForResponse(messages, zo)
     }
 
     @Test
