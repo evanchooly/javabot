@@ -2,10 +2,11 @@ package javabot.operations
 
 import com.google.inject.Inject
 import javabot.BaseTest
-import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
-import java.text.ParseException
-import java.text.SimpleDateFormat
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+
 
 /**
  * Integration test for the Weather Operation, will actually attempt to contact the Google API for weather as
@@ -27,21 +28,25 @@ class WeatherOperationTest : BaseTest() {
 
     @Test
     fun cityNotFound() {
-        scanForResponse(operation.handleMessage(message("~weather lajdlfjlasjdf")), "only supports places on Earth")
+        // we have to use a genuinely odd name, because google maps matches a LOT of place names
+        scanForResponse(operation.handleMessage(message("~weather zila jdlfj lasjdf")), "only supports places on Earth")
     }
 
     @Test
     fun cityShowTimezone() {
-        val messages = operation.handleMessage(message("~weather London"))
+        val messages = operation.handleMessage(message("~weather Phoenix, AZ"))
         scanForResponse(messages, "Weather for")
-        scanForResponse(messages, "+0100")
+        scanForResponse(messages, "-0700") // PHX doesn't have DST yet, so this is constant
     }
 
     @Test
     fun cityWithSpaces() {
         val messages = operation.handleMessage(message("~weather New York"))
         scanForResponse(messages, "Weather for")
-        scanForResponse(messages, "-0400")
+        val o = ZoneId.of("America/New_York")
+        val zdt = ZonedDateTime.now(o)
+        val zo = zdt.format(DateTimeFormatter.ofPattern("Z"))
+        scanForResponse(messages, zo)
     }
 
     @Test
