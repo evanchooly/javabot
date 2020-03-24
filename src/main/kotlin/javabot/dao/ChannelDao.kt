@@ -24,7 +24,7 @@ class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Chann
     @Suppress("UNCHECKED_CAST")
     fun configuredChannels(): List<String> {
         return ds.find(Channel::class.java)
-                .execute()
+                .iterator()
                 .toList()
                 .map { it.name }
     }
@@ -38,13 +38,13 @@ class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Chann
         if (!showAll) {
             query.filter(eq("logged", true))
         }
-        return query.execute(FindOptions()
+        return query.iterator(FindOptions()
                         .sort(Sort.ascending("name")))
                 .toList()
     }
 
     fun find(qp: QueryParam): List<Channel> {
-        return getQuery().execute(FindOptions()
+        return getQuery().iterator(FindOptions()
                         .sort(qp.toSort()))
                 .toList()
     }
@@ -73,7 +73,7 @@ class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Chann
 
     fun loggedChannels(): List<String> {
         val channels = ds.find(Channel::class.java)
-                .filter(eq("logged", true)).execute(FindOptions()
+                .filter(eq("logged", true)).iterator(FindOptions()
                         .projection().include("name"))
                 .toList()
         val names = ArrayList<String>()

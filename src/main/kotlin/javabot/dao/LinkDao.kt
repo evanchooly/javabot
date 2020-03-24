@@ -60,7 +60,7 @@ class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var c
             options.skip(qp.first)
             options.limit(qp.count)
         }
-        return query.execute(options)
+        return query.iterator(options)
     }
 
     fun get(link: Link): Link? {

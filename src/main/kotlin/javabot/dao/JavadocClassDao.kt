@@ -26,7 +26,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>
         if (pkgName != null) {
             query.filter(eq("upperPackageName", pkgName.toUpperCase()))
         }
-        return query.execute().toList()
+        return query.iterator().toList()
     }
 
     private fun getClassByFqcn(fqcn: String): JavadocClass {
@@ -56,7 +56,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>
             ds.find(JavadocField::class.java)
                     .filter(eq("javadocClass", classes[0]))
                     .filter(eq("upperName", fieldName.toUpperCase()))
-                    .execute()
+                    .iterator()
                     .toList()
         } else emptyList()
     }
@@ -92,7 +92,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>
                     eq("shortSignatureTypes", signatureTypes),
                     eq("longSignatureTypes", signatureTypes)))
         }
-        return query.execute().toList()
+        return query.iterator().toList()
     }
 
     fun delete(javadocClass: JavadocClass) {

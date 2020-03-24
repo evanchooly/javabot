@@ -99,7 +99,7 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
             options.sort(qp.toSort("upper"))
         }
         return query
-                .execute(options)
+                .iterator(options)
                 .toList()
     }
 

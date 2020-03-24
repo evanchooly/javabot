@@ -20,7 +20,7 @@ class KarmaDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var 
         if (qp.hasSort()) {
             options.sort(qp.toSort())
         }
-        return ds.find(Karma::class.java).execute(options)
+        return ds.find(Karma::class.java).iterator(options)
                 .toList()
     }
 
