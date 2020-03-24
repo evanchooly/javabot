@@ -21,7 +21,7 @@ abstract class BaseDao<T : Persistent>(val ds: Datastore, val entityClass: Class
             .filter(eq("_id", id))
             .first()
 
-    open fun findAll(): List<T> = ds.find(entityClass).execute().toList()
+    open fun findAll(): List<T> = ds.find(entityClass).iterator().toList()
 
     private fun loadChecked(id: ObjectId?) = find(id) ?: throw EntityNotFoundException(entityClass, id)
 

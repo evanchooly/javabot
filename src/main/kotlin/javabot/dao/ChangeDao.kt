@@ -50,7 +50,7 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
 
     fun getChanges(qp: QueryParam, message: String?, date: LocalDateTime?): List<Change> {
         return buildFindQuery(message, date)
-                .execute(FindOptions()
+                .iterator(FindOptions()
                         .skip(qp.first)
                         .limit(qp.count)
                         .sort(descending("changeDate")))

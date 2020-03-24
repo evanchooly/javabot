@@ -30,7 +30,7 @@ class LogsOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var ds
                 query.filter(eq("nick", nickname))
                 options.limit(50)
             }
-            query.execute(FindOptions()).forEach {
+            query.forEach {
                 responses.add(Message(event, Sofia.logsEntry(it.updated.format(ofPattern("HH:mm")), it.nick!!, it.message)))
             }
             if (responses.isEmpty()) {
