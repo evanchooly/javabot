@@ -5,22 +5,36 @@ import dev.morphia.Datastore
 import dev.morphia.query.QueryException
 import dev.morphia.query.experimental.filters.Filters.eq
 import dev.morphia.query.experimental.filters.Filters.or
-import javabot.javadoc.JavadocParser
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocField
 import javabot.model.javadoc.JavadocMethod
 
 class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>(ds, JavadocClass::class.java) {
+    companion object {
+        private fun calculateNameAndPackage(value: String): Pair<String?, String> {
+            var clsName = value
+            while (clsName.contains(".") && Character.isLowerCase(clsName[0])) {
+                clsName = clsName.substring(clsName.indexOf(".") + 1)
+            }
+            val pkgName = if (value != clsName) {
+                value.substring(0, value.indexOf(clsName) - 1)
+            } else {
+                null
+            }
+
+            return pkgName to clsName
+        }
+    }
 
     fun count() = ds.find(JavadocClass::class.java).count()
 
     fun getClass(api: JavadocApi? = null, name: String): List<JavadocClass> {
-        val strings = JavadocParser.calculateNameAndPackage(name)
+        val strings = calculateNameAndPackage(name)
         val pkgName = strings.first
         val query = ds.find(JavadocClass::class.java)
                 .filter(eq("upperName", strings.second.toUpperCase()))
-        api?.id.let { id ->
+        api?.id?.let { id ->
             query.filter(eq("apiId", id))
         }
         if (pkgName != null) {
@@ -72,11 +86,8 @@ class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>
             klass.parentTypes.forEach {
                 try {
                     methods += getMethods(methodName, signatureTypes, getClassByFqcn(it))
-                } catch (e: IllegalStateException) {
-                    println("it = ${it}")
-                    println("klass = ${klass}")
-                    println("klass.parentTypes = ${klass.parentTypes}")
-                    throw IllegalStateException("klass = ${klass}", e)
+                } catch (e: QueryException) {
+                    // parent type isn't in the bot
                 }
             }
         }

@@ -5,7 +5,11 @@ import javabot.JavabotConfig
 import javabot.dao.JavadocClassDao
 import javabot.model.ApiEvent
 import javabot.model.javadoc.JavadocApi
+import javabot.model.javadoc.JavadocClass
+import javabot.model.javadoc.JavadocField
+import javabot.model.javadoc.JavadocMethod
 import javabot.operations.JavadocOperation
+import org.bson.Document
 import org.testng.Assert
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
@@ -31,8 +35,13 @@ class JavadocTest : BaseTest() {
 
     @BeforeClass
     fun drops() {
+        for(type in listOf(JavadocApi::class.java, JavadocClass::class.java, JavadocMethod::class.java, JavadocField::class.java)) {
+            val collection = datastore.mapper.getCollection(type)
+            println("Deleting all in ${collection.namespace.collectionName}")
+            collection.deleteMany(Document())
+        }
         apiDao.delete("Servlet")
-        apiDao.delete("JavaEE7")
+        apiDao.delete("JakartaEE8")
     }
 
     private fun checkServlets(api: JavadocApi) {
@@ -52,32 +61,31 @@ class JavadocTest : BaseTest() {
         Assert.assertEquals(Files.exists(Paths.get(uri)), result)
     }
 
-    @Test(dependsOnMethods = ["coreJavadoc"])
-    fun javaee() {
-        val apiName = "JavaEE7"
-        val api = loadApi(apiName, "javax", "javaee-api", "7.0")
+    @Test(dependsOnMethods = ["core"])
+    fun jakartaEE() {
+        val apiName = "JakartaEE8"
+        val api = loadApi(apiName, "jakarta.platform", "jakarta.jakartaee-api", "8.0.0")
         verifyMapCount()
         scanForResponse(operation.handleMessage(message("~javadoc Annotated")), "javax/enterprise/inject/spi/Annotated.html")
         scanForResponse(operation.handleMessage(message("~javadoc Annotated.getAnnotation(*)")),
                 "javax/enterprise/inject/spi/Annotated.html#getAnnotation")
         scanForResponse(operation.handleMessage(message("~javadoc ContextService")), "javax/enterprise/concurrent/ContextService.html")
+
         scanForResponse(operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
-                "createContextualProxy(java.lang.Object, java.lang.Class...)")
+                "createContextualProxy-java.lang.Object-java.lang.Class...-")
+
         scanForResponse(operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
-                "createContextualProxy(java.lang.Object, java.util.Map, java.lang.Class...)")
+                "createContextualProxy-java.lang.Object-java.util.Map-java.lang.Class...-")
         scanForResponse(operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
-                "createContextualProxy(T, java.lang.Class)")
+                "createContextualProxy-T-java.lang.Class-")
         scanForResponse(operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
-                "createContextualProxy(T, java.util.Map, java.lang.Class)")
-        scanForResponse(operation.handleMessage(message("~javadoc PartitionPlan")), "javax/batch/api/partition/PartitionPlan.html")
-        scanForResponse(operation.handleMessage(message("~javadoc PartitionPlan.setPartitionProperties(Properties[])")),
-                "javax/batch/api/partition/PartitionPlan.html#setPartitionProperties(java.util.Properties[])")
+                "createContextualProxy-T-java.util.Map-java.lang.Class-")
 
         checkServlets(api)
     }
 
     @Test
-    fun coreJavadoc() {
+    fun core() {
         bot
         val api = loadApi("JDK", version = "11")
         Assert.assertEquals(classDao.getClass(api, "Map").size, 1)
@@ -89,7 +97,7 @@ class JavadocTest : BaseTest() {
         scanForResponse(operation.handleMessage(message("~javadoc Map.Entry")),
                 "${config.url()}/javadoc/JDK/11/java.base/java/util/Map.Entry.html")
         scanForResponse(operation.handleMessage(message("~javadoc String.chars()")),
-                "${config.url()}/javadoc/JDK/11/java.base/java/lang/CharSequence.html#chars()")
+                "${config.url()}/javadoc/JDK/11/java.base/java/lang/String.html#chars()")
         scanForResponse(operation.handleMessage(message("~javadoc ResultSet.getInt(*)")),
                 "${config.url()}/javadoc/JDK/11/java.sql/java/sql/ResultSet.html#getInt")
     }
@@ -99,13 +107,11 @@ class JavadocTest : BaseTest() {
         Assert.assertEquals(list.size, 1, "Should have found only 1:  $list")
     }
 
-    @Test
+    @Test(dependsOnMethods = ["core", "jakartaEE"])
     fun guava() {
         val apiName = "guava"
-        val guava = loadApi(apiName, "com.google.guava", "guava", "22.0")
-        loadApi("JDK", version = "11")
-        loadApi("JavaEE7", "javax", "javaee-api", "7.0")
-        val javaEECount = classDao.count()
+        val guava = loadApi(apiName, "com.google.guava", "guava", "28.2-jre")
+        val classCount = classDao.count()
 
         Assert.assertEquals(classDao.getClass(guava, "ArrayTable").size, 1)
         Assert.assertEquals(classDao.getClass(guava, "AbstractCache").size, 1)
@@ -116,7 +122,7 @@ class JavadocTest : BaseTest() {
         classDao.delete(classDao.getClass(guava, "AbstractCache")[0])
         classDao.delete(classDao.getClass(guava, "ArrayTable")[0])
 
-        Assert.assertEquals(classDao.count(), javaEECount - 2)
+        Assert.assertEquals(classDao.count(), classCount - 2)
 
         Assert.assertEquals(classDao.getClass(null, "ArrayList").size, 1)
         Assert.assertEquals(classDao.getClass(null, "HttpServlet").size, 1)
@@ -128,7 +134,7 @@ class JavadocTest : BaseTest() {
         injector.injectMembers(event)
         event.handle()
 
-        Assert.assertEquals(classDao.count(), javaEECount)
+        Assert.assertEquals(classDao.count(), classCount)
 
         Assert.assertEquals(classDao.getClass(event.api, "AbstractCache").size, 1)
         Assert.assertEquals(classDao.getClass(event.api, "ArrayTable").size, 1)

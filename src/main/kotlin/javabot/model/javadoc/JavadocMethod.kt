@@ -12,7 +12,7 @@ import dev.morphia.annotations.PrePersist
         Index(fields = arrayOf(Field("apiId"))),
         Index(fields = arrayOf(Field("classId"), Field("upperName") )),
         Index(fields = arrayOf(Field("apiId"), Field("classId"), Field("upperName") )))
-class JavadocMethod : JavadocElement {
+class JavadocMethod() : JavadocElement() {
     lateinit var classId: ObjectId
     var isConstructor: Boolean = false
     lateinit var name: String
@@ -23,11 +23,9 @@ class JavadocMethod : JavadocElement {
 
     lateinit var parentClassName: String
 
-    constructor()
-
-    constructor(parent: JavadocClass, name: String, urlFragment: String, longArgs: List<String>, shortArgs: List<String>) {
+    constructor(parent: JavadocClass, name: String, urlFragment: String, longArgs: List<String>, shortArgs: List<String>): this() {
         this.name = name
-        isConstructor = name == parent.name
+        isConstructor = name == "<init>"
         classId = parent.id
         apiId = parent.apiId
         parentClassName = parent.toString()
@@ -37,6 +35,9 @@ class JavadocMethod : JavadocElement {
         longSignatureTypes = longArgs.joinToString(", ")
         shortSignatureTypes = shortArgs.joinToString(", ")
         this.url = "${parent.url}${urlFragment}"
+        if(isConstructor) {
+            this.name = parent.name
+        }
     }
 
     fun getShortSignature(): String {

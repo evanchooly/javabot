@@ -15,7 +15,7 @@ open class JavadocClass : JavadocElement {
     lateinit var packageName: String
     lateinit var name: String
     lateinit var fqcn: String
-    var module: String? = null
+    lateinit var module: String
     val parentTypes: MutableList<String> = mutableListOf()
     var isClass: Boolean = false
     var isEnum: Boolean = false
@@ -31,13 +31,13 @@ open class JavadocClass : JavadocElement {
     constructor(api: JavadocApi, module: String?, pkg: String, name: String) {
         packageName = pkg
         this.name = name
-        this.module = module
+        this.module = module ?: ""
         fqcn = "$packageName.$name"
         apiId = api.id
-        url = if(module != null)
+        url = if(this.module.isNotEmpty())
             "${api.baseUrl}${module}/${packageName.replace('.', '/')}/${name}.html"
         else
-            "${api.baseUrl}index.html?${packageName.replace('.', '/')}/${name}.html"
+            "${api.baseUrl}${packageName.replace('.', '/')}/${name}.html"
     }
 
     @PrePersist

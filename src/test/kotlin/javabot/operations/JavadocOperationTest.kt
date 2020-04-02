@@ -4,8 +4,13 @@ import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
 import javabot.JavabotConfig
 import javabot.dao.ApiDao
+import javabot.dao.JavadocClassDao
 import javabot.model.ApiEvent
 import javabot.model.javadoc.JavadocApi
+import javabot.model.javadoc.JavadocClass
+import javabot.model.javadoc.JavadocField
+import javabot.model.javadoc.JavadocMethod
+import org.bson.Document
 import org.slf4j.LoggerFactory
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
@@ -13,27 +18,34 @@ import javax.inject.Inject
 
 @Test
 class JavadocOperationTest : BaseTest() {
+    companion object {
+        val STRING_URL = "java.base/java/lang/String.html#"
+    }
+
     @Inject
     private lateinit var operation: JavadocOperation
+    @Inject
+    protected lateinit var javadocClassDao: JavadocClassDao
 
     @BeforeTest
     fun jdk() {
         loadApi("JDK", version = "11")
     }
 
+
     fun constructors() {
-        scanForResponse(operation.handleMessage(message("~javadoc String(char[])")), "java/lang/String.html#%3Cinit%3E(char%5B%5D)")
-        scanForResponse(operation.handleMessage(message("~javadoc java.lang.String(char[])")), "java/lang/String.html")
+        scanForResponse(operation.handleMessage(message("~javadoc String(char[])")), "$STRING_URL<init>(char[])")
+        scanForResponse(operation.handleMessage(message("~javadoc java.lang.String(char[])")), "$STRING_URL<init>(char[])")
     }
 
     fun methods() {
-        scanForResponse(operation.handleMessage(message("~javadoc String.split(String)")), "java/lang/String.html#split(java.lang.String)")
+        scanForResponse(operation.handleMessage(message("~javadoc String.split(String)")), "${STRING_URL}split(java.lang.String)")
         scanForResponse(operation.handleMessage(message("~javadoc -jdk String.split(String)")),
-                "java/lang/String.html#split(java.lang.String)")
+                "${STRING_URL}split(java.lang.String)")
         scanForResponse(operation.handleMessage(message("~javadoc String.split(java.lang.String)")),
-                "java/lang/String.html#split(java.lang.String)")
-        scanForResponse(operation.handleMessage(message("~javadoc String.join(*)")), "java/lang/String.html#join(")
-        scanForResponse(operation.handleMessage(message("~javadoc String.split(*)")), "java/lang/String.html#split(java.lang.String)")
+                "${STRING_URL}split(java.lang.String)")
+        scanForResponse(operation.handleMessage(message("~javadoc String.join(*)")), "${STRING_URL}join(")
+        scanForResponse(operation.handleMessage(message("~javadoc String.split(*)")), "${STRING_URL}split(java.lang.String)")
     }
 
     fun nestedClasses() {

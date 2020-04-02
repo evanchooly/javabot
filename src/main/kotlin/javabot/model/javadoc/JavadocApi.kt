@@ -32,7 +32,7 @@ class JavadocApi : Persistent {
 
     var version: String = ""
 
-    private constructor()
+    constructor()
 
     constructor(config: JavabotConfig, apiName: String, groupId: String = "", artifactId: String = "", version: String = "") {
         name = apiName

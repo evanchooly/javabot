@@ -1,16 +1,16 @@
 package javabot.model
 
+import dev.morphia.annotations.Entity
+import dev.morphia.annotations.Reference
+import dev.morphia.annotations.Transient
 import javabot.JavabotConfig
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
-import javabot.javadoc.JavadocParser
+import javabot.javadoc.JavadocAsmParser
 import javabot.model.EventType.DELETE
 import javabot.model.EventType.RELOAD
 import javabot.model.javadoc.JavadocApi
 import org.bson.types.ObjectId
-import dev.morphia.annotations.Entity
-import dev.morphia.annotations.Reference
-import dev.morphia.annotations.Transient
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileOutputStream
@@ -62,7 +62,7 @@ class ApiEvent : AdminEvent {
 
     @Inject
     @Transient
-    lateinit var parser: JavadocParser
+    lateinit var asmParser: JavadocAsmParser
 
     @Inject
     @Transient
@@ -113,7 +113,7 @@ class ApiEvent : AdminEvent {
             if (admin != null) {
                 val user = JavabotUser(admin.ircName, admin.emailAddress, admin.hostName)
 
-                parser.parse(it, object : StringWriter() {
+                asmParser.scan(it, object : StringWriter() {
                     override fun write(line: String) {
                         bot.privateMessageUser(user, line)
                         LOG.debug(line)
