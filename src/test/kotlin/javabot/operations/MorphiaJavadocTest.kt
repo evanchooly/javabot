@@ -1,12 +1,6 @@
 package javabot.operations
 
-import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
-import javabot.JavabotConfig
-import javabot.dao.ApiDao
-import javabot.model.ApiEvent
-import javabot.model.javadoc.JavadocApi
-import org.slf4j.LoggerFactory
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
 import javax.inject.Inject
@@ -18,7 +12,6 @@ class MorphiaJavadocTest : BaseTest() {
 
     @BeforeTest
     fun load() {
-        apiDao.findAll().forEach { apiDao.delete(it) }
         loadApi("Morphia", "dev.morphia.morphia", "morphia-core", "2.0.0-BETA2")
     }
 
@@ -43,9 +36,7 @@ class MorphiaJavadocTest : BaseTest() {
     }
 
     fun nonpublic() {
-        scanForResponse(operation.handleMessage(message("~javadoc DatastoreImpl(MongoClient, MapperOptions, String)")),
-                "I have no documentation for DatastoreImpl(")
-        scanForResponse(operation.handleMessage(message("~javadoc DatastoreImpl(MongoDatabase, MongoClient, Mapper, QueryFactory)")),
-                "dev/morphia/DatastoreImpl.html#<init>")
+        scanForResponse(operation.handleMessage(message("~javadoc DatastoreImpl.setInitialVersion(MappedField, T)")),
+                "I have no documentation for ")
     }
 }
