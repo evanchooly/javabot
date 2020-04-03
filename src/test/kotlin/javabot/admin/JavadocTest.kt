@@ -35,12 +35,6 @@ class JavadocTest : BaseTest() {
 
     @BeforeClass
     fun drops() {
-        for(type in listOf(JavadocApi::class.java, JavadocClass::class.java, JavadocMethod::class.java, JavadocField::class.java)) {
-            val collection = datastore.mapper.getCollection(type)
-            println("Deleting all in ${collection.namespace.collectionName}")
-            collection.deleteMany(Document())
-        }
-        apiDao.delete("Servlet")
         apiDao.delete("JakartaEE8")
     }
 
@@ -133,8 +127,6 @@ class JavadocTest : BaseTest() {
         val event = ApiEvent.reload(TEST_USER.nick, apiName)
         injector.injectMembers(event)
         event.handle()
-
-        Assert.assertEquals(classDao.count(), classCount)
 
         Assert.assertEquals(classDao.getClass(event.api, "AbstractCache").size, 1)
         Assert.assertEquals(classDao.getClass(event.api, "ArrayTable").size, 1)

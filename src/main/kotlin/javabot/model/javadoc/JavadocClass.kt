@@ -10,6 +10,7 @@ import dev.morphia.annotations.PrePersist
 @Entity(value = "classes", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("apiId"))), Index(fields = arrayOf(Field("upperName"))),
       Index(fields = arrayOf(Field("upperPackageName"), Field("upperName") )),
+      Index(fields = arrayOf(Field("fqcn")), options = IndexOptions(unique = true)),
       Index(fields = arrayOf(Field("apiId"), Field("upperPackageName"), Field("upperName") ), options = IndexOptions(unique = true)))
 open class JavadocClass : JavadocElement {
     lateinit var packageName: String
@@ -47,7 +48,7 @@ open class JavadocClass : JavadocElement {
     }
 
     override fun toString(): String {
-        return packageName + "." + name
+        return "$packageName.$name [${apiId}]"
     }
 }
 

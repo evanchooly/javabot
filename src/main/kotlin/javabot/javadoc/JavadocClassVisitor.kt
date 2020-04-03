@@ -67,8 +67,10 @@ class JavadocClassVisitor(val apiDao: ApiDao, var javadocApi: JavadocApi, var pa
 
     override fun visitMethod(access: Int, name: String, descriptor: String, signature: String?, exceptions: Array<out String>?):
             MethodVisitor? {
-        if (::javadocClass.isInitialized and (access and Opcodes.ACC_PUBLIC == Opcodes.ACC_PUBLIC)) {
-            val mappedDescriptor = mapDescriptor(descriptor.substringAfter("(").substringBeforeLast(")"))
+        if (::javadocClass.isInitialized and (
+                        (access and Opcodes.ACC_PUBLIC == Opcodes.ACC_PUBLIC) or
+                                (access and Opcodes.ACC_PROTECTED == Opcodes.ACC_PROTECTED))) {
+            val mappedDescriptor = mapDescriptor(descriptor)
             val mappedSignature = try {
                 mapSignature(signature)
             } catch (e: java.lang.IllegalStateException) {
@@ -178,13 +180,14 @@ class JavadocClassVisitor(val apiDao: ApiDao, var javadocApi: JavadocApi, var pa
         val list = mutableListOf<String>()
 
         var i = 0
-        while (i < type.length) {
+        val subbed = type.substringAfter("(").substringBeforeLast(")")
+        while (i < subbed.length) {
             var array = ""
-            while (type[i] == '[') {
+            while (subbed[i] == '[') {
                 array += "[]"
                 i++
             }
-            val mapped = when (type[i++]) {
+            val mapped = when (subbed[i++]) {
                 'B' -> "byte"
                 'C' -> "char"
                 'D' -> "double"
@@ -192,14 +195,14 @@ class JavadocClassVisitor(val apiDao: ApiDao, var javadocApi: JavadocApi, var pa
                 'I' -> "int"
                 'J' -> "long"
                 'L' -> {
-                    val semi = type.indexOf(';', i)
-                    val found = type.substring(i, semi)
+                    val semi = subbed.indexOf(';', i)
+                    val found = subbed.substring(i, semi)
                     i = semi + 1
                     found
                 }
                 'S' -> "short"
                 'Z' -> "boolean"
-                else -> TODO("${type[i - 1]} not mapped: ${type}")
+                else -> TODO("${subbed[i - 1]} not mapped: ${subbed}")
             }
             list += mapped + array
         }

@@ -10,7 +10,7 @@ abstract class JavadocElement : Persistent {
     @Id
     lateinit var id: ObjectId
 
-    var apiId: ObjectId? = null
+    lateinit var apiId: ObjectId
 
     var shortUrl: String? = null
 

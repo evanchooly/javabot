@@ -1,6 +1,7 @@
 package javabot.dao
 
 import dev.morphia.Datastore
+import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
 import dev.morphia.query.experimental.filters.Filters.eq
@@ -34,17 +35,17 @@ class ApiDao @Inject constructor(ds: Datastore) : BaseDao<JavadocApi>(ds, Javado
 
         ds.find(JavadocField::class.java)
                 .filter(eq("apiId", api.id))
-                .delete()
+                .remove(DeleteOptions().multi(true))
 
         LOG.debug("Dropping methods from " + api.name)
         ds.find(JavadocMethod::class.java)
                 .filter(eq("apiId", api.id))
-                .delete()
+                .remove(DeleteOptions().multi(true))
 
         LOG.debug("Dropping classes from " + api.name)
         ds.find(JavadocClass::class.java)
                 .filter(eq("apiId", api.id))
-                .delete()
+                .remove(DeleteOptions().multi(true))
 
         super.delete(api)
     }

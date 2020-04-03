@@ -15,7 +15,7 @@ class JavadocClassVisitorTest: BaseTest()  {
 
         val list = visitor.mapDescriptor("(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;")
 
-        assertEquals(list, listOf("java.lang.Object", "java.lang.Class"));
+        assertEquals(list, listOf("java/lang/Object", "java/lang/Class"));
     }
     @Test
     fun testMapSignature() {
@@ -38,6 +38,7 @@ class JavadocClassVisitorTest: BaseTest()  {
         val visitor = JavadocClassVisitor(apiDao, JavadocApi(), "", "", null, JAVA11)
         visitor.javadocClass = JavadocClass()
         visitor.javadocClass.id = ObjectId()
+        visitor.javadocClass.apiId = ObjectId()
         visitor.javadocClass.packageName = ""
         visitor.javadocClass.name = ""
         visitor.javadocClass.url = ""
