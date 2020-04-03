@@ -25,10 +25,10 @@ class IgnorePossessiveAddressTest
 
     }
 
-    @Test
+    @Test(enabled = false)
     fun testPossessiveAddress() {
         // this message should be ignored
-        javabot.processMessage(message("~${javabot.nick}'s test"))
+        javabot.processMessage(message("${javabot.nick}'s test"))
         assertEquals(ircAdapter.messages.messages.size, 0, ircAdapter.messages.messages.toString())
     }
 }
