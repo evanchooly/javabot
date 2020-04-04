@@ -18,13 +18,7 @@ open class JavadocClass : JavadocElement {
     lateinit var fqcn: String
     lateinit var module: String
     val parentTypes: MutableList<String> = mutableListOf()
-    var isClass: Boolean = false
-    var isEnum: Boolean = false
-    var isInterface: Boolean = false
-
-    var isAnnotation: Boolean = false
     lateinit var upperPackageName: String
-
     lateinit var upperName: String
 
     constructor()
@@ -48,13 +42,6 @@ open class JavadocClass : JavadocElement {
     }
 
     override fun toString(): String {
-        return "$packageName.$name [${apiId}]"
+        return "$packageName.$name"
     }
-}
-
-enum class Visibility {
-    PackagePrivate,
-    Private,
-    Protected,
-    Public
 }

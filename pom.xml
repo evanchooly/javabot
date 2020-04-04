@@ -217,6 +217,7 @@
                     <doUpdate>false</doUpdate>
                 </configuration>
             </plugin>
+<!--
             <plugin>
                 <groupId>com.antwerkz.critter</groupId>
                 <artifactId>critter-maven</artifactId>
@@ -235,6 +236,7 @@
                     <outputType>kotlin</outputType>
                 </configuration>
             </plugin>
+-->
         </plugins>
     </build>
     <dependencies>

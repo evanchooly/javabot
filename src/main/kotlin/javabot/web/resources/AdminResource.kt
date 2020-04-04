@@ -1,6 +1,5 @@
 package javabot.web.resources
 
-import com.antwerkz.sofia.Sofia
 import io.dropwizard.views.View
 import javabot.Javabot
 import javabot.JavabotConfig
@@ -9,9 +8,9 @@ import javabot.dao.ApiDao
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
 import javabot.model.Admin
-import javabot.model.javadoc.JavadocApi
 import javabot.model.ApiEvent
 import javabot.model.Channel
+import javabot.model.javadoc.JavadocApi
 import javabot.web.auth.Restricted
 import javabot.web.model.Authority
 import javabot.web.model.User
@@ -166,8 +165,8 @@ constructor(var viewFactory: ViewFactory, var adminDao: AdminDao, var apiDao: Ap
     @POST
     @Path("/addApi")
     fun addApi(@Context request: HttpServletRequest, @Restricted(Authority.ROLE_ADMIN) user: User,
-               @FormParam("name") name: String?, @FormParam("group") groupId: String?,
-               @FormParam("artifact") artifactId: String?, @FormParam("version") version: String?): View {
+               @FormParam("name") name: String?, @FormParam("groupId") groupId: String?,
+               @FormParam("artifactId") artifactId: String?, @FormParam("version") version: String?): View {
 
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         version?.let {
