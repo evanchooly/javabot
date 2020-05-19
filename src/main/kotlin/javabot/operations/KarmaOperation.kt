@@ -61,7 +61,7 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
             }
             val nick: String =
                     try {
-                        val temp = message.substring(0, operationPointer).trim().toLowerCase()
+                        val temp = message.substring(0, operationPointer).trim()
                         // got an empty nick; spaces only?
                         if (temp.isEmpty()) {
                             // need to check for special case where bot was *addressed* for karma
@@ -88,10 +88,10 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
                         }
                         increment = false
                     }
-                    var karma: Karma? = dao.find(nick)
+                    var karma: Karma? = dao.find(nick.toLowerCase())
                     if (karma == null) {
                         karma = Karma()
-                        karma.name = nick
+                        karma.name = nick.toLowerCase()
                     }
                     if (increment) {
                         karma.value = karma.value + 1
@@ -112,8 +112,9 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
         val message = event.value
         val sender = event.user
         if (message.startsWith("karma ")) {
-            val nick = message.substring("karma ".length).toLowerCase()
-            val karma = dao.find(nick)
+            val nick = message.substring("karma ".length)
+            val normalizedNick=nick.toLowerCase()
+            val karma = dao.find(normalizedNick)
             if (karma != null) {
                 responses.add(Message(event, if (nick.equals(sender.nick, ignoreCase = true))
                     Sofia.karmaOwnValue(sender.nick, karma.value)

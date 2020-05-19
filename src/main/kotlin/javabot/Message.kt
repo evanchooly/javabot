@@ -78,8 +78,8 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
             }
             val space = target.indexOf(' ')
             val about = target.substring(space + 1)
-            val nick = target.substring(0, space)
-            return if (space >= 0) TellSubject(JavabotUser(nick), about.trim()) else null
+            //val nick = target.substring(0, space)
+            return if (space >= 0) TellSubject(JavabotUser(target.substring(0, space)), about.trim()) else null
         }
 
     }
