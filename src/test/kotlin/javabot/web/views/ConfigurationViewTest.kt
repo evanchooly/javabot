@@ -20,7 +20,7 @@ class ConfigurationViewTest : ViewsTest() {
     protected lateinit var configDao: ConfigDao
 
     @Test
-    @Throws(IOException::class) fun configuration() {
+    fun configuration() {
         var config = configDao.get()
         config.operations = mutableListOf()
         configDao.save(config)

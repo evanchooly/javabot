@@ -217,7 +217,6 @@
                     <doUpdate>false</doUpdate>
                 </configuration>
             </plugin>
-<!--
             <plugin>
                 <groupId>com.antwerkz.critter</groupId>
                 <artifactId>critter-maven</artifactId>
@@ -236,14 +235,13 @@
                     <outputType>kotlin</outputType>
                 </configuration>
             </plugin>
--->
         </plugins>
     </build>
     <dependencies>
         <dependency>
             <groupId>dev.morphia.morphia</groupId>
             <artifactId>morphia-core</artifactId>
-            <version>2.0.0-BETA2</version>
+            <version>${morphia.version}</version>
         </dependency>
 
         <dependency>
@@ -511,7 +509,7 @@
     </dependencies>
 
     <properties>
-        <critter.version>3.0.5</critter.version>
+        <critter.version>4.0.0-SNAPSHOT</critter.version>
         <dropwizard.version>0.7.1</dropwizard.version>
         <guice.version>4.0</guice.version>
         <jacoco.version>0.8.3</jacoco.version>
@@ -525,5 +523,6 @@
         <okhttp.version>4.2.1</okhttp.version>
         <jaxb.version>2.2.11</jaxb.version>
         <activation.version>1.1.1</activation.version>
+        <morphia.version>2.0.0-SNAPSHOT</morphia.version>
     </properties>
 </project>

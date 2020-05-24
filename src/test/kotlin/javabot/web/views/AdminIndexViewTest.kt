@@ -7,7 +7,7 @@ import java.io.IOException
 
 class AdminIndexViewTest : AdminViewTest() {
     @Test
-    @Throws(IOException::class) fun index() {
+    fun index() {
         val source = render()
 
         val count = adminDao.count()

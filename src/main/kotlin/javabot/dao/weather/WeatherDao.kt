@@ -7,7 +7,7 @@ import javabot.JavabotConfig
 import javabot.dao.geocode.GeocodeDao
 import javabot.dao.weather.openweathermap.OpenWeatherMapHandler
 import javabot.service.HttpService
-import java.util.*
+import java.util.Arrays
 
 class WeatherDao @Inject constructor(javabotConfig: JavabotConfig, private val geocodeDao: GeocodeDao, private val httpService: HttpService) {
     companion object {

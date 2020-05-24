@@ -17,7 +17,7 @@ class FactoidsViewTest : ViewsTest() {
     lateinit var factoidDao: FactoidDao
 
     @Test
-    @Throws(IOException::class) fun singleFactoid() {
+    fun singleFactoid() {
         createFactoids(1)
         val source = render(0, Factoid())
         previousDisabled(source)
@@ -26,7 +26,7 @@ class FactoidsViewTest : ViewsTest() {
     }
 
     @Test
-    @Throws(IOException::class) fun factoidFilter() {
+    fun factoidFilter() {
         createFactoids(10)
         var source = render(0, Factoid("name 1", "", ""))
 
@@ -46,7 +46,7 @@ class FactoidsViewTest : ViewsTest() {
     }
 
     @Test
-    @Throws(IOException::class) fun factoidBadFilter() {
+    fun factoidBadFilter() {
         createFactoids(10)
         val source = render(0, Factoid("bad filter", "", ""))
 
@@ -56,7 +56,7 @@ class FactoidsViewTest : ViewsTest() {
     }
 
     @Test
-    @Throws(IOException::class) fun twoFactoidPages() {
+    fun twoFactoidPages() {
         val itemCount = (PagedView.ITEMS_PER_PAGE * 1.5).toInt()
         createFactoids(itemCount)
 

@@ -12,7 +12,7 @@ import java.util.Locale
 
 class ChangesViewTest : ViewsTest() {
     @Test
-    @Throws(IOException::class) fun changes() {
+    fun changes() {
         createChanges(30)
 
         val renderer = FreemarkerViewRenderer()

@@ -13,7 +13,7 @@ import java.util.Locale
 
 class IndexTest : ViewsTest() {
     @Test
-    @Throws(IOException::class) fun index() {
+    fun index() {
         find(false)
         find(true)
     }

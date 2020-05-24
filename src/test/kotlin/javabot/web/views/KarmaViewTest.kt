@@ -17,7 +17,7 @@ class KarmaViewTest : ViewsTest() {
     protected lateinit var karmaDao: KarmaDao
 
     @Test
-    @Throws(IOException::class) fun karma() {
+    fun karma() {
         createKarma(100)
 
         val renderer = FreemarkerViewRenderer()

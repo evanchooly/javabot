@@ -29,7 +29,7 @@ class ChannelDaoTest : BaseServiceTest() {
     @Test(enabled = false)
     fun stats() {
         datastore.find(Channel::class.java)
-                .remove(DeleteOptions().multi(true))
+                .delete(DeleteOptions().multi(true))
         val list = channelDao.getStatistics()
         Assert.assertTrue(list.isNotEmpty())
         val activity = list[0]

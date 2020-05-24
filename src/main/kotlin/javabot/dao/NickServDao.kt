@@ -2,19 +2,19 @@ package javabot.dao
 
 import com.google.inject.Inject
 import dev.morphia.Datastore
+import dev.morphia.DeleteOptions
 import dev.morphia.UpdateOptions
-import dev.morphia.query.experimental.filters.Filters.eq
 import dev.morphia.query.experimental.filters.Filters.or
+import dev.morphia.query.experimental.updates.UpdateOperators.set
 import javabot.model.JavabotUser
 import javabot.model.NickServInfo
+import javabot.model.criteria.NickServInfoCriteria.Companion.account
+import javabot.model.criteria.NickServInfoCriteria.Companion.nick
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 open class NickServDao @Inject constructor(ds: Datastore) : BaseDao<NickServInfo>(ds, NickServInfo::class.java) {
-    fun clear() {
-        getQuery()
-                .delete()
-    }
+    fun clear() = getQuery().delete(DeleteOptions().multi(true))
 
     fun process(list: List<String>) {
         val info = NickServInfo()
@@ -62,25 +62,25 @@ open class NickServDao @Inject constructor(ds: Datastore) : BaseDao<NickServInfo
     open fun find(name: String): NickServInfo? {
         return ds.find(NickServInfo::class.java)
                 .filter(or(
-                        eq("nick", name.toLowerCase()),
-                        eq("account", name.toLowerCase()))).first()
+                        nick().eq(name.toLowerCase()),
+                        account().eq(name.toLowerCase())))
+                .first()
     }
 
     fun updateNick(oldNick: String, newNick: String): NickServInfo {
         ds.find(NickServInfo::class.java)
-                .filter(eq("nick", oldNick))
-                .update()
-                .set("nick", newNick)
+                .filter(nick().eq(oldNick))
+                .update(set(nick, newNick))
                 .execute(UpdateOptions().multi(false))
 
         return ds.find(NickServInfo::class.java)
-                .filter(eq("nick", newNick))
+                .filter(nick().eq(newNick))
                 .first()
     }
 
     fun unregister(user: JavabotUser) {
         ds.find(NickServInfo::class.java)
-                .filter(eq("nick", user.nick))
+                .filter(nick().eq(user.nick))
                 .delete()
     }
 }

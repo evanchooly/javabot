@@ -8,11 +8,10 @@ import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Query
 import dev.morphia.query.Sort.descending
-import dev.morphia.query.experimental.filters.Filters.`in`
-import dev.morphia.query.experimental.filters.Filters.eq
-import dev.morphia.query.experimental.filters.Filters.regex
 import javabot.dao.util.QueryParam
 import javabot.model.Change
+import javabot.model.criteria.ChangeCriteria.Companion.changeDate
+import javabot.model.criteria.ChangeCriteria.Companion.message
 import java.time.LocalDateTime
 
 class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change::class.java) {
@@ -39,7 +38,7 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
 
     fun findLog(message: String): Boolean {
         val query = ds.find(Change::class.java)
-                .filter(eq("message", message))
+                .filter(message().eq(message))
 
         return query.count() != 0L
     }
@@ -53,24 +52,24 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
                 .iterator(FindOptions()
                         .skip(qp.first)
                         .limit(qp.count)
-                        .sort(descending("changeDate")))
+                        .sort(descending(changeDate)))
                 .toList()
     }
 
     private fun buildFindQuery(message: String?, date: LocalDateTime?): Query<Change> {
         val query = ds.find(Change::class.java)
         if (message != null) {
-            query.filter(regex("message")
+            query.filter(message().regex()
                     .pattern(message))
         }
         if (date != null) {
-            query.filter(eq("changeDate", date))
+            query.filter(changeDate().eq(date))
         }
         return query
     }
 
     fun deleteAll(): DeleteResult {
         return ds.find(Change::class.java)
-                .remove(DeleteOptions().multi(true))
+                .delete(DeleteOptions().multi(true))
     }
 }

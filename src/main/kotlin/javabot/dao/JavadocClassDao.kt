@@ -3,12 +3,14 @@ package javabot.dao
 import com.google.inject.Inject
 import dev.morphia.Datastore
 import dev.morphia.query.QueryException
-import dev.morphia.query.experimental.filters.Filters.eq
 import dev.morphia.query.experimental.filters.Filters.or
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocField
 import javabot.model.javadoc.JavadocMethod
+import javabot.model.javadoc.criteria.JavadocClassCriteria
+import javabot.model.javadoc.criteria.JavadocFieldCriteria
+import javabot.model.javadoc.criteria.JavadocMethodCriteria
 
 class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>(ds, JavadocClass::class.java) {
     companion object {
@@ -28,17 +30,16 @@ class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>
     }
 
     fun count() = ds.find(JavadocClass::class.java).count()
-
     fun getClass(api: JavadocApi? = null, name: String): List<JavadocClass> {
         val strings = calculateNameAndPackage(name)
         val pkgName = strings.first
         val query = ds.find(JavadocClass::class.java)
-                .filter(eq("upperName", strings.second.toUpperCase()))
+                .filter(JavadocClassCriteria.upperName().eq(strings.second.toUpperCase()))
         api?.id?.let { id ->
-            query.filter(eq("apiId", id))
+            query.filter(JavadocClassCriteria.apiId().eq(id))
         }
         if (pkgName != null) {
-            query.filter(eq("upperPackageName", pkgName.toUpperCase()))
+            query.filter(JavadocClassCriteria.upperPackageName().eq(pkgName.toUpperCase()))
         }
         return query.iterator().toList()
     }
@@ -46,7 +47,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>
     private fun getClassByFqcn(fqcn: String): JavadocClass {
         try {
             return ds.find(JavadocClass::class.java)
-                    .filter(eq("fqcn", fqcn))
+                    .filter(JavadocClassCriteria.fqcn().eq(fqcn))
                     .first() ?: throw QueryException("Could not find class by fqcn: $fqcn")
         } catch (e: IllegalStateException) {
             throw IllegalStateException("fqcn = ${fqcn}", e)
@@ -56,10 +57,10 @@ class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>
     fun getClass(api: JavadocApi? = null, pkg: String, name: String): JavadocClass? {
         val query = ds.find(JavadocClass::class.java)
         if (api != null) {
-            query.filter(eq("apiId", api.id))
+            query.filter(JavadocClassCriteria.apiId().eq(api.id))
         }
-        query.filter(eq("upperPackageName", pkg.toUpperCase()))
-                .filter(eq("upperName", name.toUpperCase()))
+        query.filter(JavadocClassCriteria.upperPackageName().eq(pkg.toUpperCase()))
+                .filter(JavadocClassCriteria.upperName().eq(name.toUpperCase()))
 
         return query.first()
     }
@@ -68,8 +69,8 @@ class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>
         val classes = getClass(api, className)
         return if (classes.isNotEmpty()) {
             ds.find(JavadocField::class.java)
-                    .filter(eq("javadocClass", classes[0]))
-                    .filter(eq("upperName", fieldName.toUpperCase()))
+                    .filter(JavadocFieldCriteria.javadocClass().eq(classes[0]))
+                    .filter(JavadocFieldCriteria.upperName().eq(fieldName.toUpperCase()))
                     .iterator()
                     .toList()
         } else emptyList()
@@ -96,23 +97,23 @@ class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>
 
     private fun getMethods(name: String, signatureTypes: String, javadocClass: JavadocClass): List<JavadocMethod> {
         val query = ds.find(JavadocMethod::class.java)
-                .filter(eq("classId", javadocClass.id))
-                .filter(eq("upperName", name.toUpperCase()))
+                .filter(JavadocMethodCriteria.classId().eq(javadocClass.id))
+                .filter(JavadocMethodCriteria.upperName().eq(name.toUpperCase()))
         if ("*" != signatureTypes) {
             query.filter(or(
-                    eq("shortSignatureTypes", signatureTypes),
-                    eq("longSignatureTypes", signatureTypes)))
+                    JavadocMethodCriteria.shortSignatureTypes().eq(signatureTypes),
+                    JavadocMethodCriteria.longSignatureTypes().eq(signatureTypes)))
         }
         return query.iterator().toList()
     }
 
     fun delete(javadocClass: JavadocClass) {
         ds.find(JavadocField::class.java)
-                .filter(eq("javadocClass", javadocClass))
+                .filter(JavadocFieldCriteria.javadocClass().eq(javadocClass))
                 .delete()
 
         ds.find(JavadocMethod::class.java)
-                .filter(eq("classId", javadocClass.id))
+                .filter(JavadocMethodCriteria.classId().eq(javadocClass.id))
                 .delete()
 
         super.delete(javadocClass)
