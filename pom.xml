@@ -75,6 +75,7 @@
                         <configuration>
                             <sourceDirs>
                                 <source>src/main/kotlin</source>
+                                <source>target/generated-sources/critter</source>
                                 <source>target/generated-sources/sofia</source>
                             </sourceDirs>
                         </configuration>
