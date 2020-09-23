@@ -22,5 +22,10 @@ dependency-reduced-pom.xml
 *~
 Sofia.java
 /javadoc/
+
 # used by jottinger for local testing of mongo database
 /data/
+
+# build detritus
+build.log
+downloads/
