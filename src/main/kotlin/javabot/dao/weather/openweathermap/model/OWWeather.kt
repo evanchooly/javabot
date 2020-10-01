@@ -14,7 +14,8 @@ data class OWWeather(
         var sys: OWSys? = null,
         var id: Long? = null,
         var name: String? = null,
-        var cod: Int? = null
+        var cod: Int? = null,
+        var timezone: String? = null
 )
 
 data class OWCoordinates(
@@ -34,7 +35,8 @@ data class OWMain(
         var pressure: Long? = null,
         var humidity: Long? = null,
         var temp_min: Double? = null,
-        var temp_max: Double? = null
+        var temp_max: Double? = null,
+        var feels_like: Double? = null
 )
 
 data class OWWind(
