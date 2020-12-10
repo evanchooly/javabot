@@ -9,7 +9,7 @@ import dev.morphia.annotations.Id
 
 @Entity
 abstract class JavadocElement : Persistent {
-    @Id
+    @field:Id
     lateinit var id: ObjectId
 
     lateinit var apiId: ObjectId
