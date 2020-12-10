@@ -24,6 +24,6 @@ jobs:
           key: \${{ runner.os }}-m2-\${{ hashFiles('**/pom.xml') }}
           restore-keys: \${{ runner.os }}-m2
       - name: Configure the bot
-        run: echo ${{ secrets.javabot_properties }} > javabot.properties
+        run: echo ${{ secrets.JAVABOT_PROPERTIES }} > javabot.properties
       - name: Build with Maven
         run: mvn -e install
