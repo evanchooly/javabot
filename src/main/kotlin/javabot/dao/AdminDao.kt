@@ -22,6 +22,7 @@ class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) : Ba
     }
 
     fun isAdmin(user: JavabotUser): Boolean = findAll().isEmpty() || getAdmin(user) != null
+
     fun getAdmin(ircName: String, hostName: String) = ds.find(Admin::class.java)
             .filter(ircName().eq(ircName),
                     hostName().eq(hostName))
