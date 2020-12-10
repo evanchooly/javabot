@@ -244,6 +244,12 @@
             <groupId>dev.morphia.morphia</groupId>
             <artifactId>morphia-core</artifactId>
             <version>${morphia.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mongodb.morphia</groupId>
+                    <artifactId>morphia</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -531,6 +537,6 @@
         <okhttp.version>4.2.1</okhttp.version>
         <jaxb.version>2.2.11</jaxb.version>
         <activation.version>1.1.1</activation.version>
-        <morphia.version>2.1.1</morphia.version>
+        <morphia.version>2.1.0</morphia.version>
     </properties>
 </project>
