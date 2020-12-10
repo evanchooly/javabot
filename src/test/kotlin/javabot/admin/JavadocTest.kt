@@ -57,6 +57,7 @@ class JavadocTest : BaseTest() {
 
     @Test(dependsOnMethods = ["core"])
     fun jakartaEE() {
+        datastore.mapper.map(JavadocMethod::class.java)
         val apiName = "JakartaEE8"
         val api = loadApi(apiName, "jakarta.platform", "jakarta.jakartaee-api", "8.0.0")
         verifyMapCount()

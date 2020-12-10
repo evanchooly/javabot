@@ -1,11 +1,13 @@
 package javabot.model.javadoc
 
+import dev.morphia.annotations.Entity
 import javabot.dao.ApiDao
 import javabot.model.Persistent
 import net.swisstech.bitly.BitlyClient
 import org.bson.types.ObjectId
 import dev.morphia.annotations.Id
 
+@Entity
 abstract class JavadocElement : Persistent {
     @Id
     lateinit var id: ObjectId
