@@ -272,13 +272,25 @@
         <dependency>
            <groupId>org.zeroturnaround</groupId>
             <artifactId>zt-exec</artifactId>
-            <version>1.9</version>
+            <version>1.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.10</version>
         </dependency>
 
         <dependency>
             <groupId>org.pircbotx</groupId>
             <artifactId>pircbotx</artifactId>
             <version>2.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -309,7 +321,7 @@
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
-            <version>0.9.9</version>
+            <version>0.9.12</version>
         </dependency>
 
         <dependency>
@@ -345,13 +357,7 @@
         <dependency>
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
-            <version>1.48</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
+            <version>1.78</version>
         </dependency>
 
         <dependency>
@@ -363,7 +369,7 @@
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-core</artifactId>
-            <version>1.1.1</version>
+            <version>1.3.7</version>
         </dependency>
 
         <!-- dropwizard deps -->
@@ -485,6 +491,12 @@
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.antwerkz.bottlerocket</groupId>
+            <artifactId>bottlerocket</artifactId>
+            <version>0.13</version>
+            <scope>test</scope>
+        </dependency>
         <!-- Unit testing dependencies -->
 
         <!-- rivescript -->
@@ -531,7 +543,7 @@
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.25</slf4j.version>
         <sofia.version>0.23</sofia.version>
-        <jsoup.version>1.11.3</jsoup.version>
+        <jsoup.version>1.13.1</jsoup.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <rivescript.version>0.11.0</rivescript.version>
         <okhttp.version>4.2.1</okhttp.version>
