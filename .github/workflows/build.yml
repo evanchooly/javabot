@@ -18,7 +18,7 @@ jobs:
         with:
           java-version: 11
       - name: GH Login
-        run: gh auth login < ${{ secrets.PRIVATE_FILES }}
+        run: echo ${{ secrets.PRIVATE_FILES }} | gh auth login
       - name: Download files
         uses: actions/checkout@v2
         with:
