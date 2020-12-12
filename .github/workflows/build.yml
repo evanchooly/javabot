@@ -17,15 +17,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: GH Login
-        run: echo ${{ secrets.PRIVATE_FILES }} | gh auth login --with-token
-      - name: Download files
-        uses: actions/checkout@v2
-        with:
-          repository: evanchooly/privateFiles
-          ref: main
-          path: files
-          token: ${{ secrets.PRIVATE_FILES }}
       - name: Cache Maven packages
         uses: actions/cache@v1
         with:
@@ -33,6 +24,8 @@ jobs:
           key: \${{ runner.os }}-m2-\${{ hashFiles('**/pom.xml') }}
           restore-keys: \${{ runner.os }}-m2
       - name: Configure the bot
-        run: echo "${{ secrets.JAVABOT_PROPERTIES }}" > javabot.properties
+        run: wget -o javabot.properties ${{ secrets.JAVABOT_PROPERTIES }}
+      - name: Download Javadoc Jar
+        run: wget -o javadoc.zip ${{ secrets.JAVADOC_URL }}
       - name: Build with Maven
         run: mvn -e install
