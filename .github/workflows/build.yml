@@ -31,5 +31,6 @@ jobs:
           repository: evanchooly/privateFiles
           ref: main
           path: files
+          token: ${{ secrets.PRIVATE_FILES }}
       - name: Build with Maven
         run: mvn -e install
