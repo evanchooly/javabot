@@ -25,5 +25,10 @@ jobs:
           restore-keys: \${{ runner.os }}-m2
       - name: Configure the bot
         run: echo "${{ secrets.JAVABOT_PROPERTIES }}" > javabot.properties
+      - name: Download files
+        uses: actions/checkout@v2
+        with:
+          repository: evanchooly/privateFiles
+          token: ${{ secrets.PUSHTOKEN }}
       - name: Build with Maven
         run: mvn -e install
