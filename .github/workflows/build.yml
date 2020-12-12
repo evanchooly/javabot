@@ -37,5 +37,5 @@ jobs:
           ls -al
           file *.zip *.properties
           cat jdk-javadoc.zip
-      - name: Build with Maven
-        run: mvn -e install
+#      - name: Build with Maven
+#        run: mvn -e install
