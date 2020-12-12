@@ -28,6 +28,6 @@ jobs:
       - name: Download Javadoc Jar
         run: wget -o `pwd`/javadoc.zip ${{ secrets.JAVADOC_URL }}
       - name: Show path
-        run: pwd
+        run: pwd ; ls -al
       - name: Build with Maven
         run: mvn -e install
