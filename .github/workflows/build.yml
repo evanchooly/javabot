@@ -28,6 +28,6 @@ jobs:
       - name: Download Javadoc Jar
         run: rm -f *.zip ; wget -o jdk-javadoc.zip https://ghactions:${{ secrets.GH_PASSWD }}@evanchooly.com/private/files/jdk-javadoc.zip
       - name: Show path
-        run: pwd ; ls -al ; file *.zip *.properties
+        run: pwd ; ls -al ; file *.zip *.properties ; cat jdk-javadoc.zip
       - name: Build with Maven
         run: mvn -e install
