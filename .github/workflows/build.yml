@@ -24,10 +24,11 @@ jobs:
           key: \${{ runner.os }}-m2-\${{ hashFiles('**/pom.xml') }}
           restore-keys: \${{ runner.os }}-m2
       - name: Configure the bot
-        run: rm -f javabot.properties ; wget -o javabot.properties https://ghactions:${{ secrets.GH_PASSWD }}@evanchooly.com/private/files/javabot.properties
+        run: rm -f *.properties ; wget -o javabot.properties https://ghactions:${{ secrets.GH_PASSWD }}@evanchooly
+        .com/private/files/javabot.properties
       - name: Download Javadoc Jar
-        run: rm -f javadoc.zip ; wget -o javadoc.zip https://ghactions:${{ secrets.GH_PASSWD }}@evanchooly.com/private/files/jdk-javadoc.zip
+        run: rm -f *.zip ; wget -o jdk-javadoc.zip https://ghactions:${{ secrets.GH_PASSWD }}@evanchooly.com/private/files/jdk-javadoc.zip
       - name: Show path
-        run: pwd ; ls -al ; file javadoc.zip ; cat javadoc.zip
+        run: pwd ; ls -al ; file *.zip *.properties
       - name: Build with Maven
         run: mvn -e install
