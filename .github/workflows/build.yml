@@ -27,5 +27,7 @@ jobs:
         run: wget -o `pwd`/javabot.properties ${{ secrets.JAVABOT_PROPERTIES }}
       - name: Download Javadoc Jar
         run: wget -o `pwd`/javadoc.zip ${{ secrets.JAVADOC_URL }}
+      - name: Show path
+        run: pwd
       - name: Build with Maven
         run: mvn -e install
