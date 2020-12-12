@@ -26,11 +26,11 @@ jobs:
       - name: Configure the bot
         run: |
           rm -vf *.properties*
-          wget -o javabot.properties https://ghactions:${{ secrets.GH_PASSWD }}@evanchooly.com/private/files/javabot.properties
+          curl -o javabot.properties https://ghactions:${{ secrets.GH_PASSWD }}@evanchooly.com/private/files/javabot.properties
       - name: Download Javadoc Jar
         run: |
           rm -vf *.zip*
-          wget -o jdk-javadoc.zip https://ghactions:${{ secrets.GH_PASSWD }}@evanchooly.com/private/files/jdk-javadoc.zip
+          curl -o jdk-javadoc.zip https://ghactions:${{ secrets.GH_PASSWD }}@evanchooly.com/private/files/jdk-javadoc.zip
       - name: Show path
         run: |
           pwd
