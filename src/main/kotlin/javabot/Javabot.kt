@@ -104,7 +104,6 @@ open class Javabot @Inject
         val event = eventDao.findUnprocessed()
         if (event != null) {
             try {
-                println("found event ${event.id}")
                 event.state = State.PROCESSING
                 eventDao.save(event)
                 injector.injectMembers(event)
