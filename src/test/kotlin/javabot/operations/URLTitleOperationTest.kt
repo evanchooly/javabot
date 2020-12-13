@@ -20,7 +20,7 @@ class URLTitleOperationTest : BaseTest() {
     fun testSimpleUrl(url: String, content: String?) {
         val results = operation.handleChannelMessage(Message(TEST_CHANNEL, TEST_USER, url))
         if (content != null) {
-            assertTrue(results.isNotEmpty(), "testing url $url, content $content")
+            assertTrue(results.isNotEmpty(), "testing $url  - results: '$results', expected content: $content")
             assertEquals(content, results[0].value)
         } else {
             assertTrue(results.isEmpty(), "Results for '$url' should be empty: $results")
