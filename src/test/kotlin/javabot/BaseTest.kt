@@ -4,6 +4,7 @@ import com.antwerkz.sofia.Sofia
 import com.google.inject.Injector
 import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.Duration
+import dev.morphia.Datastore
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.dao.ChangeDao
@@ -21,7 +22,6 @@ import javabot.model.Logs
 import javabot.model.NickServInfo
 import javabot.model.State
 import javabot.model.javadoc.JavadocApi
-import dev.morphia.Datastore
 import org.pircbotx.PircBotX
 import org.slf4j.LoggerFactory
 import org.testng.Assert
@@ -172,19 +172,20 @@ open class BaseTest {
         Assert.assertTrue(found, java.lang.String.format("Did not find \n'%s' in \n'%s'", target,
                 messages.joinToString("\n") { it.value }))
     }
-
     protected fun loadApi(apiName: String, groupId: String = "", artifactId: String = "", version: String): JavadocApi {
-        return apiDao.find(apiName) ?: {
+        var api = apiDao.find(apiName)
+        if (api == null) {
             LOG.info("$apiName not found.  Generating now.")
-            val api = JavadocApi(config, apiName, groupId, artifactId, version)
+            api = JavadocApi(config, apiName, groupId, artifactId, version)
             apiDao.save(api)
             val event = ApiEvent.add(TEST_USER.nick, api)
             injector.injectMembers(event)
             event.handle()
             messages.clear()
             LOG.info("$apiName finished.")
-            api
-        }.invoke()
+        }
+
+        return api
     }
 }
 
