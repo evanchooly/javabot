@@ -5,24 +5,18 @@ import javabot.JavabotConfig
 import javabot.dao.JavadocClassDao
 import javabot.model.ApiEvent
 import javabot.model.javadoc.JavadocApi
-import javabot.model.javadoc.JavadocClass
-import javabot.model.javadoc.JavadocField
-import javabot.model.javadoc.JavadocMethod
 import javabot.operations.JavadocOperation
-import org.bson.Document
 import org.testng.Assert
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.Paths
 import javax.inject.Inject
 
 @Test
-class JavadocTest : BaseTest() {
+class JavadocTest() : BaseTest() {
     companion object {
-        const val servletVersion = "3.0.1"
-    }
+        val eeVersion = "8.0.0"
+        val eeApiName = "JakartaEE8" }
 
     @Inject
     private lateinit var classDao: JavadocClassDao
@@ -35,7 +29,7 @@ class JavadocTest : BaseTest() {
 
     @BeforeClass
     fun drops() {
-        apiDao.delete("JakartaEE8")
+        apiDao.delete(eeApiName)
     }
 
     private fun checkServlets(api: JavadocApi) {
@@ -47,18 +41,17 @@ class JavadocTest : BaseTest() {
         scanForResponse(operation.handleMessage(message("~javadoc HttpServletRequest")), "javax/servlet/http/HttpServletRequest.html")
         scanForResponse(operation.handleMessage(message("~javadoc HttpServletRequest.getMethod()")),
                 "javax/servlet/http/HttpServletRequest.html#getMethod")
-        checkServletFile(true)
+        checkServletFile()
     }
 
-    private fun checkServletFile(result: Boolean) {
-        val uri = File("javadoc/Servlet/${servletVersion}/javax/servlet/http/HttpServlet.html").toURI()
-        Assert.assertEquals(Files.exists(Paths.get(uri)), result)
+    private fun checkServletFile() {
+        val uri = File("javadoc/$eeApiName/$eeVersion/javax/servlet/http/HttpServlet.html")
+        Assert.assertTrue(uri.exists())
     }
 
     @Test(dependsOnMethods = ["core"])
     fun jakartaEE() {
-        val apiName = "JakartaEE8"
-        val api = loadApi(apiName, "jakarta.platform", "jakarta.jakartaee-api", "8.0.0")
+        val api = loadApi(eeApiName, "jakarta.platform", "jakarta.jakartaee-api", "8.0.0")
         verifyMapCount()
         scanForResponse(operation.handleMessage(message("~javadoc Annotated")), "javax/enterprise/inject/spi/Annotated.html")
         scanForResponse(operation.handleMessage(message("~javadoc Annotated.getAnnotation(*)")),
@@ -80,7 +73,6 @@ class JavadocTest : BaseTest() {
 
     @Test
     fun core() {
-        bot
         val api = loadApi("JDK", version = "11")
         Assert.assertEquals(classDao.getClass(api, "Map").size, 1)
         Assert.assertNotNull(classDao.getClass(api, "java.lang", "Integer"), "Should find an entry for ${api.name}'s java.lang.Integer")

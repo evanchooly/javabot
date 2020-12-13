@@ -22,14 +22,14 @@ class JavadocAsmParser @Inject constructor(private val apiDao: ApiDao, private v
     }
 
     fun extractJavadocContent(api: JavadocApi): File {
-        val downloadUri = if ("JDK" == api.name) {
-            File(config.jdkJavadoc()).toURI()
-        } else {
-            api.javadocUri()
-        }
-
         val javadocDir = File("javadoc/${api.name}/${api.version}/")
+
         if (!javadocDir.exists()) {
+            val downloadUri = if ("JDK" == api.name) {
+                File(config.jdkJavadoc()).toURI()
+            } else {
+                api.javadocUri()
+            }
             val extracted = extractJar(downloadUri.downloadZip())
 
             try {
