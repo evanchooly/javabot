@@ -14,7 +14,6 @@
         <url>https://github.com/evanchooly/javabot</url>
     </scm>
 
-
     <repositories>
         <repository>
             <id>stackmagic.github.maven-repo</id>
@@ -517,6 +516,7 @@
             <artifactId>jaxb-api</artifactId>
             <version>${jaxb.version}</version>
         </dependency>
+<!--
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-core</artifactId>
@@ -527,6 +527,7 @@
             <artifactId>jaxb-impl</artifactId>
             <version>${jaxb.version}</version>
         </dependency>
+-->
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>

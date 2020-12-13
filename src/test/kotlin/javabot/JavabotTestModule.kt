@@ -29,11 +29,9 @@ class JavabotTestModule : JavabotModule() {
         bind(IrcAdapter::class.java).to(MockIrcAdapter::class.java)
     }
 
-/*
     override fun client(): MongoClient {
         return tester.mongoClient
     }
-*/
 
     override fun loadConfigProperties(): HashMap<Any, Any> {
         return HashMap(load(load(Properties(), "javabot.properties"), "test-javabot.properties"))
