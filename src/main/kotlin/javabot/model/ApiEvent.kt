@@ -98,7 +98,7 @@ class ApiEvent : AdminEvent {
             api = apiDao.find(name)
         }
         api?.let {
-            File("javadoc/${it.name}/${it.version}/").deleteTree()
+            File("javadoc/${it.name}/${it.version}/").deleteRecursively()
             apiDao.delete(it)
             it.id = ObjectId()
         }
