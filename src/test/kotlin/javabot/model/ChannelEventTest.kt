@@ -5,6 +5,7 @@ import javabot.BaseTest
 import org.testng.Assert
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
+import java.util.concurrent.TimeUnit.SECONDS
 
 @Test class ChannelEventTest : BaseTest() {
     @BeforeTest fun clearEvents() {
@@ -20,7 +21,7 @@ import org.testng.annotations.Test
         val name = "##testChannel"
         val event = ChannelEvent("testng", EventType.ADD, name)
         eventDao.save(event)
-        waitForEvent(event, "adding channel " + name, Duration.ONE_MINUTE)
+        waitForEvent(event, "adding channel $name.  event id: ${event.id}", Duration(15, SECONDS))
         Assert.assertNotNull(channelDao.get(name))
     }
 

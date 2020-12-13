@@ -149,7 +149,7 @@ open class BaseTest {
     protected fun waitForEvent(event: AdminEvent, alias: String, timeout: Duration) {
         Awaitility.await(alias)
                 .atMost(timeout)
-                .pollInterval(10, TimeUnit.SECONDS)
+                .pollInterval(1, TimeUnit.SECONDS)
                 .until<Boolean> {
                     val found = eventDao.find(event.id)
                     DONE.contains(found?.state)

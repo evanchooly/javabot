@@ -96,14 +96,15 @@ open class Javabot @Inject
     }
 
     fun setUpThreads() {
-        eventHandler.scheduleAtFixedRate({ this.processAdminEvents() }, 5, 5, TimeUnit.SECONDS)
-        eventHandler.scheduleAtFixedRate({ this.joinChannels() }, 5, 5, TimeUnit.SECONDS)
+        eventHandler.scheduleAtFixedRate({ this.processAdminEvents() }, 1, 5, TimeUnit.SECONDS)
+        eventHandler.scheduleAtFixedRate({ this.joinChannels() }, 1, 5, TimeUnit.SECONDS)
     }
 
     protected fun processAdminEvents() {
         val event = eventDao.findUnprocessed()
         if (event != null) {
             try {
+                println("found event ${event.id}")
                 event.state = State.PROCESSING
                 eventDao.save(event)
                 injector.injectMembers(event)

@@ -10,6 +10,7 @@ import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
 import dev.morphia.Datastore
 import dev.morphia.Morphia
+import dev.morphia.mapping.MapperOptions
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
 import javabot.model.Factoid
@@ -51,7 +52,11 @@ open class JavabotModule : AbstractModule() {
     @Singleton
     fun datastore(): Datastore {
         val databaseName: String = javabotConfig().databaseName()
-        val datastore = Morphia.createDatastore(client(), databaseName)
+        val datastore = Morphia.createDatastore(
+            client(), databaseName, MapperOptions.builder()
+                .enablePolymorphicQueries(true)
+                .build()
+        )
 
         datastore.mapper.mapPackageFromClass(JavadocClass::class.java)
         datastore.mapper.mapPackageFromClass(Factoid::class.java)
