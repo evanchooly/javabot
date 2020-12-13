@@ -44,7 +44,6 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                 responses
             }
         } catch (ignored: Exception) {
-            ignored.printStackTrace()
             return responses
         }
     }
