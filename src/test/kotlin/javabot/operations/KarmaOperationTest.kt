@@ -37,7 +37,7 @@ class KarmaOperationTest @Inject constructor(val nickServDao: NickServDao,
     fun botNameWithKarmaWithAddress() {
         val target = TEST_BOT_NICK
         val karma = getKarma(target) + 1
-        val event = message("${TEST_BOT_NICK}: ${target}++", TEST_BOT_NICK)
+        val event = message("${TEST_BOT_NICK}: ${target}++")
         val response = operation.handleMessage(event)
         assertEquals(response[0].value, Sofia.karmaOthersValue(target, karma, TEST_USER.nick))
 
@@ -49,7 +49,7 @@ class KarmaOperationTest @Inject constructor(val nickServDao: NickServDao,
     fun botNameWithKarma() {
         val target = TEST_BOT_NICK
         val karma = getKarma(target) + 1
-        val event = message("${TEST_BOT_NICK}++", TEST_BOT_NICK)
+        val event = message("${TEST_BOT_NICK}++")
         val response = operation.handleMessage(event)
         assertEquals(response[0].value, Sofia.karmaOthersValue(target, karma, TEST_USER.nick))
 

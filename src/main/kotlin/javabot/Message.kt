@@ -43,8 +43,11 @@ open class Message(val channel: Channel? = null, val user: JavabotUser, val valu
                 content = content.dropWhile { it in arrayOf(':', ',') }.trim()
 
                 if (isTellCommand(startString, content)) {
-                    val tellSubject = if (content.startsWith("tell ")) parseLonghand(bot, content) else parseShorthand(startString,
-                            content)
+                    val tellSubject = if (content.startsWith("tell ")) {
+                        parseLonghand(bot, content)
+                    } else {
+                        parseShorthand(startString, content)
+                    }
 
                     if (tellSubject != null) {
                         return Message(channel, user, tellSubject.subject, tellSubject.target, triggered)
