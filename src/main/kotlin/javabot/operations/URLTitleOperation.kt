@@ -61,7 +61,6 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     }
 
     private fun findTitle(url: String, loop: Boolean): String? {
-        println("finding title in $url")
         if (analyzer.precheck(url)) {
             try {
                 val typedUrl = URL(url)
@@ -108,7 +107,6 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     }
 
     private fun findTwitterTitle(url: String): String {
-        println("finding twitter title.  twitter service enabled: ${twitterService.isEnabled()}")
         if (twitterService.isEnabled()) {
             if (url.contains("status")) {
                 val regex = Regex("status/\\d++")
