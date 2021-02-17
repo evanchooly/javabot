@@ -24,3 +24,4 @@ Sofia.java
 /javadoc/
 # used by jottinger for local testing of mongo database
 /data/
+/downloads/
