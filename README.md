@@ -21,7 +21,7 @@ To build and test Javabot, you'll need to do a few things.
    ```
    If you're using [Docker](https://www.docker.com/), you can run a Docker image for MongoDB:
    ```
-      docker pull mongo
+      docker pull mongo # note that docker-compose (see below) can do this for you.
    ```
 
    (Note that if you're on Windows, you may need to add network translation to handle port 27017; see `images/nat
@@ -39,6 +39,11 @@ To build and test Javabot, you'll need to do a few things.
    ```
     docker run -d -p 27017:27017 --name mongodb mongo
    ```
+   You can also use the `docker-compose-test.yml`:
+   ```
+   docker-compose -f docker-compose-test.yml up
+   ```
+1. You will need to download the JavaDoc *manually* thanks to licensing issues with Java. To do this, go to the [Java download page](https://www.oracle.com/java/technologies/javase-downloads.html) and navigate to the Java version of your choice; you'll see a "JDK Download" and a "Documentation Download" link. Download the documentation, accepting licenses as appropriate; this will give you a file named, for example, `jdk-11.0.10_doc-all.zip` if that's the version you chose. Copy that file to the `javabot` directory, under the name `jdk-javadoc.jar` - which is actually set in the `javabot.properties` file, under the key `javadoc.jdk.file`.
 1. Build and test.
 
 Developing
