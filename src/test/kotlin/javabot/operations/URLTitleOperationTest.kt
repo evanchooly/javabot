@@ -59,8 +59,10 @@ class URLTitleOperationTest : BaseTest() {
                         "botuser's titles: \"- The Java EE 6 Tutorial\" | \"Freenode ##java – enthusiasts united\""),
                 arrayOf("Two urls, one with a title: http://javachannel.org/posts/finding-hash-collisions-in-java-strings/  and " +
                         "http://javachannel.org/", "botuser's title: \"Freenode ##java – enthusiasts united\""),
-                arrayOf("Two urls, duplicated:  http://javachannel.org/ and http://javachannel.org/"
-                        , "botuser's title: \"Freenode ##java – enthusiasts united\""),
+                arrayOf("Two urls, duplicated:  http://javachannel.org/ and http://javachannel.org/",
+                        "botuser's title: \"Freenode ##java – enthusiasts united\""),
+                arrayOf("Two urls, effectively the same:  https://javachannel.org/ and http://javachannel.org/",
+                    "botuser's title: \"Freenode ##java – enthusiasts united\""),
                 arrayOf("https://twitter.com/djspiewak/status/1004038775989678080", "botuser's title: \"Daniel Spiewak on Twitter: \"Random best practice note: just because your language has type inference doesn't mean it's bad to explicitly write types. Types are good! Types are documentation. Don't make future code reviewers play the human ...\""),
                 arrayOf("http://refheap.com", null), // caught by blacklist
                 arrayOf("https://imagebin/ca", null), // caught by blacklist
