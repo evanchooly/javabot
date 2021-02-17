@@ -49,9 +49,10 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     }
 
     private fun postMessageToChannel(responses: MutableList<Message>, titlesToPost: List<String>, event: Message) {
-        val title = if (titlesToPost.size == 1) "title" else "titles"
+        val distinctTitles=titlesToPost.distinct()
+        val title = if (distinctTitles.size == 1) "title" else "titles"
         responses.add(Message(event, "${event.user.nick}'s $title: " +
-                titlesToPost.joinToString(" | ", transform = { s ->
+                distinctTitles.joinToString(" | ", transform = { s ->
                     if (s.length > 240) {
                         """"${s.substring(0, 239)}...""""
                     } else {
