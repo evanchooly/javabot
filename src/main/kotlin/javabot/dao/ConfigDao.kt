@@ -20,6 +20,7 @@ import javax.inject.Inject
 @Singleton
 class ConfigDao @Inject constructor(ds: Datastore, var injector: Injector, var javabotConfig: JavabotConfig) :
         BaseDao<Config>(ds, Config::class.java) {
+
     fun <T> list(type: Class<T>): List<T> {
         val reflections = Reflections("javabot")
 

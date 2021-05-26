@@ -51,5 +51,5 @@ class JavabotTestModule : JavabotModule() {
         return botProvider.get()
     }
 
-    override fun getBotNick(): String = BaseTest.TEST_BOT_NICK
+    fun getBotNick(): String = BaseTest.TEST_BOT_NICK
 }

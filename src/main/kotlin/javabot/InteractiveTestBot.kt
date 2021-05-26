@@ -55,7 +55,7 @@ class InteractiveJavabotModule : JavabotModule() {
         ircAdapterProvider = binder().getProvider(IrcAdapter::class.java)
     }
 
-    override fun getBotNick(): String {
+    fun getBotNick(): String {
         return "test-jb"
     }
 

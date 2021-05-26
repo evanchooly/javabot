@@ -244,3 +244,7 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
         return JavabotUser(nick, login, hostmask)
     }
 }
+
+interface IrcAdapterFactory {
+
+}

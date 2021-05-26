@@ -23,14 +23,6 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>bintray-evanchooly-maven</id>
-            <name>bintray</name>
-            <url>http://dl.bintray.com/evanchooly/maven</url>
-        </repository>
     </repositories>
 
     <build>
@@ -62,7 +54,7 @@
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <version>${kotlin.version}</version>
                 <configuration>
-                    <jvmTarget>1.8</jvmTarget>
+                    <jvmTarget>11</jvmTarget>
                 </configuration>
                 <executions>
                     <execution>
@@ -516,18 +508,6 @@
             <artifactId>jaxb-api</artifactId>
             <version>${jaxb.version}</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
-            <version>${jaxb.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>${jaxb.version}</version>
-        </dependency>
--->
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
@@ -540,7 +520,7 @@
         <dropwizard.version>0.7.1</dropwizard.version>
         <guice.version>4.0</guice.version>
         <jacoco.version>0.8.3</jacoco.version>
-        <kotlin.version>1.4.30</kotlin.version>
+        <kotlin.version>1.5.0</kotlin.version>
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.25</slf4j.version>
         <sofia.version>0.23</sofia.version>

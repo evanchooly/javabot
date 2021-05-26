@@ -21,9 +21,8 @@ import org.aeonbits.owner.ConfigFactory
 import org.pircbotx.Configuration.Builder
 import org.pircbotx.PircBotX
 import org.pircbotx.cap.SASLCapHandler
-import java.util.ArrayList
-import java.util.HashMap
 import javax.inject.Singleton
+import javax.net.ssl.SSLSocketFactory
 
 open class JavabotModule : AbstractModule() {
     open val mongoClient: MongoClient by lazy {
@@ -31,17 +30,13 @@ open class JavabotModule : AbstractModule() {
     }
 
     private var config: JavabotConfig? = null
-    lateinit var ircAdapterProvider: Provider<out IrcAdapter>
     lateinit var channelDaoProvider: Provider<ChannelDao>
     lateinit var configDaoProvider: Provider<ConfigDao>
     override fun configure() {
         configDaoProvider = binder().getProvider(ConfigDao::class.java)
         channelDaoProvider = binder().getProvider(ChannelDao::class.java)
-        ircAdapterProvider = binder().getProvider(IrcAdapter::class.java)
-        install(
-            FactoryModuleBuilder()
-                .build(ViewFactory::class.java)
-        )
+        install(FactoryModuleBuilder().build(ViewFactory::class.java))
+        install(FactoryModuleBuilder().build(IrcAdapterFactory::class.java))
     }
 
     open fun client(): MongoClient? {
@@ -67,27 +62,28 @@ open class JavabotModule : AbstractModule() {
 
     @Provides
     @Singleton
-    protected open fun createIrcBot(): PircBotX {
+    protected open fun createIrcBot(): List<PircBotX> {
         val config = configDaoProvider.get().get()
-        val nick = getBotNick()
-        val builder = Builder()
-            .setName(nick)
-            .setLogin(nick)
-            .setAutoNickChange(false)
-            .setCapEnabled(false)
-            .addListener(getBotListener())
-            .addServer(config.server, config.port)
-            .addCapHandler(SASLCapHandler(nick, config.password))
+        return config.servers.map { server ->
+                val builder = Builder()
+                    .setName(config.nick)
+                    .setLogin(config.nick)
+                    .setAutoNickChange(false)
+                    .setCapEnabled(false)
+                    .addListener(getBotListener())
+                    .addServer(server.server, server.port)
+                    .addCapHandler(SASLCapHandler(config.nick, server.password))
 
-        return buildBot(builder)
+                if (server.ssl) {
+                    builder.setSocketFactory(SSLSocketFactory.getDefault())
+                }
+
+                buildBot(builder)
+            }
     }
 
     open fun buildBot(builder: Builder): PircBotX {
         return PircBotX(builder.buildConfiguration())
-    }
-
-    protected open fun getBotNick(): String {
-        return configDaoProvider.get().get().nick
     }
 
     @Provides
@@ -123,9 +119,5 @@ open class JavabotModule : AbstractModule() {
             throw RuntimeException(Sofia.configurationMissingProperties(missingKeys))
         }
         return config
-    }
-
-    fun getBotListener(): IrcAdapter {
-        return ircAdapterProvider.get()
     }
 }
