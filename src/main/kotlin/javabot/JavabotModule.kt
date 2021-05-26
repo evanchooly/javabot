@@ -79,10 +79,8 @@ open class JavabotModule : AbstractModule() {
             .addListener(getBotListener())
             .addServer(config.server, config.port)
             .addCapHandler(SASLCapHandler(nick, config.password))
+            .setSocketFactory(SSLSocketFactory.getDefault())
 
-        if(config.port != 6667) {
-            builder.setSocketFactory(SSLSocketFactory.getDefault())
-        }
         return buildBot(builder)
     }
 
