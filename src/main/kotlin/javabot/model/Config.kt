@@ -11,7 +11,7 @@ class Config : Serializable, Persistent {
     @Id
     var id: ObjectId? = null
 
-    var server: String = "irc.freenode.org"
+    var server: String = "irc.libera.chat"
 
     var url: String = ""
 

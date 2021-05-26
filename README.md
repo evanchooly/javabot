@@ -71,14 +71,12 @@ web container on port 8081 by default.
 
 Testing on a Live Server
 ------
-Freenode maintains a [test instance of their ircd](https://freenode.net/news/testing-the-nets).  This is ideal for quickly running javabot and testing out commands or verifying your configuration.
-
 To quickly get javabot running on a live server, ensure you've followed the steps in the Building section and change javabot.properties as follows:
 
 ```
-# Connect to freenode test
-javabot.server=testnet.freenode.net 
-javabot.port=9002
+# Connect to libera.chat
+javabot.server=irc.libera.chat 
+javabot.port=6697
 
 # Give your javabot a unique nick
 javabot.nick=tk-421
@@ -90,12 +88,12 @@ mvn clean compile exec:java -DmainClass=javabot.Javabot
 ```
 The bot may take attempt to cycle through servers on testnet to connect if they are unavailable.  Once it has been connected, invite it to a channel (e.g. `/invite tk-421 ##tk421-javabot-test`) and issue commands to it.  
 
-Note that usage of testnet is optional and any available irc server should be sufficient.  Javabot's server config can be changed after it has been initialized by connecting directly to mongodb as follows:
+Javabot's server config can be changed after it has been initialized by connecting directly to mongodb as follows:
 
 ```
 $ mongo
 > use javabot-sample
 switched to db javabot-sample
-> db.configuration.update({}, {$set:{"server":"chat.freenode.net","port":6667}})
+> db.configuration.update({}, {$set:{"server":"irc.libera.chat","port":6697}})
 WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 0 })
 ```

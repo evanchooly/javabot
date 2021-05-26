@@ -21,11 +21,11 @@ interface JavabotConfig : Config, Preprocessor {
     fun url(): String
 
     @Key("javabot.server")
-    @DefaultValue("irc.freenode.org")
+    @DefaultValue("irc.libera.chat")
     fun ircHost(): String
 
     @Key("javabot.port")
-    @DefaultValue("6667")
+    @DefaultValue("6697")
     fun ircPort(): Int
 
     @Key("database.name")

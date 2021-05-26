@@ -24,6 +24,7 @@ import org.pircbotx.cap.SASLCapHandler
 import java.util.ArrayList
 import java.util.HashMap
 import javax.inject.Singleton
+import javax.net.ssl.SSLSocketFactory
 
 open class JavabotModule : AbstractModule() {
     open val mongoClient: MongoClient by lazy {
@@ -79,6 +80,9 @@ open class JavabotModule : AbstractModule() {
             .addServer(config.server, config.port)
             .addCapHandler(SASLCapHandler(nick, config.password))
 
+        if(config.port != 6667) {
+            builder.setSocketFactory(SSLSocketFactory.getDefault())
+        }
         return buildBot(builder)
     }
 
