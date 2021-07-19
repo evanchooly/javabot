@@ -6,7 +6,7 @@ import com.google.common.cache.LoadingCache
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import javabot.JavabotConfig
-import net.swisstech.bitly.BitlyClient
+import net.thauvin.erik.bitly.Bitly
 
 @Singleton
 open class UrlCacheService @Inject constructor(private val config: JavabotConfig) {
@@ -15,10 +15,10 @@ open class UrlCacheService @Inject constructor(private val config: JavabotConfig
     }
 
     @field:[Inject(optional = true)]
-    var bitly: BitlyClient? = null
+    var bitly: Bitly? = null
         get() {
             if (field == null) {
-                field = if (config.bitlyToken() != "") BitlyClient(config.bitlyToken()) else null
+                field = if (config.bitlyToken() != "") Bitly(config.bitlyToken()) else null
             }
             return field
         }
@@ -28,11 +28,7 @@ open class UrlCacheService @Inject constructor(private val config: JavabotConfig
             .build(object : CacheLoader<String, String>() {
                 override fun load(key: String): String {
                     val client = bitly
-                    return if (client != null) {
-                        client.shorten().setLongUrl(key).call().data.url
-                    } else {
-                        key
-                    }
+                    return client?.bitlinks()?.shorten(key) ?: key
                 }
             })
 }
