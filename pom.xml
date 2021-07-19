@@ -444,9 +444,15 @@
         </dependency>
 
         <dependency>
-            <groupId>net.swisstech.bitly</groupId>
-            <artifactId>bitly-api-client</artifactId>
-            <version>0.7.2</version>
+            <groupId>net.thauvin.erik</groupId>
+            <artifactId>bitly-shorten</artifactId>
+            <version>0.9.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-youtube</artifactId>
+            <version>v3-rev20210706-1.32.1</version>
         </dependency>
 
         <dependency>
