@@ -10,7 +10,7 @@ import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
-import net.swisstech.bitly.BitlyClient
+import net.thauvin.erik.bitly.Bitly
 import java.util.ArrayList
 import javax.annotation.Nullable
 
@@ -22,10 +22,10 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
     }
 
     @field:[Nullable Inject(optional = true)]
-    var bitly: BitlyClient? = null
+    var bitly: Bitly? = null
         get() {
             if (field == null) {
-                field = if (config.bitlyToken() != "") BitlyClient(config.bitlyToken()) else null
+                field = if (config.bitlyToken() != "") Bitly(config.bitlyToken()) else null
             }
             return field
         }

@@ -3,9 +3,9 @@ package javabot.model.javadoc
 import dev.morphia.annotations.Entity
 import javabot.dao.ApiDao
 import javabot.model.Persistent
-import net.swisstech.bitly.BitlyClient
 import org.bson.types.ObjectId
 import dev.morphia.annotations.Id
+import net.thauvin.erik.bitly.Bitly
 
 @Entity
 abstract class JavadocElement : Persistent {
@@ -22,11 +22,11 @@ abstract class JavadocElement : Persistent {
         this.apiId = api.id
     }
 
-    private fun buildShortUrl(client: BitlyClient, url: String): String? {
-        return client.shorten().setLongUrl(url).call().data.url
+    private fun buildShortUrl(client: Bitly, url: String): String? {
+        return client.bitlinks().shorten(url)
     }
 
-    fun getDisplayUrl(hint: String, dao: ApiDao, client: BitlyClient?): String {
+    fun getDisplayUrl(hint: String, dao: ApiDao, client: Bitly?): String {
         if (shortUrl == null && client != null) {
             shortUrl = buildShortUrl(client, url) + " [" + dao.find(apiId) + ": " + hint + "]"
             dao.save(this)
