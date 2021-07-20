@@ -65,10 +65,7 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
         if (analyzer.precheck(url)) {
             try {
                 val typedUrl = URL(url)
-                if (typedUrl.host.contains("youtube.com", true)) {
-                    // youtube needs special handling.
-                    return findYoutubeTitle(url)
-                }
+                // there used to be parsing here for youtube but they use <title> now
                 if (typedUrl.host.contains("twitter.com", true)) {
                     return findTwitterTitle(url)
                 }
@@ -89,22 +86,6 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
         } else {
             return null
         }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun findYoutubeTitle(url: String): String {
-        // need to get the actual video id
-        val v = URLEncodedUtils.parse(URI(url), "UTF-8").firstOrNull { it.name == "v" } ?: return ""
-
-        val data = httpService.get("http://youtube.com/get_video_info?video_id=${v.value}")
-        // parse returns a List of field/value pairs
-        val playerResponseField = URLEncodedUtils.parse(data, StandardCharsets.UTF_8)
-                .firstOrNull { it.name == "player_response" } ?: return ""
-
-        val map: Map<String, *> = ObjectMapper().readValue(playerResponseField.value, Map::class.java) as Map<String, *>
-        val videoDetails: Map<String, String?> = (map["videoDetails"] ?: return "") as Map<String, String>
-
-        return videoDetails["title"] ?: ""
     }
 
     private fun findTwitterTitle(url: String): String {
