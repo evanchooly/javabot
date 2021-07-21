@@ -52,7 +52,11 @@ class RFCOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOp
     fun load(rfc: Int, anchor: String = ""): Pair<String, String> {
         val url = "https://tools.ietf.org/html/rfc$rfc$anchor"
         val doc = Jsoup.connect(url).get()
-        return Pair(url, doc.title())
+        val meta= doc
+            .getElementsByTag("span")
+            .first { it.className().equals("h1", true) }
+            ?.text()
+        return Pair(url, meta ?: doc.title())
     }
 
     companion object {
