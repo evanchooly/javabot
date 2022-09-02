@@ -553,7 +553,7 @@
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.25</slf4j.version>
         <sofia.version>0.23</sofia.version>
-        <jsoup.version>1.14.2</jsoup.version>
+        <jsoup.version>1.15.3</jsoup.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <rivescript.version>0.11.0</rivescript.version>
         <okhttp.version>4.2.1</okhttp.version>
