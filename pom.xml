@@ -549,7 +549,7 @@
         <dropwizard.version>0.7.1</dropwizard.version>
         <guice.version>4.0</guice.version>
         <jacoco.version>0.8.3</jacoco.version>
-        <kotlin.version>1.5.20</kotlin.version>
+        <kotlin.version>1.7.21</kotlin.version>
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.25</slf4j.version>
         <sofia.version>0.23</sofia.version>
@@ -559,6 +559,6 @@
         <okhttp.version>4.2.1</okhttp.version>
         <jaxb.version>2.2.11</jaxb.version>
         <activation.version>1.1.1</activation.version>
-        <morphia.version>2.2.1</morphia.version>
+        <morphia.version>2.2.10</morphia.version>
     </properties>
 </project>
