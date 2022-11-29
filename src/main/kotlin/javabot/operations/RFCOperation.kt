@@ -60,6 +60,6 @@ class RFCOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOp
     }
 
     companion object {
-        const val PREFIX: String = "rfc"
+        val PREFIX: String = "rfc"
     }
 }

@@ -18,7 +18,7 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
      var dao: JavadocClassDao, var config: JavabotConfig) : BotOperation(bot, adminDao) {
 
     companion object {
-        private const val RESULT_LIMIT = 5
+        private val RESULT_LIMIT = 5
     }
 
     @field:[Nullable Inject(optional = true)]

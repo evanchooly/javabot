@@ -6,14 +6,13 @@ import org.testng.Assert
 import org.testng.annotations.Test
 import java.time.LocalDateTime
 
+@Test(enabled = false)
 class LogsViewTest : ViewsTest() {
 
-    @Test
     fun render() {
         render(viewFactory.createLogsView(MockServletRequest(false), "testchannel", LocalDateTime.now()))
     }
 
-    @Test
     fun actions() {
         val message = "my type is " + Type.MESSAGE
         val eventChannel = "testchannel"

@@ -9,21 +9,16 @@ import io.dropwizard.assets.AssetsBundle
 import io.dropwizard.setup.Bootstrap
 import io.dropwizard.setup.Environment
 import io.dropwizard.views.ViewBundle
-import javabot.IrcAdapter
-import javabot.Javabot
-import javabot.JavabotConfig
-import javabot.JavabotModule
-import javabot.OfflineAdapter
-import javabot.dao.ApiDao
-import javabot.web.auth.RestrictedProvider
-import javabot.web.resources.AdminResource
-import javabot.web.resources.BotResource
-import javabot.web.resources.PublicOAuthResource
-import org.eclipse.jetty.server.session.SessionHandler
-import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.file.Files
 import java.util.EnumSet
+import javabot.Javabot
+import javabot.JavabotConfig
+import javabot.JavabotModule
+import javabot.dao.ApiDao
+import javabot.web.resources.AdminResource
+import javabot.web.resources.BotResource
+import javabot.web.resources.PublicOAuthResource
 import javax.servlet.DispatcherType
 import javax.servlet.Filter
 import javax.servlet.FilterChain
@@ -32,6 +27,8 @@ import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import org.eclipse.jetty.server.session.SessionHandler
+import org.slf4j.LoggerFactory
 
 @Singleton
 class JavabotApplication @Inject constructor(var injector: Injector): Application<JavabotConfiguration>() {
@@ -44,7 +41,7 @@ class JavabotApplication @Inject constructor(var injector: Injector): Applicatio
         @JvmStatic fun main(args: Array<String>) {
             Guice.createInjector(JavabotModule())
                     .getInstance(JavabotApplication::class.java)
-                    .run(arrayOf("server", "javabot.yml"))
+                    .run(*arrayOf("server", "javabot.yml"))
         }
     }
 
@@ -68,7 +65,6 @@ class JavabotApplication @Inject constructor(var injector: Injector): Applicatio
         environment.jersey().register(injector.getInstance(BotResource::class.java))
         environment.jersey().register(injector.getInstance(AdminResource::class.java))
         environment.jersey().register(RuntimeExceptionMapper(configuration))
-        environment.jersey().register(RestrictedProvider())
 
         environment.servlets()
                 .addFilter("javadoc", injector.getInstance(JavadocFilter::class.java))
@@ -76,7 +72,7 @@ class JavabotApplication @Inject constructor(var injector: Injector): Applicatio
 
         environment.healthChecks().register("javabot", JavabotHealthCheck())
 
-        running = true
+        running = false
     }
 
     class JavadocFilter @Inject constructor(var apiDao: ApiDao, var config: JavabotConfig) : Filter {

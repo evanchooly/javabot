@@ -38,11 +38,11 @@ import javax.inject.Provider
 open class BaseTest {
 
     companion object {
-        const val TEST_TARGET_NICK: String = "jbtestuser"
-        const val TEST_USER_NICK: String = "botuser"
-        const val TEST_NON_ADMIN_USER_NICK = "nonadminuser"
-        const val TEST_BOT_NICK: String = "testjavabot"
-        const val BOT_EMAIL: String = "test@example.com"
+        val TEST_TARGET_NICK: String = "jbtestuser"
+        val TEST_USER_NICK: String = "botuser"
+        val TEST_NON_ADMIN_USER_NICK = "nonadminuser"
+        val TEST_BOT_NICK: String = "testjavabot"
+        val BOT_EMAIL: String = "test@example.com"
         val DONE: EnumSet<State> = EnumSet.of(State.COMPLETED, State.FAILED)
         val OK: String = Sofia.ok(TEST_USER_NICK.take(16))
         val TARGET_USER = JavabotUser(TEST_TARGET_NICK, TEST_TARGET_NICK, "hostmask")
@@ -175,7 +175,7 @@ open class BaseTest {
     protected fun loadApi(apiName: String, groupId: String = "", artifactId: String = "", version: String): JavadocApi {
         var api = apiDao.find(apiName)
         if (api == null) {
-            LOG.info("$apiName not found.  Generating now.")
+            LOG.info("$apiName API not found.  Generating now.")
             api = JavadocApi(config, apiName, groupId, artifactId, version)
             apiDao.save(api)
             val event = ApiEvent.add(TEST_USER.nick, api)

@@ -41,6 +41,6 @@ class LogsOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var ds
     }
 
     companion object {
-        private const val KEYWORD_LOGS = "logs"
+        private val KEYWORD_LOGS = "logs"
     }
 }

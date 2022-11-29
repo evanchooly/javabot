@@ -12,11 +12,11 @@ import java.time.LocalDateTime
 import java.util.Locale
 import javax.inject.Inject
 
+@Test(enabled = false)
 class FactoidsViewTest : ViewsTest() {
     @Inject
     lateinit var factoidDao: FactoidDao
 
-    @Test
     fun singleFactoid() {
         createFactoids(1)
         val source = render(0, Factoid())
@@ -25,7 +25,6 @@ class FactoidsViewTest : ViewsTest() {
         checkRange(source, 1, 1, 1)
     }
 
-    @Test
     fun factoidFilter() {
         createFactoids(10)
         var source = render(0, Factoid("name 1", "", ""))
@@ -45,7 +44,6 @@ class FactoidsViewTest : ViewsTest() {
         checkRange(source, 1, 1, 1)
     }
 
-    @Test
     fun factoidBadFilter() {
         createFactoids(10)
         val source = render(0, Factoid("bad filter", "", ""))
@@ -55,7 +53,6 @@ class FactoidsViewTest : ViewsTest() {
         checkRange(source, 0, 0, 0)
     }
 
-    @Test
     fun twoFactoidPages() {
         val itemCount = (PagedView.ITEMS_PER_PAGE * 1.5).toInt()
         createFactoids(itemCount)
@@ -77,7 +74,7 @@ class FactoidsViewTest : ViewsTest() {
     }
 
     @Throws(IOException::class)
-    fun render(page: Int, filter: Factoid): Source {
+    private fun render(page: Int, filter: Factoid): Source {
         val renderer = FreemarkerViewRenderer()
         val output = ByteArrayOutputStream()
         renderer.render(viewFactory.createFactoidsView(MockServletRequest(false), page, filter), Locale.getDefault(), output)
