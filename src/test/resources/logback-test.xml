@@ -15,7 +15,7 @@
     </appender>
 
     <logger name="javabot" level="DEBUG">
-        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
     </logger>
 
     <logger name="freemarker.cache">
