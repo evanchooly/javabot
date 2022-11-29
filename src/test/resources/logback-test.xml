@@ -1,7 +1,7 @@
 <configuration scan="true">
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>/tmp/javabot-test.log</file>
+        <file>target/javabot-test.log</file>
 
         <encoder>
             <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
@@ -15,7 +15,7 @@
     </appender>
 
     <logger name="javabot" level="DEBUG">
-        <appender-ref ref="FILE"/>
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="freemarker.cache">
