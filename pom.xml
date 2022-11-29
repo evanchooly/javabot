@@ -496,7 +496,7 @@
         <dependency>
             <groupId>com.antwerkz.bottlerocket</groupId>
             <artifactId>bottlerocket</artifactId>
-            <version>0.15</version>
+            <version>0.41.0</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
