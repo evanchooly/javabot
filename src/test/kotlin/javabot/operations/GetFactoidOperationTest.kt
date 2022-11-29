@@ -1,18 +1,17 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import java.time.ZoneOffset
+import java.util.Arrays
 import javabot.BaseTest
 import javabot.dao.FactoidDao
 import javabot.dao.LogsDaoTest
-import org.jsoup.Connection
+import javax.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
-import java.time.ZoneOffset
-import java.util.Arrays
-import javax.inject.Inject
 
 @Test
 class GetFactoidOperationTest : BaseTest() {
