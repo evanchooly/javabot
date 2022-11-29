@@ -557,7 +557,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <rivescript.version>0.11.0</rivescript.version>
         <okhttp.version>4.2.1</okhttp.version>
-        <jaxb.version>2.2.11</jaxb.version>
+        <jaxb.version>2.3.1</jaxb.version>
         <activation.version>1.1.1</activation.version>
         <morphia.version>2.2.1</morphia.version>
     </properties>
