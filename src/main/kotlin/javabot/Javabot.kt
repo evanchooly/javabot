@@ -170,11 +170,11 @@ open class Javabot @Inject
     }
 
     fun startWebApp() {
-        if (javabotConfig.startWebApp()) {
+        if (false && javabotConfig.startWebApp()) {
             if (File("javabot.yml").exists()) {
                 try {
                     Sofia.logWebappStarting()
-                    application.get().run(arrayOf("server", "javabot.yml"))
+                    application.get().run(*arrayOf("server", "javabot.yml"))
                 } catch (e: Exception) {
                     throw RuntimeException(e.message, e)
                 }

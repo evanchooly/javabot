@@ -29,7 +29,7 @@ class OpenWeatherMapHandler(
 ) : WeatherHandler {
 
     companion object {
-        private const val API_URL = "http://api.openweathermap.org/data/2.5/weather"
+        private val API_URL = "http://api.openweathermap.org/data/2.5/weather"
         private val tzEngine: TimeZoneEngine = TimeZoneEngine.initialize()
         val LOG: Logger = LoggerFactory.getLogger(OpenWeatherMapHandler::class.java)
     }

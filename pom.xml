@@ -253,6 +253,11 @@
             <artifactId>asm-tree</artifactId>
             <version>9.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.twitter4j</groupId>
@@ -280,6 +285,10 @@
                 <exclusion>
                     <groupId>org.apache.commons</groupId>
                     <artifactId>commons-lang3</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -318,6 +327,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
         </dependency>
 
         <dependency>
@@ -497,12 +511,6 @@
             <artifactId>bottlerocket</artifactId>
             <version>0.41.0</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.jetbrains.kotlin</groupId>
-                    <artifactId>kotlin-reflect</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- Unit testing dependencies -->
 
@@ -545,11 +553,12 @@
 
     <properties>
         <critter.version>4.0.0</critter.version>
-        <dropwizard.version>0.7.1</dropwizard.version>
+        <dropwizard.version>2.1.4</dropwizard.version>
         <guice.version>5.1.0</guice.version>
         <jacoco.version>0.8.3</jacoco.version>
+        <jackson.version>2.14.0</jackson.version>
         <kotlin.version>1.7.21</kotlin.version>
-        <logback.version>1.2.3</logback.version>
+        <logback.version>1.4.5</logback.version>
         <slf4j.version>2.0.4</slf4j.version>
         <sofia.version>0.23</sofia.version>
         <jsoup.version>1.15.3</jsoup.version>

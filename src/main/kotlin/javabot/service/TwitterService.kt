@@ -4,8 +4,6 @@ import com.google.inject.Inject
 import com.google.inject.Singleton
 import javabot.JavabotConfig
 import twitter4j.Twitter
-import twitter4j.TwitterFactory
-import twitter4j.conf.ConfigurationBuilder
 
 @Singleton
 class TwitterService @Inject constructor(private val config: JavabotConfig) {
@@ -16,15 +14,10 @@ class TwitterService @Inject constructor(private val config: JavabotConfig) {
                 && config.twitterConsumerSecret().isNotBlank()
                 && config.twitterAccessToken().isNotBlank()
                 && config.twitterAccessTokenSecret().isNotBlank()) {
-            val cb = ConfigurationBuilder()
-            with(cb) {
-                setOAuthConsumerKey(config.twitterConsumerKey())
-                setOAuthConsumerSecret(config.twitterConsumerSecret())
-                setOAuthAccessToken(config.twitterAccessToken())
-                setOAuthAccessTokenSecret(config.twitterAccessTokenSecret())
-            }
-            val tf = TwitterFactory(cb.build())
-            tf.instance
+            Twitter.newBuilder().apply {
+                oAuthConsumer(config.twitterConsumerKey(), config.twitterConsumerSecret())
+                oAuthAccessToken(config.twitterAccessToken(), config.twitterAccessTokenSecret())
+            }.build()
         } else {
             null
         }
@@ -34,7 +27,7 @@ class TwitterService @Inject constructor(private val config: JavabotConfig) {
 
     fun getStatus(id: Long): String? {
         if (isEnabled()) {
-            val status = twitter?.showStatus(id)
+            val status = twitter?.v1()?.tweets()?.showStatus(id)
             if (status != null) {
                 var text: String = status.text ?: return null
                 status.urlEntities.forEach { text = text.replace(it.url, it.expandedURL) }
