@@ -6,7 +6,9 @@ import org.testng.annotations.Test
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-
+import javabot.JavabotConfig
+import org.testng.SkipException
+import org.testng.annotations.BeforeTest
 
 /**
  * Integration test for the Weather Operation, will actually attempt to contact the Google API for weather as
@@ -15,6 +17,8 @@ import java.time.format.DateTimeFormatter
 class WeatherOperationTest : BaseTest() {
     @Inject
     private lateinit var operation: WeatherOperation
+    @Inject
+    private lateinit var config: JavabotConfig
 
     @Test
     fun tellWeather() {
@@ -37,6 +41,13 @@ class WeatherOperationTest : BaseTest() {
         val messages = operation.handleMessage(message("~weather Phoenix, AZ"))
         scanForResponse(messages, "Weather for")
         scanForResponse(messages, "-0700") // PHX doesn't have DST yet, so this is constant
+    }
+
+    @BeforeTest
+    fun checkForToken() {
+        if (config.openweathermapToken() == "") {
+            throw SkipException("weather token not configured")
+        }
     }
 
     @Test

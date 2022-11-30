@@ -1,0 +1,11 @@
+name: Pull Requests
+
+on:
+  pull_request:
+    paths-ignore:
+      - '.github/**'
+
+jobs:
+  Build:
+    uses: evanchooly/workflows/.github/workflows/pull-request.yml@master
+

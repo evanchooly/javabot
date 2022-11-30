@@ -1,53 +1,52 @@
 package javabot.javadoc
 
-import javabot.JavabotConfig
-import javabot.dao.ApiDao
-import javabot.model.downloadZip
-import javabot.model.javadoc.JavadocApi
-import org.bson.types.ObjectId
-import org.objectweb.asm.ClassReader
-import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileOutputStream
-import java.io.FilenameFilter
 import java.io.Writer
 import java.net.URI
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
+import javabot.JavabotConfig
+import javabot.dao.ApiDao
+import javabot.javadoc.JavadocType.Companion.discover
+import javabot.javadoc.JavadocType.Companion.forVersion
+import javabot.model.download
+import javabot.model.javadoc.JavadocApi
 import javax.inject.Inject
+import org.bson.types.ObjectId
+import org.objectweb.asm.ClassReader
+import org.slf4j.LoggerFactory
 
 class JavadocAsmParser @Inject constructor(private val apiDao: ApiDao, private val config: JavabotConfig) {
     companion object {
         private val LOG = LoggerFactory.getLogger(JavadocAsmParser::class.java)
     }
 
-    fun extractJavadocContent(api: JavadocApi): File {
+    fun extractJavadocContent(api: JavadocApi): JavadocType {
         val javadocDir = File("javadoc/${api.name}/${api.version}/")
 
         if (!javadocDir.exists()) {
-            val downloadUri = if ("JDK" == api.name) {
-                File(config.jdkJavadoc()).toURI()
-            } else {
-                api.javadocUri()
-            }
-            val extracted = extractJar(downloadUri.downloadZip())
+            if ("JDK" != api.name) {
+                val extracted = extractJar(api.javadocUri().download())
 
-            try {
-                javadocDir.mkdirs()
-                copyJavadocJar(api, extracted, javadocDir)
-            } catch (e: Exception) {
-                LOG.error(e.message, e)
-            } finally {
-                extracted.deleteRecursively()
+                try {
+                    copyJavadocJar(api, extracted, javadocDir)
+                } catch (e: Exception) {
+                    LOG.error(e.message, e)
+                } finally {
+                    extracted.deleteRecursively()
+                }
             }
         }
 
-        return javadocDir
+        return if ("JDK" != api.name)
+            discover(javadocDir)
+        else
+            forVersion(api.version)
     }
 
     fun scan(api: JavadocApi, writer: Writer) {
-        val root = extractJavadocContent(api)
-        val type = JavadocType.discover(root)
+        val type = extractJavadocContent(api)
 
         if ("JDK" == api.name) {
             File(System.getProperty("java.home"), "jmods")
@@ -56,9 +55,8 @@ class JavadocAsmParser @Inject constructor(private val apiDao: ApiDao, private v
                         scanJar(api, type, it)
                     }
         } else {
-            scanJar(api, type, api.classesUri().downloadZip())
+            scanJar(api, type, api.classesUri().download())
         }
-
 
         writer.write("Finished importing ${api.name}.")
     }
@@ -99,9 +97,9 @@ class JavadocAsmParser @Inject constructor(private val apiDao: ApiDao, private v
     }
 
     private fun copyJavadocJar(api: JavadocApi, extracted: File, javadocDir: File) {
-        val sourceRoot = if (api.name == "JDK") File(extracted, "docs/api") else discoverRoot(extracted)
-
         javadocDir.mkdirs()
+
+        val sourceRoot = if (api.name == "JDK") File(extracted, "docs/api") else discoverRoot(extracted)
         sourceRoot.copyRecursively(javadocDir)
     }
 

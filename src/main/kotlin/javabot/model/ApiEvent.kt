@@ -136,7 +136,7 @@ class ApiEvent : AdminEvent {
     }
 }
 
-fun URI.downloadZip(): File {
+fun URI.download(): File {
     val downloads = File("downloads")
     downloads.mkdir()
     val file = File(downloads, path.substringAfterLast("/"))
