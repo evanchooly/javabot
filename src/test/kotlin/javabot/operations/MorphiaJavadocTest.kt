@@ -12,7 +12,7 @@ class MorphiaJavadocTest : BaseTest() {
 
     @BeforeTest
     fun load() {
-        loadApi("Morphia", "dev.morphia.morphia", "morphia-core", "2.1.1")
+        loadApi("Morphia", "dev.morphia.morphia", "morphia-core", "2.2.10")
     }
 
     fun constructors() {

@@ -7,9 +7,13 @@ enum class JavadocType {
      JAVA6,
      JAVA7,
      JAVA8,
-     JAVA11;
+     JAVA11,
+     JAVA17;
 
     companion object {
+        fun forVersion(version: String): JavadocType {
+            return valueOf("JAVA${version}")
+        }
          fun discover(root: File) : JavadocType {
              val manFile = File(root, "META-INF/MANIFEST.MF")
              if(manFile.exists()) {
@@ -22,6 +26,7 @@ enum class JavadocType {
                      jdkVersion.startsWith("1.7") -> JAVA7
                      jdkVersion.startsWith("1.8") -> JAVA8
                      jdkVersion.startsWith("11") -> JAVA11
+                     jdkVersion.startsWith("17") -> JAVA17
                      else -> throw IllegalArgumentException("unknown JDK version for javadoc:  $jdkVersion")
                  }
              }
