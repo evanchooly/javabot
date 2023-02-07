@@ -344,7 +344,7 @@
         <dependency>
             <groupId>net.iakovlev</groupId>
             <artifactId>timeshape</artifactId>
-            <version>2022f.15</version>
+            <version>2022g.16</version>
         </dependency>
 
         <dependency>
