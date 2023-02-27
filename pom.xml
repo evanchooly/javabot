@@ -504,7 +504,7 @@
         <dependency>
             <groupId>com.antwerkz.bottlerocket</groupId>
             <artifactId>bottlerocket</artifactId>
-            <version>0.41.0</version>
+            <version>0.44.0</version>
             <scope>test</scope>
         </dependency>
         <!-- Unit testing dependencies -->
