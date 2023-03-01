@@ -2,6 +2,7 @@ package javabot.javadoc
 
 import javabot.dao.ApiDao
 import javabot.javadoc.JavadocType.JAVA11
+import javabot.javadoc.JavadocType.JAVA17
 import javabot.javadoc.JavadocType.JAVA6
 import javabot.javadoc.JavadocType.JAVA7
 import javabot.javadoc.JavadocType.JAVA8
@@ -17,7 +18,7 @@ import org.objectweb.asm.Opcodes.ACC_VARARGS
 
 class JavadocClassVisitor(val apiDao: ApiDao, var javadocApi: JavadocApi, var packageName: String, var className: String,
                           var module: String?, val type: JavadocType) :
-        ClassVisitor(Opcodes.ASM8) {
+        ClassVisitor(Opcodes.ASM9) {
 
     private val interfaces = mutableListOf<String>()
     private var parentClass: String? = null
@@ -59,6 +60,7 @@ class JavadocClassVisitor(val apiDao: ApiDao, var javadocApi: JavadocApi, var pa
                 JAVA7 -> "#${name}"
                 JAVA8 -> "#${name}"
                 JAVA11 -> "#${name}"
+                else -> "#${name}"
             }
             fields += JavadocField(javadocClass, name, urlFragment)
         }
@@ -79,8 +81,8 @@ class JavadocClassVisitor(val apiDao: ApiDao, var javadocApi: JavadocApi, var pa
                 throw e
             }
 
-            for ((index, signature) in mappedSignature.withIndex()) {
-                mappedDescriptor[index] = signature
+            for ((index, sig) in mappedSignature.withIndex()) {
+                mappedDescriptor[index] = sig
             }
 
             val longArgs = mappedDescriptor
@@ -101,6 +103,7 @@ class JavadocClassVisitor(val apiDao: ApiDao, var javadocApi: JavadocApi, var pa
                 JAVA7 -> "#${name}${longArgs.joinToString("-", prefix = "-", postfix = "-")}"
                 JAVA8 -> "#${name}${longArgs.joinToString("-", prefix = "-", postfix = "-")}"
                 JAVA11 -> "#${name}${longArgs.joinToString(",", prefix = "(", postfix = ")")}"
+                JAVA17 -> "#${name}${longArgs.joinToString(",", prefix = "(", postfix = ")")}"
             }
             methods += JavadocMethod(javadocClass, name, urlFragment, longArgs, shortArgs)
         }
@@ -115,7 +118,7 @@ class JavadocClassVisitor(val apiDao: ApiDao, var javadocApi: JavadocApi, var pa
         while (index < signature.length) {
             val (s, i) = readNext(signature, index)
             index = i
-            separated += s;
+            separated += s
         }
 
         return separated

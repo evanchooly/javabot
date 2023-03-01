@@ -27,6 +27,7 @@ import java.security.Principal
 import java.util.Enumeration
 import java.util.Locale
 import java.util.UUID
+import javax.servlet.http.HttpUpgradeHandler
 
 class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
     private val cookies: Array<Cookie>
@@ -128,6 +129,10 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return null
     }
 
+    override fun changeSessionId(): String {
+        TODO("Not yet implemented")
+    }
+
     override fun isRequestedSessionIdValid(): Boolean {
         return false
     }
@@ -169,6 +174,10 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return null
     }
 
+    override fun <T : HttpUpgradeHandler?> upgrade(p0: Class<T>?): T {
+        TODO("Not yet implemented")
+    }
+
     override fun getAttribute(name: String): Any? {
         return null
     }
@@ -187,6 +196,10 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
     }
 
     override fun getContentLength(): Int {
+        return 0
+    }
+
+    override fun getContentLengthLong(): Long {
         return 0
     }
 

@@ -4,13 +4,17 @@ import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
 import javabot.dao.FactoidDao
 import javabot.dao.LogsDaoTest
-import javabot.dao.LogsDaoTest.Companion
+import javax.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.Test
-import javax.inject.Inject
 
-@Test(groups = arrayOf("operations"))
-class ForgetFactoidOperationTest @Inject constructor(var factoidDao: FactoidDao, var operation: ForgetFactoidOperation) : BaseTest() {
+@Test
+class ForgetFactoidOperationTest : BaseTest() {
+
+    @Inject
+    private lateinit var factoidDao: FactoidDao
+    @Inject
+    private lateinit var operation: ForgetFactoidOperation
 
     fun forgetFactoid() {
         if (!factoidDao.hasFactoid("afky")) {

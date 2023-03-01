@@ -4,7 +4,7 @@ import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ModuleVisitor
 import org.objectweb.asm.Opcodes
 
-class ModuleInfoVisitor() : ClassVisitor(Opcodes.ASM8) {
+class ModuleInfoVisitor() : ClassVisitor(Opcodes.ASM9) {
 
     var module: String? = null
 

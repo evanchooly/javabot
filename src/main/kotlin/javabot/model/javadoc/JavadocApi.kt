@@ -39,7 +39,11 @@ class JavadocApi : Persistent {
         this.groupId = groupId
         this.artifactId = artifactId
         this.version = version
-        baseUrl = "${config.url()}/javadoc/$apiName/${version}/"
+        baseUrl = if (apiName == "JDK") {
+            "https://docs.oracle.com/en/java/javase/$version/docs/api"
+        } else {
+            "${config.url()}/javadoc/$apiName/${version}/"
+        }
     }
 
     @PrePersist

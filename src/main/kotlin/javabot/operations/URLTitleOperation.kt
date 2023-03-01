@@ -118,8 +118,8 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
             if (body.isNotEmpty()) {
                 body.forEach { fixTwitterLinks(it) }
                 String.format("%s: \"%s\"",
-                        header.first().attr("content"),
-                        body.first().text())
+                        header.first()?.attr("content"),
+                        body.first()?.text())
             } else {
                 doc.title()
             }

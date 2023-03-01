@@ -16,7 +16,8 @@ import javax.inject.Inject
 class JavadocTest() : BaseTest() {
     companion object {
         val eeVersion = "8.0.0"
-        val eeApiName = "JakartaEE8" }
+        val eeApiName = "JakartaEE8"
+    }
 
     @Inject
     private lateinit var classDao: JavadocClassDao
@@ -81,11 +82,11 @@ class JavadocTest() : BaseTest() {
         Assert.assertNotNull(classDao.getClass(api, "java.util.Map.Entry"), "Should find an entry for ${api.name}'s java.util.Map.Entry")
         Assert.assertNotNull(classDao.getClass(api, "Map.Entry"), "Should find an entry for ${api.name}'s java.util.Map.Entry")
         scanForResponse(operation.handleMessage(message("~javadoc Map.Entry")),
-                "${config.url()}/javadoc/JDK/11/java.base/java/util/Map.Entry.html")
+                "${api.baseUrl}/java.base/java/util/Map.Entry.html")
         scanForResponse(operation.handleMessage(message("~javadoc String.chars()")),
-                "${config.url()}/javadoc/JDK/11/java.base/java/lang/String.html#chars()")
+                "${api.baseUrl}/java.base/java/lang/String.html#chars()")
         scanForResponse(operation.handleMessage(message("~javadoc ResultSet.getInt(*)")),
-                "${config.url()}/javadoc/JDK/11/java.sql/java/sql/ResultSet.html#getInt")
+                "${api.baseUrl}/java.sql/java/sql/ResultSet.html#getInt")
     }
 
     private fun verifyMapCount() {

@@ -11,7 +11,7 @@
 bin/dumps
 dist
 idea-files
-javabot.properties
+javabot-hide.properties
 javabot.yml
 logs
 out
@@ -26,3 +26,4 @@ Sofia.java
 /data/
 /downloads/
 /jdk-javadoc.jar
+*openjdk*

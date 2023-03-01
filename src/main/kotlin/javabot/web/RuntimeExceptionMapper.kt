@@ -1,6 +1,5 @@
 package javabot.web
 
-import com.sun.jersey.api.core.HttpContext
 import javabot.web.resources.PublicErrorResource
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -16,6 +15,7 @@ import javax.ws.rs.core.Response.Status.TEMPORARY_REDIRECT
 import javax.ws.rs.core.Response.Status.UNAUTHORIZED
 import javax.ws.rs.ext.ExceptionMapper
 import javax.ws.rs.ext.Provider
+import org.apache.http.protocol.HttpContext
 
 @Provider
 class RuntimeExceptionMapper(val configuration: JavabotConfiguration) : ExceptionMapper<RuntimeException> {

@@ -18,6 +18,7 @@ interface JavabotConfig : Config, Preprocessor {
     }
 
     @Key("javabot.url")
+    @DefaultValue("http://localhost:8080")
     fun url(): String
 
     @Key("javabot.server")
@@ -45,6 +46,7 @@ interface JavabotConfig : Config, Preprocessor {
     fun nick(): String
 
     @Key("javabot.password")
+    @DefaultValue("scott/tiger")
     fun password(): String?
 
     @Key("javabot.bitly.token")
@@ -54,9 +56,6 @@ interface JavabotConfig : Config, Preprocessor {
     @Key("start.web.app")
     @DefaultValue("true")
     fun startWebApp(): Boolean
-
-    @Key("javadoc.jdk.file")
-    fun jdkJavadoc(): String
 
     @Key("javabot.openweathermap.token")
     @DefaultValue("")
