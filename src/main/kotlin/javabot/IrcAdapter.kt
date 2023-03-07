@@ -219,7 +219,8 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
     }
 
     open fun startBot() {
-        ircBot.get().startBot()
+        val botX = ircBot.get()
+        botX.startBot()
     }
 
     open fun leave(channel: Channel, user: JavabotUser) {

@@ -82,7 +82,7 @@ open class Javabot @Inject
     @Volatile private var running = true
 
     init {
-        val hook = Thread(Runnable { this.shutdown() })
+        val hook = Thread { this.shutdown() }
         hook.isDaemon = false
         Runtime.getRuntime().addShutdownHook(hook)
     }
@@ -189,7 +189,7 @@ open class Javabot @Inject
     protected fun applyUpgradeScripts() {
         val set = TreeSet(ScriptComparator())
         set.addAll(configDao.list(UpgradeScript::class.java))
-        set.forEach({ it.execute() })
+        set.forEach { it.execute() }
     }
 
     fun getAllOperations(): SortedMap<String, BotOperation> {

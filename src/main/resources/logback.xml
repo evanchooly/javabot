@@ -18,15 +18,11 @@
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="org" level="INFO">
-        <appender-ref ref="FILE"/>
-    </logger>
-
     <logger name="freemarker.cache">
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="org.pircbotx.InputParser" level="ERROR" additivity="false">
+    <logger name="org.pircbotx" level="DEBUG">
         <appender-ref ref="FILE"/>
     </logger>
 
