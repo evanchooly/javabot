@@ -22,7 +22,7 @@
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="org.pircbotx" level="DEBUG">
+    <logger name="org.pircbotx" level="ERROR">
         <appender-ref ref="FILE"/>
     </logger>
 
