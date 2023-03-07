@@ -94,17 +94,21 @@ open class JavabotModule : AbstractModule() {
     }
 
     open fun buildBot(builder: Builder): PircBotX {
+        return PircBotX(builder.buildConfiguration())
+/*
         return object: PircBotX(builder.buildConfiguration()) {
             override fun sendRawLineToServer(line: String) {
 
                 var line = line
                 if (line.length > configuration.maxLineLength - 2) line = line.substring(0, configuration.maxLineLength - 2)
+                println("raw line: $line")
                 outputWriter.write(line + "\r\n")
                 outputWriter.flush()
                 val lineParts = tokenizeLine(line)
                 getConfiguration().getListenerManager<ListenerManager>().onEvent(OutputEvent(this, line, lineParts))
             }
         }
+*/
     }
 
     protected open fun getBotNick(): String {

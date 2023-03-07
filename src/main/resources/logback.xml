@@ -14,7 +14,7 @@
         </encoder>
     </appender>
 
-    <logger name="javabot" level="INFO">
+    <logger name="javabot" level="DEBUG">
         <appender-ref ref="FILE"/>
     </logger>
 
@@ -22,7 +22,7 @@
         <appender-ref ref="FILE"/>
     </logger>
 
-    <logger name="org.pircbotx" level="INFO">
+    <logger name="org.pircbotx" level="DEBUG">
         <appender-ref ref="FILE"/>
     </logger>
 

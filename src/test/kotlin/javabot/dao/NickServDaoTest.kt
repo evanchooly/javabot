@@ -1,5 +1,6 @@
 package javabot.dao
 
+import com.google.common.collect.ImmutableMap.of
 import javabot.IrcAdapter
 import javabot.MockIrcUser
 import javabot.MockUserHostmask
@@ -41,7 +42,8 @@ class NickServDaoTest @Inject constructor(val nickServDao: NickServDao, val ircA
         info.toNickServFormat().forEach { o ->
             val user = JavabotUser("nickserv")
             ircAdapter.onNotice(NoticeEvent(ircBot.get(), MockUserHostmask(ircBot.get(), user.nick),
-                    MockIrcUser(ircBot.get(), user.nick), null, "", o))
+                    MockIrcUser(ircBot.get(), user.nick), null, "", o, of()
+            ))
         }
     }
 

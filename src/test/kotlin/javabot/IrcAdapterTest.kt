@@ -2,6 +2,7 @@ package javabot
 
 import com.antwerkz.sofia.Sofia
 import com.google.common.collect.ImmutableMap
+import com.google.common.collect.ImmutableMap.of
 import com.google.inject.Inject
 import com.jayway.awaitility.Duration
 import javabot.dao.FactoidDao
@@ -29,13 +30,14 @@ class IrcAdapterTest : BaseTest() {
     @Test
     fun testOnMessage() {
         ircAdapter.onMessage(MessageEvent(ircBot.get(), testIrcChannel, testIrcChannel.name, testIrcHostmask, testIrcUser,
-                "~dude", ImmutableMap.of()))
+                "~dude", of()
+        ))
         Assert.assertEquals(messages.get(duration)[0], Sofia.unhandledMessage(TEST_USER.nick))
     }
 
     @Test
     fun testOnPrivateMessage() {
-        ircAdapter.onPrivateMessage(PrivateMessageEvent(ircBot.get(), testIrcHostmask, testIrcUser, "dude"))
+        ircAdapter.onPrivateMessage(PrivateMessageEvent(ircBot.get(), testIrcHostmask, testIrcUser, "dude", of()))
         Assert.assertEquals(messages.get(duration)[0], Sofia.unhandledMessage(TEST_USER.nick))
     }
 
@@ -44,7 +46,8 @@ class IrcAdapterTest : BaseTest() {
         factoidDao.delete(TEST_USER.nick, "impact", LogsDaoTest.CHANNEL_NAME)
         factoidDao.addFactoid(TEST_USER.nick, "impact", "<reply>ouch", LogsDaoTest.CHANNEL_NAME)
         ircAdapter.onMessage(MessageEvent(ircBot.get(), testIrcChannel, testIrcChannel.name, testIrcHostmask, testIrcUser,
-                "~impact", ImmutableMap.of()))
+                "~impact", of()
+        ))
         Assert.assertEquals(messages.get(duration)[0], "ouch")
     }
 
@@ -65,7 +68,8 @@ class IrcAdapterTest : BaseTest() {
             factoidDao.delete(TEST_USER.nick, conversion, LogsDaoTest.CHANNEL_NAME)
             factoidDao.addFactoid(TEST_USER.nick, conversion, "<reply>something", LogsDaoTest.CHANNEL_NAME)
             ircAdapter.onMessage(MessageEvent(ircBot.get(), testIrcChannel, testIrcChannel.name, testIrcHostmask, testIrcUser,
-                    key, ImmutableMap.of()))
+                    key, of()
+            ))
             Assert.assertEquals(messages.get(duration)[0], "something")
         }
         testWithValue("~$conversion")
@@ -78,7 +82,8 @@ class IrcAdapterTest : BaseTest() {
         factoidDao.delete(TEST_USER.nick, "impact", LogsDaoTest.CHANNEL_NAME)
         factoidDao.addFactoid(TEST_USER.nick, "impact", "<reply>ouch", LogsDaoTest.CHANNEL_NAME)
         ircAdapter.onMessage(MessageEvent(ircBot.get(), testIrcChannel, testIrcChannel.name, testIrcHostmask, testIrcUser,
-                "~~ ${TARGET_USER.nick} impact", ImmutableMap.of()))
+                "~~ ${TARGET_USER.nick} impact", of()
+        ))
         Assert.assertEquals(messages.get(duration)[0], "${TARGET_USER.nick}, ouch")
     }
 
