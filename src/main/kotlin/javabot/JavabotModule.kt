@@ -1,6 +1,7 @@
 package javabot
 
 import com.antwerkz.sofia.Sofia
+import com.google.common.base.CharMatcher
 import com.google.inject.AbstractModule
 import com.google.inject.Provider
 import com.google.inject.Provides
@@ -16,15 +17,18 @@ import javabot.dao.ConfigDao
 import javabot.model.Factoid
 import javabot.model.javadoc.JavadocClass
 import javabot.web.views.ViewFactory
-import org.aeonbits.owner.Config.Key
-import org.aeonbits.owner.ConfigFactory
-import org.pircbotx.Configuration.Builder
-import org.pircbotx.PircBotX
-import org.pircbotx.cap.SASLCapHandler
-import java.util.ArrayList
-import java.util.HashMap
 import javax.inject.Singleton
 import javax.net.ssl.SSLSocketFactory
+import org.aeonbits.owner.Config.Key
+import org.aeonbits.owner.ConfigFactory
+import org.pircbotx.Configuration.BotFactory
+import org.pircbotx.Configuration.Builder
+import org.pircbotx.InputParser
+import org.pircbotx.JavabotInputParser
+import org.pircbotx.PircBotX
+import org.pircbotx.cap.SASLCapHandler
+import org.pircbotx.hooks.events.OutputEvent
+import org.pircbotx.hooks.managers.ListenerManager
 
 open class JavabotModule : AbstractModule() {
     open val mongoClient: MongoClient by lazy {
@@ -72,6 +76,11 @@ open class JavabotModule : AbstractModule() {
         val config = configDaoProvider.get().get()
         val nick = getBotNick()
         val builder = Builder()
+            .setBotFactory(object: BotFactory() {
+                override fun createInputParser(bot: PircBotX): InputParser {
+                    return JavabotInputParser(bot)
+                }
+            })
             .setName(nick)
             .setLogin(nick)
             .setAutoNickChange(false)
@@ -85,7 +94,17 @@ open class JavabotModule : AbstractModule() {
     }
 
     open fun buildBot(builder: Builder): PircBotX {
-        return PircBotX(builder.buildConfiguration())
+        return object: PircBotX(builder.buildConfiguration()) {
+            override fun sendRawLineToServer(line: String) {
+
+                var line = line
+                if (line.length > configuration.maxLineLength - 2) line = line.substring(0, configuration.maxLineLength - 2)
+                outputWriter.write(line + "\r\n")
+                outputWriter.flush()
+                val lineParts = tokenizeLine(line)
+                getConfiguration().getListenerManager<ListenerManager>().onEvent(OutputEvent(this, line, lineParts))
+            }
+        }
     }
 
     protected open fun getBotNick(): String {
@@ -121,7 +140,7 @@ open class JavabotModule : AbstractModule() {
                 throw RuntimeException(e.message, e)
             }
         }
-        if (!missingKeys.isEmpty()) {
+        if (missingKeys.isNotEmpty()) {
             throw RuntimeException(Sofia.configurationMissingProperties(missingKeys))
         }
         return config
@@ -130,4 +149,26 @@ open class JavabotModule : AbstractModule() {
     fun getBotListener(): IrcAdapter {
         return ircAdapterProvider.get()
     }
+}
+
+fun tokenizeLine(input: String?): MutableList<String> {
+    val stringParts: MutableList<String> = java.util.ArrayList()
+    if (input.isNullOrEmpty()) return stringParts
+    //Heavily optimized string split by space with all characters after :
+    //added as a single entry. Under benchmarks, this is faster than
+    //StringTokenizer, String.split, toCharArray, and charAt
+    val trimmedInput: String = CharMatcher.whitespace().trimFrom(input)
+    var pos = 0
+    var end: Int
+    while (trimmedInput.indexOf(' ', pos).also { end = it } >= 0) {
+        stringParts.add(trimmedInput.substring(pos, end))
+        pos = end + 1
+        if (trimmedInput[pos] == ':') {
+            stringParts.add(trimmedInput.substring(pos + 1))
+            return stringParts
+        }
+    }
+    //No more spaces, add last part of line
+    stringParts.add(trimmedInput.substring(pos))
+    return stringParts
 }
