@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.Lists
 import java.util.StringTokenizer
+import javabot.Javabot
 import javabot.tokenizeLine
 import org.apache.commons.lang3.StringUtils
 import org.pircbotx.hooks.events.BanListEvent
@@ -21,8 +22,15 @@ import org.pircbotx.hooks.events.UserListEvent
 import org.pircbotx.hooks.events.WhoisEvent
 import org.pircbotx.hooks.events.WhoisEvent.Builder
 import org.pircbotx.hooks.managers.ListenerManager
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class JavabotInputParser( bot: PircBotX): InputParser(bot) {
+    companion object {
+        val LOG: Logger = LoggerFactory.getLogger(JavabotInputParser::class.java)
+    }
+
+/*
     override fun handleLine(rawLine: String) {
         var line: String = CharMatcher.whitespace().trimFrom(rawLine)
         // Parse out v3Tags before
@@ -83,9 +91,13 @@ class JavabotInputParser( bot: PircBotX): InputParser(bot) {
         val source = bot.configuration.botFactory.createUserHostmask(bot, sourceRaw.substring(1))
         processCommand(target, source, command, line, parsedLine, tags.build())
     }
+*/
 
     override fun processServerResponse(code: Int, rawResponse: String, parsedResponseOrig: MutableList<String>) {
         val parsedResponse = ImmutableList.copyOf(parsedResponseOrig)
+        parsedResponse.forEach {
+            println("response: $it")
+        }
         //Parsed response format: Everything after code
         if (code == 433) {
             //EXAMPLE: * AnAlreadyUsedName :Nickname already in use

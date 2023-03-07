@@ -124,14 +124,15 @@ open class Javabot @Inject
             val joined = mutableSetOf<String>()
             val channels = ArrayList(channelDao.getChannels(true))
             if (joined.size != channels.size) {
-                channels.filter({ channel -> !joined.contains(channel.name) }).forEach({ channel ->
-                    if (!adapter.isBotOnChannel(channel.name)) {
-                        joinChannel(channel)
-                        Thread.sleep(250L)
-                    } else {
-                        joined.add(channel.name)
+                channels.filter { channel -> !joined.contains(channel.name) }
+                    .forEach { channel ->
+                        if (!adapter.isBotOnChannel(channel.name)) {
+                            joinChannel(channel)
+                            Thread.sleep(250L)
+                        } else {
+                            joined.add(channel.name)
+                        }
                     }
-                })
             }
         }
     }
