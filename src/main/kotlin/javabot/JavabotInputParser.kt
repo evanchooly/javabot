@@ -311,10 +311,11 @@ class JavabotInputParser( bot: PircBotX): InputParser(bot) {
                 //Siphon off any levels this user has
                 var nick = curUser
                 val levels: MutableList<UserLevel> = Lists.newArrayList()
-                var parsedLevel: UserLevel
-                while (UserLevel.fromSymbol(nick[0]).also { parsedLevel = it } != null) {
+                var parsedLevel: UserLevel? = UserLevel.fromSymbol(nick[0])
+                while (parsedLevel != null) {
                     nick = nick.substring(1)
                     levels.add(parsedLevel)
+                    parsedLevel = UserLevel.fromSymbol(nick[0])
                 }
                 var user: User?
                 user = if (!bot.getUserChannelDao().containsUser(nick)) //Create user with nick only
