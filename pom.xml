@@ -30,6 +30,25 @@
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.pircbotx</groupId>
+                            <artifactId>pircbotx</artifactId>
+                            <version>2.3-SNAPSHOT</version>
+                            <file>lib/pircbotx-2.3-SNAPSHOT.jar</file>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <version>${kotlin.version}</version>
@@ -274,17 +293,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.pircbotx</groupId>
+            <groupId>org.pircbotx</groupId>
             <artifactId>pircbotx</artifactId>
             <version>2.3-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/lib/pircbotx-2.3-SNAPSHOT.jar</systemPath>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
