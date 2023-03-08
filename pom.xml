@@ -563,7 +563,7 @@
     </dependencies>
 
     <properties>
-        <critter.version>4.0.0</critter.version>
+        <critter.version>4.3.3</critter.version>
         <dropwizard.version>2.1.5</dropwizard.version>
         <guice.version>5.1.0</guice.version>
         <jacoco.version>0.8.5</jacoco.version>
