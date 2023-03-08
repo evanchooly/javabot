@@ -21,14 +21,9 @@ import javax.inject.Singleton
 import javax.net.ssl.SSLSocketFactory
 import org.aeonbits.owner.Config.Key
 import org.aeonbits.owner.ConfigFactory
-import org.pircbotx.Configuration.BotFactory
 import org.pircbotx.Configuration.Builder
-import org.pircbotx.InputParser
-import org.pircbotx.JavabotInputParser
 import org.pircbotx.PircBotX
 import org.pircbotx.cap.SASLCapHandler
-import org.pircbotx.hooks.events.OutputEvent
-import org.pircbotx.hooks.managers.ListenerManager
 
 open class JavabotModule : AbstractModule() {
     open val mongoClient: MongoClient by lazy {
@@ -76,11 +71,6 @@ open class JavabotModule : AbstractModule() {
         val config = configDaoProvider.get().get()
         val nick = getBotNick()
         val builder = Builder()
-            .setBotFactory(object: BotFactory() {
-                override fun createInputParser(bot: PircBotX): InputParser {
-                    return JavabotInputParser(bot)
-                }
-            })
             .setName(nick)
             .setLogin(nick)
             .setAutoNickChange(false)
