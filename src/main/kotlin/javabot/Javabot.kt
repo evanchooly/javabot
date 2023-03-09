@@ -171,7 +171,7 @@ open class Javabot @Inject
     }
 
     fun startWebApp() {
-        if (false && javabotConfig.startWebApp()) {
+        if (javabotConfig.startWebApp()) {
             if (File("javabot.yml").exists()) {
                 try {
                     Sofia.logWebappStarting()
