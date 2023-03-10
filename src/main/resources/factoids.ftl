@@ -1,3 +1,4 @@
+<#ftl output_format="HTML">
 <form action="/factoids" method="GET">
     <tr>
         <th>Name</th>
@@ -21,7 +22,7 @@
             </#if>
         ${factoid.name}
         </td>
-        <td>${factoid.value?html}</td>
+        <td>${factoid.value}</td>
         <td>${factoid.userName}</td>
         <td>${format(factoid.lastUsed)}</td>
         <td class="right">${format(factoid.updated)}</td>
