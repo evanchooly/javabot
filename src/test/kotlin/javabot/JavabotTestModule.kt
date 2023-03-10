@@ -1,36 +1,33 @@
 package javabot
 
-import com.antwerkz.bottlerocket.BottleRocket
-import com.antwerkz.bottlerocket.BottleRocketTest
-import com.github.zafarkhaja.semver.Version
 import com.google.inject.Provides
 import com.google.inject.Singleton
 import com.mongodb.client.MongoClient
-import javabot.dao.NickServDao
-import javabot.dao.TestNickServDao
+import com.mongodb.client.MongoClients
 import java.io.File
 import java.io.FileInputStream
-import java.util.HashMap
 import java.util.Properties
+import javabot.dao.NickServDao
+import javabot.dao.TestNickServDao
 import javax.inject.Provider
+import org.testcontainers.containers.MongoDBContainer
 
 class JavabotTestModule : JavabotModule() {
     private lateinit var botProvider: Provider<TestJavabot>
-    private val tester = object : BottleRocketTest() {
-        override fun version(): Version {
-            return BottleRocket.DEFAULT_VERSION
-        }
-    }
+    private val container = MongoDBContainer("mongo:6")
+        .withReuse(true)
 
     override fun configure() {
         super.configure()
+        container.start()
         botProvider = binder().getProvider(TestJavabot::class.java)
         bind(NickServDao::class.java).to(TestNickServDao::class.java)
         bind(IrcAdapter::class.java).to(MockIrcAdapter::class.java)
     }
 
     override fun client(): MongoClient {
-        return tester.mongoClient
+        println("**************** creating new client")
+        return MongoClients.create(container.replicaSetUrl)
     }
 
     override fun loadConfigProperties(): HashMap<Any, Any> {

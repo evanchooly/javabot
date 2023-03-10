@@ -30,9 +30,9 @@ open class JavadocClass : JavadocElement {
         fqcn = "$packageName.$name"
         apiId = api.id
         url = if(this.module.isNotEmpty())
-            "${api.baseUrl}${module}/${packageName.replace('.', '/')}/${name}.html"
+            "${api.baseUrl}/${module}/${packageName.replace('.', '/')}/${name}.html"
         else
-            "${api.baseUrl}${packageName.replace('.', '/')}/${name}.html"
+            "${api.baseUrl}/${packageName.replace('.', '/')}/${name}.html"
     }
 
     @PrePersist
