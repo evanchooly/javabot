@@ -67,12 +67,7 @@ abstract class MainView(var adminDao: AdminDao, var channelDao: ChannelDao, var 
     }
 
     private fun getSessionCookie(): Cookie? {
-        for (cookie in request.cookies) {
-            if (cookie.name == JavabotConfiguration.SESSION_TOKEN_NAME) {
-                return cookie
-            }
-        }
-        return null
+        return request.cookies?.firstOrNull { it.name == JavabotConfiguration.SESSION_TOKEN_NAME }
     }
 
     fun addError(message: String) {

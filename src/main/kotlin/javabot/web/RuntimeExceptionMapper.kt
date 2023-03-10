@@ -25,7 +25,7 @@ class RuntimeExceptionMapper(val configuration: JavabotConfiguration) : Exceptio
     }
 
     @Context
-    private val httpContext: HttpContext? = null
+    private var httpContext: HttpContext? = null
 
     override fun toResponse(runtime: RuntimeException): Response {
 

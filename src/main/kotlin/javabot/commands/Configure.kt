@@ -6,7 +6,6 @@ import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ConfigDao
-import org.apache.commons.lang.StringUtils
 import javax.inject.Inject
 
 class Configure @Inject constructor(bot: Javabot, adminDao: AdminDao, var configDao: ConfigDao): AdminCommand(bot, adminDao) {
