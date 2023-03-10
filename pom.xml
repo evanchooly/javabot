@@ -512,9 +512,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.antwerkz.bottlerocket</groupId>
-            <artifactId>bottlerocket</artifactId>
-            <version>0.44.0</version>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mongodb</artifactId>
+            <version>1.17.6</version>
             <scope>test</scope>
         </dependency>
         <!-- Unit testing dependencies -->
