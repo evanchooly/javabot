@@ -3,11 +3,11 @@
 <html>
     <head>
         <title>javabot</title>
-        <script src="/webjars/jquery/1.11.0/jquery.min.js"></script>
-        <script src="/webjars/bootstrap/2.2.1/js/bootstrap.min.js"></script>
+        <script src="/webjars/jquery/3.6.3/jquery.min.js"></script>
+        <script src="/webjars/bootstrap/5.2.3/js/bootstrap.min.js"></script>
         <script type="text/javascript" src='/assets/js/javabot.js'></script>
         <link rel="stylesheet/less" type="text/css" media="screen" href='/assets/style/main.less'>
-        <script type='text/javascript' src='/webjars/less/1.3.1/less.min.js'></script>
+        <script type='text/javascript' src='/webjars/less/4.1.2/less.min.js'></script>
     </head>
     <body >
     <div id="page_wrapper">
