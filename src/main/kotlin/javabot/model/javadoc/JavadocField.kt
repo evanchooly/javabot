@@ -19,7 +19,7 @@ class JavadocField : JavadocElement {
 
     var type: String? = null
 
-    private constructor()
+    constructor()
 
     constructor(parent: JavadocClass, fieldName: String, urlFragment: String) {
         javadocClass = parent

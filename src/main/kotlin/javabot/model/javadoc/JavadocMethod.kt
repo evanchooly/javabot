@@ -26,7 +26,7 @@ class JavadocMethod() : JavadocElement() {
     constructor(parent: JavadocClass, name: String, urlFragment: String, longArgs: List<String>, shortArgs: List<String>): this() {
         this.name = name
         isConstructor = name == "<init>"
-        classId = parent.id
+        classId = parent.id!!
         apiId = parent.apiId
         parentClassName = parent.toString()
 

@@ -26,7 +26,6 @@ class JavabotTestModule : JavabotModule() {
     }
 
     override fun client(): MongoClient {
-        println("**************** creating new client")
         return MongoClients.create(container.replicaSetUrl)
     }
 

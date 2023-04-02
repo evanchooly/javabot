@@ -74,7 +74,7 @@ class ConfigDao @Inject constructor(ds: Datastore, var injector: Injector, var j
 */
 
     private fun updateHistoryIndex(historyLength: Int) {
-        val collection = ds.mapper.getCollection(Logs::class.java)
+        val collection = ds.getCollection(Logs::class.java)
         try {
             collection.dropIndex("updated_1")
         } catch (e: Exception) {

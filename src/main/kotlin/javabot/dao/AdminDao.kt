@@ -3,7 +3,7 @@ package javabot.dao
 import dev.morphia.Datastore
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
-import dev.morphia.query.experimental.filters.Filters.or
+import dev.morphia.query.filters.Filters.or
 import javabot.model.Admin
 import javabot.model.EventType
 import javabot.model.JavabotUser

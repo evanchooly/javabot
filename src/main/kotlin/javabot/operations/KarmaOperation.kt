@@ -1,6 +1,7 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import java.util.Locale
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
@@ -60,23 +61,23 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
                 return responses
             }
             val nick: String =
-                    try {
-                        val temp = message.substring(0, operationPointer).trim().toLowerCase()
-                        // got an empty nick; spaces only?
-                        if (temp.isEmpty()) {
-                            // need to check for special case where bot was *addressed* for karma
-                            if (event.addressed) {
-                                bot.nick
-                            } else {
-                                ""
-                            }
+                try {
+                    val temp = message.substring(0, operationPointer).trim().lowercase(Locale.getDefault())
+                    // got an empty nick; spaces only?
+                    if (temp.isEmpty()) {
+                        // need to check for special case where bot was *addressed* for karma
+                        if (event.addressed) {
+                            bot.nick
                         } else {
-                            temp
+                            ""
                         }
-                    } catch (e: StringIndexOutOfBoundsException) {
-                        log.info("message = $message", e)
-                        throw e
+                    } else {
+                        temp
                     }
+                } catch (e: StringIndexOutOfBoundsException) {
+                    log.info("message = $message", e)
+                    throw e
+                }
 
             if (!nick.isEmpty()) {
                 if (channel == null || !channel.name.startsWith("#")) {
@@ -112,20 +113,27 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
         val message = event.value
         val sender = event.user
         if (message.startsWith("karma ")) {
-            val nick = message.substring("karma ".length).toLowerCase()
+            val nick = message.substring("karma ".length).lowercase(Locale.getDefault())
             val karma = dao.find(nick)
             if (karma != null) {
-                responses.add(Message(event, if (nick.equals(sender.nick, ignoreCase = true))
-                    Sofia.karmaOwnValue(sender.nick, karma.value)
-                else
-                    Sofia.karmaOthersValue(nick, karma.value, sender.nick)))
+                responses.add(
+                    Message(
+                        event, if (nick.equals(sender.nick, ignoreCase = true))
+                            Sofia.karmaOwnValue(sender.nick, karma.value)
+                        else
+                            Sofia.karmaOthersValue(nick, karma.value, sender.nick)
+                    )
+                )
             } else {
-                responses.add(Message(event, if (sender.nick == nick)
-                    Sofia.karmaOwnNone(sender.nick)
-                else
-                    Sofia.karmaOthersNone(nick, sender.nick)))
+                responses.add(
+                    Message(
+                        event, if (sender.nick == nick)
+                            Sofia.karmaOwnNone(sender.nick)
+                        else
+                            Sofia.karmaOthersNone(nick, sender.nick)
+                    )
+                )
             }
-
         }
     }
 

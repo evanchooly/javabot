@@ -1,5 +1,7 @@
 package javabot.web.views
 
+import freemarker.template.Configuration
+import freemarker.template.Configuration.VERSION_2_3_32
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
 import javabot.dao.ConfigDao
 import javabot.web.views.ConfigurationView
@@ -25,7 +27,7 @@ class ConfigurationViewTest : ViewsTest() {
         config.operations = mutableListOf()
         configDao.save(config)
 
-        val renderer = FreemarkerViewRenderer()
+        val renderer = FreemarkerViewRenderer(VERSION_2_3_32)
         var output = ByteArrayOutputStream()
         renderer.render(viewFactory.createConfigurationView(MockServletRequest(false)), Locale.getDefault(), output)
         var source = Source(ByteArrayInputStream(output.toByteArray()))

@@ -3,6 +3,7 @@ package javabot.commands
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.JCommander
 import com.beust.jcommander.Parameters
+import java.util.Locale
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
@@ -57,7 +58,7 @@ abstract class AdminCommand @Inject constructor(bot: Javabot, adminDao: AdminDao
 
     fun getCommandName(): String {
         var name = javaClass.simpleName
-        name = name.substring(0, 1).toLowerCase() + name.substring(1)
+        name = name.substring(0, 1).lowercase(Locale.getDefault()) + name.substring(1)
         return name
     }
 

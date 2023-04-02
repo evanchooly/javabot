@@ -1,5 +1,7 @@
 package javabot.web.views
 
+import freemarker.template.Configuration
+import freemarker.template.Configuration.VERSION_2_3_32
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
 import javabot.web.views.IndexView
 import net.htmlparser.jericho.Source
@@ -20,7 +22,7 @@ class IndexTest : ViewsTest() {
 
     @Throws(IOException::class)
     protected fun find(loggedIn: Boolean) {
-        val renderer = FreemarkerViewRenderer()
+        val renderer = FreemarkerViewRenderer(VERSION_2_3_32)
         val output = ByteArrayOutputStream()
 
         renderer.render(viewFactory.createIndexView(MockServletRequest(loggedIn)), Locale.getDefault(), output)

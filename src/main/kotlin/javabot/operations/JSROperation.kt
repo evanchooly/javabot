@@ -1,6 +1,7 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import java.util.Locale
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
@@ -8,10 +9,9 @@ import javabot.service.JCPJSRLocator
 import javax.inject.Inject
 
 class JSROperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var locator: JCPJSRLocator) : BotOperation(bot, adminDao) {
-
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
-        val message = event.value.toLowerCase()
+        val message = event.value.lowercase(Locale.getDefault())
         if ("jsr" == message.trim()) {
             responses.add(Message(event, Sofia.jsrMissing()))
         } else {

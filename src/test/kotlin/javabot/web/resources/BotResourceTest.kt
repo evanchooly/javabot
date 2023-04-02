@@ -25,8 +25,8 @@ class BotResourceTest : BaseTest() {
 
     fun badFactoidSearch() {
         TODO()
-        if ( application.running ) {
 /*
+        if ( application.running ) {
             // TODO pull port from javabot.yml
             val response = client.executor().get()
                     "${javabotConfig.url()}/factoids?name=Diet&value=rgnbxmj29.298%2C+%3Ca+href%3D%22http%3A%2F%2F123diet-guide" +
@@ -34,8 +34,8 @@ class BotResourceTest : BaseTest() {
                             "+vOJHJvT%2C+http%3A%2F%2F123diet-guide.com%2F+Diet%2C+CbJjvVt.&userName=Diet").get(ClientResponse::class.java)
 
             assertEquals(response.status, 200)
-*/
         }
+*/
     }
 
     fun badLogsDate() {

@@ -1,5 +1,6 @@
 package javabot.operations
 
+import java.util.Locale
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
@@ -11,7 +12,7 @@ class QuitOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var co
 
     override fun handleMessage(event: Message): List<Message> {
         val message = event.value
-        if (message.toLowerCase().startsWith("quit ")) {
+        if (message.lowercase(Locale.getDefault()).startsWith("quit ")) {
             if (message.substring("quit ".length) == configDao.get().password) {
                 System.exit(0)
             }

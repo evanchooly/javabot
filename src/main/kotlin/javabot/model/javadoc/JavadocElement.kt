@@ -10,7 +10,7 @@ import net.thauvin.erik.bitly.Bitly
 @Entity
 abstract class JavadocElement : Persistent {
     @field:Id
-    lateinit var id: ObjectId
+    var id: ObjectId? = null
 
     lateinit var apiId: ObjectId
 

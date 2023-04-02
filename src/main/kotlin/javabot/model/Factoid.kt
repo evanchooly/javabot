@@ -21,25 +21,36 @@ import java.time.LocalDateTime
 
 @Entity(value = "factoids", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("upperName"), Field("upperUserName"))))
-class Factoid(var name: String = "", var value: String = "", var userName: String = "") : Serializable, Persistent {
+class Factoid() : Serializable, Persistent {
+
+    constructor(name: String = "", value: String = "", userName: String = ""): this() {
+        this.name = name
+        this.value = value
+        this.userName = userName
+    }
+
     @Id
     var id: ObjectId? = null
+
+    var name = ""
+    var value = ""
+    var userName = ""
 
     @JsonView(PUBLIC::class)
     var updated: LocalDateTime = LocalDateTime.now()
 
     var lastUsed: LocalDateTime? = null
 
-    var locked: Boolean = false
+    var locked = false
 
     @Indexed
-    private lateinit var upperName: String
+    lateinit var upperName: String
 
     @Indexed
-    private lateinit var upperUserName: String
+    lateinit var upperUserName: String
 
     @Indexed
-    private lateinit var upperValue: String
+    lateinit var upperValue: String
 
     init {
         update()

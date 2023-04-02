@@ -1,5 +1,6 @@
 package javabot.web.views
 
+import freemarker.template.Configuration.VERSION_2_3_32
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
 import javabot.model.Change
 import net.htmlparser.jericho.Source
@@ -15,7 +16,7 @@ class ChangesViewTest : ViewsTest() {
     fun changes() {
         createChanges(30)
 
-        val renderer = FreemarkerViewRenderer()
+        val renderer = FreemarkerViewRenderer(VERSION_2_3_32)
         var output = ByteArrayOutputStream()
         renderer.render(viewFactory.createChangesView(MockServletRequest(false), 0), Locale.getDefault(), output)
         var source = Source(ByteArrayInputStream(output.toByteArray()))

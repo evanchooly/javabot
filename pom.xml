@@ -14,6 +14,15 @@
         <url>https://github.com/evanchooly/javabot</url>
     </scm>
 
+    <repositories>
+        <repository>
+            <id>sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <build>
         <defaultGoal>install</defaultGoal>
@@ -54,6 +63,9 @@
                 <version>${kotlin.version}</version>
                 <configuration>
                     <jvmTarget>11</jvmTarget>
+                    <compilerPlugins>
+                        <compilerPlugin>ksp</compilerPlugin>
+                    </compilerPlugins>
                 </configuration>
                 <executions>
                     <execution>
@@ -65,7 +77,6 @@
                         <configuration>
                             <sourceDirs>
                                 <source>src/main/kotlin</source>
-                                <source>target/generated-sources/critter</source>
                                 <source>target/generated-sources/sofia</source>
                             </sourceDirs>
                         </configuration>
@@ -79,6 +90,18 @@
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.dyescape</groupId>
+                        <artifactId>kotlin-maven-symbol-processing</artifactId>
+                        <version>1.5-SNAPSHOT</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>dev.morphia.critter</groupId>
+                        <artifactId>critter-maven</artifactId>
+                        <version>${critter.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -224,25 +247,6 @@
                     <doUpdate>false</doUpdate>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>dev.morphia.critter</groupId>
-                <artifactId>critter-maven</artifactId>
-                <version>${critter.version}</version>
-                <executions>
-                    <execution>
-                        <id>critter</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <force>true</force>
-                    <sourceDirectory>src/main/kotlin/javabot/model</sourceDirectory>
-                    <outputType>kotlin</outputType>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -250,12 +254,6 @@
             <groupId>dev.morphia.morphia</groupId>
             <artifactId>morphia-core</artifactId>
             <version>${morphia.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.mongodb.morphia</groupId>
-                    <artifactId>morphia</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -413,12 +411,6 @@
             <artifactId>dropwizard-views-freemarker</artifactId>
             <version>${dropwizard.version}</version>
         </dependency>
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-testing</artifactId>
-            <version>${dropwizard.version}</version>
-            <scope>test</scope>
-        </dependency>
         <!-- dropwizard deps -->
 
         <!-- OAuth library -->
@@ -537,18 +529,6 @@
             <artifactId>jaxb-api</artifactId>
             <version>${jaxb.version}</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
-            <version>${jaxb.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>${jaxb.version}</version>
-        </dependency>
--->
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
@@ -563,21 +543,23 @@
     </dependencies>
 
     <properties>
-        <critter.version>4.0.0</critter.version>
+        <activation.version>1.1.1</activation.version>
+        <critter.version>4.4.0</critter.version>
         <dropwizard.version>2.1.5</dropwizard.version>
         <guice.version>5.1.0</guice.version>
-        <jacoco.version>0.8.5</jacoco.version>
         <jackson.version>2.14.2</jackson.version>
+        <jacoco.version>0.8.5</jacoco.version>
+        <jaxb.version>2.3.1</jaxb.version>
+        <jsoup.version>1.15.4</jsoup.version>
         <kotlin.version>1.8.10</kotlin.version>
         <logback.version>1.4.5</logback.version>
+        <morphia.version>2.3.0</morphia.version>
+        <okhttp.version>4.10.0</okhttp.version>
+        <rivescript.version>0.11.0</rivescript.version>
         <slf4j.version>2.0.5</slf4j.version>
         <sofia.version>0.23</sofia.version>
-        <jsoup.version>1.15.4</jsoup.version>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <rivescript.version>0.11.0</rivescript.version>
-        <okhttp.version>4.10.0</okhttp.version>
-        <jaxb.version>2.3.1</jaxb.version>
-        <activation.version>1.1.1</activation.version>
-        <morphia.version>2.2.10</morphia.version>
     </properties>
+
 </project>

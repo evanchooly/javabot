@@ -2,7 +2,7 @@ package javabot.dao
 
 import com.antwerkz.sofia.Sofia
 import dev.morphia.Datastore
-import dev.morphia.query.experimental.filters.Filters
+import dev.morphia.query.filters.Filters
 import javabot.BaseTest
 import javabot.model.Channel
 import javabot.model.JavabotUser

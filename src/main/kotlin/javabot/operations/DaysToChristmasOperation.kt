@@ -11,12 +11,13 @@ import java.time.Month
 import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 class DaysToChristmasOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
-        if ("countdown to christmas" == event.value.toLowerCase()) {
+        if ("countdown to christmas" == event.value.lowercase(Locale.getDefault())) {
             val christmas = LocalDateTime.of(now().year, Month.DECEMBER, 25, 0, 0, 0)
             val now = now()
             val duration = Duration.between(now, christmas)

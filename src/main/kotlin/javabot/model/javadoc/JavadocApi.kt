@@ -22,7 +22,7 @@ class JavadocApi : Persistent {
 
     var name: String = ""
 
-    private var upperName: String = ""
+    var upperName: String = ""
 
     var baseUrl: String = ""
 

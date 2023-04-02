@@ -3,6 +3,7 @@ package javabot.operations.urlcontent
 import com.google.inject.Singleton
 
 import java.util.HashMap
+import java.util.Locale
 import java.util.regex.Pattern
 import java.util.stream.Stream
 
@@ -50,17 +51,17 @@ import java.util.stream.Stream
     @Throws(ContentException::class)
     private fun checkTitleToURLRatio(url: String, title: String) {
         // now break down the words in the title.
-        val wordsInTitle = title.toLowerCase().split(" ")
+        val wordsInTitle = title.lowercase(Locale.getDefault()).split(" ")
         val words = wordsInTitle
-              .map({ s -> s.replace("[\\W]|_".toRegex(), "") })
-              .filter { s -> s.length > 2 }
-              .count()
+            .map { s -> s.replace("[\\W]|_".toRegex(), "") }
+            .count { s -> s.length > 2 }
         // generate a ratio of words to occurrences in the title.
         val hits = wordsInTitle
-              .map({ s -> s.replace("[\\W]|_".toRegex(), "") }).filter { s -> s.length > 2 }.filter { s ->
-            url.toLowerCase().contains(s.toLowerCase())
-        }.count()
-
+            .map { s -> s.replace("[\\W]|_".toRegex(), "") }
+            .filter { s -> s.length > 2 }
+            .count { s ->
+                url.lowercase(Locale.getDefault()).contains(s.lowercase(Locale.getDefault()))
+            }
         // ratio close enough to 1:1? reject.
         val ratio = (hits * 1.0) / words
         if ((hits * 1.0) / words >= 0.8) {

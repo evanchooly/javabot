@@ -12,6 +12,7 @@ import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import net.thauvin.erik.bitly.Bitly
 import java.util.ArrayList
+import java.util.Locale
 import javax.annotation.Nullable
 
 class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var apiDao: ApiDao,
@@ -33,7 +34,7 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value
-        if (message.toLowerCase().startsWith("javadoc")) {
+        if (message.lowercase(Locale.getDefault()).startsWith("javadoc")) {
             var key = message.substring("javadoc".length).trim()
             var api: JavadocApi? = null
             if (key.startsWith("-list") || key.isEmpty()) {

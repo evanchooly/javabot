@@ -1,6 +1,7 @@
 package javabot.operations
 
 import com.google.inject.Inject
+import java.util.Locale
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
@@ -13,7 +14,7 @@ class Magic8BallOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) 
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
-        val message = event.value.toLowerCase()
+        val message = event.value.lowercase(Locale.getDefault())
         if (message.startsWith("should i ") || message.startsWith("magic8 ")) {
             responses.add(Message(event, entries[((Math.random() * entries.size).toInt())]))
         }

@@ -2,7 +2,7 @@ package javabot.dao
 
 import dev.morphia.Datastore
 import dev.morphia.query.Query
-import dev.morphia.query.experimental.filters.Filters.eq
+import dev.morphia.query.filters.Filters.eq
 import javabot.dao.util.EntityNotFoundException
 import javabot.model.Persistent
 import org.bson.types.ObjectId

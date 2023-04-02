@@ -1,5 +1,7 @@
 package javabot.web.views
 
+import freemarker.template.Configuration
+import freemarker.template.Configuration.VERSION_2_3_32
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
 import javabot.dao.KarmaDao
 import javabot.model.Karma
@@ -20,7 +22,7 @@ class KarmaViewTest : ViewsTest() {
     fun karma() {
         createKarma(100)
 
-        val renderer = FreemarkerViewRenderer()
+        val renderer = FreemarkerViewRenderer(VERSION_2_3_32)
         val output = ByteArrayOutputStream()
         renderer.render(viewFactory.createKarmaView(MockServletRequest(false), 0), Locale.getDefault(), output)
         val source = Source(ByteArrayInputStream(output.toByteArray()))

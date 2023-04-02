@@ -1,6 +1,8 @@
 package javabot.web.views
 
 import com.google.inject.Injector
+import freemarker.template.Configuration
+import freemarker.template.Configuration.VERSION_2_3_32
 import io.dropwizard.views.View
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
 import javabot.BaseTest
@@ -48,7 +50,7 @@ public open class ViewsTest : BaseTest() {
 
     @Throws(IOException::class)
     protected fun render(view: View): Source {
-        val renderer = FreemarkerViewRenderer()
+        val renderer = FreemarkerViewRenderer(VERSION_2_3_32)
         val output = ByteArrayOutputStream()
         renderer.render(view, Locale.getDefault(), output)
         return Source(ByteArrayInputStream(output.toByteArray()))

@@ -6,8 +6,8 @@ import dev.morphia.Datastore
 import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Query
-import dev.morphia.query.experimental.filters.Filters.eq
-import dev.morphia.query.experimental.filters.Filters.or
+import dev.morphia.query.filters.Filters.eq
+import dev.morphia.query.filters.Filters.or
 import javabot.dao.util.QueryParam
 import javabot.model.Factoid
 import javabot.model.Persistent
