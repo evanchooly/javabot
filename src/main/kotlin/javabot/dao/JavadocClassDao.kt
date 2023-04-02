@@ -3,7 +3,7 @@ package javabot.dao
 import com.google.inject.Inject
 import dev.morphia.Datastore
 import dev.morphia.query.QueryException
-import dev.morphia.query.experimental.filters.Filters.or
+import dev.morphia.query.filters.Filters.or
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocField
@@ -97,7 +97,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>
 
     private fun getMethods(name: String, signatureTypes: String, javadocClass: JavadocClass): List<JavadocMethod> {
         val query = ds.find(JavadocMethod::class.java)
-                .filter(JavadocMethodCriteria.classId().eq(javadocClass.id))
+                .filter(JavadocMethodCriteria.classId().eq(javadocClass.id!!))
                 .filter(JavadocMethodCriteria.upperName().eq(name.toUpperCase()))
         if ("*" != signatureTypes) {
             query.filter(or(
@@ -113,7 +113,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>
                 .delete()
 
         ds.find(JavadocMethod::class.java)
-                .filter(JavadocMethodCriteria.classId().eq(javadocClass.id))
+                .filter(JavadocMethodCriteria.classId().eq(javadocClass.id!!))
                 .delete()
 
         super.delete(javadocClass)

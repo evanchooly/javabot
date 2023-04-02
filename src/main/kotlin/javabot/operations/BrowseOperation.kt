@@ -14,6 +14,7 @@ import javabot.service.HTTP_OPTIONS
 import javabot.service.HttpService
 import javabot.service.UrlCacheService
 import java.time.Duration
+import java.util.Locale
 
 class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                                           val httpService: HttpService,
@@ -25,7 +26,7 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
 
     private fun correctReference(cardinality: Int, text: String): String {
         return if (cardinality == 1) {
-            "A ${text.toLowerCase()}"
+            "A ${text.lowercase(Locale.getDefault())}"
         } else {
             "${text}s"
         }

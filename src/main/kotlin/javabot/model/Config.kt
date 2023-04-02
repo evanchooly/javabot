@@ -36,7 +36,7 @@ class Config : Serializable, Persistent {
     constructor() {
     }
 
-    constructor(id: ObjectId, server: String, url: String, port: Int, historyLength: Int, trigger: String, nick: String, password: String,
+    constructor(id: ObjectId?, server: String, url: String, port: Int, historyLength: Int, trigger: String, nick: String, password: String?,
                 operations: MutableList<String>) {
         this.id = id
         this.historyLength = historyLength

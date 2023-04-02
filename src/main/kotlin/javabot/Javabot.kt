@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.time.LocalDateTime
 import java.util.ArrayList
+import java.util.Locale
 import java.util.SortedMap
 import java.util.TreeMap
 import java.util.TreeSet
@@ -323,7 +324,7 @@ open class Javabot @Inject
 
         }
 
-        if (responses.isEmpty() && (!message.value.toLowerCase().startsWith("${nick}'s".toLowerCase()))) {
+        if (responses.isEmpty() && (!message.value.lowercase(Locale.getDefault()).startsWith("${nick}'s".lowercase(Locale.getDefault())))) {
             responses.add(Message(message.channel, message.user, Sofia.unhandledMessage(message.user.nick)))
         }
         return responses

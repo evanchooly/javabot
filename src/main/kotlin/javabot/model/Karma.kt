@@ -19,7 +19,7 @@ class Karma : Serializable, Persistent {
 
     lateinit var name: String
 
-    private var upperName: String? = null
+    var upperName: String? = null
 
     var value: Int = 0
 

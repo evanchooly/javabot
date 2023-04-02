@@ -4,12 +4,13 @@ import com.antwerkz.sofia.Sofia
 import dev.morphia.Datastore
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
-import dev.morphia.query.experimental.filters.Filters.eq
+import dev.morphia.query.filters.Filters.eq
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.model.Logs
 import java.time.format.DateTimeFormatter.ofPattern
+import java.util.Locale
 import javax.inject.Inject
 
 class LogsOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var ds: Datastore) : BotOperation(bot, adminDao) {
@@ -17,12 +18,12 @@ class LogsOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var ds
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value
-        if (message.toLowerCase().startsWith(KEYWORD_LOGS)) {
+        if (message.lowercase(Locale.getDefault()).startsWith(KEYWORD_LOGS)) {
             val nickname = message.substring(KEYWORD_LOGS.length).trim()
             val query = ds.find(Logs::class.java)
             query.filter(eq("channel", event.channel!!.name))
             val options = FindOptions()
-                    .sort(Sort.ascending("updated"))
+                .sort(Sort.ascending("updated"))
 
             if (nickname.isEmpty()) {
                 options.limit(200)

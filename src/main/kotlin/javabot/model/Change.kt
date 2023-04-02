@@ -17,7 +17,7 @@ class Change : Serializable, Persistent {
     @Indexed(options = IndexOptions(name = "changed"))
     var changeDate: LocalDateTime = LocalDateTime.now()
 
-    private constructor() {
+    constructor() {
     }
 
     constructor(message: String, date: LocalDateTime = LocalDateTime.now()) {

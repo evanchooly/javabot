@@ -9,6 +9,7 @@ import javabot.Message
 import javabot.dao.AdminDao
 import org.jsoup.Jsoup
 import java.io.IOException
+import java.util.Locale
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 
@@ -29,10 +30,10 @@ import java.util.concurrent.TimeUnit
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
-        val message = event.value.toLowerCase()
+        val message = event.value.lowercase(Locale.getDefault())
         if (message.startsWith(prefix)) {
             val jepText = message.substring(prefix.length).trim()
-            if(jepText.isEmpty()) {
+            if (jepText.isEmpty()) {
                 responses.add(Message(event, Sofia.jepMissing()))
             } else {
                 try {
@@ -44,7 +45,6 @@ import java.util.concurrent.TimeUnit
                         // from jep.fail
                         responses.add(Message(event, Sofia.jepInvalid(jepText)))
                     }
-
                 } catch (e: NumberFormatException) {
                     responses.add(Message(event, Sofia.jepInvalid(jepText)))
                 }

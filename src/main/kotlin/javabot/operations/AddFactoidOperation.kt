@@ -11,6 +11,7 @@ import javabot.model.Factoid
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
+import java.util.Locale
 import javax.inject.Inject
 
 class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
@@ -41,7 +42,7 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                 val redefine = key.startsWith("no ", true) || key.startsWith("no, ", true)
                 var exists = false
                 if (redefine) {
-                    key = key.substring(key.indexOf(" ")).trim().toLowerCase()
+                    key = key.substring(key.indexOf(" ")).trim().lowercase(Locale.getDefault())
 
                     factoid = factoidDao.getFactoid(key)
                     if (factoid == null) {
@@ -53,7 +54,7 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                     if (key.startsWith(",")) {
                         key = message.substring(1)
                     }
-                    val name = key.trim().toLowerCase()
+                    val name = key.trim().lowercase(Locale.getDefault())
                     if (name.isEmpty()) {
                         responses.add(Message(event, Sofia.factoidInvalidName()))
                     }
@@ -79,7 +80,7 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                     } else {
                         factoid.value = message
                         if (factoid.value.startsWith("<see>")) {
-                            factoid.value = factoid.value.toLowerCase()
+                            factoid.value = factoid.value.lowercase(Locale.getDefault())
                         }
                         if (redefine) {
                             factoid.userName = event.user.nick

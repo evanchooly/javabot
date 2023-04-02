@@ -10,6 +10,7 @@ import javabot.model.Factoid
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 import java.util.HashSet
+import java.util.Locale
 import javax.inject.Inject
 
 class GetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :
@@ -38,7 +39,7 @@ class GetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, 
         }
         val firstWord = message.split(" ")[0]
         val params = message.substring(firstWord.length).trim()
-        var factoid = factoidDao.getFactoid(message.toLowerCase())
+        var factoid = factoidDao.getFactoid(message.lowercase(Locale.getDefault()))
         if (factoid == null) {
             factoid = factoidDao.getParameterizedFactoid(firstWord)
         }

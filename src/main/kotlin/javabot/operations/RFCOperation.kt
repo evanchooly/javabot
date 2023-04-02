@@ -9,6 +9,7 @@ import javabot.dao.AdminDao
 import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
 import java.io.IOException
+import java.util.Locale
 
 /**
  * Displays RFC url and title
@@ -17,7 +18,7 @@ import java.io.IOException
 class RFCOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
-        val message = event.value.toLowerCase()
+        val message = event.value.lowercase(Locale.getDefault())
         if (message.startsWith(PREFIX)) {
             val rfcText = message.substring(PREFIX.length).trim()
             val parts = rfcText.split(Regex("\\s+"))

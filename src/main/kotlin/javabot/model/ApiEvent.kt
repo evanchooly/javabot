@@ -84,7 +84,7 @@ class ApiEvent : AdminEvent {
         this.api = api
     }
 
-    private constructor(requestedBy: String, type: EventType, name: String) : super(requestedBy, type) {
+    constructor(requestedBy: String, type: EventType, name: String) : super(requestedBy, type) {
         this.name = name
     }
 

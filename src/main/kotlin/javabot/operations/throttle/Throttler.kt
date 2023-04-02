@@ -4,7 +4,7 @@ import com.antwerkz.sofia.Sofia
 import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.core.ConditionTimeoutException
 import dev.morphia.Datastore
-import dev.morphia.query.experimental.filters.Filters
+import dev.morphia.query.filters.Filters
 import javabot.Javabot
 import javabot.dao.AdminDao
 import javabot.dao.BaseDao

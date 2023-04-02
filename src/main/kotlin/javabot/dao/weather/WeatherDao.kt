@@ -8,6 +8,7 @@ import javabot.dao.geocode.GeocodeDao
 import javabot.dao.weather.openweathermap.OpenWeatherMapHandler
 import javabot.service.HttpService
 import java.util.Arrays
+import java.util.Locale
 
 class WeatherDao @Inject constructor(javabotConfig: JavabotConfig, private val geocodeDao: GeocodeDao, private val httpService: HttpService) {
     companion object {
@@ -33,7 +34,7 @@ class WeatherDao @Inject constructor(javabotConfig: JavabotConfig, private val g
         return if (location.contains(',')) {
             location
         } else {
-            translations[location.toLowerCase()] ?: location
+            translations[location.lowercase(Locale.getDefault())] ?: location
         }
     }
 

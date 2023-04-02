@@ -9,6 +9,7 @@ import javabot.dao.ChannelDao
 import javabot.dao.LinkDao
 import javabot.model.Link
 import java.net.URL
+import java.util.Locale
 import javax.inject.Inject
 
 class LinksOperation @Inject constructor(bot: Javabot,
@@ -27,22 +28,23 @@ class LinksOperation @Inject constructor(bot: Javabot,
             return emptyList()
         }
 
-        responses.addAll(when (tokens[0].toLowerCase()) {
-            "submit" -> handleSubmit(event)
-            "list" -> handleList(event)
-            else -> emptyList()
-        })
+        responses.addAll(
+            when (tokens[0].lowercase(Locale.getDefault())) {
+                "submit" -> handleSubmit(event)
+                "list" -> handleList(event)
+                else -> emptyList()
+            }
+        )
         return responses
     }
 
     private fun handleList(event: Message): List<Message> {
         val responses: MutableList<Message> = mutableListOf()
         val needsChannel = event.channel?.name?.isEmpty() ?: true
-
         val tokens = event.value.split(" ").toMutableList()
         // remove the "list" command, which is handled by the calling method
         tokens.removeAt(0)
-        when (tokens[0].toLowerCase()) {
+        when (tokens[0].lowercase(Locale.getDefault())) {
             "approved" -> showMessageLists(tokens, needsChannel, event, responses, dao::approvedLinks, tokens[0])
             "unapproved" -> showMessageLists(tokens, needsChannel, event, responses, dao::unapprovedLinks, tokens[0], true)
             "approve" -> handleVerb(tokens, needsChannel, event, responses, dao::approveLink, tokens[0])
@@ -133,9 +135,9 @@ class LinksOperation @Inject constructor(bot: Javabot,
     }
 
     private fun formatPastTense(input: String): String {
-        val verb = input.toLowerCase()
+        val verb = input.lowercase(Locale.getDefault())
         return verb +
-                if ("aeiou".indexOf(verb.last()) != -1) "d" else "ed"
+            if ("aeiou".indexOf(verb.last()) != -1) "d" else "ed"
     }
 
     private fun extractKey(tokens: MutableList<String>): String {

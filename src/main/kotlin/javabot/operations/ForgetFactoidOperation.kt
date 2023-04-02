@@ -1,6 +1,7 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import java.util.Locale
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
@@ -24,7 +25,7 @@ class ForgetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDa
                 if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
                     message = message.substring(0, message.length - 1)
                 }
-                forget(channel, responses, event, message.toLowerCase())
+                forget(channel, responses, event, message.lowercase(Locale.getDefault()))
             }
         }
         return responses

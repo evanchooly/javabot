@@ -9,18 +9,21 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
+import java.util.Locale
 
 class DaysUntilOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
-        var message = event.value.toLowerCase()
+        var message = event.value.lowercase(Locale.getDefault())
         if (message.startsWith("days until ")) {
             val sender = event.user
             message = message.substring("days until ".length)
             var d: LocalDateTime? = null
-            val formats = arrayOf(DateTimeFormatter.ofPattern("yyyy/MM/dd"), DateTimeFormatter.ofPattern("MMM d, ''yy"),
-                  DateTimeFormatter.ofPattern("d MMM yyyy"), DateTimeFormatter.ofPattern("MMM d, yyyy"),
-                  DateTimeFormatter.ofPattern("MMM d, ''yy"))
+            val formats = arrayOf(
+                DateTimeFormatter.ofPattern("yyyy/MM/dd"), DateTimeFormatter.ofPattern("MMM d, ''yy"),
+                DateTimeFormatter.ofPattern("d MMM yyyy"), DateTimeFormatter.ofPattern("MMM d, yyyy"),
+                DateTimeFormatter.ofPattern("MMM d, ''yy")
+            )
             var i = 0
             while (i < formats.size && d == null) {
                 try {

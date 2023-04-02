@@ -46,7 +46,7 @@ class Logs : Persistent {
 
     var upperNick: String? = null
 
-    private constructor() {
+    constructor() {
     }
 
     constructor(nick: String?, message: String, type: Type, channel: String?, updated: LocalDateTime = LocalDateTime.now()) : this() {

@@ -1,6 +1,7 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import java.util.Locale
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
@@ -33,7 +34,7 @@ class AolBonicsOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
     override fun handleChannelMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         for (bad in event.value.split(" ")) {
-            if (phrases.contains(bad.toLowerCase().replace("!|\\.|\\?|,".toRegex(), ""))) {
+            if (phrases.contains(bad.lowercase(Locale.getDefault()).replace("!|\\.|\\?|,".toRegex(), ""))) {
                 responses.add(Message(event, Sofia.botAolbonics(event.user.nick)))
             }
         }

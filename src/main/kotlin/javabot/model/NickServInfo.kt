@@ -23,13 +23,13 @@ class NickServInfo : Persistent {
     @Indexed
     lateinit var account: String
 
-    private val created: LocalDateTime = now()
+    val created: LocalDateTime = now()
 
     var registered: LocalDateTime = LocalDateTime.now()
 
     var userRegistered: LocalDateTime = registered
 
-    private val extraneous: TreeMap<String, String> = TreeMap<String, String>()
+    val extraneous: TreeMap<String, String> = TreeMap<String, String>()
 
     var lastAddress: String? = null
 
