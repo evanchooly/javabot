@@ -94,7 +94,7 @@
                     <dependency>
                         <groupId>com.dyescape</groupId>
                         <artifactId>kotlin-maven-symbol-processing</artifactId>
-                        <version>1.5-SNAPSHOT</version>
+                        <version>1.5</version>
                     </dependency>
                     <dependency>
                         <groupId>dev.morphia.critter</groupId>
