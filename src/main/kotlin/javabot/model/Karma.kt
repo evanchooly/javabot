@@ -9,6 +9,7 @@ import dev.morphia.annotations.Indexes
 import dev.morphia.annotations.PrePersist
 import java.io.Serializable
 import java.time.LocalDateTime
+import java.util.Locale
 
 @Entity(value = "karma", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("upperName"))),
@@ -36,7 +37,8 @@ class Karma : Serializable, Persistent {
         this.userName = userName
     }
 
-    @PrePersist fun uppers() {
-        upperName = name.toUpperCase()
+    @PrePersist
+    fun uppers() {
+        upperName = name.uppercase(Locale.getDefault())
     }
 }

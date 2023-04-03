@@ -18,6 +18,7 @@ import java.lang.String.format
 import java.net.URLEncoder
 import java.nio.charset.Charset
 import java.time.LocalDateTime
+import java.util.Locale
 
 @Entity(value = "factoids", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("upperName"), Field("upperUserName"))))
@@ -134,9 +135,9 @@ class Factoid() : Serializable, Persistent {
 
     @PrePersist
     fun update() {
-        upperName = name.toUpperCase()
-        upperUserName = userName.toUpperCase()
-        upperValue = value.toUpperCase()
+        upperName = name.uppercase(Locale.getDefault())
+        upperUserName = userName.uppercase(Locale.getDefault())
+        upperValue = value.uppercase(Locale.getDefault())
     }
 
     override fun toString(): String {

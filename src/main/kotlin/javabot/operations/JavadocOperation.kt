@@ -108,7 +108,7 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
         } else {
             val className = key.substring(0, finalIndex)
             val fieldName = key.substring(finalIndex + 1)
-            if (Character.isUpperCase(fieldName[0]) && fieldName.toUpperCase() != fieldName) {
+            if (Character.isUpperCase(fieldName[0]) && fieldName.uppercase(Locale.getDefault()) != fieldName) {
                 findClasses(api, urls, key)
             } else {
                 urls += dao.getField(api, className, fieldName)

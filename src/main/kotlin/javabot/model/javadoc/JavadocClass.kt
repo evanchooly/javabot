@@ -6,6 +6,7 @@ import dev.morphia.annotations.Index
 import dev.morphia.annotations.IndexOptions
 import dev.morphia.annotations.Indexes
 import dev.morphia.annotations.PrePersist
+import java.util.Locale
 
 @Entity(value = "classes", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("apiId"))), Index(fields = arrayOf(Field("upperName"))),
@@ -37,8 +38,8 @@ open class JavadocClass : JavadocElement {
 
     @PrePersist
     fun uppers() {
-        upperName = name.toUpperCase()
-        upperPackageName = packageName.toUpperCase()
+        upperName = name.uppercase(Locale.getDefault())
+        upperPackageName = packageName.uppercase(Locale.getDefault())
     }
 
     override fun toString(): String {

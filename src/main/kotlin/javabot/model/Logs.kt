@@ -10,6 +10,7 @@ import dev.morphia.annotations.IndexOptions
 import dev.morphia.annotations.Indexes
 import dev.morphia.annotations.PrePersist
 import java.time.LocalDateTime
+import java.util.Locale
 
 @Entity(value = "logs", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("channel"), Field("upperNick"), Field("updated")),
@@ -72,7 +73,7 @@ class Logs : Persistent {
 
     @PrePersist
     fun upperNick() {
-        upperNick = nick?.toUpperCase()
+        upperNick = nick?.uppercase(Locale.getDefault())
     }
 
     override fun toString(): String {

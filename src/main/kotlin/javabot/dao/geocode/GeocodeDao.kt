@@ -1,6 +1,7 @@
 package javabot.dao.geocode
 
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
@@ -19,10 +20,10 @@ class GeocodeDao @Inject constructor(private val javabotConfig: JavabotConfig, p
     val cache: LoadingCache<String, GeoLocation> =
             CacheBuilder.newBuilder().maximumSize(1000).expireAfterAccess(10, TimeUnit.MINUTES)
                 .build(object : CacheLoader<String, GeoLocation>() {
-                    override fun load(key: String): GeoLocation? {
-                        return if (javabotConfig.googleAPI().isNotEmpty() && key.isNotEmpty()) {
+                    override fun load(key: String): GeoLocation {
+                        val geoLocation: GeoLocation? = if (javabotConfig.googleAPI().isNotEmpty() && key.isNotEmpty()) {
                             if (limiter.tryAcquire()) {
-                                val mapper = ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                                val mapper = ObjectMapper().disable(FAIL_ON_UNKNOWN_PROPERTIES)
                                 val location = key.replace(" ", "+")
                                 val geocodeResponse = httpService.get("$baseUrl$location")
                                 val response = mapper.readValue(geocodeResponse, GeocodeResponse::class.java)
@@ -30,21 +31,24 @@ class GeocodeDao @Inject constructor(private val javabotConfig: JavabotConfig, p
                                 if (results.isNotEmpty()) {
                                     results[0].geometry?.location?.let {
                                         GeoLocation(
-                                                it.lat ?: 0.0,
-                                                it.lng ?: 0.0,
-                                                response.results?.get(0)?.formatted_address ?: ""
+                                            it.lat ?: 0.0,
+                                            it.lng ?: 0.0,
+                                            response.results?.get(0)?.formatted_address ?: ""
                                         )
                                     }
                                 } else {
                                     null
                                 }
                             } else {
-                                throw Exception("Too many requests: geocode service is limited to ${limiter.allowed} for " +
-                                                        "every ${limiter.span} ${limiter.period}")
+                                throw Exception(
+                                    "Too many requests: geocode service is limited to ${limiter.allowed} for " +
+                                        "every ${limiter.span} ${limiter.period}"
+                                )
                             }
                         } else {
                             throw Exception("Geocode service has no API key defined. See javabot.properties.")
                         }
+                        return geoLocation ?: throw Exception("Geocode lookup failed")
                     }
                 })
 

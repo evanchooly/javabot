@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit.SECONDS
         val name = "##testChannel"
         val event = ChannelEvent("testng", EventType.ADD, name)
         eventDao.save(event)
-        waitForEvent(event, "adding channel $name.  event id: ${event.id}", Duration(15, SECONDS))
+        waitForEvent(event, "adding channel $name.  event id: ${event.id}")
         Assert.assertNotNull(channelDao.get(name))
     }
 
@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit.SECONDS
         val key = "abcdef"
         val event = ChannelEvent("testng", EventType.ADD, KEYED_CHANNEL, key)
         eventDao.save(event)
-        waitForEvent(event, "adding keyed channel " + KEYED_CHANNEL, Duration.ONE_MINUTE)
+        waitForEvent(event, "adding keyed channel " + KEYED_CHANNEL)
         Assert.assertNotNull(channelDao.get(KEYED_CHANNEL))
     }
 
@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit.SECONDS
         bot
         val event = ChannelEvent("testng", EventType.DELETE, KEYED_CHANNEL)
         eventDao.save(event)
-        waitForEvent(event, "leaving channel " + KEYED_CHANNEL, Duration.ONE_MINUTE)
+        waitForEvent(event, "leaving channel " + KEYED_CHANNEL)
         Assert.assertNull(channelDao.get(KEYED_CHANNEL))
     }
 
@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit.SECONDS
         val name = "##testChannel"
         val event = ChannelEvent("testng", EventType.UPDATE, name, "newKey")
         eventDao.save(event)
-        waitForEvent(event, "updating channel " + name, Duration.ONE_MINUTE)
+        waitForEvent(event, "updating channel " + name)
         val channel = channelDao.get(name)
         Assert.assertNotNull(channel)
         Assert.assertEquals(channel?.key, "newKey")

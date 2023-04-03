@@ -13,6 +13,7 @@ import dev.morphia.annotations.Indexes
 import dev.morphia.annotations.PrePersist
 import java.io.Serializable
 import java.time.LocalDateTime
+import java.util.Locale
 
 @Entity(value = "channels", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("upperName")), options = IndexOptions(unique = true)))
@@ -58,7 +59,8 @@ class Channel : Serializable, Persistent {
         return "Channel{id=$id, logged=$logged, name='$name', updated=$updated}"
     }
 
-    @PrePersist fun uppers() {
-        upperName = name.toUpperCase()
+    @PrePersist
+    fun uppers() {
+        upperName = name.uppercase(Locale.getDefault())
     }
 }
