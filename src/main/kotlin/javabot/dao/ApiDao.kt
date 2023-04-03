@@ -4,6 +4,7 @@ import dev.morphia.Datastore
 import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
+import java.util.Locale
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocField
@@ -23,7 +24,7 @@ class ApiDao @Inject constructor(ds: Datastore) : BaseDao<JavadocApi>(ds, Javado
     }
 
     fun find(name: String) = ds.find(JavadocApi::class.java)
-            .filter(upperName().eq(name.toUpperCase()))
+            .filter(upperName().eq(name.uppercase(Locale.getDefault())))
             .first()
 
     fun delete(api: String) {

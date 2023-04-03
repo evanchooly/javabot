@@ -7,6 +7,7 @@ import javabot.model.Shun
 import javabot.model.criteria.ShunCriteria.Companion.expiry
 import javabot.model.criteria.ShunCriteria.Companion.upperNick
 import java.time.LocalDateTime
+import java.util.Locale
 
 class ShunDao @Inject constructor(ds: Datastore) : BaseDao<Shun>(ds, Shun::class.java) {
 
@@ -17,7 +18,7 @@ class ShunDao @Inject constructor(ds: Datastore) : BaseDao<Shun>(ds, Shun::class
     fun getShun(nick: String): Shun? {
         expireShuns()
         return ds.find(Shun::class.java)
-                .filter(upperNick().eq(nick.toUpperCase()))
+                .filter(upperNick().eq(nick.uppercase(Locale.getDefault())))
                 .first()
     }
 
@@ -31,7 +32,7 @@ class ShunDao @Inject constructor(ds: Datastore) : BaseDao<Shun>(ds, Shun::class
         var shun = getShun(nick)
         if (shun == null) {
             shun = Shun()
-            shun.nick = nick.toUpperCase()
+            shun.nick = nick.uppercase(Locale.getDefault())
             shun.expiry = until
             save(shun)
         }

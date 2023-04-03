@@ -13,6 +13,7 @@ import javabot.model.criteria.ChannelCriteria.Companion.upperName
 import org.apache.commons.lang.StringUtils
 import java.time.LocalDateTime
 import java.util.ArrayList
+import java.util.Locale
 
 @SuppressWarnings("ConstantNamingConvention")
 class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Channel::class.java) {
@@ -58,7 +59,7 @@ class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Chann
 
     fun get(name: String): Channel? {
         return ds.find(Channel::class.java)
-                .filter(upperName().eq(name.toUpperCase()))
+                .filter(upperName().eq(name.uppercase(Locale.getDefault())))
                 .first()
     }
 

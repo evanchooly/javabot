@@ -8,6 +8,7 @@ import javabot.dao.util.QueryParam
 import javabot.model.Karma
 import javabot.model.criteria.KarmaCriteria.Companion.upperName
 import java.time.LocalDateTime
+import java.util.Locale
 import javax.inject.Inject
 
 class KarmaDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var channelDao: ChannelDao) :
@@ -30,7 +31,7 @@ class KarmaDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var 
     }
 
     fun find(name: String): Karma? = ds.find(Karma::class.java)
-            .filter(upperName().eq(name.toUpperCase())).first()
+            .filter(upperName().eq(name.uppercase(Locale.getDefault()))).first()
 
     fun count(): Long {
         return ds.find(Karma::class.java).count()

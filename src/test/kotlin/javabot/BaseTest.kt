@@ -31,6 +31,7 @@ import org.testng.annotations.BeforeTest
 import org.testng.annotations.Guice
 import java.util.EnumSet
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeUnit.SECONDS
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -146,7 +147,7 @@ open class BaseTest {
         bot.get().shutdown()
     }
 
-    protected fun waitForEvent(event: AdminEvent, alias: String, timeout: Duration) {
+    protected fun waitForEvent(event: AdminEvent, alias: String, timeout: Duration = Duration(15, SECONDS)) {
         Awaitility.await(alias)
                 .atMost(timeout)
                 .pollInterval(1, TimeUnit.SECONDS)

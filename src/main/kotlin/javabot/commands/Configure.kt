@@ -2,6 +2,7 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
+import java.util.Locale
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
@@ -22,7 +23,7 @@ class Configure @Inject constructor(bot: Javabot, adminDao: AdminDao, var config
             responses.add(Message(event.user, config.toString()))
         } else {
             try {
-                val name = property.substring(0, 1).toUpperCase() + property.substring(1)
+                val name = property.substring(0, 1).uppercase(Locale.getDefault()) + property.substring(1)
                 val get = config.javaClass.getDeclaredMethod("get" + name)
                 val type = get.returnType
                 val set = config.javaClass.getDeclaredMethod("set" + name, type)
@@ -35,7 +36,6 @@ class Configure @Inject constructor(bot: Javabot, adminDao: AdminDao, var config
                 } catch (e: NumberFormatException) {
                     responses.add(Message(event.user, e.message!!))
                 }
-
             } catch (e: NoSuchMethodException) {
                 responses.add(Message(event.user, Sofia.configurationUnknownProperty(property)))
             }

@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import dev.morphia.Datastore
 import dev.morphia.query.QueryException
 import dev.morphia.query.filters.Filters.or
+import java.util.Locale
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocField
@@ -34,12 +35,12 @@ class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>
         val strings = calculateNameAndPackage(name)
         val pkgName = strings.first
         val query = ds.find(JavadocClass::class.java)
-                .filter(JavadocClassCriteria.upperName().eq(strings.second.toUpperCase()))
+                .filter(JavadocClassCriteria.upperName().eq(strings.second.uppercase(Locale.getDefault())))
         api?.id?.let { id ->
             query.filter(JavadocClassCriteria.apiId().eq(id))
         }
         if (pkgName != null) {
-            query.filter(JavadocClassCriteria.upperPackageName().eq(pkgName.toUpperCase()))
+            query.filter(JavadocClassCriteria.upperPackageName().eq(pkgName.uppercase(Locale.getDefault())))
         }
         return query.iterator().toList()
     }
@@ -59,8 +60,8 @@ class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>
         if (api != null) {
             query.filter(JavadocClassCriteria.apiId().eq(api.id))
         }
-        query.filter(JavadocClassCriteria.upperPackageName().eq(pkg.toUpperCase()))
-                .filter(JavadocClassCriteria.upperName().eq(name.toUpperCase()))
+        query.filter(JavadocClassCriteria.upperPackageName().eq(pkg.uppercase(Locale.getDefault())))
+                .filter(JavadocClassCriteria.upperName().eq(name.uppercase(Locale.getDefault())))
 
         return query.first()
     }
@@ -70,7 +71,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>
         return if (classes.isNotEmpty()) {
             ds.find(JavadocField::class.java)
                     .filter(JavadocFieldCriteria.javadocClass().eq(classes[0]))
-                    .filter(JavadocFieldCriteria.upperName().eq(fieldName.toUpperCase()))
+                    .filter(JavadocFieldCriteria.upperName().eq(fieldName.uppercase(Locale.getDefault())))
                     .iterator()
                     .toList()
         } else emptyList()
@@ -98,7 +99,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore) : BaseDao<JavadocClass>
     private fun getMethods(name: String, signatureTypes: String, javadocClass: JavadocClass): List<JavadocMethod> {
         val query = ds.find(JavadocMethod::class.java)
                 .filter(JavadocMethodCriteria.classId().eq(javadocClass.id!!))
-                .filter(JavadocMethodCriteria.upperName().eq(name.toUpperCase()))
+                .filter(JavadocMethodCriteria.upperName().eq(name.uppercase(Locale.getDefault())))
         if ("*" != signatureTypes) {
             query.filter(or(
                     JavadocMethodCriteria.shortSignatureTypes().eq(signatureTypes),

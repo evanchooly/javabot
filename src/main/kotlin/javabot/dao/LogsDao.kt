@@ -17,6 +17,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.Locale
 
 class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channelDao: ChannelDao) : BaseDao<Logs>(ds, Logs::class.java) {
 
@@ -34,7 +35,7 @@ class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channel
 
     fun getSeen(channel: String, nick: String): Seen? {
         val criteria = ds.find(Logs::class.java)
-                .filter(upperNick().eq(nick.toUpperCase()),
+                .filter(upperNick().eq(nick.uppercase(Locale.getDefault())),
                         channel().eq(channel))
         val first = criteria.first(FindOptions()
                 .sort(Sort.descending(updated)))

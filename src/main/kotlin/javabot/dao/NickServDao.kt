@@ -26,7 +26,7 @@ open class NickServDao @Inject constructor(ds: Datastore) : BaseDao<NickServInfo
             .filter { line -> line.contains(":") }
             .forEach { line ->
                 val (key, value) = line.split(':')
-                when (key.toUpperCase()) {
+                when (key.uppercase(Locale.getDefault())) {
                     "REGISTERED" -> info.registered = extractDate(value)
                     "USER REG." -> info.userRegistered = extractDate(value)
                     "LAST SEEN" -> info.lastSeen = extractDate(value)
