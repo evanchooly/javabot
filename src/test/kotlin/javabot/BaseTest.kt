@@ -152,8 +152,7 @@ open class BaseTest {
                 .atMost(timeout)
                 .pollInterval(1, TimeUnit.SECONDS)
                 .until<Boolean> {
-                    val found = eventDao.find(event.id)
-                    DONE.contains(found?.state)
+                    DONE.contains(eventDao.find(event.id)?.state)
                 }
     }
 

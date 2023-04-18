@@ -55,6 +55,7 @@ open class JavabotModule : AbstractModule() {
         val datastore = Morphia.createDatastore(
             client(), databaseName, MapperOptions.builder()
                 .enablePolymorphicQueries(true)
+                .autoImportModels(true)
                 .build()
         )
 
