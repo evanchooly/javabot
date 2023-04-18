@@ -11,27 +11,27 @@ class Config : Serializable, Persistent {
     @Id
     var id: ObjectId? = null
 
-    var server: String = "irc.libera.chat"
+    var server = "irc.libera.chat"
 
-    var url: String = ""
+    var url = ""
 
-    var port: Int = 6667
+    var port = 6667
 
-    var historyLength: Int = 12
+    var historyLength = 12
 
-    var trigger: String = "~"
+    var trigger = "~"
 
     var nick: String = ""
 
     var password: String? = null
 
-    var schemaVersion: Int = 0
+    var schemaVersion = 0
 
-    var operations: MutableList<String> = ArrayList()
+    var operations = mutableListOf<String>()
 
-    var throttleThreshold: Int = 5
+    var throttleThreshold = 5
 
-    var minimumNickServAge: Int = 14
+    var minimumNickServAge = 14
 
     constructor() {
     }

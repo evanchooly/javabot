@@ -6,7 +6,6 @@ import dev.morphia.annotations.Id
 import dev.morphia.annotations.Indexed
 import java.lang.String.format
 import java.time.LocalDateTime
-import java.time.LocalDateTime.now
 import java.time.format.DateTimeFormatter
 import java.util.ArrayList
 import java.util.TreeMap
@@ -23,7 +22,7 @@ class NickServInfo : Persistent {
     @Indexed
     lateinit var account: String
 
-    val created: LocalDateTime = now()
+    val created: LocalDateTime = LocalDateTime.now()
 
     var registered: LocalDateTime = LocalDateTime.now()
 
