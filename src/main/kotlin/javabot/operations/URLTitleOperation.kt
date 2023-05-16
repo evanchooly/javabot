@@ -49,7 +49,7 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     }
 
     private fun postMessageToChannel(responses: MutableList<Message>, titlesToPost: List<String>, event: Message) {
-        val distinctTitles=titlesToPost.distinct()
+        val distinctTitles = titlesToPost.distinct()
         val title = if (distinctTitles.size == 1) "title" else "titles"
         responses.add(Message(event, "${event.user.nick}'s $title: " +
                 distinctTitles.joinToString(" | ", transform = { s ->
@@ -112,6 +112,14 @@ class URLTitleOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     }
 
     private fun parseTitle(doc: Document): String {
+        val activityPubHeader = doc.select("link[type=\"application/activity+json\"]");
+        if (activityPubHeader.isNotEmpty()) {
+            val description = doc.head().select("meta[property=\"og:description\"]")
+            if (description.isNotEmpty()) {
+                val text=description.first()!!.attr("content")
+                return text
+            }
+        }
         val header = doc.select("meta[property=\"og:title\"]")
         return if (header.isNotEmpty()) {
             val body: Elements = doc.select(".permalink-tweet-container .js-tweet-text-container") ?: Elements()
