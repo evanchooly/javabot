@@ -31,24 +31,28 @@ import org.eclipse.jetty.server.session.SessionHandler
 import org.slf4j.LoggerFactory
 
 @Singleton
-class JavabotApplication @Inject constructor(var injector: Injector): Application<JavabotConfiguration>() {
+class JavabotApplication @Inject constructor(var injector: Injector) :
+    Application<JavabotConfiguration>() {
     var running = false
 
     companion object {
         private val LOG = LoggerFactory.getLogger(JavabotApplication::class.java)
 
         @Throws(Exception::class)
-        @JvmStatic fun main(args: Array<String>) {
+        @JvmStatic
+        fun main(args: Array<String>) {
             Guice.createInjector(JavabotModule())
-                    .getInstance(JavabotApplication::class.java)
-                    .run(*arrayOf("server", "javabot.yml"))
+                .getInstance(JavabotApplication::class.java)
+                .run(*arrayOf("server", "javabot.yml"))
         }
     }
 
     override fun initialize(bootstrap: Bootstrap<JavabotConfiguration>) {
         bootstrap.addBundle(ViewBundle())
         bootstrap.addBundle(AssetsBundle("/assets", "/assets", null, "assets"))
-        bootstrap.addBundle(AssetsBundle("/META-INF/resources/webjars", "/webjars", null, "webjars"))
+        bootstrap.addBundle(
+            AssetsBundle("/META-INF/resources/webjars", "/webjars", null, "webjars")
+        )
     }
 
     override fun run(configuration: JavabotConfiguration, environment: Environment) {
@@ -66,23 +70,32 @@ class JavabotApplication @Inject constructor(var injector: Injector): Applicatio
         environment.jersey().register(injector.getInstance(AdminResource::class.java))
         environment.jersey().register(RuntimeExceptionMapper(configuration))
 
-        environment.servlets()
-                .addFilter("javadoc", injector.getInstance(JavadocFilter::class.java))
-                .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), false, "/javadoc/*")
+        environment
+            .servlets()
+            .addFilter("javadoc", injector.getInstance(JavadocFilter::class.java))
+            .addMappingForUrlPatterns(
+                EnumSet.allOf(DispatcherType::class.java),
+                false,
+                "/javadoc/*"
+            )
 
         environment.healthChecks().register("javabot", JavabotHealthCheck())
 
         running = false
     }
 
-    class JavadocFilter @Inject constructor(var apiDao: ApiDao, var config: JavabotConfig) : Filter {
-        override fun destroy() {
-        }
+    class JavadocFilter @Inject constructor(var apiDao: ApiDao, var config: JavabotConfig) :
+        Filter {
+        override fun destroy() {}
 
-        override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
+        override fun doFilter(
+            request: ServletRequest,
+            response: ServletResponse,
+            chain: FilterChain
+        ) {
             request as HttpServletRequest
             var filePath = request.requestURI.split("/").drop(2).joinToString("/")
-            if(!filePath.startsWith("/")) {
+            if (!filePath.startsWith("/")) {
                 filePath = "/" + filePath
             }
             val path = File("javadoc$filePath").toPath()
@@ -97,7 +110,6 @@ class JavabotApplication @Inject constructor(var injector: Injector): Applicatio
             }
         }
 
-        override fun init(filterConfig: FilterConfig?) {
-        }
+        override fun init(filterConfig: FilterConfig?) {}
     }
 }

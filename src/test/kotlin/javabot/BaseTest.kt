@@ -5,6 +5,9 @@ import com.google.inject.Injector
 import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.Duration
 import dev.morphia.Datastore
+import java.util.EnumSet
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeUnit.SECONDS
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.dao.ChangeDao
@@ -22,6 +25,8 @@ import javabot.model.Logs
 import javabot.model.NickServInfo
 import javabot.model.State
 import javabot.model.javadoc.JavadocApi
+import javax.inject.Inject
+import javax.inject.Provider
 import org.pircbotx.PircBotX
 import org.slf4j.LoggerFactory
 import org.testng.Assert
@@ -29,11 +34,6 @@ import org.testng.annotations.AfterSuite
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Guice
-import java.util.EnumSet
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeUnit.SECONDS
-import javax.inject.Inject
-import javax.inject.Provider
 
 @Guice(modules = [JavabotTestModule::class])
 open class BaseTest {
@@ -48,65 +48,49 @@ open class BaseTest {
         val OK: String = Sofia.ok(TEST_USER_NICK.take(16))
         val TARGET_USER = JavabotUser(TEST_TARGET_NICK, TEST_TARGET_NICK, "hostmask")
         val TEST_USER = JavabotUser(TEST_USER_NICK, TEST_USER_NICK, "hostmask")
-        val TEST_NON_ADMIN_USER = JavabotUser(TEST_NON_ADMIN_USER_NICK, TEST_NON_ADMIN_USER_NICK, "hostmask")
+        val TEST_NON_ADMIN_USER =
+            JavabotUser(TEST_NON_ADMIN_USER_NICK, TEST_NON_ADMIN_USER_NICK, "hostmask")
         val TEST_CHANNEL = Channel("#jbunittest")
         private val LOG = LoggerFactory.getLogger(BaseTest::class.java)
     }
 
-    val testIrcChannel: MockIrcChannel by lazy {
-        MockIrcChannel(ircBot.get(), TEST_CHANNEL.name)
-    }
+    val testIrcChannel: MockIrcChannel by lazy { MockIrcChannel(ircBot.get(), TEST_CHANNEL.name) }
 
-    val testIrcUser: MockIrcUser by lazy {
-        MockIrcUser(ircBot.get(), TEST_USER.nick)
-    }
+    val testIrcUser: MockIrcUser by lazy { MockIrcUser(ircBot.get(), TEST_USER.nick) }
 
-    val testIrcHostmask: MockUserHostmask by lazy {
-        MockUserHostmask(ircBot.get(), TEST_USER.nick)
-    }
+    val testIrcHostmask: MockUserHostmask by lazy { MockUserHostmask(ircBot.get(), TEST_USER.nick) }
 
-    @Inject
-    lateinit var injector: Injector
+    @Inject lateinit var injector: Injector
 
-    @Inject
-    protected lateinit var datastore: Datastore
+    @Inject protected lateinit var datastore: Datastore
 
-    @Inject
-    private lateinit var config: JavabotConfig
+    @Inject private lateinit var config: JavabotConfig
 
-    @Inject
-    protected lateinit var apiDao: ApiDao
+    @Inject protected lateinit var apiDao: ApiDao
 
-    @Inject
-    protected lateinit var eventDao: EventDao
+    @Inject protected lateinit var eventDao: EventDao
 
-    @Inject
-    protected lateinit var channelDao: ChannelDao
+    @Inject protected lateinit var channelDao: ChannelDao
 
-    @Inject
-    protected lateinit var logsDao: LogsDao
+    @Inject protected lateinit var logsDao: LogsDao
 
-    @Inject
-    protected lateinit var adminDao: AdminDao
+    @Inject protected lateinit var adminDao: AdminDao
 
-    @Inject
-    protected lateinit var changeDao: ChangeDao
+    @Inject protected lateinit var changeDao: ChangeDao
 
-    @Inject
-    protected lateinit var bot: Provider<TestJavabot>
+    @Inject protected lateinit var bot: Provider<TestJavabot>
 
-    @Inject
-    protected lateinit var ircBot: Provider<PircBotX>
+    @Inject protected lateinit var ircBot: Provider<PircBotX>
 
-    @Inject
-    protected lateinit var messages: Messages
-
+    @Inject protected lateinit var messages: Messages
 
     @BeforeTest
     fun setup() {
         LOG.debug("setting up test")
         messages.clear()
-        val admin = adminDao.getAdminByEmailAddress(BOT_EMAIL) ?: Admin(TEST_USER.nick, BOT_EMAIL, TEST_USER.hostmask, true)
+        val admin =
+            adminDao.getAdminByEmailAddress(BOT_EMAIL)
+                ?: Admin(TEST_USER.nick, BOT_EMAIL, TEST_USER.hostmask, true)
         admin.ircName = TEST_USER.nick
         admin.emailAddress = BOT_EMAIL
         admin.hostName = TEST_USER.hostmask
@@ -147,17 +131,29 @@ open class BaseTest {
         bot.get().shutdown()
     }
 
-    protected fun waitForEvent(event: AdminEvent, alias: String, timeout: Duration = Duration(15, SECONDS)) {
-        Awaitility.await(alias)
-                .atMost(timeout)
-                .pollInterval(1, TimeUnit.SECONDS)
-                .until<Boolean> {
-                    DONE.contains(eventDao.find(event.id)?.state)
-                }
+    protected fun waitForEvent(
+        event: AdminEvent,
+        alias: String,
+        timeout: Duration = Duration(15, SECONDS)
+    ) {
+        Awaitility.await(alias).atMost(timeout).pollInterval(1, TimeUnit.SECONDS).until<Boolean> {
+            DONE.contains(eventDao.find(event.id)?.state)
+        }
     }
 
-    protected fun message(value: String, start: String = "~", user: JavabotUser = TEST_USER): Message {
-        return Message.extractContentFromMessage(bot.get(), TEST_CHANNEL, user, start, bot.get().nick, value)
+    protected fun message(
+        value: String,
+        start: String = "~",
+        user: JavabotUser = TEST_USER
+    ): Message {
+        return Message.extractContentFromMessage(
+            bot.get(),
+            TEST_CHANNEL,
+            user,
+            start,
+            bot.get().nick,
+            value
+        )
     }
 
     protected fun privateMessage(value: String, user: JavabotUser = TEST_USER): Message {
@@ -169,10 +165,21 @@ open class BaseTest {
         for (response in messages) {
             found = found or response.value.contains(target)
         }
-        Assert.assertTrue(found, java.lang.String.format("Did not find \n'%s' in \n'%s'", target,
-                messages.joinToString("\n") { it.value }))
+        Assert.assertTrue(
+            found,
+            java.lang.String.format(
+                "Did not find \n'%s' in \n'%s'",
+                target,
+                messages.joinToString("\n") { it.value }
+            )
+        )
     }
-    protected fun loadApi(apiName: String, groupId: String = "", artifactId: String = "", version: String): JavadocApi {
+    protected fun loadApi(
+        apiName: String,
+        groupId: String = "",
+        artifactId: String = "",
+        version: String
+    ): JavadocApi {
         var api = apiDao.find(apiName)
         if (api == null) {
             LOG.info("$apiName API not found.  Generating now.")

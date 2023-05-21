@@ -3,14 +3,12 @@ package javabot.operations
 import com.google.inject.Inject
 import javabot.BaseTest
 import javabot.MockIrcAdapter
-import org.testng.Assert
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
 @Test(groups = arrayOf("operations"))
 class SayOperationsTest : BaseTest() {
-    @Inject
-    private lateinit var operation: SayOperation
+    @Inject private lateinit var operation: SayOperation
 
     fun testSay() {
         val response = operation.handleMessage(message("~say MAGNIFICENT"))
@@ -25,5 +23,4 @@ class SayOperationsTest : BaseTest() {
         val response = operation.handleMessage(message("~say MAGNIFICENT"))
         assertEquals(response.size, 0)
     }
-
 }

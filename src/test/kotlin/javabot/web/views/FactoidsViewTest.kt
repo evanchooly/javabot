@@ -1,23 +1,21 @@
 package javabot.web.views
 
-import freemarker.template.Configuration
 import freemarker.template.Configuration.*
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
-import javabot.dao.FactoidDao
-import javabot.model.Factoid
-import net.htmlparser.jericho.Source
-import org.testng.annotations.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.time.LocalDateTime
 import java.util.Locale
+import javabot.dao.FactoidDao
+import javabot.model.Factoid
 import javax.inject.Inject
+import net.htmlparser.jericho.Source
+import org.testng.annotations.Test
 
 @Test(enabled = false)
 class FactoidsViewTest : ViewsTest() {
-    @Inject
-    lateinit var factoidDao: FactoidDao
+    @Inject lateinit var factoidDao: FactoidDao
 
     fun singleFactoid() {
         createFactoids(1)
@@ -79,7 +77,11 @@ class FactoidsViewTest : ViewsTest() {
     private fun render(page: Int, filter: Factoid): Source {
         val renderer = FreemarkerViewRenderer(VERSION_2_3_32)
         val output = ByteArrayOutputStream()
-        renderer.render(viewFactory.createFactoidsView(MockServletRequest(false), page, filter), Locale.getDefault(), output)
+        renderer.render(
+            viewFactory.createFactoidsView(MockServletRequest(false), page, filter),
+            Locale.getDefault(),
+            output
+        )
         return Source(ByteArrayInputStream(output.toByteArray()))
     }
 

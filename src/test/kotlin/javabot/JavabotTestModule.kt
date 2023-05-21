@@ -14,8 +14,7 @@ import org.testcontainers.containers.MongoDBContainer
 
 class JavabotTestModule : JavabotModule() {
     private lateinit var botProvider: Provider<TestJavabot>
-    private val container = MongoDBContainer("mongo:6")
-        .withReuse(true)
+    private val container = MongoDBContainer("mongo:6").withReuse(true)
 
     override fun configure() {
         super.configure()

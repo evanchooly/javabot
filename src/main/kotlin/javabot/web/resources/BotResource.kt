@@ -1,14 +1,13 @@
 package javabot.web.resources
 
 import io.dropwizard.views.View
-import javabot.model.Factoid
-import javabot.web.views.ViewFactory
-import org.slf4j.LoggerFactory
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import javabot.model.Factoid
+import javabot.web.views.ViewFactory
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.Consumes
@@ -19,6 +18,7 @@ import javax.ws.rs.Produces
 import javax.ws.rs.QueryParam
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.MediaType
+import org.slf4j.LoggerFactory
 
 @Path("/")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -44,42 +44,55 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
     @GET
     @Path("/factoids")
     @Produces("text/html;charset=ISO-8859-1")
-    fun factoids(@Context request: HttpServletRequest, @QueryParam("page") page: Int?,
-                 @QueryParam("name") name: String?, @QueryParam("value") value: String?,
-                 @QueryParam("userName") userName: String?)
-            : View {
+    fun factoids(
+        @Context request: HttpServletRequest,
+        @QueryParam("page") page: Int?,
+        @QueryParam("name") name: String?,
+        @QueryParam("value") value: String?,
+        @QueryParam("userName") userName: String?
+    ): View {
         return viewFactory.createFactoidsView(request, page ?: 1, Factoid.of(name, value, userName))
     }
 
     @GET
     @Path("/karma")
     @Produces("text/html;charset=ISO-8859-1")
-    fun karma(@Context request: HttpServletRequest,
-              @QueryParam("page") page: Int?,
-              @Suppress("UNUSED_PARAMETER") @QueryParam("name") name: String?,
-              @Suppress("UNUSED_PARAMETER") @QueryParam("value") value: Int?,
-              @Suppress("UNUSED_PARAMETER") @QueryParam("userName") userName: String?): View {
+    fun karma(
+        @Context request: HttpServletRequest,
+        @QueryParam("page") page: Int?,
+        @Suppress("UNUSED_PARAMETER") @QueryParam("name") name: String?,
+        @Suppress("UNUSED_PARAMETER") @QueryParam("value") value: Int?,
+        @Suppress("UNUSED_PARAMETER") @QueryParam("userName") userName: String?
+    ): View {
         return viewFactory.createKarmaView(request, page ?: 1)
     }
 
     @GET
     @Path("/changes")
     @Produces("text/html;charset=ISO-8859-1")
-    fun changes(@Context request: HttpServletRequest, @QueryParam("page") page: Int?
-                , @QueryParam("message") message: String?): View {
+    fun changes(
+        @Context request: HttpServletRequest,
+        @QueryParam("page") page: Int?,
+        @QueryParam("message") message: String?
+    ): View {
         return viewFactory.createChangesView(request, page ?: 1, message)
     }
 
     @GET
     @Path("/logs/{channel}/{date}")
     @Produces("text/html;charset=ISO-8859-1")
-    fun logs(@Context request: HttpServletRequest, @PathParam("channel") channel: String?,
-             @PathParam("date") dateString: String?): View {
-        val date: LocalDateTime = try {
-            if ("today" == dateString) LocalDate.now().atStartOfDay() else LocalDate.parse(dateString, FORMAT).atStartOfDay()
-        } catch (e: Exception) {
-            LocalDate.now().atStartOfDay()
-        }
+    fun logs(
+        @Context request: HttpServletRequest,
+        @PathParam("channel") channel: String?,
+        @PathParam("date") dateString: String?
+    ): View {
+        val date: LocalDateTime =
+            try {
+                if ("today" == dateString) LocalDate.now().atStartOfDay()
+                else LocalDate.parse(dateString, FORMAT).atStartOfDay()
+            } catch (e: Exception) {
+                LocalDate.now().atStartOfDay()
+            }
         val channelName: String
         try {
             channelName = URLDecoder.decode(channel, "UTF-8")
@@ -97,5 +110,4 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
 
         val FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern(PATTERN)
     }
-
 }

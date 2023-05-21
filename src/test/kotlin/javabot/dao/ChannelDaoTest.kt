@@ -1,6 +1,5 @@
 package javabot.dao
 
-import com.mongodb.BasicDBObject
 import dev.morphia.DeleteOptions
 import javabot.model.Channel
 import org.testng.Assert
@@ -19,7 +18,6 @@ class ChannelDaoTest : BaseServiceTest() {
 
     fun getChannels() {
         Assert.assertTrue(!channelDao.getChannels().isEmpty())
-
     }
 
     fun currentChannels() {
@@ -28,8 +26,7 @@ class ChannelDaoTest : BaseServiceTest() {
 
     @Test(enabled = false)
     fun stats() {
-        datastore.find(Channel::class.java)
-                .delete(DeleteOptions().multi(true))
+        datastore.find(Channel::class.java).delete(DeleteOptions().multi(true))
         val list = channelDao.getStatistics()
         Assert.assertTrue(list.isNotEmpty())
         val activity = list[0]

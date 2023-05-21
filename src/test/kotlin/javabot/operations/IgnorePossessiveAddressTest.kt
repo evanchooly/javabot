@@ -6,18 +6,17 @@ import javabot.BaseTest
 import javabot.Javabot
 import javabot.MockIrcAdapter
 import org.testng.Assert.assertEquals
-import org.testng.Assert.assertNotNull
 import org.testng.annotations.Test
 
 class IgnorePossessiveAddressTest
-@Inject constructor(val ircAdapter: MockIrcAdapter, val javabot: Javabot) : BaseTest() {
+@Inject
+constructor(val ircAdapter: MockIrcAdapter, val javabot: Javabot) : BaseTest() {
     @Test
     fun testNonPossessiveAddress() {
         javabot.processMessage(message("~${javabot.nick} test"))
         assertEquals(ircAdapter.messages.messages.size, 1)
         assertEquals(ircAdapter.messages.messages[0], Sofia.unhandledMessage(TEST_USER))
         ircAdapter.messages.clear()
-
     }
 
     @Test(enabled = false)

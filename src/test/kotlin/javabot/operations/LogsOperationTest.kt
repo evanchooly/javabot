@@ -1,18 +1,17 @@
 package javabot.operations
 
+import java.util.UUID
 import javabot.BaseTest
 import javabot.model.Logs
 import javabot.model.Logs.Type
+import javax.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import java.util.UUID
-import javax.inject.Inject
 
 class LogsOperationTest : BaseTest() {
-    @Inject
-    private lateinit var operation: LogsOperation
+    @Inject private lateinit var operation: LogsOperation
 
     @BeforeMethod
     @AfterMethod
@@ -23,9 +22,9 @@ class LogsOperationTest : BaseTest() {
     @Test
     @Throws(Exception::class)
     fun TEST_CHANNELLogs() {
-        datastore.find(Logs::class.java)
-                .delete()
-        // Add a known and unique message to the logs so we can validate that we are testing against new data
+        datastore.find(Logs::class.java).delete()
+        // Add a known and unique message to the logs so we can validate that we are testing against
+        // new data
         val uuid = UUID.randomUUID().toString()
         logsDao.logMessage(Type.MESSAGE, TEST_CHANNEL, TEST_USER, uuid)
         val list = operation.handleMessage(message("~logs"))
@@ -36,7 +35,8 @@ class LogsOperationTest : BaseTest() {
     @Test
     @Throws(Exception::class)
     fun testNickSpecificLogsWhenNoLogsForNick() {
-        // We generate unique user names so that existing data in the DB doesn't interfere with this unit test
+        // We generate unique user names so that existing data in the DB doesn't interfere with this
+        // unit test
         val uuid = UUID.randomUUID().toString()
         val list = operation.handleMessage(message("~logs ${uuid}"))
         Assert.assertEquals(list.size, 1)

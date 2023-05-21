@@ -6,15 +6,16 @@ import dev.morphia.DeleteOptions
 import dev.morphia.UpdateOptions
 import dev.morphia.query.filters.Filters.or
 import dev.morphia.query.updates.UpdateOperators.set
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import javabot.model.JavabotUser
 import javabot.model.NickServInfo
 import javabot.model.criteria.NickServInfoCriteria.Companion.account
 import javabot.model.criteria.NickServInfoCriteria.Companion.nick
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
-open class NickServDao @Inject constructor(ds: Datastore) : BaseDao<NickServInfo>(ds, NickServInfo::class.java) {
+open class NickServDao @Inject constructor(ds: Datastore) :
+    BaseDao<NickServInfo>(ds, NickServInfo::class.java) {
     fun clear() = getQuery().delete(DeleteOptions().multi(true))
 
     fun process(list: List<String>) {
@@ -22,7 +23,8 @@ open class NickServDao @Inject constructor(ds: Datastore) : BaseDao<NickServInfo
         val split = list[0].split(" ")
         info.nick = split[2].lowercase(Locale.getDefault())
         info.account = split[4].substring(0, split[4].indexOf(')')).lowercase(Locale.getDefault())
-        list.subList(1, list.size)
+        list
+            .subList(1, list.size)
             .filter { line -> line.contains(":") }
             .forEach { line ->
                 val (key, value) = line.split(':')
@@ -53,7 +55,10 @@ open class NickServDao @Inject constructor(ds: Datastore) : BaseDao<NickServInfo
     private fun extractDate(line: String): LocalDateTime {
         return if (!line.endsWith("now")) {
             val dateString = if (line.contains("(")) line.substring(0, line.indexOf(" (")) else line
-            LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern(NickServInfo.NSERV_DATE_FORMAT))
+            LocalDateTime.parse(
+                dateString,
+                DateTimeFormatter.ofPattern(NickServInfo.NSERV_DATE_FORMAT)
+            )
         } else {
             LocalDateTime.now()
         }
@@ -61,26 +66,25 @@ open class NickServDao @Inject constructor(ds: Datastore) : BaseDao<NickServInfo
 
     open fun find(name: String): NickServInfo? {
         return ds.find(NickServInfo::class.java)
-                .filter(or(
-                        nick().eq(name.lowercase(Locale.getDefault())),
-                        account().eq(name.lowercase(Locale.getDefault()))))
-                .first()
+            .filter(
+                or(
+                    nick().eq(name.lowercase(Locale.getDefault())),
+                    account().eq(name.lowercase(Locale.getDefault()))
+                )
+            )
+            .first()
     }
 
     fun updateNick(oldNick: String, newNick: String): NickServInfo {
         ds.find(NickServInfo::class.java)
-                .filter(nick().eq(oldNick))
-                .update(set(nick, newNick))
-                .execute(UpdateOptions().multi(false))
+            .filter(nick().eq(oldNick))
+            .update(set(nick, newNick))
+            .execute(UpdateOptions().multi(false))
 
-        return ds.find(NickServInfo::class.java)
-                .filter(nick().eq(newNick))
-                .first()
+        return ds.find(NickServInfo::class.java).filter(nick().eq(newNick)).first()
     }
 
     fun unregister(user: JavabotUser) {
-        ds.find(NickServInfo::class.java)
-                .filter(nick().eq(user.nick))
-                .delete()
+        ds.find(NickServInfo::class.java).filter(nick().eq(user.nick)).delete()
     }
 }

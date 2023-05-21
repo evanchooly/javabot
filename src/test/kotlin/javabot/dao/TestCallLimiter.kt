@@ -1,10 +1,10 @@
 package javabot.dao
 
-import javabot.dao.util.CallLimiter
-import org.testng.annotations.Test
 import java.util.concurrent.TimeUnit
+import javabot.dao.util.CallLimiter
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.testng.annotations.Test
 
 class TestCallLimiter {
     @Test

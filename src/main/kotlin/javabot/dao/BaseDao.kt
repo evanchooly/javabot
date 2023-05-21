@@ -17,13 +17,12 @@ abstract class BaseDao<T : Persistent>(val ds: Datastore, val entityClass: Class
 
     fun <U> getQuery(clazz: Class<U>): Query<U> = ds.find(clazz)
 
-    fun find(id: ObjectId?): T? = ds.find(entityClass)
-            .filter(eq("_id", id))
-            .first()
+    fun find(id: ObjectId?): T? = ds.find(entityClass).filter(eq("_id", id)).first()
 
     open fun findAll(): List<T> = ds.find(entityClass).iterator().toList()
 
-    private fun loadChecked(id: ObjectId?) = find(id) ?: throw EntityNotFoundException(entityClass, id)
+    private fun loadChecked(id: ObjectId?) =
+        find(id) ?: throw EntityNotFoundException(entityClass, id)
 
     open fun save(entity: Persistent) {
         ds.save(entity)

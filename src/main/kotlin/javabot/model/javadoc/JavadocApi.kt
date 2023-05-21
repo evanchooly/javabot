@@ -1,8 +1,5 @@
 package javabot.model.javadoc
 
-import javabot.JavabotConfig
-import javabot.model.Persistent
-import org.bson.types.ObjectId
 import dev.morphia.annotations.Entity
 import dev.morphia.annotations.Field
 import dev.morphia.annotations.Id
@@ -11,15 +8,22 @@ import dev.morphia.annotations.IndexOptions
 import dev.morphia.annotations.Indexes
 import dev.morphia.annotations.PrePersist
 import java.util.Locale
+import javabot.JavabotConfig
+import javabot.model.Persistent
+import org.bson.types.ObjectId
 
 @Entity(value = "apis", useDiscriminator = false)
-@Indexes(Index(fields = arrayOf(Field("name")), options = IndexOptions(unique = true)),
-         Index(fields = arrayOf(Field("groupId"), Field("artifactId")), options = IndexOptions(unique = true)),
-         Index(fields = arrayOf(Field("upperName")), options = IndexOptions(unique = true)))
+@Indexes(
+    Index(fields = arrayOf(Field("name")), options = IndexOptions(unique = true)),
+    Index(
+        fields = arrayOf(Field("groupId"), Field("artifactId")),
+        options = IndexOptions(unique = true)
+    ),
+    Index(fields = arrayOf(Field("upperName")), options = IndexOptions(unique = true))
+)
 class JavadocApi : Persistent {
 
-    @Id
-    var id: ObjectId = ObjectId()
+    @Id var id: ObjectId = ObjectId()
 
     var name: String = ""
 
@@ -35,16 +39,23 @@ class JavadocApi : Persistent {
 
     constructor()
 
-    constructor(config: JavabotConfig, apiName: String, groupId: String = "", artifactId: String = "", version: String = "") {
+    constructor(
+        config: JavabotConfig,
+        apiName: String,
+        groupId: String = "",
+        artifactId: String = "",
+        version: String = ""
+    ) {
         name = apiName
         this.groupId = groupId
         this.artifactId = artifactId
         this.version = version
-        baseUrl = if (apiName == "JDK") {
-            "https://docs.oracle.com/en/java/javase/$version/docs/api"
-        } else {
-            "${config.url()}/javadoc/$apiName/${version}/"
-        }
+        baseUrl =
+            if (apiName == "JDK") {
+                "https://docs.oracle.com/en/java/javase/$version/docs/api"
+            } else {
+                "${config.url()}/javadoc/$apiName/${version}/"
+            }
     }
 
     @PrePersist

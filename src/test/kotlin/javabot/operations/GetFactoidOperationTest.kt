@@ -15,28 +15,66 @@ import org.testng.annotations.Test
 
 @Test
 class GetFactoidOperationTest : BaseTest() {
-    @Inject
-    private lateinit var factoidDao: FactoidDao
-    @Inject
-    private lateinit var operation: GetFactoidOperation
+    @Inject private lateinit var factoidDao: FactoidDao
+    @Inject private lateinit var operation: GetFactoidOperation
 
     @BeforeClass
     fun createGets() {
         deleteFactoids()
-        factoidDao.addFactoid(TEST_TARGET_NICK, "api", "http://java.sun.com/javase/current/docs/api/index.html", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.addFactoid(TEST_TARGET_NICK, "replyTest", "<reply>I'm a reply!", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.addFactoid(TEST_TARGET_NICK, "stupid", "<reply>\$who, what you've just said is one of the most insanely idiotic " +
+        factoidDao.addFactoid(
+            TEST_TARGET_NICK,
+            "api",
+            "http://java.sun.com/javase/current/docs/api/index.html",
+            LogsDaoTest.CHANNEL_NAME
+        )
+        factoidDao.addFactoid(
+            TEST_TARGET_NICK,
+            "replyTest",
+            "<reply>I'm a reply!",
+            LogsDaoTest.CHANNEL_NAME
+        )
+        factoidDao.addFactoid(
+            TEST_TARGET_NICK,
+            "stupid",
+            "<reply>\$who, what you've just said is one of the most insanely idiotic " +
                 "things I have ever heard. At no point in your rambling, incoherent response were you even close to anything that could be" +
                 " considered a rational thought. Everyone in this room is now dumber for having listened to it. I award you no points, and" +
-                " may God have mercy on your soul.", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.addFactoid(TEST_TARGET_NICK, "seeTest", "<see>replyTest", LogsDaoTest.CHANNEL_NAME)
+                " may God have mercy on your soul.",
+            LogsDaoTest.CHANNEL_NAME
+        )
+        factoidDao.addFactoid(
+            TEST_TARGET_NICK,
+            "seeTest",
+            "<see>replyTest",
+            LogsDaoTest.CHANNEL_NAME
+        )
         factoidDao.addFactoid(TEST_TARGET_NICK, "noReply", "I'm a reply!", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.addFactoid(TEST_TARGET_NICK, "replace $1", "<reply>I replaced you $1", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(
+            TEST_TARGET_NICK,
+            "replace $1",
+            "<reply>I replaced you $1",
+            LogsDaoTest.CHANNEL_NAME
+        )
         factoidDao.addFactoid(TEST_TARGET_NICK, "camel $^", "<reply>$^", LogsDaoTest.CHANNEL_NAME)
         factoidDao.addFactoid(TEST_TARGET_NICK, "url $+", "<reply>$+", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.addFactoid(TEST_TARGET_NICK, "hey", "<reply>Hello, \$who", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.addFactoid(TEST_TARGET_NICK, "coin", "<reply>(heads|tails)", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.addFactoid(TEST_TARGET_NICK, "hug $1", "<action>hugs $1", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.addFactoid(
+            TEST_TARGET_NICK,
+            "hey",
+            "<reply>Hello, \$who",
+            LogsDaoTest.CHANNEL_NAME
+        )
+        factoidDao.addFactoid(
+            TEST_TARGET_NICK,
+            "coin",
+            "<reply>(heads|tails)",
+            LogsDaoTest.CHANNEL_NAME
+        )
+        factoidDao.addFactoid(
+            TEST_TARGET_NICK,
+            "hug $1",
+            "<action>hugs $1",
+            LogsDaoTest.CHANNEL_NAME
+        )
     }
 
     @AfterClass
@@ -65,19 +103,25 @@ class GetFactoidOperationTest : BaseTest() {
 
     fun straightGets() {
         val response = operation.handleMessage(message("~api"))
-        Assert.assertEquals(response[0].value, getFoundMessage("api", "http://java.sun.com/javase/current/docs/api/index.html"))
+        Assert.assertEquals(
+            response[0].value,
+            getFoundMessage("api", "http://java.sun.com/javase/current/docs/api/index.html")
+        )
         Assert.assertNotNull(factoidDao.getFactoid("api")?.lastUsed)
     }
 
     fun dates() {
         factoidDao.delete(TEST_USER.nick, "dates", LogsDaoTest.CHANNEL_NAME)
-        val dates = factoidDao.addFactoid(TEST_TARGET_NICK, "dates", "dates", LogsDaoTest.CHANNEL_NAME)
+        val dates =
+            factoidDao.addFactoid(TEST_TARGET_NICK, "dates", "dates", LogsDaoTest.CHANNEL_NAME)
         operation.handleMessage(message("~dates"))
 
         val factoid = factoidDao.getFactoid("dates")!!
-        Assert.assertEquals(factoid.updated.toEpochSecond(ZoneOffset.UTC), dates.updated.toEpochSecond(ZoneOffset.UTC))
-        Assert.assertTrue(factoid.lastUsed?.isAfter(dates.lastUsed) ?: false);
-
+        Assert.assertEquals(
+            factoid.updated.toEpochSecond(ZoneOffset.UTC),
+            dates.updated.toEpochSecond(ZoneOffset.UTC)
+        )
+        Assert.assertTrue(factoid.lastUsed?.isAfter(dates.lastUsed) ?: false)
     }
 
     fun replyGets() {
@@ -117,7 +161,10 @@ class GetFactoidOperationTest : BaseTest() {
     @Test(enabled = false)
     fun guessFactoid() {
         val response = operation.handleMessage(message("~bre"))
-        Assert.assertEquals(response[0].value, "I guess the factoid 'label line breaks' might be appropriate:")
+        Assert.assertEquals(
+            response[0].value,
+            "I guess the factoid 'label line breaks' might be appropriate:"
+        )
     }
 
     fun noGuess() {
@@ -131,7 +178,7 @@ class GetFactoidOperationTest : BaseTest() {
     }
 
     fun actionWithoutTarget() {
-        val response = operation.handleMessage(message("~hug "));
+        val response = operation.handleMessage(message("~hug "))
         Assert.assertEquals(response[0].value, Sofia.missingTarget("hug $1", TEST_USER_NICK))
     }
 
@@ -140,24 +187,25 @@ class GetFactoidOperationTest : BaseTest() {
     fun whitespaceProvider(): Array<Array<Any>> {
         @Suppress("UNCHECKED_CAST")
         return arrayOf(
-                arrayOf('\u0020'),
-                arrayOf('\u00a0'),
-                arrayOf('\u1680'),
-                arrayOf('\u2000'),
-                arrayOf('\u2001'),
-                arrayOf('\u2002'),
-                arrayOf('\u2003'),
-                arrayOf('\u2004'),
-                arrayOf('\u2005'),
-                arrayOf('\u2006'),
-                arrayOf('\u2007'),
-                arrayOf('\u2008'),
-                arrayOf('\u2009'),
-                arrayOf('\u200a'),
-                arrayOf('\u202f'),
-                arrayOf('\u205f'),
-                arrayOf('\u3000')
-        ) as Array<Array<Any>>
+            arrayOf('\u0020'),
+            arrayOf('\u00a0'),
+            arrayOf('\u1680'),
+            arrayOf('\u2000'),
+            arrayOf('\u2001'),
+            arrayOf('\u2002'),
+            arrayOf('\u2003'),
+            arrayOf('\u2004'),
+            arrayOf('\u2005'),
+            arrayOf('\u2006'),
+            arrayOf('\u2007'),
+            arrayOf('\u2008'),
+            arrayOf('\u2009'),
+            arrayOf('\u200a'),
+            arrayOf('\u202f'),
+            arrayOf('\u205f'),
+            arrayOf('\u3000')
+        )
+            as Array<Array<Any>>
     }
 
     /*
@@ -166,7 +214,8 @@ class GetFactoidOperationTest : BaseTest() {
      */
     @Test(dataProvider = "whitespaceProvider")
     fun testLeadingSpace(leader: Char) {
-        var response = operation.handleMessage(message("~${leader}tell $TEST_TARGET_NICK about hey"))
+        var response =
+            operation.handleMessage(message("~${leader}tell $TEST_TARGET_NICK about hey"))
         Assert.assertEquals(response[0].value, "Hello, $TEST_TARGET_NICK")
         response = operation.handleMessage(message("~${leader}hey"))
         Assert.assertEquals(response[0].value, "Hello, $TEST_USER_NICK")
@@ -180,29 +229,39 @@ class GetFactoidOperationTest : BaseTest() {
     fun tell() {
         var response = operation.handleMessage(message("~tell $TEST_TARGET_NICK about hey"))
         Assert.assertEquals(response[0].value, "Hello, $TEST_TARGET_NICK")
-        response = operation.handleMessage(message("~tell $TEST_TARGET_NICK about camel I am a test"))
+        response =
+            operation.handleMessage(message("~tell $TEST_TARGET_NICK about camel I am a test"))
         Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, IAmATest")
         response = operation.handleMessage(message("~tell $TEST_TARGET_NICK about url I am a test"))
         Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, I+am+a+test")
         response = operation.handleMessage(message("~tell $TEST_TARGET_NICK about stupid"))
-        Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, what you've just said is one of the most " +
+        Assert.assertEquals(
+            response[0].value,
+            "$TEST_TARGET_NICK, what you've just said is one of the most " +
                 "insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you even close to " +
                 "anything that could be considered a rational thought. Everyone in this room is now dumber for having listened to it. I " +
-                "award you no points, and may God have mercy on your soul.")
+                "award you no points, and may God have mercy on your soul."
+        )
         response = operation.handleMessage(message("~~ $TEST_TARGET_NICK seeTest"))
         Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, I'm a reply!")
         response = operation.handleMessage(message("~~ $TEST_TARGET_NICK bobloblaw"))
         Assert.assertEquals(response.size, 0)
         response = operation.handleMessage(message("~~ $TEST_TARGET_NICK api"))
-        Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, api is http://java.sun.com/javase/current/docs/api/index.html")
+        Assert.assertEquals(
+            response[0].value,
+            "$TEST_TARGET_NICK, api is http://java.sun.com/javase/current/docs/api/index.html"
+        )
         validate("camel I am a test 2", "IAmATest2")
         response = operation.handleMessage(message("~~ $TEST_TARGET_NICK url I am a test 2"))
         Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, I+am+a+test+2")
         response = operation.handleMessage(message("~~ $TEST_TARGET_NICK stupid"))
-        Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, what you've just said is one of the most insanely idiotic" +
+        Assert.assertEquals(
+            response[0].value,
+            "$TEST_TARGET_NICK, what you've just said is one of the most insanely idiotic" +
                 " things I have ever heard. At no point in your rambling, incoherent response were you even close to anything that could " +
                 "be considered a rational thought. Everyone in this room is now dumber for having listened to it. I award you no points, " +
-                "and may God have mercy on your soul.")
+                "and may God have mercy on your soul."
+        )
 
         response = operation.handleMessage(message("~~$TEST_TARGET_NICK seeTest"))
         Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, I'm a reply!")
@@ -210,31 +269,45 @@ class GetFactoidOperationTest : BaseTest() {
         Assert.assertEquals(response.size, 0)
 
         response = operation.handleMessage(message("~~$TEST_TARGET_NICK api"))
-        Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, api is http://java.sun.com/javase/current/docs/api/index.html")
+        Assert.assertEquals(
+            response[0].value,
+            "$TEST_TARGET_NICK, api is http://java.sun.com/javase/current/docs/api/index.html"
+        )
         response = operation.handleMessage(message("~~$TEST_TARGET_NICK camel I am a test 3"))
         Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, IAmATest3")
         response = operation.handleMessage(message("~~$TEST_TARGET_NICK url I am a test 3"))
         Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, I+am+a+test+3")
-        validate("stupid", "what you've just said is one of the most insanely idiotic things I have ever heard. At no point in your " +
+        validate(
+            "stupid",
+            "what you've just said is one of the most insanely idiotic things I have ever heard. At no point in your " +
                 "rambling, incoherent response were you even close to anything that could be considered a rational thought. Everyone in " +
-                "this room is now dumber for having listened to it. I award you no points, and may God have mercy on your soul.")
+                "this room is now dumber for having listened to it. I award you no points, and may God have mercy on your soul."
+        )
     }
 
     @Test
     fun longResponse() {
-        factoidDao.addFactoid(TEST_TARGET_NICK, "yalla $1",
-                "<reply>$1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 !111!!!!!one!!!\n",
-                LogsDaoTest.CHANNEL_NAME)
-        val response = operation.handleMessage(message("~yalla I'm a really long repeated spam I'm a really long repeated spam I'm a " +
-                "really long repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long " +
-                "repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long repeated spam " +
-                "I'm a really long repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really " +
-                "long repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long repeated " +
-                "spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a " +
-                "really long repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long " +
-                "repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long repeated spam " +
-                "I'm a really long repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really " +
-                "long repeated spam I'm a really long repeated spam "))
+        factoidDao.addFactoid(
+            TEST_TARGET_NICK,
+            "yalla $1",
+            "<reply>$1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 $1 !111!!!!!one!!!\n",
+            LogsDaoTest.CHANNEL_NAME
+        )
+        val response =
+            operation.handleMessage(
+                message(
+                    "~yalla I'm a really long repeated spam I'm a really long repeated spam I'm a " +
+                        "really long repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long " +
+                        "repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long repeated spam " +
+                        "I'm a really long repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really " +
+                        "long repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long repeated " +
+                        "spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a " +
+                        "really long repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long " +
+                        "repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really long repeated spam " +
+                        "I'm a really long repeated spam I'm a really long repeated spam I'm a really long repeated spam I'm a really " +
+                        "long repeated spam I'm a really long repeated spam "
+                )
+            )
 
         Assert.assertEquals(response.size, 1)
         Assert.assertTrue(response[0].value.length <= 510)

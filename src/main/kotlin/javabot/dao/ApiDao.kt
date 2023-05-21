@@ -14,16 +14,17 @@ import javabot.model.javadoc.criteria.JavadocApiCriteria.Companion.upperName
 import javabot.model.javadoc.criteria.JavadocClassCriteria
 import javabot.model.javadoc.criteria.JavadocFieldCriteria
 import javabot.model.javadoc.criteria.JavadocMethodCriteria
+import javax.inject.Inject
 import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
-import javax.inject.Inject
 
 class ApiDao @Inject constructor(ds: Datastore) : BaseDao<JavadocApi>(ds, JavadocApi::class.java) {
     companion object {
         private val LOG = LoggerFactory.getLogger(ApiDao::class.java)
     }
 
-    fun find(name: String) = ds.find(JavadocApi::class.java)
+    fun find(name: String) =
+        ds.find(JavadocApi::class.java)
             .filter(upperName().eq(name.uppercase(Locale.getDefault())))
             .first()
 
@@ -39,26 +40,25 @@ class ApiDao @Inject constructor(ds: Datastore) : BaseDao<JavadocApi>(ds, Javado
         LOG.debug("Dropping fields from " + api.name)
 
         ds.find(JavadocField::class.java)
-                .filter(JavadocFieldCriteria.apiId().eq(api.id))
-                .delete(DeleteOptions().multi(true))
+            .filter(JavadocFieldCriteria.apiId().eq(api.id))
+            .delete(DeleteOptions().multi(true))
 
         LOG.debug("Dropping methods from " + api.name)
         ds.find(JavadocMethod::class.java)
-                .filter(JavadocMethodCriteria.apiId(). eq(api.id))
-                .delete(DeleteOptions().multi(true))
+            .filter(JavadocMethodCriteria.apiId().eq(api.id))
+            .delete(DeleteOptions().multi(true))
 
         LOG.debug("Dropping classes from " + api.name)
         ds.find(JavadocClass::class.java)
-                .filter(JavadocClassCriteria.apiId().eq(api.id))
-                .delete(DeleteOptions().multi(true))
+            .filter(JavadocClassCriteria.apiId().eq(api.id))
+            .delete(DeleteOptions().multi(true))
 
         super.delete(api)
     }
 
     override fun findAll(): List<JavadocApi> {
         return ds.find(JavadocApi::class.java)
-                .iterator(FindOptions()
-                        .sort(Sort.ascending(JavadocApiCriteria.name)))
-                .toList()
+            .iterator(FindOptions().sort(Sort.ascending(JavadocApiCriteria.name)))
+            .toList()
     }
 }

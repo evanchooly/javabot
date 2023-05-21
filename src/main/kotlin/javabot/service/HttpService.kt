@@ -1,12 +1,12 @@
 package javabot.service
 
 import com.google.inject.Singleton
+import java.time.Duration
+import java.util.concurrent.TimeUnit
 import okhttp3.Headers.Companion.toHeaders
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.time.Duration
-import java.util.concurrent.TimeUnit
 
 class HttpServiceException(message: String = "No message") : Exception(message)
 
@@ -37,55 +37,57 @@ enum class HTTP_OPTIONS {
 
 @Singleton
 class HttpService {
-    private val client = OkHttpClient()
+    private val client =
+        OkHttpClient()
             .newBuilder()
             .callTimeout(10, TimeUnit.SECONDS)
             .readTimeout(5, TimeUnit.SECONDS)
             .connectTimeout(5, TimeUnit.SECONDS)
             .addInterceptor { chain ->
                 val request = chain.request()
-                val requestWithUserAgent = request.newBuilder()
+                val requestWithUserAgent =
+                    request
+                        .newBuilder()
                         .removeHeader("User-Agent")
-                        .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36")
+                        .addHeader(
+                            "User-Agent",
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+                        )
                         .build()
                 chain.proceed(requestWithUserAgent)
             }
             .build()
 
     fun get(
-            url: String,
-            params: Map<String, String> = emptyMap(),
-            headers: Map<String, String> = emptyMap(),
-            options: Map<HTTP_OPTIONS, Duration> = emptyMap()
+        url: String,
+        params: Map<String, String> = emptyMap(),
+        headers: Map<String, String> = emptyMap(),
+        options: Map<HTTP_OPTIONS, Duration> = emptyMap()
     ): String {
         val httpUrl = url.toHttpUrl()
         val builder = httpUrl.newBuilder()
         params.forEach { builder.addQueryParameter(it.key, it.value) }
-        val request = Request.Builder().url(builder.build())
-                .headers(headers.toHeaders())
-                .build()
+        val request = Request.Builder().url(builder.build()).headers(headers.toHeaders()).build()
 
         // if options aren't empty, build a local copy of the request.
         // otherwise, use the global client options as is.
         if (!options.isEmpty()) {
-            val localRequest = client.newBuilder()
+                val localRequest = client.newBuilder()
 
-            options.forEach { action ->
-                action.key.apply(localRequest, action.value)
+                options.forEach { action -> action.key.apply(localRequest, action.value) }
+
+                localRequest.build()
+            } else {
+                client
             }
-
-            localRequest.build()
-        } else {
-            client
-        }
-                .newCall(request)
-                .execute()
-                .use { response ->
-                    if (response.isSuccessful) {
-                        return (response.body?.string() ?: throw HttpServiceException())
-                    } else {
-                        throw HttpServiceException("${response.code} ${response.message}")
-                    }
+            .newCall(request)
+            .execute()
+            .use { response ->
+                if (response.isSuccessful) {
+                    return (response.body?.string() ?: throw HttpServiceException())
+                } else {
+                    throw HttpServiceException("${response.code} ${response.message}")
                 }
+            }
     }
 }

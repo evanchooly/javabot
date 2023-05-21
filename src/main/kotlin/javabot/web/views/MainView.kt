@@ -2,27 +2,31 @@ package javabot.web.views
 
 import com.antwerkz.sofia.Sofia
 import io.dropwizard.views.View
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.ArrayList
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
+import javabot.model.Channel
 import javabot.model.javadoc.JavadocApi
 import javabot.web.JavabotConfiguration
-import javabot.model.Channel
 import javabot.web.model.InMemoryUserCache.INSTANCE
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.ArrayList
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 
-abstract class MainView(var adminDao: AdminDao, var channelDao: ChannelDao, var factoidDao: FactoidDao, var apiDao: ApiDao,
-                        val request: HttpServletRequest) : View("/main.ftl", com.google.common.base.Charsets.ISO_8859_1) {
+abstract class MainView(
+    var adminDao: AdminDao,
+    var channelDao: ChannelDao,
+    var factoidDao: FactoidDao,
+    var apiDao: ApiDao,
+    val request: HttpServletRequest
+) : View("/main.ftl", com.google.common.base.Charsets.ISO_8859_1) {
 
     companion object {
         val DATE_TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm")
     }
-
 
     private val errors = ArrayList<String>()
 

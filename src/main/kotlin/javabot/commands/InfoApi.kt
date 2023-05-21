@@ -8,10 +8,10 @@ import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javax.inject.Inject
 
-class InfoApi @Inject constructor(bot: Javabot, adminDao: AdminDao, var apiDao: ApiDao) : AdminCommand(bot, adminDao) {
+class InfoApi @Inject constructor(bot: Javabot, adminDao: AdminDao, var apiDao: ApiDao) :
+    AdminCommand(bot, adminDao) {
 
-    @Parameter(required = true)
-    lateinit var apiName: String
+    @Parameter(required = true) lateinit var apiName: String
 
     override fun execute(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

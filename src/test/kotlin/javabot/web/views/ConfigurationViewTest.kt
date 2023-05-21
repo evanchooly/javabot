@@ -1,25 +1,20 @@
 package javabot.web.views
 
-import freemarker.template.Configuration
 import freemarker.template.Configuration.VERSION_2_3_32
 import io.dropwizard.views.freemarker.FreemarkerViewRenderer
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.util.Arrays.asList
+import java.util.Locale
 import javabot.dao.ConfigDao
-import javabot.web.views.ConfigurationView
+import javax.inject.Inject
 import net.htmlparser.jericho.Source
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNotNull
 import org.testng.annotations.Test
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.util.ArrayList
-import java.util.Arrays.asList
-import java.util.Locale
-import javax.inject.Inject
 
 class ConfigurationViewTest : ViewsTest() {
-    @Inject
-    protected lateinit var configDao: ConfigDao
+    @Inject protected lateinit var configDao: ConfigDao
 
     @Test
     fun configuration() {
@@ -29,7 +24,11 @@ class ConfigurationViewTest : ViewsTest() {
 
         val renderer = FreemarkerViewRenderer(VERSION_2_3_32)
         var output = ByteArrayOutputStream()
-        renderer.render(viewFactory.createConfigurationView(MockServletRequest(false)), Locale.getDefault(), output)
+        renderer.render(
+            viewFactory.createConfigurationView(MockServletRequest(false)),
+            Locale.getDefault(),
+            output
+        )
         var source = Source(ByteArrayInputStream(output.toByteArray()))
 
         val operation = "Javadoc"
@@ -46,7 +45,11 @@ class ConfigurationViewTest : ViewsTest() {
         configDao.save(config)
 
         output = ByteArrayOutputStream()
-        renderer.render(viewFactory.createConfigurationView(MockServletRequest(false)), Locale.getDefault(), output)
+        renderer.render(
+            viewFactory.createConfigurationView(MockServletRequest(false)),
+            Locale.getDefault(),
+            output
+        )
         source = Source(ByteArrayInputStream(output.toByteArray()))
 
         enable = source.getElementById("enable" + operation)
@@ -56,7 +59,5 @@ class ConfigurationViewTest : ViewsTest() {
         disable = source.getElementById("disable" + operation)
         assertNotNull(disable, source.toString())
         assertEquals(disable.getAttributeValue("class"), "active")
-
     }
-
 }

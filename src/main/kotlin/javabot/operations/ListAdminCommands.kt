@@ -2,17 +2,20 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import com.google.inject.Inject
+import java.util.ServiceLoader
 import javabot.Javabot
 import javabot.Message
 import javabot.commands.AdminCommand
 import javabot.dao.AdminDao
-import java.util.ServiceLoader
 
-class ListAdminCommands @Inject constructor(bot: Javabot, adminDao: AdminDao) : AdminCommand(bot, adminDao) {
+class ListAdminCommands @Inject constructor(bot: Javabot, adminDao: AdminDao) :
+    AdminCommand(bot, adminDao) {
     override fun execute(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val list = listCommands().map({ it.getCommandName() })
-        responses.add(Message(event, Sofia.adminKnownCommands(event.user.nick, list.joinToString(", "))))
+        responses.add(
+            Message(event, Sofia.adminKnownCommands(event.user.nick, list.joinToString(", ")))
+        )
         return responses
     }
 

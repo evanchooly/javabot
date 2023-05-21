@@ -8,7 +8,10 @@ import javabot.dao.ConfigDao
 import javabot.model.NickRegistration
 import javax.inject.Inject
 
-class RegisterNickOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var configDao: ConfigDao) : BotOperation(bot, adminDao) {
+class RegisterNickOperation
+@Inject
+constructor(bot: Javabot, adminDao: AdminDao, var configDao: ConfigDao) :
+    BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value
@@ -19,7 +22,12 @@ class RegisterNickOperation @Inject constructor(bot: Javabot, adminDao: AdminDao
                 val registration = NickRegistration(event.user, twitterName)
                 adminDao.save(registration)
 
-                responses.add(Message(event.user, Sofia.registerNick(configDao.get().url, registration.url ?: "", twitterName)))
+                responses.add(
+                    Message(
+                        event.user,
+                        Sofia.registerNick(configDao.get().url, registration.url ?: "", twitterName)
+                    )
+                )
             }
         }
         return responses

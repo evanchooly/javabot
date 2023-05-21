@@ -8,7 +8,7 @@ import org.testng.annotations.Test
 class TestGeocodeModel {
     @Test
     fun testDeserializeGeocodeModel() {
-        val mapper=ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+        val mapper = ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         this::class.java.getResourceAsStream("/geocode-response.json").use { inputStream ->
             mapper.readValue(inputStream, GeocodeResponse::class.java)
         }

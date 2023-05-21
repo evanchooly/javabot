@@ -8,22 +8,36 @@ import javabot.dao.LogsDaoTest
 import javabot.dao.NickServDao
 import javabot.operations.ForgetFactoidOperation
 import javabot.registerIrcUser
+import javax.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
-import javax.inject.Inject
 
-@Test class LockFactoidTest @Inject constructor(val nickServDao: NickServDao, val factoidDao: FactoidDao,
-                                                val forgetFactoid: ForgetFactoidOperation) : BaseTest() {
+@Test
+class LockFactoidTest
+@Inject
+constructor(
+    val nickServDao: NickServDao,
+    val factoidDao: FactoidDao,
+    val forgetFactoid: ForgetFactoidOperation
+) : BaseTest() {
 
-    @DataProvider(name = "factoids") fun names(): Array<Array<String>> {
+    @DataProvider(name = "factoids")
+    fun names(): Array<Array<String>> {
         return arrayOf(arrayOf("lock me"), arrayOf("lockme"))
     }
 
-    @Test(dataProvider = "factoids") fun lock(name: String) {
+    @Test(dataProvider = "factoids")
+    fun lock(name: String) {
         try {
             factoidDao.delete(TEST_USER.nick, name, LogsDaoTest.CHANNEL_NAME)
-            var factoid = factoidDao.addFactoid(TEST_USER.nick, name, "i should be locked", LogsDaoTest.CHANNEL_NAME)
+            var factoid =
+                factoidDao.addFactoid(
+                    TEST_USER.nick,
+                    name,
+                    "i should be locked",
+                    LogsDaoTest.CHANNEL_NAME
+                )
             factoid.locked = true
             factoidDao.save(factoid)
 
@@ -39,17 +53,21 @@ import javax.inject.Inject
             response = forgetFactoid.handleMessage(message)
             Assert.assertEquals(response[0].value, Sofia.factoidForgotten(name, bob.nick))
 
-            factoid = factoidDao.addFactoid(TEST_USER.nick, name, "i should be locked", LogsDaoTest.CHANNEL_NAME)
+            factoid =
+                factoidDao.addFactoid(
+                    TEST_USER.nick,
+                    name,
+                    "i should be locked",
+                    LogsDaoTest.CHANNEL_NAME
+                )
             factoid.locked = true
             factoidDao.save(factoid)
             response = forgetFactoid.handleMessage(message("~forget ${name}"))
             Assert.assertEquals(response[0].value, Sofia.factoidForgotten(name, TEST_USER.nick))
-
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
             factoidDao.delete(TEST_USER.nick, name, LogsDaoTest.CHANNEL_NAME)
-
         }
     }
 }

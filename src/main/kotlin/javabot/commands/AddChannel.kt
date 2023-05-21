@@ -8,13 +8,11 @@ import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 
-class AddChannel @Inject constructor(bot: Javabot, adminDao: AdminDao, var channelDao: ChannelDao) : AdminCommand(bot, adminDao) {
-    @Parameter(required = true)
-    lateinit var channelName: String
-    @Parameter(required = false)
-    var logged = true
-    @Parameter(required = false, password = true)
-    var password: String = ""
+class AddChannel @Inject constructor(bot: Javabot, adminDao: AdminDao, var channelDao: ChannelDao) :
+    AdminCommand(bot, adminDao) {
+    @Parameter(required = true) lateinit var channelName: String
+    @Parameter(required = false) var logged = true
+    @Parameter(required = false, password = true) var password: String = ""
 
     override fun execute(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
@@ -28,11 +26,13 @@ class AddChannel @Inject constructor(bot: Javabot, adminDao: AdminDao, var chann
                 channelDao.save(channel)
             }
 
-            responses.add(Message(event,
-                    if (isLogged)
-                        Sofia.adminJoiningLoggedChannel(channelName)
-                    else
-                        Sofia.adminJoiningChannel(channelName)))
+            responses.add(
+                Message(
+                    event,
+                    if (isLogged) Sofia.adminJoiningLoggedChannel(channelName)
+                    else Sofia.adminJoiningChannel(channelName)
+                )
+            )
             if (channel.key != null) {
                 bot.joinChannel(channel)
             }

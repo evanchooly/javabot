@@ -1,6 +1,5 @@
 package javabot.model
 
-import org.bson.types.ObjectId
 import dev.morphia.annotations.Entity
 import dev.morphia.annotations.Field
 import dev.morphia.annotations.Id
@@ -10,13 +9,15 @@ import dev.morphia.annotations.PrePersist
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.Locale
+import org.bson.types.ObjectId
 
 @Entity(value = "karma", useDiscriminator = false)
-@Indexes(Index(fields = arrayOf(Field("upperName"))),
-        Index(fields = arrayOf(Field("value"), Field("name"))))
+@Indexes(
+    Index(fields = arrayOf(Field("upperName"))),
+    Index(fields = arrayOf(Field("value"), Field("name")))
+)
 class Karma : Serializable, Persistent {
-    @Id
-    var id: ObjectId? = null
+    @Id var id: ObjectId? = null
 
     lateinit var name: String
 
@@ -28,8 +29,7 @@ class Karma : Serializable, Persistent {
 
     var updated: LocalDateTime? = null
 
-    constructor() {
-    }
+    constructor() {}
 
     constructor(name: String, value: Int, userName: String) {
         this.name = name

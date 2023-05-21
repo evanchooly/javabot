@@ -7,12 +7,13 @@ import javabot.dao.FactoidDao
 import javax.servlet.http.HttpServletRequest
 
 abstract class PagedView<V>(
-        adminDao: AdminDao,
-        channelDao: ChannelDao,
-        factoidDao: FactoidDao,
-        apiDao: ApiDao,
-        request: HttpServletRequest, private var page: Int) :
-        MainView(adminDao, channelDao, factoidDao, apiDao, request) {
+    adminDao: AdminDao,
+    channelDao: ChannelDao,
+    factoidDao: FactoidDao,
+    apiDao: ApiDao,
+    request: HttpServletRequest,
+    private var page: Int
+) : MainView(adminDao, channelDao, factoidDao, apiDao, request) {
     private val itemsPerPage = ITEMS_PER_PAGE
     var itemCount: Long = -1
         get() {
@@ -21,7 +22,6 @@ abstract class PagedView<V>(
             }
             return field
         }
-
 
     override fun getChildView(): String {
         return "paged.ftl"

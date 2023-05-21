@@ -8,14 +8,21 @@ import javabot.dao.LogsDao
 import javabot.dao.NickServDao
 import javabot.model.Channel
 import javabot.model.JavabotUser
+import javax.inject.Provider
 import org.pircbotx.PircBotX
 import org.slf4j.LoggerFactory
-import javax.inject.Provider
 
-open class OfflineAdapter @Inject
-constructor(nickServDao: NickServDao, logsDao: LogsDao, channelDao: ChannelDao, adminDao: AdminDao,
-            javabot: Provider<Javabot>, configDao: ConfigDao, ircBot: Provider<PircBotX>) :
-        IrcAdapter(nickServDao, logsDao, channelDao, adminDao, javabot, configDao, ircBot) {
+open class OfflineAdapter
+@Inject
+constructor(
+    nickServDao: NickServDao,
+    logsDao: LogsDao,
+    channelDao: ChannelDao,
+    adminDao: AdminDao,
+    javabot: Provider<Javabot>,
+    configDao: ConfigDao,
+    ircBot: Provider<PircBotX>
+) : IrcAdapter(nickServDao, logsDao, channelDao, adminDao, javabot, configDao, ircBot) {
 
     companion object {
         val LOG = LoggerFactory.getLogger("offline")
@@ -41,8 +48,7 @@ constructor(nickServDao: NickServDao, logsDao: LogsDao, channelDao: ChannelDao, 
         log(value)
     }
 
-    override
-    fun send(channel: Channel, value: String) {
+    override fun send(channel: Channel, value: String) {
         log(value)
     }
 

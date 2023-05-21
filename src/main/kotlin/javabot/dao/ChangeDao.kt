@@ -8,11 +8,11 @@ import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Query
 import dev.morphia.query.Sort.descending
+import java.time.LocalDateTime
 import javabot.dao.util.QueryParam
 import javabot.model.Change
 import javabot.model.criteria.ChangeCriteria.Companion.changeDate
 import javabot.model.criteria.ChangeCriteria.Companion.message
-import java.time.LocalDateTime
 
 class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change::class.java) {
 
@@ -20,7 +20,13 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
         save(Change(Sofia.factoidAdded(sender, key, value, location)))
     }
 
-    fun logFactoidChanged(sender: String, key: String, oldValue: String, newValue: String, location: String) {
+    fun logFactoidChanged(
+        sender: String,
+        key: String,
+        oldValue: String,
+        newValue: String,
+        location: String
+    ) {
         save(Change(Sofia.factoidChanged(sender, key, oldValue, newValue, location)))
     }
 
@@ -37,8 +43,7 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
     }
 
     fun findLog(message: String): Boolean {
-        val query = ds.find(Change::class.java)
-                .filter(message().eq(message))
+        val query = ds.find(Change::class.java).filter(message().eq(message))
 
         return query.count() != 0L
     }
@@ -49,18 +54,14 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
 
     fun getChanges(qp: QueryParam, message: String?, date: LocalDateTime?): List<Change> {
         return buildFindQuery(message, date)
-                .iterator(FindOptions()
-                        .skip(qp.first)
-                        .limit(qp.count)
-                        .sort(descending(changeDate)))
-                .toList()
+            .iterator(FindOptions().skip(qp.first).limit(qp.count).sort(descending(changeDate)))
+            .toList()
     }
 
     private fun buildFindQuery(message: String?, date: LocalDateTime?): Query<Change> {
         val query = ds.find(Change::class.java)
         if (message != null) {
-            query.filter(message().regex()
-                    .pattern(message))
+            query.filter(message().regex().pattern(message))
         }
         if (date != null) {
             query.filter(changeDate().eq(date))
@@ -69,7 +70,6 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
     }
 
     fun deleteAll(): DeleteResult {
-        return ds.find(Change::class.java)
-                .delete(DeleteOptions().multi(true))
+        return ds.find(Change::class.java).delete(DeleteOptions().multi(true))
     }
 }

@@ -14,8 +14,7 @@ class Tri<T> {
 
             current = node
         }
-        @Suppress("UNCHECKED_CAST")
-        return current.value as T
+        @Suppress("UNCHECKED_CAST") return current.value as T
     }
 
     fun insert(key: String, value: T) {

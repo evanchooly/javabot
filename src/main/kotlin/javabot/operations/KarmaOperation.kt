@@ -2,6 +2,7 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import java.util.Locale
+import java.util.regex.Pattern
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
@@ -9,12 +10,18 @@ import javabot.dao.ChangeDao
 import javabot.dao.ChannelDao
 import javabot.dao.KarmaDao
 import javabot.model.Karma
-import org.slf4j.LoggerFactory
-import java.util.regex.Pattern
 import javax.inject.Inject
+import org.slf4j.LoggerFactory
 
-class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var dao: KarmaDao, var changeDao: ChangeDao,
-                                         var channelDao: ChannelDao) : BotOperation(bot, adminDao) {
+class KarmaOperation
+@Inject
+constructor(
+    bot: Javabot,
+    adminDao: AdminDao,
+    var dao: KarmaDao,
+    var changeDao: ChangeDao,
+    var channelDao: ChannelDao
+) : BotOperation(bot, adminDao) {
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
@@ -62,7 +69,8 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
             }
             val nick: String =
                 try {
-                    val temp = message.substring(0, operationPointer).trim().lowercase(Locale.getDefault())
+                    val temp =
+                        message.substring(0, operationPointer).trim().lowercase(Locale.getDefault())
                     // got an empty nick; spaces only?
                     if (temp.isEmpty()) {
                         // need to check for special case where bot was *addressed* for karma
@@ -101,7 +109,12 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
                     }
                     karma.userName = sender.nick
                     dao.save(karma)
-                    changeDao.logKarmaChanged(karma.userName, karma.name, karma.value, channelDao.location(channel))
+                    changeDao.logKarmaChanged(
+                        karma.userName,
+                        karma.name,
+                        karma.value,
+                        channelDao.location(channel)
+                    )
                     readKarma(responses, Message(event.channel, event.user, "karma " + nick))
                 }
             }
@@ -118,19 +131,18 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
             if (karma != null) {
                 responses.add(
                     Message(
-                        event, if (nick.equals(sender.nick, ignoreCase = true))
+                        event,
+                        if (nick.equals(sender.nick, ignoreCase = true))
                             Sofia.karmaOwnValue(sender.nick, karma.value)
-                        else
-                            Sofia.karmaOthersValue(nick, karma.value, sender.nick)
+                        else Sofia.karmaOthersValue(nick, karma.value, sender.nick)
                     )
                 )
             } else {
                 responses.add(
                     Message(
-                        event, if (sender.nick == nick)
-                            Sofia.karmaOwnNone(sender.nick)
-                        else
-                            Sofia.karmaOthersNone(nick, sender.nick)
+                        event,
+                        if (sender.nick == nick) Sofia.karmaOwnNone(sender.nick)
+                        else Sofia.karmaOthersNone(nick, sender.nick)
                     )
                 )
             }
@@ -142,5 +154,4 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
 
         private val optionPattern = Pattern.compile("\\s--\\p{Alpha}[\\p{Alnum}]*=")
     }
-
 }

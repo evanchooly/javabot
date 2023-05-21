@@ -1,16 +1,15 @@
 package javabot.model.javadoc
 
 import dev.morphia.annotations.Entity
+import dev.morphia.annotations.Id
 import javabot.dao.ApiDao
 import javabot.model.Persistent
-import org.bson.types.ObjectId
-import dev.morphia.annotations.Id
 import net.thauvin.erik.bitly.Bitly
+import org.bson.types.ObjectId
 
 @Entity
 abstract class JavadocElement : Persistent {
-    @field:Id
-    var id: ObjectId? = null
+    @field:Id var id: ObjectId? = null
 
     lateinit var apiId: ObjectId
 

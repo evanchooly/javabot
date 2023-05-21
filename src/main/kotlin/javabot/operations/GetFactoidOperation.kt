@@ -1,20 +1,22 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import java.time.LocalDateTime
+import java.util.HashSet
+import java.util.Locale
 import javabot.Action
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.FactoidDao
 import javabot.model.Factoid
-import org.slf4j.LoggerFactory
-import java.time.LocalDateTime
-import java.util.HashSet
-import java.util.Locale
 import javax.inject.Inject
+import org.slf4j.LoggerFactory
 
-class GetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :
-        BotOperation(bot, adminDao), StandardOperation {
+class GetFactoidOperation
+@Inject
+constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :
+    BotOperation(bot, adminDao), StandardOperation {
 
     override fun getPriority(): Int {
         return Integer.MIN_VALUE
@@ -32,7 +34,11 @@ class GetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, 
         return responses
     }
 
-    private fun getFactoid(responses: MutableList<Message>, event: Message, backtrack: MutableSet<String>) {
+    private fun getFactoid(
+        responses: MutableList<Message>,
+        event: Message,
+        backtrack: MutableSet<String>
+    ) {
         var message = event.value
         if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
             message = message.substring(0, message.length - 1)
@@ -51,8 +57,13 @@ class GetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, 
         }
     }
 
-    private fun getResponse(responses: MutableList<Message>, event: Message, backtrack: MutableSet<String>, replacedValue: String,
-                            factoid: Factoid) {
+    private fun getResponse(
+        responses: MutableList<Message>,
+        event: Message,
+        backtrack: MutableSet<String>,
+        replacedValue: String,
+        factoid: Factoid
+    ) {
         val sender = event.user.nick
         val message = factoid.evaluate(event.target, sender, replacedValue)
         if (message.startsWith("<see>")) {
@@ -68,8 +79,11 @@ class GetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, 
             try {
                 responses.add(Action(event, message.substring("<action>".length)))
             } catch (e: Exception) {
-                LOG.error("""Exception:  event.target = [${event.target}], event = [${event}], backtrack = [${backtrack}],
-                        replacedValue = [${replacedValue}], factoid = [${factoid}]""", e)
+                LOG.error(
+                    """Exception:  event.target = [${event.target}], event = [${event}], backtrack = [${backtrack}],
+                        replacedValue = [${replacedValue}], factoid = [${factoid}]""",
+                    e
+                )
             }
         } else {
             responses.add(Message(event, message))
@@ -85,8 +99,12 @@ class GetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, 
             } else {
                 if (channel != null) {
                     if (!bot.isOnCommonChannel(targetUser)) {
-                        responses.add(Message(event, Sofia.userNotInChannel(targetUser.nick, channel.name)))
-                    } else if (event.user.nick == channel.name && !bot.isOnCommonChannel(targetUser)) {
+                        responses.add(
+                            Message(event, Sofia.userNotInChannel(targetUser.nick, channel.name))
+                        )
+                    } else if (
+                        event.user.nick == channel.name && !bot.isOnCommonChannel(targetUser)
+                    ) {
                         responses.add(Message(event, Sofia.userNoSharedChannels()))
                     }
                 }

@@ -1,18 +1,19 @@
 package javabot.model.javadoc
 
-import org.bson.types.ObjectId
 import dev.morphia.annotations.Entity
 import dev.morphia.annotations.Field
 import dev.morphia.annotations.Index
 import dev.morphia.annotations.Indexes
 import dev.morphia.annotations.PrePersist
 import java.util.Locale
+import org.bson.types.ObjectId
 
 @Entity(value = "methods", useDiscriminator = false)
 @Indexes(
-        Index(fields = arrayOf(Field("apiId"))),
-        Index(fields = arrayOf(Field("classId"), Field("upperName") )),
-        Index(fields = arrayOf(Field("apiId"), Field("classId"), Field("upperName") )))
+    Index(fields = arrayOf(Field("apiId"))),
+    Index(fields = arrayOf(Field("classId"), Field("upperName"))),
+    Index(fields = arrayOf(Field("apiId"), Field("classId"), Field("upperName")))
+)
 class JavadocMethod() : JavadocElement() {
     lateinit var classId: ObjectId
     var isConstructor: Boolean = false
@@ -24,7 +25,13 @@ class JavadocMethod() : JavadocElement() {
 
     lateinit var parentClassName: String
 
-    constructor(parent: JavadocClass, name: String, urlFragment: String, longArgs: List<String>, shortArgs: List<String>): this() {
+    constructor(
+        parent: JavadocClass,
+        name: String,
+        urlFragment: String,
+        longArgs: List<String>,
+        shortArgs: List<String>
+    ) : this() {
         this.name = name
         isConstructor = name == "<init>"
         classId = parent.id!!
@@ -36,7 +43,7 @@ class JavadocMethod() : JavadocElement() {
         longSignatureTypes = longArgs.joinToString(", ")
         shortSignatureTypes = shortArgs.joinToString(", ")
         this.url = "${parent.url}${urlFragment}"
-        if(isConstructor) {
+        if (isConstructor) {
             this.name = parent.name
         }
     }

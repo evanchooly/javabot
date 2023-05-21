@@ -2,12 +2,11 @@ package javabot
 
 import com.google.inject.Inject
 import javabot.service.UrlCacheService
-import org.testng.annotations.Test
 import kotlin.test.assertNotNull
+import org.testng.annotations.Test
 
 class ShortenerTest : BaseTest() {
-    @Inject
-    val urlCache: UrlCacheService? = null
+    @Inject val urlCache: UrlCacheService? = null
 
     @Test
     fun shorten() {

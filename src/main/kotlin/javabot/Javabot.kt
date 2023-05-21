@@ -5,27 +5,6 @@ import com.google.inject.Guice
 import com.google.inject.Injector
 import com.google.inject.Singleton
 import com.jayway.awaitility.Awaitility
-import javabot.commands.AdminCommand
-import javabot.dao.AdminDao
-import javabot.dao.ChannelDao
-import javabot.dao.ConfigDao
-import javabot.dao.EventDao
-import javabot.dao.LogsDao
-import javabot.model.State
-import javabot.dao.ShunDao
-import javabot.database.UpgradeScript
-import javabot.model.Channel
-import javabot.model.JavabotUser
-import javabot.model.Logs
-import javabot.model.Logs.Type
-import javabot.operations.BotOperation
-import javabot.operations.OperationComparator
-import javabot.operations.StandardOperation
-import javabot.operations.throttle.NickServViolationException
-import javabot.operations.throttle.Throttler
-import javabot.web.JavabotApplication
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.io.File
 import java.time.LocalDateTime
 import java.util.ArrayList
@@ -37,44 +16,78 @@ import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
+import javabot.commands.AdminCommand
+import javabot.dao.AdminDao
+import javabot.dao.ChannelDao
+import javabot.dao.ConfigDao
+import javabot.dao.EventDao
+import javabot.dao.LogsDao
+import javabot.dao.ShunDao
+import javabot.database.UpgradeScript
+import javabot.model.Channel
+import javabot.model.JavabotUser
+import javabot.model.Logs
+import javabot.model.Logs.Type
+import javabot.model.State
+import javabot.operations.BotOperation
+import javabot.operations.OperationComparator
+import javabot.operations.StandardOperation
+import javabot.operations.throttle.NickServViolationException
+import javabot.operations.throttle.Throttler
+import javabot.web.JavabotApplication
 import javax.inject.Inject
 import javax.inject.Provider
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 @Singleton
-open class Javabot @Inject
-    constructor(var injector: Injector, var configDao: ConfigDao, var channelDao: ChannelDao,
-            var logsDao: LogsDao, var shunDao: ShunDao, var eventDao: EventDao,
-            var throttler: Throttler, var adapter: IrcAdapter, var adminDao: AdminDao,
-            var javabotConfig: JavabotConfig, var application: Provider<JavabotApplication>) {
+open class Javabot
+@Inject
+constructor(
+    var injector: Injector,
+    var configDao: ConfigDao,
+    var channelDao: ChannelDao,
+    var logsDao: LogsDao,
+    var shunDao: ShunDao,
+    var eventDao: EventDao,
+    var throttler: Throttler,
+    var adapter: IrcAdapter,
+    var adminDao: AdminDao,
+    var javabotConfig: JavabotConfig,
+    var application: Provider<JavabotApplication>
+) {
 
     companion object {
         val LOG: Logger = LoggerFactory.getLogger(Javabot::class.java)
 
-        @JvmStatic fun main(args: Array<String>) {
+        @JvmStatic
+        fun main(args: Array<String>) {
             Sofia.javabotStart()
             val injector = Guice.createInjector(JavabotModule())
             val bot = injector.getInstance(Javabot::class.java)
             bot.start()
-            Awaitility.await()
-                    .forever()
-                    .until<Boolean> { !bot.isRunning() }
+            Awaitility.await().forever().until<Boolean> { !bot.isRunning() }
         }
     }
 
     private var allOperationsMap = TreeMap<String, BotOperation>()
 
-    val startString: String by lazy {
-        configDao.get().trigger
-    }
+    val startString: String by lazy { configDao.get().trigger }
 
-    open val nick: String by lazy {
-        configDao.get().nick
-    }
+    open val nick: String by lazy { configDao.get().nick }
 
-    val executors = ThreadPoolExecutor(5, 10, 5L, TimeUnit.MINUTES, ArrayBlockingQueue(50),
-            JavabotThreadFactory(true, "javabot-handler-thread-"))
+    val executors =
+        ThreadPoolExecutor(
+            5,
+            10,
+            5L,
+            TimeUnit.MINUTES,
+            ArrayBlockingQueue(50),
+            JavabotThreadFactory(true, "javabot-handler-thread-")
+        )
 
-    private val eventHandler = Executors.newScheduledThreadPool(2, JavabotThreadFactory(true, "javabot-event-handler"))
+    private val eventHandler =
+        Executors.newScheduledThreadPool(2, JavabotThreadFactory(true, "javabot-event-handler"))
 
     private val ignores = ArrayList<String>()
 
@@ -125,7 +138,8 @@ open class Javabot @Inject
             val joined = mutableSetOf<String>()
             val channels = ArrayList(channelDao.getChannels(true))
             if (joined.size != channels.size) {
-                channels.filter { channel -> !joined.contains(channel.name) }
+                channels
+                    .filter { channel -> !joined.contains(channel.name) }
                     .forEach { channel ->
                         if (!adapter.isBotOnChannel(channel.name)) {
                             joinChannel(channel)
@@ -168,7 +182,6 @@ open class Javabot @Inject
         } catch (ex: Exception) {
             ex.printStackTrace(System.out)
         }
-
     }
 
     fun startWebApp() {
@@ -214,7 +227,6 @@ open class Javabot @Inject
             LOG.error(e.message, e)
             throw RuntimeException(e.message, e)
         }
-
     }
 
     fun disableOperation(name: String?): Boolean {
@@ -248,8 +260,11 @@ open class Javabot @Inject
         val responses = arrayListOf<Message>()
         logMessage(message.channel, sender, message.value)
 
-        if (!ignores.contains(sender.nick) && !shunDao.isShunned(sender.nick)
-                && (message.channel != null || isOnCommonChannel(message.user))) {
+        if (
+            !ignores.contains(sender.nick) &&
+                !shunDao.isShunned(sender.nick) &&
+                (message.channel != null || isOnCommonChannel(message.user))
+        ) {
             try {
                 if (message.triggered) {
                     if (throttler.isThrottled(message.user) && !adminDao.isAdmin(message.user)) {
@@ -264,9 +279,7 @@ open class Javabot @Inject
             if (responses.isEmpty()) {
                 responses.addAll(getChannelResponses(message))
             }
-            responses.forEach {
-                postMessage(it)
-            }
+            responses.forEach { postMessage(it) }
         } else {
             if (LOG.isInfoEnabled) {
                 LOG.info("ignoring " + sender)
@@ -321,11 +334,17 @@ open class Javabot @Inject
             } catch (e: Exception) {
                 LOG.error("NPE: message = [$message], requester = [${message.user}]", e)
             }
-
         }
 
-        if (responses.isEmpty() && (!message.value.lowercase(Locale.getDefault()).startsWith("${nick}'s".lowercase(Locale.getDefault())))) {
-            responses.add(Message(message.channel, message.user, Sofia.unhandledMessage(message.user.nick)))
+        if (
+            responses.isEmpty() &&
+                (!message.value
+                    .lowercase(Locale.getDefault())
+                    .startsWith("${nick}'s".lowercase(Locale.getDefault())))
+        ) {
+            responses.add(
+                Message(message.channel, message.user, Sofia.unhandledMessage(message.user.nick))
+            )
         }
         return responses
     }
@@ -358,5 +377,4 @@ open class Javabot @Inject
     open fun getUser(nick: String): JavabotUser {
         return adapter.getUser(nick)
     }
-
 }

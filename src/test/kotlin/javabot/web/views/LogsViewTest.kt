@@ -1,16 +1,22 @@
 package javabot.web.views
 
 import com.antwerkz.sofia.Sofia
+import java.time.LocalDateTime
 import javabot.model.Logs.Type
 import org.testng.Assert
 import org.testng.annotations.Test
-import java.time.LocalDateTime
 
 @Test(enabled = false)
 class LogsViewTest : ViewsTest() {
 
     fun render() {
-        render(viewFactory.createLogsView(MockServletRequest(false), "testchannel", LocalDateTime.now()))
+        render(
+            viewFactory.createLogsView(
+                MockServletRequest(false),
+                "testchannel",
+                LocalDateTime.now()
+            )
+        )
     }
 
     fun actions() {
@@ -21,7 +27,11 @@ class LogsViewTest : ViewsTest() {
         logsDao.deleteAllForChannel(eventChannel)
 
         create(Type.MESSAGE, eventChannel, message)
-        create(Type.MESSAGE, eventChannel, "this is a test of a url: http://google.com/ now isn't that cool")
+        create(
+            Type.MESSAGE,
+            eventChannel,
+            "this is a test of a url: http://google.com/ now isn't that cool"
+        )
 
         val action = "really loves deleting boiler plate code"
         create(Type.ACTION, eventChannel, action)
@@ -29,20 +39,43 @@ class LogsViewTest : ViewsTest() {
         create(Type.QUIT, eventChannel, Sofia.userQuit(user.nick, eventChannel))
         create(Type.PART, eventChannel, Sofia.userParted(user.nick, "i'm done"))
 
-        val rendered = render(viewFactory.createLogsView(MockServletRequest(false), eventChannel, LocalDateTime.now())).toString()
+        val rendered =
+            render(
+                    viewFactory.createLogsView(
+                        MockServletRequest(false),
+                        eventChannel,
+                        LocalDateTime.now()
+                    )
+                )
+                .toString()
 
-        Assert.assertTrue(rendered.contains(Sofia.logsAnchorFormat("http://google.com/", "http://google.com/")),
-              "Should find url in logs: \n" + Sofia.logsAnchorFormat("http://google.com/", "http://google.com/"))
-        Assert.assertTrue(rendered.contains("<td>$message</td>"),
-              "Should find basic message: \n" + rendered)
-        Assert.assertTrue(rendered.contains(">$user $action</td>"),
-              "Should find action: \n" + rendered)
-        Assert.assertTrue(rendered.contains(">" + Sofia.userJoined(user.nick, user.hostmask, eventChannel) + "</td>"),
-              "Should find join: \n" + rendered)
-        Assert.assertTrue(rendered.contains(">" + Sofia.userQuit(user.nick, eventChannel) + "</td>"),
-              "Should find quit: \n" + rendered)
-        Assert.assertTrue(rendered.contains(">" + Sofia.userParted(user.nick, "i'm done") + "</td>"),
-              "Should find part: \n" + rendered)
+        Assert.assertTrue(
+            rendered.contains(Sofia.logsAnchorFormat("http://google.com/", "http://google.com/")),
+            "Should find url in logs: \n" +
+                Sofia.logsAnchorFormat("http://google.com/", "http://google.com/")
+        )
+        Assert.assertTrue(
+            rendered.contains("<td>$message</td>"),
+            "Should find basic message: \n" + rendered
+        )
+        Assert.assertTrue(
+            rendered.contains(">$user $action</td>"),
+            "Should find action: \n" + rendered
+        )
+        Assert.assertTrue(
+            rendered.contains(
+                ">" + Sofia.userJoined(user.nick, user.hostmask, eventChannel) + "</td>"
+            ),
+            "Should find join: \n" + rendered
+        )
+        Assert.assertTrue(
+            rendered.contains(">" + Sofia.userQuit(user.nick, eventChannel) + "</td>"),
+            "Should find quit: \n" + rendered
+        )
+        Assert.assertTrue(
+            rendered.contains(">" + Sofia.userParted(user.nick, "i'm done") + "</td>"),
+            "Should find part: \n" + rendered
+        )
     }
 
     private fun create(type: Type, channelName: String, value: String) {

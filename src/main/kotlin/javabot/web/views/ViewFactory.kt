@@ -1,19 +1,25 @@
 package javabot.web.views
 
 import com.google.inject.assistedinject.Assisted
+import java.time.LocalDateTime
 import javabot.model.Admin
 import javabot.model.Channel
 import javabot.model.Factoid
-import java.time.LocalDateTime
-import javax.annotation.Nullable
 import javax.servlet.http.HttpServletRequest
 
 interface ViewFactory {
-    fun createChangesView(request: HttpServletRequest, page: Int, message: String? = null, date: LocalDateTime? = null):
-            ChangesView
+    fun createChangesView(
+        request: HttpServletRequest,
+        page: Int,
+        message: String? = null,
+        date: LocalDateTime? = null
+    ): ChangesView
 
-    fun createAdminIndexView(request: HttpServletRequest, @Assisted("current") current: Admin,
-                             @Assisted("editing") editing: Admin?): AdminIndexView
+    fun createAdminIndexView(
+        request: HttpServletRequest,
+        @Assisted("current") current: Admin,
+        @Assisted("editing") editing: Admin?
+    ): AdminIndexView
 
     fun createChannelEditView(request: HttpServletRequest, channel: Channel): ChannelEditView
 

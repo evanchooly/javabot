@@ -4,6 +4,9 @@ import com.google.inject.Inject
 import dev.morphia.Datastore
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
+import java.time.LocalDateTime
+import java.util.ArrayList
+import java.util.Locale
 import javabot.dao.util.QueryParam
 import javabot.model.Activity
 import javabot.model.Channel
@@ -11,25 +14,17 @@ import javabot.model.criteria.ChannelCriteria.Companion.logged
 import javabot.model.criteria.ChannelCriteria.Companion.name
 import javabot.model.criteria.ChannelCriteria.Companion.upperName
 import org.apache.commons.lang.StringUtils
-import java.time.LocalDateTime
-import java.util.ArrayList
-import java.util.Locale
 
 @SuppressWarnings("ConstantNamingConvention")
 class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Channel::class.java) {
 
     fun delete(name: String) {
-        ds.find(Channel::class.java)
-                .filter(name().eq(name))
-                .delete()
+        ds.find(Channel::class.java).filter(name().eq(name)).delete()
     }
 
     @Suppress("UNCHECKED_CAST")
     fun configuredChannels(): List<String> {
-        return ds.find(Channel::class.java)
-                .iterator()
-                .toList()
-                .map { it.name }
+        return ds.find(Channel::class.java).iterator().toList().map { it.name }
     }
 
     fun getChannels(): List<Channel> {
@@ -41,15 +36,11 @@ class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Chann
         if (!showAll) {
             query.filter(logged().eq(true))
         }
-        return query.iterator(FindOptions()
-                        .sort(Sort.ascending(name)))
-                .toList()
+        return query.iterator(FindOptions().sort(Sort.ascending(name))).toList()
     }
 
     fun find(qp: QueryParam): List<Channel> {
-        return getQuery().iterator(FindOptions()
-                        .sort(qp.toSort()))
-                .toList()
+        return getQuery().iterator(FindOptions().sort(qp.toSort())).toList()
     }
 
     fun isLogged(channel: String): Boolean {
@@ -59,25 +50,27 @@ class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Chann
 
     fun get(name: String): Channel? {
         return ds.find(Channel::class.java)
-                .filter(upperName().eq(name.uppercase(Locale.getDefault())))
-                .first()
+            .filter(upperName().eq(name.uppercase(Locale.getDefault())))
+            .first()
     }
 
     fun getStatistics(): List<Activity> {
         //        val criteria = ActivityCriteria(ds)
         /*
-@NamedQuery(name = ChannelDao.STATISTICS, query = "select new javabot.model.Activity(l.channel, count(l), max(l.updated),"
-    + " min(l.updated), (select count(e) from Logs e)) from Logs l "
-    + "where l.channel like '#%' group by l.channel order by count(l) desc")
-*/
-        return listOf()//(List<Activity>) getEntityManager().createNamedQuery(ChannelDao.STATISTICS)
+        @NamedQuery(name = ChannelDao.STATISTICS, query = "select new javabot.model.Activity(l.channel, count(l), max(l.updated),"
+            + " min(l.updated), (select count(e) from Logs e)) from Logs l "
+            + "where l.channel like '#%' group by l.channel order by count(l) desc")
+        */
+        return listOf(
+        ) // (List<Activity>) getEntityManager().createNamedQuery(ChannelDao.STATISTICS)
         //            .getResultList();
     }
 
     fun loggedChannels(): List<String> {
-        val channels = ds.find(Channel::class.java)
-                .filter(logged().eq(true)).iterator(FindOptions()
-                        .projection().include(name))
+        val channels =
+            ds.find(Channel::class.java)
+                .filter(logged().eq(true))
+                .iterator(FindOptions().projection().include(name))
                 .toList()
         val names = ArrayList<String>()
         for (channel in channels) {

@@ -10,8 +10,14 @@ import javabot.dao.FactoidDao
 import javabot.model.Channel
 import javax.inject.Inject
 
-class ForgetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao, var channelDao: ChannelDao) :
-        BotOperation(bot, adminDao), StandardOperation {
+class ForgetFactoidOperation
+@Inject
+constructor(
+    bot: Javabot,
+    adminDao: AdminDao,
+    var factoidDao: FactoidDao,
+    var channelDao: ChannelDao
+) : BotOperation(bot, adminDao), StandardOperation {
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
@@ -31,7 +37,12 @@ class ForgetFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDa
         return responses
     }
 
-    protected fun forget(channel: Channel?, responses: MutableList<Message>, event: Message, key: String) {
+    protected fun forget(
+        channel: Channel?,
+        responses: MutableList<Message>,
+        event: Message,
+        key: String
+    ) {
         val factoid = factoidDao.getFactoid(key)
         if (factoid != null) {
             if ((!factoid.locked) || isAdminUser(event.user)) {

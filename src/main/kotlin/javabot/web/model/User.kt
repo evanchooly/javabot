@@ -2,12 +2,16 @@ package javabot.web.model
 
 import com.google.common.collect.Sets
 import java.security.Principal
-import org.brickred.socialauth.util.AccessGrant
-
 import java.util.HashSet
 import java.util.UUID
+import org.brickred.socialauth.util.AccessGrant
 
-class User(var sessionToken: UUID?, var email: String, var openIDIdentifier: String, var OAuthInfo: AccessGrant): Principal {
+class User(
+    var sessionToken: UUID?,
+    var email: String,
+    var openIDIdentifier: String,
+    var OAuthInfo: AccessGrant
+) : Principal {
     var authorities: HashSet<Authority> = HashSet()
 
     fun hasAllAuthorities(requiredAuthorities: Set<Authority>): Boolean {

@@ -2,6 +2,8 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import com.google.inject.Inject
+import java.util.ArrayList
+import java.util.Locale
 import javabot.Javabot
 import javabot.JavabotConfig
 import javabot.Message
@@ -10,13 +12,18 @@ import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
-import net.thauvin.erik.bitly.Bitly
-import java.util.ArrayList
-import java.util.Locale
 import javax.annotation.Nullable
+import net.thauvin.erik.bitly.Bitly
 
-class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var apiDao: ApiDao,
-     var dao: JavadocClassDao, var config: JavabotConfig) : BotOperation(bot, adminDao) {
+class JavadocOperation
+@Inject
+constructor(
+    bot: Javabot,
+    adminDao: AdminDao,
+    var apiDao: ApiDao,
+    var dao: JavadocClassDao,
+    var config: JavabotConfig
+) : BotOperation(bot, adminDao) {
 
     companion object {
         private val RESULT_LIMIT = 5
@@ -55,7 +62,12 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
         return responses
     }
 
-    private fun buildResponse(responses: MutableList<Message>, event: Message, api: JavadocApi?, key: String) {
+    private fun buildResponse(
+        responses: MutableList<Message>,
+        event: Message,
+        api: JavadocApi?,
+        key: String
+    ) {
         val urls = handle(api, key)
         if (!urls.isEmpty()) {
 
@@ -64,7 +76,7 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
             val entries = buildResponse(event, urls, urlMessage)
             if (urls.size > RESULT_LIMIT) {
                 responses.add(Message(event, Sofia.tooManyResults(nick)))
-                responses.addAll(entries.map { Message(it.user, it.value)})
+                responses.addAll(entries.map { Message(it.user, it.value) })
             } else {
                 responses.addAll(entries)
             }
@@ -73,7 +85,11 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
         }
     }
 
-    private fun buildResponse(event: Message, urls: List<String>, urlMessage: StringBuilder): MutableList<Message> {
+    private fun buildResponse(
+        event: Message,
+        urls: List<String>,
+        urlMessage: StringBuilder
+    ): MutableList<Message> {
         val responses = arrayListOf<Message>()
         var message = urlMessage
         for (index in urls.indices) {
@@ -81,9 +97,7 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
                 responses.add(Message(event, message.toString()))
                 message = StringBuilder()
             }
-            message
-                    .append(if (index == 0) "" else "; ")
-                    .append(urls[index])
+            message.append(if (index == 0) "" else "; ").append(urls[index])
         }
         responses.add(Message(event, message.toString()))
 
@@ -108,11 +122,16 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
         } else {
             val className = key.substring(0, finalIndex)
             val fieldName = key.substring(finalIndex + 1)
-            if (Character.isUpperCase(fieldName[0]) && fieldName.uppercase(Locale.getDefault()) != fieldName) {
+            if (
+                Character.isUpperCase(fieldName[0]) &&
+                    fieldName.uppercase(Locale.getDefault()) != fieldName
+            ) {
                 findClasses(api, urls, key)
             } else {
-                urls += dao.getField(api, className, fieldName)
-                        .map { it.getDisplayUrl(it.toString(), apiDao, bitly) }
+                urls +=
+                    dao.getField(api, className, fieldName).map {
+                        it.getDisplayUrl(it.toString(), apiDao, bitly)
+                    }
             }
         }
     }
@@ -121,29 +140,40 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
         urls.addAll(dao.getClass(api, key).map { it.getDisplayUrl(it.toString(), apiDao, bitly) })
     }
 
-    private fun parseMethodRequest(urls: MutableList<String>, api: JavadocApi?, key: String, openIndex: Int) {
+    private fun parseMethodRequest(
+        urls: MutableList<String>,
+        api: JavadocApi?,
+        key: String,
+        openIndex: Int
+    ) {
         val closeIndex = key.indexOf(')')
         if (closeIndex != -1) {
             val finalIndex = key.lastIndexOf('.', openIndex)
             val methodName: String
-            val className = if (finalIndex == -1) {
-                methodName = key.substring(0, openIndex)
-                methodName
-            } else {
-                methodName = key.substring(finalIndex + 1, openIndex)
-                key.substring(0, finalIndex)
-            }
+            val className =
+                if (finalIndex == -1) {
+                    methodName = key.substring(0, openIndex)
+                    methodName
+                } else {
+                    methodName = key.substring(finalIndex + 1, openIndex)
+                    key.substring(0, finalIndex)
+                }
             val signatureTypes = key.substring(openIndex + 1, closeIndex)
             val list = ArrayList<String>()
 
             list.addAll(findMethods(api, className, methodName, signatureTypes))
             val classes = dao.getClass(api, className)
-            list.addAll(findParents(classes)
-                    .flatMap { findMethods(api, it.fqcn, methodName, signatureTypes) })
+            list.addAll(
+                findParents(classes).flatMap {
+                    findMethods(api, it.fqcn, methodName, signatureTypes)
+                }
+            )
 
             if (list.isEmpty()) {
-                list.addAll(dao.getMethods(api, methodName, methodName, signatureTypes)
-                        .map { it.getDisplayUrl(it.toString(), apiDao, bitly) }
+                list.addAll(
+                    dao.getMethods(api, methodName, methodName, signatureTypes).map {
+                        it.getDisplayUrl(it.toString(), apiDao, bitly)
+                    }
                 )
             }
 
@@ -168,9 +198,15 @@ class JavadocOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var
         return parents
     }
 
-    private fun findMethods(api: JavadocApi?, className: String, methodName: String, signatureTypes: String) : List<String> {
-        return dao.getMethods(api, className, methodName, signatureTypes)
-                .map { it.getDisplayUrl(it.toString(), apiDao, bitly) }
+    private fun findMethods(
+        api: JavadocApi?,
+        className: String,
+        methodName: String,
+        signatureTypes: String
+    ): List<String> {
+        return dao.getMethods(api, className, methodName, signatureTypes).map {
+            it.getDisplayUrl(it.toString(), apiDao, bitly)
+        }
     }
 
     private fun displayApiList(responses: MutableList<Message>, event: Message) {

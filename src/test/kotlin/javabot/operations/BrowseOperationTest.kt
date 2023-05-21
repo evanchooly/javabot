@@ -2,10 +2,10 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
-import org.testng.annotations.Test
 import javax.inject.Inject
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import org.testng.annotations.Test
 
 @Test(groups = arrayOf("operations"))
 class BrowseOperationTest @Inject constructor(val browseOperation: BrowseOperation) : BaseTest() {
@@ -27,7 +27,11 @@ class BrowseOperationTest @Inject constructor(val browseOperation: BrowseOperati
     fun testMethodReference() {
         val response = browseOperation.handleMessage(message("~browse String.indexOf(String)"))
         assertEquals(1, response.size)
-        assertTrue(response[0].value.startsWith("A reference matching 'String.indexOf(String)' can be found at:"))
+        assertTrue(
+            response[0]
+                .value
+                .startsWith("A reference matching 'String.indexOf(String)' can be found at:")
+        )
     }
 
     @Test
@@ -37,8 +41,7 @@ class BrowseOperationTest @Inject constructor(val browseOperation: BrowseOperati
         assertTrue(response[0].value.startsWith("A reference matching 'Files' can be found at: "))
     }
 
-
-    //@Test // needs to test entire bot message handler, not the operation directly
+    // @Test // needs to test entire bot message handler, not the operation directly
     private fun testNoTrigger() {
         val response = browseOperation.handleMessage(message("browse guava Files"))
         assertEquals(0, response.size)
@@ -69,9 +72,11 @@ class BrowseOperationTest @Inject constructor(val browseOperation: BrowseOperati
     fun testNoValidResponseModuleAndClass() {
         val response = browseOperation.handleMessage(message("~browse guavaMcGee FilesMcGee"))
         assertEquals(1, response.size)
-        assertEquals("No source matching `FilesMcGee` and module `guavaMcGee` found.", response[0].value)
+        assertEquals(
+            "No source matching `FilesMcGee` and module `guavaMcGee` found.",
+            response[0].value
+        )
     }
-
 
     @Test
     fun testBrowseHelp() {

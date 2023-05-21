@@ -3,7 +3,6 @@ package javabot.web.model
 import com.google.common.base.Preconditions
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeUnit.MINUTES
 
 enum class InMemoryUserCache {
@@ -13,7 +12,8 @@ enum class InMemoryUserCache {
 
     // A lot of threads will hit this cache
     @Volatile
-    var userCache: Cache<String, User> = CacheBuilder.newBuilder()
+    var userCache: Cache<String, User> =
+        CacheBuilder.newBuilder()
             .expireAfterWrite(15, MINUTES)
             .maximumSize(1000)
             .build<String, User>()
@@ -36,9 +36,7 @@ enum class InMemoryUserCache {
         return user
     }
 
-    /**
-     * @param user         The User to cache
-     */
+    /** @param user The User to cache */
     fun put(user: User) {
 
         Preconditions.checkNotNull(user)
@@ -54,10 +52,8 @@ enum class InMemoryUserCache {
             if (entry.value.openIDIdentifier == identifier) {
                 return entry.value
             }
-
         }
 
         return null
     }
-
 }

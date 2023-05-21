@@ -3,11 +3,11 @@ package javabot.dao
 import com.google.inject.Inject
 import dev.morphia.Datastore
 import dev.morphia.DeleteOptions
+import java.time.LocalDateTime
+import java.util.Locale
 import javabot.model.Shun
 import javabot.model.criteria.ShunCriteria.Companion.expiry
 import javabot.model.criteria.ShunCriteria.Companion.upperNick
-import java.time.LocalDateTime
-import java.util.Locale
 
 class ShunDao @Inject constructor(ds: Datastore) : BaseDao<Shun>(ds, Shun::class.java) {
 
@@ -18,14 +18,14 @@ class ShunDao @Inject constructor(ds: Datastore) : BaseDao<Shun>(ds, Shun::class
     fun getShun(nick: String): Shun? {
         expireShuns()
         return ds.find(Shun::class.java)
-                .filter(upperNick().eq(nick.uppercase(Locale.getDefault())))
-                .first()
+            .filter(upperNick().eq(nick.uppercase(Locale.getDefault())))
+            .first()
     }
 
     private fun expireShuns() {
         ds.find(Shun::class.java)
-                .filter(expiry().lt(LocalDateTime.now()))
-                .delete(DeleteOptions().multi(true))
+            .filter(expiry().lt(LocalDateTime.now()))
+            .delete(DeleteOptions().multi(true))
     }
 
     fun addShun(nick: String, until: LocalDateTime) {

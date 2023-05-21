@@ -23,12 +23,15 @@ open class UrlCacheService @Inject constructor(private val config: JavabotConfig
             return field
         }
 
-    private val urlCache: LoadingCache<String, String> = CacheBuilder.newBuilder()
+    private val urlCache: LoadingCache<String, String> =
+        CacheBuilder.newBuilder()
             .maximumSize(1000)
-            .build(object : CacheLoader<String, String>() {
-                override fun load(key: String): String {
-                    val client = bitly
-                    return client?.bitlinks()?.shorten(key) ?: key
+            .build(
+                object : CacheLoader<String, String>() {
+                    override fun load(key: String): String {
+                        val client = bitly
+                        return client?.bitlinks()?.shorten(key) ?: key
+                    }
                 }
-            })
+            )
 }

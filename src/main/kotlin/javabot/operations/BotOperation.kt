@@ -7,18 +7,16 @@ import javabot.model.JavabotUser
 
 abstract class BotOperation constructor(var bot: Javabot, var adminDao: AdminDao) {
     /**
-     * This method returns where the operation should fall in terms of priority. Lower values represent lower
-     * priority. Implementations can probably get by with the default implementation (which returns a priority of 10)
-     * but some commands may want to override this.
+     * This method returns where the operation should fall in terms of priority. Lower values
+     * represent lower priority. Implementations can probably get by with the default implementation
+     * (which returns a priority of 10) but some commands may want to override this.
      * @return the priority of the command
      */
     open fun getPriority(): Int {
         return 10
     }
 
-    /**
-     * @return true if the message has been handled
-     */
+    /** @return true if the message has been handled */
     open fun handleMessage(event: Message): List<Message> {
         return listOf()
     }

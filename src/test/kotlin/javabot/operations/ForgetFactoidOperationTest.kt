@@ -11,10 +11,8 @@ import org.testng.annotations.Test
 @Test
 class ForgetFactoidOperationTest : BaseTest() {
 
-    @Inject
-    private lateinit var factoidDao: FactoidDao
-    @Inject
-    private lateinit var operation: ForgetFactoidOperation
+    @Inject private lateinit var factoidDao: FactoidDao
+    @Inject private lateinit var operation: ForgetFactoidOperation
 
     fun forgetFactoid() {
         if (!factoidDao.hasFactoid("afky")) {
@@ -26,6 +24,9 @@ class ForgetFactoidOperationTest : BaseTest() {
 
     fun nonexistentFactoid() {
         var response = operation.handleMessage(message("~forget asdfghjkl"))
-        Assert.assertEquals(response[0].value, Sofia.factoidDeleteUnknown("asdfghjkl", TEST_USER.nick))
+        Assert.assertEquals(
+            response[0].value,
+            Sofia.factoidDeleteUnknown("asdfghjkl", TEST_USER.nick)
+        )
     }
 }

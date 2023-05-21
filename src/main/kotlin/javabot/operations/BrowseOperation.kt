@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.inject.Inject
+import java.time.Duration
+import java.util.Locale
 import javabot.Javabot
 import javabot.JavabotConfig
 import javabot.Message
@@ -13,13 +15,16 @@ import javabot.operations.browse.BrowseResult
 import javabot.service.HTTP_OPTIONS
 import javabot.service.HttpService
 import javabot.service.UrlCacheService
-import java.time.Duration
-import java.util.Locale
 
-class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
-                                          val httpService: HttpService,
-                                          val config: JavabotConfig,
-                                          val urlCacheService: UrlCacheService) : BotOperation(bot, adminDao) {
+class BrowseOperation
+@Inject
+constructor(
+    bot: Javabot,
+    adminDao: AdminDao,
+    val httpService: HttpService,
+    val config: JavabotConfig,
+    val urlCacheService: UrlCacheService
+) : BotOperation(bot, adminDao) {
     companion object {
         val typeReference = object : TypeReference<Array<BrowseResult>>() {}
     }
@@ -33,46 +38,54 @@ class BrowseOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
     }
 
     private fun callService(clazz: String, module: String? = null): String {
-        val sourceData = httpService.get(
+        val sourceData =
+            httpService.get(
                 url = "https://java-browser.yawk.at/api/javabotSearch/v1",
-                params = mapOf(
-                        "term" to clazz,
-                        "artifact" to module
-                )
+                params =
+                    mapOf("term" to clazz, "artifact" to module)
                         .mapNotNull { it.value?.let { value -> it.key to value } }
                         .toMap(),
-                options = mapOf(
+                options =
+                    mapOf(
                         HTTP_OPTIONS.READ_TIMEOUT to Duration.ofSeconds(45),
                         HTTP_OPTIONS.CALL_TIMEOUT to Duration.ofSeconds(45)
-                )
-        )
-        val data = ObjectMapper().configure(JsonParser.Feature.ALLOW_COMMENTS, true)
+                    )
+            )
+        val data =
+            ObjectMapper()
+                .configure(JsonParser.Feature.ALLOW_COMMENTS, true)
                 .readValue(sourceData, typeReference) as Array<BrowseResult>
         return if (data.isNotEmpty()) {
             data
-                    .map { urlCacheService.shorten("https://java-browser.yawk.at${it.uri}") + " [${it.binding}]" }
-                    .joinToString(
-                            separator = ", ",
-                            prefix = correctReference(data.size, "Reference")
-                                    + " matching '$clazz' can be found at: ")
+                .map {
+                    urlCacheService.shorten("https://java-browser.yawk.at${it.uri}") +
+                        " [${it.binding}]"
+                }
+                .joinToString(
+                    separator = ", ",
+                    prefix =
+                        correctReference(data.size, "Reference") +
+                            " matching '$clazz' can be found at: "
+                )
         } else {
             "No source matching `$clazz` " +
-                    if (module != null) {
-                        "and module `$module` "
-                    } else {
-                        ""
-                    } +
-                    "found."
+                if (module != null) {
+                    "and module `$module` "
+                } else {
+                    ""
+                } +
+                "found."
         }
     }
 
     override fun handleMessage(event: Message): List<Message> {
         val tokens = event.value.split("\\s".toRegex())
-        val (command, part1, part2) = listOf(
+        val (command, part1, part2) =
+            listOf(
                 if (tokens.isNotEmpty()) tokens[0] else null,
                 if (tokens.size > 1) tokens[1] else null,
                 if (tokens.size > 2) tokens[2] else null
-        )
+            )
         return try {
             if ("browse".equals(command, true) && part1 != null) {
                 if ("-help".equals(part1, true)) {

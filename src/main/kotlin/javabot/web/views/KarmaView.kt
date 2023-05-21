@@ -11,14 +11,17 @@ import javabot.model.Karma
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 
-class KarmaView @Inject constructor(
-        adminDao: AdminDao,
-        channelDao: ChannelDao,
-        factoidDao: FactoidDao,
-        apiDao: ApiDao,
-        var karmaDao: KarmaDao,
-        @Assisted request: HttpServletRequest, @Assisted page: Int) :
-        PagedView<Karma>(adminDao, channelDao, factoidDao, apiDao, request, page) {
+class KarmaView
+@Inject
+constructor(
+    adminDao: AdminDao,
+    channelDao: ChannelDao,
+    factoidDao: FactoidDao,
+    apiDao: ApiDao,
+    var karmaDao: KarmaDao,
+    @Assisted request: HttpServletRequest,
+    @Assisted page: Int
+) : PagedView<Karma>(adminDao, channelDao, factoidDao, apiDao, request, page) {
 
     override fun countItems(): Long {
         return karmaDao.count()

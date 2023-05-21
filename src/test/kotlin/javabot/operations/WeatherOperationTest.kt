@@ -1,24 +1,22 @@
 package javabot.operations
 
 import com.google.inject.Inject
-import javabot.BaseTest
-import org.testng.annotations.Test
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import javabot.BaseTest
 import javabot.JavabotConfig
 import org.testng.SkipException
 import org.testng.annotations.BeforeTest
+import org.testng.annotations.Test
 
 /**
- * Integration test for the Weather Operation, will actually attempt to contact the Google API for weather as
- * it's using the real Dao instead of a Mock/Stub
+ * Integration test for the Weather Operation, will actually attempt to contact the Google API for
+ * weather as it's using the real Dao instead of a Mock/Stub
  */
 class WeatherOperationTest : BaseTest() {
-    @Inject
-    private lateinit var operation: WeatherOperation
-    @Inject
-    private lateinit var config: JavabotConfig
+    @Inject private lateinit var operation: WeatherOperation
+    @Inject private lateinit var config: JavabotConfig
 
     @Test
     fun tellWeather() {
@@ -33,7 +31,10 @@ class WeatherOperationTest : BaseTest() {
     @Test
     fun cityNotFound() {
         // we have to use a genuinely odd name, because google maps matches a LOT of place names
-        scanForResponse(operation.handleMessage(message("~weather zila jdlfj lasjdf")), "only supports places on Earth")
+        scanForResponse(
+            operation.handleMessage(message("~weather zila jdlfj lasjdf")),
+            "only supports places on Earth"
+        )
     }
 
     @Test

@@ -8,5 +8,4 @@ interface WeatherHandler {
      * @return Current Weather information, null if not found
      */
     fun getWeatherFor(place: String): Weather?
-
 }

@@ -3,17 +3,16 @@ package javabot.dao
 import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
 import javabot.operations.GetFactoidOperation
+import javax.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import javax.inject.Inject
 
-@Test class SeeLoopTest : BaseTest() {
-    @Inject
-    protected lateinit var factoidDao: FactoidDao
-    @Inject
-    protected lateinit var operation: GetFactoidOperation
+@Test
+class SeeLoopTest : BaseTest() {
+    @Inject protected lateinit var factoidDao: FactoidDao
+    @Inject protected lateinit var operation: GetFactoidOperation
 
     @BeforeMethod
     @AfterMethod

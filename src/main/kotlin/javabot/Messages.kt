@@ -8,7 +8,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Singleton
-class Messages(var messages: MutableList<String> = ArrayList()) : Iterable<String>, List<String> by messages {
+class Messages(var messages: MutableList<String> = ArrayList()) :
+    Iterable<String>, List<String> by messages {
     fun add(message: String) {
         messages.add(message)
     }
@@ -17,13 +18,16 @@ class Messages(var messages: MutableList<String> = ArrayList()) : Iterable<Strin
         messages = ArrayList()
     }
 
-    fun get(duration: Duration = Duration(30, TimeUnit.SECONDS), failOnTimeout: Boolean = true): List<String> {
+    fun get(
+        duration: Duration = Duration(30, TimeUnit.SECONDS),
+        failOnTimeout: Boolean = true
+    ): List<String> {
         try {
             Awaitility.await()
-                    .pollInterval(Duration.FIVE_HUNDRED_MILLISECONDS)
-                    .atMost(duration)
-                    .until<Boolean>({ !messages.isEmpty() })
-        } catch(e: ConditionTimeoutException) {
+                .pollInterval(Duration.FIVE_HUNDRED_MILLISECONDS)
+                .atMost(duration)
+                .until<Boolean>({ !messages.isEmpty() })
+        } catch (e: ConditionTimeoutException) {
             if (failOnTimeout) {
                 throw e
             }

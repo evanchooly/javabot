@@ -5,7 +5,8 @@ import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 
-class SayOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao) {
+class SayOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
+    BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value

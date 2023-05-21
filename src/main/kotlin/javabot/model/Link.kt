@@ -1,17 +1,21 @@
 package javabot.model
 
-import org.bson.types.ObjectId
 import dev.morphia.annotations.Entity
 import dev.morphia.annotations.Id
 import java.io.Serializable
 import java.time.LocalDateTime
+import org.bson.types.ObjectId
 
 @Entity(value = "links", useDiscriminator = false)
-class Link(var channel: String = "", var username: String = "", var url: String = "", var info: String = "", var approved: Boolean = false)
-    : Serializable, Persistent {
+class Link(
+    var channel: String = "",
+    var username: String = "",
+    var url: String = "",
+    var info: String = "",
+    var approved: Boolean = false
+) : Serializable, Persistent {
 
-    @Id
-    var id: ObjectId = ObjectId()
+    @Id var id: ObjectId = ObjectId()
 
     var updated: LocalDateTime = LocalDateTime.now()
 
@@ -44,6 +48,4 @@ class Link(var channel: String = "", var username: String = "", var url: String 
     override fun toString(): String {
         return "Link(channel='$channel', username='$username', url='$url', info='$info', id=$id, updated=$updated, created=$created, approved=$approved)"
     }
-
-
 }
