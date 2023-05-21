@@ -1,16 +1,14 @@
 package javabot.dao.weather
 
-/**
- * Simple model for passing around Weather conditions
- */
+/** Simple model for passing around Weather conditions */
 data class Weather(
-        var city: String? = null,
-        var condition: String? = null,
-        var tempCelsius: Double? = null,
-        var humidity: String? = null,
-        var wind: String? = null,
-        var windChill: String? = null,
-        var localTime: String? = null
+    var city: String? = null,
+    var condition: String? = null,
+    var tempCelsius: Double? = null,
+    var humidity: String? = null,
+    var wind: String? = null,
+    var windChill: String? = null,
+    var localTime: String? = null
 ) {
     override fun toString(): String {
         val dotWithSpaces = " $SEPARATOR "

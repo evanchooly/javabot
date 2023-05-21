@@ -8,10 +8,12 @@ import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 import javax.inject.Inject
 
-class DropChannel @Inject constructor(bot: Javabot, adminDao: AdminDao, var channelDao: ChannelDao) : AdminCommand(bot, adminDao) {
+class DropChannel
+@Inject
+constructor(bot: Javabot, adminDao: AdminDao, var channelDao: ChannelDao) :
+    AdminCommand(bot, adminDao) {
 
-    @Parameter(required = true)
-    lateinit var channel: String
+    @Parameter(required = true) lateinit var channel: String
 
     override fun execute(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

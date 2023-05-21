@@ -5,6 +5,10 @@ import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.core.ConditionTimeoutException
 import dev.morphia.Datastore
 import dev.morphia.query.filters.Filters
+import java.time.Duration.between
+import java.time.LocalDateTime.now
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
 import javabot.Javabot
 import javabot.dao.AdminDao
 import javabot.dao.BaseDao
@@ -12,32 +16,29 @@ import javabot.dao.ConfigDao
 import javabot.dao.NickServDao
 import javabot.model.JavabotUser
 import javabot.model.ThrottleItem
-import java.time.Duration.between
-import java.time.LocalDateTime.now
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 import javax.inject.Provider
 
-class Throttler @Inject constructor(
-        ds: Datastore,
-        var configDao: ConfigDao,
-        var adminDao: AdminDao,
-        var nickServDao: NickServDao,
-        var bot: Provider<Javabot>) :
-        BaseDao<ThrottleItem>(ds, ThrottleItem::class.java) {
+class Throttler
+@Inject
+constructor(
+    ds: Datastore,
+    var configDao: ConfigDao,
+    var adminDao: AdminDao,
+    var nickServDao: NickServDao,
+    var bot: Provider<Javabot>
+) : BaseDao<ThrottleItem>(ds, ThrottleItem::class.java) {
 
     /**
      * Check if a user is currently throttled or not.
-
+     *
      * @return true if the user is currently throttled and ought to be ignored, false otherwise.
      */
     fun isThrottled(user: JavabotUser): Boolean {
         if (!adminDao.isAdmin(user)) {
-//            validateNickServAccount(user)
+            //            validateNickServAccount(user)
             ds.save(ThrottleItem(user.nick))
-            val query = ds.find(ThrottleItem::class.java)
-                    .filter(Filters.eq("user", user.nick))
+            val query = ds.find(ThrottleItem::class.java).filter(Filters.eq("user", user.nick))
             return query.count() > configDao.get().throttleThreshold
         }
         return false
@@ -49,17 +50,14 @@ class Throttler @Inject constructor(
             bot.get().message("NickServ", "info " + user.nick)
             Sofia.logWaitingForNickserv(user.nick)
             try {
-                Awaitility.await()
-                        .atMost(15, TimeUnit.SECONDS)
-                        .until<Boolean> {
-                            info.set(nickServDao.find(user.nick))
-                            info.get() != null
-                        }
+                Awaitility.await().atMost(15, TimeUnit.SECONDS).until<Boolean> {
+                    info.set(nickServDao.find(user.nick))
+                    info.get() != null
+                }
             } catch (e: ConditionTimeoutException) {
                 Sofia.logNoNickservEntry(user.nick)
                 throw NickServViolationException(Sofia.unknownUser())
             }
-
         }
         val nickServInfo = info.get()
         if (nickServInfo == null) {

@@ -1,8 +1,7 @@
 package javabot
 
-import javabot.database.UpgradeScript
-
 import java.util.Comparator
+import javabot.database.UpgradeScript
 
 class ScriptComparator : Comparator<UpgradeScript> {
     override fun compare(o1: UpgradeScript, o2: UpgradeScript): Int {
@@ -15,6 +14,12 @@ class ScriptComparator : Comparator<UpgradeScript> {
         if (o1.id() > o2.id()) {
             return 1
         }
-        throw RuntimeException("%s and %s have the same priority: %d".format(o1.javaClass.name, o2.javaClass.name, o1.id()))
+        throw RuntimeException(
+            "%s and %s have the same priority: %d".format(
+                o1.javaClass.name,
+                o2.javaClass.name,
+                o1.id()
+            )
+        )
     }
 }

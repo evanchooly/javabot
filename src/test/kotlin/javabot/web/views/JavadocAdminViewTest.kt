@@ -8,5 +8,4 @@ class JavadocAdminViewTest : ViewsTest() {
     fun render() {
         render(viewFactory.createJavadocAdminView(MockServletRequest(false)))
     }
-
 }

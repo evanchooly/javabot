@@ -7,8 +7,13 @@ import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 
-class DisableOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : OperationsCommand(bot, adminDao) {
-    @Parameter(names=arrayOf("-name"), description = "The name of the operation to disable", required = true)
+class DisableOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
+    OperationsCommand(bot, adminDao) {
+    @Parameter(
+        names = arrayOf("-name"),
+        description = "The name of the operation to disable",
+        required = true
+    )
     lateinit var operationName: String
 
     override fun execute(event: Message): List<Message> {

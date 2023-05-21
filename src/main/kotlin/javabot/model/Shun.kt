@@ -7,18 +7,16 @@ import dev.morphia.annotations.Index
 import dev.morphia.annotations.IndexOptions
 import dev.morphia.annotations.Indexed
 import dev.morphia.annotations.Indexes
-import org.bson.types.ObjectId
 import java.io.Serializable
 import java.time.LocalDateTime
+import org.bson.types.ObjectId
 
 @Entity(value = "shuns", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("upperNick"))))
 class Shun : Serializable, Persistent {
-    @Id
-    var id: ObjectId? = null
+    @Id var id: ObjectId? = null
 
-    @Indexed(options = IndexOptions(unique = true))
-    var nick: String? = null
+    @Indexed(options = IndexOptions(unique = true)) var nick: String? = null
 
     var upperNick: String? = null
 

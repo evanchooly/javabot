@@ -10,17 +10,25 @@ class TwitterService @Inject constructor(private val config: JavabotConfig) {
     private val twitter: Twitter?
 
     init {
-        twitter = if (config.twitterConsumerKey().isNotBlank()
-                && config.twitterConsumerSecret().isNotBlank()
-                && config.twitterAccessToken().isNotBlank()
-                && config.twitterAccessTokenSecret().isNotBlank()) {
-            Twitter.newBuilder().apply {
-                oAuthConsumer(config.twitterConsumerKey(), config.twitterConsumerSecret())
-                oAuthAccessToken(config.twitterAccessToken(), config.twitterAccessTokenSecret())
-            }.build()
-        } else {
-            null
-        }
+        twitter =
+            if (
+                config.twitterConsumerKey().isNotBlank() &&
+                    config.twitterConsumerSecret().isNotBlank() &&
+                    config.twitterAccessToken().isNotBlank() &&
+                    config.twitterAccessTokenSecret().isNotBlank()
+            ) {
+                Twitter.newBuilder()
+                    .apply {
+                        oAuthConsumer(config.twitterConsumerKey(), config.twitterConsumerSecret())
+                        oAuthAccessToken(
+                            config.twitterAccessToken(),
+                            config.twitterAccessTokenSecret()
+                        )
+                    }
+                    .build()
+            } else {
+                null
+            }
     }
 
     fun isEnabled() = twitter != null

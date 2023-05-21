@@ -7,12 +7,9 @@ import javabot.Message
 import javabot.dao.AdminDao
 import javax.inject.Inject
 
-class AddAdmin @Inject constructor(bot: Javabot, adminDao: AdminDao) :
-        AdminCommand(bot, adminDao) {
-    @Parameter(required = true)
-    lateinit var userName: String
-    @Parameter(required = true)
-    lateinit var hostName: String
+class AddAdmin @Inject constructor(bot: Javabot, adminDao: AdminDao) : AdminCommand(bot, adminDao) {
+    @Parameter(required = true) lateinit var userName: String
+    @Parameter(required = true) lateinit var hostName: String
 
     override fun execute(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

@@ -1,14 +1,13 @@
 package javabot.operations
 
 import javabot.BaseTest
+import javax.inject.Inject
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
-import javax.inject.Inject
 
 @Test
 class MorphiaJavadocTest : BaseTest() {
-    @Inject
-    private lateinit var operation: JavadocOperation
+    @Inject private lateinit var operation: JavadocOperation
 
     @BeforeTest
     fun load() {
@@ -16,27 +15,47 @@ class MorphiaJavadocTest : BaseTest() {
     }
 
     fun constructors() {
-        scanForResponse(operation.handleMessage(message("~javadoc CountOptions()")), "dev/morphia/query/CountOptions.html#<init>")
-        scanForResponse(operation.handleMessage(message("~javadoc dev.morphia.query.CountOptions()")), "dev/morphia/query/CountOptions.html")
+        scanForResponse(
+            operation.handleMessage(message("~javadoc CountOptions()")),
+            "dev/morphia/query/CountOptions.html#<init>"
+        )
+        scanForResponse(
+            operation.handleMessage(message("~javadoc dev.morphia.query.CountOptions()")),
+            "dev/morphia/query/CountOptions.html"
+        )
     }
 
     fun methods() {
-        scanForResponse(operation.handleMessage(message("~javadoc Query.filter(*)")), "dev/morphia/query/Query.html#filter(")
+        scanForResponse(
+            operation.handleMessage(message("~javadoc Query.filter(*)")),
+            "dev/morphia/query/Query.html#filter("
+        )
     }
 
     fun primitives() {
-        scanForResponse(operation.handleMessage(message("~javadoc CountOptions.limit(int)")), "dev/morphia/query/CountOptions.html#limit(")
-        scanForResponse(operation.handleMessage(message("~javadoc GeoNear.to(double[])")),
-                "dev/morphia/aggregation/experimental/stages/GeoNear.html#to(")
+        scanForResponse(
+            operation.handleMessage(message("~javadoc CountOptions.limit(int)")),
+            "dev/morphia/query/CountOptions.html#limit("
+        )
+        scanForResponse(
+            operation.handleMessage(message("~javadoc GeoNear.to(double[])")),
+            "dev/morphia/aggregation/experimental/stages/GeoNear.html#to("
+        )
     }
 
     fun fields() {
-        scanForResponse(operation.handleMessage(message("~javadoc SystemVariables.CLUSTER_TIME")),
-                "dev/morphia/aggregation/experimental/expressions/SystemVariables.html#CLUSTER_TIME")
+        scanForResponse(
+            operation.handleMessage(message("~javadoc SystemVariables.CLUSTER_TIME")),
+            "dev/morphia/aggregation/experimental/expressions/SystemVariables.html#CLUSTER_TIME"
+        )
     }
 
     fun nonpublic() {
-        scanForResponse(operation.handleMessage(message("~javadoc DatastoreImpl.setInitialVersion(MappedField, T)")),
-                "I have no documentation for ")
+        scanForResponse(
+            operation.handleMessage(
+                message("~javadoc DatastoreImpl.setInitialVersion(MappedField, T)")
+            ),
+            "I have no documentation for "
+        )
     }
 }

@@ -17,7 +17,9 @@ import org.bson.types.ObjectId
 import org.objectweb.asm.ClassReader
 import org.slf4j.LoggerFactory
 
-class JavadocAsmParser @Inject constructor(private val apiDao: ApiDao, private val config: JavabotConfig) {
+class JavadocAsmParser
+@Inject
+constructor(private val apiDao: ApiDao, private val config: JavabotConfig) {
     companion object {
         private val LOG = LoggerFactory.getLogger(JavadocAsmParser::class.java)
     }
@@ -39,10 +41,7 @@ class JavadocAsmParser @Inject constructor(private val apiDao: ApiDao, private v
             }
         }
 
-        return if ("JDK" != api.name)
-            discover(javadocDir)
-        else
-            forVersion(api.version)
+        return if ("JDK" != api.name) discover(javadocDir) else forVersion(api.version)
     }
 
     fun scan(api: JavadocApi, writer: Writer) {
@@ -50,10 +49,8 @@ class JavadocAsmParser @Inject constructor(private val apiDao: ApiDao, private v
 
         if ("JDK" == api.name) {
             File(System.getProperty("java.home"), "jmods")
-                    .listFiles { file, s -> s.startsWith("java") }
-                    .forEach {
-                        scanJar(api, type, it)
-                    }
+                .listFiles { file, s -> s.startsWith("java") }
+                .forEach { scanJar(api, type, it) }
         } else {
             scanJar(api, type, api.classesUri().download())
         }
@@ -68,14 +65,23 @@ class JavadocAsmParser @Inject constructor(private val apiDao: ApiDao, private v
                 if (entry.name.endsWith("module-info.class")) {
                     val moduleInfoVisitor = ModuleInfoVisitor()
                     ClassReader(JarFile(jar).getInputStream(entry))
-                            .accept(moduleInfoVisitor, ClassReader.SKIP_CODE)
+                        .accept(moduleInfoVisitor, ClassReader.SKIP_CODE)
                     module = moduleInfoVisitor.module
                 } else {
                     val packageName = entry.packageName()
                     if (!packageName.startsWith("com.sun") and !packageName.startsWith("sun")) {
                         ClassReader(JarFile(jar).getInputStream(entry))
-                                .accept(JavadocClassVisitor(apiDao, api, packageName, entry.className(), module, type),
-                                        ClassReader.SKIP_CODE)
+                            .accept(
+                                JavadocClassVisitor(
+                                    apiDao,
+                                    api,
+                                    packageName,
+                                    entry.className(),
+                                    module,
+                                    type
+                                ),
+                                ClassReader.SKIP_CODE
+                            )
                     }
                 }
             }
@@ -84,30 +90,29 @@ class JavadocAsmParser @Inject constructor(private val apiDao: ApiDao, private v
 
     private fun JarEntry.className(): String {
         return this.name
-                .substringAfter("classes/")
-                .substringAfterLast("/")
-                .substringBeforeLast(".")
-                .replace("/", ".")
+            .substringAfter("classes/")
+            .substringAfterLast("/")
+            .substringBeforeLast(".")
+            .replace("/", ".")
     }
     private fun JarEntry.packageName(): String {
-        return this.name
-                .substringAfter("classes/")
-                .substringBeforeLast("/")
-                .replace("/", ".")
+        return this.name.substringAfter("classes/").substringBeforeLast("/").replace("/", ".")
     }
 
     private fun copyJavadocJar(api: JavadocApi, extracted: File, javadocDir: File) {
         javadocDir.mkdirs()
 
-        val sourceRoot = if (api.name == "JDK") File(extracted, "docs/api") else discoverRoot(extracted)
+        val sourceRoot =
+            if (api.name == "JDK") File(extracted, "docs/api") else discoverRoot(extracted)
         sourceRoot.copyRecursively(javadocDir)
     }
 
     private fun discoverRoot(extracted: File): File {
         return extracted
-                .walkTopDown()
-                .filter { it.name == "index.html" }
-                .map { it.parentFile }.first()
+            .walkTopDown()
+            .filter { it.name == "index.html" }
+            .map { it.parentFile }
+            .first()
     }
 
     private fun extractJar(jar: File): File {
@@ -123,19 +128,21 @@ class JavadocAsmParser @Inject constructor(private val apiDao: ApiDao, private v
             if (!entry.isDirectory) {
                 val javaFile = File(extracted, entry.name)
                 javaFile.parentFile.mkdirs()
-                FileOutputStream(javaFile).use {
-                    jarFile.getInputStream(entry).copyTo(it)
-                }
+                FileOutputStream(javaFile).use { jarFile.getInputStream(entry).copyTo(it) }
             }
         }
 
         return extracted
     }
 
-    private fun JavadocApi.javadocUri() = URI("https://repo1.maven.org/maven2/${groupId.toPath()}/${artifactId}/${version}/${artifactId}-${version}-javadoc.jar")
-    private fun JavadocApi.classesUri() = URI("https://repo1.maven.org/maven2/${groupId.toPath()}/${artifactId}/${version}/${artifactId}-${version}.jar")
+    private fun JavadocApi.javadocUri() =
+        URI(
+            "https://repo1.maven.org/maven2/${groupId.toPath()}/${artifactId}/${version}/${artifactId}-${version}-javadoc.jar"
+        )
+    private fun JavadocApi.classesUri() =
+        URI(
+            "https://repo1.maven.org/maven2/${groupId.toPath()}/${artifactId}/${version}/${artifactId}-${version}.jar"
+        )
 
     private fun String.toPath() = this.replace(".", "/")
-
 }
-

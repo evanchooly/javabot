@@ -9,10 +9,16 @@ import dev.morphia.annotations.PrePersist
 import java.util.Locale
 
 @Entity(value = "classes", useDiscriminator = false)
-@Indexes(Index(fields = arrayOf(Field("apiId"))), Index(fields = arrayOf(Field("upperName"))),
-      Index(fields = arrayOf(Field("upperPackageName"), Field("upperName") )),
-      Index(fields = arrayOf(Field("fqcn")), options = IndexOptions(unique = true)),
-      Index(fields = arrayOf(Field("apiId"), Field("upperPackageName"), Field("upperName") ), options = IndexOptions(unique = true)))
+@Indexes(
+    Index(fields = arrayOf(Field("apiId"))),
+    Index(fields = arrayOf(Field("upperName"))),
+    Index(fields = arrayOf(Field("upperPackageName"), Field("upperName"))),
+    Index(fields = arrayOf(Field("fqcn")), options = IndexOptions(unique = true)),
+    Index(
+        fields = arrayOf(Field("apiId"), Field("upperPackageName"), Field("upperName")),
+        options = IndexOptions(unique = true)
+    )
+)
 open class JavadocClass : JavadocElement {
     lateinit var packageName: String
     lateinit var name: String
@@ -30,10 +36,10 @@ open class JavadocClass : JavadocElement {
         this.module = module ?: ""
         fqcn = "$packageName.$name"
         apiId = api.id
-        url = if(this.module.isNotEmpty())
-            "${api.baseUrl}/${module}/${packageName.replace('.', '/')}/${name}.html"
-        else
-            "${api.baseUrl}/${packageName.replace('.', '/')}/${name}.html"
+        url =
+            if (this.module.isNotEmpty())
+                "${api.baseUrl}/${module}/${packageName.replace('.', '/')}/${name}.html"
+            else "${api.baseUrl}/${packageName.replace('.', '/')}/${name}.html"
     }
 
     @PrePersist

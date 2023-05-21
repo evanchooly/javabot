@@ -4,29 +4,37 @@ import com.antwerkz.sofia.Sofia
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.inject.Singleton
-import javabot.Javabot
-import javabot.Message
-import javabot.dao.AdminDao
-import org.jsoup.Jsoup
 import java.io.IOException
 import java.util.Locale
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
+import javabot.Javabot
+import javabot.Message
+import javabot.dao.AdminDao
+import org.jsoup.Jsoup
 
 /**
- * Astute coders might notice a SLIGHT similarity to RFCOperation... as in, it's copied and pasted directly
- * with references to RFC stuff being renamed to JEP stuff instead.
+ * Astute coders might notice a SLIGHT similarity to RFCOperation... as in, it's copied and pasted
+ * directly with references to RFC stuff being renamed to JEP stuff instead.
  */
-@Singleton class JEPOperation @com.google.inject.Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao) {
-    var jepTitleCache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(1, TimeUnit.HOURS).recordStats().build(
-            object : CacheLoader<String, String>() {
-                @SuppressWarnings("NullableProblems")
-                @Throws(IOException::class)
-                override fun load(url: String): String {
-                    val doc = Jsoup.connect(url).get()
-                    return doc.title()
+@Singleton
+class JEPOperation @com.google.inject.Inject constructor(bot: Javabot, adminDao: AdminDao) :
+    BotOperation(bot, adminDao) {
+    var jepTitleCache =
+        CacheBuilder.newBuilder()
+            .maximumSize(100)
+            .expireAfterWrite(1, TimeUnit.HOURS)
+            .recordStats()
+            .build(
+                object : CacheLoader<String, String>() {
+                    @SuppressWarnings("NullableProblems")
+                    @Throws(IOException::class)
+                    override fun load(url: String): String {
+                        val doc = Jsoup.connect(url).get()
+                        return doc.title()
+                    }
                 }
-            })
+            )
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

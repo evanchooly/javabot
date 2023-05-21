@@ -1,7 +1,5 @@
 package javabot.model
 
-import javabot.model.Logs.Type
-import org.bson.types.ObjectId
 import dev.morphia.annotations.Entity
 import dev.morphia.annotations.Field
 import dev.morphia.annotations.Id
@@ -11,10 +9,16 @@ import dev.morphia.annotations.Indexes
 import dev.morphia.annotations.PrePersist
 import java.time.LocalDateTime
 import java.util.Locale
+import javabot.model.Logs.Type
+import org.bson.types.ObjectId
 
 @Entity(value = "logs", useDiscriminator = false)
-@Indexes(Index(fields = arrayOf(Field("channel"), Field("upperNick"), Field("updated")),
-        options = IndexOptions(name = "seen")))
+@Indexes(
+    Index(
+        fields = arrayOf(Field("channel"), Field("upperNick"), Field("updated")),
+        options = IndexOptions(name = "seen")
+    )
+)
 class Logs : Persistent {
     enum class Type {
         ACTION,
@@ -32,9 +36,8 @@ class Logs : Persistent {
         NICK
     }
 
-    @Id
-    var id: ObjectId = ObjectId()
-    
+    @Id var id: ObjectId = ObjectId()
+
     var nick: String? = null
 
     var channel: String? = null
@@ -47,10 +50,15 @@ class Logs : Persistent {
 
     var upperNick: String? = null
 
-    constructor() {
-    }
+    constructor() {}
 
-    constructor(nick: String?, message: String, type: Type, channel: String?, updated: LocalDateTime = LocalDateTime.now()) : this() {
+    constructor(
+        nick: String?,
+        message: String,
+        type: Type,
+        channel: String?,
+        updated: LocalDateTime = LocalDateTime.now()
+    ) : this() {
         this.nick = nick
         this.message = message
         this.type = type

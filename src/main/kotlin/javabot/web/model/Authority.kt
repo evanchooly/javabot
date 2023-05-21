@@ -11,17 +11,10 @@ enum class Authority {
     // Roles (act as EnumSets from the fine grained authorities defined later)
 
     // Internal roles
-    /**
-     * The administrator role that can reach administration API functions
-     */
+    /** The administrator role that can reach administration API functions */
     ROLE_ADMIN,
-    /**
-     * An anonymous (public) customer
-     */
+    /** An anonymous (public) customer */
     ROLE_PUBLIC,
-    /**
-     * An un-authenticated customer in possession of a "remember me" token
-     */
+    /** An un-authenticated customer in possession of a "remember me" token */
     ROLE_PARTIAL
-
-}// End of enum
+} // End of enum

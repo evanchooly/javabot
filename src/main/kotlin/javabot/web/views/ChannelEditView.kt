@@ -9,14 +9,16 @@ import javabot.dao.FactoidDao
 import javabot.model.Channel
 import javax.servlet.http.HttpServletRequest
 
-class ChannelEditView @Inject constructor(
-        adminDao: AdminDao,
-        channelDao: ChannelDao,
-        factoidDao: FactoidDao,
-        apiDao: ApiDao,
-        @Assisted request: HttpServletRequest,
-        @Assisted val channel: Channel) :
-        MainView(adminDao, channelDao, factoidDao, apiDao, request) {
+class ChannelEditView
+@Inject
+constructor(
+    adminDao: AdminDao,
+    channelDao: ChannelDao,
+    factoidDao: FactoidDao,
+    apiDao: ApiDao,
+    @Assisted request: HttpServletRequest,
+    @Assisted val channel: Channel
+) : MainView(adminDao, channelDao, factoidDao, apiDao, request) {
 
     override fun getChildView(): String {
         return "admin/editChannel.ftl"

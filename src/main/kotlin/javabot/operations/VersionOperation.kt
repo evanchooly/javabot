@@ -2,15 +2,16 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import com.google.inject.Inject
-import javabot.Javabot
-import javabot.Message
-import javabot.dao.AdminDao
 import java.io.InputStream
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
+import javabot.Javabot
+import javabot.Message
+import javabot.dao.AdminDao
 
-class VersionOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao), StandardOperation {
+class VersionOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
+    BotOperation(bot, adminDao), StandardOperation {
     var lastInvocationTime = LocalDateTime.of(1992, 10, 17, 9, 0)
 
     override fun handleMessage(event: Message): List<Message> {
@@ -28,7 +29,8 @@ class VersionOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : B
 
     fun loadVersion(): String {
         val properties = Properties()
-        val versionProperties: InputStream? = this.javaClass.getResourceAsStream("/version.properties")
+        val versionProperties: InputStream? =
+            this.javaClass.getResourceAsStream("/version.properties")
         if (versionProperties != null) {
             properties.load(versionProperties)
             val version = properties.getProperty("build.version", "UNKNOWN")

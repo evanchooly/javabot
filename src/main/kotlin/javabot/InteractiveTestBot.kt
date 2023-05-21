@@ -13,18 +13,38 @@ import javabot.dao.ShunDao
 import javabot.model.Channel
 import javabot.operations.throttle.Throttler
 import javabot.web.JavabotApplication
+import javax.inject.Provider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import javax.inject.Provider
 
 class InteractiveTestBot
 @Inject
-constructor(injector: Injector, configDao: ConfigDao, channelDao: ChannelDao,
-                    logsDao: LogsDao, shunDao: ShunDao, eventDao: EventDao,
-                    throttler: Throttler, adapter: IrcAdapter, adminDao: AdminDao,
-                    javabotConfig: JavabotConfig, application: Provider<JavabotApplication>) :
-        Javabot(injector, configDao, channelDao, logsDao, shunDao, eventDao, throttler, adapter,
-                adminDao, javabotConfig, application) {
+constructor(
+    injector: Injector,
+    configDao: ConfigDao,
+    channelDao: ChannelDao,
+    logsDao: LogsDao,
+    shunDao: ShunDao,
+    eventDao: EventDao,
+    throttler: Throttler,
+    adapter: IrcAdapter,
+    adminDao: AdminDao,
+    javabotConfig: JavabotConfig,
+    application: Provider<JavabotApplication>
+) :
+    Javabot(
+        injector,
+        configDao,
+        channelDao,
+        logsDao,
+        shunDao,
+        eventDao,
+        throttler,
+        adapter,
+        adminDao,
+        javabotConfig,
+        application
+    ) {
     companion object {
         val LOG: Logger = LoggerFactory.getLogger(Javabot::class.java)
 
@@ -36,9 +56,7 @@ constructor(injector: Injector, configDao: ConfigDao, channelDao: ChannelDao,
             }
             val bot = injector.getInstance(InteractiveTestBot::class.java)
             bot.start()
-            Awaitility.await()
-                    .forever()
-                    .until<Boolean> { !bot.isRunning() }
+            Awaitility.await().forever().until<Boolean> { !bot.isRunning() }
         }
     }
 
@@ -58,5 +76,4 @@ class InteractiveJavabotModule : JavabotModule() {
     override fun getBotNick(): String {
         return "test-jb"
     }
-
 }

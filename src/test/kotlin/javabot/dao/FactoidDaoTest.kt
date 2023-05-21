@@ -1,15 +1,15 @@
 package javabot.dao
 
 import javabot.model.Factoid
+import javax.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.Test
-import javax.inject.Inject
 
 class FactoidDaoTest : BaseServiceTest() {
-    @Inject
-    protected lateinit var factoidDao: FactoidDao
+    @Inject protected lateinit var factoidDao: FactoidDao
 
-    @Test(groups = arrayOf("operations")) fun testInsertfactoid() {
+    @Test(groups = arrayOf("operations"))
+    fun testInsertfactoid() {
         factoidDao.addFactoid("joed2", "test2", "##javabot", LogsDaoTest.CHANNEL_NAME)
         Assert.assertTrue(factoidDao.hasFactoid("test2"))
         Assert.assertEquals(factoidDao.countFiltered(Factoid.of("test2")), 1)
@@ -19,10 +19,11 @@ class FactoidDaoTest : BaseServiceTest() {
         Assert.assertEquals(factoidDao.countFiltered(Factoid.of("test 2")), 0)
 
         factoidDao.delete("joed2", "test2", LogsDaoTest.CHANNEL_NAME)
-        //Assert.assertFalse(factoidDao.hasFactoid("test2"));
+        // Assert.assertFalse(factoidDao.hasFactoid("test2"));
     }
 
-    @Test(groups = arrayOf("operations")) fun countFactoids() {
+    @Test(groups = arrayOf("operations"))
+    fun countFactoids() {
         val key = "test factoid"
         val value = "test value"
         val count = factoidDao.count()
@@ -32,11 +33,17 @@ class FactoidDaoTest : BaseServiceTest() {
         factoidDao.delete("cheeser", key, LogsDaoTest.CHANNEL_NAME)
     }
 
-    @Test fun testLastUsed() {
+    @Test
+    fun testLastUsed() {
         factoidDao.delete("cheeser", "testing last used", LogsDaoTest.CHANNEL_NAME)
-        val factoid = factoidDao.addFactoid("cheeser", "testing last used", "'sup?", LogsDaoTest.CHANNEL_NAME)
+        val factoid =
+            factoidDao.addFactoid("cheeser", "testing last used", "'sup?", LogsDaoTest.CHANNEL_NAME)
         Assert.assertNotNull(factoid.lastUsed, "Should have recorded a date")
         val factoid1 = factoidDao.getFactoid("testing last used")
-        Assert.assertNotSame(factoid.lastUsed, factoid1?.lastUsed, "Should have a new lastUsed value")
+        Assert.assertNotSame(
+            factoid.lastUsed,
+            factoid1?.lastUsed,
+            "Should have a new lastUsed value"
+        )
     }
 }

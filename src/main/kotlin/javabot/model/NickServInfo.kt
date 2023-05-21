@@ -1,6 +1,5 @@
 package javabot.model
 
-import org.bson.types.ObjectId
 import dev.morphia.annotations.Entity
 import dev.morphia.annotations.Id
 import dev.morphia.annotations.Indexed
@@ -9,18 +8,16 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.ArrayList
 import java.util.TreeMap
+import org.bson.types.ObjectId
 
 @Entity(value = "nickserv", useDiscriminator = false)
 class NickServInfo : Persistent {
 
-    @Id
-    var id: ObjectId? = null
+    @Id var id: ObjectId? = null
 
-    @Indexed
-    lateinit var nick: String
+    @Indexed lateinit var nick: String
 
-    @Indexed
-    lateinit var account: String
+    @Indexed lateinit var account: String
 
     val created: LocalDateTime = LocalDateTime.now()
 
@@ -49,7 +46,7 @@ class NickServInfo : Persistent {
 
     override fun toString(): String {
         return "NickServInfo{id=${id}, nick='${nick}', account='${account}', registered=${registered}, userRegistered=${userRegistered}, " +
-                "lastSeen=${lastSeen}, lastAddress='${lastAddress}'}"
+            "lastSeen=${lastSeen}, lastAddress='${lastAddress}'}"
     }
 
     fun toNickServFormat(): List<String> {

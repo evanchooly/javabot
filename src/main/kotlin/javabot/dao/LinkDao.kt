@@ -6,17 +6,20 @@ import dev.morphia.Datastore
 import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
 import dev.morphia.query.internal.MorphiaCursor
+import java.time.LocalDateTime
+import java.util.regex.PatternSyntaxException
 import javabot.dao.util.QueryParam
 import javabot.model.Link
 import javabot.model.Persistent
 import javabot.model.criteria.LinkCriteria.Companion.approved
 import javabot.model.criteria.LinkCriteria.Companion.channel
 import javabot.model.criteria.LinkCriteria.Companion.url
-import java.time.LocalDateTime
-import java.util.regex.PatternSyntaxException
 import javax.inject.Inject
 
-class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) : BaseDao<Link>(ds, Link::class.java) {
+class LinkDao
+@Inject
+constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
+    BaseDao<Link>(ds, Link::class.java) {
     override fun save(entity: Persistent) {
         val link = entity as Link
         link.updated = LocalDateTime.now()
@@ -24,8 +27,7 @@ class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var c
     }
 
     fun deleteAll(): DeleteResult {
-        return ds.find(Link::class.java)
-                .delete(DeleteOptions().multi(true))
+        return ds.find(Link::class.java).delete(DeleteOptions().multi(true))
     }
 
     fun addLink(channel: String, user: String, url: String, text: String) {
@@ -36,8 +38,7 @@ class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var c
         val query = ds.find(Link::class.java)
         if (filter.channel != "") {
             try {
-                query.filter(channel().regex()
-                                .pattern(filter.channel))
+                query.filter(channel().regex().pattern(filter.channel))
             } catch (e: PatternSyntaxException) {
                 Sofia.logFactoidInvalidSearchValue(filter.channel)
             }
@@ -45,8 +46,7 @@ class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var c
 
         if (filter.url != "") {
             try {
-                query.filter(url().regex()
-                        .pattern(filter.url))
+                query.filter(url().regex().pattern(filter.url))
             } catch (e: PatternSyntaxException) {
                 Sofia.logFactoidInvalidSearchValue(filter.url)
             }
@@ -70,27 +70,33 @@ class LinkDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var c
     }
 
     fun approveLink(channel: String, id: String) {
-        unapprovedLinks(channel).firstOrNull { it.id.toString().endsWith(id) }?.let {
-            it.approved = true
-            save(it)
-        } ?: throw IllegalArgumentException("No matching unapproved link matching id $id")
+        unapprovedLinks(channel)
+            .firstOrNull { it.id.toString().endsWith(id) }
+            ?.let {
+                it.approved = true
+                save(it)
+            }
+            ?: throw IllegalArgumentException("No matching unapproved link matching id $id")
     }
 
     fun rejectUnapprovedLink(channel: String, id: String) {
-        unapprovedLinks(channel).firstOrNull { it.id.toString().endsWith(id) }?.let {
-            delete(it.id)
-        } ?: throw IllegalArgumentException("No matching unapproved link matching id $id")
+        unapprovedLinks(channel)
+            .firstOrNull { it.id.toString().endsWith(id) }
+            ?.let { delete(it.id) }
+            ?: throw IllegalArgumentException("No matching unapproved link matching id $id")
     }
 
     fun unapprovedLinks(channel: String): List<Link> {
-        return buildFindQuery(
-                QueryParam(0, 100, "created", false), Link(channel = channel), false
-        ).toList()
+        return buildFindQuery(QueryParam(0, 100, "created", false), Link(channel = channel), false)
+            .toList()
     }
 
     fun approvedLinks(channel: String): List<Link> {
         return buildFindQuery(
-                QueryParam(0, 100, "created", false), Link(approved = true, channel = channel), true
-        ).toList()
+                QueryParam(0, 100, "created", false),
+                Link(approved = true, channel = channel),
+                true
+            )
+            .toList()
     }
 }

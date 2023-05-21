@@ -3,24 +3,25 @@ package javabot.operations
 import javabot.BaseTest
 import javabot.dao.FactoidDao
 import javabot.dao.LogsDaoTest
+import javax.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.Test
-import javax.inject.Inject
 
 @Test(enabled = false)
 class ShunOperationTest : BaseTest() {
-    @Inject
-    private lateinit var operation: ShunOperation
-    @Inject
-    private lateinit var getFactoidOperation: GetFactoidOperation
-    @Inject
-    private lateinit var factoidDao: FactoidDao
-
+    @Inject private lateinit var operation: ShunOperation
+    @Inject private lateinit var getFactoidOperation: GetFactoidOperation
+    @Inject private lateinit var factoidDao: FactoidDao
 
     fun shunMe() {
         factoidDao.delete(TEST_USER.nick, "shunHey", LogsDaoTest.CHANNEL_NAME)
         try {
-            factoidDao.addFactoid(TEST_USER.nick, "shunHey", "<reply>shunHey", LogsDaoTest.CHANNEL_NAME)
+            factoidDao.addFactoid(
+                TEST_USER.nick,
+                "shunHey",
+                "<reply>shunHey",
+                LogsDaoTest.CHANNEL_NAME
+            )
             var response = operation.handleMessage(message("~shun ${TEST_USER} 5"))
             Assert.assertEquals(response[0].value, "${TEST_USER} is shunned until")
             response = operation.handleMessage(message("~shunHey"))

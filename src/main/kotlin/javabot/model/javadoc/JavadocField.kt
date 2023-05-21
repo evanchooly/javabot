@@ -9,11 +9,12 @@ import dev.morphia.annotations.Reference
 import java.util.Locale
 
 @Entity(value = "fields", useDiscriminator = false)
-@Indexes(Index(fields = arrayOf(Field("javadocClass"), Field("upperName") )),
-      Index(fields = arrayOf(Field("apiId"), Field("javadocClass"), Field("upperName") )))
+@Indexes(
+    Index(fields = arrayOf(Field("javadocClass"), Field("upperName"))),
+    Index(fields = arrayOf(Field("apiId"), Field("javadocClass"), Field("upperName")))
+)
 class JavadocField : JavadocElement {
-    @Reference(lazy = true, idOnly = true)
-    lateinit var javadocClass: JavadocClass
+    @Reference(lazy = true, idOnly = true) lateinit var javadocClass: JavadocClass
     lateinit var name: String
     lateinit var upperName: String
     lateinit var parentClassName: String

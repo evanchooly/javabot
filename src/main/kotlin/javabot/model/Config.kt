@@ -1,15 +1,13 @@
 package javabot.model
 
-import org.bson.types.ObjectId
 import dev.morphia.annotations.Entity
 import dev.morphia.annotations.Id
 import java.io.Serializable
-import java.util.ArrayList
+import org.bson.types.ObjectId
 
 @Entity("configuration")
 class Config : Serializable, Persistent {
-    @Id
-    var id: ObjectId? = null
+    @Id var id: ObjectId? = null
 
     var server = "irc.libera.chat"
 
@@ -33,11 +31,19 @@ class Config : Serializable, Persistent {
 
     var minimumNickServAge = 14
 
-    constructor() {
-    }
+    constructor() {}
 
-    constructor(id: ObjectId?, server: String, url: String, port: Int, historyLength: Int, trigger: String, nick: String, password: String?,
-                operations: MutableList<String>) {
+    constructor(
+        id: ObjectId?,
+        server: String,
+        url: String,
+        port: Int,
+        historyLength: Int,
+        trigger: String,
+        nick: String,
+        password: String?,
+        operations: MutableList<String>
+    ) {
         this.id = id
         this.historyLength = historyLength
         this.nick = nick
@@ -51,7 +57,7 @@ class Config : Serializable, Persistent {
 
     override fun toString(): String {
         return "Config{server='$server', url='$url', port=$port, historyLength=$historyLength, trigger='$trigger', nick='$nick', " +
-              "schemaVersion=$schemaVersion, throttleThreshold=$throttleThreshold, mininumNickServAge=$minimumNickServAge, " +
-              "operations=$operations}"
+            "schemaVersion=$schemaVersion, throttleThreshold=$throttleThreshold, mininumNickServAge=$minimumNickServAge, " +
+            "operations=$operations}"
     }
 }

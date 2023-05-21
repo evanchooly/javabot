@@ -1,6 +1,5 @@
 package javabot.model
 
-import org.bson.types.ObjectId
 import dev.morphia.annotations.AlsoLoad
 import dev.morphia.annotations.Entity
 import dev.morphia.annotations.Field
@@ -10,20 +9,21 @@ import dev.morphia.annotations.IndexOptions
 import dev.morphia.annotations.Indexes
 import java.io.Serializable
 import java.time.LocalDateTime
+import org.bson.types.ObjectId
 
 @Entity(value = "admins", useDiscriminator = false)
-@Indexes(Index(fields = arrayOf(Field("emailAddress")), options = IndexOptions(unique = true)),
-        Index(fields = arrayOf(Field("ircName"), Field("hostName"))))
+@Indexes(
+    Index(fields = arrayOf(Field("emailAddress")), options = IndexOptions(unique = true)),
+    Index(fields = arrayOf(Field("ircName"), Field("hostName")))
+)
 class Admin : Serializable, Persistent {
-    @Id
-    var id: ObjectId? = null
+    @Id var id: ObjectId? = null
 
     var hostName: String = ""
 
     var ircName: String = ""
 
-    @AlsoLoad("userName")
-    var emailAddress: String
+    @AlsoLoad("userName") var emailAddress: String
 
     var botOwner: Boolean = false
 

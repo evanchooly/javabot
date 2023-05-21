@@ -3,19 +3,18 @@ package javabot.operations
 import com.antwerkz.sofia.Sofia
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import java.io.IOException
+import java.util.Locale
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
-import java.io.IOException
-import java.util.Locale
 
-/**
- * Displays RFC url and title
- */
+/** Displays RFC url and title */
 @Singleton
-class RFCOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao) {
+class RFCOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
+    BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value.lowercase(Locale.getDefault())
@@ -33,11 +32,16 @@ class RFCOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOp
                     try {
                         val anchorType = parts.getOrNull(1)
                         val name = parts.getOrNull(2)
-                        val data = if (name != null && ("section".equals(anchorType, true) || "page".equals(anchorType, true))) {
-                            load(rfcNum, "#$anchorType-$name")
-                        } else {
-                            load(rfcNum)
-                        }
+                        val data =
+                            if (
+                                name != null &&
+                                    ("section".equals(anchorType, true) ||
+                                        "page".equals(anchorType, true))
+                            ) {
+                                load(rfcNum, "#$anchorType-$name")
+                            } else {
+                                load(rfcNum)
+                            }
                         responses.add(Message(event, Sofia.rfcSucceed(data.first, data.second)))
                     } catch (e: HttpStatusException) {
                         responses.add(Message(event, Sofia.rfcFail(rfcText)))
@@ -53,10 +57,7 @@ class RFCOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOp
     fun load(rfc: Int, anchor: String = ""): Pair<String, String> {
         val url = "https://tools.ietf.org/html/rfc$rfc$anchor"
         val doc = Jsoup.connect(url).get()
-        val meta= doc
-            .getElementsByTag("span")
-            .first { it.className().equals("h1", true) }
-            ?.text()
+        val meta = doc.getElementsByTag("span").first { it.className().equals("h1", true) }?.text()
         return Pair(url, meta ?: doc.title())
     }
 

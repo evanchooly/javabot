@@ -4,36 +4,39 @@ import com.google.inject.Injector
 import com.google.inject.Singleton
 import com.mongodb.client.model.IndexOptions
 import dev.morphia.Datastore
-import javabot.JavabotConfig
-import javabot.model.Config
-import javabot.model.Logs
-import javabot.operations.BotOperation
-import org.bson.Document
-import org.reflections.Reflections
-import org.slf4j.LoggerFactory
 import java.lang.reflect.Modifier
 import java.util.ArrayList
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeUnit.SECONDS
+import javabot.JavabotConfig
+import javabot.model.Config
+import javabot.model.Logs
+import javabot.operations.BotOperation
 import javax.inject.Inject
+import org.bson.Document
+import org.reflections.Reflections
+import org.slf4j.LoggerFactory
 
 @Singleton
-class ConfigDao @Inject constructor(ds: Datastore, var injector: Injector, var javabotConfig: JavabotConfig) :
-        BaseDao<Config>(ds, Config::class.java) {
+class ConfigDao
+@Inject
+constructor(ds: Datastore, var injector: Injector, var javabotConfig: JavabotConfig) :
+    BaseDao<Config>(ds, Config::class.java) {
     fun <T> list(type: Class<T>): List<T> {
         val reflections = Reflections("javabot")
 
         val classes = reflections.getSubTypesOf(type)
 
         val list = ArrayList<T>()
-        classes.filterNot { Modifier.isAbstract(it.modifiers) }
-                .forEach {
-                    try {
-                        list.add(injector.getInstance(it))
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+        classes
+            .filterNot { Modifier.isAbstract(it.modifiers) }
+            .forEach {
+                try {
+                    list.add(injector.getInstance(it))
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
+            }
         return list
     }
 
@@ -61,17 +64,17 @@ class ConfigDao @Inject constructor(ds: Datastore, var injector: Injector, var j
         return config
     }
 
-/*
-    override fun save(entity: Persistent) {
-        if (entity is Config && entity.id != null) {
-            val old = get()
-            if (old.historyLength != entity.historyLength) {
-                updateHistoryIndex(entity.historyLength)
+    /*
+        override fun save(entity: Persistent) {
+            if (entity is Config && entity.id != null) {
+                val old = get()
+                if (old.historyLength != entity.historyLength) {
+                    updateHistoryIndex(entity.historyLength)
+                }
             }
+            super.save(entity)
         }
-        super.save(entity)
-    }
-*/
+    */
 
     private fun updateHistoryIndex(historyLength: Int) {
         val collection = ds.getCollection(Logs::class.java)
@@ -89,7 +92,6 @@ class ConfigDao @Inject constructor(ds: Datastore, var injector: Injector, var j
         } catch (e: Exception) {
             LOG.error(e.message, e)
         }
-
     }
 
     companion object {

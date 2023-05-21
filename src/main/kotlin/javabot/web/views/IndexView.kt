@@ -8,12 +8,15 @@ import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
 import javax.servlet.http.HttpServletRequest
 
-class IndexView @Inject constructor(
-        adminDao: AdminDao,
-        channelDao: ChannelDao,
-        factoidDao: FactoidDao,
-        apiDao: ApiDao,
-        @Assisted request: HttpServletRequest) : MainView(adminDao, channelDao, factoidDao, apiDao, request) {
+class IndexView
+@Inject
+constructor(
+    adminDao: AdminDao,
+    channelDao: ChannelDao,
+    factoidDao: FactoidDao,
+    apiDao: ApiDao,
+    @Assisted request: HttpServletRequest
+) : MainView(adminDao, channelDao, factoidDao, apiDao, request) {
 
     override fun getChildView(): String {
         return "/index.ftl"

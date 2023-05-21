@@ -3,7 +3,6 @@ package javabot
 import org.aeonbits.owner.Config
 import org.aeonbits.owner.Config.DefaultValue
 import org.aeonbits.owner.Config.Key
-
 import org.aeonbits.owner.Config.LoadPolicy
 import org.aeonbits.owner.Config.LoadType
 import org.aeonbits.owner.Config.Sources
@@ -17,67 +16,35 @@ interface JavabotConfig : Config, Preprocessor {
         return input?.trim()
     }
 
-    @Key("javabot.url")
-    @DefaultValue("http://localhost:8080")
-    fun url(): String
+    @Key("javabot.url") @DefaultValue("http://localhost:8080") fun url(): String
 
-    @Key("javabot.server")
-    @DefaultValue("irc.libera.chat")
-    fun ircHost(): String
+    @Key("javabot.server") @DefaultValue("irc.libera.chat") fun ircHost(): String
 
-    @Key("javabot.port")
-    @DefaultValue("6697")
-    fun ircPort(): Int
+    @Key("javabot.port") @DefaultValue("6697") fun ircPort(): Int
 
-    @Key("database.name")
-    @DefaultValue("javabot")
-    fun databaseName(): String
+    @Key("database.name") @DefaultValue("javabot") fun databaseName(): String
 
-    @Key("database.host")
-    @DefaultValue("localhost")
-    fun databaseHost(): String
+    @Key("database.host") @DefaultValue("localhost") fun databaseHost(): String
 
-    @Key("database.port")
-    @DefaultValue("27017")
-    fun databasePort(): Int
+    @Key("database.port") @DefaultValue("27017") fun databasePort(): Int
 
-    @Key("javabot.nick")
-    @DefaultValue("testjavabot")
-    fun nick(): String
+    @Key("javabot.nick") @DefaultValue("testjavabot") fun nick(): String
 
-    @Key("javabot.password")
-    @DefaultValue("scott/tiger")
-    fun password(): String?
+    @Key("javabot.password") @DefaultValue("scott/tiger") fun password(): String?
 
-    @Key("javabot.bitly.token")
-    @DefaultValue("")
-    fun bitlyToken(): String
+    @Key("javabot.bitly.token") @DefaultValue("") fun bitlyToken(): String
 
-    @Key("start.web.app")
-    @DefaultValue("true")
-    fun startWebApp(): Boolean
+    @Key("start.web.app") @DefaultValue("true") fun startWebApp(): Boolean
 
-    @Key("javabot.openweathermap.token")
-    @DefaultValue("")
-    fun openweathermapToken(): String
+    @Key("javabot.openweathermap.token") @DefaultValue("") fun openweathermapToken(): String
 
-    @Key("javabot.googleapi")
-    @DefaultValue("")
-    fun googleAPI(): String
+    @Key("javabot.googleapi") @DefaultValue("") fun googleAPI(): String
 
-    @Key("twitter.consumerKey")
-    @DefaultValue("")
-    fun twitterConsumerKey(): String
+    @Key("twitter.consumerKey") @DefaultValue("") fun twitterConsumerKey(): String
 
-    @Key("twitter.consumerSecret")
-    @DefaultValue("")
-    fun twitterConsumerSecret(): String
+    @Key("twitter.consumerSecret") @DefaultValue("") fun twitterConsumerSecret(): String
 
-    @Key("twitter.accessToken")
-    @DefaultValue("")
-    fun twitterAccessToken(): String
+    @Key("twitter.accessToken") @DefaultValue("") fun twitterAccessToken(): String
 
-    @Key("twitter.accessTokenSecret")
-    @DefaultValue("")
-    fun twitterAccessTokenSecret(): String
+    @Key("twitter.accessTokenSecret") @DefaultValue("") fun twitterAccessTokenSecret(): String
 }

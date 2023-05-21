@@ -1,23 +1,37 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import java.time.format.DateTimeFormatter
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.LogsDao
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
-class SeenOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var dao: LogsDao) : BotOperation(bot, adminDao) {
+class SeenOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var dao: LogsDao) :
+    BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value
         val channel = event.channel
-        if (channel != null && "seen ".equals(message.substring(0, Math.min(message.length, 5)), ignoreCase = true)) {
+        if (
+            channel != null &&
+                "seen ".equals(message.substring(0, Math.min(message.length, 5)), ignoreCase = true)
+        ) {
             val key = message.substring("seen ".length)
             val seen = dao.getSeen(channel.name, key)
             if (seen != null) {
-                responses.add(Message(event, Sofia.seenLast(event.user.nick, key, seen.updated.format(FORMATTER), seen.message)))
+                responses.add(
+                    Message(
+                        event,
+                        Sofia.seenLast(
+                            event.user.nick,
+                            key,
+                            seen.updated.format(FORMATTER),
+                            seen.message
+                        )
+                    )
+                )
             } else {
                 responses.add(Message(event, Sofia.seenUnknown(event.user.nick, key)))
             }

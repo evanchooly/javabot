@@ -2,14 +2,15 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import com.google.inject.Inject
+import java.util.Random
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
-import java.util.Random
 
-class UnixCommandOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao) {
-    private val commands = sortedSetOf("rm","ls","clear")
-    private val insults = listOf("genius", "Einstein","pal","buddy")
+class UnixCommandOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
+    BotOperation(bot, adminDao) {
+    private val commands = sortedSetOf("rm", "ls", "clear")
+    private val insults = listOf("genius", "Einstein", "pal", "buddy")
 
     private val random = Random()
 

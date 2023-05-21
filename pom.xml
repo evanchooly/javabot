@@ -2,6 +2,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>com.antwerkz</groupId>
+        <artifactId>antwerkz-parent</artifactId>
+        <version>6</version>
+    </parent>
+
     <groupId>com.antwerkz.javabot</groupId>
     <artifactId>javabot</artifactId>
     <packaging>jar</packaging>
@@ -544,7 +550,7 @@
 
     <properties>
         <activation.version>1.1.1</activation.version>
-        <critter.version>4.4.1</critter.version>
+        <critter.version>4.4.4-SNAPSHOT</critter.version>
         <dropwizard.version>2.1.5</dropwizard.version>
         <guice.version>5.1.0</guice.version>
         <jackson.version>2.14.2</jackson.version>
@@ -557,7 +563,7 @@
         <okhttp.version>4.10.0</okhttp.version>
         <rivescript.version>0.11.0</rivescript.version>
         <slf4j.version>2.0.5</slf4j.version>
-        <sofia.version>0.23</sofia.version>
+        <sofia.version>0.25</sofia.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

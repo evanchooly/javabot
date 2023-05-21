@@ -2,13 +2,14 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import java.util.Locale
+import java.util.TreeSet
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
-import java.util.TreeSet
 import javax.inject.Inject
 
-class AolBonicsOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) : BotOperation(bot, adminDao) {
+class AolBonicsOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
+    BotOperation(bot, adminDao) {
     private val phrases = TreeSet<String>()
 
     init {
@@ -34,7 +35,11 @@ class AolBonicsOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
     override fun handleChannelMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         for (bad in event.value.split(" ")) {
-            if (phrases.contains(bad.lowercase(Locale.getDefault()).replace("!|\\.|\\?|,".toRegex(), ""))) {
+            if (
+                phrases.contains(
+                    bad.lowercase(Locale.getDefault()).replace("!|\\.|\\?|,".toRegex(), "")
+                )
+            ) {
                 responses.add(Message(event, Sofia.botAolbonics(event.user.nick)))
             }
         }

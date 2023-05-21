@@ -15,12 +15,34 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 @Singleton
-class TestJavabot @Inject
-constructor(injector: Injector, configDao: ConfigDao, channelDao: ChannelDao, logsDao: LogsDao, shunDao: ShunDao,
-            adminDao: AdminDao, eventDao: EventDao, throttler: Throttler, adapter: IrcAdapter, javabotConfig: JavabotConfig,
-            application: Provider<JavabotApplication>) :
-        Javabot(injector, configDao, channelDao, logsDao, shunDao, eventDao, throttler, adapter, adminDao, javabotConfig,
-                application) {
+class TestJavabot
+@Inject
+constructor(
+    injector: Injector,
+    configDao: ConfigDao,
+    channelDao: ChannelDao,
+    logsDao: LogsDao,
+    shunDao: ShunDao,
+    adminDao: AdminDao,
+    eventDao: EventDao,
+    throttler: Throttler,
+    adapter: IrcAdapter,
+    javabotConfig: JavabotConfig,
+    application: Provider<JavabotApplication>
+) :
+    Javabot(
+        injector,
+        configDao,
+        channelDao,
+        logsDao,
+        shunDao,
+        eventDao,
+        throttler,
+        adapter,
+        adminDao,
+        javabotConfig,
+        application
+    ) {
 
     override val nick: String = BaseTest.TEST_BOT_NICK
 

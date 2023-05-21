@@ -2,8 +2,6 @@ package javabot.model
 
 import com.antwerkz.sofia.Sofia
 import com.fasterxml.jackson.annotation.JsonView
-import javabot.json.Views.PUBLIC
-import org.bson.types.ObjectId
 import dev.morphia.annotations.Entity
 import dev.morphia.annotations.Field
 import dev.morphia.annotations.Id
@@ -11,7 +9,6 @@ import dev.morphia.annotations.Index
 import dev.morphia.annotations.Indexed
 import dev.morphia.annotations.Indexes
 import dev.morphia.annotations.PrePersist
-import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.io.UnsupportedEncodingException
 import java.lang.String.format
@@ -19,39 +16,37 @@ import java.net.URLEncoder
 import java.nio.charset.Charset
 import java.time.LocalDateTime
 import java.util.Locale
+import javabot.json.Views.PUBLIC
+import org.bson.types.ObjectId
+import org.slf4j.LoggerFactory
 
 @Entity(value = "factoids", useDiscriminator = false)
 @Indexes(Index(fields = arrayOf(Field("upperName"), Field("upperUserName"))))
 class Factoid() : Serializable, Persistent {
 
-    constructor(name: String = "", value: String = "", userName: String = ""): this() {
+    constructor(name: String = "", value: String = "", userName: String = "") : this() {
         this.name = name
         this.value = value
         this.userName = userName
     }
 
-    @Id
-    var id: ObjectId? = null
+    @Id var id: ObjectId? = null
 
     var name = ""
     var value = ""
     var userName = ""
 
-    @JsonView(PUBLIC::class)
-    var updated: LocalDateTime = LocalDateTime.now()
+    @JsonView(PUBLIC::class) var updated: LocalDateTime = LocalDateTime.now()
 
     var lastUsed: LocalDateTime? = null
 
     var locked = false
 
-    @Indexed
-    lateinit var upperName: String
+    @Indexed lateinit var upperName: String
 
-    @Indexed
-    lateinit var upperUserName: String
+    @Indexed lateinit var upperUserName: String
 
-    @Indexed
-    lateinit var upperValue: String
+    @Indexed lateinit var upperValue: String
 
     init {
         update()
@@ -95,7 +90,6 @@ class Factoid() : Serializable, Persistent {
             log.error(e.message, e)
             return value
         }
-
     }
 
     private fun camelcase(`in`: String): String {
@@ -124,8 +118,13 @@ class Factoid() : Serializable, Persistent {
             val choices = choice.split("|")
             if (choices.size > 1) {
                 val chosen = (Math.random() * choices.size).toInt()
-                result = format("%s%s%s", result.substring(0, index), choices[chosen],
-                        result.substring(index2 + 1))
+                result =
+                    format(
+                        "%s%s%s",
+                        result.substring(0, index),
+                        choices[chosen],
+                        result.substring(index2 + 1)
+                    )
             }
             index = result.indexOf("(", index + 1)
             index2 = result.indexOf(")", index + 1)
@@ -141,13 +140,22 @@ class Factoid() : Serializable, Persistent {
     }
 
     override fun toString(): String {
-        return format("Factoid{id=%s, name='%s', value='%s', userName='%s', updated=%s, lastUsed=%s, locked=%s}",
-                id, name, value, userName, updated, lastUsed, locked)
+        return format(
+            "Factoid{id=%s, name='%s', value='%s', userName='%s', updated=%s, lastUsed=%s, locked=%s}",
+            id,
+            name,
+            value,
+            userName,
+            updated,
+            lastUsed,
+            locked
+        )
     }
 
     companion object {
         private val log = LoggerFactory.getLogger(Factoid::class.java)
 
-        fun of(name: String? = null, value: String? = null, userName: String? = null) = Factoid((name ?: "").trim(), (value ?: "").trim(), (userName ?: "").trim())
+        fun of(name: String? = null, value: String? = null, userName: String? = null) =
+            Factoid((name ?: "").trim(), (value ?: "").trim(), (userName ?: "").trim())
     }
 }

@@ -6,10 +6,10 @@ import org.testng.annotations.Test
 
 class JavabotConfigTest : BaseTest() {
 
-    @Inject
-    protected lateinit var javabotConfig: JavabotConfig
+    @Inject protected lateinit var javabotConfig: JavabotConfig
 
-    @Test fun testConfig() {
+    @Test
+    fun testConfig() {
         Assert.assertNotEquals(javabotConfig.nick(), "javabot")
         Assert.assertNotEquals(javabotConfig.databaseName(), "javabot")
     }

@@ -8,9 +8,7 @@ import com.rivescript.RiveScript
 class RiveScriptService : RiveScript(Config.utf8()) {
     var updated = true
     fun load(resource: String) {
-        this::class.java.getResourceAsStream(resource).use {
-            loadInputStream(it)
-        }
+        this::class.java.getResourceAsStream(resource).use { loadInputStream(it) }
         updated = true
     }
 

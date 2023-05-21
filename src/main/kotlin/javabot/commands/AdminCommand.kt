@@ -8,12 +8,12 @@ import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.operations.BotOperation
-import org.slf4j.LoggerFactory
 import javax.inject.Inject
+import org.slf4j.LoggerFactory
 
 @Parameters(separators = "=")
 abstract class AdminCommand @Inject constructor(bot: Javabot, adminDao: AdminDao) :
-        BotOperation(bot, adminDao) {
+    BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         var message = event.value
@@ -23,7 +23,7 @@ abstract class AdminCommand @Inject constructor(bot: Javabot, adminDao: AdminDao
                 val params = message.split(" ") as MutableList
                 if (canHandle(params[0])) {
                     try {
-                        synchronized (this) {
+                        synchronized(this) {
                             parse(params)
                             responses.addAll(execute(event))
                         }
@@ -31,7 +31,6 @@ abstract class AdminCommand @Inject constructor(bot: Javabot, adminDao: AdminDao
                         LOG.error(e.message, e)
                         responses.add(Message(event.user, Sofia.adminParseFailure(e.message!!)))
                     }
-
                 }
             } else {
                 responses.add(Message(event, Sofia.notAdmin(event.user.nick)))
@@ -51,7 +50,6 @@ abstract class AdminCommand @Inject constructor(bot: Javabot, adminDao: AdminDao
             LOG.error(e.message, e)
             throw RuntimeException(e.message, e)
         }
-
     }
 
     abstract fun execute(event: Message): List<Message>

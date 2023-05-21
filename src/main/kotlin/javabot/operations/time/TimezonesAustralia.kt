@@ -2,7 +2,11 @@ package javabot.operations.time
 
 class TimezonesAustralia : Timezones {
 
-    enum class AustralianState(val abbreviation: String, val capital: String, val timezone: String) {
+    enum class AustralianState(
+        val abbreviation: String,
+        val capital: String,
+        val timezone: String
+    ) {
         WESTERN_AUSTRALIA("WA", "Perth", "Australia/Perth"),
         SOUTH_AUSTRALIA("SA", "Adelaide", "Australia/Adelaide"),
         NORTH_TERRITORY("NT", "Darwin", "Australia/Darwin"),
@@ -11,7 +15,6 @@ class TimezonesAustralia : Timezones {
         AUSTRALIAN_CAPITAL_TERRITORY("ACT", "Canberra", "Australia/Canberra"),
         VICTORIA("VIC", "Melbourne", "Australia/Victoria"),
         TASMANIA("TAS", "Hobart", "Australia/Hobart")
-
     }
 
     override fun get(province: String): String? {

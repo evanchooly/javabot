@@ -8,18 +8,20 @@ import javabot.dao.AdminDao
 import javabot.dao.FactoidDao
 import javax.inject.Inject
 
-class UnlockFactoid @Inject constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) : AdminCommand(bot, adminDao) {
+class UnlockFactoid
+@Inject
+constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :
+    AdminCommand(bot, adminDao) {
 
-    @Parameter
-    lateinit var args: MutableList<String>
+    @Parameter lateinit var args: MutableList<String>
 
-/*
-    override
-    protected fun parse(params: MutableList<String>) {
-        val cli = message.substring(params[0].length()).trim()
-        JCommander(this).parse(cli)
-    }
-*/
+    /*
+        override
+        protected fun parse(params: MutableList<String>) {
+            val cli = message.substring(params[0].length()).trim()
+            JCommander(this).parse(cli)
+        }
+    */
 
     override fun execute(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

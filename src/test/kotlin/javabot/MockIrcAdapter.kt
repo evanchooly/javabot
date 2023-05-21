@@ -9,23 +9,28 @@ import javabot.dao.LogsDao
 import javabot.dao.NickServDao
 import javabot.model.Channel
 import javabot.model.JavabotUser
-import org.pircbotx.PircBotX
-import org.pircbotx.exception.DaoException
 import javax.inject.Provider
+import org.pircbotx.PircBotX
 
 @Singleton
-class MockIrcAdapter @Inject
-constructor(var messages: Messages, nickServDao: NickServDao, logsDao: LogsDao, channelDao: ChannelDao, adminDao: AdminDao,
-            javabot: Provider<Javabot>, configDao: ConfigDao, ircBot: Provider<PircBotX>) :
-        OfflineAdapter(nickServDao, logsDao, channelDao, adminDao, javabot, configDao, ircBot) {
-    val channels: MutableMap<String, MutableSet<String>> = mutableMapOf("#jbunittest" to mutableSetOf("botuser"))
+class MockIrcAdapter
+@Inject
+constructor(
+    var messages: Messages,
+    nickServDao: NickServDao,
+    logsDao: LogsDao,
+    channelDao: ChannelDao,
+    adminDao: AdminDao,
+    javabot: Provider<Javabot>,
+    configDao: ConfigDao,
+    ircBot: Provider<PircBotX>
+) : OfflineAdapter(nickServDao, logsDao, channelDao, adminDao, javabot, configDao, ircBot) {
+    val channels: MutableMap<String, MutableSet<String>> =
+        mutableMapOf("#jbunittest" to mutableSetOf("botuser"))
 
-    override
-    fun startBot() {
-    }
+    override fun startBot() {}
 
-    override
-    fun isConnected(): Boolean {
+    override fun isConnected(): Boolean {
         return true
     }
 
@@ -41,8 +46,7 @@ constructor(var messages: Messages, nickServDao: NickServDao, logsDao: LogsDao, 
         messages.add(value)
     }
 
-    override
-    fun send(channel: Channel, value: String) {
+    override fun send(channel: Channel, value: String) {
         messages.add(value)
     }
 
@@ -50,12 +54,9 @@ constructor(var messages: Messages, nickServDao: NickServDao, logsDao: LogsDao, 
         throw UnsupportedOperationException("action")
     }
 
-    override
-    fun joinChannel(channel: Channel) {
-    }
+    override fun joinChannel(channel: Channel) {}
 
-    override fun leave(channel: Channel, user: JavabotUser) {
-    }
+    override fun leave(channel: Channel, user: JavabotUser) {}
 
     override fun isOnCommonChannel(user: JavabotUser): Boolean {
         throw UnsupportedOperationException("isOnCommonChannel")
@@ -99,5 +100,4 @@ constructor(var messages: Messages, nickServDao: NickServDao, logsDao: LogsDao, 
 
         return (channels[channel] ?: mutableSetOf()).contains(nick)
     }
-
 }

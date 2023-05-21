@@ -1,7 +1,5 @@
 package javabot.model
 
-import javabot.Javabot
-import org.bson.types.ObjectId
 import dev.morphia.annotations.Entity
 import dev.morphia.annotations.Field
 import dev.morphia.annotations.Id
@@ -12,18 +10,17 @@ import dev.morphia.annotations.Indexes
 import dev.morphia.annotations.Transient
 import java.io.Serializable
 import java.time.LocalDateTime
+import javabot.Javabot
 import javax.inject.Inject
+import org.bson.types.ObjectId
 
 @Entity("events")
 @Indexes(Index(fields = arrayOf(Field("state"), Field("requestedOn"))))
 open class AdminEvent : Serializable, Persistent {
 
-    @Inject
-    @Transient
-    lateinit var bot: Javabot
+    @Inject @Transient lateinit var bot: Javabot
 
-    @Id
-    var id: ObjectId = ObjectId()
+    @Id var id: ObjectId = ObjectId()
 
     @Indexed(options = IndexOptions(expireAfterSeconds = 60 * 60 * 24))
     var completed: LocalDateTime? = null
@@ -36,7 +33,11 @@ open class AdminEvent : Serializable, Persistent {
 
     constructor()
 
-    constructor(requestedBy: String, type: EventType, requestedOn: LocalDateTime = LocalDateTime.now()) : this() {
+    constructor(
+        requestedBy: String,
+        type: EventType,
+        requestedOn: LocalDateTime = LocalDateTime.now()
+    ) : this() {
         this.requestedBy = requestedBy
         this.requestedOn = requestedOn
         this.type = type
@@ -55,17 +56,13 @@ open class AdminEvent : Serializable, Persistent {
         return "AdminEvent{id=${id}, requestedOn=${requestedOn}, completed=${completed}, state=${state}, type=${type}}"
     }
 
-    open fun add() {
-    }
+    open fun add() {}
 
-    open fun delete() {
-    }
+    open fun delete() {}
 
-    open fun update() {
-    }
+    open fun update() {}
 
-    open fun reload() {
-    }
+    open fun reload() {}
 }
 
 enum class State {

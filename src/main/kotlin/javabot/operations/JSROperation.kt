@@ -8,7 +8,10 @@ import javabot.dao.AdminDao
 import javabot.service.JCPJSRLocator
 import javax.inject.Inject
 
-class JSROperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var locator: JCPJSRLocator) : BotOperation(bot, adminDao) {
+class JSROperation
+@Inject
+constructor(bot: Javabot, adminDao: AdminDao, var locator: JCPJSRLocator) :
+    BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
         val message = event.value.lowercase(Locale.getDefault())
@@ -21,7 +24,12 @@ class JSROperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var loc
                 try {
                     val jsr = Integer.parseInt(jsrString)
                     val response = locator.findInformation(jsr)
-                    responses.add(Message(event, if (!response.isEmpty()) response else Sofia.jsrUnknown(jsrString)))
+                    responses.add(
+                        Message(
+                            event,
+                            if (!response.isEmpty()) response else Sofia.jsrUnknown(jsrString)
+                        )
+                    )
                 } catch (nfe: NumberFormatException) {
                     responses.add(Message(event, Sofia.jsrInvalid(jsrString)))
                 }
@@ -31,4 +39,3 @@ class JSROperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var loc
         return responses
     }
 }
-

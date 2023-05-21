@@ -2,8 +2,12 @@ package javabot.operations.time
 
 class TimezonesCanada : Timezones {
 
-    enum class CanadianProvince(private val regionCode: Int, val abbreviation: String, val capital: String,
-                                       val timezone: String) {
+    enum class CanadianProvince(
+        private val regionCode: Int,
+        val abbreviation: String,
+        val capital: String,
+        val timezone: String
+    ) {
         ALBERTA(1, "AB", "Edmonton", "America/Edmonton"),
         BRITISH_COLUMBIA(2, "BC", "Victoria", "America/Vancouver"),
         MANITOBA(3, "MB", "Winnipeg", "America/Winnipeg"),

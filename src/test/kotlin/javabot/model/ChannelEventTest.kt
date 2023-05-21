@@ -1,14 +1,14 @@
 package javabot.model
 
-import com.jayway.awaitility.Duration
 import javabot.BaseTest
 import org.testng.Assert
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
-import java.util.concurrent.TimeUnit.SECONDS
 
-@Test class ChannelEventTest : BaseTest() {
-    @BeforeTest fun clearEvents() {
+@Test
+class ChannelEventTest : BaseTest() {
+    @BeforeTest
+    fun clearEvents() {
         for (event in eventDao.findAll()) {
             eventDao.delete(event)
         }
@@ -53,7 +53,6 @@ import java.util.concurrent.TimeUnit.SECONDS
         val channel = channelDao.get(name)
         Assert.assertNotNull(channel)
         Assert.assertEquals(channel?.key, "newKey")
-
     }
 
     companion object {

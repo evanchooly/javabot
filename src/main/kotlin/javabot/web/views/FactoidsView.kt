@@ -2,23 +2,27 @@ package javabot.web.views
 
 import com.google.inject.Inject
 import com.google.inject.assistedinject.Assisted
+import java.io.UnsupportedEncodingException
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
 import javabot.dao.util.QueryParam
 import javabot.model.Factoid
-import org.slf4j.LoggerFactory
-import java.io.UnsupportedEncodingException
 import javax.servlet.http.HttpServletRequest
+import org.slf4j.LoggerFactory
 
-class FactoidsView @Inject constructor(
-        adminDao: AdminDao,
-        channelDao: ChannelDao,
-        factoidDao: FactoidDao,
-        apiDao: ApiDao,
-        @Assisted request: HttpServletRequest, @Assisted page: Int, @Assisted private val filter: Factoid) :
-        PagedView<Factoid>(adminDao, channelDao, factoidDao, apiDao,  request, page) {
+class FactoidsView
+@Inject
+constructor(
+    adminDao: AdminDao,
+    channelDao: ChannelDao,
+    factoidDao: FactoidDao,
+    apiDao: ApiDao,
+    @Assisted request: HttpServletRequest,
+    @Assisted page: Int,
+    @Assisted private val filter: Factoid
+) : PagedView<Factoid>(adminDao, channelDao, factoidDao, apiDao, request, page) {
 
     override fun getPageUrl(): String {
         return "/factoids"
@@ -33,7 +37,10 @@ class FactoidsView @Inject constructor(
     }
 
     override fun getPageItems(): List<Factoid> {
-        return factoidDao.getFactoidsFiltered(QueryParam(getIndex(), ITEMS_PER_PAGE, "Name", true), filter)
+        return factoidDao.getFactoidsFiltered(
+            QueryParam(getIndex(), ITEMS_PER_PAGE, "Name", true),
+            filter
+        )
     }
 
     override fun getNextPage(): String? {
@@ -67,5 +74,4 @@ class FactoidsView @Inject constructor(
     companion object {
         private val LOG = LoggerFactory.getLogger(FactoidsView::class.java)
     }
-
 }

@@ -8,10 +8,12 @@ import javabot.dao.AdminDao
 import javabot.dao.FactoidDao
 import javax.inject.Inject
 
-class LockFactoid @Inject constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) : AdminCommand(bot, adminDao) {
+class LockFactoid
+@Inject
+constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :
+    AdminCommand(bot, adminDao) {
 
-    @Parameter
-    lateinit var args: MutableList<String>
+    @Parameter lateinit var args: MutableList<String>
 
     override fun execute(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

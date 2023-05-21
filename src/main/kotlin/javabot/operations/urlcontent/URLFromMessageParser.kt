@@ -1,12 +1,11 @@
 package javabot.operations.urlcontent
 
+import java.net.URL
+import java.util.ArrayList
+import java.util.stream.Collectors
 import org.apache.commons.lang.StringUtils.isBlank
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.StringUtils
-import java.net.URL
-import java.nio.charset.Charset
-import java.util.ArrayList
-import java.util.stream.Collectors
 
 class URLFromMessageParser {
 
@@ -19,15 +18,15 @@ class URLFromMessageParser {
         var idxHttp = message.indexOf("http")
         while (idxHttp >= 0) {
             val idxSpace = message.indexOf(' ', idxHttp)
-            val url = if (idxSpace == -1) message.substring(idxHttp) else message.substring(idxHttp, idxSpace)
+            val url =
+                if (idxSpace == -1) message.substring(idxHttp)
+                else message.substring(idxHttp, idxSpace)
             potentialUrlsFound.add(stripPunctuation(message, url, idxHttp))
             idxHttp = if (idxSpace == -1) -1 else message.indexOf("http", idxSpace)
         }
 
         val list = arrayListOf<URL>()
-        potentialUrlsFound
-                .map { this.urlFromToken(it) }
-                .filterNotNullTo(list)
+        potentialUrlsFound.map { this.urlFromToken(it) }.filterNotNullTo(list)
         return list
     }
 
@@ -39,8 +38,9 @@ class URLFromMessageParser {
             return url
         }
 
-        //Walk backwards in message from urlStart, and strip the punctuation if an open brace/bracket is seen
-        //before another close.  Otherwise, return the url as is.
+        // Walk backwards in message from urlStart, and strip the punctuation if an open
+        // brace/bracket is seen
+        // before another close.  Otherwise, return the url as is.
         for (c in StringUtils.reverse(message.substring(0, idxUrlStart)).toCharArray()) {
             if (c == OPEN_PUNCTUATION[idxPunc]) {
                 return url.substring(0, url.length - 1)
@@ -64,15 +64,15 @@ class URLFromMessageParser {
     companion object {
         private val OPEN_PUNCTUATION = charArrayOf('{', '(', '[')
         private val CLOSE_PUNCTUATION = charArrayOf('}', ')', ']')
-        val blacklistHosts = try {
-            this::class.java
+        val blacklistHosts =
+            try {
+                this::class
+                    .java
                     .getResourceAsStream("/urlBlacklist.csv")
                     .bufferedReader(Charsets.UTF_8)
-                    .use {
-                        it.lines().collect(Collectors.toList())
-                    }
-        } catch (ignored: Exception) {
-            emptyList<String>()
-        }
+                    .use { it.lines().collect(Collectors.toList()) }
+            } catch (ignored: Exception) {
+                emptyList<String>()
+            }
     }
 }

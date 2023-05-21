@@ -11,14 +11,15 @@ class JCPJSRLocator @Inject constructor(private val httpService: HttpService) {
         var title: String? = null
         val urlString = "http://www.jcp.org/en/jsr/detail?id=$jsr"
         try {
-            title = Jsoup.parse(httpService.get(urlString))
-                .select("div.header1")
-                .first()
-                ?.textNodes()
-                ?.map { element -> element.text().trim() }
-                ?.joinToString(separator = " ") ?: throw IOException()
-        } catch (ignored: Exception) {
-        }
+            title =
+                Jsoup.parse(httpService.get(urlString))
+                    .select("div.header1")
+                    .first()
+                    ?.textNodes()
+                    ?.map { element -> element.text().trim() }
+                    ?.joinToString(separator = " ")
+                    ?: throw IOException()
+        } catch (ignored: Exception) {}
 
         return urlString to title
     }

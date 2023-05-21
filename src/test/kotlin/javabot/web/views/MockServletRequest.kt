@@ -1,12 +1,17 @@
 package javabot.web.views
 
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.UnsupportedEncodingException
+import java.security.Principal
+import java.util.Enumeration
+import java.util.Locale
+import java.util.UUID
 import javabot.BaseTest
 import javabot.web.JavabotConfiguration
 import javabot.web.model.Authority
 import javabot.web.model.InMemoryUserCache
 import javabot.web.model.User
-import org.brickred.socialauth.util.AccessGrant
-
 import javax.servlet.AsyncContext
 import javax.servlet.DispatcherType
 import javax.servlet.RequestDispatcher
@@ -19,27 +24,33 @@ import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpSession
-import javax.servlet.http.Part
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.UnsupportedEncodingException
-import java.security.Principal
-import java.util.Enumeration
-import java.util.Locale
-import java.util.UUID
 import javax.servlet.http.HttpUpgradeHandler
+import javax.servlet.http.Part
+import org.brickred.socialauth.util.AccessGrant
 
 class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
     private val cookies: Array<Cookie>
 
     init {
         if (loggedIn) {
-            val tempUser = User(UUID.randomUUID(), BaseTest.BOT_EMAIL, UUID.randomUUID().toString(), AccessGrant())
+            val tempUser =
+                User(
+                    UUID.randomUUID(),
+                    BaseTest.BOT_EMAIL,
+                    UUID.randomUUID().toString(),
+                    AccessGrant()
+                )
             tempUser.authorities.add(Authority.ROLE_PUBLIC)
 
             InMemoryUserCache.INSTANCE.put(tempUser)
 
-            cookies = arrayOf(Cookie(JavabotConfiguration.SESSION_TOKEN_NAME, tempUser.sessionToken.toString()))
+            cookies =
+                arrayOf(
+                    Cookie(
+                        JavabotConfiguration.SESSION_TOKEN_NAME,
+                        tempUser.sessionToken.toString()
+                    )
+                )
         } else {
             cookies = arrayOf<Cookie>()
         }
@@ -154,15 +165,9 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return false
     }
 
-    @Throws(ServletException::class)
-    override fun login(username: String, password: String) {
+    @Throws(ServletException::class) override fun login(username: String, password: String) {}
 
-    }
-
-    @Throws(ServletException::class)
-    override fun logout() {
-
-    }
+    @Throws(ServletException::class) override fun logout() {}
 
     @Throws(IOException::class, ServletException::class)
     override fun getParts(): Collection<Part>? {
@@ -190,10 +195,7 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return null
     }
 
-    @Throws(UnsupportedEncodingException::class)
-    override fun setCharacterEncoding(env: String) {
-
-    }
+    @Throws(UnsupportedEncodingException::class) override fun setCharacterEncoding(env: String) {}
 
     override fun getContentLength(): Int {
         return 0
@@ -257,13 +259,9 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return null
     }
 
-    override fun setAttribute(name: String, o: Any) {
+    override fun setAttribute(name: String, o: Any) {}
 
-    }
-
-    override fun removeAttribute(name: String) {
-
-    }
+    override fun removeAttribute(name: String) {}
 
     override fun getLocale(): Locale? {
         return null
@@ -311,7 +309,10 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
     }
 
     @Throws(IllegalStateException::class)
-    override fun startAsync(servletRequest: ServletRequest, servletResponse: ServletResponse): AsyncContext? {
+    override fun startAsync(
+        servletRequest: ServletRequest,
+        servletResponse: ServletResponse
+    ): AsyncContext? {
         return null
     }
 

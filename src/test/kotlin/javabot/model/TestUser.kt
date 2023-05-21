@@ -2,15 +2,17 @@ package javabot.model
 
 import javabot.Messages
 import javabot.MockUserHostmask
-import org.pircbotx.Channel
 import org.pircbotx.PircBotX
 import org.pircbotx.User
-import org.pircbotx.UserChannelDao
-import org.pircbotx.UserHostmask
 import org.pircbotx.output.OutputUser
 
-class TestUser(private val ircBot: PircBotX, private val messages: Messages, nick: String, login: String, host: String) :
-        User(MockUserHostmask(ircBot, nick, login, host)) {
+class TestUser(
+    private val ircBot: PircBotX,
+    private val messages: Messages,
+    nick: String,
+    login: String,
+    host: String
+) : User(MockUserHostmask(ircBot, nick, login, host)) {
 
     override fun send(): OutputUser {
         return object : OutputUser(ircBot, this@TestUser) {

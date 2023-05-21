@@ -8,18 +8,20 @@ import dev.morphia.query.FindOptions
 import dev.morphia.query.Query
 import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.or
+import java.time.LocalDateTime
+import java.util.Locale
+import java.util.regex.PatternSyntaxException
 import javabot.dao.util.QueryParam
 import javabot.model.Factoid
 import javabot.model.Persistent
 import javabot.model.criteria.FactoidCriteria.Companion.upperName
 import javabot.model.criteria.FactoidCriteria.Companion.upperUserName
-import java.time.LocalDateTime
-import java.util.Locale
-import java.util.regex.PatternSyntaxException
 import javax.inject.Inject
 
-class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
-        BaseDao<Factoid>(ds, Factoid::class.java) {
+class FactoidDao
+@Inject
+constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
+    BaseDao<Factoid>(ds, Factoid::class.java) {
 
     override fun save(entity: Persistent) {
         val factoid = entity as Factoid
@@ -35,7 +37,8 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
         super.save(entity)
     }
 
-    fun hasFactoid(key: String) = ds.find(Factoid::class.java)
+    fun hasFactoid(key: String) =
+        ds.find(Factoid::class.java)
             .filter(upperName().eq(key.uppercase(Locale.getDefault())))
             .first() != null
 
@@ -43,7 +46,13 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
         return addFactoid(sender, key, value, location, LocalDateTime.now())
     }
 
-    fun addFactoid(sender: String, key: String, value: String, location: String, updated: LocalDateTime): Factoid {
+    fun addFactoid(
+        sender: String,
+        key: String,
+        value: String,
+        location: String,
+        updated: LocalDateTime
+    ): Factoid {
         val factoid = Factoid(key, value, sender)
         factoid.updated = updated
         factoid.lastUsed = LocalDateTime.now()
@@ -61,8 +70,8 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
     }
 
     fun getFactoid(name: String): Factoid? {
-        val criteria = ds.find(Factoid::class.java)
-                .filter(upperName().eq(name.uppercase(Locale.getDefault())))
+        val criteria =
+            ds.find(Factoid::class.java).filter(upperName().eq(name.uppercase(Locale.getDefault())))
         val factoid = criteria.first()
         if (factoid != null) {
             factoid.lastUsed = LocalDateTime.now()
@@ -72,11 +81,15 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
     }
 
     fun getParameterizedFactoid(name: String): Factoid? {
-        val factoid = ds.find(Factoid::class.java)
-                .filter(or(
+        val factoid =
+            ds.find(Factoid::class.java)
+                .filter(
+                    or(
                         upperName().eq(name.uppercase(Locale.getDefault()) + " \$1"),
                         upperName().eq(name.uppercase(Locale.getDefault()) + " \$^"),
-                        upperName().eq(name.uppercase(Locale.getDefault()) + " \$+")))
+                        upperName().eq(name.uppercase(Locale.getDefault()) + " \$+")
+                    )
+                )
                 .first()
         if (factoid != null) {
             factoid.lastUsed = LocalDateTime.now()
@@ -95,15 +108,11 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
 
     fun getFactoidsFiltered(qp: QueryParam, filter: Factoid): List<Factoid> {
         val query = buildFindQuery(filter)
-        val options = FindOptions()
-                .skip(qp.first)
-                .limit(qp.count)
+        val options = FindOptions().skip(qp.first).limit(qp.count)
         if (qp.hasSort()) {
             options.sort(qp.toSort("upper"))
         }
-        return query
-                .iterator(options)
-                .toList()
+        return query.iterator(options).toList()
     }
 
     private fun buildFindQuery(filter: Factoid): Query<Factoid> {
@@ -136,7 +145,6 @@ class FactoidDao @Inject constructor(ds: Datastore, var changeDao: ChangeDao, va
     }
 
     fun deleteAll(): DeleteResult {
-        return ds.find(Factoid::class.java)
-                .delete(DeleteOptions().multi(true))
+        return ds.find(Factoid::class.java).delete(DeleteOptions().multi(true))
     }
 }

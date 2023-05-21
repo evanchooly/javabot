@@ -9,12 +9,15 @@ import javabot.dao.FactoidDao
 import javabot.model.javadoc.JavadocApi
 import javax.servlet.http.HttpServletRequest
 
-class JavadocAdminView @Inject constructor(
-        adminDao: AdminDao,
-        channelDao: ChannelDao,
-        factoidDao: FactoidDao,
-        apiDao: ApiDao, @Assisted request: HttpServletRequest) :
-        MainView(adminDao, channelDao, factoidDao, apiDao, request) {
+class JavadocAdminView
+@Inject
+constructor(
+    adminDao: AdminDao,
+    channelDao: ChannelDao,
+    factoidDao: FactoidDao,
+    apiDao: ApiDao,
+    @Assisted request: HttpServletRequest
+) : MainView(adminDao, channelDao, factoidDao, apiDao, request) {
 
     override fun getChildView(): String {
         return "admin/javadoc.ftl"

@@ -3,7 +3,6 @@ package javabot.web.views
 import com.antwerkz.sofia.Sofia
 import org.testng.Assert
 import org.testng.annotations.Test
-import java.io.IOException
 
 class AdminIndexViewTest : AdminViewTest() {
     @Test
@@ -12,7 +11,10 @@ class AdminIndexViewTest : AdminViewTest() {
 
         val count = adminDao.count()
         for (i in 0 until count) {
-            Assert.assertNotNull(source.getElementById("admin" + i), "Trying to find admin${i}\n\n${source}")
+            Assert.assertNotNull(
+                source.getElementById("admin" + i),
+                "Trying to find admin${i}\n\n${source}"
+            )
         }
         val labels = source.getAllElements("for", "irc", false)
         Assert.assertFalse(labels.isEmpty())

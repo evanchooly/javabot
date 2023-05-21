@@ -1,6 +1,8 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import java.time.LocalDateTime
+import java.util.Locale
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
@@ -8,22 +10,23 @@ import javabot.dao.ChangeDao
 import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
 import javabot.model.Factoid
+import javax.inject.Inject
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.time.LocalDateTime
-import java.util.Locale
-import javax.inject.Inject
 
-class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
-                                              var factoidDao: FactoidDao,
-                                              var changeDao: ChangeDao,
-                                              var channelDao: ChannelDao) :
-        BotOperation(bot, adminDao), StandardOperation {
+class AddFactoidOperation
+@Inject
+constructor(
+    bot: Javabot,
+    adminDao: AdminDao,
+    var factoidDao: FactoidDao,
+    var changeDao: ChangeDao,
+    var channelDao: ChannelDao
+) : BotOperation(bot, adminDao), StandardOperation {
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(AddFactoidOperation::class.java)
     }
-
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
@@ -63,18 +66,25 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                     } else {
                         factoid = factoidDao.getFactoid(key)
                         if (factoid != null) {
-                            responses.add(Message(event, Sofia.factoidExists(factoid.name, event.user.nick)))
+                            responses.add(
+                                Message(event, Sofia.factoidExists(factoid.name, event.user.nick))
+                            )
                             exists = true
                         } else {
                             factoid = Factoid(name, userName = event.user.nick)
-                            factoid.name = factoid.name.dropLastWhile { it in arrayOf('.', '?', '!') }
+                            factoid.name =
+                                factoid.name.dropLastWhile { it in arrayOf('.', '?', '!') }
                         }
                     }
                 }
                 if (factoid != null) {
                     if (exists && !redefine) {
                         if (factoid.locked && !admin) {
-                            changeDao.logChangingLockedFactoid(event.user.nick, key, channel?.name ?: "private message")
+                            changeDao.logChangingLockedFactoid(
+                                event.user.nick,
+                                key,
+                                channel?.name ?: "private message"
+                            )
                             responses.add(Message(event, Sofia.factoidLocked(event.user.nick)))
                         }
                     } else {
@@ -87,20 +97,29 @@ class AddFactoidOperation @Inject constructor(bot: Javabot, adminDao: AdminDao,
                             factoid.updated = LocalDateTime.now()
                         }
                         if (factoid.id != null) {
-                            changeDao.logFactoidChanged(event.user.nick, factoid.name, factoid.value, message, channelDao.location(channel))
+                            changeDao.logFactoidChanged(
+                                event.user.nick,
+                                factoid.name,
+                                factoid.value,
+                                message,
+                                channelDao.location(channel)
+                            )
                         } else {
-                            changeDao.logFactoidAdded(event.user.nick, factoid.name, factoid.value, channelDao.location(channel))
+                            changeDao.logFactoidAdded(
+                                event.user.nick,
+                                factoid.name,
+                                factoid.value,
+                                channelDao.location(channel)
+                            )
                         }
                         factoidDao.save(factoid)
                         responses.add(Message(event, Sofia.ok(event.user.nick)))
                     }
-
                 }
             }
         }
         return responses
     }
-
 
     /**
      * Adding factoids should happen after everything else has had a chance to run. See issue #88.

@@ -1,7 +1,7 @@
 package javabot
 
-
 import com.antwerkz.sofia.Sofia
+import java.util.ArrayList
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
@@ -11,6 +11,8 @@ import javabot.model.Channel
 import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.Logs.Type
+import javax.inject.Inject
+import javax.inject.Provider
 import org.pircbotx.PircBotX
 import org.pircbotx.User
 import org.pircbotx.exception.DaoException
@@ -27,14 +29,18 @@ import org.pircbotx.hooks.events.PartEvent
 import org.pircbotx.hooks.events.PrivateMessageEvent
 import org.pircbotx.hooks.events.QuitEvent
 import org.slf4j.LoggerFactory
-import java.util.ArrayList
-import javax.inject.Inject
-import javax.inject.Provider
 
-open class IrcAdapter @Inject
-constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, private var channelDao: ChannelDao,
-            private var adminDao: AdminDao, private var javabotProvider: Provider<Javabot>, private var configDao: ConfigDao,
-            private var ircBot: Provider<PircBotX>) : ListenerAdapter() {
+open class IrcAdapter
+@Inject
+constructor(
+    private var nickServDao: NickServDao,
+    private var logsDao: LogsDao,
+    private var channelDao: ChannelDao,
+    private var adminDao: AdminDao,
+    private var javabotProvider: Provider<Javabot>,
+    private var configDao: ConfigDao,
+    private var ircBot: Provider<PircBotX>
+) : ListenerAdapter() {
 
     companion object {
         private val LOG = LoggerFactory.getLogger(IrcAdapter::class.java)
@@ -47,7 +53,16 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
         val channel = event.channel.toJavabot()
         val user = event.user!!.toJavabot()
         bot.executors.execute {
-            bot.processMessage(Message.extractContentFromMessage(bot, channel, user, bot.startString, bot.nick, event.message))
+            bot.processMessage(
+                Message.extractContentFromMessage(
+                    bot,
+                    channel,
+                    user,
+                    bot.startString,
+                    bot.nick,
+                    event.message
+                )
+            )
         }
     }
 
@@ -61,23 +76,45 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
         }
 
         bot.executors.execute({
-            bot.processMessage(Message.extractContentFromMessage(bot, null, event.user!!.toJavabot(), start, bot.nick, event.message))
+            bot.processMessage(
+                Message.extractContentFromMessage(
+                    bot,
+                    null,
+                    event.user!!.toJavabot(),
+                    start,
+                    bot.nick,
+                    event.message
+                )
+            )
         })
     }
 
     override fun onJoin(event: JoinEvent) {
-        logsDao.logMessage(Logs.Type.JOIN, event.channel.toJavabot(), event.user?.toJavabot(),
-                Sofia.userJoined(event.user?.nick!!, event.user?.hostmask!!, event.channel.name))
+        logsDao.logMessage(
+            Logs.Type.JOIN,
+            event.channel.toJavabot(),
+            event.user?.toJavabot(),
+            Sofia.userJoined(event.user?.nick!!, event.user?.hostmask!!, event.channel.name)
+        )
     }
 
     override fun onPart(event: PartEvent) {
-        logsDao.logMessage(Logs.Type.PART, event.channel.toJavabot(), event.user.toJavabot(),
-                Sofia.userParted(event.user.nick, event.reason))
+        logsDao.logMessage(
+            Logs.Type.PART,
+            event.channel.toJavabot(),
+            event.user.toJavabot(),
+            Sofia.userParted(event.user.nick, event.reason)
+        )
         nickServDao.unregister(event.user.toJavabot())
     }
 
     override fun onQuit(event: QuitEvent) {
-        logsDao.logMessage(Logs.Type.QUIT, null, event.user.toJavabot(), Sofia.userQuit(event.user.nick, event.reason))
+        logsDao.logMessage(
+            Logs.Type.QUIT,
+            null,
+            event.user.toJavabot(),
+            Sofia.userQuit(event.user.nick, event.reason)
+        )
         nickServDao.unregister(event.user.toJavabot())
     }
 
@@ -97,7 +134,10 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
 
     override fun onConnect(event: ConnectEvent) {
         nickServDao.clear()
-        event.getBot<PircBotX>().sendIRC().message("nickserv", "identify " + configDao.get().password)
+        event
+            .getBot<PircBotX>()
+            .sendIRC()
+            .message("nickserv", "identify " + configDao.get().password)
     }
 
     override fun onNotice(event: NoticeEvent) {
@@ -118,25 +158,39 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
     }
 
     override fun onNickChange(event: NickChangeEvent) {
-        logsDao.logMessage(Type.NICK, null, event.user?.toJavabot(), Sofia.userNickChanged(event.oldNick, event.newNick))
+        logsDao.logMessage(
+            Type.NICK,
+            null,
+            event.user?.toJavabot(),
+            Sofia.userNickChanged(event.oldNick, event.newNick)
+        )
         nickServDao.updateNick(event.oldNick, event.newNick)
     }
 
     override fun onAction(event: ActionEvent) {
-        logsDao.logMessage(Logs.Type.ACTION, event.channel?.toJavabot(), event.user?.toJavabot(), event.message)
+        logsDao.logMessage(
+            Logs.Type.ACTION,
+            event.channel?.toJavabot(),
+            event.user?.toJavabot(),
+            event.message
+        )
     }
 
     override fun onKick(event: KickEvent) {
-        logsDao.logMessage(Logs.Type.KICK, event.channel.toJavabot(), event.user?.toJavabot(),
-                " kicked %s (%s)".format(event.recipient?.nick, event.reason))
+        logsDao.logMessage(
+            Logs.Type.KICK,
+            event.channel.toJavabot(),
+            event.user?.toJavabot(),
+            " kicked %s (%s)".format(event.recipient?.nick, event.reason)
+        )
     }
 
     open fun isOnChannel(channel: String, nick: String): Boolean {
         val userChannelDao = ircBot.get().userChannelDao
         return try {
-            val user=userChannelDao.getUser(nick)
+            val user = userChannelDao.getUser(nick)
             user.channels.contains(userChannelDao.getChannel(channel))
-        } catch(u:DaoException) {
+        } catch (u: DaoException) {
             false
         }
     }
@@ -153,7 +207,8 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
                 false
             }
         } catch (u: DaoException) {
-            // mostly for testing, as the nick shouldn't be generated by anything other than the IRC framework
+            // mostly for testing, as the nick shouldn't be generated by anything other than the IRC
+            // framework
             false
         }
     }
@@ -175,22 +230,15 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
     }
 
     open fun send(channel: Channel, value: String) {
-        channel.toIrcChannel()
-                .send()
-                .message(value)
+        channel.toIrcChannel().send().message(value)
     }
 
     open fun send(user: JavabotUser, value: String) {
-        user.toIrcUser()
-                .send()
-                .message(value)
-
+        user.toIrcUser().send().message(value)
     }
 
     open fun action(channel: Channel, message: String) {
-        channel.toIrcChannel()
-                .send()
-                .action(message)
+        channel.toIrcChannel().send().action(message)
     }
 
     open fun joinChannel(channel: Channel) {
@@ -213,8 +261,7 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
         return ircBot.get().isConnected
     }
 
-    open
-    fun isBotOnChannel(name: String): Boolean {
+    open fun isBotOnChannel(name: String): Boolean {
         return ircBot.get().userChannelDao.containsChannel(name)
     }
 
@@ -224,9 +271,7 @@ constructor(private var nickServDao: NickServDao, private var logsDao: LogsDao, 
     }
 
     open fun leave(channel: Channel, user: JavabotUser) {
-        channel.toIrcChannel()
-                .send()
-                .part(Sofia.channelDeleted(user.nick))
+        channel.toIrcChannel().send().part(Sofia.channelDeleted(user.nick))
     }
 
     fun JavabotUser.toIrcUser(): User {

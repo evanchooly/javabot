@@ -1,22 +1,26 @@
 package javabot.dao
 
 import javabot.model.Link
+import javax.inject.Inject
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertFalse
 import org.testng.Assert.assertNotNull
 import org.testng.Assert.assertTrue
 import org.testng.Assert.fail
 import org.testng.annotations.Test
-import javax.inject.Inject
 
 class LinkDaoTest : BaseServiceTest() {
-    @Inject
-    lateinit var linkDao: LinkDao
+    @Inject lateinit var linkDao: LinkDao
 
     @Test
     fun testCreateRetrieveAllDelete() {
         linkDao.deleteAll()
-        linkDao.addLink("##java", "botuser", "http://foo.com", "http://foo.com is really cool, y'all")
+        linkDao.addLink(
+            "##java",
+            "botuser",
+            "http://foo.com",
+            "http://foo.com is really cool, y'all"
+        )
 
         assertEquals(linkDao.findAll().size, 1)
         linkDao.deleteAll()
@@ -26,7 +30,8 @@ class LinkDaoTest : BaseServiceTest() {
     @Test
     fun testFindLink() {
         linkDao.deleteAll()
-        val linkData = Link("##java", "botuser", "http://bar.com", "http://foo.com is really cool, y'all")
+        val linkData =
+            Link("##java", "botuser", "http://bar.com", "http://foo.com is really cool, y'all")
         linkDao.addLink(linkData.channel, linkData.username, linkData.url, linkData.info)
         val retrievedLink = linkDao.get(Link(url = linkData.url))
 
@@ -39,7 +44,14 @@ class LinkDaoTest : BaseServiceTest() {
     @Test
     fun testApproveLink() {
         linkDao.deleteAll()
-        val linkData = Link("##java", "botuser", "http://bar.com", "http://foo.com is really cool, y'all", false)
+        val linkData =
+            Link(
+                "##java",
+                "botuser",
+                "http://bar.com",
+                "http://foo.com is really cool, y'all",
+                false
+            )
         linkDao.addLink(linkData.channel, linkData.username, linkData.url, linkData.info)
         var retrievedLink = linkDao.get(Link(url = linkData.url))
         assertEquals(retrievedLink?.url, linkData.url)
@@ -55,13 +67,11 @@ class LinkDaoTest : BaseServiceTest() {
         try {
             linkDao.approveLink("##java", linkData.url)
             fail("should have thrown an exception on re-approval of link")
-        } catch(ignored: IllegalArgumentException) {
-        }
+        } catch (ignored: IllegalArgumentException) {}
         try {
             linkDao.approveLink("##java", "abcdef")
             fail("should have thrown an exception on approval of nonexistent link")
-        } catch(ignored: IllegalArgumentException) {
-        }
+        } catch (ignored: IllegalArgumentException) {}
     }
 
     @Test
@@ -92,6 +102,5 @@ class LinkDaoTest : BaseServiceTest() {
 
         assertEquals(links.size, 2)
         assertTrue(links[0].updated.isBefore(links[1].updated))
-
     }
 }

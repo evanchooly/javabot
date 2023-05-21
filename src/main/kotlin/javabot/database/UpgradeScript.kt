@@ -1,11 +1,11 @@
 package javabot.database
 
-import javabot.dao.ConfigDao
 import java.io.IOException
 import java.sql.SQLException
+import javabot.dao.ConfigDao
 import javax.inject.Inject
 
-abstract class UpgradeScript @Inject constructor(var configDao: ConfigDao)  {
+abstract class UpgradeScript @Inject constructor(var configDao: ConfigDao) {
     fun execute() {
         val config = configDao.get()
         if (config.schemaVersion < id()) {
@@ -15,7 +15,6 @@ abstract class UpgradeScript @Inject constructor(var configDao: ConfigDao)  {
             } catch (e: Exception) {
                 throw RuntimeException(e.message, e)
             }
-
         }
     }
 
@@ -27,8 +26,7 @@ abstract class UpgradeScript @Inject constructor(var configDao: ConfigDao)  {
 
     abstract fun id(): Int
 
-    @Throws(SQLException::class, IOException::class)
-    abstract fun doUpgrade()
+    @Throws(SQLException::class, IOException::class) abstract fun doUpgrade()
 
     override fun toString(): String {
         return javaClass.name + ":" + id()

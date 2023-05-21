@@ -1,9 +1,8 @@
 package javabot.web.resources
 
 import io.dropwizard.views.View
-import javabot.web.views.ErrorView
-
 import java.util.Random
+import javabot.web.views.ErrorView
 
 class PublicErrorResource {
     companion object {
