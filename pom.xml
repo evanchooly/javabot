@@ -564,7 +564,7 @@
         <morphia.version>2.3.1</morphia.version>
         <okhttp.version>4.10.0</okhttp.version>
         <rivescript.version>0.11.0</rivescript.version>
-        <slf4j.version>2.0.5</slf4j.version>
+        <slf4j.version>2.0.7</slf4j.version>
         <sofia.version>0.25</sofia.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
