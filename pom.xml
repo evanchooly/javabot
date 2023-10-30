@@ -459,7 +459,7 @@
         <dependency>
             <groupId>net.thauvin.erik</groupId>
             <artifactId>bitly-shorten</artifactId>
-            <version>0.9.3</version>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
