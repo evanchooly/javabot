@@ -38,8 +38,8 @@ class TimezonesCanada : Timezones {
         init {
             for (province in CanadianProvince.values()) {
                 val timezone = province.timezone
-                timezones.insert(province.name.toLowerCase(), timezone)
-                timezones.insert(province.abbreviation.toLowerCase(), timezone)
+                timezones.insert(province.name.lowercase(), timezone)
+                timezones.insert(province.abbreviation.lowercase(), timezone)
                 timezones.insert(province.capital, timezone)
             }
         }

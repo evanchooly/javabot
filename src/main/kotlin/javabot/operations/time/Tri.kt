@@ -35,11 +35,11 @@ class Tri<T> {
     }
 
     private fun clean(key: String): String {
-        return key.toLowerCase().replace("[^a-z]".toRegex(), "")
+        return key.lowercase().replace("[^a-z]".toRegex(), "")
     }
 
     private fun hash(c: Char): Int {
-        return c.toInt() - OFFSET
+        return c.code - OFFSET
     }
 
     private inner class Node<T> {
@@ -56,6 +56,6 @@ class Tri<T> {
     }
 
     companion object {
-        private val OFFSET = 'a'.toInt()
+        private val OFFSET = 'a'.code
     }
 }

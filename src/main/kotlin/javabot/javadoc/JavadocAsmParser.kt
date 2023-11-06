@@ -49,7 +49,7 @@ constructor(private val apiDao: ApiDao, private val config: JavabotConfig) {
 
         if ("JDK" == api.name) {
             File(System.getProperty("java.home"), "jmods")
-                .listFiles { file, s -> s.startsWith("java") }
+                .listFiles { _, s -> s.startsWith("java") }
                 .forEach { scanJar(api, type, it) }
         } else {
             scanJar(api, type, api.classesUri().download())

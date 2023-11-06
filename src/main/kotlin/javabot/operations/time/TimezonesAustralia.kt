@@ -32,8 +32,8 @@ class TimezonesAustralia : Timezones {
         init {
             for (states in AustralianState.values()) {
                 val timezone = states.timezone
-                timezones.insert(states.name.toLowerCase(), timezone)
-                timezones.insert(states.abbreviation.toLowerCase(), timezone)
+                timezones.insert(states.name.lowercase(), timezone)
+                timezones.insert(states.abbreviation.lowercase(), timezone)
                 timezones.insert(states.capital, timezone)
             }
         }

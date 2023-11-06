@@ -12,7 +12,7 @@ class DateUtils {
         val date = Date().time
         val formattedDate = dateFormatter.withZone(DateTimeZone.forID(timezone)).print(date)
         val formattedTime =
-            timeFormatter.withZone(DateTimeZone.forID(timezone)).print(date).toLowerCase()
+            timeFormatter.withZone(DateTimeZone.forID(timezone)).print(date).lowercase()
         return formattedDate + " @ " + formattedTime
     }
 }
