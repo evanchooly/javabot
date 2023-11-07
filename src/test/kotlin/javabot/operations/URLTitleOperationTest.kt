@@ -1,5 +1,6 @@
 package javabot.operations
 
+import java.net.URI
 import javabot.BaseTest
 import javabot.JavabotConfig
 import javabot.Message
@@ -17,6 +18,22 @@ class URLTitleOperationTest : BaseTest() {
 
     @Inject private lateinit var config: JavabotConfig
     private val analyzer = URLContentAnalyzer()
+
+    @DataProvider(name = "longUrls")
+    fun longUrls(): Array<Array<String>> =
+        arrayOf(
+            arrayOf("https://twitter.com", "twitter.com"),
+            arrayOf("http://www.twitter.com", "twitter.com"),
+            arrayOf("http://x.com", "x.com"),
+            arrayOf("https://foo.www.x.com", "x.com"),
+            arrayOf("https://twitter", "twitter"), // ew
+        )
+
+    @Test(dataProvider = "longUrls")
+    fun testHostBasename(url: String, basenamed: String) {
+        var host = URI(url).toURL().host
+        assertEquals(operation.hostBasename(host), basenamed.lowercase())
+    }
 
     @Test(dataProvider = "urls")
     fun testSimpleUrl(url: String, content: String?) {

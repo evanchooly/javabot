@@ -41,7 +41,7 @@ open class JavabotModule : AbstractModule() {
         install(FactoryModuleBuilder().build(ViewFactory::class.java))
     }
 
-    open fun client(): MongoClient? {
+    open fun client(): MongoClient {
         return mongoClient
     }
 

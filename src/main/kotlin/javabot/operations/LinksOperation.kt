@@ -1,7 +1,7 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
-import java.net.URL
+import java.net.URI
 import java.util.Locale
 import javabot.Javabot
 import javabot.Message
@@ -118,7 +118,7 @@ constructor(
                     tokens
                         .mapNotNull {
                             try {
-                                URL(it)
+                                URI(it).toURL()
                             } catch (e: Exception) {
                                 null
                             }

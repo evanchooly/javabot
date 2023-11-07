@@ -1,7 +1,7 @@
 package javabot.operations
 
 import java.io.IOException
-import java.net.URL
+import java.net.URI
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
@@ -74,12 +74,18 @@ constructor(
         )
     }
 
+    fun hostBasename(host: String, sections: Int = 2): String {
+        return host.split(".").takeLast(sections).joinToString(".").lowercase()
+    }
+
     private fun findTitle(url: String, loop: Boolean): String? {
+        val twitterUrls = listOf("twitter.com", "x.com")
         if (analyzer.precheck(url)) {
+            @Suppress("GrazieInspection")
             try {
-                val typedUrl = URL(url)
+                val typedUrl = URI(url).toURL()
                 // there used to be parsing here for youtube but they use <title> now
-                if (typedUrl.host.contains("twitter.com", true)) {
+                if (twitterUrls.contains(typedUrl.host.lowercase())) {
                     return findTwitterTitle(url)
                 }
                 val document = Jsoup.parse(httpService.get(url))
@@ -102,6 +108,7 @@ constructor(
     }
 
     private fun findTwitterTitle(url: String): String {
+        @Suppress("GrazieInspection")
         if (twitterService.isEnabled()) {
             if (url.contains("status")) {
                 val regex = Regex("status/\\d++")
