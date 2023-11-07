@@ -78,8 +78,8 @@ class TimezonesUS : Timezones {
         init {
             for (state in UsState.values()) {
                 val timezone = state.timezone
-                timezones.insert(state.name.toLowerCase(), timezone)
-                timezones.insert(state.abbreviation.toLowerCase(), timezone)
+                timezones.insert(state.name.lowercase(), timezone)
+                timezones.insert(state.abbreviation.lowercase(), timezone)
                 timezones.insert(state.capital, timezone)
             }
         }
