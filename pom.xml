@@ -553,7 +553,7 @@
         <jsoup.version>1.15.4</jsoup.version>
         <kotlin.version>1.8.10</kotlin.version>
         <logback.version>1.4.12</logback.version>
-        <morphia.version>2.3.1</morphia.version>
+        <morphia.version>2.4.8</morphia.version>
         <okhttp.version>4.10.0</okhttp.version>
         <slf4j.version>2.0.9</slf4j.version>
         <sofia.version>0.25</sofia.version>
