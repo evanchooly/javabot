@@ -17,10 +17,7 @@ constructor(val javabotConfig: JavabotConfig) {
             val model = "gpt-4"
             val gpt = GPT(javabotConfig.chatGptKey())
             val messageModel = MessageModel(model, listOf(Message("user", prompt)))
-            gpt.log.info(messageModel.toString())
             val messageResponse = gpt.sendMessage(messageModel)
-            gpt.log.info("Waiting for the answer");
-            gpt.log.info(messageResponse.choices[0].message.content);
             return messageResponse.choices[0].message.content
         } else {
             // no chatGPT key? No chatGPT attempt.
