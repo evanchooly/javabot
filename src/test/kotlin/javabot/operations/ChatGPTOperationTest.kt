@@ -15,7 +15,7 @@ class ChatGPTOperationTest : BaseTest() {
     protected lateinit var config: JavabotConfig
 
     @Test
-    fun testSwallow() {
+    fun testNonJavaQuestion() {
         if (config.chatGptKey().isNotEmpty()) {
             val response = operation.handleMessage(message("~gpt speed of an african laden swallow"))
             assertTrue(response.isEmpty())

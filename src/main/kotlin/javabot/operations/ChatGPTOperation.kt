@@ -14,11 +14,11 @@ class ChatGPTOperation
 constructor(bot: Javabot, adminDao: AdminDao, var chatGPTDao: ChatGPTDao) :
     BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
-        val responses = arrayListOf<Message>()
+        val responses = mutableListOf<Message>()
         val message = event.value
         if (message.lowercase(Locale.getDefault()).startsWith("gpt ")) {
             val uuid= UUID.randomUUID()
-            val query = message.substring("gpt ".length).trim()
+            val query = message.substringAfter("gpt ")
             val prompt = """Someone is asking "$query". 
                 Restrict your answer to being applicable to the Java Virtual Machine, 
                 and limit the response's length as if it were to be posted on Twitter, 
