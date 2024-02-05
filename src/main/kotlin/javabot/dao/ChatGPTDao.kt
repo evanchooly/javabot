@@ -4,16 +4,30 @@ import com.google.inject.Inject
 import gpt.api.GPT
 import gpt.models.Message
 import gpt.models.MessageModel
+import io.dropwizard.util.Duration
 import javabot.JavabotConfig
-import java.util.*
+import javabot.operations.throttle.BotRateLimiter
 
 
 class ChatGPTDao
 @Inject
 constructor(val javabotConfig: JavabotConfig) {
+    companion object {
+        private var limiter: BotRateLimiter? = null
+
+        fun acquire(javabotConfig: JavabotConfig): Boolean {
+            if (limiter == null) {
+                limiter = BotRateLimiter(
+                    javabotConfig.chatGptLimit(),
+                    Duration.days(1).toMilliseconds()
+                )
+            }
+            return limiter!!.tryAcquire()
+        }
+    }
+
     fun sendPromptToChatGPT(prompt: String): String? {
-        println("chat gpt key: '${javabotConfig.chatGptKey()}'")
-        return if (javabotConfig.chatGptKey().isNotEmpty()) {
+        return if (javabotConfig.chatGptKey().isNotEmpty() && acquire(javabotConfig)) {
             val model = "gpt-4"
             val gpt = GPT(javabotConfig.chatGptKey())
             val messageModel = MessageModel(model, listOf(Message("user", prompt)))

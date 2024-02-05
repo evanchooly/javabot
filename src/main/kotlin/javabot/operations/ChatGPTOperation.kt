@@ -4,6 +4,7 @@ import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ChatGPTDao
+import javabot.operations.throttle.BotRateLimiter
 import java.util.*
 import javax.inject.Inject
 
@@ -32,3 +33,5 @@ constructor(bot: Javabot, adminDao: AdminDao, var chatGPTDao: ChatGPTDao) :
         return responses
     }
 }
+
+
