@@ -14,7 +14,7 @@ class BotRateLimiter(private val maxRequests: Int, private val timeWindowMillis:
 
         // Check if we can add a new request
         if (requests.size < maxRequests) {
-            requests.addLast(now)
+            requests.add(now)
             return true
         }
 
