@@ -4,7 +4,6 @@ import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ChatGPTDao
-import javabot.operations.throttle.BotRateLimiter
 import java.util.*
 import javax.inject.Inject
 
@@ -17,7 +16,7 @@ constructor(bot: Javabot, adminDao: AdminDao, var chatGPTDao: ChatGPTDao) :
         val responses = mutableListOf<Message>()
         val message = event.value
         if (message.lowercase(Locale.getDefault()).startsWith("gpt ")) {
-            val uuid= UUID.randomUUID()
+            val uuid = UUID.randomUUID()
             val query = message.substringAfter("gpt ")
             val prompt = """Someone is asking "$query". 
                 Restrict your answer to being applicable to the Java Virtual Machine, 
