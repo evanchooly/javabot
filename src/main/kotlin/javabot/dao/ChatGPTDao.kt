@@ -9,16 +9,11 @@ import io.dropwizard.util.Duration
 import javabot.JavabotConfig
 import javabot.operations.throttle.BotRateLimiter
 
-
 @Singleton
-class ChatGPTDao
-@Inject
-constructor(val javabotConfig: JavabotConfig) {
+class ChatGPTDao @Inject constructor(val javabotConfig: JavabotConfig) {
 
-    private var limiter: BotRateLimiter = BotRateLimiter(
-        javabotConfig.chatGptLimit(),
-        Duration.days(1).toMilliseconds()
-    )
+    private var limiter: BotRateLimiter =
+        BotRateLimiter(javabotConfig.chatGptLimit(), Duration.days(1).toMilliseconds())
 
     fun sendPromptToChatGPT(prompt: String): String? {
         return if (javabotConfig.chatGptKey().isNotEmpty() && limiter.tryAcquire()) {
@@ -32,5 +27,4 @@ constructor(val javabotConfig: JavabotConfig) {
             null
         }
     }
-
 }

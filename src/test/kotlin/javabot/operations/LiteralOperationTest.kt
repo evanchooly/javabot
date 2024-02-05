@@ -10,6 +10,7 @@ import org.testng.annotations.Test
 @Test(groups = arrayOf("operations"))
 class LiteralOperationTest : BaseTest() {
     @Inject private lateinit var operation: LiteralOperation
+
     @Test
     fun testMissingFactoid() {
         val factoidName = "foo${Date().time}"

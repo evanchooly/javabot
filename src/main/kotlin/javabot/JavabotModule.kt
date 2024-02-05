@@ -34,6 +34,7 @@ open class JavabotModule : AbstractModule() {
     lateinit var ircAdapterProvider: Provider<out IrcAdapter>
     lateinit var channelDaoProvider: Provider<ChannelDao>
     lateinit var configDaoProvider: Provider<ConfigDao>
+
     override fun configure() {
         configDaoProvider = binder().getProvider(ConfigDao::class.java)
         channelDaoProvider = binder().getProvider(ChannelDao::class.java)
@@ -124,6 +125,7 @@ open class JavabotModule : AbstractModule() {
     }
 
     protected open fun loadConfigProperties(): HashMap<Any, Any> = HashMap()
+
     protected fun validate(config: JavabotConfig): JavabotConfig {
         @Suppress("UNCHECKED_CAST")
         val configClass = config.javaClass.interfaces[0] as Class<JavabotConfig>

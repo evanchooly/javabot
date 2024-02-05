@@ -33,6 +33,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore) :
     }
 
     fun count() = ds.find(JavadocClass::class.java).count()
+
     fun getClass(api: JavadocApi? = null, name: String): List<JavadocClass> {
         val strings = calculateNameAndPackage(name)
         val pkgName = strings.first
