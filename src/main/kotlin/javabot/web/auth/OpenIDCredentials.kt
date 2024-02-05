@@ -4,19 +4,16 @@ import java.util.UUID
 import javabot.web.model.Authority
 
 /**
- *
  * Value object to provide the following to [OpenIDAuthenticator]:
- *
  * * Storage of the necessary credentials for OpenID authentication
  *
  * @since 0.0.1
  */
 class OpenIDCredentials
 /**
- * @param sessionToken The session token acting as a surrogate for the OpenID token
- * *
+ * @param sessionToken The session token acting as a surrogate for the OpenID token *
  * @param requiredAuthorities The authorities required to authenticate (provided by the [Restricted]
- * annotation)
+ *   annotation)
  */
 (sessionToken: UUID, requiredAuthorities: Set<Authority>) {
 

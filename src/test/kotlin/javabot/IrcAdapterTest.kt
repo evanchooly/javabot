@@ -18,6 +18,7 @@ import org.testng.annotations.Test
 
 class IrcAdapterTest : BaseTest() {
     companion object {}
+
     @Inject lateinit var ircAdapter: IrcAdapter
     @Inject lateinit var factoidDao: FactoidDao
 

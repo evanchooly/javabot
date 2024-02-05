@@ -4,6 +4,7 @@ import dev.morphia.query.Sort
 
 /**
  * Set to return count sorted elements, starting at the first element.
+ *
  * @param first First element to return.
  * @param count Number of elements to return.
  * @param sort Column to sort on.

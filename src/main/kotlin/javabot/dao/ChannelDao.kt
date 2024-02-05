@@ -61,8 +61,8 @@ class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Chann
             + " min(l.updated), (select count(e) from Logs e)) from Logs l "
             + "where l.channel like '#%' group by l.channel order by count(l) desc")
         */
-        return listOf(
-        ) // (List<Activity>) getEntityManager().createNamedQuery(ChannelDao.STATISTICS)
+        return listOf() // (List<Activity>)
+        // getEntityManager().createNamedQuery(ChannelDao.STATISTICS)
         //            .getResultList();
     }
 

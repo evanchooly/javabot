@@ -95,6 +95,7 @@ constructor(private val apiDao: ApiDao, private val config: JavabotConfig) {
             .substringBeforeLast(".")
             .replace("/", ".")
     }
+
     private fun JarEntry.packageName(): String {
         return this.name.substringAfter("classes/").substringBeforeLast("/").replace("/", ".")
     }
@@ -139,6 +140,7 @@ constructor(private val apiDao: ApiDao, private val config: JavabotConfig) {
         URI(
             "https://repo1.maven.org/maven2/${groupId.toPath()}/${artifactId}/${version}/${artifactId}-${version}-javadoc.jar"
         )
+
     private fun JavadocApi.classesUri() =
         URI(
             "https://repo1.maven.org/maven2/${groupId.toPath()}/${artifactId}/${version}/${artifactId}-${version}.jar"

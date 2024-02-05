@@ -15,11 +15,8 @@ class ScriptComparator : Comparator<UpgradeScript> {
             return 1
         }
         throw RuntimeException(
-            "%s and %s have the same priority: %d".format(
-                o1.javaClass.name,
-                o2.javaClass.name,
-                o1.id()
-            )
+            "%s and %s have the same priority: %d"
+                .format(o1.javaClass.name, o2.javaClass.name, o1.id())
         )
     }
 }

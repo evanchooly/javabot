@@ -17,6 +17,7 @@ class JavadocClassVisitorTest : BaseTest() {
 
         assertEquals(list, listOf("java/lang/Object", "java/lang/Class"))
     }
+
     @Test
     fun testMapSignature() {
         val visitor = JavadocClassVisitor(apiDao, JavadocApi(), "", "", null, JAVA11)

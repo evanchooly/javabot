@@ -19,8 +19,7 @@ enum class InMemoryUserCache {
             .build<String, User>()
 
     /**
-     * @param sessionToken The session token to locate the user (not JSESSIONID)
-     * *
+     * @param sessionToken The session token to locate the user (not JSESSIONID) *
      * @return The matching User or absent
      */
     fun getBySessionToken(sessionToken: String?): User? {
