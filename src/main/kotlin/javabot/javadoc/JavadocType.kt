@@ -14,6 +14,7 @@ enum class JavadocType {
         fun forVersion(version: String): JavadocType {
             return valueOf("JAVA${version}")
         }
+
         fun discover(root: File): JavadocType {
             val manFile = File(root, "META-INF/MANIFEST.MF")
             if (manFile.exists()) {

@@ -47,4 +47,8 @@ interface JavabotConfig : Config, Preprocessor {
     @Key("twitter.accessToken") @DefaultValue("") fun twitterAccessToken(): String
 
     @Key("twitter.accessTokenSecret") @DefaultValue("") fun twitterAccessTokenSecret(): String
+
+    @Key("javabot.chatgpt.token") @DefaultValue("") fun chatGptKey(): String
+
+    @Key("javabot.chatgpt.limit") @DefaultValue("30") fun chatGptLimit(): Int
 }

@@ -196,7 +196,7 @@ constructor(
      * Ugh. Okay, so:
      * 1. See if the first token is a channel. If it is, pull it off and retain it internally...
      * 2. If we have an internal and external channel, they should match. If not, throw a wrong
-     * channel message.
+     *    channel message.
      * 3. If we NEED a channel, and the internal channel is empty, throw a no channel message.
      * 4. return either the internal channel (if present) or the external channel.
      */
