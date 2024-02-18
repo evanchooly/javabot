@@ -100,7 +100,7 @@
                     <dependency>
                         <groupId>com.dyescape</groupId>
                         <artifactId>kotlin-maven-symbol-processing</artifactId>
-                        <version>1.5</version>
+                        <version>${kotlin-maven-symbol-processing.version}</version>
                     </dependency>
                     <dependency>
                         <groupId>dev.morphia.critter</groupId>
@@ -560,6 +560,7 @@
         <sofia.version>0.25</sofia.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kotlin-maven-symbol-processing.version>1.5</kotlin-maven-symbol-processing.version>
     </properties>
 
 </project>

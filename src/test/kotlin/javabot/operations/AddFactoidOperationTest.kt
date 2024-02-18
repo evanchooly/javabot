@@ -5,6 +5,7 @@ import javabot.BaseTest
 import javabot.Message
 import javabot.dao.FactoidDao
 import javabot.dao.LogsDaoTest
+import javabot.model.JavabotUser
 import javax.inject.Inject
 import org.testng.Assert
 import org.testng.Assert.assertEquals
@@ -22,21 +23,29 @@ constructor(
     val forgetFactoidOperation: ForgetFactoidOperation
 ) : BaseTest() {
 
+    companion object {
+        val OK: String = Sofia.ok(TEST_USER_NICK.take(16))
+
+        val TEST_NON_ADMIN_USER_NICK = "nonadminuser"
+        val TEST_NON_ADMIN_USER =
+            JavabotUser(TEST_NON_ADMIN_USER_NICK, TEST_NON_ADMIN_USER_NICK, "hostmask")
+    }
+
     @BeforeMethod
     fun setUp() {
-        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "test", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "ping $1", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "what", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "what up", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "test pong", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "asdf", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "12345", LogsDaoTest.CHANNEL_NAME)
-        factoidDao.delete(BaseTest.TEST_TARGET_NICK, "replace", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.delete(TEST_TARGET_NICK, "test", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.delete(TEST_TARGET_NICK, "ping $1", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.delete(TEST_TARGET_NICK, "what", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.delete(TEST_TARGET_NICK, "what up", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.delete(TEST_TARGET_NICK, "test pong", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.delete(TEST_TARGET_NICK, "asdf", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.delete(TEST_TARGET_NICK, "12345", LogsDaoTest.CHANNEL_NAME)
+        factoidDao.delete(TEST_TARGET_NICK, "replace", LogsDaoTest.CHANNEL_NAME)
     }
 
     fun factoidAdd() {
         var response = addFactoidOperation.handleMessage(message("~test pong is pong"))
-        Assert.assertEquals(response[0].value, OK)
+        assertEquals(response[0].value, OK)
         response =
             addFactoidOperation.handleMessage(
                 message(
@@ -44,12 +53,12 @@ constructor(
                         " response then forgets how long it took"
                 )
             )
-        Assert.assertEquals(response[0].value, OK)
+        assertEquals(response[0].value, OK)
 
         response = addFactoidOperation.handleMessage(message("~what? is a question"))
-        Assert.assertEquals(response[0].value, OK)
+        assertEquals(response[0].value, OK)
         response = addFactoidOperation.handleMessage(message("~what up? is <see>what?"))
-        Assert.assertEquals(response[0].value, OK)
+        assertEquals(response[0].value, OK)
     }
 
     @DataProvider
@@ -68,31 +77,31 @@ constructor(
         assertEquals(response.size, 0)
 
         response = addFactoidOperation.handleMessage(message("~replace is first entry"))
-        Assert.assertEquals(response[0].value, OK)
+        assertEquals(response[0].value, OK)
         var factoid = factoidDao.getFactoid("replace")!!
 
         val updated = factoid.updated
-        Assert.assertEquals(factoid.userName, TEST_USER.nick)
+        assertEquals(factoid.userName, TEST_USER.nick)
 
         response =
             addFactoidOperation.handleMessage(
                 message("~$text, replace is <reply>second entry", user = TEST_NON_ADMIN_USER)
             )
-        Assert.assertEquals(response[0].value, Sofia.ok(TEST_NON_ADMIN_USER.nick))
+        assertEquals(response[0].value, Sofia.ok(TEST_NON_ADMIN_USER.nick))
 
         factoid = factoidDao.getFactoid("replace")!!
         Assert.assertTrue(factoid.updated.isAfter(updated))
-        Assert.assertEquals(factoid.userName, TEST_NON_ADMIN_USER.nick)
+        assertEquals(factoid.userName, TEST_NON_ADMIN_USER.nick)
 
         response = getFactoidOperation.handleMessage(message("~replace"))
-        Assert.assertEquals(response[0].value, "second entry")
+        assertEquals(response[0].value, "second entry")
 
         response = forgetFactoidOperation.handleMessage(message("~forget replace"))
-        Assert.assertEquals(response[0].value, Sofia.factoidForgotten("replace", TEST_USER.nick))
+        assertEquals(response[0].value, Sofia.factoidForgotten("replace", TEST_USER.nick))
 
         response =
             addFactoidOperation.handleMessage(message("~$text, replace is <reply>second entry"))
-        Assert.assertEquals(response[0].value, Sofia.factoidUnknown("replace"))
+        assertEquals(response[0].value, Sofia.factoidUnknown("replace"))
     }
 
     @Test
@@ -102,54 +111,48 @@ constructor(
 
         var response =
             addFactoidOperation.handleMessage(message("~epesh is cool", user = TEST_NON_ADMIN_USER))
-        Assert.assertEquals(response.size, 1)
-        Assert.assertEquals(response[0].value, "OK, ${TEST_NON_ADMIN_USER.nick}.")
+        assertEquals(response.size, 1)
+        assertEquals(response[0].value, "OK, ${TEST_NON_ADMIN_USER.nick}.")
         val updated = factoidDao.getFactoid("epesh")!!.updated
 
         response =
             addFactoidOperation.handleMessage(
                 message("~epesh is awesome", user = TEST_NON_ADMIN_USER)
             )
-        Assert.assertEquals(response.size, 1)
-        Assert.assertEquals(
-            response[0].value,
-            Sofia.factoidExists("epesh", TEST_NON_ADMIN_USER.nick)
-        )
+        assertEquals(response.size, 1)
+        assertEquals(response[0].value, Sofia.factoidExists("epesh", TEST_NON_ADMIN_USER.nick))
         Assert.assertFalse(factoidDao.getFactoid("epesh")!!.updated.isAfter(updated))
 
         response = getFactoidOperation.handleMessage(message("~epesh", user = TEST_NON_ADMIN_USER))
-        Assert.assertEquals(response.size, 1)
-        Assert.assertEquals(response[0].value, "${TEST_NON_ADMIN_USER.nick}, epesh is cool")
+        assertEquals(response.size, 1)
+        assertEquals(response[0].value, "${TEST_NON_ADMIN_USER.nick}, epesh is cool")
 
         response =
             forgetFactoidOperation.handleMessage(
                 message("~forget epesh", user = TEST_NON_ADMIN_USER)
             )
-        Assert.assertEquals(response.size, 1)
-        Assert.assertEquals(
-            response[0].value,
-            Sofia.factoidForgotten("epesh", TEST_NON_ADMIN_USER.nick)
-        )
+        assertEquals(response.size, 1)
+        assertEquals(response[0].value, Sofia.factoidForgotten("epesh", TEST_NON_ADMIN_USER.nick))
     }
 
     @Test(dependsOnMethods = arrayOf("factoidAdd"))
     fun duplicateAdd() {
         val message = "~test pong is pong"
         var response = addFactoidOperation.handleMessage(message(message))
-        Assert.assertEquals(response[0].value, OK)
+        assertEquals(response[0].value, OK)
         response = addFactoidOperation.handleMessage(message(message))
-        Assert.assertEquals(response[0].value, Sofia.factoidExists("test pong", TEST_USER.nick))
+        assertEquals(response[0].value, Sofia.factoidExists("test pong", TEST_USER.nick))
         forgetFactoidOperation.handleMessage(message("~forget test pong"))
     }
 
     fun blankValue() {
         val response = addFactoidOperation.handleMessage(message("~pong is"))
-        Assert.assertEquals(response.size, 0)
+        assertEquals(response.size, 0)
     }
 
     fun addLog() {
         val response = addFactoidOperation.handleMessage(message("~12345 is 12345"))
-        Assert.assertEquals(response[0].value, OK)
+        assertEquals(response[0].value, OK)
         Assert.assertTrue(
             changeDao.findLog(
                 Sofia.factoidAdded(TEST_USER.nick, "12345", "12345", TEST_CHANNEL.name)
@@ -161,9 +164,9 @@ constructor(
     fun parensFactoids() {
         val factoid = "should be the full (/hi there) factoid"
         var response = addFactoidOperation.handleMessage(message("~asdf is <reply>$factoid"))
-        Assert.assertEquals(response[0].value, OK)
+        assertEquals(response[0].value, OK)
         response = getFactoidOperation.handleMessage(message("~asdf"))
-        Assert.assertEquals(response[0].value, factoid)
+        assertEquals(response[0].value, factoid)
     }
 
     fun privMessage() {
@@ -171,6 +174,6 @@ constructor(
             .processMessage(
                 Message(TARGET_USER, System.currentTimeMillis().toString() + " is doh!")
             )
-        Assert.assertEquals(messages.get()[0], Sofia.privmsgChange())
+        assertEquals(messages.get()[0], Sofia.privmsgChange())
     }
 }
