@@ -21,6 +21,11 @@ class IrcAdapterTest : BaseTest() {
 
     @Inject lateinit var ircAdapter: IrcAdapter
     @Inject lateinit var factoidDao: FactoidDao
+    val testIrcChannel: MockIrcChannel by lazy { MockIrcChannel(ircBot.get(), TEST_CHANNEL.name) }
+
+    val testIrcUser: MockIrcUser by lazy { MockIrcUser(ircBot.get(), TEST_USER.nick) }
+
+    val testIrcHostmask: MockUserHostmask by lazy { MockUserHostmask(ircBot.get(), TEST_USER.nick) }
 
     private val duration = Duration(10, SECONDS)
 
