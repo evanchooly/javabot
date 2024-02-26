@@ -19,16 +19,20 @@ constructor(bot: Javabot, adminDao: AdminDao, var chatGPTDao: ChatGPTDao) :
             val uuid = UUID.randomUUID()
             val query = message.substringAfter("gpt ")
             val prompt =
-                """Someone is asking "$query". 
+                """Someone is asking '$query'. 
                 Restrict your answer to being applicable to the Java Virtual Machine, 
                 and limit the response's length as if it were to be posted on Twitter, 
                 but without hashtags or other such twitter-like features; 
                 if the answer does not contain constructive information for Java programming, 
-                respond ONLY with \"$uuid-not applicable\" and no other text"""
+                respond ONLY with "$uuid-not applicable" and no other text"""
                     .trimIndent()
-            val result = chatGPTDao.sendPromptToChatGPT(prompt)
-            if (!result.isNullOrEmpty() && !result.lowercase().contains(uuid.toString())) {
-                responses.add(Message(event, result.toString()))
+            try {
+                val result = chatGPTDao.sendPromptToChatGPT(prompt)
+                if (!result.isNullOrEmpty() && !result.lowercase().contains(uuid.toString())) {
+                    responses.add(Message(event, result.toString()))
+                }
+            } catch (e: Throwable) {
+                Javabot.LOG.info("exception", e)
             }
         }
         return responses

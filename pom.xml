@@ -540,11 +540,7 @@
             <artifactId>xz</artifactId>
             <version>1.9</version>
         </dependency>
-        <dependency>
-            <groupId>io.github.umutayb</groupId>
-            <artifactId>gpt-utilities</artifactId>
-            <version>0.1.4</version>
-        </dependency>
+
     </dependencies>
 
     <properties>
