@@ -1,12 +1,15 @@
 package javabot.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.inject.Singleton
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 import okhttp3.Headers.Companion.toHeaders
 import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class HttpServiceException(message: String = "No message") : Exception(message)
 
@@ -63,26 +66,57 @@ class HttpService {
         params: Map<String, String> = emptyMap(),
         headers: Map<String, String> = emptyMap(),
         options: Map<HTTP_OPTIONS, Duration> = emptyMap()
+    ): String = request(url, params, headers, options, "get", null)
+
+    fun post(
+        url: String,
+        params: Map<String, String> = emptyMap(),
+        headers: Map<String, String> = emptyMap(),
+        options: Map<HTTP_OPTIONS, Duration> = emptyMap(),
+        body: Any? = null
+    ): String = request(url, params, headers, options, "post", body)
+
+    fun request(
+        url: String,
+        params: Map<String, String> = emptyMap(),
+        headers: Map<String, String> = emptyMap(),
+        options: Map<HTTP_OPTIONS, Duration> = emptyMap(),
+        method: String = "get",
+        body: Any? = null
     ): String {
         val httpUrl = url.toHttpUrl()
         val builder = httpUrl.newBuilder()
         params.forEach { builder.addQueryParameter(it.key, it.value) }
-        val request = Request.Builder().url(builder.build()).headers(headers.toHeaders()).build()
+        val requestBuilder = Request.Builder().url(builder.build()).headers(headers.toHeaders())
+        when (method) {
+            "get" -> requestBuilder.get()
+            "post" -> {
+                val mapper = ObjectMapper()
+                val bodyContent = mapper.writeValueAsString(body)
+                requestBuilder.post(
+                    bodyContent.toRequestBody("application/json; chartset=utf-8".toMediaType())
+                )
+            }
 
+            else ->
+                throw IllegalArgumentException("method type $method not supported by HttpService")
+        }
+        val request = requestBuilder.build()
         // if options aren't empty, build a local copy of the request.
         // otherwise, use the global client options as is.
-        if (!options.isEmpty()) {
-                val localRequest = client.newBuilder()
+        if (options.isNotEmpty()) {
+            val localRequest = client.newBuilder()
 
-                options.forEach { action -> action.key.apply(localRequest, action.value) }
+            options.forEach { action -> action.key.apply(localRequest, action.value) }
 
-                localRequest.build()
-            } else {
-                client
-            }
+            localRequest.build()
+        } else {
+            client
+        }
             .newCall(request)
             .execute()
             .use { response ->
+                println(response)
                 if (response.isSuccessful) {
                     return (response.body?.string() ?: throw HttpServiceException())
                 } else {
