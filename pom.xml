@@ -100,7 +100,7 @@
                     <dependency>
                         <groupId>com.dyescape</groupId>
                         <artifactId>kotlin-maven-symbol-processing</artifactId>
-                        <version>1.5</version>
+                        <version>${kotlin-maven-symbol-processing.version}</version>
                     </dependency>
                     <dependency>
                         <groupId>dev.morphia.critter</groupId>
@@ -155,7 +155,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.2.0</version>
 
                 <configuration>
                     <mainClass>javabot.Javabot</mainClass>
@@ -387,7 +387,7 @@
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-core</artifactId>
-            <version>1.7.3</version>
+            <version>1.8.0</version>
         </dependency>
 
         <!-- dropwizard deps -->
@@ -446,7 +446,7 @@
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>bootstrap</artifactId>
-            <version>5.3.2</version>
+            <version>5.3.3</version>
         </dependency>
         <!-- webjars -->
 
@@ -465,7 +465,7 @@
         <dependency>
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-youtube</artifactId>
-            <version>v3-rev20240123-2.0.0</version>
+            <version>v3-rev20240225-2.0.0</version>
         </dependency>
 
         <dependency>
@@ -512,7 +512,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>mongodb</artifactId>
-            <version>1.19.4</version>
+            <version>1.19.6</version>
             <scope>test</scope>
         </dependency>
         <!-- Unit testing dependencies -->
@@ -552,14 +552,15 @@
         <jacoco.version>0.8.5</jacoco.version>
         <jaxb.version>2.3.1</jaxb.version>
         <jsoup.version>1.15.4</jsoup.version>
-        <kotlin.version>1.8.10</kotlin.version>
-        <logback.version>1.4.14</logback.version>
-        <morphia.version>2.3.1</morphia.version>
+        <kotlin.version>1.9.22</kotlin.version>
+        <logback.version>1.5.0</logback.version>
+        <morphia.version>2.3.9</morphia.version>
         <okhttp.version>4.10.0</okhttp.version>
         <slf4j.version>2.0.12</slf4j.version>
         <sofia.version>0.25</sofia.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kotlin-maven-symbol-processing.version>1.6</kotlin-maven-symbol-processing.version>
     </properties>
 
 </project>

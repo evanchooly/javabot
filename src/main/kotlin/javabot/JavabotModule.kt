@@ -19,6 +19,7 @@ import javabot.model.javadoc.JavadocClass
 import javabot.web.views.ViewFactory
 import javax.inject.Singleton
 import javax.net.ssl.SSLSocketFactory
+import net.thauvin.erik.bitly.Bitly
 import org.aeonbits.owner.Config.Key
 import org.aeonbits.owner.ConfigFactory
 import org.pircbotx.Configuration.Builder
@@ -122,6 +123,13 @@ open class JavabotModule : AbstractModule() {
             validate(config!!)
         }
         return config!!
+    }
+
+    @Provides
+    @Singleton
+    fun bitly(): Bitly? {
+        val bitlyToken = javabotConfig().bitlyToken()
+        return if (bitlyToken != "") Bitly(bitlyToken) else null
     }
 
     protected open fun loadConfigProperties(): HashMap<Any, Any> = HashMap()

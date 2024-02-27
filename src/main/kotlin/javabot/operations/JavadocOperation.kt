@@ -31,12 +31,6 @@ constructor(
 
     @field:[Nullable Inject(optional = true)]
     var bitly: Bitly? = null
-        get() {
-            if (field == null) {
-                field = if (config.bitlyToken() != "") Bitly(config.bitlyToken()) else null
-            }
-            return field
-        }
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

@@ -1,12 +1,10 @@
 package javabot
 
-import com.antwerkz.sofia.Sofia
 import com.google.inject.Injector
 import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.Duration
 import dev.morphia.Datastore
 import java.util.EnumSet
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeUnit.SECONDS
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
@@ -41,24 +39,14 @@ open class BaseTest {
     companion object {
         val TEST_TARGET_NICK: String = "jbtestuser"
         val TEST_USER_NICK: String = "botuser"
-        val TEST_NON_ADMIN_USER_NICK = "nonadminuser"
         val TEST_BOT_NICK: String = "testjavabot"
         val BOT_EMAIL: String = "test@example.com"
         val DONE: EnumSet<State> = EnumSet.of(State.COMPLETED, State.FAILED)
-        val OK: String = Sofia.ok(TEST_USER_NICK.take(16))
         val TARGET_USER = JavabotUser(TEST_TARGET_NICK, TEST_TARGET_NICK, "hostmask")
         val TEST_USER = JavabotUser(TEST_USER_NICK, TEST_USER_NICK, "hostmask")
-        val TEST_NON_ADMIN_USER =
-            JavabotUser(TEST_NON_ADMIN_USER_NICK, TEST_NON_ADMIN_USER_NICK, "hostmask")
         val TEST_CHANNEL = Channel("#jbunittest")
         private val LOG = LoggerFactory.getLogger(BaseTest::class.java)
     }
-
-    val testIrcChannel: MockIrcChannel by lazy { MockIrcChannel(ircBot.get(), TEST_CHANNEL.name) }
-
-    val testIrcUser: MockIrcUser by lazy { MockIrcUser(ircBot.get(), TEST_USER.nick) }
-
-    val testIrcHostmask: MockUserHostmask by lazy { MockUserHostmask(ircBot.get(), TEST_USER.nick) }
 
     @Inject lateinit var injector: Injector
 
@@ -136,7 +124,7 @@ open class BaseTest {
         alias: String,
         timeout: Duration = Duration(15, SECONDS)
     ) {
-        Awaitility.await(alias).atMost(timeout).pollInterval(1, TimeUnit.SECONDS).until<Boolean> {
+        Awaitility.await(alias).atMost(timeout).pollInterval(1, SECONDS).until<Boolean> {
             DONE.contains(eventDao.find(event.id)?.state)
         }
     }
