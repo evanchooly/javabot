@@ -93,7 +93,8 @@ constructor(
 
     val activeOperations = sortedSetOf(OperationComparator())
 
-    @Volatile private var running = true
+    @Volatile
+    private var running = true
 
     init {
         val hook = Thread { this.shutdown() }
@@ -262,8 +263,8 @@ constructor(
 
         if (
             !ignores.contains(sender.nick) &&
-                !shunDao.isShunned(sender.nick) &&
-                (message.channel != null || isOnCommonChannel(message.user))
+            !shunDao.isShunned(sender.nick) &&
+            (message.channel != null || isOnCommonChannel(message.user))
         ) {
             try {
                 if (message.triggered) {
@@ -292,16 +293,16 @@ constructor(
     }
 
     private fun postMessage(event: Message) {
-        if (event is Action) {
-            postAction(event.channel!!, event.value)
-        } else {
-            val value = event.massageTell()
-            if (event.channel != null) {
-                logMessage(event.channel, event.user, value)
-                adapter.send(event.channel, value)
-            } else {
-                LOG.debug("channel is null.  sending directly to user: " + event)
-                privateMessageUser(event.user, value)
+        when {
+            event is NoOperationMessage -> {}
+            event is Action -> postAction(event.channel!!, event.value)
+            event.channel != null -> {
+                logMessage(event.channel, event.user, event.massageTell())
+                adapter.send(event.channel, event.massageTell())
+            }
+            else -> {
+                LOG.debug("channel is null.  sending directly to user: $event")
+                privateMessageUser(event.user, event.massageTell())
             }
         }
     }
@@ -338,9 +339,9 @@ constructor(
 
         if (
             responses.isEmpty() &&
-                (!message.value
-                    .lowercase(Locale.getDefault())
-                    .startsWith("${nick}'s".lowercase(Locale.getDefault())))
+            (!message.value
+                .lowercase(Locale.getDefault())
+                .startsWith("${nick}'s".lowercase(Locale.getDefault())))
         ) {
             responses.add(
                 Message(message.channel, message.user, Sofia.unhandledMessage(message.user.nick))
