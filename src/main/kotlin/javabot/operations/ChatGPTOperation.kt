@@ -17,7 +17,7 @@ constructor(
     private var chatGPTDao: ChatGPTDao,
     private var getFactoidOperation: GetFactoidOperation
 
-) :    BotOperation(bot, adminDao) {
+) : BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val message = event.value
         val responses = mutableListOf<Message>()
@@ -39,10 +39,11 @@ constructor(
                     )
 
                 else -> {
-                    val factoid=getFactoidOperation.handleMessage(Message(event.user,query)).firstOrNull()?.value
-                    val seed=when {
-                        factoid!=null ->
+                    val factoid = getFactoidOperation.handleMessage(Message(event.user, query)).firstOrNull()?.value
+                    val seed = when {
+                        factoid != null ->
                             "Please frame the response in the context of the query having a potential answer of '${factoid}'."
+
                         else -> ""
                     }
                     val uuid = UUID.randomUUID()
@@ -50,16 +51,16 @@ constructor(
                         """
                         Someone is asking '$query'.
                         Restrict your answer to being applicable to the Java Virtual Machine,
-                        and limit the response's length to under 510 characters, 
+                        and limit the response's length to under 500 characters, 
                         formatted as simple text, no markdown or other markup, but urls are acceptable.
                         $seed
                         If the answer does not contain constructive information for Java programmers,
                         respond **ONLY** with "$uuid-not applicable" and no other text.
                         """.trimIndent().trim()
                     try {
-                        val result = chatGPTDao.sendPromptToChatGPT(prompt)
+                        val result = chatGPTDao.sendPromptToChatGPT(query, prompt)
                         if (!result.isNullOrEmpty() && !result.lowercase().contains(uuid.toString())) {
-                            val response=result.cleanForIRC()
+                            val response = result.cleanForIRC()
                             responses.add(Message(event, response))
                         }
                     } catch (e: Throwable) {
