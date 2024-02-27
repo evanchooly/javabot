@@ -3,6 +3,7 @@ package javabot.operations
 import java.util.*
 import javabot.Javabot
 import javabot.Message
+import javabot.NoOperationMessage
 import javabot.dao.AdminDao
 import javabot.dao.ChatGPTDao
 import javabot.dao.FactoidDao
@@ -62,6 +63,8 @@ constructor(
                         if (!result.isNullOrEmpty() && !result.lowercase().contains(uuid.toString())) {
                             val response = result.cleanForIRC()
                             responses.add(Message(event, response))
+                        } else {
+                            responses.add(NoOperationMessage(event, "no appropriate response from ChatGPT"))
                         }
                     } catch (e: Throwable) {
                         Javabot.LOG.info("exception", e)
