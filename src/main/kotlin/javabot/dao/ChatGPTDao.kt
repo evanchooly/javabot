@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import io.dropwizard.util.Duration
+import javabot.Javabot
 import javabot.JavabotConfig
 import javabot.operations.throttle.BotRateLimiter
 import javabot.service.HttpService

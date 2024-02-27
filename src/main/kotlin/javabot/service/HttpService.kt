@@ -43,8 +43,8 @@ class HttpService {
     private val client =
         OkHttpClient()
             .newBuilder()
-            .callTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(5, TimeUnit.SECONDS)
+            .callTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
             .connectTimeout(5, TimeUnit.SECONDS)
             .addInterceptor { chain ->
                 val request = chain.request()
@@ -116,7 +116,6 @@ class HttpService {
             .newCall(request)
             .execute()
             .use { response ->
-                println(response)
                 if (response.isSuccessful) {
                     return (response.body?.string() ?: throw HttpServiceException())
                 } else {
