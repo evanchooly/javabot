@@ -10,7 +10,6 @@ import io.dropwizard.util.Duration
 import javabot.JavabotConfig
 import javabot.operations.throttle.BotRateLimiter
 import javabot.service.HttpService
-import org.apache.commons.compress.harmony.unpack200.NewAttributeBands.Callable
 import java.util.concurrent.TimeUnit
 
 data class GPTMessageContainer(
@@ -68,7 +67,7 @@ constructor(
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
 
-    private fun getGPTResponse(key: String, prompt: String): GPTResponse {
+    private fun getGPTResponse(prompt: String): GPTResponse {
         val data = httpService.post(
             "https://api.openai.com/v1/chat/completions",
             emptyMap(),
@@ -84,7 +83,7 @@ constructor(
         val mapper = ObjectMapper()
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         return if (javabotConfig.chatGptKey().isNotEmpty() && limiter.tryAcquire()) {
-            val response = queryCache.get(key) { getGPTResponse(key, prompt) }
+            val response = queryCache.get(key) { getGPTResponse(prompt) }
             return response.choices.first().message.content
         } else {
             // no chatGPT key? No chatGPT attempt.
