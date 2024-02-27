@@ -3,13 +3,14 @@ package javabot.dao
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.common.cache.CacheBuilder
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import io.dropwizard.util.Duration
-import javabot.Javabot
 import javabot.JavabotConfig
 import javabot.operations.throttle.BotRateLimiter
 import javabot.service.HttpService
+import java.util.concurrent.TimeUnit
 
 data class GPTMessageContainer(
     val messages: List<GPTMessage>,
@@ -52,22 +53,37 @@ constructor(
     private val javabotConfig: JavabotConfig,
     private val httpService: HttpService,
 ) {
-    private var limiter: BotRateLimiter =
-        BotRateLimiter(javabotConfig.chatGptLimit(), Duration.days(1).toMilliseconds())
+    private val mapper: ObjectMapper
 
-    fun sendPromptToChatGPT(prompt: String): String? {
+    private val limiter: BotRateLimiter =
+        BotRateLimiter(javabotConfig.chatGptLimit(), Duration.days(1).toMilliseconds())
+    private val queryCache = CacheBuilder.newBuilder()
+        .maximumSize(100)
+        .expireAfterWrite(1, TimeUnit.DAYS)
+        .build<String, GPTResponse>();
+
+    init {
+        mapper = ObjectMapper()
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    }
+
+    private fun getGPTResponse(prompt: String): GPTResponse {
+        val data = httpService.post(
+            "https://api.openai.com/v1/chat/completions",
+            emptyMap(),
+            mapOf("Authorization" to "Bearer ${javabotConfig.chatGptKey()}"),
+            emptyMap(),
+            GPTMessageContainer(listOf(GPTMessage(prompt)))
+        )
+        val response = mapper.readValue(data, GPTResponse::class.java)
+        return response
+    }
+
+    fun sendPromptToChatGPT(key: String, prompt: String): String? {
         val mapper = ObjectMapper()
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         return if (javabotConfig.chatGptKey().isNotEmpty() && limiter.tryAcquire()) {
-            val data =
-                httpService.post(
-                    "https://api.openai.com/v1/chat/completions",
-                    emptyMap(),
-                    mapOf("Authorization" to "Bearer ${javabotConfig.chatGptKey()}"),
-                    emptyMap(),
-                    GPTMessageContainer(listOf(GPTMessage(prompt)))
-                )
-            val response = mapper.readValue(data, GPTResponse::class.java)
+            val response = queryCache.get(key) { getGPTResponse(prompt) }
             return response.choices.first().message.content
         } else {
             // no chatGPT key? No chatGPT attempt.

@@ -137,3 +137,27 @@ open class Message(
         return "Message{channel=${channel?.name ?: ""}, user=${user.nick}, message='$value', tell=${tell}}"
     }
 }
+
+/**
+ * This is a standard message type whose content is NOT output to a user.
+ */
+class NoOperationMessage(
+    channel: Channel? = null,
+    user: JavabotUser,
+    value: String,
+    target: JavabotUser? = null,
+    triggered: Boolean = true,
+    addressed: Boolean = false
+) : Message(
+    channel,
+    user,
+    value,
+    target,
+    triggered,
+    addressed
+) {
+    constructor(
+        message: Message,
+        value: String
+    ) : this(message.channel, message.user, value, message.target)
+}
