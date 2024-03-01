@@ -1,5 +1,7 @@
 package javabot.operations
 
+import com.enigmastation.kgpt.asSystem
+import com.enigmastation.kgpt.asUser
 import java.util.*
 import javabot.Javabot
 import javabot.Message
@@ -43,23 +45,26 @@ constructor(
                     val factoid = getFactoidOperation.handleMessage(Message(event.user, query)).firstOrNull()?.value
                     val seed = when {
                         factoid != null ->
-                            "Please frame the response in the context of the query having a potential answer of '${factoid}'."
-
-                        else -> ""
+                            "Frame the response in the context of the query having a potential answer of '${factoid}'."
+                        else -> null
                     }
                     val uuid = UUID.randomUUID()
-                    val prompt =
-                        """
-                        Someone is asking '$query'.
-                        Restrict your answer to being applicable to the Java Virtual Machine,
-                        and limit the response's length to under 500 characters, 
-                        formatted as simple text, no markdown or other markup, but urls are acceptable.
-                        $seed
-                        If the answer does not contain constructive information for Java programmers,
-                        respond **ONLY** with "$uuid-not applicable" and no other text.
-                        """.trimIndent().trim()
                     try {
-                        val result = chatGPTDao.sendPromptToChatGPT(query, prompt)
+                        val result = chatGPTDao.sendPromptToChatGPT(
+                            query,
+                            listOfNotNull(
+                                "Someone is asking '$query', in the context of the Java Virtual Machine.".asUser(),
+                                """
+                                    If the answer does not contain constructive information for Java programmers,
+                                    respond **ONLY** with \"$uuid-not applicable\" and no other text.
+                                     
+                                    Restrict your answer to being applicable to the Java Virtual Machine, and 
+                                    limit the response's length to under 500 characters, formatted as simple text, 
+                                    no markdown or other markup, but urls are acceptable.
+                                """.trimIndent().asSystem(),
+                                seed?.asSystem()
+                            )
+                        )
                         if (!result.isNullOrEmpty() && !result.lowercase().contains(uuid.toString())) {
                             val response = result.cleanForIRC()
                             responses.add(Message(event, response))
