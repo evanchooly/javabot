@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import javabot.BaseTest
 import javabot.Javabot.Companion.LOG
 import javabot.JavabotConfig
+import javabot.NoOperationMessage
 import org.testng.Assert.assertTrue
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.DataProvider
@@ -44,8 +45,10 @@ class ChatGPTOperationTest : BaseTest() {
         if (config.chatGptKey().isNotEmpty()) {
             val response =
                 operation.handleMessage(message("~gpt $prompt"))
+            println(response)
             if (empty) {
-                assertTrue(response.isEmpty())
+                assertTrue(response.isNotEmpty())
+                assertTrue(response[0] is NoOperationMessage)
             } else {
                 assertTrue(response.isNotEmpty())
                 assertTrue(response[0].value.lowercase().contains(match.lowercase()))
