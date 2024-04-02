@@ -41,6 +41,7 @@ class Factoid() : Serializable, Persistent {
     var lastUsed: LocalDateTime? = null
 
     var locked = false
+    var usage = 0
 
     @Indexed lateinit var upperName: String
 
@@ -94,7 +95,7 @@ class Factoid() : Serializable, Persistent {
 
     private fun camelcase(`in`: String): String {
         val sb = StringBuilder(`in`.replace("\\s".toRegex(), " "))
-        if (!`in`.isEmpty()) {
+        if (`in`.isNotEmpty()) {
             var idx = sb.indexOf(" ")
             sb.setCharAt(0, Character.toUpperCase(sb[0]))
             while (idx > -1) {
@@ -141,14 +142,15 @@ class Factoid() : Serializable, Persistent {
 
     override fun toString(): String {
         return format(
-            "Factoid{id=%s, name='%s', value='%s', userName='%s', updated=%s, lastUsed=%s, locked=%s}",
+            "Factoid{id=%s, name='%s', value='%s', userName='%s', updated=%s, lastUsed=%s, locked=%s, usage=%d}",
             id,
             name,
             value,
             userName,
             updated,
             lastUsed,
-            locked
+            locked,
+            usage
         )
     }
 

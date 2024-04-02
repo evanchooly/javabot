@@ -102,12 +102,14 @@ class GetFactoidOperationTest : BaseTest() {
     }
 
     fun straightGets() {
+        Assert.assertEquals(factoidDao.getFactoid("api")?.usage, 0)
         val response = operation.handleMessage(message("~api"))
         Assert.assertEquals(
             response[0].value,
             getFoundMessage("api", "http://java.sun.com/javase/current/docs/api/index.html")
         )
         Assert.assertNotNull(factoidDao.getFactoid("api")?.lastUsed)
+        Assert.assertEquals(factoidDao.getFactoid("api")?.usage, 1)
     }
 
     fun dates() {

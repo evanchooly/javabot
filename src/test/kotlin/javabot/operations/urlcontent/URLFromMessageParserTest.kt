@@ -32,19 +32,19 @@ class URLFromMessageParserTest {
             ),
             arrayOf(
                 "Don't fix mismatched punctuation  {http://sample.com)",
-                expectedUrls("http://sample.com)")
+                expectedUrls("http://sample.com")
             ),
             arrayOf(
                 "Don't fix mismatched punctuation (http://sample.com]",
-                expectedUrls("http://sample.com]")
+                expectedUrls("http://sample.com")
             ),
             arrayOf(
                 "Don't fix mismatched punctuation [http://sample.com}",
-                expectedUrls("http://sample.com}")
+                expectedUrls("http://sample.com")
             ),
             arrayOf(
                 "Message has parens (like this) before http://sample.com)",
-                expectedUrls("http://sample.com)")
+                expectedUrls("http://sample.com")
             )
         )
     }
