@@ -1,5 +1,6 @@
 package javabot.operations.urlcontent
 
+import java.net.URI
 import java.net.URL
 import java.util.ArrayList
 import java.util.stream.Collectors
@@ -20,7 +21,7 @@ class URLFromMessageParser {
             val url =
                 if (idxSpace == -1) message.substring(idxHttp)
                 else message.substring(idxHttp, idxSpace)
-            potentialUrlsFound.add(stripPunctuation(message, url, idxHttp))
+            potentialUrlsFound.add(stripPunctuation(url))
             idxHttp = if (idxSpace == -1) -1 else message.indexOf("http", idxSpace)
         }
 
@@ -29,7 +30,7 @@ class URLFromMessageParser {
         return list
     }
 
-    private fun stripPunctuation(message: String, url: String, idxUrlStart: Int): String {
+    private fun stripPunctuation(url: String): String {
         val last = url[url.length - 1]
 
         val idxPunc = ArrayUtils.indexOf(CLOSE_PUNCTUATION, last)
@@ -42,7 +43,7 @@ class URLFromMessageParser {
 
     private fun urlFromToken(token: String): URL? {
         return try {
-            val url = URL(token)
+            val url = URI(token).toURL()
             if (blacklistHosts.contains(url.host)) null else url
         } catch (e: Exception) {
             null
@@ -57,8 +58,8 @@ class URLFromMessageParser {
                 this::class
                     .java
                     .getResourceAsStream("/urlBlacklist.csv")
-                    .bufferedReader(Charsets.UTF_8)
-                    .use { it.lines().collect(Collectors.toList()) }
+                    ?.bufferedReader(Charsets.UTF_8)
+                    .use { it!!.lines().collect(Collectors.toList()) }
             } catch (ignored: Exception) {
                 emptyList()
             }
