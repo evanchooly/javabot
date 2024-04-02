@@ -51,7 +51,6 @@ class URLFromMessageParser {
     }
 
     companion object {
-        private val OPEN_PUNCTUATION = charArrayOf('{', '(', '[')
         private val CLOSE_PUNCTUATION = charArrayOf('}', ')', ']')
         val blacklistHosts: List<String> =
             try {
