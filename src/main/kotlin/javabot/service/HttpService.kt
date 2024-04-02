@@ -97,7 +97,6 @@ class HttpService {
                     bodyContent.toRequestBody("application/json; chartset=utf-8".toMediaType())
                 )
             }
-
             else ->
                 throw IllegalArgumentException("method type $method not supported by HttpService")
         }
@@ -105,14 +104,14 @@ class HttpService {
         // if options aren't empty, build a local copy of the request.
         // otherwise, use the global client options as is.
         if (options.isNotEmpty()) {
-            val localRequest = client.newBuilder()
+                val localRequest = client.newBuilder()
 
-            options.forEach { action -> action.key.apply(localRequest, action.value) }
+                options.forEach { action -> action.key.apply(localRequest, action.value) }
 
-            localRequest.build()
-        } else {
-            client
-        }
+                localRequest.build()
+            } else {
+                client
+            }
             .newCall(request)
             .execute()
             .use { response ->

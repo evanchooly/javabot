@@ -11,40 +11,42 @@ import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
 class ChatGPTOperationTest : BaseTest() {
-    @Inject
-    protected lateinit var operation: ChatGPTOperation
-    @Inject
-    protected lateinit var addFactoidOperation: AddFactoidOperation
+    @Inject protected lateinit var operation: ChatGPTOperation
+    @Inject protected lateinit var addFactoidOperation: AddFactoidOperation
 
-    @Inject
-    protected lateinit var config: JavabotConfig
+    @Inject protected lateinit var config: JavabotConfig
 
     @BeforeClass
     fun prepFactoids() {
-        addFactoidOperation.handleMessage(message("""
+        addFactoidOperation.handleMessage(
+            message(
+                """
             ~suffering-oriented programming is 
             <reply>Suffering-oriented programming: 
             make it work, make it pretty, make it fast 
             - in that order. 
             http://nathanmarz.com/blog/suffering-oriented-programming.html"""
-            .cleanForIRC()))
+                    .cleanForIRC()
+            )
+        )
     }
+
     @DataProvider
-    fun queries() = arrayOf(
-        arrayOf("help", false, "query. Note that GPT"),
-        arrayOf("speed of an african laden swallow", true, ""),
-        arrayOf("what is the maven directory structure", false, "Maven directory structure"),
-        arrayOf("suffering-oriented programming", false, "Suffering-oriented programming"),
-        arrayOf("list of DI frameworks", false, "Spring"),
-        arrayOf("list of DI frameworks", false, "Spring"),
-        arrayOf("how do I declare a new variable in Javascript", true, "")
-    )
+    fun queries() =
+        arrayOf(
+            arrayOf("help", false, "query. Note that GPT"),
+            arrayOf("speed of an african laden swallow", true, ""),
+            arrayOf("what is the maven directory structure", false, "Maven directory structure"),
+            arrayOf("suffering-oriented programming", false, "Suffering-oriented programming"),
+            arrayOf("list of DI frameworks", false, "Spring"),
+            arrayOf("list of DI frameworks", false, "Spring"),
+            arrayOf("how do I declare a new variable in Javascript", true, "")
+        )
 
     @Test(dataProvider = "queries")
     fun runTestQuery(prompt: String, empty: Boolean, match: String) {
         if (config.chatGptKey().isNotEmpty()) {
-            val response =
-                operation.handleMessage(message("~gpt $prompt"))
+            val response = operation.handleMessage(message("~gpt $prompt"))
             println(response)
             if (empty) {
                 assertTrue(response.isNotEmpty())
@@ -57,7 +59,6 @@ class ChatGPTOperationTest : BaseTest() {
             LOG.info("ChatGPT testing skipped, no key configured")
         }
     }
-
 
     fun testNonJavaQuestion() {
         if (config.chatGptKey().isNotEmpty()) {
