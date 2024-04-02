@@ -5,7 +5,6 @@ import java.util.ArrayList
 import java.util.stream.Collectors
 import org.apache.commons.lang.StringUtils.isBlank
 import org.apache.commons.lang3.ArrayUtils
-import org.apache.commons.lang3.StringUtils
 
 class URLFromMessageParser {
 
@@ -37,21 +36,21 @@ class URLFromMessageParser {
         if (idxPunc == -1) {
             return url
         } else {
-            return url.substring(0,url.indexOf(CLOSE_PUNCTUATION[idxPunc]))
+            return url.substring(0, url.indexOf(CLOSE_PUNCTUATION[idxPunc]))
         }
 
         // Walk backwards in message from urlStart, and strip the punctuation if an open
         // brace/bracket is seen
         // before another close.  Otherwise, return the url as is.
-//        for (c in StringUtils.reverse(message.substring(0, idxUrlStart)).toCharArray()) {
-//            if (c == OPEN_PUNCTUATION[idxPunc]) {
-//                return url.substring(0, url.length - 1)
-//            }
-//            if (c == CLOSE_PUNCTUATION[idxPunc]) {
-//                return url
-//            }
-//        }
-//        return url
+        //        for (c in StringUtils.reverse(message.substring(0, idxUrlStart)).toCharArray()) {
+        //            if (c == OPEN_PUNCTUATION[idxPunc]) {
+        //                return url.substring(0, url.length - 1)
+        //            }
+        //            if (c == CLOSE_PUNCTUATION[idxPunc]) {
+        //                return url
+        //            }
+        //        }
+        //        return url
     }
 
     private fun urlFromToken(token: String): URL? {
