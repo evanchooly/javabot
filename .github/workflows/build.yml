@@ -11,4 +11,3 @@ jobs:
     uses: evanchooly/workflows/.github/workflows/code-audits.yml@master
   Build:
     uses: evanchooly/workflows/.github/workflows/build.yml@master
-    needs: CodeAudits
