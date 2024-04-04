@@ -31,19 +31,19 @@ class URLFromMessageParserTest {
                 expectedUrls("http://msdn.microsoft.com/en-us/library/aa752574(VS.85).aspx")
             ),
             arrayOf(
-                "Don't fix mismatched punctuation  {http://sample.com)",
+                "extract url from punctuation markers {http://sample.com)",
                 expectedUrls("http://sample.com")
             ),
             arrayOf(
-                "Don't fix mismatched punctuation (http://sample.com]",
+                "extract url from punctuation markers {http://sample.com)",
                 expectedUrls("http://sample.com")
             ),
             arrayOf(
-                "Don't fix mismatched punctuation [http://sample.com}",
+                "extract url from punctuation markers {http://sample.com)",
                 expectedUrls("http://sample.com")
             ),
             arrayOf(
-                "Message has parens (like this) before http://sample.com)",
+                "extract url from punctuation markers {http://sample.com)",
                 expectedUrls("http://sample.com")
             )
         )
