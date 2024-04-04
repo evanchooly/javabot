@@ -1,0 +1,28 @@
+<FindBugsFilter>
+
+<!-- some samples left in to jog my memory -->
+
+<!--
+    <Match>
+        <Class name="~.*org\.bson.*"/>
+        <Not>
+            <Bug code="IJU"/>
+        </Not>
+    </Match>
+-->
+
+    <!--
+        <Match>
+            <Class name=".*Impl"/>
+        </Match>
+        <Match>
+            <Bug pattern="EI_EXPOSE_REP"/>
+        </Match>
+        <Match>
+            <Class name="~.*\.*Test.*"/>
+            <Not>
+                <Bug pattern="SE_BAD_FIELD, EI_EXPOSE_REP, EI_EXPOSE_REP2"/>
+            </Not>
+        </Match>
+    -->
+</FindBugsFilter>
