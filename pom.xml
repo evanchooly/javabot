@@ -553,14 +553,14 @@
         <critter.version>4.4.4</critter.version>
         <dropwizard.version>2.1.5</dropwizard.version>
         <guice.version>5.1.0</guice.version>
-        <jackson.version>2.14.2</jackson.version>
+        <jackson.version>2.17.0</jackson.version>
         <jacoco.version>0.8.5</jacoco.version>
         <jaxb.version>2.3.1</jaxb.version>
         <jsoup.version>1.15.4</jsoup.version>
-        <kotlin.version>1.9.22</kotlin.version>
+        <kotlin.version>1.9.23</kotlin.version>
         <logback.version>1.5.3</logback.version>
         <morphia.version>2.3.9</morphia.version>
-        <okhttp.version>4.10.0</okhttp.version>
+        <okhttp.version>4.12.0</okhttp.version>
         <slf4j.version>2.0.12</slf4j.version>
         <sofia.version>0.25</sofia.version>
         <kgpt.version>1.0.1</kgpt.version>

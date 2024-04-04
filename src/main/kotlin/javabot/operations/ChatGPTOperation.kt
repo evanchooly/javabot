@@ -8,7 +8,6 @@ import javabot.Message
 import javabot.NoOperationMessage
 import javabot.dao.AdminDao
 import javabot.dao.ChatGPTDao
-import javabot.dao.FactoidDao
 import javax.inject.Inject
 
 /** Gets current weather conditions for a place given as a parameter. */
@@ -19,7 +18,6 @@ constructor(
     adminDao: AdminDao,
     private var chatGPTDao: ChatGPTDao,
     private var getFactoidOperation: GetFactoidOperation
-
 ) : BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val message = event.value
@@ -30,7 +28,8 @@ constructor(
                 query.equals("help", true) ->
                     responses.add(
                         Message(
-                            event, """
+                            event,
+                            """
                         Simply use '~gpt query' to generate a Java-focused query. 
                         Note that GPT is not exceptionally reliable: the data is based
                         on content from April 2023, and should be considered as if the
@@ -40,36 +39,48 @@ constructor(
                                 .cleanForIRC()
                         )
                     )
-
                 else -> {
-                    val factoid = getFactoidOperation.handleMessage(Message(event.user, query)).firstOrNull()?.value
-                    val seed = when {
-                        factoid != null ->
-                            "Frame the response in the context of the query having a potential answer of '${factoid}'."
-                        else -> null
-                    }
+                    val factoid =
+                        getFactoidOperation
+                            .handleMessage(Message(event.user, query))
+                            .firstOrNull()
+                            ?.value
+                    val seed =
+                        when {
+                            factoid != null ->
+                                "Frame the response in the context of the query having a potential answer of '${factoid}'."
+                            else -> null
+                        }
                     val uuid = UUID.randomUUID()
                     try {
-                        val result = chatGPTDao.sendPromptToChatGPT(
-                            query,
-                            listOfNotNull(
-                                "Someone is asking '$query', in the context of the Java Virtual Machine.".asUser(),
-                                """
+                        val result =
+                            chatGPTDao.sendPromptToChatGPT(
+                                query,
+                                listOfNotNull(
+                                    "Someone is asking '$query', in the context of the Java Virtual Machine."
+                                        .asUser(),
+                                    """
                                     If the answer does not contain constructive information for Java programmers,
                                     respond **ONLY** with \"$uuid-not applicable\" and no other text.
                                      
                                     Restrict your answer to being applicable to the Java Virtual Machine, and 
                                     limit the response's length to under 500 characters, formatted as simple text, 
                                     no markdown or other markup, but urls are acceptable.
-                                """.trimIndent().asSystem(),
-                                seed?.asSystem()
+                                """
+                                        .trimIndent()
+                                        .asSystem(),
+                                    seed?.asSystem()
+                                )
                             )
-                        )
-                        if (!result.isNullOrEmpty() && !result.lowercase().contains(uuid.toString())) {
+                        if (
+                            !result.isNullOrEmpty() && !result.lowercase().contains(uuid.toString())
+                        ) {
                             val response = result.cleanForIRC()
                             responses.add(Message(event, response))
                         } else {
-                            responses.add(NoOperationMessage(event, "no appropriate response from ChatGPT"))
+                            responses.add(
+                                NoOperationMessage(event, "no appropriate response from ChatGPT")
+                            )
                         }
                     } catch (e: Throwable) {
                         Javabot.LOG.info("exception", e)
@@ -82,9 +93,5 @@ constructor(
 }
 
 fun String.cleanForIRC(): String {
-    return this.trimIndent()
-        .trim()
-        .replace("\n ", " ")
-        .replace(" \n", " ")
-        .replace("\n", " ")
+    return this.trimIndent().trim().replace("\n ", " ").replace(" \n", " ").replace("\n", " ")
 }

@@ -53,6 +53,7 @@ constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :
         if (factoid != null) {
             getResponse(responses, event, backtrack, params, factoid)
             factoid.lastUsed = LocalDateTime.now()
+            factoid.usage += 1
             factoidDao.save(factoid)
         }
     }

@@ -138,9 +138,7 @@ open class Message(
     }
 }
 
-/**
- * This is a standard message type whose content is NOT output to a user.
- */
+/** This is a standard message type whose content is NOT output to a user. */
 class NoOperationMessage(
     channel: Channel? = null,
     user: JavabotUser,
@@ -148,14 +146,7 @@ class NoOperationMessage(
     target: JavabotUser? = null,
     triggered: Boolean = true,
     addressed: Boolean = false
-) : Message(
-    channel,
-    user,
-    value,
-    target,
-    triggered,
-    addressed
-) {
+) : Message(channel, user, value, target, triggered, addressed) {
     constructor(
         message: Message,
         value: String
