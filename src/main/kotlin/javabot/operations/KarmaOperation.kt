@@ -88,10 +88,10 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
                         }
                         increment = false
                     }
-                    var karma: Karma? = dao.find(nick.toLowerCase())
+                    var karma: Karma? = dao.find(nick)
                     if (karma == null) {
                         karma = Karma()
-                        karma.name = nick.toLowerCase()
+                        karma.name = nick
                     }
                     if (increment) {
                         karma.value = karma.value + 1
@@ -113,8 +113,7 @@ class KarmaOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var d
         val sender = event.user
         if (message.startsWith("karma ")) {
             val nick = message.substring("karma ".length)
-            val normalizedNick=nick.toLowerCase()
-            val karma = dao.find(normalizedNick)
+            val karma = dao.find(nick)
             if (karma != null) {
                 responses.add(Message(event, if (nick.equals(sender.nick, ignoreCase = true))
                     Sofia.karmaOwnValue(sender.nick, karma.value)
