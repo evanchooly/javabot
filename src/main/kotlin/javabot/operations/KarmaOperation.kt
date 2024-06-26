@@ -28,18 +28,37 @@ constructor(
 
         readKarma(responses, event)
         if (responses.isEmpty()) {
-            val message = event.value
+            // if we're being addressed, we need to reconstruct the message so it looks like a
+            // "karma operation"
+            val message =
+                if (event.addressed && !event.value.startsWith(bot.nick, true)) {
+                    // argh. What if we're addressed, but it's not OUR KARMA being adjusted?
+                    // We need to do some pre-emptive parsing to see if there's a match: if not,
+                    // we have an "us++" situation.
+                    val matches = operationPattern.matcher(event.value)
+                    if (!matches.find()) {
+                        "${bot.nick}${event.value}"
+                    } else {
+                        event.value
+                    }
+                } else {
+                    event.value
+                }
             val sender = event.user
             val channel = event.channel
-            var operationPointer = message.indexOf("++")
-            var increment = true
-            if (operationPointer == -1) {
-                operationPointer = message.indexOf("--")
-                increment = false
-                // check for no karma inc/dec, and ~-- and ~++ too
-                if (operationPointer < 1) {
-                    return responses
-                }
+            val matches = operationPattern.matcher(message)
+            if (!matches.find()) {
+                return responses
+            }
+            val tempSubject = matches.group(1)
+            // we strip off the "completion character" if it's there
+            val subject = tempSubject.substringBefore(":", tempSubject).trim()
+            val operation = matches.group(2)
+            var increment = operation.equals("++")
+
+            // poison pill subject. Trust me on this one, people.
+            if (subject.hashCode() == -1215158239) {
+                return responses
             }
 
             if (event.tell) {
@@ -47,77 +66,30 @@ constructor(
                 return responses
             }
 
-            /*
-             * we won't get here unless operationPointer>0.
-             *
-             * But things get wonky; we need to handle two alternatives if it's a
-             * karma decrement. One is: "admin --name=foo" and the other is
-             * "foo --". We may need to apply a regex to ascertain whether
-             * the signal is an option or not.
-             *
-             * The regex assumes options look like "--foo="
-             */
-            if (!increment) {
-                val potentialParam = message.substring(operationPointer - 1)
-                if (optionPattern.matcher(potentialParam).find()) {
-                    // we PRESUMABLY have an option...
-                    return responses
-                }
-            }
-            if (operationPointer != message.length - 2 && message[operationPointer + 2] != ' ') {
+            // TODO handle tell (when there's an operation but no addressed nick: can we get here?)
+            if (channel == null || !channel.name.startsWith("#")) {
+                responses.add(Message(event, Sofia.privmsgChange()))
                 return responses
             }
-            val nick: String =
-                try {
-                    val temp =
-                        message.substring(0, operationPointer).trim().lowercase(Locale.getDefault())
-                    // got an empty nick; spaces only?
-                    if (temp.isEmpty()) {
-                        // need to check for special case where bot was *addressed* for karma
-                        if (event.addressed) {
-                            bot.nick
-                        } else {
-                            ""
-                        }
-                    } else {
-                        temp
-                    }
-                } catch (e: StringIndexOutOfBoundsException) {
-                    log.info("message = $message", e)
-                    throw e
-                }
-
-            if (!nick.isEmpty()) {
-                if (channel == null || !channel.name.startsWith("#")) {
-                    responses.add(Message(event, Sofia.privmsgChange()))
-                } else {
-                    if (nick.equals(sender.nick, ignoreCase = true)) {
-                        if (increment) {
-                            responses.add(Message(event, Sofia.karmaOwnIncrement()))
-                        }
-                        increment = false
-                    }
-                    var karma: Karma? = dao.find(nick)
-                    if (karma == null) {
-                        karma = Karma()
-                        karma.name = nick
-                    }
-                    if (increment) {
-                        karma.value = karma.value + 1
-                    } else {
-                        karma.value = karma.value - 1
-                    }
-                    karma.userName = sender.nick
-                    dao.save(karma)
-                    changeDao.logKarmaChanged(
-                        karma.userName,
-                        karma.name,
-                        karma.value,
-                        channelDao.location(channel)
-                    )
-                    readKarma(responses, Message(event.channel, event.user, "karma " + nick))
-                }
+            if (increment && subject.equals(sender.nick, ignoreCase = true)) {
+                responses.add(Message(event, Sofia.karmaOwnIncrement()))
+                increment = false
             }
+            var karma = dao.find(subject!!) ?: Karma(subject, 0, sender.nick)
+            karma.value +=
+                if (increment) {
+                    1
+                } else {
+                    -1
+                }
+            dao.save(karma)
+            changeDao.logKarmaChanged(
+                karma.userName,
+                karma.name,
+                karma.value,
+                channelDao.location(channel)
+            )
+            readKarma(responses, Message(event.channel, event.user, "karma $subject"))
         }
         return responses
     }
@@ -151,7 +123,8 @@ constructor(
 
     companion object {
         private val log = LoggerFactory.getLogger(KarmaOperation::class.java)
-
+        private val operationPattern =
+            Pattern.compile("^(?<nick>.+)(?<operation>\\+{2}|--).*\$", Pattern.COMMENTS)
         private val optionPattern = Pattern.compile("\\s--\\p{Alpha}[\\p{Alnum}]*=")
     }
 }
