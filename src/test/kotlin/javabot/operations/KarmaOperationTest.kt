@@ -16,7 +16,7 @@ import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
 @Test(groups = arrayOf("operations"))
-class sKarmaOperationTest
+class KarmaOperationTest
 @Inject
 constructor(val nickServDao: NickServDao, val karmaDao: KarmaDao, val operation: KarmaOperation) :
     BaseTest() {
