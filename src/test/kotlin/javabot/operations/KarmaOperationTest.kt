@@ -6,11 +6,13 @@ import java.util.Date
 import javabot.BaseTest
 import javabot.dao.KarmaDao
 import javabot.dao.NickServDao
+import javabot.dao.util.EntityNotFoundException
 import javabot.registerIrcUser
 import javax.inject.Inject
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertFalse
 import org.testng.Assert.assertTrue
+import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
 @Test(groups = arrayOf("operations"))
@@ -18,6 +20,54 @@ class KarmaOperationTest
 @Inject
 constructor(val nickServDao: NickServDao, val karmaDao: KarmaDao, val operation: KarmaOperation) :
     BaseTest() {
+
+    @DataProvider
+    fun karmaTestData() =
+        arrayOf(
+            arrayOf("%s++", 1),
+            arrayOf("~%s++", 1),
+            arrayOf("%s++", 1),
+            arrayOf("~ %s ++", 1),
+            arrayOf("%s--", -1),
+            arrayOf("~%s--", -1),
+            arrayOf("%s: ++", 1),
+            arrayOf("~%s: ++", 1),
+            arrayOf("~ %s: ++", 1),
+            arrayOf("~ %s : ++", 1),
+            arrayOf("%s: --", -1),
+            arrayOf("~%s: --", -1)
+        )
+
+    @Test(dataProvider = "karmaTestData")
+    fun karmaTests(command: String, expectedKarma: Int) {
+        deleteKarma("foo")
+        var message = message(command.format("foo"))
+        var response = operation.handleMessage(message)
+        var karma = getKarma("foo")
+        assertEquals(expectedKarma, karma)
+        deleteKarma("foo")
+    }
+
+    fun handleCPlusPlus1() {
+        deleteKarma("C++")
+        var message = message("C++++")
+        var response = operation.handleMessage(message)
+        println(response)
+        var karma = getKarma("C++")
+        assertEquals(1, karma)
+        deleteKarma("C++")
+    }
+
+    fun handleCPlusPlus2() {
+        deleteKarma("C++")
+        var message = message("C++:++")
+        var response = operation.handleMessage(message)
+        println(response)
+        var karma = getKarma("C++")
+        assertEquals(1, karma)
+        deleteKarma("C++")
+    }
+
     fun noncontiguousNameReadKarma() {
         val target = "foo ${Date().time}"
         val response = operation.handleMessage(message("~karma ${target}"))
@@ -32,7 +82,7 @@ constructor(val nickServDao: NickServDao, val karmaDao: KarmaDao, val operation:
         assertTrue(
             changeDao.findLog(Sofia.karmaChanged(TEST_USER.nick, target, karma, TEST_CHANNEL.name))
         )
-        karmaDao.delete(karmaDao.find(target)?.id)
+        deleteKarma(target)
     }
 
     fun botNameWithKarmaWithAddress() {
@@ -46,21 +96,22 @@ constructor(val nickServDao: NickServDao, val karmaDao: KarmaDao, val operation:
         assertTrue(
             changeDao.findLog(Sofia.karmaChanged(TEST_USER.nick, target, karma, TEST_CHANNEL.name))
         )
-        karmaDao.delete(karmaDao.find(target)?.id)
+        deleteKarma(target)
     }
 
     fun botNameWithKarma() {
         val target = TEST_BOT_NICK
         val karma = getKarma(target) + 1
-        val event = message("${TEST_BOT_NICK}++")
+        val event = message("${TEST_BOT_NICK}: ++")
         val response = operation.handleMessage(event)
+        assertEquals(1, response.size)
         assertEquals(response[0].value, Sofia.karmaOthersValue(target, karma, TEST_USER.nick))
 
         bot.get().processMessage(event)
         assertTrue(
             changeDao.findLog(Sofia.karmaChanged(TEST_USER.nick, target, karma, TEST_CHANNEL.name))
         )
-        karmaDao.delete(karmaDao.find(target)?.id)
+        deleteKarma(target)
     }
 
     fun botNameKarma() {
@@ -74,20 +125,7 @@ constructor(val nickServDao: NickServDao, val karmaDao: KarmaDao, val operation:
         assertTrue(
             changeDao.findLog(Sofia.karmaChanged(TEST_USER.nick, target, karma, TEST_CHANNEL.name))
         )
-        karmaDao.delete(karmaDao.find(target)?.id)
-    }
-
-    fun karmaLooksLikeParam() {
-        val target = "foo ${Date().time}"
-        val response = operation.handleMessage(message("~${target}--bar=as"))
-        assertEquals(response.size, 0)
-    }
-
-    fun karmaLooksLikeParamShort() {
-        var response = operation.handleMessage(message("~--bar=as"))
-        assertEquals(response.size, 0)
-        response = operation.handleMessage(message("~ --bar=af"))
-        assertEquals(response.size, 0)
+        deleteKarma(target)
     }
 
     fun noncontiguousNameAddKarmaTrailingSpace() {
@@ -98,7 +136,7 @@ constructor(val nickServDao: NickServDao, val karmaDao: KarmaDao, val operation:
         assertTrue(
             changeDao.findLog(Sofia.karmaChanged(TEST_USER.nick, target, karma, TEST_CHANNEL.name))
         )
-        karmaDao.delete(karmaDao.find(target)?.id)
+        deleteKarma(target)
     }
 
     fun noncontiguousNameAddKarmaWithComment() {
@@ -109,7 +147,7 @@ constructor(val nickServDao: NickServDao, val karmaDao: KarmaDao, val operation:
         assertTrue(
             changeDao.findLog(Sofia.karmaChanged(TEST_USER.nick, target, karma, TEST_CHANNEL.name))
         )
-        karmaDao.delete(karmaDao.find(target)?.id)
+        deleteKarma(target)
     }
 
     fun shortNameAddKarma() {
@@ -120,7 +158,7 @@ constructor(val nickServDao: NickServDao, val karmaDao: KarmaDao, val operation:
         assertTrue(
             changeDao.findLog(Sofia.karmaChanged(TEST_USER.nick, target, karma, TEST_CHANNEL.name))
         )
-        karmaDao.delete(karmaDao.find(target)?.id)
+        deleteKarma(target)
     }
 
     fun noNameAddKarma() {
@@ -151,7 +189,7 @@ constructor(val nickServDao: NickServDao, val karmaDao: KarmaDao, val operation:
         assertTrue(
             changeDao.findLog(Sofia.karmaChanged(TEST_USER.nick, target, karma, TEST_CHANNEL.name))
         )
-        karmaDao.delete(karmaDao.find(target)?.id)
+        deleteKarma(target)
     }
 
     fun logChanged() {
@@ -188,6 +226,14 @@ constructor(val nickServDao: NickServDao, val karmaDao: KarmaDao, val operation:
             if (karma != null) {
                 karmaDao.delete(karma.id)
             }
+        }
+    }
+
+    private fun deleteKarma(nick: String) {
+        try {
+            karmaDao.delete(karmaDao.find(nick)?.id)
+        } catch (_: EntityNotFoundException) {
+            // it's okay if the target isn't found. This is a cleanup operation.
         }
     }
 
