@@ -1,7 +1,8 @@
 package javabot.web.views
 
 import com.antwerkz.sofia.Sofia
-import io.dropwizard.views.View
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletRequest
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.ArrayList
@@ -13,8 +14,6 @@ import javabot.model.Channel
 import javabot.model.javadoc.JavadocApi
 import javabot.web.JavabotConfiguration
 import javabot.web.model.InMemoryUserCache.INSTANCE
-import javax.servlet.http.Cookie
-import javax.servlet.http.HttpServletRequest
 
 abstract class MainView(
     var adminDao: AdminDao,
@@ -22,7 +21,7 @@ abstract class MainView(
     var factoidDao: FactoidDao,
     var apiDao: ApiDao,
     val request: HttpServletRequest
-) : View("/main.ftl", com.google.common.base.Charsets.ISO_8859_1) {
+) {
 
     companion object {
         val DATE_TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm")

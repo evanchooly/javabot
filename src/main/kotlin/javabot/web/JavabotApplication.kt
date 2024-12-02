@@ -1,85 +1,44 @@
 package javabot.web
 
-import com.google.inject.Guice
-import com.google.inject.Inject
-import com.google.inject.Injector
-import com.google.inject.Singleton
-import io.dropwizard.Application
-import io.dropwizard.assets.AssetsBundle
-import io.dropwizard.setup.Bootstrap
-import io.dropwizard.setup.Environment
-import io.dropwizard.views.ViewBundle
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
+import jakarta.servlet.Filter
+import jakarta.servlet.FilterChain
+import jakarta.servlet.FilterConfig
+import jakarta.servlet.ServletRequest
+import jakarta.servlet.ServletResponse
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import java.io.File
 import java.nio.file.Files
-import java.util.EnumSet
 import javabot.Javabot
 import javabot.JavabotConfig
-import javabot.JavabotModule
 import javabot.dao.ApiDao
-import javabot.web.resources.AdminResource
-import javabot.web.resources.BotResource
-import javabot.web.resources.PublicOAuthResource
-import javax.servlet.DispatcherType
-import javax.servlet.Filter
-import javax.servlet.FilterChain
-import javax.servlet.FilterConfig
-import javax.servlet.ServletRequest
-import javax.servlet.ServletResponse
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-import org.eclipse.jetty.server.session.SessionHandler
+import kotlin.jvm.java
 import org.slf4j.LoggerFactory
 
 @Singleton
-class JavabotApplication @Inject constructor(var injector: Injector) :
-    Application<JavabotConfiguration>() {
+class JavabotApplication @Inject constructor(/*var injector: Injector*/ ) {
     var running = false
 
     companion object {
         private val LOG = LoggerFactory.getLogger(JavabotApplication::class.java)
 
-        @Throws(Exception::class)
-        @JvmStatic
-        fun main(args: Array<String>) {
-            Guice.createInjector(JavabotModule())
-                .getInstance(JavabotApplication::class.java)
-                .run(*arrayOf("server", "javabot.yml"))
-        }
+        @Throws(Exception::class) @JvmStatic fun main(args: Array<String>) {}
     }
 
-    override fun initialize(bootstrap: Bootstrap<JavabotConfiguration>) {
-        bootstrap.addBundle(ViewBundle())
-        bootstrap.addBundle(AssetsBundle("/assets", "/assets", null, "assets"))
-        bootstrap.addBundle(
-            AssetsBundle("/META-INF/resources/webjars", "/webjars", null, "webjars")
-        )
-    }
+    fun run(configuration: JavabotConfiguration) {
+        val bot: Javabot? = null // = injector.getInstance(Javabot::class.java)
+        bot?.setUpThreads()
 
-    override fun run(configuration: JavabotConfiguration, environment: Environment) {
-        environment.applicationContext.isSessionsEnabled = true
-        environment.applicationContext.sessionHandler = SessionHandler()
-
-        val bot = injector.getInstance(Javabot::class.java)
-        bot.setUpThreads()
-
-        val oauth = injector.getInstance(PublicOAuthResource::class.java)
-        oauth.configuration = configuration
-        environment.jersey().register(oauth)
-
-        environment.jersey().register(injector.getInstance(BotResource::class.java))
-        environment.jersey().register(injector.getInstance(AdminResource::class.java))
-        environment.jersey().register(RuntimeExceptionMapper(configuration))
-
-        environment
-            .servlets()
-            .addFilter("javadoc", injector.getInstance(JavadocFilter::class.java))
-            .addMappingForUrlPatterns(
-                EnumSet.allOf(DispatcherType::class.java),
-                false,
-                "/javadoc/*"
-            )
-
-        environment.healthChecks().register("javabot", JavabotHealthCheck())
+        //        environment
+        //            .servlets()
+        //            .addFilter("javadoc", injector.getInstance(JavadocFilter::class.java))
+        //            .addMappingForUrlPatterns(
+        //                EnumSet.allOf(DispatcherType::class.java),
+        //                false,
+        //                "/javadoc/*"
+        //            )
 
         running = false
     }

@@ -1,8 +1,20 @@
 package javabot.web.views
 
+import jakarta.servlet.AsyncContext
+import jakarta.servlet.DispatcherType
+import jakarta.servlet.RequestDispatcher
+import jakarta.servlet.ServletConnection
+import jakarta.servlet.ServletContext
+import jakarta.servlet.ServletInputStream
+import jakarta.servlet.ServletRequest
+import jakarta.servlet.ServletResponse
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpSession
+import jakarta.servlet.http.HttpUpgradeHandler
+import jakarta.servlet.http.Part
 import java.io.BufferedReader
-import java.io.IOException
-import java.io.UnsupportedEncodingException
 import java.security.Principal
 import java.util.Enumeration
 import java.util.Locale
@@ -12,34 +24,13 @@ import javabot.web.JavabotConfiguration
 import javabot.web.model.Authority
 import javabot.web.model.InMemoryUserCache
 import javabot.web.model.User
-import javax.servlet.AsyncContext
-import javax.servlet.DispatcherType
-import javax.servlet.RequestDispatcher
-import javax.servlet.ServletContext
-import javax.servlet.ServletException
-import javax.servlet.ServletInputStream
-import javax.servlet.ServletRequest
-import javax.servlet.ServletResponse
-import javax.servlet.http.Cookie
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-import javax.servlet.http.HttpSession
-import javax.servlet.http.HttpUpgradeHandler
-import javax.servlet.http.Part
-import org.brickred.socialauth.util.AccessGrant
 
 class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
     private val cookies: Array<Cookie>
 
     init {
         if (loggedIn) {
-            val tempUser =
-                User(
-                    UUID.randomUUID(),
-                    BaseTest.BOT_EMAIL,
-                    UUID.randomUUID().toString(),
-                    AccessGrant()
-                )
+            val tempUser = User(UUID.randomUUID(), BaseTest.BOT_EMAIL, UUID.randomUUID().toString())
             tempUser.authorities.add(Authority.ROLE_PUBLIC)
 
             InMemoryUserCache.INSTANCE.put(tempUser)
@@ -156,25 +147,18 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return false
     }
 
-    override fun isRequestedSessionIdFromUrl(): Boolean {
-        return false
-    }
-
-    @Throws(IOException::class, ServletException::class)
     override fun authenticate(response: HttpServletResponse): Boolean {
         return false
     }
 
-    @Throws(ServletException::class) override fun login(username: String, password: String) {}
+    override fun login(username: String, password: String) {}
 
-    @Throws(ServletException::class) override fun logout() {}
+    override fun logout() {}
 
-    @Throws(IOException::class, ServletException::class)
     override fun getParts(): Collection<Part>? {
         return null
     }
 
-    @Throws(IOException::class, ServletException::class)
     override fun getPart(name: String): Part? {
         return null
     }
@@ -195,7 +179,7 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return null
     }
 
-    @Throws(UnsupportedEncodingException::class) override fun setCharacterEncoding(env: String) {}
+    override fun setCharacterEncoding(env: String) {}
 
     override fun getContentLength(): Int {
         return 0
@@ -209,7 +193,6 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return null
     }
 
-    @Throws(IOException::class)
     override fun getInputStream(): ServletInputStream? {
         return null
     }
@@ -246,7 +229,6 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return 0
     }
 
-    @Throws(IOException::class)
     override fun getReader(): BufferedReader? {
         return null
     }
@@ -279,10 +261,6 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return null
     }
 
-    override fun getRealPath(path: String): String? {
-        return null
-    }
-
     override fun getRemotePort(): Int {
         return 0
     }
@@ -303,12 +281,10 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return null
     }
 
-    @Throws(IllegalStateException::class)
     override fun startAsync(): AsyncContext? {
         return null
     }
 
-    @Throws(IllegalStateException::class)
     override fun startAsync(
         servletRequest: ServletRequest,
         servletResponse: ServletResponse
@@ -330,5 +306,17 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
 
     override fun getDispatcherType(): DispatcherType? {
         return null
+    }
+
+    override fun getRequestId(): String? {
+        TODO("Not yet implemented")
+    }
+
+    override fun getProtocolRequestId(): String? {
+        TODO("Not yet implemented")
+    }
+
+    override fun getServletConnection(): ServletConnection? {
+        TODO("Not yet implemented")
     }
 }

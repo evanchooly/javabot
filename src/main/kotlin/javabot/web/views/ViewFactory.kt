@@ -1,11 +1,10 @@
 package javabot.web.views
 
-import com.google.inject.assistedinject.Assisted
+import jakarta.servlet.http.HttpServletRequest
 import java.time.LocalDateTime
 import javabot.model.Admin
 import javabot.model.Channel
 import javabot.model.Factoid
-import javax.servlet.http.HttpServletRequest
 
 interface ViewFactory {
     fun createChangesView(
@@ -17,8 +16,8 @@ interface ViewFactory {
 
     fun createAdminIndexView(
         request: HttpServletRequest,
-        @Assisted("current") current: Admin,
-        @Assisted("editing") editing: Admin?
+        current: Admin,
+        editing: Admin?
     ): AdminIndexView
 
     fun createChannelEditView(request: HttpServletRequest, channel: Channel): ChannelEditView

@@ -1,14 +1,16 @@
 package javabot.dao
 
-import com.google.inject.Inject
 import dev.morphia.Datastore
 import dev.morphia.DeleteOptions
+import dev.morphia.query.filters.Filters.eq
+import dev.morphia.query.filters.Filters.lt
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.util.Locale
 import javabot.model.Shun
-import javabot.model.criteria.ShunCriteria.Companion.expiry
-import javabot.model.criteria.ShunCriteria.Companion.upperNick
 
+@ApplicationScoped
 class ShunDao @Inject constructor(ds: Datastore) : BaseDao<Shun>(ds, Shun::class.java) {
 
     fun isShunned(nick: String): Boolean {
@@ -18,13 +20,13 @@ class ShunDao @Inject constructor(ds: Datastore) : BaseDao<Shun>(ds, Shun::class
     fun getShun(nick: String): Shun? {
         expireShuns()
         return ds.find(Shun::class.java)
-            .filter(upperNick().eq(nick.uppercase(Locale.getDefault())))
+            .filter(eq("upperNick", nick.uppercase(Locale.getDefault())))
             .first()
     }
 
     private fun expireShuns() {
         ds.find(Shun::class.java)
-            .filter(expiry().lt(LocalDateTime.now()))
+            .filter(lt("expiry", LocalDateTime.now()))
             .delete(DeleteOptions().multi(true))
     }
 

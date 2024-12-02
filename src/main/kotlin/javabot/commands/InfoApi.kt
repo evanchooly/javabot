@@ -2,11 +2,11 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
+import jakarta.inject.Inject
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
-import javax.inject.Inject
 
 class InfoApi @Inject constructor(bot: Javabot, adminDao: AdminDao, var apiDao: ApiDao) :
     AdminCommand(bot, adminDao) {

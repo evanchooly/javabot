@@ -1,12 +1,12 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import java.time.ZoneOffset
 import java.util.Arrays
 import javabot.BaseTest
 import javabot.dao.FactoidDao
 import javabot.dao.LogsDaoTest
-import javax.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass

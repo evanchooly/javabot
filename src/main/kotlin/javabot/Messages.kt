@@ -3,9 +3,9 @@ package javabot
 import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.Duration
 import com.jayway.awaitility.core.ConditionTimeoutException
+import jakarta.inject.Singleton
 import java.util.ArrayList
 import java.util.concurrent.TimeUnit
-import javax.inject.Singleton
 
 @Singleton
 class Messages(var messages: MutableList<String> = ArrayList()) :

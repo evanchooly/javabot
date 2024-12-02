@@ -1,11 +1,11 @@
 package javabot.dao.impl.openweathermap.model
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.JavabotConfig
 import javabot.dao.weather.openweathermap.model.OWWeather
 import javabot.service.HttpService
-import javax.inject.Inject
 import org.testng.annotations.Test
 
 @Test

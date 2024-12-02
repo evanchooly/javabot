@@ -4,12 +4,12 @@ import com.mongodb.client.result.DeleteResult
 import dev.morphia.Datastore
 import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
+import dev.morphia.query.filters.Filters.eq
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.util.Locale
 import javabot.dao.util.QueryParam
 import javabot.model.Karma
-import javabot.model.criteria.KarmaCriteria.Companion.upperName
-import javax.inject.Inject
 
 class KarmaDao
 @Inject
@@ -31,7 +31,7 @@ constructor(ds: Datastore, var changeDao: ChangeDao, var channelDao: ChannelDao)
 
     fun find(name: String): Karma? =
         ds.find(Karma::class.java)
-            .filter(upperName().eq(name.uppercase(Locale.getDefault())))
+            .filter(eq("upperName", name.uppercase(Locale.getDefault())))
             .first()
 
     fun count(): Long {

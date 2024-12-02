@@ -1,6 +1,6 @@
 package javabot.operations
 
-import com.google.inject.Inject
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.MockIrcAdapter
 import org.testng.Assert.assertEquals

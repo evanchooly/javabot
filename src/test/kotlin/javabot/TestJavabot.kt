@@ -1,7 +1,8 @@
 package javabot
 
-import com.google.inject.Injector
-import com.google.inject.Singleton
+import jakarta.inject.Inject
+import jakarta.inject.Provider
+import jakarta.inject.Singleton
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
@@ -11,14 +12,11 @@ import javabot.dao.ShunDao
 import javabot.model.JavabotUser
 import javabot.operations.throttle.Throttler
 import javabot.web.JavabotApplication
-import javax.inject.Inject
-import javax.inject.Provider
 
 @Singleton
 class TestJavabot
 @Inject
 constructor(
-    injector: Injector,
     configDao: ConfigDao,
     channelDao: ChannelDao,
     logsDao: LogsDao,
@@ -31,7 +29,6 @@ constructor(
     application: Provider<JavabotApplication>
 ) :
     Javabot(
-        injector,
         configDao,
         channelDao,
         logsDao,

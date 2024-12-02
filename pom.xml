@@ -25,7 +25,6 @@
             <id>sonatype-snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
             <snapshots>
-                <enabled>true</enabled>
             </snapshots>
         </repository>
     </repositories>
@@ -44,6 +43,36 @@
         <sourceDirectory>src/main/kotlin</sourceDirectory>
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
         <plugins>
+            <plugin>
+                <groupId>io.smallrye</groupId>
+                <artifactId>jandex-maven-plugin</artifactId>
+                <version>3.2.3</version>
+                <executions>
+                    <execution>
+                        <id>make-index</id>
+                        <goals>
+                            <goal>jandex</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>${quarkus.platform.group-id}</groupId>
+                <artifactId>quarkus-maven-plugin</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>generate-code</goal>
+                            <goal>generate-code-tests</goal>
+<!--                            <goal>native-image-agent</goal>-->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
@@ -69,9 +98,6 @@
                 <version>${kotlin.version}</version>
                 <configuration>
                     <jvmTarget>11</jvmTarget>
-                    <compilerPlugins>
-                        <compilerPlugin>ksp</compilerPlugin>
-                    </compilerPlugins>
                 </configuration>
                 <executions>
                     <execution>
@@ -96,26 +122,14 @@
                         </goals>
                     </execution>
                 </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.dyescape</groupId>
-                        <artifactId>kotlin-maven-symbol-processing</artifactId>
-                        <version>${kotlin-maven-symbol-processing.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>dev.morphia.critter</groupId>
-                        <artifactId>critter-maven</artifactId>
-                        <version>${critter.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
                 <executions>
                     <execution>
@@ -255,6 +269,19 @@
             </plugin>
         </plugins>
     </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${quarkus.platform.group-id}</groupId>
+                <artifactId>${quarkus.platform.artifact-id}</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>dev.morphia.morphia</groupId>
@@ -271,11 +298,6 @@
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm-tree</artifactId>
             <version>9.7</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
 
         <dependency>
@@ -312,18 +334,6 @@
             <groupId>ca.grimoire.maven</groupId>
             <artifactId>maven-utils</artifactId>
             <version>2.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>${guice.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.inject.extensions</groupId>
-            <artifactId>guice-assistedinject</artifactId>
-            <version>${guice.version}</version>
         </dependency>
 
         <dependency>
@@ -375,7 +385,7 @@
 
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <artifactId>kotlin-stdlib</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
         <dependency>
@@ -390,47 +400,58 @@
             <version>1.9.0</version>
         </dependency>
 
-        <!-- dropwizard deps -->
+        <!-- quarkus deps -->
         <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-core</artifactId>
-            <version>${dropwizard.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-auth</artifactId>
-            <version>${dropwizard.version}</version>
-        </dependency>
-
-        <!-- dropwizard deps -->
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-assets</artifactId>
-            <version>${dropwizard.version}</version>
-        </dependency>
-        <!-- dropwizard deps -->
-
-        <!-- OAuth library -->
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-views-freemarker</artifactId>
-            <version>${dropwizard.version}</version>
-        </dependency>
-        <!-- dropwizard deps -->
-
-        <!-- OAuth library -->
-        <dependency>
-            <groupId>org.brickred</groupId>
-            <artifactId>socialauth</artifactId>
-            <version>4.15</version>
+            <groupId>io.quarkiverse.qute.web</groupId>
+            <artifactId>quarkus-qute-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.brickred</groupId>
-            <artifactId>socialauth-filter</artifactId>
-            <version>2.4</version>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-qute</artifactId>
         </dependency>
-        <!-- OAuth library -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-servlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-picocli</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-kotlin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.playwright</groupId>
+            <artifactId>quarkus-playwright</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-oidc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-config-yaml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jaxb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-arc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>kotlin-extensions</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- quarkus deps -->
 
         <!-- webjars -->
         <dependency>
@@ -475,18 +496,20 @@
         </dependency>
 
 
+<!--
         <dependency>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.5.0</version>
+          <version>3.11.1</version>
           <type>maven-plugin</type>
         </dependency>
+-->
 
         <!-- Unit testing dependencies -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>7.7.1</version>
+            <version>7.10.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -525,11 +548,6 @@
 
         <!-- java 11 required dependencies thanks to JPMS -->
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>${jaxb.version}</version>
-        </dependency>
-        <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
             <version>${activation.version}</version>
@@ -550,24 +568,27 @@
 
     <properties>
         <activation.version>1.1.1</activation.version>
-        <critter.version>4.4.4</critter.version>
         <dropwizard.version>2.1.5</dropwizard.version>
-        <guice.version>5.1.0</guice.version>
         <jackson.version>2.17.0</jackson.version>
         <jacoco.version>0.8.5</jacoco.version>
-        <jaxb.version>2.3.1</jaxb.version>
         <jsoup.version>1.15.4</jsoup.version>
-        <kotlin.version>1.9.23</kotlin.version>
+        <kotlin.version>2.0.21</kotlin.version>
         <logback.version>1.5.12</logback.version>
-        <morphia.version>2.3.9</morphia.version>
+        <morphia.version>2.4.14</morphia.version>
         <okhttp.version>4.12.0</okhttp.version>
         <slf4j.version>2.0.16</slf4j.version>
         <sofia.version>0.25</sofia.version>
         <kgpt.version>1.0.1</kgpt.version>
-        <quarkus.version>3.17.2</quarkus.version>
 
+        <quarkus.version>3.17.2</quarkus.version>
+        <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
+        <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
+        <quarkus.platform.version>3.17.2</quarkus.platform.version>
+
+        <compiler-plugin.version>3.13.0</compiler-plugin.version>
+        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin-maven-symbol-processing.version>1.6</kotlin-maven-symbol-processing.version>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
 </project>

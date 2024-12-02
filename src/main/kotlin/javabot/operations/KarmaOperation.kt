@@ -1,6 +1,7 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import java.util.Locale
 import java.util.regex.Pattern
 import javabot.Javabot
@@ -10,7 +11,6 @@ import javabot.dao.ChangeDao
 import javabot.dao.ChannelDao
 import javabot.dao.KarmaDao
 import javabot.model.Karma
-import javax.inject.Inject
 import org.slf4j.LoggerFactory
 
 class KarmaOperation

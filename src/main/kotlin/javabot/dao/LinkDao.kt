@@ -5,16 +5,15 @@ import com.mongodb.client.result.DeleteResult
 import dev.morphia.Datastore
 import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
-import dev.morphia.query.internal.MorphiaCursor
+import dev.morphia.query.MorphiaCursor
+import dev.morphia.query.filters.Filters.eq
+import dev.morphia.query.filters.Filters.regex
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.util.regex.PatternSyntaxException
 import javabot.dao.util.QueryParam
 import javabot.model.Link
 import javabot.model.Persistent
-import javabot.model.criteria.LinkCriteria.Companion.approved
-import javabot.model.criteria.LinkCriteria.Companion.channel
-import javabot.model.criteria.LinkCriteria.Companion.url
-import javax.inject.Inject
 
 class LinkDao
 @Inject
@@ -38,7 +37,7 @@ constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
         val query = ds.find(Link::class.java)
         if (filter.channel != "") {
             try {
-                query.filter(channel().regex().pattern(filter.channel))
+                query.filter(regex("channel", filter.channel))
             } catch (e: PatternSyntaxException) {
                 Sofia.logFactoidInvalidSearchValue(filter.channel)
             }
@@ -46,13 +45,13 @@ constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
 
         if (filter.url != "") {
             try {
-                query.filter(url().regex().pattern(filter.url))
+                query.filter(regex("url", filter.url))
             } catch (e: PatternSyntaxException) {
                 Sofia.logFactoidInvalidSearchValue(filter.url)
             }
         }
 
-        query.filter(approved().eq(filter.approved))
+        query.filter(eq("approved", filter.approved))
 
         val options = FindOptions()
         if (!count && qp != null) {

@@ -2,22 +2,19 @@ package javabot
 
 import com.antwerkz.sofia.Sofia
 import com.google.common.base.CharMatcher
-import com.google.inject.AbstractModule
-import com.google.inject.Provider
-import com.google.inject.Provides
-import com.google.inject.assistedinject.FactoryModuleBuilder
 import com.mongodb.MongoClientSettings
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
 import dev.morphia.Datastore
 import dev.morphia.Morphia
-import dev.morphia.mapping.MapperOptions
-import javabot.dao.ChannelDao
+import dev.morphia.config.MorphiaConfig
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.enterprise.inject.Produces
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import javabot.dao.ConfigDao
 import javabot.model.Factoid
 import javabot.model.javadoc.JavadocClass
-import javabot.web.views.ViewFactory
-import javax.inject.Singleton
 import javax.net.ssl.SSLSocketFactory
 import net.thauvin.erik.bitly.Bitly
 import org.aeonbits.owner.Config.Key
@@ -26,69 +23,69 @@ import org.pircbotx.Configuration.Builder
 import org.pircbotx.PircBotX
 import org.pircbotx.cap.SASLCapHandler
 
-open class JavabotModule : AbstractModule() {
+@ApplicationScoped
+open class JavabotModule @Inject constructor(val configDao: ConfigDao, val ircAdapter: IrcAdapter) {
     open val mongoClient: MongoClient by lazy {
         MongoClients.create(MongoClientSettings.builder().build())
     }
 
     private var config: JavabotConfig? = null
-    lateinit var ircAdapterProvider: Provider<out IrcAdapter>
-    lateinit var channelDaoProvider: Provider<ChannelDao>
-    lateinit var configDaoProvider: Provider<ConfigDao>
+    //    lateinit var ircAdapterProvider: Instance<out IrcAdapter>
+    //    lateinit var channelDaoProvider: Instance<ChannelDao>
+    //    lateinit var configDaoProvider: Instance<ConfigDao>
 
-    override fun configure() {
-        configDaoProvider = binder().getProvider(ConfigDao::class.java)
-        channelDaoProvider = binder().getProvider(ChannelDao::class.java)
-        ircAdapterProvider = binder().getProvider(IrcAdapter::class.java)
-        install(FactoryModuleBuilder().build(ViewFactory::class.java))
+    open fun configure() {
+        //        configDaoProvider = binder().getProvider(ConfigDao::class.java)
+        //        channelDaoProvider = binder().getProvider(ChannelDao::class.java)
+        //        ircAdapterProvider = binder().getProvider(IrcAdapter::class.java)
+        //        install(FactoryModuleBuilder().build(ViewFactory::class.java))
     }
 
     open fun client(): MongoClient {
         return mongoClient
     }
 
-    @Provides
+    @Produces
     @Singleton
     fun datastore(): Datastore {
         val databaseName: String = javabotConfig().databaseName()
         val datastore =
             Morphia.createDatastore(
                 client(),
-                databaseName,
-                MapperOptions.builder()
-                    .enablePolymorphicQueries(true)
+                MorphiaConfig.load()
+                    .applyIndexes(true)
                     .autoImportModels(true)
-                    .build()
+                    .database(databaseName)
+                    .enablePolymorphicQueries(true)
+                    .packages(
+                        listOf(
+                            JavadocClass::class.java.packageName,
+                            Factoid::class.java.packageName
+                        )
+                    )
             )
-
-        datastore.mapper.mapPackageFromClass(JavadocClass::class.java)
-        datastore.mapper.mapPackageFromClass(Factoid::class.java)
-        datastore.ensureIndexes()
 
         return datastore
     }
 
-    @Provides
+    @Produces
     @Singleton
     protected open fun createIrcBot(): PircBotX {
-        val config = configDaoProvider.get().get()
-        val nick = getBotNick()
-        val builder =
+        val config = configDao.get()
+
+        return PircBotX(
             Builder()
-                .setName(nick)
-                .setLogin(nick)
+                .setName(getBotNick())
+                .setLogin(getBotNick())
                 .setAutoNickChange(false)
                 .setCapEnabled(false)
-                .addListener(getBotListener())
+                .addListener(ircAdapter)
                 .addServer(config.server, config.port)
-                .addCapHandler(SASLCapHandler(nick, config.password))
+                .addCapHandler(SASLCapHandler(getBotNick(), config.password))
                 .setSocketFactory(SSLSocketFactory.getDefault())
+                .buildConfiguration()
+        )
 
-        return buildBot(builder)
-    }
-
-    open fun buildBot(builder: Builder): PircBotX {
-        return PircBotX(builder.buildConfiguration())
         /*
                 return object: PircBotX(builder.buildConfiguration()) {
                     override fun sendRawLineToServer(line: String) {
@@ -106,10 +103,10 @@ open class JavabotModule : AbstractModule() {
     }
 
     protected open fun getBotNick(): String {
-        return configDaoProvider.get().get().nick
+        return configDao.get().nick
     }
 
-    @Provides
+    @Produces
     @Singleton
     fun javabotConfig(): JavabotConfig {
         if (config == null) {
@@ -125,7 +122,7 @@ open class JavabotModule : AbstractModule() {
         return config!!
     }
 
-    @Provides
+    @Produces
     @Singleton
     fun bitly(): Bitly? {
         val bitlyToken = javabotConfig().bitlyToken()
@@ -158,10 +155,6 @@ open class JavabotModule : AbstractModule() {
             throw RuntimeException(Sofia.configurationMissingProperties(missingKeys))
         }
         return config
-    }
-
-    fun getBotListener(): IrcAdapter {
-        return ircAdapterProvider.get()
     }
 }
 

@@ -1,7 +1,7 @@
 package javabot.dao
 
+import jakarta.inject.Inject
 import javabot.model.Factoid
-import javax.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.Test
 

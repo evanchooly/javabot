@@ -1,12 +1,12 @@
 package javabot.operations
 
+import jakarta.inject.Inject
 import java.net.URI
 import javabot.BaseTest
 import javabot.JavabotConfig
 import javabot.Message
 import javabot.operations.urlcontent.URLContentAnalyzer
 import javabot.operations.urlcontent.URLFromMessageParser
-import javax.inject.Inject
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertTrue
 import org.testng.annotations.DataProvider

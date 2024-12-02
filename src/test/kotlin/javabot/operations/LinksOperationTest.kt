@@ -1,10 +1,10 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.MockIrcAdapter
 import javabot.dao.LinkDao
-import javax.inject.Inject
 import org.testng.Assert.*
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test

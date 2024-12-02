@@ -1,7 +1,7 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Inject
+import jakarta.inject.Inject
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

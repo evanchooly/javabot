@@ -1,18 +1,18 @@
 package javabot.web
 
+import jakarta.ws.rs.WebApplicationException
+import jakarta.ws.rs.core.Context
+import jakarta.ws.rs.core.Response
+import jakarta.ws.rs.core.Response.Status.FORBIDDEN
+import jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR
+import jakarta.ws.rs.core.Response.Status.NOT_FOUND
+import jakarta.ws.rs.core.Response.Status.TEMPORARY_REDIRECT
+import jakarta.ws.rs.core.Response.Status.UNAUTHORIZED
+import jakarta.ws.rs.ext.ExceptionMapper
+import jakarta.ws.rs.ext.Provider
 import java.net.URI
 import java.net.URISyntaxException
 import javabot.web.resources.PublicErrorResource
-import javax.ws.rs.WebApplicationException
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.Response
-import javax.ws.rs.core.Response.Status.FORBIDDEN
-import javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR
-import javax.ws.rs.core.Response.Status.NOT_FOUND
-import javax.ws.rs.core.Response.Status.TEMPORARY_REDIRECT
-import javax.ws.rs.core.Response.Status.UNAUTHORIZED
-import javax.ws.rs.ext.ExceptionMapper
-import javax.ws.rs.ext.Provider
 import org.apache.http.protocol.HttpContext
 import org.slf4j.LoggerFactory
 

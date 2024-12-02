@@ -1,13 +1,12 @@
 package javabot.commands
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ConfigDao
 import javabot.operations.BotOperation
-import javax.inject.Inject
-import org.apache.commons.lang.StringUtils
 
 class ListOperations
 @Inject
@@ -20,10 +19,7 @@ constructor(bot: Javabot, adminDao: AdminDao, var configDao: ConfigDao) :
         val responses = arrayListOf<Message>()
         val list = operation
         responses.add(
-            Message(
-                event,
-                Sofia.adminKnownOperations(event.user.nick, StringUtils.join(list.iterator(), ","))
-            )
+            Message(event, Sofia.adminKnownOperations(event.user.nick, list.joinToString(",")))
         )
 
         listCurrent(event, responses)

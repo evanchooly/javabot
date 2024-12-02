@@ -2,7 +2,7 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
-import com.google.inject.Inject
+import jakarta.inject.Inject
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao

@@ -1,6 +1,19 @@
 package javabot.web.resources
 
-import io.dropwizard.views.View
+import io.quarkus.qute.CheckedTemplate
+import io.quarkus.qute.TemplateInstance
+import jakarta.inject.Inject
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.ws.rs.Consumes
+import jakarta.ws.rs.FormParam
+import jakarta.ws.rs.GET
+import jakarta.ws.rs.POST
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.PathParam
+import jakarta.ws.rs.Produces
+import jakarta.ws.rs.WebApplicationException
+import jakarta.ws.rs.core.Context
+import jakarta.ws.rs.core.MediaType
 import javabot.Javabot
 import javabot.JavabotConfig
 import javabot.dao.AdminDao
@@ -15,84 +28,94 @@ import javabot.web.auth.Restricted
 import javabot.web.model.Authority
 import javabot.web.model.User
 import javabot.web.views.ViewFactory
-import javax.inject.Inject
-import javax.servlet.http.HttpServletRequest
-import javax.ws.rs.Consumes
-import javax.ws.rs.FormParam
-import javax.ws.rs.GET
-import javax.ws.rs.POST
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.WebApplicationException
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.MediaType
 import org.bson.types.ObjectId
 
 @Path("/admin")
+@CheckedTemplate
 class AdminResource
 @Inject
 constructor(
-    var viewFactory: ViewFactory,
-    var adminDao: AdminDao,
-    var apiDao: ApiDao,
-    var configDao: ConfigDao,
-    var channelDao: ChannelDao,
-    var javabot: Javabot,
-    var config: JavabotConfig
+    val viewFactory: ViewFactory,
+    val adminDao: AdminDao,
+    val apiDao: ApiDao,
+    val configDao: ConfigDao,
+    val channelDao: ChannelDao,
+    val javabot: Javabot,
+    val config: JavabotConfig,
 ) {
+    companion object {
+        @JvmStatic external fun index(): TemplateInstance
+
+        @JvmStatic external fun config(): TemplateInstance
+
+        @JvmStatic external fun javadoc(): TemplateInstance
+
+        @JvmStatic external fun newChannel(): TemplateInstance
+
+        @JvmStatic external fun editChannel(): TemplateInstance
+
+        @JvmStatic external fun enableOperation(): TemplateInstance
+
+        @JvmStatic external fun disableOperation(): TemplateInstance
+
+        @JvmStatic external fun editAdmin(): TemplateInstance
+
+        @JvmStatic external fun deleteAdmin(): TemplateInstance
+
+        @JvmStatic external fun addAdmin(): TemplateInstance
+
+        @JvmStatic external fun addApi(): TemplateInstance
+
+        @JvmStatic external fun deleteApi(): TemplateInstance
+
+        @JvmStatic external fun reloadApi(): TemplateInstance
+    }
 
     @GET
+    @Produces(MediaType.TEXT_HTML)
     fun index(
         @Context request: HttpServletRequest,
-        @Restricted(Authority.ROLE_ADMIN) user: User
-    ): View {
-        val current = adminDao.getAdminByEmailAddress(user.email)
-        return if (current == null) PublicErrorResource.view403()
-        else viewFactory.createAdminIndexView(request, current, Admin())
-    }
+        @Restricted(Authority.ROLE_ADMIN) user: User,
+    ) =
+        adminDao.getAdminByEmailAddress(user.email)?.let { index() }
+            ?: PublicErrorResource.view403()
 
     @GET
     @Path("/config")
     fun config(
         @Context request: HttpServletRequest,
-        @Restricted(Authority.ROLE_ADMIN) user: User
-    ): View {
-        adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        return viewFactory.createConfigurationView(request)
-    }
+        @Restricted(Authority.ROLE_ADMIN) user: User,
+    ) =
+        adminDao.getAdminByEmailAddress(user.email)?.let { config() }
+            ?: PublicErrorResource.view403()
 
     @GET
     @Path("/javadoc")
     fun javadoc(
         @Context request: HttpServletRequest,
-        @Restricted(Authority.ROLE_ADMIN) user: User
-    ): View {
-        adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        return viewFactory.createJavadocAdminView(request)
-    }
+        @Restricted(Authority.ROLE_ADMIN) user: User,
+    ) =
+        adminDao.getAdminByEmailAddress(user.email)?.let { javadoc() }
+            ?: PublicErrorResource.view403()
 
     @GET
     @Path("/newChannel")
     fun newChannel(
         @Context request: HttpServletRequest,
-        @Restricted(Authority.ROLE_ADMIN) user: User
-    ): View {
-        adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        return viewFactory.createChannelEditView(request, Channel())
-    }
+        @Restricted(Authority.ROLE_ADMIN) user: User,
+    ) =
+        adminDao.getAdminByEmailAddress(user.email)?.let { newChannel() }
+            ?: PublicErrorResource.view403()
 
     @GET
     @Path("/editChannel/{channel}")
     fun editChannel(
         @Context request: HttpServletRequest,
         @Restricted(Authority.ROLE_ADMIN) user: User,
-        @PathParam("channel") channel: String
-    ): View {
-
-        // TODO redirect to / if channel is null
-        adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        return viewFactory.createChannelEditView(request, channelDao.get(channel)!!)
-    }
+        @PathParam("channel") channel: String,
+    ) =
+        adminDao.getAdminByEmailAddress(user.email)?.let { editChannel() }
+            ?: PublicErrorResource.view403()
 
     @POST
     @Path("/saveChannel")
@@ -102,8 +125,8 @@ constructor(
         @FormParam("id") id: String?,
         @FormParam("name") name: String,
         @FormParam("key") key: String,
-        @FormParam("logged") logged: Boolean
-    ): View {
+        @FormParam("logged") logged: Boolean,
+    ): TemplateInstance {
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         val channel =
             if (id == null) Channel(name, key, logged) else Channel(ObjectId(id), name, key, logged)
@@ -125,8 +148,8 @@ constructor(
         @FormParam("nick") nick: String,
         @FormParam("password") password: String,
         @FormParam("throttleThreshold") throttleThreshold: Int,
-        @FormParam("minimumNickServAge") minimumNickServAge: Int
-    ): View {
+        @FormParam("minimumNickServAge") minimumNickServAge: Int,
+    ): TemplateInstance {
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         val config = configDao.get()
         config.server = server
@@ -139,7 +162,7 @@ constructor(
         config.throttleThreshold = throttleThreshold
         config.minimumNickServAge = minimumNickServAge
         configDao.save(config)
-        return viewFactory.createConfigurationView(request)
+        return config()
     }
 
     @GET
@@ -147,52 +170,53 @@ constructor(
     fun enableOperation(
         @Context request: HttpServletRequest,
         @Restricted(Authority.ROLE_ADMIN) user: User,
-        @PathParam("name") name: String
-    ): View {
-        adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        javabot.enableOperation(name)
-        return viewFactory.createConfigurationView(request)
-    }
+        @PathParam("name") name: String,
+    ) =
+        adminDao.getAdminByEmailAddress(user.email)?.let {
+            javabot.enableOperation(name)
+
+            config()
+        }
+            ?: PublicErrorResource.view403()
 
     @GET
     @Path("/disableOperation/{name}")
     fun disableOperation(
         @Context request: HttpServletRequest,
         @Restricted(Authority.ROLE_ADMIN) user: User,
-        @PathParam("name") name: String
-    ): View {
-        adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        javabot.disableOperation(name)
-        return viewFactory.createConfigurationView(request)
-    }
+        @PathParam("name") name: String,
+    ) =
+        adminDao.getAdminByEmailAddress(user.email)?.let {
+            javabot.disableOperation(name)
+            config()
+        }
+            ?: PublicErrorResource.view403()
 
     @GET
     @Path("/edit/{id}")
     fun editAdmin(
         @Context request: HttpServletRequest,
         @Restricted(Authority.ROLE_ADMIN) user: User,
-        @PathParam("id") id: String
-    ): View {
-        val current =
-            adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-
-        return viewFactory.createAdminIndexView(request, current, adminDao.find(ObjectId(id)))
-    }
+        @PathParam("id") id: String,
+    ) =
+        adminDao.getAdminByEmailAddress(user.email)?.let { editAdmin() }
+            ?: PublicErrorResource.view403()
 
     @GET
     @Path("/delete/{id}")
     fun deleteAdmin(
         @Context request: HttpServletRequest,
         @Restricted(Authority.ROLE_ADMIN) user: User,
-        @PathParam("id") id: String
-    ): View {
-        adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        val admin = adminDao.find(ObjectId(id))
-        if (admin != null && (!admin.botOwner)) {
-            adminDao.delete(admin)
+        @PathParam("id") id: String,
+    ) =
+        adminDao.getAdminByEmailAddress(user.email)?.let {
+            val admin = adminDao.find(ObjectId(id))
+            if (admin != null && (!admin.botOwner)) {
+                adminDao.delete(admin)
+            }
+            index()
         }
-        return index(request, user)
-    }
+            ?: PublicErrorResource.view403()
 
     @POST
     @Path("/add")
@@ -201,16 +225,17 @@ constructor(
         @Restricted(Authority.ROLE_ADMIN) user: User,
         @FormParam("ircName") ircName: String,
         @FormParam("hostName") hostName: String,
-        @FormParam("emailAddress") emailAddress: String
-    ): View {
-        var admin: Admin? = adminDao.getAdminByEmailAddress(emailAddress)
-        if (admin == null) {
-            admin = Admin(ircName, emailAddress, hostName, true)
-        } else {
-            admin.ircName = ircName
-            admin.hostName = hostName
-            admin.emailAddress = emailAddress
-        }
+        @FormParam("emailAddress") emailAddress: String,
+    ): TemplateInstance {
+        var admin =
+            adminDao.getAdminByEmailAddress(emailAddress)?.also {
+                it.ircName = ircName
+                it.hostName = hostName
+                it.emailAddress = emailAddress
+                it
+            }
+                ?: Admin(ircName, emailAddress, hostName, true)
+
         adminDao.save(admin)
         return index(request, user)
     }
@@ -223,9 +248,8 @@ constructor(
         @FormParam("name") name: String?,
         @FormParam("groupId") groupId: String?,
         @FormParam("artifactId") artifactId: String?,
-        @FormParam("version") version: String?
-    ): View {
-
+        @FormParam("version") version: String?,
+    ): TemplateInstance {
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         version?.let {
             val apiName = name ?: artifactId ?: throw WebApplicationException(400)
@@ -242,8 +266,8 @@ constructor(
     fun deleteApi(
         @Context request: HttpServletRequest,
         @Restricted(Authority.ROLE_ADMIN) user: User,
-        @PathParam("id") id: String
-    ): View {
+        @PathParam("id") id: String,
+    ): TemplateInstance {
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         apiDao.delete(ObjectId(id))
         return javadoc(request, user)
@@ -254,8 +278,8 @@ constructor(
     fun reloadApi(
         @Context request: HttpServletRequest,
         @Restricted(Authority.ROLE_ADMIN) user: User,
-        @PathParam("id") id: String
-    ): View {
+        @PathParam("id") id: String,
+    ): TemplateInstance {
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         apiDao.find(ObjectId(id))?.let { apiDao.save(ApiEvent.reload(user.email, it)) }
         return javadoc(request, user)

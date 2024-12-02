@@ -1,27 +1,28 @@
 package javabot
 
-import com.google.inject.Provides
-import com.google.inject.Singleton
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
+import jakarta.enterprise.inject.Produces
+import jakarta.inject.Inject
+import jakarta.inject.Provider
+import jakarta.inject.Singleton
 import java.io.File
 import java.io.FileInputStream
 import java.util.Properties
-import javabot.dao.NickServDao
-import javabot.dao.TestNickServDao
-import javax.inject.Provider
+import javabot.dao.ConfigDao
 import org.testcontainers.containers.MongoDBContainer
 
-class JavabotTestModule : JavabotModule() {
+class JavabotTestModule @Inject constructor(configDao: ConfigDao, ircAdapter: IrcAdapter) :
+    JavabotModule(configDao, ircAdapter) {
     private lateinit var botProvider: Provider<TestJavabot>
     private val container = MongoDBContainer("mongo:6").withReuse(true)
 
     override fun configure() {
         super.configure()
         container.start()
-        botProvider = binder().getProvider(TestJavabot::class.java)
-        bind(NickServDao::class.java).to(TestNickServDao::class.java)
-        bind(IrcAdapter::class.java).to(MockIrcAdapter::class.java)
+        //        botProvider = binder().getProvider(TestJavabot::class.java)
+        //        bind(NickServDao::class.java).to(TestNickServDao::class.java)
+        //        bind(IrcAdapter::class.java).to(MockIrcAdapter::class.java)
     }
 
     override fun client(): MongoClient {
@@ -40,7 +41,7 @@ class JavabotTestModule : JavabotModule() {
         return properties
     }
 
-    @Provides
+    @Produces
     @Singleton
     fun getJavabot(): Javabot {
         return botProvider.get()

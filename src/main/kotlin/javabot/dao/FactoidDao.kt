@@ -8,15 +8,13 @@ import dev.morphia.query.FindOptions
 import dev.morphia.query.Query
 import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.or
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.util.Locale
 import java.util.regex.PatternSyntaxException
 import javabot.dao.util.QueryParam
 import javabot.model.Factoid
 import javabot.model.Persistent
-import javabot.model.criteria.FactoidCriteria.Companion.upperName
-import javabot.model.criteria.FactoidCriteria.Companion.upperUserName
-import javax.inject.Inject
 
 class FactoidDao
 @Inject
@@ -39,7 +37,7 @@ constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
 
     fun hasFactoid(key: String) =
         ds.find(Factoid::class.java)
-            .filter(upperName().eq(key.uppercase(Locale.getDefault())))
+            .filter(eq("upperName", key.uppercase(Locale.getDefault())))
             .first() != null
 
     fun addFactoid(sender: String, key: String, value: String, location: String): Factoid {
@@ -71,7 +69,8 @@ constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
 
     fun getFactoid(name: String): Factoid? {
         val criteria =
-            ds.find(Factoid::class.java).filter(upperName().eq(name.uppercase(Locale.getDefault())))
+            ds.find(Factoid::class.java)
+                .filter(eq("upperName", name.uppercase(Locale.getDefault())))
         val factoid = criteria.first()
         if (factoid != null) {
             factoid.lastUsed = LocalDateTime.now()
@@ -85,9 +84,9 @@ constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
             ds.find(Factoid::class.java)
                 .filter(
                     or(
-                        upperName().eq(name.uppercase(Locale.getDefault()) + " \$1"),
-                        upperName().eq(name.uppercase(Locale.getDefault()) + " \$^"),
-                        upperName().eq(name.uppercase(Locale.getDefault()) + " \$+")
+                        eq("upperName", name.uppercase(Locale.getDefault()) + " \$1"),
+                        eq("upperName", name.uppercase(Locale.getDefault()) + " \$^"),
+                        eq("upperName", name.uppercase(Locale.getDefault()) + " \$+")
                     )
                 )
                 .first()
@@ -119,16 +118,16 @@ constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
         val query = ds.find(Factoid::class.java)
         if (filter.name != "") {
             try {
-                query.filter(upperName().eq(filter.name.uppercase(Locale.getDefault())))
-            } catch (e: PatternSyntaxException) {
+                query.filter(eq("upperName", filter.name.uppercase(Locale.getDefault())))
+            } catch (_: PatternSyntaxException) {
                 Sofia.logFactoidInvalidSearchValue(filter.name)
             }
         }
 
         if (filter.userName != "") {
             try {
-                query.filter(upperUserName().eq(filter.userName.uppercase(Locale.getDefault())))
-            } catch (e: PatternSyntaxException) {
+                query.filter(eq("upperUserName", filter.userName.uppercase(Locale.getDefault())))
+            } catch (_: PatternSyntaxException) {
                 Sofia.logFactoidInvalidSearchValue(filter.userName)
             }
         }
@@ -136,7 +135,7 @@ constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
         if (filter.value != "") {
             try {
                 query.filter(eq("upperValue", filter.value.uppercase(Locale.getDefault())))
-            } catch (e: PatternSyntaxException) {
+            } catch (_: PatternSyntaxException) {
                 Sofia.logFactoidInvalidSearchValue(filter.value)
             }
         }

@@ -1,15 +1,13 @@
 package javabot.web.views
 
-import freemarker.template.Configuration.VERSION_2_3_32
-import io.dropwizard.views.freemarker.FreemarkerViewRenderer
+import jakarta.inject.Inject
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
-import java.util.Locale
 import javabot.dao.KarmaDao
 import javabot.model.Karma
-import javax.inject.Inject
 import net.htmlparser.jericho.Source
+import org.testng.Assert.fail
 import org.testng.annotations.Test
 
 class KarmaViewTest : ViewsTest() {
@@ -19,13 +17,16 @@ class KarmaViewTest : ViewsTest() {
     fun karma() {
         createKarma(100)
 
-        val renderer = FreemarkerViewRenderer(VERSION_2_3_32)
+        //        val renderer = FreemarkerViewRenderer(VERSION_2_3_32)
         val output = ByteArrayOutputStream()
-        renderer.render(
-            viewFactory.createKarmaView(MockServletRequest(false), 0),
-            Locale.getDefault(),
-            output
-        )
+        fail()
+        /*
+                renderer.render(
+                    viewFactory.createKarmaView(MockServletRequest(false), 0),
+                    Locale.getDefault(),
+                    output
+                )
+        */
         val source = Source(ByteArrayInputStream(output.toByteArray()))
 
         previousDisabled(source)

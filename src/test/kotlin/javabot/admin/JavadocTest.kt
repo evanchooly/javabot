@@ -1,5 +1,6 @@
 package javabot.admin
 
+import jakarta.inject.Inject
 import java.io.File
 import javabot.BaseTest
 import javabot.JavabotConfig
@@ -7,9 +8,9 @@ import javabot.dao.JavadocClassDao
 import javabot.model.ApiEvent
 import javabot.model.javadoc.JavadocApi
 import javabot.operations.JavadocOperation
-import javax.inject.Inject
 import org.testng.Assert
 import org.testng.Assert.assertNotNull
+import org.testng.Assert.fail
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 
@@ -33,8 +34,8 @@ class JavadocTest() : BaseTest() {
 
     private fun checkServlets(api: JavadocApi) {
         assertNotNull(
-            classDao.getClass(api, "javax.servlet.http", "HttpServletRequest"),
-            "Should find an entry for ${api.name}/javax.servlet.http.HttpServletRequest"
+            classDao.getClass(api, "jakarta.servlet.http", "HttpServletRequest"),
+            "Should find an entry for ${api.name}/jakarta.servlet.http.HttpServletRequest"
         )
 
         scanForResponse(
@@ -166,7 +167,8 @@ class JavadocTest() : BaseTest() {
         Assert.assertEquals(classDao.getClass(guava, "ArrayTable").size, 0)
 
         val event = ApiEvent.reload(TEST_USER.nick, apiName)
-        injector.injectMembers(event)
+        //        injector.injectMembers(event)
+        fail()
         event.handle()
 
         Assert.assertEquals(classDao.getClass(event.api, "AbstractCache").size, 1)

@@ -2,15 +2,13 @@ package javabot.operations.urlcontent
 
 import java.net.URI
 import java.net.URL
-import java.util.ArrayList
 import java.util.stream.Collectors
-import org.apache.commons.lang.StringUtils.isBlank
 import org.apache.commons.lang3.ArrayUtils
 
 class URLFromMessageParser {
 
     fun urlsFromMessage(message: String): List<URL> {
-        if (isBlank(message)) {
+        if (message.isBlank()) {
             return listOf()
         }
 

@@ -1,7 +1,8 @@
 package javabot
 
-import com.google.inject.Inject
-import com.google.inject.Singleton
+import jakarta.inject.Inject
+import jakarta.inject.Provider
+import jakarta.inject.Singleton
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
@@ -9,7 +10,6 @@ import javabot.dao.LogsDao
 import javabot.dao.NickServDao
 import javabot.model.Channel
 import javabot.model.JavabotUser
-import javax.inject.Provider
 import org.pircbotx.PircBotX
 
 @Singleton

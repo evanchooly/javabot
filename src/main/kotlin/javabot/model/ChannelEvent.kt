@@ -2,8 +2,8 @@ package javabot.model
 
 import dev.morphia.annotations.Entity
 import dev.morphia.annotations.Transient
+import jakarta.inject.Inject
 import javabot.dao.ChannelDao
-import javax.inject.Inject
 
 @Entity("events")
 class ChannelEvent : AdminEvent {

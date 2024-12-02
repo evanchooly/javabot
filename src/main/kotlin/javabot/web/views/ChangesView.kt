@@ -1,6 +1,8 @@
 package javabot.web.views
 
-import com.google.inject.assistedinject.Assisted
+import jakarta.annotation.Nullable
+import jakarta.inject.Inject
+import jakarta.servlet.http.HttpServletRequest
 import java.time.LocalDateTime
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
@@ -9,9 +11,6 @@ import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
 import javabot.dao.util.QueryParam
 import javabot.model.Change
-import javax.annotation.Nullable
-import javax.inject.Inject
-import javax.servlet.http.HttpServletRequest
 
 class ChangesView
 @Inject
@@ -21,10 +20,10 @@ constructor(
     factoidDao: FactoidDao,
     apiDao: ApiDao,
     var changeDao: ChangeDao,
-    @Assisted request: HttpServletRequest,
-    @Assisted page: Int,
-    @Nullable @Assisted private val message: String?,
-    @Nullable @Assisted private val date: LocalDateTime?
+    request: HttpServletRequest,
+    page: Int,
+    @Nullable private val message: String?,
+    @Nullable private val date: LocalDateTime?
 ) : PagedView<Change>(adminDao, channelDao, factoidDao, apiDao, request, page) {
 
     override fun getPagedView(): String {

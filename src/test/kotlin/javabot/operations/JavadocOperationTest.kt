@@ -1,9 +1,9 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.dao.JavadocClassDao
-import javax.inject.Inject
 import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
 

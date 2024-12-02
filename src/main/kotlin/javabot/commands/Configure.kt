@@ -2,12 +2,12 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
+import jakarta.inject.Inject
 import java.util.Locale
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ConfigDao
-import javax.inject.Inject
 
 class Configure @Inject constructor(bot: Javabot, adminDao: AdminDao, var configDao: ConfigDao) :
     AdminCommand(bot, adminDao) {

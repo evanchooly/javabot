@@ -4,17 +4,13 @@ import dev.morphia.Datastore
 import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
+import dev.morphia.query.filters.Filters.eq
+import jakarta.inject.Inject
 import java.util.Locale
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocField
 import javabot.model.javadoc.JavadocMethod
-import javabot.model.javadoc.criteria.JavadocApiCriteria
-import javabot.model.javadoc.criteria.JavadocApiCriteria.Companion.upperName
-import javabot.model.javadoc.criteria.JavadocClassCriteria
-import javabot.model.javadoc.criteria.JavadocFieldCriteria
-import javabot.model.javadoc.criteria.JavadocMethodCriteria
-import javax.inject.Inject
 import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
 
@@ -25,7 +21,7 @@ class ApiDao @Inject constructor(ds: Datastore) : BaseDao<JavadocApi>(ds, Javado
 
     fun find(name: String) =
         ds.find(JavadocApi::class.java)
-            .filter(upperName().eq(name.uppercase(Locale.getDefault())))
+            .filter(eq("upperName", name.uppercase(Locale.getDefault())))
             .first()
 
     fun delete(api: String) {
@@ -40,17 +36,17 @@ class ApiDao @Inject constructor(ds: Datastore) : BaseDao<JavadocApi>(ds, Javado
         LOG.debug("Dropping fields from " + api.name)
 
         ds.find(JavadocField::class.java)
-            .filter(JavadocFieldCriteria.apiId().eq(api.id))
+            .filter(eq("apiId", api.id))
             .delete(DeleteOptions().multi(true))
 
         LOG.debug("Dropping methods from " + api.name)
         ds.find(JavadocMethod::class.java)
-            .filter(JavadocMethodCriteria.apiId().eq(api.id))
+            .filter(eq("apiId", api.id))
             .delete(DeleteOptions().multi(true))
 
         LOG.debug("Dropping classes from " + api.name)
         ds.find(JavadocClass::class.java)
-            .filter(JavadocClassCriteria.apiId().eq(api.id))
+            .filter(eq("apiId", api.id))
             .delete(DeleteOptions().multi(true))
 
         super.delete(api)
@@ -58,7 +54,7 @@ class ApiDao @Inject constructor(ds: Datastore) : BaseDao<JavadocApi>(ds, Javado
 
     override fun findAll(): List<JavadocApi> {
         return ds.find(JavadocApi::class.java)
-            .iterator(FindOptions().sort(Sort.ascending(JavadocApiCriteria.name)))
+            .iterator(FindOptions().sort(Sort.ascending("name")))
             .toList()
     }
 }

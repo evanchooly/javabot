@@ -1,9 +1,10 @@
 package javabot
 
-import com.google.inject.Injector
 import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.Duration
 import dev.morphia.Datastore
+import jakarta.inject.Inject
+import jakarta.inject.Provider
 import java.util.EnumSet
 import java.util.concurrent.TimeUnit.SECONDS
 import javabot.dao.AdminDao
@@ -23,17 +24,14 @@ import javabot.model.Logs
 import javabot.model.NickServInfo
 import javabot.model.State
 import javabot.model.javadoc.JavadocApi
-import javax.inject.Inject
-import javax.inject.Provider
 import org.pircbotx.PircBotX
 import org.slf4j.LoggerFactory
 import org.testng.Assert
+import org.testng.Assert.fail
 import org.testng.annotations.AfterSuite
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.BeforeTest
-import org.testng.annotations.Guice
 
-@Guice(modules = [JavabotTestModule::class])
 open class BaseTest {
 
     companion object {
@@ -47,8 +45,6 @@ open class BaseTest {
         val TEST_CHANNEL = Channel("#jbunittest")
         private val LOG = LoggerFactory.getLogger(BaseTest::class.java)
     }
-
-    @Inject lateinit var injector: Injector
 
     @Inject protected lateinit var datastore: Datastore
 
@@ -175,7 +171,9 @@ open class BaseTest {
             api = JavadocApi(config, apiName, groupId, artifactId, version)
             apiDao.save(api)
             val event = ApiEvent.add(TEST_USER.nick, api)
-            injector.injectMembers(event)
+
+            fail()
+            //            injector.injectMembers(event)
             event.handle()
             messages.clear()
             LOG.info("$apiName finished.")

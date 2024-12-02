@@ -1,6 +1,7 @@
 package javabot.web.views
 
-import com.google.inject.assistedinject.Assisted
+import jakarta.inject.Inject
+import jakarta.servlet.http.HttpServletRequest
 import java.util.ArrayList
 import java.util.Collections
 import java.util.TreeSet
@@ -12,8 +13,6 @@ import javabot.dao.ConfigDao
 import javabot.dao.FactoidDao
 import javabot.model.Config
 import javabot.operations.BotOperation
-import javax.inject.Inject
-import javax.servlet.http.HttpServletRequest
 
 class ConfigurationView
 @Inject
@@ -24,7 +23,7 @@ constructor(
     apiDao: ApiDao,
     var configDao: ConfigDao,
     var javabot: Javabot,
-    @Assisted request: HttpServletRequest
+    request: HttpServletRequest
 ) : MainView(adminDao, channelDao, factoidDao, apiDao, request) {
 
     val configuration: Config by lazy { configDao.get() }

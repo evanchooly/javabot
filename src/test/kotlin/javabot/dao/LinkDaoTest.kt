@@ -1,7 +1,7 @@
 package javabot.dao
 
+import jakarta.inject.Inject
 import javabot.model.Link
-import javax.inject.Inject
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertFalse
 import org.testng.Assert.assertNotNull

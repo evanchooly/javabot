@@ -1,9 +1,8 @@
 package javabot
 
-import com.google.inject.Guice
-import com.google.inject.Inject
-import com.google.inject.Injector
 import com.jayway.awaitility.Awaitility
+import jakarta.inject.Inject
+import jakarta.inject.Provider
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
@@ -13,14 +12,13 @@ import javabot.dao.ShunDao
 import javabot.model.Channel
 import javabot.operations.throttle.Throttler
 import javabot.web.JavabotApplication
-import javax.inject.Provider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 class InteractiveTestBot
 @Inject
 constructor(
-    injector: Injector,
+    injector: Any, // Injector,
     configDao: ConfigDao,
     channelDao: ChannelDao,
     logsDao: LogsDao,
@@ -33,7 +31,6 @@ constructor(
     application: Provider<JavabotApplication>
 ) :
     Javabot(
-        injector,
         configDao,
         channelDao,
         logsDao,
@@ -50,13 +47,14 @@ constructor(
 
         @JvmStatic
         fun main() {
-            val injector = Guice.createInjector(InteractiveJavabotModule())
+            //            val injector = Guice.createInjector(InteractiveJavabotModule())
             if (LOG.isInfoEnabled) {
                 LOG.info("Starting Javabot")
             }
-            val bot = injector.getInstance(InteractiveTestBot::class.java)
-            bot.start()
-            Awaitility.await().forever().until<Boolean> { !bot.isRunning() }
+            val bot: InteractiveTestBot? =
+                null // = injector.getInstance(InteractiveTestBot::class.java)
+            bot?.start()
+            Awaitility.await().forever().until<Boolean> { bot?.isRunning() ?: false }
         }
     }
 
@@ -64,16 +62,5 @@ constructor(
         channelDao.findAll().forEach { channelDao.delete(it) }
         channelDao.save(Channel("#test-jb"))
         super.start()
-    }
-}
-
-class InteractiveJavabotModule : JavabotModule() {
-    override fun configure() {
-        super.configure()
-        ircAdapterProvider = binder().getProvider(IrcAdapter::class.java)
-    }
-
-    override fun getBotNick(): String {
-        return "test-jb"
     }
 }

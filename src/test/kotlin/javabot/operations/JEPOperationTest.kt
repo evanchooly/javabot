@@ -1,7 +1,7 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Inject
+import jakarta.inject.Inject
 import javabot.BaseTest
 import org.testng.Assert
 import org.testng.annotations.DataProvider

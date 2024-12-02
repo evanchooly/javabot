@@ -1,8 +1,7 @@
 package javabot.web.resources
 
-import io.dropwizard.views.View
+import io.quarkus.qute.TemplateInstance
 import java.util.Random
-import javabot.web.views.ErrorView
 
 class PublicErrorResource {
     companion object {
@@ -10,17 +9,17 @@ class PublicErrorResource {
         private val IMAGE_404 = arrayOf("404_1.gif", "404_2.gif", "404_3.gif", "404_4.gif")
         private val IMAGE_500 = arrayOf("500.gif")
 
-        fun view403(): View {
-            return ErrorView("/error/403.ftl", getRandomImage(IMAGE_403))
-        }
+        @JvmStatic external fun error403(image: String): TemplateInstance
 
-        fun view404(): View {
-            return ErrorView("/error/404.ftl", getRandomImage(IMAGE_404))
-        }
+        @JvmStatic external fun error404(image: String): TemplateInstance
 
-        fun view500(): View {
-            return ErrorView("/error/500.ftl", getRandomImage(IMAGE_500))
-        }
+        @JvmStatic external fun error500(image: String): TemplateInstance
+
+        fun view403() = error403(getRandomImage(IMAGE_403))
+
+        fun view404() = error404(getRandomImage(IMAGE_404))
+
+        fun view500() = error500(getRandomImage(IMAGE_500))
 
         private fun getRandomImage(images: Array<String>): String {
             return images[Random().nextInt(images.size)]

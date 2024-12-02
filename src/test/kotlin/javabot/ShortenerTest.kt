@@ -1,6 +1,6 @@
 package javabot
 
-import com.google.inject.Inject
+import jakarta.inject.Inject
 import javabot.service.UrlCacheService
 import kotlin.test.assertNotNull
 import org.testng.annotations.Test

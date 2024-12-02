@@ -1,6 +1,7 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.util.HashSet
 import java.util.Locale
@@ -10,7 +11,6 @@ import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.FactoidDao
 import javabot.model.Factoid
-import javax.inject.Inject
 import org.slf4j.LoggerFactory
 
 class GetFactoidOperation

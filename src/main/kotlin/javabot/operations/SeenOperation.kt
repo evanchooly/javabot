@@ -1,12 +1,12 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import java.time.format.DateTimeFormatter
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.LogsDao
-import javax.inject.Inject
 
 class SeenOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var dao: LogsDao) :
     BotOperation(bot, adminDao) {

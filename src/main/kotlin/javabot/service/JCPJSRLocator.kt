@@ -1,7 +1,7 @@
 package javabot.service
 
-import com.google.inject.Inject
-import com.google.inject.Singleton
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.io.IOException
 import org.jsoup.Jsoup
 

@@ -1,6 +1,7 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.util.Locale
 import javabot.Javabot
@@ -10,7 +11,6 @@ import javabot.dao.ChangeDao
 import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
 import javabot.model.Factoid
-import javax.inject.Inject
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

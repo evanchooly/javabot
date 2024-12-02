@@ -1,10 +1,10 @@
 package javabot
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Guice
-import com.google.inject.Injector
-import com.google.inject.Singleton
 import com.jayway.awaitility.Awaitility
+import jakarta.inject.Inject
+import jakarta.inject.Provider
+import jakarta.inject.Singleton
 import java.io.File
 import java.time.LocalDateTime
 import java.util.ArrayList
@@ -35,8 +35,6 @@ import javabot.operations.StandardOperation
 import javabot.operations.throttle.NickServViolationException
 import javabot.operations.throttle.Throttler
 import javabot.web.JavabotApplication
-import javax.inject.Inject
-import javax.inject.Provider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -44,7 +42,7 @@ import org.slf4j.LoggerFactory
 open class Javabot
 @Inject
 constructor(
-    var injector: Injector,
+    //    var injector: Any, // Injector,
     var configDao: ConfigDao,
     var channelDao: ChannelDao,
     var logsDao: LogsDao,
@@ -63,10 +61,9 @@ constructor(
         @JvmStatic
         fun main(args: Array<String>) {
             Sofia.javabotStart()
-            val injector = Guice.createInjector(JavabotModule())
-            val bot = injector.getInstance(Javabot::class.java)
-            bot.start()
-            Awaitility.await().forever().until<Boolean> { !bot.isRunning() }
+            val bot: Javabot? = null // = injector.getInstance(Javabot::class.java)
+            bot?.start()
+            Awaitility.await().forever().until<Boolean> { bot?.isRunning() ?: false }
         }
     }
 
@@ -120,7 +117,7 @@ constructor(
             try {
                 event.state = State.PROCESSING
                 eventDao.save(event)
-                injector.injectMembers(event)
+                //                injector.injectMembers(event)
                 event.handle()
                 event.state = State.COMPLETED
             } catch (e: Exception) {
@@ -189,7 +186,7 @@ constructor(
             if (File("javabot.yml").exists()) {
                 try {
                     Sofia.logWebappStarting()
-                    application.get().run(*arrayOf("server", "javabot.yml"))
+                    //                    application.get().run(*arrayOf("server", "javabot.yml"))
                 } catch (e: Exception) {
                     throw RuntimeException(e.message, e)
                 }

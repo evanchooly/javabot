@@ -1,7 +1,7 @@
 package javabot.web.views
 
-import com.google.inject.Inject
-import com.google.inject.assistedinject.Assisted
+import jakarta.inject.Inject
+import jakarta.servlet.http.HttpServletRequest
 import java.io.UnsupportedEncodingException
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
@@ -9,7 +9,6 @@ import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
 import javabot.dao.util.QueryParam
 import javabot.model.Factoid
-import javax.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 
 class FactoidsView
@@ -19,9 +18,9 @@ constructor(
     channelDao: ChannelDao,
     factoidDao: FactoidDao,
     apiDao: ApiDao,
-    @Assisted request: HttpServletRequest,
-    @Assisted page: Int,
-    @Assisted private val filter: Factoid
+    request: HttpServletRequest,
+    page: Int,
+    private val filter: Factoid
 ) : PagedView<Factoid>(adminDao, channelDao, factoidDao, apiDao, request, page) {
 
     override fun getPageUrl(): String {

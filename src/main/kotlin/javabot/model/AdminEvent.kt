@@ -8,10 +8,10 @@ import dev.morphia.annotations.IndexOptions
 import dev.morphia.annotations.Indexed
 import dev.morphia.annotations.Indexes
 import dev.morphia.annotations.Transient
+import jakarta.inject.Inject
 import java.io.Serializable
 import java.time.LocalDateTime
 import javabot.Javabot
-import javax.inject.Inject
 import org.bson.types.ObjectId
 
 @Entity("events")

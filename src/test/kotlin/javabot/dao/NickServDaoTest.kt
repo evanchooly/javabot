@@ -1,6 +1,7 @@
 package javabot.dao
 
 import com.google.common.collect.ImmutableMap.of
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.time.Month
 import java.util.Arrays.asList
@@ -9,7 +10,6 @@ import javabot.MockIrcUser
 import javabot.MockUserHostmask
 import javabot.model.JavabotUser
 import javabot.model.NickServInfo
-import javax.inject.Inject
 import org.pircbotx.hooks.events.NoticeEvent
 import org.testng.Assert
 import org.testng.annotations.Test

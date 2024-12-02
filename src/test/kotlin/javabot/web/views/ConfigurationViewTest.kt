@@ -1,16 +1,14 @@
 package javabot.web.views
 
-import freemarker.template.Configuration.VERSION_2_3_32
-import io.dropwizard.views.freemarker.FreemarkerViewRenderer
+import jakarta.inject.Inject
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.util.Arrays.asList
-import java.util.Locale
 import javabot.dao.ConfigDao
-import javax.inject.Inject
 import net.htmlparser.jericho.Source
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertNotNull
+import org.testng.Assert.fail
 import org.testng.annotations.Test
 
 class ConfigurationViewTest : ViewsTest() {
@@ -22,13 +20,16 @@ class ConfigurationViewTest : ViewsTest() {
         config.operations = mutableListOf()
         configDao.save(config)
 
-        val renderer = FreemarkerViewRenderer(VERSION_2_3_32)
+        //        val renderer = FreemarkerViewRenderer(VERSION_2_3_32)
+        fail()
         var output = ByteArrayOutputStream()
-        renderer.render(
-            viewFactory.createConfigurationView(MockServletRequest(false)),
-            Locale.getDefault(),
-            output
-        )
+        /*
+                renderer.render(
+                    viewFactory.createConfigurationView(MockServletRequest(false)),
+                    Locale.getDefault(),
+                    output
+                )
+        */
         var source = Source(ByteArrayInputStream(output.toByteArray()))
 
         val operation = "Javadoc"
@@ -45,11 +46,14 @@ class ConfigurationViewTest : ViewsTest() {
         configDao.save(config)
 
         output = ByteArrayOutputStream()
-        renderer.render(
-            viewFactory.createConfigurationView(MockServletRequest(false)),
-            Locale.getDefault(),
-            output
-        )
+        fail()
+        /*
+                renderer.render(
+                    viewFactory.createConfigurationView(MockServletRequest(false)),
+                    Locale.getDefault(),
+                    output
+                )
+        */
         source = Source(ByteArrayInputStream(output.toByteArray()))
 
         enable = source.getElementById("enable" + operation)

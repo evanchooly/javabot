@@ -1,5 +1,6 @@
 package javabot.admin
 
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.commands.AdminCommand
 import javabot.commands.DisableOperation
@@ -7,7 +8,6 @@ import javabot.commands.EnableOperation
 import javabot.commands.ListOperations
 import javabot.operations.BotOperation
 import javabot.operations.StandardOperation
-import javax.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.Test
 

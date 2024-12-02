@@ -1,9 +1,9 @@
 package javabot.dao
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.operations.GetFactoidOperation
-import javax.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod

@@ -1,6 +1,9 @@
 package javabot
 
 import com.antwerkz.sofia.Sofia
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.inject.Inject
+import jakarta.inject.Provider
 import java.util.ArrayList
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
@@ -11,8 +14,6 @@ import javabot.model.Channel
 import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.Logs.Type
-import javax.inject.Inject
-import javax.inject.Provider
 import org.pircbotx.PircBotX
 import org.pircbotx.User
 import org.pircbotx.exception.DaoException
@@ -30,6 +31,7 @@ import org.pircbotx.hooks.events.PrivateMessageEvent
 import org.pircbotx.hooks.events.QuitEvent
 import org.slf4j.LoggerFactory
 
+@ApplicationScoped
 open class IrcAdapter
 @Inject
 constructor(

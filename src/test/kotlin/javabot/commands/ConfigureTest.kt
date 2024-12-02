@@ -1,6 +1,6 @@
 package javabot.commands
 
-import com.google.inject.Inject
+import jakarta.inject.Inject
 import java.lang.String.format
 import javabot.BaseTest
 import javabot.dao.ConfigDao

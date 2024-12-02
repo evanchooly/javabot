@@ -1,7 +1,8 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Inject
+import jakarta.annotation.Nullable
+import jakarta.inject.Inject
 import java.util.ArrayList
 import java.util.Locale
 import javabot.Javabot
@@ -12,7 +13,6 @@ import javabot.dao.ApiDao
 import javabot.dao.JavadocClassDao
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
-import javax.annotation.Nullable
 import net.thauvin.erik.bitly.Bitly
 
 class JavadocOperation
@@ -29,8 +29,8 @@ constructor(
         private val RESULT_LIMIT = 5
     }
 
-    @field:[Nullable Inject(optional = true)]
-    var bitly: Bitly? = null
+    @field:[Nullable Inject]
+    lateinit var bitly: Bitly
 
     override fun handleMessage(event: Message): List<Message> {
         val responses = arrayListOf<Message>()
