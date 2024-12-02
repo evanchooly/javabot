@@ -13,6 +13,7 @@ dist
 idea-files
 javabot-hide.properties
 javabot.yml
+javadoc/
 logs
 out
 target
@@ -30,3 +31,5 @@ javabot.properties
 
 
 quarkus/*
+.quarkus
+bin

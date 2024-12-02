@@ -9,5 +9,9 @@ on:
 jobs:
   CodeAudits:
     uses: evanchooly/workflows/.github/workflows/code-audits.yml@master
+    with:
+      java: 21
   Build:
     uses: evanchooly/workflows/.github/workflows/build.yml@master
+    with:
+      java: 21
