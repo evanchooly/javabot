@@ -3,7 +3,7 @@ name: Test Morphia Upgrades
 on:
   workflow_dispatch:
   schedule:
-    - cron: @weekly
+    - cron: '0 0 * * 0'
 
 jobs:
   Build:
