@@ -11,7 +11,6 @@ on:
 jobs:
   Upgrade:
     runs-on: ubuntu-latest
-    if: false
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,6 +21,7 @@ jobs:
           distribution: 'zulu'
       - name: Build with Tests
         run: |
-          mvn -e -X -U org.openrewrite.maven:rewrite-maven-plugin:run \
+          mvn -e -U org.openrewrite.maven:rewrite-maven-plugin:run \
             -Drewrite.recipeArtifactCoordinates=dev.morphia.morphia:rewrite:3.0.0-SNAPSHOT \
             -Drewrite.activeRecipes=dev.morphia.UpgradeToMorphia30
+          mvn test-compile
