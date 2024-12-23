@@ -19,27 +19,6 @@ jobs:
         with:
           java-version: 17
           distribution: 'zulu'
-      - name: maven-settings-xml-action
-        uses: whelk-io/maven-settings-xml-action@v22
-        with:
-          repositories: >
-            [
-              {
-                "id": "snapshot-repository",
-                "url": "https://oss.sonatype.org/content/repositories/snapshots/",
-                "releases": {
-                  "enabled": "true",
-                  "updatePolicy": "always",
-                  "checksumPolicy": "fail"
-                },
-                "snapshots": {
-                  "enabled": "tre",
-                  "updatePolicy": "always",
-                  "checksumPolicy": "fail"
-                }
-              }
-            ]
-          output_file: .m2/settings.xml
       - name: Build with Tests
         run: |
           mvn -e -U org.openrewrite.maven:rewrite-maven-plugin:run \
