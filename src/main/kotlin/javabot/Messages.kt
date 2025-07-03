@@ -20,7 +20,7 @@ class Messages(var messages: MutableList<String> = ArrayList()) :
 
     fun get(
         duration: Duration = Duration(30, TimeUnit.SECONDS),
-        failOnTimeout: Boolean = true
+        failOnTimeout: Boolean = true,
     ): List<String> {
         try {
             Awaitility.await()

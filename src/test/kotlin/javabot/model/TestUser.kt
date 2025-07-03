@@ -11,7 +11,7 @@ class TestUser(
     private val messages: Messages,
     nick: String,
     login: String,
-    host: String
+    host: String,
 ) : User(MockUserHostmask(ircBot, nick, login, host)) {
 
     override fun send(): OutputUser {

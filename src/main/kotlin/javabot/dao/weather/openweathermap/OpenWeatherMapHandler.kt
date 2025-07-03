@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory
 class OpenWeatherMapHandler(
     private val geocodeDao: GeocodeDao,
     private val apiKey: String,
-    val httpService: HttpService
+    val httpService: HttpService,
 ) : WeatherHandler {
 
     companion object {
@@ -60,7 +60,7 @@ class OpenWeatherMapHandler(
                             humidity = data.main!!.humidity.toString(),
                             condition = data.weather!![0].description,
                             wind = data.wind!!.speed.toString(),
-                            tempCelsius = data.main!!.temp!! - 273.15
+                            tempCelsius = data.main!!.temp!! - 273.15,
                         )
 
                     val zoneId = tzEngine.query(data.coord!!.lat!!, data.coord!!.lon!!)

@@ -28,7 +28,7 @@ public open class ViewsTest : BaseTest() {
                 .startTag
                 .getAttributeValue("class")
                 .contains("disabled"),
-            "Next page should not be disabled"
+            "Next page should not be disabled",
         )
     }
 
@@ -39,7 +39,7 @@ public open class ViewsTest : BaseTest() {
                 .startTag
                 .getAttributeValue("class")
                 .contains("disabled"),
-            "Next page should be disabled"
+            "Next page should be disabled",
         )
     }
 
@@ -50,7 +50,7 @@ public open class ViewsTest : BaseTest() {
                 .startTag
                 .getAttributeValue("class")
                 .contains("disabled"),
-            "Previous page should be disabled"
+            "Previous page should be disabled",
         )
     }
 
@@ -61,7 +61,7 @@ public open class ViewsTest : BaseTest() {
                 .startTag
                 .getAttributeValue("class")
                 .contains("disabled"),
-            "Previous page should not be disabled"
+            "Previous page should not be disabled",
         )
     }
 

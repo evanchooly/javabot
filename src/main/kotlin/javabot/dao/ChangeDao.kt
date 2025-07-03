@@ -25,7 +25,7 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
         key: String,
         oldValue: String,
         newValue: String,
-        location: String
+        location: String,
     ) {
         save(Change(Sofia.factoidChanged(sender, key, oldValue, newValue, location)))
     }

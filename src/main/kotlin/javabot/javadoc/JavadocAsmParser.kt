@@ -78,9 +78,9 @@ constructor(private val apiDao: ApiDao, private val config: JavabotConfig) {
                                     packageName,
                                     entry.className(),
                                     module,
-                                    type
+                                    type,
                                 ),
-                                ClassReader.SKIP_CODE
+                                ClassReader.SKIP_CODE,
                             )
                     }
                 }

@@ -43,7 +43,7 @@ class FactoidDaoTest : BaseServiceTest() {
         Assert.assertNotSame(
             factoid.lastUsed,
             factoid1?.lastUsed,
-            "Should have a new lastUsed value"
+            "Should have a new lastUsed value",
         )
     }
 }

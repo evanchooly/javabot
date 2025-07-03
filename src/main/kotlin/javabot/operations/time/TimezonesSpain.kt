@@ -5,7 +5,7 @@ class TimezonesSpain : Timezones {
     private enum class Timezones(val timezone: String) {
         Canary_Islands("Atlantic/Canary"),
         Ceuta("Africa/Ceuta"),
-        Madrid("Europe/Madrid")
+        Madrid("Europe/Madrid"),
     }
 
     override fun get(province: String): String? {

@@ -51,7 +51,7 @@ class JavadocClassVisitorTest : BaseTest() {
             name = "createContextualProxy",
             descriptor = "(Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;",
             signature = "<T:Ljava/lang/Object;>(TT;Ljava/lang/Class<TT;>;)TT;",
-            exceptions = null
+            exceptions = null,
         )
 
         visitor.visitMethod(
@@ -61,7 +61,7 @@ class JavadocClassVisitorTest : BaseTest() {
                 "(Ljavax/faces/context/FacesContext;Ljava/lang/String;Ljava/util/Map;Z)Ljava/lang/String;",
             signature =
                 "(Ljavax/faces/context/FacesContext;Ljava/lang/String;Ljava/util/Map<Ljava/lang/String;Ljava/util/List<Ljava/lang/String;>;>;Z)Ljava/lang/String;",
-            exceptions = null
+            exceptions = null,
         )
     }
 }

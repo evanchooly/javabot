@@ -22,7 +22,7 @@ class TwitterService @Inject constructor(private val config: JavabotConfig) {
                         oAuthConsumer(config.twitterConsumerKey(), config.twitterConsumerSecret())
                         oAuthAccessToken(
                             config.twitterAccessToken(),
-                            config.twitterAccessTokenSecret()
+                            config.twitterAccessTokenSecret(),
                         )
                     }
                     .build()

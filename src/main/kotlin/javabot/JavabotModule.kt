@@ -58,7 +58,7 @@ open class JavabotModule : AbstractModule() {
                 MapperOptions.builder()
                     .enablePolymorphicQueries(true)
                     .autoImportModels(true)
-                    .build()
+                    .build(),
             )
 
         datastore.mapper.mapPackageFromClass(JavadocClass::class.java)
@@ -118,7 +118,7 @@ open class JavabotModule : AbstractModule() {
                     JavabotConfig::class.java,
                     loadConfigProperties(),
                     System.getProperties(),
-                    System.getenv()
+                    System.getenv(),
                 )
             validate(config!!)
         }

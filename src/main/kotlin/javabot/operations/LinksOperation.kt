@@ -19,7 +19,7 @@ constructor(
     adminDao: AdminDao,
     var dao: LinkDao,
     var changeDao: ChangeDao,
-    var channelDao: ChannelDao
+    var channelDao: ChannelDao,
 ) : BotOperation(bot, adminDao) {
 
     /** @return true if the message has been handled */
@@ -54,7 +54,7 @@ constructor(
                     event,
                     responses,
                     dao::approvedLinks,
-                    tokens[0]
+                    tokens[0],
                 )
             "unapproved" ->
                 showMessageLists(
@@ -64,7 +64,7 @@ constructor(
                     responses,
                     dao::unapprovedLinks,
                     tokens[0],
-                    true
+                    true,
                 )
             "approve" ->
                 handleVerb(tokens, needsChannel, event, responses, dao::approveLink, tokens[0])
@@ -75,7 +75,7 @@ constructor(
                     event,
                     responses,
                     dao::rejectUnapprovedLink,
-                    tokens[0]
+                    tokens[0],
                 )
             "help" -> showHelp(event, responses)
             else -> {
@@ -93,7 +93,7 @@ constructor(
                     "list unapproved [channel] [count] - shows the [count] unapproved links for channel [channel]",
                     "list approve [channel] [key] - approves the link with key [key] for channel [channel]",
                     "list reject [channel] [key] - deletes the link with key [key] for channel [channel]",
-                    "list help - shows this text"
+                    "list help - shows this text",
                 )
                 .map { Message(event.user, it) }
         )
@@ -130,7 +130,7 @@ constructor(
                         channel,
                         event.user.userName,
                         firstUrl.toString(),
-                        event.value.substring("submit ".length)
+                        event.value.substring("submit ".length),
                     )
                     responses.add(Message(event, Sofia.linksAccepted(firstUrl, channel)))
                 } else {
@@ -149,7 +149,7 @@ constructor(
         event: Message,
         responses: MutableList<Message>,
         modifyFunction: (String, String) -> Unit,
-        command: String
+        command: String,
     ) {
         tokens.removeAt(0)
         try {
@@ -163,7 +163,7 @@ constructor(
                     responses.add(
                         Message(
                             event,
-                            Sofia.linksVerbApplied(key, formatPastTense(command), channel)
+                            Sofia.linksVerbApplied(key, formatPastTense(command), channel),
                         )
                     )
                 } catch (e: IllegalArgumentException) {
@@ -203,7 +203,7 @@ constructor(
     private fun extractChannel(
         tokens: MutableList<String>,
         needsChannel: Boolean,
-        event: Message
+        event: Message,
     ): String {
         // step 1
         val internalChannel =
@@ -248,7 +248,7 @@ constructor(
         responses: MutableList<Message>,
         listFunction: (String) -> List<Link>,
         status: String,
-        needsOps: Boolean = false
+        needsOps: Boolean = false,
     ) {
         tokens.removeAt(0)
         try {
@@ -263,7 +263,7 @@ constructor(
                             val id = it.id.toString()
                             Message(
                                 event.user,
-                                Sofia.linksList(id.substring(id.length - 5), it.info)
+                                Sofia.linksList(id.substring(id.length - 5), it.info),
                             )
                         }
                         .toList()

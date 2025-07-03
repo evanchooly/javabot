@@ -56,8 +56,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore) :
         try {
             return ds.find(JavadocClass::class.java)
                 .filter(JavadocClassCriteria.fqcn().eq(fqcn))
-                .first()
-                ?: throw QueryException("Could not find class by fqcn: $fqcn")
+                .first() ?: throw QueryException("Could not find class by fqcn: $fqcn")
         } catch (e: IllegalStateException) {
             throw IllegalStateException("fqcn = ${fqcn}", e)
         }
@@ -92,7 +91,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore) :
         api: JavadocApi?,
         className: String,
         methodName: String,
-        signatureTypes: String
+        signatureTypes: String,
     ): List<JavadocMethod> {
         val classes = getClass(api, className)
         val list = ArrayList(classes)
@@ -114,7 +113,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore) :
     private fun getMethods(
         name: String,
         signatureTypes: String,
-        javadocClass: JavadocClass
+        javadocClass: JavadocClass,
     ): List<JavadocMethod> {
         val query =
             ds.find(JavadocMethod::class.java)
@@ -124,7 +123,7 @@ class JavadocClassDao @Inject constructor(ds: Datastore) :
             query.filter(
                 or(
                     JavadocMethodCriteria.shortSignatureTypes().eq(signatureTypes),
-                    JavadocMethodCriteria.longSignatureTypes().eq(signatureTypes)
+                    JavadocMethodCriteria.longSignatureTypes().eq(signatureTypes),
                 )
             )
         }

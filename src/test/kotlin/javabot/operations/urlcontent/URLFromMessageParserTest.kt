@@ -28,24 +28,24 @@ class URLFromMessageParserTest {
             arrayOf("Fat finger a space ( http://sample.com)", expectedUrls("http://sample.com")),
             arrayOf(
                 "Valid URL with parens http://msdn.microsoft.com/en-us/library/aa752574(VS.85).aspx",
-                expectedUrls("http://msdn.microsoft.com/en-us/library/aa752574(VS.85).aspx")
+                expectedUrls("http://msdn.microsoft.com/en-us/library/aa752574(VS.85).aspx"),
             ),
             arrayOf(
                 "extract url from punctuation markers {http://sample.com)",
-                expectedUrls("http://sample.com")
+                expectedUrls("http://sample.com"),
             ),
             arrayOf(
                 "extract url from punctuation markers {http://sample.com)",
-                expectedUrls("http://sample.com")
+                expectedUrls("http://sample.com"),
             ),
             arrayOf(
                 "extract url from punctuation markers {http://sample.com)",
-                expectedUrls("http://sample.com")
+                expectedUrls("http://sample.com"),
             ),
             arrayOf(
                 "extract url from punctuation markers {http://sample.com)",
-                expectedUrls("http://sample.com")
-            )
+                expectedUrls("http://sample.com"),
+            ),
         )
     }
 

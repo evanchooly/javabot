@@ -20,7 +20,7 @@ class ShunOperationTest : BaseTest() {
                 TEST_USER.nick,
                 "shunHey",
                 "<reply>shunHey",
-                LogsDaoTest.CHANNEL_NAME
+                LogsDaoTest.CHANNEL_NAME,
             )
             var response = operation.handleMessage(message("~shun ${TEST_USER} 5"))
             Assert.assertEquals(response[0].value, "${TEST_USER} is shunned until")

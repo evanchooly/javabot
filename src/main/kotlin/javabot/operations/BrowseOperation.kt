@@ -23,7 +23,7 @@ constructor(
     adminDao: AdminDao,
     val httpService: HttpService,
     val config: JavabotConfig,
-    val urlCacheService: UrlCacheService
+    val urlCacheService: UrlCacheService,
 ) : BotOperation(bot, adminDao) {
     companion object {
         val typeReference = object : TypeReference<Array<BrowseResult>>() {}
@@ -48,8 +48,8 @@ constructor(
                 options =
                     mapOf(
                         HTTP_OPTIONS.READ_TIMEOUT to Duration.ofSeconds(45),
-                        HTTP_OPTIONS.CALL_TIMEOUT to Duration.ofSeconds(45)
-                    )
+                        HTTP_OPTIONS.CALL_TIMEOUT to Duration.ofSeconds(45),
+                    ),
             )
         val data =
             ObjectMapper()
@@ -65,7 +65,7 @@ constructor(
                     separator = ", ",
                     prefix =
                         correctReference(data.size, "Reference") +
-                            " matching '$clazz' can be found at: "
+                            " matching '$clazz' can be found at: ",
                 )
         } else {
             "No source matching `$clazz` " +
@@ -84,7 +84,7 @@ constructor(
             listOf(
                 if (tokens.isNotEmpty()) tokens[0] else null,
                 if (tokens.size > 1) tokens[1] else null,
-                if (tokens.size > 2) tokens[2] else null
+                if (tokens.size > 2) tokens[2] else null,
             )
         return try {
             if ("browse".equals(command, true) && part1 != null) {

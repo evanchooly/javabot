@@ -38,8 +38,8 @@ class LogsOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var ds
                         Sofia.logsEntry(
                             it.updated.format(ofPattern("HH:mm")),
                             it.nick!!,
-                            it.message
-                        )
+                            it.message,
+                        ),
                     )
                 )
             }
@@ -48,7 +48,7 @@ class LogsOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var ds
                     Message(
                         event,
                         if (nickname.isEmpty()) Sofia.logsNone()
-                        else Sofia.logsNoneForNick(nickname)
+                        else Sofia.logsNoneForNick(nickname),
                     )
                 )
             }

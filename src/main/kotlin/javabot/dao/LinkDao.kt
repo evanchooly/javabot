@@ -75,8 +75,7 @@ constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
             ?.let {
                 it.approved = true
                 save(it)
-            }
-            ?: throw IllegalArgumentException("No matching unapproved link matching id $id")
+            } ?: throw IllegalArgumentException("No matching unapproved link matching id $id")
     }
 
     fun rejectUnapprovedLink(channel: String, id: String) {
@@ -95,7 +94,7 @@ constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
         return buildFindQuery(
                 QueryParam(0, 100, "created", false),
                 Link(approved = true, channel = channel),
-                true
+                true,
             )
             .toList()
     }

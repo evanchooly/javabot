@@ -12,7 +12,7 @@ abstract class PagedView<V>(
     factoidDao: FactoidDao,
     apiDao: ApiDao,
     request: HttpServletRequest,
-    private var page: Int
+    private var page: Int,
 ) : MainView(adminDao, channelDao, factoidDao, apiDao, request) {
     private val itemsPerPage = ITEMS_PER_PAGE
     var itemCount: Long = -1

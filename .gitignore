@@ -13,7 +13,6 @@ dist
 idea-files
 javabot-hide.properties
 javabot.yml
-javadoc/
 logs
 out
 target

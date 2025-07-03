@@ -4,7 +4,7 @@ class TimezonesCongo : Timezones {
 
     private enum class Timezones(val timezone: String) {
         Kinshasa("Africa/Kinshasa"),
-        Lubumbashi("Africa/Lubumbashi")
+        Lubumbashi("Africa/Lubumbashi"),
     }
 
     override fun get(province: String): String? {

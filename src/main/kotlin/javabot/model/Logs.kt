@@ -16,7 +16,7 @@ import org.bson.types.ObjectId
 @Indexes(
     Index(
         fields = arrayOf(Field("channel"), Field("upperNick"), Field("updated")),
-        options = IndexOptions(name = "seen")
+        options = IndexOptions(name = "seen"),
     )
 )
 class Logs : Persistent {
@@ -33,7 +33,7 @@ class Logs : Persistent {
         QUIT,
         REGISTERED,
         TOPIC,
-        NICK
+        NICK,
     }
 
     @Id var id: ObjectId = ObjectId()
@@ -57,7 +57,7 @@ class Logs : Persistent {
         message: String,
         type: Type,
         channel: String?,
-        updated: LocalDateTime = LocalDateTime.now()
+        updated: LocalDateTime = LocalDateTime.now(),
     ) : this() {
         this.nick = nick
         this.message = message

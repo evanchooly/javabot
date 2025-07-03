@@ -26,13 +26,13 @@ class IndexTest : ViewsTest() {
         renderer.render(
             viewFactory.createIndexView(MockServletRequest(loggedIn)),
             Locale.getDefault(),
-            output
+            output,
         )
         val source = Source(ByteArrayInputStream(output.toByteArray()))
         val a = source.getElementById("id")
         Assert.assertTrue(
             a == null || loggedIn,
-            format("Should %sfind the newChannel link", if (loggedIn) "" else "not ")
+            format("Should %sfind the newChannel link", if (loggedIn) "" else "not "),
         )
     }
 }

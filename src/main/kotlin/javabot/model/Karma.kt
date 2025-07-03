@@ -14,7 +14,7 @@ import org.bson.types.ObjectId
 @Entity(value = "karma", useDiscriminator = false)
 @Indexes(
     Index(fields = arrayOf(Field("upperName"))),
-    Index(fields = arrayOf(Field("value"), Field("name")))
+    Index(fields = arrayOf(Field("value"), Field("name"))),
 )
 class Karma : Serializable, Persistent {
     @Id var id: ObjectId? = null

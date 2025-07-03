@@ -30,7 +30,7 @@ constructor(
     adapter: IrcAdapter,
     adminDao: AdminDao,
     javabotConfig: JavabotConfig,
-    application: Provider<JavabotApplication>
+    application: Provider<JavabotApplication>,
 ) :
     Javabot(
         injector,
@@ -43,7 +43,7 @@ constructor(
         adapter,
         adminDao,
         javabotConfig,
-        application
+        application,
     ) {
     companion object {
         val LOG: Logger = LoggerFactory.getLogger(Javabot::class.java)

@@ -15,7 +15,7 @@ class TimezonesBrazil : Timezones {
         Maceio("America/Maceio"),
         Recife("America/Recife"),
         Sao_Paulo("America/Sao_Paulo"),
-        Noronha("America/Noronha")
+        Noronha("America/Noronha"),
     }
 
     override fun get(province: String): String? {

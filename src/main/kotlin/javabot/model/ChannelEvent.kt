@@ -18,7 +18,7 @@ class ChannelEvent : AdminEvent {
         requestedBy: String,
         type: EventType,
         channel: String,
-        key: String? = null
+        key: String? = null,
     ) : super(requestedBy, type) {
         this.key = key
         this.channel = channel

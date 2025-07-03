@@ -15,7 +15,7 @@ class WeatherDao
 constructor(
     javabotConfig: JavabotConfig,
     private val geocodeDao: GeocodeDao,
-    private val httpService: HttpService
+    private val httpService: HttpService,
 ) {
     companion object {
         val translations: Map<String, String> =

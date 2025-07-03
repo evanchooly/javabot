@@ -12,7 +12,7 @@ class Link(
     var username: String = "",
     var url: String = "",
     var info: String = "",
-    var approved: Boolean = false
+    var approved: Boolean = false,
 ) : Serializable, Persistent {
 
     @Id var id: ObjectId = ObjectId()

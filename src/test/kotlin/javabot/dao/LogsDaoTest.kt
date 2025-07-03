@@ -31,7 +31,7 @@ class LogsDaoTest @Inject constructor(val ds: Datastore) : BaseTest() {
             Type.MESSAGE,
             channel,
             JavabotUser("ChattyCathy", "ChattyCathy", "localhost"),
-            "test message"
+            "test message",
         )
 
         Assert.assertNotNull(logsDao.getSeen(channel.name, "chattycathy"))
@@ -54,7 +54,7 @@ class LogsDaoTest @Inject constructor(val ds: Datastore) : BaseTest() {
             PART,
             channel,
             TEST_USER,
-            Sofia.userParted(TEST_USER.nick, "i'm out of here!")
+            Sofia.userParted(TEST_USER.nick, "i'm out of here!"),
         )
 
         val logs = logsDao.findByChannel(chanName, LocalDateTime.now(), true)

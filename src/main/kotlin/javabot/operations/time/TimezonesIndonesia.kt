@@ -5,7 +5,7 @@ class TimezonesIndonesia : Timezones {
     private enum class Timezones(val timezone: String) {
         Jakarta("Asia/Jakarta"),
         Makassar("Asia/Makassar"),
-        Jayapura("Asia/Jayapura")
+        Jayapura("Asia/Jayapura"),
     }
 
     override fun get(province: String): String? {

@@ -19,7 +19,7 @@ class LinkDaoTest : BaseServiceTest() {
             "##java",
             "botuser",
             "http://foo.com",
-            "http://foo.com is really cool, y'all"
+            "http://foo.com is really cool, y'all",
         )
 
         assertEquals(linkDao.findAll().size, 1)
@@ -50,7 +50,7 @@ class LinkDaoTest : BaseServiceTest() {
                 "botuser",
                 "http://bar.com",
                 "http://foo.com is really cool, y'all",
-                false
+                false,
             )
         linkDao.addLink(linkData.channel, linkData.username, linkData.url, linkData.info)
         var retrievedLink = linkDao.get(Link(url = linkData.url))

@@ -5,7 +5,7 @@ class TimezonesAustralia : Timezones {
     enum class AustralianState(
         val abbreviation: String,
         val capital: String,
-        val timezone: String
+        val timezone: String,
     ) {
         WESTERN_AUSTRALIA("WA", "Perth", "Australia/Perth"),
         SOUTH_AUSTRALIA("SA", "Adelaide", "Australia/Adelaide"),
@@ -14,7 +14,7 @@ class TimezonesAustralia : Timezones {
         NEW_SOUTH_WALES("NSW", "Sydney", "Australia/Sydney"),
         AUSTRALIAN_CAPITAL_TERRITORY("ACT", "Canberra", "Australia/Canberra"),
         VICTORIA("VIC", "Melbourne", "Australia/Victoria"),
-        TASMANIA("TAS", "Hobart", "Australia/Hobart")
+        TASMANIA("TAS", "Hobart", "Australia/Hobart"),
     }
 
     override fun get(province: String): String? {

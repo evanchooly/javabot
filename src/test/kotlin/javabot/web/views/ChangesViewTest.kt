@@ -20,7 +20,7 @@ class ChangesViewTest : ViewsTest() {
         renderer.render(
             viewFactory.createChangesView(MockServletRequest(false), 0),
             Locale.getDefault(),
-            output
+            output,
         )
         var source = Source(ByteArrayInputStream(output.toByteArray()))
 
@@ -32,7 +32,7 @@ class ChangesViewTest : ViewsTest() {
         renderer.render(
             viewFactory.createChangesView(MockServletRequest(false), 0, "change 2"),
             Locale.getDefault(),
-            output
+            output,
         )
         source = Source(ByteArrayInputStream(output.toByteArray()))
 

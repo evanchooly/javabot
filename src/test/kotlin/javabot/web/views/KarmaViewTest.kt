@@ -24,7 +24,7 @@ class KarmaViewTest : ViewsTest() {
         renderer.render(
             viewFactory.createKarmaView(MockServletRequest(false), 0),
             Locale.getDefault(),
-            output
+            output,
         )
         val source = Source(ByteArrayInputStream(output.toByteArray()))
 

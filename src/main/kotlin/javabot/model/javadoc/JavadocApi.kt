@@ -17,9 +17,9 @@ import org.bson.types.ObjectId
     Index(fields = arrayOf(Field("name")), options = IndexOptions(unique = true)),
     Index(
         fields = arrayOf(Field("groupId"), Field("artifactId")),
-        options = IndexOptions(unique = true)
+        options = IndexOptions(unique = true),
     ),
-    Index(fields = arrayOf(Field("upperName")), options = IndexOptions(unique = true))
+    Index(fields = arrayOf(Field("upperName")), options = IndexOptions(unique = true)),
 )
 class JavadocApi : Persistent {
 
@@ -44,7 +44,7 @@ class JavadocApi : Persistent {
         apiName: String,
         groupId: String = "",
         artifactId: String = "",
-        version: String = ""
+        version: String = "",
     ) {
         name = apiName
         this.groupId = groupId

@@ -14,7 +14,7 @@ class LogsViewTest : ViewsTest() {
             viewFactory.createLogsView(
                 MockServletRequest(false),
                 "testchannel",
-                LocalDateTime.now()
+                LocalDateTime.now(),
             )
         )
     }
@@ -30,7 +30,7 @@ class LogsViewTest : ViewsTest() {
         create(
             Type.MESSAGE,
             eventChannel,
-            "this is a test of a url: http://google.com/ now isn't that cool"
+            "this is a test of a url: http://google.com/ now isn't that cool",
         )
 
         val action = "really loves deleting boiler plate code"
@@ -44,7 +44,7 @@ class LogsViewTest : ViewsTest() {
                     viewFactory.createLogsView(
                         MockServletRequest(false),
                         eventChannel,
-                        LocalDateTime.now()
+                        LocalDateTime.now(),
                     )
                 )
                 .toString()
@@ -52,29 +52,29 @@ class LogsViewTest : ViewsTest() {
         Assert.assertTrue(
             rendered.contains(Sofia.logsAnchorFormat("http://google.com/", "http://google.com/")),
             "Should find url in logs: \n" +
-                Sofia.logsAnchorFormat("http://google.com/", "http://google.com/")
+                Sofia.logsAnchorFormat("http://google.com/", "http://google.com/"),
         )
         Assert.assertTrue(
             rendered.contains("<td>$message</td>"),
-            "Should find basic message: \n" + rendered
+            "Should find basic message: \n" + rendered,
         )
         Assert.assertTrue(
             rendered.contains(">$user $action</td>"),
-            "Should find action: \n" + rendered
+            "Should find action: \n" + rendered,
         )
         Assert.assertTrue(
             rendered.contains(
                 ">" + Sofia.userJoined(user.nick, user.hostmask, eventChannel) + "</td>"
             ),
-            "Should find join: \n" + rendered
+            "Should find join: \n" + rendered,
         )
         Assert.assertTrue(
             rendered.contains(">" + Sofia.userQuit(user.nick, eventChannel) + "</td>"),
-            "Should find quit: \n" + rendered
+            "Should find quit: \n" + rendered,
         )
         Assert.assertTrue(
             rendered.contains(">" + Sofia.userParted(user.nick, "i'm done") + "</td>"),
-            "Should find part: \n" + rendered
+            "Should find part: \n" + rendered,
         )
     }
 

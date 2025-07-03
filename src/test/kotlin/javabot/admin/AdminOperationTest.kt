@@ -30,7 +30,7 @@ class AdminOperationTest : BaseTest() {
                     operation == null ||
                         operation is AdminCommand ||
                         operation is StandardOperation,
-                    "${opName} should be disabled"
+                    "${opName} should be disabled",
                 )
             }
         } finally {

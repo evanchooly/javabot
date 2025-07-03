@@ -24,7 +24,7 @@ constructor(
     apiDao: ApiDao,
     var configDao: ConfigDao,
     var javabot: Javabot,
-    @Assisted request: HttpServletRequest
+    @Assisted request: HttpServletRequest,
 ) : MainView(adminDao, channelDao, factoidDao, apiDao, request) {
 
     val configuration: Config by lazy { configDao.get() }

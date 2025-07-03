@@ -39,7 +39,7 @@ constructor(
     private var adminDao: AdminDao,
     private var javabotProvider: Provider<Javabot>,
     private var configDao: ConfigDao,
-    private var ircBot: Provider<PircBotX>
+    private var ircBot: Provider<PircBotX>,
 ) : ListenerAdapter() {
 
     companion object {
@@ -60,7 +60,7 @@ constructor(
                     user,
                     bot.startString,
                     bot.nick,
-                    event.message
+                    event.message,
                 )
             )
         }
@@ -83,7 +83,7 @@ constructor(
                     event.user!!.toJavabot(),
                     start,
                     bot.nick,
-                    event.message
+                    event.message,
                 )
             )
         })
@@ -94,7 +94,7 @@ constructor(
             Logs.Type.JOIN,
             event.channel.toJavabot(),
             event.user?.toJavabot(),
-            Sofia.userJoined(event.user?.nick!!, event.user?.hostmask!!, event.channel.name)
+            Sofia.userJoined(event.user?.nick!!, event.user?.hostmask!!, event.channel.name),
         )
     }
 
@@ -103,7 +103,7 @@ constructor(
             Logs.Type.PART,
             event.channel.toJavabot(),
             event.user.toJavabot(),
-            Sofia.userParted(event.user.nick, event.reason)
+            Sofia.userParted(event.user.nick, event.reason),
         )
         nickServDao.unregister(event.user.toJavabot())
     }
@@ -113,7 +113,7 @@ constructor(
             Logs.Type.QUIT,
             null,
             event.user.toJavabot(),
-            Sofia.userQuit(event.user.nick, event.reason)
+            Sofia.userQuit(event.user.nick, event.reason),
         )
         nickServDao.unregister(event.user.toJavabot())
     }
@@ -162,7 +162,7 @@ constructor(
             Type.NICK,
             null,
             event.user?.toJavabot(),
-            Sofia.userNickChanged(event.oldNick, event.newNick)
+            Sofia.userNickChanged(event.oldNick, event.newNick),
         )
         nickServDao.updateNick(event.oldNick, event.newNick)
     }
@@ -172,7 +172,7 @@ constructor(
             Logs.Type.ACTION,
             event.channel?.toJavabot(),
             event.user?.toJavabot(),
-            event.message
+            event.message,
         )
     }
 
@@ -181,7 +181,7 @@ constructor(
             Logs.Type.KICK,
             event.channel.toJavabot(),
             event.user?.toJavabot(),
-            " kicked %s (%s)".format(event.recipient?.nick, event.reason)
+            " kicked %s (%s)".format(event.recipient?.nick, event.reason),
         )
     }
 

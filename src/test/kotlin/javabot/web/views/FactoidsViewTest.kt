@@ -80,7 +80,7 @@ class FactoidsViewTest : ViewsTest() {
         renderer.render(
             viewFactory.createFactoidsView(MockServletRequest(false), page, filter),
             Locale.getDefault(),
-            output
+            output,
         )
         return Source(ByteArrayInputStream(output.toByteArray()))
     }

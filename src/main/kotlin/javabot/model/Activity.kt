@@ -9,7 +9,7 @@ class Activity(
     val count: Long,
     val end: LocalDateTime,
     val start: LocalDateTime,
-    var total: Long
+    var total: Long,
 ) : Serializable {
 
     fun getPercent(): String {

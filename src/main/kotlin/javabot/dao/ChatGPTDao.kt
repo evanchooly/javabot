@@ -12,11 +12,7 @@ import javabot.JavabotConfig
 import javabot.operations.throttle.BotRateLimiter
 
 @Singleton
-class ChatGPTDao
-@Inject
-constructor(
-    private val javabotConfig: JavabotConfig,
-) {
+class ChatGPTDao @Inject constructor(private val javabotConfig: JavabotConfig) {
     private val gpt = GPT(javabotConfig.chatGptKey())
 
     private val limiter: BotRateLimiter =

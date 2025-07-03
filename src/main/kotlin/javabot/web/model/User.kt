@@ -10,7 +10,7 @@ class User(
     var sessionToken: UUID?,
     var email: String,
     var openIDIdentifier: String,
-    var OAuthInfo: AccessGrant
+    var OAuthInfo: AccessGrant,
 ) : Principal {
     var authorities: HashSet<Authority> = HashSet()
 

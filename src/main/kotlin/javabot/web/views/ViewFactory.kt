@@ -12,13 +12,13 @@ interface ViewFactory {
         request: HttpServletRequest,
         page: Int,
         message: String? = null,
-        date: LocalDateTime? = null
+        date: LocalDateTime? = null,
     ): ChangesView
 
     fun createAdminIndexView(
         request: HttpServletRequest,
         @Assisted("current") current: Admin,
-        @Assisted("editing") editing: Admin?
+        @Assisted("editing") editing: Admin?,
     ): AdminIndexView
 
     fun createChannelEditView(request: HttpServletRequest, channel: Channel): ChannelEditView

@@ -35,7 +35,7 @@ constructor(private val javabotConfig: JavabotConfig, private val httpService: H
                                     val response =
                                         mapper.readValue(
                                             geocodeResponse,
-                                            GeocodeResponse::class.java
+                                            GeocodeResponse::class.java,
                                         )
                                     val results = response.results ?: emptyList()
                                     if (results.isNotEmpty()) {
@@ -43,7 +43,7 @@ constructor(private val javabotConfig: JavabotConfig, private val httpService: H
                                             GeoLocation(
                                                 it.lat ?: 0.0,
                                                 it.lng ?: 0.0,
-                                                response.results?.get(0)?.formatted_address ?: ""
+                                                response.results?.get(0)?.formatted_address ?: "",
                                             )
                                         }
                                     } else {

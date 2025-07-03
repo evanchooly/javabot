@@ -26,7 +26,7 @@ class ForgetFactoidOperationTest : BaseTest() {
         var response = operation.handleMessage(message("~forget asdfghjkl"))
         Assert.assertEquals(
             response[0].value,
-            Sofia.factoidDeleteUnknown("asdfghjkl", TEST_USER.nick)
+            Sofia.factoidDeleteUnknown("asdfghjkl", TEST_USER.nick),
         )
     }
 }

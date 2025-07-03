@@ -30,7 +30,7 @@ class DaysToChristmasOperation @Inject constructor(bot: Javabot, adminDao: Admin
             responses.add(
                 Message(
                     event,
-                    Sofia.daysUntil(event.user.nick, duration.toDays(), Date.from(instant))
+                    Sofia.daysUntil(event.user.nick, duration.toDays(), Date.from(instant)),
                 )
             )
         }

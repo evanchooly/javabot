@@ -31,7 +31,7 @@ class Magic8BallOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) 
             "Don't do anything I wouldn't do",
             "Only on a Tuesday",
             "If I tell you that I'll have to shoot you",
-            "I'm getting something about JFK, but I don't think it's relevant"
+            "I'm getting something about JFK, but I don't think it's relevant",
         )
 
     override fun handleMessage(event: Message): List<Message> {

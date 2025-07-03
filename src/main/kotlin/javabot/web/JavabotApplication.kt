@@ -76,7 +76,7 @@ class JavabotApplication @Inject constructor(var injector: Injector) :
             .addMappingForUrlPatterns(
                 EnumSet.allOf(DispatcherType::class.java),
                 false,
-                "/javadoc/*"
+                "/javadoc/*",
             )
 
         environment.healthChecks().register("javabot", JavabotHealthCheck())
@@ -91,7 +91,7 @@ class JavabotApplication @Inject constructor(var injector: Injector) :
         override fun doFilter(
             request: ServletRequest,
             response: ServletResponse,
-            chain: FilterChain
+            chain: FilterChain,
         ) {
             request as HttpServletRequest
             var filePath = request.requestURI.split("/").drop(2).joinToString("/")

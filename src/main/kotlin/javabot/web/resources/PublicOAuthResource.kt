@@ -135,7 +135,7 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
                 null,
                 null,
                 86400 * 30,
-                false
+                false,
             )
         } else {
             // Remove the session token cookie
@@ -147,7 +147,7 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
                 null,
                 null,
                 0,
-                false
+                false,
             )
         }
     }

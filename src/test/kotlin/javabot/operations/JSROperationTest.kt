@@ -25,7 +25,7 @@ class JSROperationTest : BaseTest() {
         Assert.assertEquals(
             response[0].value,
             "'JSR 220: Enterprise JavaBeans 3.0' can be found at http://www.jcp" +
-                ".org/en/jsr/detail?id=220"
+                ".org/en/jsr/detail?id=220",
         )
     }
 
@@ -40,7 +40,7 @@ class JSROperationTest : BaseTest() {
         return arrayOf(
             arrayOf<Any>("~jsr", Sofia.jsrMissing()),
             arrayOf<Any>("~jsr ", Sofia.jsrMissing()),
-            arrayOf<Any>("~jsr abc", Sofia.jsrInvalid("abc"))
+            arrayOf<Any>("~jsr abc", Sofia.jsrInvalid("abc")),
         )
     }
 

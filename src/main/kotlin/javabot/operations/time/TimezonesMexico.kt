@@ -7,7 +7,7 @@ class TimezonesMexico : Timezones {
         Tijuana("America/Tijuana"),
         Hermosillo("America/Hermosillo"),
         Mazatlan("America/Mazatlan"),
-        Mexico_City("America/Mexico_City")
+        Mexico_City("America/Mexico_City"),
     }
 
     override fun get(province: String): String? {

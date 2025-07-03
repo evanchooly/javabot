@@ -14,7 +14,7 @@ import org.bson.types.ObjectId
 @Entity(value = "admins", useDiscriminator = false)
 @Indexes(
     Index(fields = arrayOf(Field("emailAddress")), options = IndexOptions(unique = true)),
-    Index(fields = arrayOf(Field("ircName"), Field("hostName")))
+    Index(fields = arrayOf(Field("ircName"), Field("hostName"))),
 )
 class Admin : Serializable, Persistent {
     @Id var id: ObjectId? = null

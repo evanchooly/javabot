@@ -8,4 +8,6 @@ on:
 jobs:
   Build:
     uses: evanchooly/workflows/.github/workflows/pull-request.yml@master
+    with:
+      java: 17
 

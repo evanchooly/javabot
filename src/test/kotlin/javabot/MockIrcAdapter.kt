@@ -23,7 +23,7 @@ constructor(
     adminDao: AdminDao,
     javabot: Provider<Javabot>,
     configDao: ConfigDao,
-    ircBot: Provider<PircBotX>
+    ircBot: Provider<PircBotX>,
 ) : OfflineAdapter(nickServDao, logsDao, channelDao, adminDao, javabot, configDao, ircBot) {
     val channels: MutableMap<String, MutableSet<String>> =
         mutableMapOf("#jbunittest" to mutableSetOf("botuser"))

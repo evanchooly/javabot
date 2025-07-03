@@ -26,7 +26,7 @@ class DaysUntilOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
                     DateTimeFormatter.ofPattern("MMM d, ''yy"),
                     DateTimeFormatter.ofPattern("d MMM yyyy"),
                     DateTimeFormatter.ofPattern("MMM d, yyyy"),
-                    DateTimeFormatter.ofPattern("MMM d, ''yy")
+                    DateTimeFormatter.ofPattern("MMM d, ''yy"),
                 )
             var i = 0
             while (i < formats.size && d == null) {

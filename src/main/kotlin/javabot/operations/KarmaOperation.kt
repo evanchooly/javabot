@@ -20,7 +20,7 @@ constructor(
     adminDao: AdminDao,
     var dao: KarmaDao,
     var changeDao: ChangeDao,
-    var channelDao: ChannelDao
+    var channelDao: ChannelDao,
 ) : BotOperation(bot, adminDao) {
 
     override fun handleMessage(event: Message): List<Message> {
@@ -87,7 +87,7 @@ constructor(
                 karma.userName,
                 karma.name,
                 karma.value,
-                channelDao.location(channel)
+                channelDao.location(channel),
             )
             readKarma(responses, Message(event.channel, event.user, "karma $subject"))
         }
@@ -106,7 +106,7 @@ constructor(
                         event,
                         if (nick.equals(sender.nick, ignoreCase = true))
                             Sofia.karmaOwnValue(sender.nick, karma.value)
-                        else Sofia.karmaOthersValue(nick, karma.value, sender.nick)
+                        else Sofia.karmaOthersValue(nick, karma.value, sender.nick),
                     )
                 )
             } else {
@@ -114,7 +114,7 @@ constructor(
                     Message(
                         event,
                         if (sender.nick == nick) Sofia.karmaOwnNone(sender.nick)
-                        else Sofia.karmaOthersNone(nick, sender.nick)
+                        else Sofia.karmaOthersNone(nick, sender.nick),
                     )
                 )
             }

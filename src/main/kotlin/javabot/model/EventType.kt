@@ -4,5 +4,5 @@ enum class EventType {
     ADD,
     DELETE,
     UPDATE,
-    RELOAD
+    RELOAD,
 }

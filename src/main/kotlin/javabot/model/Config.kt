@@ -42,7 +42,7 @@ class Config : Serializable, Persistent {
         trigger: String,
         nick: String,
         password: String?,
-        operations: MutableList<String>
+        operations: MutableList<String>,
     ) {
         this.id = id
         this.historyLength = historyLength

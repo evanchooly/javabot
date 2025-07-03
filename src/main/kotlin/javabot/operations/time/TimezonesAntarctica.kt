@@ -10,7 +10,7 @@ class TimezonesAntarctica : Timezones {
         Vostok("Antarctica/Vostok"),
         Davis("Antarctica/Davis"),
         Casey("Antarctica/Casey"),
-        Dumont_D_Urville("Antarctica/DumontDUrville")
+        Dumont_D_Urville("Antarctica/DumontDUrville"),
     }
 
     override fun get(province: String): String? {

@@ -17,36 +17,36 @@ class MorphiaJavadocTest : BaseTest() {
     fun constructors() {
         scanForResponse(
             operation.handleMessage(message("~javadoc CountOptions()")),
-            "dev/morphia/query/CountOptions.html#<init>"
+            "dev/morphia/query/CountOptions.html#<init>",
         )
         scanForResponse(
             operation.handleMessage(message("~javadoc dev.morphia.query.CountOptions()")),
-            "dev/morphia/query/CountOptions.html"
+            "dev/morphia/query/CountOptions.html",
         )
     }
 
     fun methods() {
         scanForResponse(
             operation.handleMessage(message("~javadoc Query.filter(*)")),
-            "dev/morphia/query/Query.html#filter("
+            "dev/morphia/query/Query.html#filter(",
         )
     }
 
     fun primitives() {
         scanForResponse(
             operation.handleMessage(message("~javadoc CountOptions.limit(int)")),
-            "dev/morphia/query/CountOptions.html#limit("
+            "dev/morphia/query/CountOptions.html#limit(",
         )
         scanForResponse(
             operation.handleMessage(message("~javadoc GeoNear.to(double[])")),
-            "dev/morphia/aggregation/experimental/stages/GeoNear.html#to("
+            "dev/morphia/aggregation/experimental/stages/GeoNear.html#to(",
         )
     }
 
     fun fields() {
         scanForResponse(
             operation.handleMessage(message("~javadoc SystemVariables.CLUSTER_TIME")),
-            "dev/morphia/aggregation/experimental/expressions/SystemVariables.html#CLUSTER_TIME"
+            "dev/morphia/aggregation/experimental/expressions/SystemVariables.html#CLUSTER_TIME",
         )
     }
 
@@ -55,7 +55,7 @@ class MorphiaJavadocTest : BaseTest() {
             operation.handleMessage(
                 message("~javadoc DatastoreImpl.setInitialVersion(MappedField, T)")
             ),
-            "I have no documentation for "
+            "I have no documentation for ",
         )
     }
 }

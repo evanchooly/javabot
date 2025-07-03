@@ -26,14 +26,14 @@ class InfoOperationTest : BaseTest() {
             var response = operation.handleMessage(message("~info " + key))
             Assert.assertEquals(
                 response[0].value,
-                "${key} was added by: ${user} on ${format} and has a literal value of: ${value}"
+                "${key} was added by: ${user} on ${format} and has a literal value of: ${value}",
             )
             response = factoidOperation.handleMessage(message("~whatwhat"))
             Assert.assertEquals(response[0].value, "botuser, whatwhat is ah, yeah")
             response = operation.handleMessage(message("~info " + key))
             Assert.assertEquals(
                 response[0].value,
-                "${key} was added by: ${user} on ${format} and has a literal value of: ${value}"
+                "${key} was added by: ${user} on ${format} and has a literal value of: ${value}",
             )
         } finally {
             var factoid = factoidDao.getFactoid(key)

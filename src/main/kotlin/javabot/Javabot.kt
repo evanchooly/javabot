@@ -54,7 +54,7 @@ constructor(
     var adapter: IrcAdapter,
     var adminDao: AdminDao,
     var javabotConfig: JavabotConfig,
-    var application: Provider<JavabotApplication>
+    var application: Provider<JavabotApplication>,
 ) {
 
     companion object {
@@ -83,7 +83,7 @@ constructor(
             5L,
             TimeUnit.MINUTES,
             ArrayBlockingQueue(50),
-            JavabotThreadFactory(true, "javabot-handler-thread-")
+            JavabotThreadFactory(true, "javabot-handler-thread-"),
         )
 
     private val eventHandler =

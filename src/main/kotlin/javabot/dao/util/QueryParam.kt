@@ -14,7 +14,7 @@ class QueryParam(
     val first: Int,
     val count: Int,
     val sort: String? = null,
-    val sortAsc: Boolean = true
+    val sortAsc: Boolean = true,
 ) {
     fun hasSort(): Boolean {
         return sort != null

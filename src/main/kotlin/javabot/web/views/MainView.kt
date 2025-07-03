@@ -21,7 +21,7 @@ abstract class MainView(
     var channelDao: ChannelDao,
     var factoidDao: FactoidDao,
     var apiDao: ApiDao,
-    val request: HttpServletRequest
+    val request: HttpServletRequest,
 ) : View("/main.ftl", com.google.common.base.Charsets.ISO_8859_1) {
 
     companion object {

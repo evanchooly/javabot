@@ -57,7 +57,7 @@ open class NickServDao @Inject constructor(ds: Datastore) :
             val dateString = if (line.contains("(")) line.substring(0, line.indexOf(" (")) else line
             LocalDateTime.parse(
                 dateString,
-                DateTimeFormatter.ofPattern(NickServInfo.NSERV_DATE_FORMAT)
+                DateTimeFormatter.ofPattern(NickServInfo.NSERV_DATE_FORMAT),
             )
         } else {
             LocalDateTime.now()
@@ -69,7 +69,7 @@ open class NickServDao @Inject constructor(ds: Datastore) :
             .filter(
                 or(
                     nick().eq(name.lowercase(Locale.getDefault())),
-                    account().eq(name.lowercase(Locale.getDefault()))
+                    account().eq(name.lowercase(Locale.getDefault())),
                 )
             )
             .first()

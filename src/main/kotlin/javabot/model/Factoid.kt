@@ -124,7 +124,7 @@ class Factoid() : Serializable, Persistent {
                         "%s%s%s",
                         result.substring(0, index),
                         choices[chosen],
-                        result.substring(index2 + 1)
+                        result.substring(index2 + 1),
                     )
             }
             index = result.indexOf("(", index + 1)
@@ -150,7 +150,7 @@ class Factoid() : Serializable, Persistent {
             updated,
             lastUsed,
             locked,
-            usage
+            usage,
         )
     }
 

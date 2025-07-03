@@ -55,7 +55,7 @@ class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channel
                     .filter(
                         channel().eq(channelName),
                         updated().lte(nextMidnight),
-                        updated().gte(lastMidnight)
+                        updated().gte(lastMidnight),
                     )
             list = criteria.iterator(FindOptions().sort(Sort.ascending(updated))).toList()
         }

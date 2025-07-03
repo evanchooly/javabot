@@ -12,7 +12,7 @@ class DisableOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
     @Parameter(
         names = arrayOf("-name"),
         description = "The name of the operation to disable",
-        required = true
+        required = true,
     )
     lateinit var operationName: String
 

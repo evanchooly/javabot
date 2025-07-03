@@ -14,7 +14,7 @@ open class Message(
     val value: String,
     val target: JavabotUser? = null,
     val triggered: Boolean = true,
-    val addressed: Boolean = false
+    val addressed: Boolean = false,
 ) {
     companion object {
         private val LOG = LoggerFactory.getLogger(Message::class.java)
@@ -34,7 +34,7 @@ open class Message(
             user: JavabotUser,
             startString: String,
             botNick: String,
-            message: String
+            message: String,
         ): Message {
             try {
                 var triggered = false
@@ -68,14 +68,14 @@ open class Message(
                             user,
                             tellSubject.subject,
                             tellSubject.target,
-                            triggered
+                            triggered,
                         )
                     } else {
                         return Message(
                             channel,
                             user,
                             Sofia.factoidTellSyntax(user.nick),
-                            triggered = triggered
+                            triggered = triggered,
                         )
                     }
                 }
@@ -119,12 +119,12 @@ open class Message(
     constructor(
         channel: Channel,
         message: Message,
-        value: String
+        value: String,
     ) : this(channel, message.user, value, message.target)
 
     constructor(
         message: Message,
-        value: String
+        value: String,
     ) : this(message.channel, message.user, value, message.target)
 
     fun massageTell(): String {
@@ -145,10 +145,10 @@ class NoOperationMessage(
     value: String,
     target: JavabotUser? = null,
     triggered: Boolean = true,
-    addressed: Boolean = false
+    addressed: Boolean = false,
 ) : Message(channel, user, value, target, triggered, addressed) {
     constructor(
         message: Message,
-        value: String
+        value: String,
     ) : this(message.channel, message.user, value, message.target)
 }

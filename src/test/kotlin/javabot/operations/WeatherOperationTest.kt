@@ -33,7 +33,7 @@ class WeatherOperationTest : BaseTest() {
         // we have to use a genuinely odd name, because google maps matches a LOT of place names
         scanForResponse(
             operation.handleMessage(message("~weather zila jdlfj lasjdf")),
-            "only supports places on Earth"
+            "only supports places on Earth",
         )
     }
 

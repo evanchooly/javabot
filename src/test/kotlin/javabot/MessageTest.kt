@@ -33,7 +33,7 @@ class MessageTest : BaseTest() {
                 user,
                 start,
                 BaseTest.TEST_BOT_NICK,
-                test
+                test,
             )
         assertEquals(message.value, expected)
         assertEquals(message.triggered, triggered)

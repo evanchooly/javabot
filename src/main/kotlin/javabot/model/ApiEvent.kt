@@ -73,7 +73,7 @@ class ApiEvent : AdminEvent {
     private constructor(
         requestedBy: String,
         type: EventType,
-        api: JavadocApi
+        api: JavadocApi,
     ) : super(requestedBy, type) {
         this.api = api
     }
@@ -114,7 +114,7 @@ class ApiEvent : AdminEvent {
                             bot.privateMessageUser(user, line)
                             LOG.debug(line)
                         }
-                    }
+                    },
                 )
             }
         }
@@ -155,7 +155,7 @@ fun File.deleteTree() {
                 object : SimpleFileVisitor<Path>() {
                     override fun visitFile(
                         file: Path,
-                        attrs: BasicFileAttributes
+                        attrs: BasicFileAttributes,
                     ): FileVisitResult {
                         Files.delete(file)
                         return FileVisitResult.CONTINUE
@@ -170,7 +170,7 @@ fun File.deleteTree() {
                             throw e
                         }
                     }
-                }
+                },
             )
         } else {
             throw RuntimeException("deleteTree() can only be called on directories:  ${this}")

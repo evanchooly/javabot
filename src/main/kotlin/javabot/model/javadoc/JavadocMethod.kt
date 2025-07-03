@@ -12,7 +12,7 @@ import org.bson.types.ObjectId
 @Indexes(
     Index(fields = arrayOf(Field("apiId"))),
     Index(fields = arrayOf(Field("classId"), Field("upperName"))),
-    Index(fields = arrayOf(Field("apiId"), Field("classId"), Field("upperName")))
+    Index(fields = arrayOf(Field("apiId"), Field("classId"), Field("upperName"))),
 )
 class JavadocMethod() : JavadocElement() {
     lateinit var classId: ObjectId
@@ -30,7 +30,7 @@ class JavadocMethod() : JavadocElement() {
         name: String,
         urlFragment: String,
         longArgs: List<String>,
-        shortArgs: List<String>
+        shortArgs: List<String>,
     ) : this() {
         this.name = name
         isConstructor = name == "<init>"

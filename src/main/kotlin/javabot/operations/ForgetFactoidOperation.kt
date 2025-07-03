@@ -16,7 +16,7 @@ constructor(
     bot: Javabot,
     adminDao: AdminDao,
     var factoidDao: FactoidDao,
-    var channelDao: ChannelDao
+    var channelDao: ChannelDao,
 ) : BotOperation(bot, adminDao), StandardOperation {
 
     override fun handleMessage(event: Message): List<Message> {
@@ -41,7 +41,7 @@ constructor(
         channel: Channel?,
         responses: MutableList<Message>,
         event: Message,
-        key: String
+        key: String,
     ) {
         val factoid = factoidDao.getFactoid(key)
         if (factoid != null) {

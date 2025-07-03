@@ -28,7 +28,7 @@ constructor(
     throttler: Throttler,
     adapter: IrcAdapter,
     javabotConfig: JavabotConfig,
-    application: Provider<JavabotApplication>
+    application: Provider<JavabotApplication>,
 ) :
     Javabot(
         injector,
@@ -41,7 +41,7 @@ constructor(
         adapter,
         adminDao,
         javabotConfig,
-        application
+        application,
     ) {
 
     override val nick: String = BaseTest.TEST_BOT_NICK

@@ -16,8 +16,8 @@ import java.util.Locale
     Index(fields = arrayOf(Field("fqcn")), options = IndexOptions(unique = true)),
     Index(
         fields = arrayOf(Field("apiId"), Field("upperPackageName"), Field("upperName")),
-        options = IndexOptions(unique = true)
-    )
+        options = IndexOptions(unique = true),
+    ),
 )
 open class JavadocClass : JavadocElement {
     lateinit var packageName: String

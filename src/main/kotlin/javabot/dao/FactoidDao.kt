@@ -51,7 +51,7 @@ constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
         key: String,
         value: String,
         location: String,
-        updated: LocalDateTime
+        updated: LocalDateTime,
     ): Factoid {
         val factoid = Factoid(key, value, sender)
         factoid.updated = updated
@@ -87,7 +87,7 @@ constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
                     or(
                         upperName().eq(name.uppercase(Locale.getDefault()) + " \$1"),
                         upperName().eq(name.uppercase(Locale.getDefault()) + " \$^"),
-                        upperName().eq(name.uppercase(Locale.getDefault()) + " \$+")
+                        upperName().eq(name.uppercase(Locale.getDefault()) + " \$+"),
                     )
                 )
                 .first()

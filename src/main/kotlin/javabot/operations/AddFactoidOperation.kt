@@ -21,7 +21,7 @@ constructor(
     adminDao: AdminDao,
     var factoidDao: FactoidDao,
     var changeDao: ChangeDao,
-    var channelDao: ChannelDao
+    var channelDao: ChannelDao,
 ) : BotOperation(bot, adminDao), StandardOperation {
 
     companion object {
@@ -83,7 +83,7 @@ constructor(
                             changeDao.logChangingLockedFactoid(
                                 event.user.nick,
                                 key,
-                                channel?.name ?: "private message"
+                                channel?.name ?: "private message",
                             )
                             responses.add(Message(event, Sofia.factoidLocked(event.user.nick)))
                         }
@@ -102,14 +102,14 @@ constructor(
                                 factoid.name,
                                 factoid.value,
                                 message,
-                                channelDao.location(channel)
+                                channelDao.location(channel),
                             )
                         } else {
                             changeDao.logFactoidAdded(
                                 event.user.nick,
                                 factoid.name,
                                 factoid.value,
-                                channelDao.location(channel)
+                                channelDao.location(channel),
                             )
                         }
                         factoidDao.save(factoid)

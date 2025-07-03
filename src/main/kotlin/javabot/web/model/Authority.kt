@@ -16,5 +16,5 @@ enum class Authority {
     /** An anonymous (public) customer */
     ROLE_PUBLIC,
     /** An un-authenticated customer in possession of a "remember me" token */
-    ROLE_PARTIAL
+    ROLE_PARTIAL,
 } // End of enum

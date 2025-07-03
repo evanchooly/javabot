@@ -22,7 +22,7 @@ constructor(bot: Javabot, adminDao: AdminDao, var configDao: ConfigDao) :
         responses.add(
             Message(
                 event,
-                Sofia.adminKnownOperations(event.user.nick, StringUtils.join(list.iterator(), ","))
+                Sofia.adminKnownOperations(event.user.nick, StringUtils.join(list.iterator(), ",")),
             )
         )
 

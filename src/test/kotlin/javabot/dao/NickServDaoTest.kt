@@ -27,7 +27,7 @@ constructor(val nickServDao: NickServDao, val ircAdapter: IrcAdapter) : BaseServ
                 "Last seen  : now",
                 "Flags      : HideMail, Private",
                 "cheeser has enabled nick protection",
-                "*** End of Info ***"
+                "*** End of Info ***",
             )
         nickServDao.process(list)
     }
@@ -41,7 +41,7 @@ constructor(val nickServDao: NickServDao, val ircAdapter: IrcAdapter) : BaseServ
                     "nick" + i,
                     LocalDateTime.of(2014, Month.MARCH, 1, 16, 30),
                     LocalDateTime.of(2014, Month.MARCH, 1, 16, 30),
-                    LocalDateTime.now()
+                    LocalDateTime.now(),
                 )
             )
         }
@@ -61,7 +61,7 @@ constructor(val nickServDao: NickServDao, val ircAdapter: IrcAdapter) : BaseServ
                     null,
                     "",
                     o,
-                    of()
+                    of(),
                 )
             )
         }
@@ -72,7 +72,7 @@ constructor(val nickServDao: NickServDao, val ircAdapter: IrcAdapter) : BaseServ
         nick: String,
         registered: LocalDateTime,
         userRegistered: LocalDateTime,
-        lastSeen: LocalDateTime
+        lastSeen: LocalDateTime,
     ): NickServInfo {
         val info = NickServInfo()
         info.account = account

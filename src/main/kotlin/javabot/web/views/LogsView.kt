@@ -25,7 +25,7 @@ constructor(
     var logsDao: LogsDao,
     @Assisted request: HttpServletRequest,
     @Assisted val channel: String,
-    @Assisted private val date: LocalDateTime
+    @Assisted private val date: LocalDateTime,
 ) : MainView(adminDao, channelDao, factoidDao, apiDao, request) {
     companion object {
         val LOG_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm")

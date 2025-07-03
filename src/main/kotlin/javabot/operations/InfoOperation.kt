@@ -32,8 +32,8 @@ constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :
                             if (factoid.locked) "*" else "",
                             factoid.userName,
                             formatted,
-                            factoid.value
-                        )
+                            factoid.value,
+                        ),
                     )
                 )
             } else {

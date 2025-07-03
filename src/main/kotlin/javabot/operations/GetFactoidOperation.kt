@@ -37,7 +37,7 @@ constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :
     private fun getFactoid(
         responses: MutableList<Message>,
         event: Message,
-        backtrack: MutableSet<String>
+        backtrack: MutableSet<String>,
     ) {
         var message = event.value
         if (message.endsWith(".") || message.endsWith("?") || message.endsWith("!")) {
@@ -63,7 +63,7 @@ constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :
         event: Message,
         backtrack: MutableSet<String>,
         replacedValue: String,
-        factoid: Factoid
+        factoid: Factoid,
     ) {
         val sender = event.user.nick
         val message = factoid.evaluate(event.target, sender, replacedValue)
@@ -83,7 +83,7 @@ constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :
                 LOG.error(
                     """Exception:  event.target = [${event.target}], event = [${event}], backtrack = [${backtrack}],
                         replacedValue = [${replacedValue}], factoid = [${factoid}]""",
-                    e
+                    e,
                 )
             }
         } else {

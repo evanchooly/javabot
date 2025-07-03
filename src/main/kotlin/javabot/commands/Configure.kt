@@ -30,7 +30,7 @@ class Configure @Inject constructor(bot: Javabot, adminDao: AdminDao, var config
                 try {
                     set.invoke(
                         config,
-                        if (type == String::class.java) value.trim() else Integer.parseInt(value)
+                        if (type == String::class.java) value.trim() else Integer.parseInt(value),
                     )
                     configDao.save(config)
                     responses.add(

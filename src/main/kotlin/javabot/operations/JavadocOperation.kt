@@ -22,7 +22,7 @@ constructor(
     adminDao: AdminDao,
     var apiDao: ApiDao,
     var dao: JavadocClassDao,
-    var config: JavabotConfig
+    var config: JavabotConfig,
 ) : BotOperation(bot, adminDao) {
 
     companion object {
@@ -60,7 +60,7 @@ constructor(
         responses: MutableList<Message>,
         event: Message,
         api: JavadocApi?,
-        key: String
+        key: String,
     ) {
         val urls = handle(api, key)
         if (!urls.isEmpty()) {
@@ -82,7 +82,7 @@ constructor(
     private fun buildResponse(
         event: Message,
         urls: List<String>,
-        urlMessage: StringBuilder
+        urlMessage: StringBuilder,
     ): MutableList<Message> {
         val responses = arrayListOf<Message>()
         var message = urlMessage
@@ -138,7 +138,7 @@ constructor(
         urls: MutableList<String>,
         api: JavadocApi?,
         key: String,
-        openIndex: Int
+        openIndex: Int,
     ) {
         val closeIndex = key.indexOf(')')
         if (closeIndex != -1) {
@@ -196,7 +196,7 @@ constructor(
         api: JavadocApi?,
         className: String,
         methodName: String,
-        signatureTypes: String
+        signatureTypes: String,
     ): List<String> {
         return dao.getMethods(api, className, methodName, signatureTypes).map {
             it.getDisplayUrl(it.toString(), apiDao, bitly)

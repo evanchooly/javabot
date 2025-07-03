@@ -66,7 +66,7 @@ constructor(private val linkDao: LinkDao, val operation: LinksOperation) : BaseT
         assertEquals(response.size, 1)
         assertEquals(
             response[0].value,
-            Sofia.linksVerbApplied(firstKey, "approved", TEST_CHANNEL.name)
+            Sofia.linksVerbApplied(firstKey, "approved", TEST_CHANNEL.name),
         )
 
         response = operation.handleMessage(message("~list approved ${TEST_CHANNEL.name} 10"))
@@ -79,7 +79,7 @@ constructor(private val linkDao: LinkDao, val operation: LinksOperation) : BaseT
         assertEquals(response.size, 1)
         assertEquals(
             response[0].value,
-            Sofia.linksVerbApplied(secondKey, "rejected", TEST_CHANNEL.name)
+            Sofia.linksVerbApplied(secondKey, "rejected", TEST_CHANNEL.name),
         )
 
         response = operation.handleMessage(message("~list unapproved ${TEST_CHANNEL.name}"))
@@ -153,7 +153,7 @@ constructor(private val linkDao: LinkDao, val operation: LinksOperation) : BaseT
                 "garply",
                 "plugh",
                 "xyzzy",
-                "wibble"
+                "wibble",
             )
             .forEachIndexed { index, domain ->
                 val response =
@@ -162,7 +162,7 @@ constructor(private val linkDao: LinkDao, val operation: LinksOperation) : BaseT
                     )
                 assertEquals(
                     response[0].value,
-                    Sofia.linksAccepted("http://$domain.com", TEST_CHANNEL.name)
+                    Sofia.linksAccepted("http://$domain.com", TEST_CHANNEL.name),
                 )
                 assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, index + 1)
             }
@@ -206,7 +206,7 @@ constructor(private val linkDao: LinkDao, val operation: LinksOperation) : BaseT
         assertEquals(response.size, 1)
         assertEquals(
             response[0].value,
-            Sofia.linksVerbApplied(firstKey, "approved", TEST_CHANNEL.name)
+            Sofia.linksVerbApplied(firstKey, "approved", TEST_CHANNEL.name),
         )
 
         response = operation.handleMessage(privateMessage("list approved ${TEST_CHANNEL.name} 10"))
@@ -262,7 +262,7 @@ constructor(private val linkDao: LinkDao, val operation: LinksOperation) : BaseT
         assertEquals(response.size, 1)
         assertEquals(
             response[0].value,
-            Sofia.linksVerbApplied(firstKey, "approved", TEST_CHANNEL.name)
+            Sofia.linksVerbApplied(firstKey, "approved", TEST_CHANNEL.name),
         )
         mockIrcAdapter.disableOperation("isOp")
         response = operation.handleMessage(message("~list approve ${TEST_CHANNEL.name} $secondKey"))

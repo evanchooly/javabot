@@ -16,7 +16,7 @@ constructor(
     channelDao: ChannelDao,
     factoidDao: FactoidDao,
     apiDao: ApiDao,
-    @Assisted request: HttpServletRequest
+    @Assisted request: HttpServletRequest,
 ) : MainView(adminDao, channelDao, factoidDao, apiDao, request) {
 
     override fun getChildView(): String {

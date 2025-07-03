@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class JavabotThreadFactory(
     private val createDaemonThreads: Boolean,
-    private val namePrefix: String
+    private val namePrefix: String,
 ) : ThreadFactory {
     private val threadNumber = AtomicInteger(1)
 

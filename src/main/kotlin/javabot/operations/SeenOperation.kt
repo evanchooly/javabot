@@ -28,8 +28,8 @@ class SeenOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var da
                             event.user.nick,
                             key,
                             seen.updated.format(FORMATTER),
-                            seen.message
-                        )
+                            seen.message,
+                        ),
                     )
                 )
             } else {

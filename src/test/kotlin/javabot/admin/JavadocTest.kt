@@ -34,24 +34,24 @@ class JavadocTest() : BaseTest() {
     private fun checkServlets(api: JavadocApi) {
         assertNotNull(
             classDao.getClass(api, "javax.servlet.http", "HttpServletRequest"),
-            "Should find an entry for ${api.name}/javax.servlet.http.HttpServletRequest"
+            "Should find an entry for ${api.name}/javax.servlet.http.HttpServletRequest",
         )
 
         scanForResponse(
             operation.handleMessage(message("~javadoc HttpServlet")),
-            "javax/servlet/http/HttpServlet.html"
+            "javax/servlet/http/HttpServlet.html",
         )
         scanForResponse(
             operation.handleMessage(message("~javadoc HttpServlet.doGet(*)")),
-            "javax/servlet/http/HttpServlet.html#doGet"
+            "javax/servlet/http/HttpServlet.html#doGet",
         )
         scanForResponse(
             operation.handleMessage(message("~javadoc HttpServletRequest")),
-            "javax/servlet/http/HttpServletRequest.html"
+            "javax/servlet/http/HttpServletRequest.html",
         )
         scanForResponse(
             operation.handleMessage(message("~javadoc HttpServletRequest.getMethod()")),
-            "javax/servlet/http/HttpServletRequest.html#getMethod"
+            "javax/servlet/http/HttpServletRequest.html#getMethod",
         )
         checkServletFile()
     }
@@ -67,33 +67,33 @@ class JavadocTest() : BaseTest() {
         verifyMapCount()
         scanForResponse(
             operation.handleMessage(message("~javadoc Annotated")),
-            "javax/enterprise/inject/spi/Annotated.html"
+            "javax/enterprise/inject/spi/Annotated.html",
         )
         scanForResponse(
             operation.handleMessage(message("~javadoc Annotated.getAnnotation(*)")),
-            "javax/enterprise/inject/spi/Annotated.html#getAnnotation"
+            "javax/enterprise/inject/spi/Annotated.html#getAnnotation",
         )
         scanForResponse(
             operation.handleMessage(message("~javadoc ContextService")),
-            "javax/enterprise/concurrent/ContextService.html"
+            "javax/enterprise/concurrent/ContextService.html",
         )
 
         scanForResponse(
             operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
-            "createContextualProxy-java.lang.Object-java.lang.Class...-"
+            "createContextualProxy-java.lang.Object-java.lang.Class...-",
         )
 
         scanForResponse(
             operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
-            "createContextualProxy-java.lang.Object-java.util.Map-java.lang.Class...-"
+            "createContextualProxy-java.lang.Object-java.util.Map-java.lang.Class...-",
         )
         scanForResponse(
             operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
-            "createContextualProxy-T-java.lang.Class-"
+            "createContextualProxy-T-java.lang.Class-",
         )
         scanForResponse(
             operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
-            "createContextualProxy-T-java.util.Map-java.lang.Class-"
+            "createContextualProxy-T-java.util.Map-java.lang.Class-",
         )
 
         checkServlets(api)
@@ -105,35 +105,35 @@ class JavadocTest() : BaseTest() {
         Assert.assertEquals(classDao.getClass(api, "Map").size, 1)
         assertNotNull(
             classDao.getClass(api, "java.lang", "Integer"),
-            "Should find an entry for ${api.name}'s java.lang.Integer"
+            "Should find an entry for ${api.name}'s java.lang.Integer",
         )
         assertNotNull(
             classDao.getClass(api, "java.util", "List"),
-            "Should find an entry for ${api.name}'s java.util.List"
+            "Should find an entry for ${api.name}'s java.util.List",
         )
         assertNotNull(
             classDao.getClass(api, "java.sql", "ResultSet"),
-            "Should find an entry for ${api.name}'s java.sql.ResultSet"
+            "Should find an entry for ${api.name}'s java.sql.ResultSet",
         )
         assertNotNull(
             classDao.getClass(api, "java.util.Map.Entry"),
-            "Should find an entry for ${api.name}'s java.util.Map.Entry"
+            "Should find an entry for ${api.name}'s java.util.Map.Entry",
         )
         assertNotNull(
             classDao.getClass(api, "Map.Entry"),
-            "Should find an entry for ${api.name}'s java.util.Map.Entry"
+            "Should find an entry for ${api.name}'s java.util.Map.Entry",
         )
         scanForResponse(
             operation.handleMessage(message("~javadoc Map.Entry")),
-            "${api.baseUrl}/java.base/java/util/Map.Entry.html"
+            "${api.baseUrl}/java.base/java/util/Map.Entry.html",
         )
         scanForResponse(
             operation.handleMessage(message("~javadoc String.chars()")),
-            "${api.baseUrl}/java.base/java/lang/String.html#chars()"
+            "${api.baseUrl}/java.base/java/lang/String.html#chars()",
         )
         scanForResponse(
             operation.handleMessage(message("~javadoc ResultSet.getInt(*)")),
-            "${api.baseUrl}/java.sql/java/sql/ResultSet.html#getInt"
+            "${api.baseUrl}/java.sql/java/sql/ResultSet.html#getInt",
         )
     }
 

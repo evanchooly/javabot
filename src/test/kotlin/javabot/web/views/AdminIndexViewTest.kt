@@ -13,7 +13,7 @@ class AdminIndexViewTest : AdminViewTest() {
         for (i in 0 until count) {
             Assert.assertNotNull(
                 source.getElementById("admin" + i),
-                "Trying to find admin${i}\n\n${source}"
+                "Trying to find admin${i}\n\n${source}",
             )
         }
         val labels = source.getAllElements("for", "irc", false)

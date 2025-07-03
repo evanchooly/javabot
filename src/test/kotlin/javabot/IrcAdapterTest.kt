@@ -39,7 +39,7 @@ class IrcAdapterTest : BaseTest() {
                 testIrcHostmask,
                 testIrcUser,
                 "~dude",
-                of()
+                of(),
             )
         )
         Assert.assertEquals(messages.get(duration)[0], Sofia.unhandledMessage(TEST_USER.nick))
@@ -65,7 +65,7 @@ class IrcAdapterTest : BaseTest() {
                 testIrcHostmask,
                 testIrcUser,
                 "~impact",
-                of()
+                of(),
             )
         )
         Assert.assertEquals(messages.get(duration)[0], "ouch")
@@ -78,7 +78,7 @@ class IrcAdapterTest : BaseTest() {
             arrayOf("\u00c3foo", "Afoo"),
             arrayOf("\u00e3foo", "afoo"),
             arrayOf("\u00f1foo", "nfoo"),
-            arrayOf("\u00f5foo", "ofoo")
+            arrayOf("\u00f5foo", "ofoo"),
         )
             as Array<Array<Any>>
 
@@ -91,7 +91,7 @@ class IrcAdapterTest : BaseTest() {
                 TEST_USER.nick,
                 conversion,
                 "<reply>something",
-                LogsDaoTest.CHANNEL_NAME
+                LogsDaoTest.CHANNEL_NAME,
             )
             ircAdapter.onMessage(
                 MessageEvent(
@@ -101,7 +101,7 @@ class IrcAdapterTest : BaseTest() {
                     testIrcHostmask,
                     testIrcUser,
                     key,
-                    of()
+                    of(),
                 )
             )
             Assert.assertEquals(messages.get(duration)[0], "something")
@@ -122,7 +122,7 @@ class IrcAdapterTest : BaseTest() {
                 testIrcHostmask,
                 testIrcUser,
                 "~~ ${TARGET_USER.nick} impact",
-                of()
+                of(),
             )
         )
         Assert.assertEquals(messages.get(duration)[0], "${TARGET_USER.nick}, ouch")
@@ -133,7 +133,7 @@ class MockUserHostmask(
     bot: PircBotX,
     userNick: String,
     login: String = userNick,
-    hostname: String = userNick
+    hostname: String = userNick,
 ) : UserHostmask(bot, userNick, userNick, login, hostname) {}
 
 class MockIrcUser(bot: PircBotX, userNick: String) :

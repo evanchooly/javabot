@@ -36,7 +36,7 @@ open class AdminEvent : Serializable, Persistent {
     constructor(
         requestedBy: String,
         type: EventType,
-        requestedOn: LocalDateTime = LocalDateTime.now()
+        requestedOn: LocalDateTime = LocalDateTime.now(),
     ) : this() {
         this.requestedBy = requestedBy
         this.requestedOn = requestedOn
@@ -69,5 +69,5 @@ enum class State {
     NEW,
     PROCESSING,
     COMPLETED,
-    FAILED
+    FAILED,
 }

@@ -13,7 +13,7 @@ class TimezonesRussia : Timezones {
         Yakutsk("Asia/Yakutsk"),
         Yuzhno_Sakhalinsk("Asia/Vladivostok"),
         Petropavlovsk_Kamchatskiy("Asia/Kamchatka"),
-        Magadan("Asia/Magadan")
+        Magadan("Asia/Magadan"),
     }
 
     override fun get(province: String): String? {

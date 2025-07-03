@@ -20,7 +20,7 @@ constructor(
     val factoidDao: FactoidDao,
     val addFactoidOperation: AddFactoidOperation,
     val getFactoidOperation: GetFactoidOperation,
-    val forgetFactoidOperation: ForgetFactoidOperation
+    val forgetFactoidOperation: ForgetFactoidOperation,
 ) : BaseTest() {
 
     companion object {
@@ -67,7 +67,7 @@ constructor(
             arrayOf("no"),
             arrayOf("No"),
             arrayOf("nO"),
-            arrayOf("NO") // let's be emphatic!
+            arrayOf("NO"), // let's be emphatic!
         )
 
     @Test(dataProvider = "replaceInput")

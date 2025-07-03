@@ -22,7 +22,7 @@ class JavadocClassVisitor(
     var packageName: String,
     var className: String,
     var module: String?,
-    val type: JavadocType
+    val type: JavadocType,
 ) : ClassVisitor(Opcodes.ASM9) {
 
     private val interfaces = mutableListOf<String>()
@@ -38,7 +38,7 @@ class JavadocClassVisitor(
         name: String?,
         signature: String?,
         superName: String?,
-        interfaces: Array<out String>
+        interfaces: Array<out String>,
     ) {
         if (access and Opcodes.ACC_PUBLIC == Opcodes.ACC_PUBLIC) {
             superName?.let { parentClass = it.replace("/", ".") }
@@ -68,7 +68,7 @@ class JavadocClassVisitor(
         name: String,
         descriptor: String,
         signature: String?,
-        value: Any?
+        value: Any?,
     ): FieldVisitor? {
         if (
             ::javadocClass.isInitialized and (access and Opcodes.ACC_PUBLIC == Opcodes.ACC_PUBLIC)
@@ -92,7 +92,7 @@ class JavadocClassVisitor(
         name: String,
         descriptor: String,
         signature: String?,
-        exceptions: Array<out String>?
+        exceptions: Array<out String>?,
     ): MethodVisitor? {
         if (
             ::javadocClass.isInitialized and

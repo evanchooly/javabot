@@ -8,13 +8,13 @@ import java.util.concurrent.atomic.AtomicInteger
 class CallLimiter(
     val allowed: Int = 1000,
     val span: Long = 1,
-    val period: TimeUnit = TimeUnit.DAYS
+    val period: TimeUnit = TimeUnit.DAYS,
 ) {
     companion object {
         fun create(
             allowed: Int = 1000,
             span: Long = 1,
-            period: TimeUnit = TimeUnit.DAYS
+            period: TimeUnit = TimeUnit.DAYS,
         ): CallLimiter {
             return CallLimiter(allowed, span, period)
         }

@@ -49,7 +49,7 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
         @QueryParam("page") page: Int?,
         @QueryParam("name") name: String?,
         @QueryParam("value") value: String?,
-        @QueryParam("userName") userName: String?
+        @QueryParam("userName") userName: String?,
     ): View {
         return viewFactory.createFactoidsView(request, page ?: 1, Factoid.of(name, value, userName))
     }
@@ -62,7 +62,7 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
         @QueryParam("page") page: Int?,
         @Suppress("UNUSED_PARAMETER") @QueryParam("name") name: String?,
         @Suppress("UNUSED_PARAMETER") @QueryParam("value") value: Int?,
-        @Suppress("UNUSED_PARAMETER") @QueryParam("userName") userName: String?
+        @Suppress("UNUSED_PARAMETER") @QueryParam("userName") userName: String?,
     ): View {
         return viewFactory.createKarmaView(request, page ?: 1)
     }
@@ -73,7 +73,7 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
     fun changes(
         @Context request: HttpServletRequest,
         @QueryParam("page") page: Int?,
-        @QueryParam("message") message: String?
+        @QueryParam("message") message: String?,
     ): View {
         return viewFactory.createChangesView(request, page ?: 1, message)
     }
@@ -84,7 +84,7 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
     fun logs(
         @Context request: HttpServletRequest,
         @PathParam("channel") channel: String?,
-        @PathParam("date") dateString: String?
+        @PathParam("date") dateString: String?,
     ): View {
         val date: LocalDateTime =
             try {

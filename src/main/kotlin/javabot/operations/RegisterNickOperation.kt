@@ -25,7 +25,7 @@ constructor(bot: Javabot, adminDao: AdminDao, var configDao: ConfigDao) :
                 responses.add(
                     Message(
                         event.user,
-                        Sofia.registerNick(configDao.get().url, registration.url ?: "", twitterName)
+                        Sofia.registerNick(configDao.get().url, registration.url ?: "", twitterName),
                     )
                 )
             }

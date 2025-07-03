@@ -11,7 +11,7 @@ import org.bson.types.ObjectId
 @Entity("users")
 @Indexes(
     Index(fields = arrayOf(Field("nick")), options = IndexOptions(unique = true)),
-    Index(fields = arrayOf(Field("hostmask")), options = IndexOptions(unique = true))
+    Index(fields = arrayOf(Field("hostmask")), options = IndexOptions(unique = true)),
 )
 class JavabotUser {
     @Id var id: ObjectId = ObjectId()

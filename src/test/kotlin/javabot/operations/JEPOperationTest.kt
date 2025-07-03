@@ -17,7 +17,7 @@ class JEPOperationTest : BaseTest() {
         Assert.assertEquals(
             response[0].value,
             "'JEP 220: Modular Run-Time Images' can be found at " +
-                "http://openjdk.java.net/jeps/220"
+                "http://openjdk.java.net/jeps/220",
         )
     }
 
@@ -32,7 +32,7 @@ class JEPOperationTest : BaseTest() {
         return arrayOf(
             arrayOf<Any>("~jep", Sofia.jepMissing()),
             arrayOf<Any>("~jep ", Sofia.jepMissing()),
-            arrayOf<Any>("~jep abc", Sofia.jepInvalid("abc"))
+            arrayOf<Any>("~jep abc", Sofia.jepInvalid("abc")),
         )
     }
 

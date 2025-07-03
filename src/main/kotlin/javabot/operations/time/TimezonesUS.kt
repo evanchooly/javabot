@@ -7,7 +7,7 @@ class TimezonesUS : Timezones {
         private val regionCode: Int,
         val abbreviation: String,
         val capital: String,
-        val timezone: String
+        val timezone: String,
     ) {
         ALABAMA(1, "AL", "Montgomery", "US/Central"),
         ALASKA(2, "AK", "Juneau", "US/Alaska"),
@@ -60,7 +60,7 @@ class TimezonesUS : Timezones {
         WASHINGTON(53, "WA", "Olympia", "US/Pacific"),
         WEST_VIRGINIA(54, "WV", "Charleston", "US/Eastern"),
         WISCONSIN(55, "WI", "Madison", "US/Central"),
-        WYOMING(56, "WY", "Cheyenne", "US/Mountain")
+        WYOMING(56, "WY", "Cheyenne", "US/Mountain"),
     }
 
     override fun get(province: String): String? {

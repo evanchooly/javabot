@@ -4,7 +4,7 @@ class TimezonesEcuador : Timezones {
 
     private enum class Timezones(val timezone: String) {
         Galapagos("Pacific/Galapagos"),
-        Guayaquil("America/Guayaquil")
+        Guayaquil("America/Guayaquil"),
     }
 
     override fun get(province: String): String? {

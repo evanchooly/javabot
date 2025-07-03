@@ -21,7 +21,7 @@ constructor(
     adminDao: AdminDao,
     javabot: Provider<Javabot>,
     configDao: ConfigDao,
-    ircBot: Provider<PircBotX>
+    ircBot: Provider<PircBotX>,
 ) : IrcAdapter(nickServDao, logsDao, channelDao, adminDao, javabot, configDao, ircBot) {
 
     companion object {

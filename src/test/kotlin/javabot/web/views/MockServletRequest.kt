@@ -38,7 +38,7 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
                     UUID.randomUUID(),
                     BaseTest.BOT_EMAIL,
                     UUID.randomUUID().toString(),
-                    AccessGrant()
+                    AccessGrant(),
                 )
             tempUser.authorities.add(Authority.ROLE_PUBLIC)
 
@@ -48,7 +48,7 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
                 arrayOf(
                     Cookie(
                         JavabotConfiguration.SESSION_TOKEN_NAME,
-                        tempUser.sessionToken.toString()
+                        tempUser.sessionToken.toString(),
                     )
                 )
         } else {
@@ -311,7 +311,7 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
     @Throws(IllegalStateException::class)
     override fun startAsync(
         servletRequest: ServletRequest,
-        servletResponse: ServletResponse
+        servletResponse: ServletResponse,
     ): AsyncContext? {
         return null
     }

@@ -17,8 +17,7 @@ class JCPJSRLocator @Inject constructor(private val httpService: HttpService) {
                     .first()
                     ?.textNodes()
                     ?.map { element -> element.text().trim() }
-                    ?.joinToString(separator = " ")
-                    ?: throw IOException()
+                    ?.joinToString(separator = " ") ?: throw IOException()
         } catch (ignored: Exception) {}
 
         return urlString to title

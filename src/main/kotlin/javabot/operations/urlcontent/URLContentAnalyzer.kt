@@ -83,7 +83,7 @@ class URLContentAnalyzer {
                 "git\\.io",
                 "localhost",
                 "127\\.0\\.0\\.1",
-                "glot\\.io"
+                "glot\\.io",
             )
         val matchingPatterns: MutableMap<String, Pattern> = HashMap()
 

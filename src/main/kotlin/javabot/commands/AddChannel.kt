@@ -30,7 +30,7 @@ class AddChannel @Inject constructor(bot: Javabot, adminDao: AdminDao, var chann
                 Message(
                     event,
                     if (isLogged) Sofia.adminJoiningLoggedChannel(channelName)
-                    else Sofia.adminJoiningChannel(channelName)
+                    else Sofia.adminJoiningChannel(channelName),
                 )
             )
             if (channel.key != null) {

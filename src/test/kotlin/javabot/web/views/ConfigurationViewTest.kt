@@ -27,7 +27,7 @@ class ConfigurationViewTest : ViewsTest() {
         renderer.render(
             viewFactory.createConfigurationView(MockServletRequest(false)),
             Locale.getDefault(),
-            output
+            output,
         )
         var source = Source(ByteArrayInputStream(output.toByteArray()))
 
@@ -48,7 +48,7 @@ class ConfigurationViewTest : ViewsTest() {
         renderer.render(
             viewFactory.createConfigurationView(MockServletRequest(false)),
             Locale.getDefault(),
-            output
+            output,
         )
         source = Source(ByteArrayInputStream(output.toByteArray()))
 

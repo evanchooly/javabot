@@ -27,7 +27,7 @@ constructor(bot: Javabot, adminDao: AdminDao, var locator: JCPJSRLocator) :
                     responses.add(
                         Message(
                             event,
-                            if (!response.isEmpty()) response else Sofia.jsrUnknown(jsrString)
+                            if (!response.isEmpty()) response else Sofia.jsrUnknown(jsrString),
                         )
                     )
                 } catch (nfe: NumberFormatException) {

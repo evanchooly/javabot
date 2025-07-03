@@ -8,7 +8,7 @@ data class Weather(
     var humidity: String? = null,
     var wind: String? = null,
     var windChill: String? = null,
-    var localTime: String? = null
+    var localTime: String? = null,
 ) {
     override fun toString(): String {
         val dotWithSpaces = " $SEPARATOR "

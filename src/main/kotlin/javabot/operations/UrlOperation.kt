@@ -22,7 +22,7 @@ abstract class UrlOperation @Inject constructor(bot: Javabot, adminDao: AdminDao
                     Message(
                         event,
                         getBaseUrl() +
-                            URLEncoder.encode(message, Charset.defaultCharset().displayName())
+                            URLEncoder.encode(message, Charset.defaultCharset().displayName()),
                     )
                 )
             } catch (e: UnsupportedEncodingException) {

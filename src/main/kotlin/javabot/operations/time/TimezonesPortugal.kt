@@ -4,7 +4,7 @@ class TimezonesPortugal : Timezones {
 
     private enum class Timezones(val timezone: String) {
         Azores("Atlantic/Azores"),
-        Lisbon("Europe/Lisbon")
+        Lisbon("Europe/Lisbon"),
     }
 
     override fun get(province: String): String? {

@@ -74,7 +74,7 @@ class BrowseOperationTest @Inject constructor(val browseOperation: BrowseOperati
         assertEquals(1, response.size)
         assertEquals(
             "No source matching `FilesMcGee` and module `guavaMcGee` found.",
-            response[0].value
+            response[0].value,
         )
     }
 

@@ -17,7 +17,7 @@ constructor(
     bot: Javabot,
     adminDao: AdminDao,
     private var chatGPTDao: ChatGPTDao,
-    private var getFactoidOperation: GetFactoidOperation
+    private var getFactoidOperation: GetFactoidOperation,
 ) : BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
         val message = event.value
@@ -36,7 +36,7 @@ constructor(
                         question was "what would people say about my query, if they 
                         weren't really sure of what a correct answer might be?"
                         """
-                                .cleanForIRC()
+                                .cleanForIRC(),
                         )
                     )
                 else -> {
@@ -69,8 +69,8 @@ constructor(
                                 """
                                         .trimIndent()
                                         .asSystem(),
-                                    seed?.asSystem()
-                                )
+                                    seed?.asSystem(),
+                                ),
                             )
                         if (
                             !result.isNullOrEmpty() && !result.lowercase().contains(uuid.toString())

@@ -26,8 +26,8 @@ constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :
                     Sofia.botStats(
                         Duration.between(startTime, now()).toDays(),
                         numberOfMessages,
-                        factoidDao.count()
-                    )
+                        factoidDao.count(),
+                    ),
                 )
             )
         }

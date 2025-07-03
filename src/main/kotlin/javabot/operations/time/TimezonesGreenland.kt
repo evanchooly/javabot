@@ -6,7 +6,7 @@ class TimezonesGreenland : Timezones {
         Thule("America/Thule"),
         Godthab("America/Godthab"),
         Scoresbysund("America/Scoresbysund"),
-        Danmarkshavn("America/Danmarkshavn")
+        Danmarkshavn("America/Danmarkshavn"),
     }
 
     override fun get(province: String): String? {

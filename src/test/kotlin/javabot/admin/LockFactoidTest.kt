@@ -19,7 +19,7 @@ class LockFactoidTest
 constructor(
     val nickServDao: NickServDao,
     val factoidDao: FactoidDao,
-    val forgetFactoid: ForgetFactoidOperation
+    val forgetFactoid: ForgetFactoidOperation,
 ) : BaseTest() {
 
     @DataProvider(name = "factoids")
@@ -36,7 +36,7 @@ constructor(
                     TEST_USER.nick,
                     name,
                     "i should be locked",
-                    LogsDaoTest.CHANNEL_NAME
+                    LogsDaoTest.CHANNEL_NAME,
                 )
             factoid.locked = true
             factoidDao.save(factoid)
@@ -58,7 +58,7 @@ constructor(
                     TEST_USER.nick,
                     name,
                     "i should be locked",
-                    LogsDaoTest.CHANNEL_NAME
+                    LogsDaoTest.CHANNEL_NAME,
                 )
             factoid.locked = true
             factoidDao.save(factoid)

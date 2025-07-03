@@ -122,7 +122,7 @@ open class BaseTest {
     protected fun waitForEvent(
         event: AdminEvent,
         alias: String,
-        timeout: Duration = Duration(15, SECONDS)
+        timeout: Duration = Duration(15, SECONDS),
     ) {
         Awaitility.await(alias).atMost(timeout).pollInterval(1, SECONDS).until<Boolean> {
             DONE.contains(eventDao.find(event.id)?.state)
@@ -132,7 +132,7 @@ open class BaseTest {
     protected fun message(
         value: String,
         start: String = "~",
-        user: JavabotUser = TEST_USER
+        user: JavabotUser = TEST_USER,
     ): Message {
         return Message.extractContentFromMessage(
             bot.get(),
@@ -140,7 +140,7 @@ open class BaseTest {
             user,
             start,
             bot.get().nick,
-            value
+            value,
         )
     }
 
@@ -158,8 +158,8 @@ open class BaseTest {
             java.lang.String.format(
                 "Did not find \n'%s' in \n'%s'",
                 target,
-                messages.joinToString("\n") { it.value }
-            )
+                messages.joinToString("\n") { it.value },
+            ),
         )
     }
 
@@ -167,7 +167,7 @@ open class BaseTest {
         apiName: String,
         groupId: String = "",
         artifactId: String = "",
-        version: String
+        version: String,
     ): JavadocApi {
         var api = apiDao.find(apiName)
         if (api == null) {

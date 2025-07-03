@@ -54,7 +54,7 @@ class HttpService {
                         .removeHeader("User-Agent")
                         .addHeader(
                             "User-Agent",
-                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                         )
                         .build()
                 chain.proceed(requestWithUserAgent)
@@ -65,7 +65,7 @@ class HttpService {
         url: String,
         params: Map<String, String> = emptyMap(),
         headers: Map<String, String> = emptyMap(),
-        options: Map<HTTP_OPTIONS, Duration> = emptyMap()
+        options: Map<HTTP_OPTIONS, Duration> = emptyMap(),
     ): String = request(url, params, headers, options, "get", null)
 
     fun post(
@@ -73,7 +73,7 @@ class HttpService {
         params: Map<String, String> = emptyMap(),
         headers: Map<String, String> = emptyMap(),
         options: Map<HTTP_OPTIONS, Duration> = emptyMap(),
-        body: Any? = null
+        body: Any? = null,
     ): String = request(url, params, headers, options, "post", body)
 
     fun request(
@@ -82,7 +82,7 @@ class HttpService {
         headers: Map<String, String> = emptyMap(),
         options: Map<HTTP_OPTIONS, Duration> = emptyMap(),
         method: String = "get",
-        body: Any? = null
+        body: Any? = null,
     ): String {
         val httpUrl = url.toHttpUrl()
         val builder = httpUrl.newBuilder()

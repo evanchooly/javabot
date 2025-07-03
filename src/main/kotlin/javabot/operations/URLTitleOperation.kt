@@ -24,7 +24,7 @@ constructor(
     private val analyzer: URLContentAnalyzer,
     private val parser: URLFromMessageParser,
     private val httpService: HttpService,
-    private val twitterService: TwitterService
+    private val twitterService: TwitterService,
 ) : BotOperation(bot, adminDao) {
 
     override fun handleChannelMessage(event: Message): List<Message> {
@@ -52,7 +52,7 @@ constructor(
     private fun postMessageToChannel(
         responses: MutableList<Message>,
         titlesToPost: List<String>,
-        event: Message
+        event: Message,
     ) {
         val distinctTitles = titlesToPost.distinct()
         val title = if (distinctTitles.size == 1) "title" else "titles"
@@ -68,8 +68,8 @@ constructor(
                             } else {
                                 """"$s""""
                             }
-                        }
-                    )
+                        },
+                    ),
             )
         )
     }

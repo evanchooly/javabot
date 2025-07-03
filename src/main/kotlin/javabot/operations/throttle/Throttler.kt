@@ -26,7 +26,7 @@ constructor(
     var configDao: ConfigDao,
     var adminDao: AdminDao,
     var nickServDao: NickServDao,
-    var bot: Provider<Javabot>
+    var bot: Provider<Javabot>,
 ) : BaseDao<ThrottleItem>(ds, ThrottleItem::class.java) {
 
     /**

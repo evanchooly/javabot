@@ -20,7 +20,7 @@ open class AdminViewTest : ViewsTest() {
         renderer.render(
             viewFactory.createAdminIndexView(getRequest(), adminDao.findAll()[0], Admin()),
             Locale.getDefault(),
-            output
+            output,
         )
         return Source(ByteArrayInputStream(output.toByteArray()))
     }

@@ -6,7 +6,7 @@ class TimezonesCanada : Timezones {
         private val regionCode: Int,
         val abbreviation: String,
         val capital: String,
-        val timezone: String
+        val timezone: String,
     ) {
         ALBERTA(1, "AB", "Edmonton", "America/Edmonton"),
         BRITISH_COLUMBIA(2, "BC", "Victoria", "America/Vancouver"),
@@ -20,7 +20,7 @@ class TimezonesCanada : Timezones {
         PRINCE_EDWARD_ISLAND(9, "PE", "Charlottetown", "America/Halifax"),
         QUEBEC(10, "QC", "Quevec", "America/Montreal"),
         SASKATCHEWAN(11, "SK", "Regina", "America/Regina"),
-        YUKON_TERRITORY(12, "YT", "Whitehorse", "America/Whitehorse")
+        YUKON_TERRITORY(12, "YT", "Whitehorse", "America/Whitehorse"),
     }
 
     override fun get(province: String): String? {

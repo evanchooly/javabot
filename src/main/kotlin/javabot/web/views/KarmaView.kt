@@ -20,7 +20,7 @@ constructor(
     apiDao: ApiDao,
     var karmaDao: KarmaDao,
     @Assisted request: HttpServletRequest,
-    @Assisted page: Int
+    @Assisted page: Int,
 ) : PagedView<Karma>(adminDao, channelDao, factoidDao, apiDao, request, page) {
 
     override fun countItems(): Long {

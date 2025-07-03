@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.antwerkz</groupId>
         <artifactId>antwerkz-parent</artifactId>
-        <version>34</version>
+        <version>45</version>
     </parent>
 
     <groupId>com.antwerkz.javabot</groupId>
@@ -16,8 +16,9 @@
     <name>javabot</name>
 
     <scm>
-        <connection>scm:git:git://localhost/${basedir}</connection>
         <url>https://github.com/evanchooly/javabot</url>
+        <connection>scm:git:git@github.com:evanchooly/javabot.git</connection>
+        <developerConnection>scm:git:git@github.com:evanchooly/javabot.git</developerConnection>
     </scm>
 
     <repositories>
