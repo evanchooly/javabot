@@ -17,8 +17,6 @@ import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
 class IrcAdapterTest : BaseTest() {
-    companion object {}
-
     @Inject lateinit var ircAdapter: IrcAdapter
     @Inject lateinit var factoidDao: FactoidDao
     val testIrcChannel: MockIrcChannel by lazy { MockIrcChannel(ircBot.get(), TEST_CHANNEL.name) }
