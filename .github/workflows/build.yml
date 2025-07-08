@@ -9,6 +9,8 @@ on:
 jobs:
   CodeAudits:
     uses: evanchooly/workflows/.github/workflows/code-audits.yml@master
+    with:
+      maven-flags: generate-resources
   Build:
     uses: evanchooly/workflows/.github/workflows/build.yml@master
     with:
