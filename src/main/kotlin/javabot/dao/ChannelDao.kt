@@ -4,22 +4,20 @@ import com.google.inject.Inject
 import dev.morphia.Datastore
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
+import dev.morphia.query.filters.Filters.eq
 import java.time.LocalDateTime
 import java.util.ArrayList
 import java.util.Locale
 import javabot.dao.util.QueryParam
 import javabot.model.Activity
 import javabot.model.Channel
-import javabot.model.criteria.ChannelCriteria.Companion.logged
-import javabot.model.criteria.ChannelCriteria.Companion.name
-import javabot.model.criteria.ChannelCriteria.Companion.upperName
 import org.apache.commons.lang.StringUtils
 
 @SuppressWarnings("ConstantNamingConvention")
 class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Channel::class.java) {
 
     fun delete(name: String) {
-        ds.find(Channel::class.java).filter(name().eq(name)).delete()
+        ds.find(Channel::class.java).filter(eq("name", name)).delete()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -34,9 +32,9 @@ class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Chann
     fun getChannels(showAll: Boolean): List<Channel> {
         val query = ds.find(Channel::class.java)
         if (!showAll) {
-            query.filter(logged().eq(true))
+            query.filter(eq("logged", true))
         }
-        return query.iterator(FindOptions().sort(Sort.ascending(name))).toList()
+        return query.iterator(FindOptions().sort(Sort.ascending("name"))).toList()
     }
 
     fun find(qp: QueryParam): List<Channel> {
@@ -50,7 +48,7 @@ class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Chann
 
     fun get(name: String): Channel? {
         return ds.find(Channel::class.java)
-            .filter(upperName().eq(name.uppercase(Locale.getDefault())))
+            .filter(eq("upperName", name.uppercase(Locale.getDefault())))
             .first()
     }
 
@@ -69,8 +67,8 @@ class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Chann
     fun loggedChannels(): List<String> {
         val channels =
             ds.find(Channel::class.java)
-                .filter(logged().eq(true))
-                .iterator(FindOptions().projection().include(name))
+                .filter(eq("logged", true))
+                .iterator(FindOptions().projection().include("name"))
                 .toList()
         val names = ArrayList<String>()
         for (channel in channels) {

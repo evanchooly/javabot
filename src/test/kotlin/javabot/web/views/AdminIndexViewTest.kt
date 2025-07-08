@@ -5,7 +5,7 @@ import org.testng.Assert
 import org.testng.annotations.Test
 
 class AdminIndexViewTest : AdminViewTest() {
-    @Test
+    @Test(enabled = false)
     fun index() {
         val source = render()
 

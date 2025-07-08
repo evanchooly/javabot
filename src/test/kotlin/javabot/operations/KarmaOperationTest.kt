@@ -24,18 +24,18 @@ constructor(val nickServDao: NickServDao, val karmaDao: KarmaDao, val operation:
     @DataProvider
     fun karmaTestData() =
         arrayOf(
-            arrayOf("%s++", 1),
-            arrayOf("~%s++", 1),
-            arrayOf("%s++", 1),
-            arrayOf("~ %s ++", 1),
-            arrayOf("%s--", -1),
-            arrayOf("~%s--", -1),
-            arrayOf("%s: ++", 1),
-            arrayOf("~%s: ++", 1),
-            arrayOf("~ %s: ++", 1),
-            arrayOf("~ %s : ++", 1),
-            arrayOf("%s: --", -1),
-            arrayOf("~%s: --", -1),
+            arrayOf<Any>("%s++", 1),
+            arrayOf<Any>("~%s++", 1),
+            arrayOf<Any>("%s++", 1),
+            arrayOf<Any>("~ %s ++", 1),
+            arrayOf<Any>("%s--", -1),
+            arrayOf<Any>("~%s--", -1),
+            arrayOf<Any>("%s: ++", 1),
+            arrayOf<Any>("~%s: ++", 1),
+            arrayOf<Any>("~ %s: ++", 1),
+            arrayOf<Any>("~ %s : ++", 1),
+            arrayOf<Any>("%s: --", -1),
+            arrayOf<Any>("~%s: --", -1),
         )
 
     @Test(dataProvider = "karmaTestData")

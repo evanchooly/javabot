@@ -1,7 +1,7 @@
 package javabot.operations.urlcontent
 
+import java.net.URI
 import java.net.URL
-import java.util.ArrayList
 import org.testng.Assert.assertEquals
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
@@ -51,11 +51,7 @@ class URLFromMessageParserTest {
 
     @Throws(Exception::class)
     private fun expectedUrls(vararg strings: String): List<URL> {
-        val list = ArrayList<URL>()
-        for (s in strings) {
-            list.add(URL(s))
-        }
-        return list
+        return strings.map { URI(it).toURL() }
     }
 
     @Test(dataProvider = "messages")

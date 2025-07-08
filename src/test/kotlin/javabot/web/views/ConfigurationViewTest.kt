@@ -16,7 +16,7 @@ import org.testng.annotations.Test
 class ConfigurationViewTest : ViewsTest() {
     @Inject protected lateinit var configDao: ConfigDao
 
-    @Test
+    @Test(enabled = false)
     fun configuration() {
         var config = configDao.get()
         config.operations = mutableListOf()

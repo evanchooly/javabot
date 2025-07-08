@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.antwerkz</groupId>
         <artifactId>antwerkz-parent</artifactId>
-        <version>45</version>
+        <version>55</version>
     </parent>
 
     <groupId>com.antwerkz.javabot</groupId>
@@ -23,8 +23,15 @@
 
     <repositories>
         <repository>
-            <id>sonatype-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>central snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
@@ -70,9 +77,6 @@
                 <version>${kotlin.version}</version>
                 <configuration>
                     <jvmTarget>17</jvmTarget>
-                    <compilerPlugins>
-                        <compilerPlugin>ksp</compilerPlugin>
-                    </compilerPlugins>
                 </configuration>
                 <executions>
                     <execution>
@@ -97,18 +101,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.dyescape</groupId>
-                        <artifactId>kotlin-maven-symbol-processing</artifactId>
-                        <version>${kotlin-maven-symbol-processing.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>dev.morphia.critter</groupId>
-                        <artifactId>critter-maven</artifactId>
-                        <version>${critter.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -564,9 +556,8 @@
         <jacoco.version>0.8.5</jacoco.version>
         <jaxb.version>2.3.1</jaxb.version>
         <jsoup.version>1.15.4</jsoup.version>
-        <kotlin.version>1.9.25</kotlin.version>
         <logback.version>1.5.18</logback.version>
-        <morphia.version>2.3.9</morphia.version>
+        <morphia.version>2.5.0</morphia.version>
         <okhttp.version>4.12.0</okhttp.version>
         <slf4j.version>2.0.17</slf4j.version>
         <sofia.version>0.25</sofia.version>

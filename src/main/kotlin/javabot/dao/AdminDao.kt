@@ -3,36 +3,34 @@ package javabot.dao
 import dev.morphia.Datastore
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
+import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.or
 import javabot.model.Admin
 import javabot.model.EventType
 import javabot.model.JavabotUser
 import javabot.model.OperationEvent
-import javabot.model.criteria.AdminCriteria.Companion.emailAddress
-import javabot.model.criteria.AdminCriteria.Companion.hostName
-import javabot.model.criteria.AdminCriteria.Companion.ircName
 import javax.inject.Inject
 
 class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) :
     BaseDao<Admin>(ds, Admin::class.java) {
     override fun findAll(): List<Admin> {
         return ds.find(Admin::class.java)
-            .iterator(FindOptions().sort(Sort.ascending(ircName)))
+            .iterator(FindOptions().sort(Sort.ascending("ircName")))
             .toList()
     }
 
     fun isAdmin(user: JavabotUser): Boolean = findAll().isEmpty() || getAdmin(user) != null
 
     fun getAdmin(ircName: String, hostName: String) =
-        ds.find(Admin::class.java).filter(ircName().eq(ircName), hostName().eq(hostName)).first()
+        ds.find(Admin::class.java).filter(eq("ircName", ircName), eq("hostName", hostName)).first()
 
     fun getAdmin(user: JavabotUser) =
         ds.find(Admin::class.java)
-            .filter(or(ircName().eq(user.nick), emailAddress().eq(user.userName)))
+            .filter(or(eq("ircName", user.nick), eq("emailAddress", user.userName)))
             .first()
 
     fun getAdminByEmailAddress(email: String) =
-        ds.find(Admin::class.java).filter(emailAddress().eq(email)).first()
+        ds.find(Admin::class.java).filter(eq("emailAddress", email)).first()
 
     fun create(ircName: String, userName: String, hostName: String): Admin {
         val admin = Admin(ircName, userName, hostName, findAll().isEmpty())

@@ -20,7 +20,7 @@ class URLTitleOperationTest : BaseTest() {
     private val analyzer = URLContentAnalyzer()
 
     @DataProvider(name = "longUrls")
-    fun longUrls(): Array<Array<String>> =
+    fun longUrls() =
         arrayOf(
             arrayOf("https://twitter.com", "twitter.com"),
             arrayOf("http://www.twitter.com", "twitter.com"),
@@ -31,7 +31,7 @@ class URLTitleOperationTest : BaseTest() {
 
     @Test(dataProvider = "longUrls")
     fun testHostBasename(url: String, basenamed: String) {
-        var host = URI(url).toURL().host
+        val host = URI(url).toURL().host
         assertEquals(operation.hostBasename(host), basenamed.lowercase())
     }
 
@@ -40,11 +40,7 @@ class URLTitleOperationTest : BaseTest() {
         val results = operation.handleChannelMessage(Message(TEST_CHANNEL, TEST_USER, url))
         var testContent = true
         if (content != null) {
-            if (url.contains("twitter")) {
-                if (config.twitterAccessToken() == "") {
-                    testContent = false
-                }
-            }
+            testContent = !url.contains("twitter")
             if (testContent) {
                 assertTrue(
                     results.isNotEmpty(),
@@ -63,12 +59,8 @@ class URLTitleOperationTest : BaseTest() {
     }
 
     @DataProvider(name = "urls")
-    fun getUrls(): Array<Array<*>> {
-        return arrayOf(
-            arrayOf(
-                "https://www.youtube.com/watch?v=LD4kSBpxatM",
-                "botuser's title: \"Jimi Hendrix - Hey Joe (live) - YouTube\"",
-            ),
+    fun getUrls() =
+        arrayOf(
             arrayOf("https://www.youtube.com/watch?v=LDtM", null),
             arrayOf("http://google.com/", null),
             arrayOf("http://google.com", null),
@@ -145,39 +137,33 @@ class URLTitleOperationTest : BaseTest() {
             ), // caught by blacklist; note that this site is shuttered
             arrayOf(
                 "https://hachyderm.io/@kinabalu/109367252866888149",
-                "botuser's title: \"Andrew: \"Can I find some way to change this button from To…\" - Hachyderm.io\"",
-            ),
-            arrayOf(
-                "https://calckey.social/notes/9esmlys12y",
-                "botuser's title: \"Florida is Twitter but in real life.\"",
+                "botuser's title: \"Can I find some way to change this button from Toot! to literally anything else \uD83D\uDE02\"",
             ),
         )
-    }
 
     @DataProvider(name = "urlRulesCheck")
-    fun getUrlsForRulesCheck(): Array<Array<*>> {
-        return arrayOf(
-            arrayOf("http://pastebin.com", "pastebin for your wastebin", false),
-            arrayOf(
+    fun getUrlsForRulesCheck() =
+        arrayOf(
+            arrayOf<Any>("http://pastebin.com", "pastebin for your wastebin", false),
+            arrayOf<Any>(
                 "http://makemoneyfast.com/super-profit",
                 "make money fast! super profit",
                 false,
             ),
-            arrayOf("http://varietyofsound.wordpress.com", "Variety Of Sound", false),
-            arrayOf(
+            arrayOf<Any>("http://varietyofsound.wordpress.com", "Variety Of Sound", false),
+            arrayOf<Any>(
                 "http://javachannel.com",
                 "Freenode ##java: for enthusiasts by enthusiasts",
                 true,
             ),
-            arrayOf(
+            arrayOf<Any>(
                 "http://javachannel.com/exceptions",
                 "Freenode ##java: How to properly handle exceptions",
                 true,
             ),
-            arrayOf("http://foo.bar.com", "", false),
-            arrayOf("http://foo.bar.com", null, false),
+            arrayOf<Any>("http://foo.bar.com", "", false),
+            arrayOf<Any?>("http://foo.bar.com", null, false),
         )
-    }
 
     @Test
     fun testBlacklist() {

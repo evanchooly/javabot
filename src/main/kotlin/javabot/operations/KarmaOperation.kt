@@ -11,7 +11,6 @@ import javabot.dao.ChannelDao
 import javabot.dao.KarmaDao
 import javabot.model.Karma
 import javax.inject.Inject
-import org.slf4j.LoggerFactory
 
 class KarmaOperation
 @Inject
@@ -75,7 +74,7 @@ constructor(
                 responses.add(Message(event, Sofia.karmaOwnIncrement()))
                 increment = false
             }
-            var karma = dao.find(subject!!) ?: Karma(subject, 0, sender.nick)
+            val karma = dao.find(subject) ?: Karma(subject, 0, sender.nick)
             karma.value +=
                 if (increment) {
                     1
@@ -122,9 +121,7 @@ constructor(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(KarmaOperation::class.java)
         private val operationPattern =
             Pattern.compile("^(?<nick>.+)(?<operation>\\+{2}|--).*\$", Pattern.COMMENTS)
-        private val optionPattern = Pattern.compile("\\s--\\p{Alpha}[\\p{Alnum}]*=")
     }
 }

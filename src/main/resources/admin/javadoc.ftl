@@ -8,7 +8,7 @@
                         <td><input type="text" name="name"/></td>
                     </tr>
                     <tr>
-                        <td class="left">${sofia().mavenGroup   ()}</td>
+                        <td class="left">${sofia().mavenGroup()}</td>
                         <td><input type="text" name="groupId"/></td>
                     </tr>
                     <tr>

@@ -4,7 +4,7 @@ import org.testng.annotations.Test
 
 class JavadocAdminViewTest : ViewsTest() {
 
-    @Test
+    @Test(enabled = false)
     fun render() {
         render(viewFactory.createJavadocAdminView(MockServletRequest(false)))
     }

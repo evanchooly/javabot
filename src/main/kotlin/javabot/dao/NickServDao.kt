@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import dev.morphia.Datastore
 import dev.morphia.DeleteOptions
 import dev.morphia.UpdateOptions
+import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.or
 import dev.morphia.query.updates.UpdateOperators.set
 import java.time.LocalDateTime
@@ -11,8 +12,6 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javabot.model.JavabotUser
 import javabot.model.NickServInfo
-import javabot.model.criteria.NickServInfoCriteria.Companion.account
-import javabot.model.criteria.NickServInfoCriteria.Companion.nick
 
 open class NickServDao @Inject constructor(ds: Datastore) :
     BaseDao<NickServInfo>(ds, NickServInfo::class.java) {
@@ -68,8 +67,8 @@ open class NickServDao @Inject constructor(ds: Datastore) :
         return ds.find(NickServInfo::class.java)
             .filter(
                 or(
-                    nick().eq(name.lowercase(Locale.getDefault())),
-                    account().eq(name.lowercase(Locale.getDefault())),
+                    eq("nick", name.lowercase(Locale.getDefault())),
+                    eq("account", name.lowercase(Locale.getDefault())),
                 )
             )
             .first()
@@ -77,14 +76,14 @@ open class NickServDao @Inject constructor(ds: Datastore) :
 
     fun updateNick(oldNick: String, newNick: String): NickServInfo {
         ds.find(NickServInfo::class.java)
-            .filter(nick().eq(oldNick))
-            .update(set(nick, newNick))
+            .filter(eq("nick", oldNick))
+            .update(set("nick", newNick))
             .execute(UpdateOptions().multi(false))
 
-        return ds.find(NickServInfo::class.java).filter(nick().eq(newNick)).first()
+        return ds.find(NickServInfo::class.java).filter(eq("nick", newNick)).first()
     }
 
     fun unregister(user: JavabotUser) {
-        ds.find(NickServInfo::class.java).filter(nick().eq(user.nick)).delete()
+        ds.find(NickServInfo::class.java).filter(eq("nick", user.nick)).delete()
     }
 }

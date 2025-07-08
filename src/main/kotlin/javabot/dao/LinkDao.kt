@@ -5,15 +5,15 @@ import com.mongodb.client.result.DeleteResult
 import dev.morphia.Datastore
 import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
-import dev.morphia.query.internal.MorphiaCursor
+import dev.morphia.query.MorphiaCursor
+import dev.morphia.query.filters.Filters.eq
+import dev.morphia.query.filters.Filters.regex
 import java.time.LocalDateTime
+import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
 import javabot.dao.util.QueryParam
 import javabot.model.Link
 import javabot.model.Persistent
-import javabot.model.criteria.LinkCriteria.Companion.approved
-import javabot.model.criteria.LinkCriteria.Companion.channel
-import javabot.model.criteria.LinkCriteria.Companion.url
 import javax.inject.Inject
 
 class LinkDao
@@ -35,25 +35,6 @@ constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
     }
 
     private fun buildFindQuery(qp: QueryParam?, filter: Link, count: Boolean): MorphiaCursor<Link> {
-        val query = ds.find(Link::class.java)
-        if (filter.channel != "") {
-            try {
-                query.filter(channel().regex().pattern(filter.channel))
-            } catch (e: PatternSyntaxException) {
-                Sofia.logFactoidInvalidSearchValue(filter.channel)
-            }
-        }
-
-        if (filter.url != "") {
-            try {
-                query.filter(url().regex().pattern(filter.url))
-            } catch (e: PatternSyntaxException) {
-                Sofia.logFactoidInvalidSearchValue(filter.url)
-            }
-        }
-
-        query.filter(approved().eq(filter.approved))
-
         val options = FindOptions()
         if (!count && qp != null) {
             if (qp.hasSort()) {
@@ -62,7 +43,27 @@ constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
             options.skip(qp.first)
             options.limit(qp.count)
         }
-        return query.iterator(options)
+
+        val query = ds.find(Link::class.java, options)
+        if (filter.channel != "") {
+            try {
+                query.filter(regex("channel", Pattern.compile(filter.channel)))
+            } catch (_: PatternSyntaxException) {
+                Sofia.logFactoidInvalidSearchValue(filter.channel)
+            }
+        }
+
+        if (filter.url != "") {
+            try {
+                query.filter(regex("url", filter.url))
+            } catch (e: PatternSyntaxException) {
+                Sofia.logFactoidInvalidSearchValue(filter.url)
+            }
+        }
+
+        query.filter(eq("approved", filter.approved))
+
+        return query.iterator()
     }
 
     fun get(link: Link): Link? {

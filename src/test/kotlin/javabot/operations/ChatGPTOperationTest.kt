@@ -34,13 +34,17 @@ class ChatGPTOperationTest : BaseTest() {
     @DataProvider
     fun queries() =
         arrayOf(
-            arrayOf("help", false, "query. Note that GPT"),
-            arrayOf("speed of an african laden swallow", true, ""),
-            arrayOf("what is the maven directory structure", false, "Maven directory structure"),
-            arrayOf("suffering-oriented programming", false, "Suffering-oriented programming"),
-            arrayOf("list of DI frameworks", false, "Spring"),
-            arrayOf("list of DI frameworks", false, "Spring"),
-            arrayOf("how do I declare a new variable in Javascript", true, ""),
+            arrayOf<Any>("help", false, "query. Note that GPT"),
+            arrayOf<Any>("speed of an african laden swallow", true, ""),
+            arrayOf<Any>(
+                "what is the maven directory structure",
+                false,
+                "Maven directory structure",
+            ),
+            arrayOf<Any>("suffering-oriented programming", false, "Suffering-oriented programming"),
+            arrayOf<Any>("list of DI frameworks", false, "Spring"),
+            arrayOf<Any>("list of DI frameworks", false, "Spring"),
+            arrayOf<Any>("how do I declare a new variable in Javascript", true, ""),
         )
 
     @Test(dataProvider = "queries")
