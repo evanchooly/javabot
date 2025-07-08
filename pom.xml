@@ -538,7 +538,7 @@
         <jackson.version>2.17.0</jackson.version>
         <jacoco.version>0.8.5</jacoco.version>
         <jaxb.version>2.3.1</jaxb.version>
-        <jsoup.version>1.15.4</jsoup.version>
+        <jsoup.version>1.21.1</jsoup.version>
         <logback.version>1.5.18</logback.version>
         <morphia.version>2.5.0</morphia.version>
         <okhttp.version>4.12.0</okhttp.version>
