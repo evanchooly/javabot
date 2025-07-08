@@ -10,5 +10,4 @@ jobs:
     uses: evanchooly/workflows/.github/workflows/pull-request.yml@master
     with:
       java: 17
-      maven-flags: generate-resources
 
