@@ -535,7 +535,7 @@
         <critter.version>4.4.4</critter.version>
         <dropwizard.version>2.1.5</dropwizard.version>
         <guice.version>5.1.0</guice.version>
-        <jackson.version>2.17.0</jackson.version>
+        <jackson.version>2.19.1</jackson.version>
         <jacoco.version>0.8.5</jacoco.version>
         <jaxb.version>2.3.1</jaxb.version>
         <jsoup.version>1.15.4</jsoup.version>
