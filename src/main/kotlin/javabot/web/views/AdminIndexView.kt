@@ -17,8 +17,8 @@ constructor(
     factoidDao: FactoidDao,
     apiDao: ApiDao,
     @Assisted request: HttpServletRequest,
-    @Assisted("current") val current: Admin,
-    @Assisted("editing") val editing: Admin?,
+    @param:Assisted("current") val current: Admin,
+    @param:Assisted("editing") val editing: Admin?,
 ) : MainView(adminDao, channelDao, factoidDao, apiDao, request) {
 
     fun getAdmins(): List<Admin> {

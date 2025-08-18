@@ -156,6 +156,7 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return false
     }
 
+    @Deprecated("")
     override fun isRequestedSessionIdFromUrl(): Boolean {
         return false
     }
@@ -279,6 +280,7 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return null
     }
 
+    @Deprecated("")
     override fun getRealPath(path: String): String? {
         return null
     }

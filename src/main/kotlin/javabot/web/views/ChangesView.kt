@@ -23,8 +23,8 @@ constructor(
     var changeDao: ChangeDao,
     @Assisted request: HttpServletRequest,
     @Assisted page: Int,
-    @Nullable @param:Assisted private val message: String?,
-    @Nullable @param:Assisted private val date: LocalDateTime?,
+    @param:Nullable @param:Assisted private val message: String?,
+    @param:Nullable @param:Assisted private val date: LocalDateTime?,
 ) : PagedView<Change>(adminDao, channelDao, factoidDao, apiDao, request, page) {
 
     override fun getPagedView(): String {
