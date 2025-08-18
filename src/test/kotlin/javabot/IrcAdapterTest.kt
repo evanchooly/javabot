@@ -7,9 +7,9 @@ import com.jayway.awaitility.Duration
 import java.util.concurrent.TimeUnit.SECONDS
 import javabot.dao.FactoidDao
 import javabot.dao.LogsDaoTest
-import org.pircbotx.PircBotX
-import org.pircbotx.User
-import org.pircbotx.UserHostmask
+import javabot.mocks.MockIrcChannel
+import javabot.mocks.MockIrcUser
+import javabot.mocks.MockUserHostmask
 import org.pircbotx.hooks.events.MessageEvent
 import org.pircbotx.hooks.events.PrivateMessageEvent
 import org.testng.Assert
@@ -126,15 +126,3 @@ class IrcAdapterTest : BaseTest() {
         Assert.assertEquals(messages.get(duration)[0], "${TARGET_USER.nick}, ouch")
     }
 }
-
-class MockUserHostmask(
-    bot: PircBotX,
-    userNick: String,
-    login: String = userNick,
-    hostname: String = userNick,
-) : UserHostmask(bot, userNick, userNick, login, hostname) {}
-
-class MockIrcUser(bot: PircBotX, userNick: String) :
-    User(MockUserHostmask(bot, userNick, userNick, "localhost")) {}
-
-class MockIrcChannel(bot: PircBotX, channelName: String) : org.pircbotx.Channel(bot, channelName) {}

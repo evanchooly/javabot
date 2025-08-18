@@ -5,8 +5,8 @@ import java.time.LocalDateTime
 import java.time.Month
 import java.util.Arrays.asList
 import javabot.IrcAdapter
-import javabot.MockIrcUser
-import javabot.MockUserHostmask
+import javabot.mocks.MockIrcUser
+import javabot.mocks.MockUserHostmask
 import javabot.model.JavabotUser
 import javabot.model.NickServInfo
 import javax.inject.Inject

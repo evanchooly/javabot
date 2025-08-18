@@ -1,7 +1,7 @@
 package javabot.model
 
 import javabot.Messages
-import javabot.MockUserHostmask
+import javabot.mocks.MockUserHostmask
 import org.pircbotx.PircBotX
 import org.pircbotx.User
 import org.pircbotx.output.OutputUser
