@@ -4,7 +4,7 @@ import com.antwerkz.sofia.Sofia
 import com.google.inject.Inject
 import javabot.BaseTest
 import javabot.Javabot
-import javabot.MockIrcAdapter
+import javabot.mocks.MockIrcAdapter
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 

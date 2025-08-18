@@ -1,7 +1,10 @@
-package javabot
+package javabot.mocks
 
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import javabot.Javabot
+import javabot.Messages
+import javabot.OfflineAdapter
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
@@ -25,8 +28,7 @@ constructor(
     configDao: ConfigDao,
     ircBot: Provider<PircBotX>,
 ) : OfflineAdapter(nickServDao, logsDao, channelDao, adminDao, javabot, configDao, ircBot) {
-    val channels: MutableMap<String, MutableSet<String>> =
-        mutableMapOf("#jbunittest" to mutableSetOf("botuser"))
+    val channels = mutableMapOf("#jbunittest" to mutableSetOf("botuser"))
 
     override fun startBot() {}
 

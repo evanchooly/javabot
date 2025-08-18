@@ -9,6 +9,7 @@ import java.io.FileInputStream
 import java.util.Properties
 import javabot.dao.NickServDao
 import javabot.dao.TestNickServDao
+import javabot.mocks.MockIrcAdapter
 import javax.inject.Provider
 import org.testcontainers.containers.MongoDBContainer
 

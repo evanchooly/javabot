@@ -2,8 +2,8 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import javabot.BaseTest
-import javabot.MockIrcAdapter
 import javabot.dao.LinkDao
+import javabot.mocks.MockIrcAdapter
 import javax.inject.Inject
 import org.testng.Assert.*
 import org.testng.annotations.BeforeMethod
