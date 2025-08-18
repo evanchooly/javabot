@@ -21,7 +21,7 @@ constructor(
     apiDao: ApiDao,
     @Assisted request: HttpServletRequest,
     @Assisted page: Int,
-    @Assisted private val filter: Factoid,
+    @param:Assisted private val filter: Factoid,
 ) : PagedView<Factoid>(adminDao, channelDao, factoidDao, apiDao, request, page) {
 
     override fun getPageUrl(): String {
