@@ -53,13 +53,16 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
     }
 
     fun getChanges(qp: QueryParam, message: String?, date: LocalDateTime?): List<Change> {
-        return buildFindQuery(message, date)
-            .iterator(FindOptions().skip(qp.first).limit(qp.count).sort(descending("changeDate")))
-            .toList()
+        val options = FindOptions().skip(qp.first).limit(qp.count).sort(descending("changeDate"))
+        return buildFindQuery(message, date, options).toList()
     }
 
-    private fun buildFindQuery(message: String?, date: LocalDateTime?): Query<Change> {
-        val query = ds.find(Change::class.java)
+    private fun buildFindQuery(
+        message: String?,
+        date: LocalDateTime?,
+        options: FindOptions = FindOptions(),
+    ): Query<Change> {
+        val query = ds.find(Change::class.java, options)
         if (message != null) {
             query.filter(regex("message").pattern(message))
         }
