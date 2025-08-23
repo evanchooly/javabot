@@ -1,6 +1,7 @@
 package javabot.dao
 
 import dev.morphia.Datastore
+import dev.morphia.query.FindOptions
 import dev.morphia.query.Query
 import dev.morphia.query.filters.Filters.eq
 import javabot.dao.util.EntityNotFoundException
@@ -13,9 +14,10 @@ abstract class BaseDao<T : Persistent>(val ds: Datastore, val entityClass: Class
         private val LOG = LoggerFactory.getLogger(BaseDao::class.java)
     }
 
-    fun getQuery(): Query<T> = getQuery(entityClass)
+    fun getQuery(options: FindOptions = FindOptions()): Query<T> = getQuery(entityClass, options)
 
-    fun <U> getQuery(clazz: Class<U>): Query<U> = ds.find(clazz)
+    fun <U> getQuery(clazz: Class<U>, options: FindOptions = FindOptions()): Query<U> =
+        ds.find(clazz, options)
 
     fun find(id: ObjectId?): T? = ds.find(entityClass).filter(eq("_id", id)).first()
 

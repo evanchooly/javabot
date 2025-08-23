@@ -30,15 +30,15 @@ class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Chann
     }
 
     fun getChannels(showAll: Boolean): List<Channel> {
-        val query = ds.find(Channel::class.java)
+        val query = ds.find(Channel::class.java, FindOptions().sort(Sort.ascending("name")))
         if (!showAll) {
             query.filter(eq("logged", true))
         }
-        return query.iterator(FindOptions().sort(Sort.ascending("name"))).toList()
+        return query.iterator().toList()
     }
 
     fun find(qp: QueryParam): List<Channel> {
-        return getQuery().iterator(FindOptions().sort(qp.toSort())).toList()
+        return getQuery(FindOptions().sort(qp.toSort())).iterator().toList()
     }
 
     fun isLogged(channel: String): Boolean {

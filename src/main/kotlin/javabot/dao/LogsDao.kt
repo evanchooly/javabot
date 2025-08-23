@@ -35,35 +35,33 @@ class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channel
     }
 
     fun getSeen(channel: String, nick: String): Seen? {
-        val criteria =
+        val first =
             ds.find(Logs::class.java)
                 .filter(
                     eq("upperNick", nick.uppercase(Locale.getDefault())),
                     eq("channel", channel),
                 )
-        val first = criteria.first(FindOptions().sort(Sort.descending("updated")))
+                .first(FindOptions().sort(Sort.descending("updated")))
 
         return first?.let { Seen(it.channel!!, it.message, it.nick, it.updated) }
     }
 
-    private fun dailyLog(channelName: String, date: LocalDateTime?, logged: Boolean): List<Logs> {
-        var list: List<Logs> = listOf()
-        if (logged) {
+    private fun dailyLog(channelName: String, date: LocalDateTime?, logged: Boolean) =
+        if (logged) listOf()
+        else {
             val start = if (date == null) LocalDate.now() else date.toLocalDate()
             val tomorrow = start.plusDays(1)
             val nextMidnight = tomorrow.atStartOfDay()
             val lastMidnight = start.atStartOfDay()
-            val criteria =
-                ds.find(Logs::class.java)
-                    .filter(
-                        eq("channel", channelName),
-                        lte("updated", nextMidnight),
-                        gte("updated", lastMidnight),
-                    )
-            list = criteria.iterator(FindOptions().sort(Sort.ascending("updated"))).toList()
+            ds.find<Logs>(Logs::class.java)
+                .filter(
+                    eq("channel", channelName),
+                    lte("updated", nextMidnight),
+                    gte("updated", lastMidnight),
+                )
+                .iterator(FindOptions().sort(Sort.ascending("updated")))
+                .toList()
         }
-        return list
-    }
 
     fun findByChannel(name: String, date: LocalDateTime, showAll: Boolean): List<Logs> {
         val channel = channelDao.get(name)

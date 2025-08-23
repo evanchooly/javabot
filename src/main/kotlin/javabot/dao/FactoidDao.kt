@@ -106,20 +106,23 @@ constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :
     }
 
     fun getFactoidsFiltered(qp: QueryParam, filter: Factoid): List<Factoid> {
-        val query = buildFindQuery(filter)
         val options = FindOptions().skip(qp.first).limit(qp.count)
         if (qp.hasSort()) {
             options.sort(qp.toSort("upper"))
         }
-        return query.iterator(options).toList()
+        val query = buildFindQuery(filter, options)
+        return query.iterator().toList()
     }
 
-    private fun buildFindQuery(filter: Factoid): Query<Factoid> {
-        val query = ds.find(Factoid::class.java)
+    private fun buildFindQuery(
+        filter: Factoid,
+        options: FindOptions = FindOptions(),
+    ): Query<Factoid> {
+        val query = ds.find(Factoid::class.java, options)
         if (filter.name != "") {
             try {
                 query.filter(eq("upperName", filter.name.uppercase(Locale.getDefault())))
-            } catch (e: PatternSyntaxException) {
+            } catch (_: PatternSyntaxException) {
                 Sofia.logFactoidInvalidSearchValue(filter.name)
             }
         }
