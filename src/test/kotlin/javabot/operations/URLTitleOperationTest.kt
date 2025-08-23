@@ -2,7 +2,6 @@ package javabot.operations
 
 import java.net.URI
 import javabot.BaseTest
-import javabot.JavabotConfig
 import javabot.Message
 import javabot.operations.urlcontent.URLContentAnalyzer
 import javabot.operations.urlcontent.URLFromMessageParser
@@ -16,7 +15,6 @@ import org.testng.annotations.Test
 class URLTitleOperationTest : BaseTest() {
     @Inject private lateinit var operation: URLTitleOperation
 
-    @Inject private lateinit var config: JavabotConfig
     private val analyzer = URLContentAnalyzer()
 
     @DataProvider(name = "longUrls")
@@ -38,10 +36,8 @@ class URLTitleOperationTest : BaseTest() {
     @Test(dataProvider = "urls")
     fun testSimpleUrl(url: String, content: String?) {
         val results = operation.handleChannelMessage(Message(TEST_CHANNEL, TEST_USER, url))
-        var testContent = true
         if (content != null) {
-            testContent = !url.contains("twitter")
-            if (testContent) {
+            if (!url.contains("twitter")) {
                 assertTrue(
                     results.isNotEmpty(),
                     "testing $url  - results: '$results', expected content: $content",

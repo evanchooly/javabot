@@ -93,5 +93,5 @@ constructor(
 }
 
 fun String.cleanForIRC(): String {
-    return this.trimIndent().trim().replace("\n ", " ").replace(" \n", " ").replace("\n", " ")
+    return this.lines().joinToString(" ")
 }

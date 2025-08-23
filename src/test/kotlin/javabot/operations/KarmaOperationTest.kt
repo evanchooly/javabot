@@ -41,29 +41,29 @@ constructor(val nickServDao: NickServDao, val karmaDao: KarmaDao, val operation:
     @Test(dataProvider = "karmaTestData")
     fun karmaTests(command: String, expectedKarma: Int) {
         deleteKarma("foo")
-        var message = message(command.format("foo"))
-        var response = operation.handleMessage(message)
-        var karma = getKarma("foo")
+        val message = message(command.format("foo"))
+        operation.handleMessage(message)
+        val karma = getKarma("foo")
         assertEquals(expectedKarma, karma)
         deleteKarma("foo")
     }
 
     fun handleCPlusPlus1() {
         deleteKarma("C++")
-        var message = message("C++++")
-        var response = operation.handleMessage(message)
+        val message = message("C++++")
+        val response = operation.handleMessage(message)
         println(response)
-        var karma = getKarma("C++")
+        val karma = getKarma("C++")
         assertEquals(1, karma)
         deleteKarma("C++")
     }
 
     fun handleCPlusPlus2() {
         deleteKarma("C++")
-        var message = message("C++:++")
-        var response = operation.handleMessage(message)
+        val message = message("C++:++")
+        val response = operation.handleMessage(message)
         println(response)
-        var karma = getKarma("C++")
+        val karma = getKarma("C++")
         assertEquals(1, karma)
         deleteKarma("C++")
     }
