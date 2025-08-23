@@ -74,7 +74,7 @@ open class NickServDao @Inject constructor(ds: Datastore) :
             .first()
     }
 
-    fun updateNick(oldNick: String, newNick: String): NickServInfo {
+    fun updateNick(oldNick: String, newNick: String): NickServInfo? {
         ds.find(NickServInfo::class.java)
             .filter(eq("nick", oldNick))
             .update(set("nick", newNick))

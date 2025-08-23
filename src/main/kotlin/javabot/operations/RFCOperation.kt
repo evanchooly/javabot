@@ -43,7 +43,7 @@ class RFCOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
                                 load(rfcNum)
                             }
                         responses.add(Message(event, Sofia.rfcSucceed(data.first, data.second)))
-                    } catch (e: HttpStatusException) {
+                    } catch (_: HttpStatusException) {
                         responses.add(Message(event, Sofia.rfcFail(rfcText)))
                     } catch (e: IOException) {
                         responses.add(Message(event, Sofia.rfcFail(rfcText)))
@@ -57,7 +57,7 @@ class RFCOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
     fun load(rfc: Int, anchor: String = ""): Pair<String, String> {
         val url = "https://tools.ietf.org/html/rfc$rfc$anchor"
         val doc = Jsoup.connect(url).get()
-        val meta = doc.getElementsByTag("span").first { it.className().equals("h1", true) }?.text()
+        val meta = doc.getElementsByTag("span").first { it.className().equals("h1", true) }.text()
         return Pair(url, meta ?: doc.title())
     }
 
