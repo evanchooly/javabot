@@ -506,7 +506,7 @@
         <jacoco.version>0.8.5</jacoco.version>
         <jaxb.version>2.3.1</jaxb.version>
         <jsoup.version>1.21.2</jsoup.version>
-        <kotlin.version>2.2.20</kotlin.version>
+        <kotlin.version>2.2.21</kotlin.version>
         <logback.version>1.5.20</logback.version>
         <morphia.version>2.5.1</morphia.version>
         <okhttp.version>4.12.0</okhttp.version>
