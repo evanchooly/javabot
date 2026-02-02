@@ -23,4 +23,10 @@ constructor(
     override fun getChildView(): String {
         return "admin/editChannel.ftl"
     }
+    
+    override fun toModel(): Map<String, Any?> {
+        return super.toModel() + mapOf(
+            "channel" to channel
+        )
+    }
 }

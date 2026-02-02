@@ -46,4 +46,11 @@ constructor(
             date,
         )
     }
+    
+    override fun toModel(): Map<String, Any?> {
+        return super.toModel() + mapOf(
+            "message" to message,
+            "date" to date
+        )
+    }
 }

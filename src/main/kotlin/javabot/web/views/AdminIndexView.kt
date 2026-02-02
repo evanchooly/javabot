@@ -28,4 +28,12 @@ constructor(
     override fun getChildView(): String {
         return "admin/index.ftl"
     }
+    
+    override fun toModel(): Map<String, Any?> {
+        return super.toModel() + mapOf(
+            "current" to current,
+            "editing" to editing,
+            "admins" to getAdmins()
+        )
+    }
 }

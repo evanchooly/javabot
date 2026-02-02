@@ -21,4 +21,8 @@ constructor(
     override fun getChildView(): String {
         return "/index.ftl"
     }
+    
+    override fun toModel(): Map<String, Any?> {
+        return super.toModel()
+    }
 }
