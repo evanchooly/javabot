@@ -1,7 +1,6 @@
 package javabot.web.views
 
 import com.antwerkz.sofia.Sofia
-import io.dropwizard.views.View
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.ArrayList
@@ -22,7 +21,7 @@ abstract class MainView(
     var factoidDao: FactoidDao,
     var apiDao: ApiDao,
     val request: HttpServletRequest,
-) : View("/main.ftl", com.google.common.base.Charsets.ISO_8859_1) {
+) {
 
     companion object {
         val DATE_TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm")
@@ -88,5 +87,22 @@ abstract class MainView(
 
     open fun format(date: LocalDateTime?): String {
         return if (date != null) DATE_TIME_FORMATTER.format(date) else ""
+    }
+    
+    /**
+     * Convert this view to a model map for FreeMarker
+     */
+    open fun toModel(): Map<String, Any?> {
+        return mapOf(
+            "sofia" to sofia(),
+            "factoidCount" to getFactoidCount(),
+            "loggedIn" to loggedIn(),
+            "isAdmin" to isAdmin(),
+            "currentChannel" to getCurrentChannel(),
+            "channels" to getChannels(),
+            "apis" to getAPIs(),
+            "errors" to getErrors(),
+            "hasErrors" to hasErrors()
+        )
     }
 }
