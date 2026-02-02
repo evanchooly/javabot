@@ -387,6 +387,19 @@
             <artifactId>ktor-serialization-jackson-jvm</artifactId>
             <version>${ktor.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-server-partial-content-jvm</artifactId>
+            <version>${ktor.version}</version>
+        </dependency>
+        
+        <!-- Servlet API for compatibility -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+        </dependency>
         <!-- ktor deps -->
 
         <!-- OAuth library -->

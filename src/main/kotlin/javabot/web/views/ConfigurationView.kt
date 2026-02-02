@@ -46,12 +46,13 @@ constructor(
     override fun getChildView(): String {
         return "admin/configuration.ftl"
     }
-    
+
     override fun toModel(): Map<String, Any?> {
-        return super.toModel() + mapOf(
-            "configuration" to configuration,
-            "operations" to operations(),
-            "currentOps" to getCurrentOps()
-        )
+        return super.toModel() +
+            mapOf(
+                "configuration" to configuration,
+                "operations" to operations(),
+                "currentOps" to getCurrentOps(),
+            )
     }
 }

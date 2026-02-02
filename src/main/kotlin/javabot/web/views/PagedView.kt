@@ -80,20 +80,21 @@ abstract class PagedView<V>(
     }
 
     abstract fun getPageItems(): List<V>
-    
+
     override fun toModel(): Map<String, Any?> {
-        return super.toModel() + mapOf(
-            "page" to getPage(),
-            "pageCount" to getPageCount(),
-            "itemsPerPage" to getItemsPerPage(),
-            "itemCount" to itemCount,
-            "nextPage" to getNextPage(),
-            "previousPage" to getPreviousPage(),
-            "startRange" to getStartRange(),
-            "endRange" to getEndRange(),
-            "pageItems" to getPageItems(),
-            "pagedView" to getPagedView()
-        )
+        return super.toModel() +
+            mapOf(
+                "page" to getPage(),
+                "pageCount" to getPageCount(),
+                "itemsPerPage" to getItemsPerPage(),
+                "itemCount" to itemCount,
+                "nextPage" to getNextPage(),
+                "previousPage" to getPreviousPage(),
+                "startRange" to getStartRange(),
+                "endRange" to getEndRange(),
+                "pageItems" to getPageItems(),
+                "pagedView" to getPagedView(),
+            )
     }
 
     companion object {

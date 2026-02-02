@@ -70,11 +70,9 @@ constructor(
     override fun getPagedView(): String {
         return "/factoids.ftl"
     }
-    
+
     override fun toModel(): Map<String, Any?> {
-        return super.toModel() + mapOf(
-            "filter" to getFilter()
-        )
+        return super.toModel() + mapOf("filter" to getFilter())
     }
 
     companion object {

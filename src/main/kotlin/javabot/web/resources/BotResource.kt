@@ -1,10 +1,10 @@
 package javabot.web.resources
 
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.freemarker.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.http.*
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.time.LocalDate
@@ -18,18 +18,18 @@ import org.slf4j.LoggerFactory
 class BotResource @Inject constructor(var viewFactory: ViewFactory) {
 
     fun configureRoutes(routing: Routing) {
-        routing {
+        with(routing) {
             get("/") {
                 if (call.request.queryParameters["test.exception"] != null) {
                     throw RuntimeException("Testing 500 pages")
                 }
                 val view = viewFactory.createIndexView(KtorServletRequest(call))
-                call.respond(FreeMarkerContent(view.getChildView(), view.toModel()))
+                call.respond(FreeMarkerContent("main.ftl", view.toModel()))
             }
 
             get("/index") {
                 val view = viewFactory.createIndexView(KtorServletRequest(call))
-                call.respond(FreeMarkerContent(view.getChildView(), view.toModel()))
+                call.respond(FreeMarkerContent("main.ftl", view.toModel()))
             }
 
             get("/factoids") {
@@ -37,32 +37,33 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
                 val name = call.request.queryParameters["name"]
                 val value = call.request.queryParameters["value"]
                 val userName = call.request.queryParameters["userName"]
-                
-                val view = viewFactory.createFactoidsView(
-                    KtorServletRequest(call),
-                    page,
-                    Factoid.of(name, value, userName)
-                )
-                call.respond(FreeMarkerContent(view.getChildView(), view.toModel()))
+
+                val view =
+                    viewFactory.createFactoidsView(
+                        KtorServletRequest(call),
+                        page,
+                        Factoid.of(name, value, userName),
+                    )
+                call.respond(FreeMarkerContent("main.ftl", view.toModel()))
             }
 
             get("/karma") {
                 val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 1
                 val view = viewFactory.createKarmaView(KtorServletRequest(call), page)
-                call.respond(FreeMarkerContent(view.getChildView(), view.toModel()))
+                call.respond(FreeMarkerContent("main.ftl", view.toModel()))
             }
 
             get("/changes") {
                 val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 1
                 val message = call.request.queryParameters["message"]
                 val view = viewFactory.createChangesView(KtorServletRequest(call), page, message)
-                call.respond(FreeMarkerContent(view.getChildView(), view.toModel()))
+                call.respond(FreeMarkerContent("main.ftl", view.toModel()))
             }
 
             get("/logs/{channel}/{date}") {
                 val channel = call.parameters["channel"]
                 val dateString = call.parameters["date"]
-                
+
                 val date: LocalDateTime =
                     try {
                         if ("today" == dateString) LocalDate.now().atStartOfDay()
@@ -79,7 +80,7 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
                 }
 
                 val view = viewFactory.createLogsView(KtorServletRequest(call), channelName, date)
-                call.respond(FreeMarkerContent(view.getChildView(), view.toModel()))
+                call.respond(FreeMarkerContent("main.ftl", view.toModel()))
             }
         }
     }

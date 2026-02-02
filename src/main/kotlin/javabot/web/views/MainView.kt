@@ -88,10 +88,8 @@ abstract class MainView(
     open fun format(date: LocalDateTime?): String {
         return if (date != null) DATE_TIME_FORMATTER.format(date) else ""
     }
-    
-    /**
-     * Convert this view to a model map for FreeMarker
-     */
+
+    /** Convert this view to a model map for FreeMarker */
     open fun toModel(): Map<String, Any?> {
         return mapOf(
             "sofia" to sofia(),
@@ -102,7 +100,8 @@ abstract class MainView(
             "channels" to getChannels(),
             "apis" to getAPIs(),
             "errors" to getErrors(),
-            "hasErrors" to hasErrors()
+            "hasErrors" to hasErrors(),
+            "childView" to getChildView(),
         )
     }
 }

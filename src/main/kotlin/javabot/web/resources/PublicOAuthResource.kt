@@ -1,11 +1,11 @@
 package javabot.web.resources
 
 import com.antwerkz.sofia.Sofia
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
-import io.ktor.http.*
 import java.net.URI
 import java.util.UUID
 import javabot.dao.AdminDao
@@ -19,7 +19,6 @@ import javabot.web.model.User
 import javax.inject.Inject
 import org.brickred.socialauth.SocialAuthConfig
 import org.brickred.socialauth.SocialAuthManager
-import org.brickred.socialauth.util.SocialAuthUtil
 import org.slf4j.LoggerFactory
 
 class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
@@ -27,19 +26,23 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
     var configuration: JavabotConfiguration? = null
 
     fun configureRoutes(routing: Routing) {
-        routing {
+        with(routing) {
             get("/auth/login") {
                 val oauthCfg = configuration!!.OAuthCfg
                 if (oauthCfg != null) {
                     try {
                         val manager = getSocialAuthManager()
-                        
+
                         // Store manager in session
                         call.sessions.set(UserSession(AUTH_MANAGER))
 
-                        val uri = URI(
-                            manager?.getAuthenticationUrl("googleplus", configuration!!.OAuthSuccessUrl)
-                        )
+                        val uri =
+                            URI(
+                                manager?.getAuthenticationUrl(
+                                    "googleplus",
+                                    configuration!!.OAuthSuccessUrl,
+                                )
+                            )
                         call.respondRedirect(uri.toString())
                         return@get
                     } catch (e: Exception) {
@@ -51,10 +54,12 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
 
             get("/auth/verify") {
                 // TODO: Retrieve manager from session
-                val manager = getSocialAuthManager() ?: run {
-                    call.respond(HttpStatusCode.Unauthorized)
-                    return@get
-                }
+                val manager =
+                    getSocialAuthManager()
+                        ?: run {
+                            call.respond(HttpStatusCode.Unauthorized)
+                            return@get
+                        }
 
                 try {
                     val params = mutableMapOf<String, String>()
@@ -67,7 +72,8 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
 
                     Sofia.loggingInUser(p)
 
-                    var tempUser = User(UUID.randomUUID(), p.email, p.validatedId, provider.accessGrant)
+                    var tempUser =
+                        User(UUID.randomUUID(), p.email, p.validatedId, provider.accessGrant)
                     tempUser.authorities.add(ROLE_PUBLIC)
 
                     val user = INSTANCE.getByOpenIDIdentifier(tempUser.openIDIdentifier)
