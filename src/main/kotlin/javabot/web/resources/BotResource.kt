@@ -1,6 +1,6 @@
 package javabot.web.resources
 
-import io.dropwizard.views.common.View
+import io.quarkus.qute.TemplateInstance
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
 import jakarta.servlet.http.HttpServletRequest
@@ -18,28 +18,28 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javabot.model.Factoid
-import javabot.web.views.ViewFactory
+import javabot.web.views.TemplateService
 import org.slf4j.LoggerFactory
 
 @Path("/")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @ApplicationScoped
-class BotResource @Inject constructor(var viewFactory: ViewFactory) {
+class BotResource @Inject constructor(var templateService: TemplateService) {
 
     @GET
     @Produces("text/html;charset=ISO-8859-1")
-    fun index(@Context request: HttpServletRequest): View {
+    fun index(@Context request: HttpServletRequest): TemplateInstance {
         if (request.getParameter("test.exception") != null) {
             throw RuntimeException("Testing 500 pages")
         }
-        return viewFactory.createIndexView(request)
+        return templateService.createIndexView(request)
     }
 
     @GET
     @Path("/index")
     @Produces("text/html;charset=ISO-8859-1")
-    fun indexHtml(@Context request: HttpServletRequest): View {
+    fun indexHtml(@Context request: HttpServletRequest): TemplateInstance {
         return index(request)
     }
 
@@ -52,8 +52,8 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
         @QueryParam("name") name: String?,
         @QueryParam("value") value: String?,
         @QueryParam("userName") userName: String?,
-    ): View {
-        return viewFactory.createFactoidsView(request, page ?: 1, Factoid.of(name, value, userName))
+    ): TemplateInstance {
+        return templateService.createFactoidsView(request, page ?: 1, Factoid.of(name, value, userName))
     }
 
     @GET
@@ -65,8 +65,8 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
         @Suppress("UNUSED_PARAMETER") @QueryParam("name") name: String?,
         @Suppress("UNUSED_PARAMETER") @QueryParam("value") value: Int?,
         @Suppress("UNUSED_PARAMETER") @QueryParam("userName") userName: String?,
-    ): View {
-        return viewFactory.createKarmaView(request, page ?: 1)
+    ): TemplateInstance {
+        return templateService.createKarmaView(request, page ?: 1)
     }
 
     @GET
@@ -76,8 +76,8 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
         @Context request: HttpServletRequest,
         @QueryParam("page") page: Int?,
         @QueryParam("message") message: String?,
-    ): View {
-        return viewFactory.createChangesView(request, page ?: 1, message)
+    ): TemplateInstance {
+        return templateService.createChangesView(request, page ?: 1, message, null)
     }
 
     @GET
@@ -87,7 +87,7 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
         @Context request: HttpServletRequest,
         @PathParam("channel") channel: String?,
         @PathParam("date") dateString: String?,
-    ): View {
+    ): TemplateInstance {
         val date: LocalDateTime =
             try {
                 if ("today" == dateString) LocalDate.now().atStartOfDay()
@@ -103,7 +103,7 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
             throw RuntimeException(e.message, e)
         }
 
-        return viewFactory.createLogsView(request, channelName, date)
+        return templateService.createLogsView(request, channelName, date)
     }
 
     companion object {

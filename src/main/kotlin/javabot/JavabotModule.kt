@@ -5,7 +5,6 @@ import com.google.common.base.CharMatcher
 import com.google.inject.AbstractModule
 import com.google.inject.Provider
 import com.google.inject.Provides
-import com.google.inject.assistedinject.FactoryModuleBuilder
 import com.mongodb.MongoClientSettings
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
@@ -16,7 +15,6 @@ import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
 import javabot.model.Factoid
 import javabot.model.javadoc.JavadocClass
-import javabot.web.views.ViewFactory
 import javax.inject.Singleton
 import javax.net.ssl.SSLSocketFactory
 import net.thauvin.erik.bitly.Bitly
@@ -40,7 +38,6 @@ open class JavabotModule : AbstractModule() {
         configDaoProvider = binder().getProvider(ConfigDao::class.java)
         channelDaoProvider = binder().getProvider(ChannelDao::class.java)
         ircAdapterProvider = binder().getProvider(IrcAdapter::class.java)
-        install(FactoryModuleBuilder().build(ViewFactory::class.java))
     }
 
     open fun client(): MongoClient {

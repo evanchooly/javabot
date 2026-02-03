@@ -391,19 +391,6 @@
         </dependency>
         <!-- Quarkus deps -->
 
-        <!-- Keep Dropwizard View support temporarily until View classes are converted -->
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-views</artifactId>
-            <version>4.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-views-freemarker</artifactId>
-            <version>4.0.1</version>
-        </dependency>
-        <!-- Keep Dropwizard View support temporarily -->
-
         <!-- OAuth library -->
         <dependency>
             <groupId>org.brickred</groupId>
