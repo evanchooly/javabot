@@ -118,13 +118,23 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
     private fun getSocialAuthManager(): SocialAuthManager? {
         val config = SocialAuthConfig.getDefault()
         try {
-            // In Quarkus, we would need to load OAuth config differently
-            // For now, using a placeholder approach
+            // Load OAuth configuration from file if path is provided
+            if (oauthConfigPath != null && oauthConfigPath!!.isNotEmpty()) {
+                val configFile = java.io.File(oauthConfigPath!!)
+                if (configFile.exists()) {
+                    val props = java.util.Properties()
+                    configFile.inputStream().use { props.load(it) }
+                    config.load(props)
+                    log.info("Loaded OAuth configuration from {}", oauthConfigPath)
+                } else {
+                    log.warn("OAuth config file not found: {}", oauthConfigPath)
+                }
+            }
             val manager = SocialAuthManager()
             manager.socialAuthConfig = config
             return manager
         } catch (e: Exception) {
-            log.error(e.message, e)
+            log.error("Failed to initialize SocialAuthManager: {}", e.message, e)
         }
 
         return null
