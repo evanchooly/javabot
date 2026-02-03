@@ -1,25 +1,24 @@
 package javabot.web
 
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.inject.Inject
+import jakarta.ws.rs.WebApplicationException
+import jakarta.ws.rs.core.Response
+import jakarta.ws.rs.core.Response.Status.FORBIDDEN
+import jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR
+import jakarta.ws.rs.core.Response.Status.NOT_FOUND
+import jakarta.ws.rs.core.Response.Status.TEMPORARY_REDIRECT
+import jakarta.ws.rs.core.Response.Status.UNAUTHORIZED
+import jakarta.ws.rs.ext.ExceptionMapper
+import jakarta.ws.rs.ext.Provider
 import java.net.URI
 import java.net.URISyntaxException
 import javabot.web.resources.PublicErrorResource
-import javax.enterprise.context.ApplicationScoped
-import javax.inject.Inject
-import javax.ws.rs.WebApplicationException
-import javax.ws.rs.core.Response
-import javax.ws.rs.core.Response.Status.FORBIDDEN
-import javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR
-import javax.ws.rs.core.Response.Status.NOT_FOUND
-import javax.ws.rs.core.Response.Status.TEMPORARY_REDIRECT
-import javax.ws.rs.core.Response.Status.UNAUTHORIZED
-import javax.ws.rs.ext.ExceptionMapper
-import javax.ws.rs.ext.Provider
 import org.slf4j.LoggerFactory
 
 @Provider
 @ApplicationScoped
-class RuntimeExceptionMapper @Inject constructor() :
-    ExceptionMapper<RuntimeException> {
+class RuntimeExceptionMapper @Inject constructor() : ExceptionMapper<RuntimeException> {
 
     companion object {
         private val LOG = LoggerFactory.getLogger(RuntimeExceptionMapper::class.java)

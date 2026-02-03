@@ -1,6 +1,8 @@
 package javabot.web.views
 
 import com.google.inject.assistedinject.Assisted
+import jakarta.inject.Inject
+import jakarta.servlet.http.HttpServletRequest
 import java.util.ArrayList
 import java.util.Collections
 import java.util.TreeSet
@@ -12,8 +14,6 @@ import javabot.dao.ConfigDao
 import javabot.dao.FactoidDao
 import javabot.model.Config
 import javabot.operations.BotOperation
-import javax.inject.Inject
-import javax.servlet.http.HttpServletRequest
 
 class ConfigurationView
 @Inject

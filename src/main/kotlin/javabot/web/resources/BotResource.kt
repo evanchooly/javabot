@@ -1,6 +1,17 @@
 package javabot.web.resources
 
-import io.dropwizard.views.View
+import io.dropwizard.views.common.View
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.inject.Inject
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.ws.rs.Consumes
+import jakarta.ws.rs.GET
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.PathParam
+import jakarta.ws.rs.Produces
+import jakarta.ws.rs.QueryParam
+import jakarta.ws.rs.core.Context
+import jakarta.ws.rs.core.MediaType
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.time.LocalDate
@@ -8,17 +19,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javabot.model.Factoid
 import javabot.web.views.ViewFactory
-import javax.enterprise.context.ApplicationScoped
-import javax.inject.Inject
-import javax.servlet.http.HttpServletRequest
-import javax.ws.rs.Consumes
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.QueryParam
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.MediaType
 import org.slf4j.LoggerFactory
 
 @Path("/")

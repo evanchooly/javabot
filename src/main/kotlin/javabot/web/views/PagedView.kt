@@ -1,10 +1,10 @@
 package javabot.web.views
 
+import jakarta.servlet.http.HttpServletRequest
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
-import javax.servlet.http.HttpServletRequest
 
 abstract class PagedView<V>(
     adminDao: AdminDao,

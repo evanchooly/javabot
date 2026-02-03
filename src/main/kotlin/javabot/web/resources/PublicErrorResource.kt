@@ -1,6 +1,6 @@
 package javabot.web.resources
 
-import io.dropwizard.views.View
+import io.dropwizard.views.common.View
 import java.util.Random
 import javabot.web.views.ErrorView
 

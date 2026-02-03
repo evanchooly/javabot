@@ -1,7 +1,7 @@
 package javabot.web.auth
 
+import jakarta.enterprise.context.ApplicationScoped
 import java.util.Optional
-import javax.enterprise.context.ApplicationScoped
 import javabot.web.model.InMemoryUserCache.INSTANCE
 import javabot.web.model.User
 

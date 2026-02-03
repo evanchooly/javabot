@@ -1,6 +1,18 @@
 package javabot.web.resources
 
-import io.dropwizard.views.View
+import io.dropwizard.views.common.View
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.inject.Inject
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.ws.rs.Consumes
+import jakarta.ws.rs.FormParam
+import jakarta.ws.rs.GET
+import jakarta.ws.rs.POST
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.PathParam
+import jakarta.ws.rs.WebApplicationException
+import jakarta.ws.rs.core.Context
+import jakarta.ws.rs.core.MediaType
 import javabot.Javabot
 import javabot.JavabotConfig
 import javabot.dao.AdminDao
@@ -15,18 +27,6 @@ import javabot.web.auth.Restricted
 import javabot.web.model.Authority
 import javabot.web.model.User
 import javabot.web.views.ViewFactory
-import javax.enterprise.context.ApplicationScoped
-import javax.inject.Inject
-import javax.servlet.http.HttpServletRequest
-import javax.ws.rs.Consumes
-import javax.ws.rs.FormParam
-import javax.ws.rs.GET
-import javax.ws.rs.POST
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.WebApplicationException
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.MediaType
 import org.bson.types.ObjectId
 
 @Path("/admin")

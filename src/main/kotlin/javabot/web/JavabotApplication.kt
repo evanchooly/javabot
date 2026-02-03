@@ -4,20 +4,20 @@ import com.google.inject.Guice
 import com.google.inject.Inject
 import com.google.inject.Injector
 import io.quarkus.runtime.StartupEvent
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.enterprise.event.Observes
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import jakarta.ws.rs.container.ContainerRequestContext
+import jakarta.ws.rs.container.ContainerRequestFilter
+import jakarta.ws.rs.core.Context
+import jakarta.ws.rs.ext.Provider
 import java.io.File
 import java.nio.file.Files
 import javabot.Javabot
 import javabot.JavabotConfig
 import javabot.JavabotModule
 import javabot.dao.ApiDao
-import javax.enterprise.context.ApplicationScoped
-import javax.enterprise.event.Observes
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-import javax.ws.rs.container.ContainerRequestContext
-import javax.ws.rs.container.ContainerRequestFilter
-import javax.ws.rs.core.Context
-import javax.ws.rs.ext.Provider
 import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.slf4j.LoggerFactory
 
@@ -57,11 +57,9 @@ class JavabotApplication @Inject constructor(var injector: Injector) {
     class JavadocFilter @Inject constructor(var apiDao: ApiDao, var config: JavabotConfig) :
         ContainerRequestFilter {
 
-        @Context
-        private lateinit var httpRequest: HttpServletRequest
+        @Context private lateinit var httpRequest: HttpServletRequest
 
-        @Context
-        private lateinit var httpResponse: HttpServletResponse
+        @Context private lateinit var httpResponse: HttpServletResponse
 
         override fun filter(requestContext: ContainerRequestContext) {
             val path = requestContext.uriInfo.path
@@ -78,18 +76,12 @@ class JavabotApplication @Inject constructor(var injector: Injector) {
                             Files.copy(javadocPath, stream)
                             stream.flush()
                         }
-                        requestContext.abortWith(
-                            javax.ws.rs.core.Response.ok().build()
-                        )
+                        requestContext.abortWith(jakarta.ws.rs.core.Response.ok().build())
                     } catch (e: Exception) {
-                        requestContext.abortWith(
-                            javax.ws.rs.core.Response.status(500).build()
-                        )
+                        requestContext.abortWith(jakarta.ws.rs.core.Response.status(500).build())
                     }
                 } else {
-                    requestContext.abortWith(
-                        javax.ws.rs.core.Response.status(404).build()
-                    )
+                    requestContext.abortWith(jakarta.ws.rs.core.Response.status(404).build())
                 }
             }
         }

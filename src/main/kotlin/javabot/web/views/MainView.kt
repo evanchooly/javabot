@@ -1,7 +1,9 @@
 package javabot.web.views
 
 import com.antwerkz.sofia.Sofia
-import io.dropwizard.views.View
+import io.dropwizard.views.common.View
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletRequest
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.ArrayList
@@ -13,8 +15,6 @@ import javabot.model.Channel
 import javabot.model.javadoc.JavadocApi
 import javabot.web.JavabotConfiguration
 import javabot.web.model.InMemoryUserCache.INSTANCE
-import javax.servlet.http.Cookie
-import javax.servlet.http.HttpServletRequest
 
 abstract class MainView(
     var adminDao: AdminDao,

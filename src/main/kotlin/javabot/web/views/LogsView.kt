@@ -2,6 +2,8 @@ package javabot.web.views
 
 import com.antwerkz.sofia.Sofia
 import com.google.inject.assistedinject.Assisted
+import jakarta.inject.Inject
+import jakarta.servlet.http.HttpServletRequest
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javabot.dao.AdminDao
@@ -12,8 +14,6 @@ import javabot.dao.LogsDao
 import javabot.dao.util.CleanHtmlConverter
 import javabot.model.Logs
 import javabot.web.resources.BotResource
-import javax.inject.Inject
-import javax.servlet.http.HttpServletRequest
 
 class LogsView
 @Inject

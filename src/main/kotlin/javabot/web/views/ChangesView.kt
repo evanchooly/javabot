@@ -1,6 +1,8 @@
 package javabot.web.views
 
 import com.google.inject.assistedinject.Assisted
+import jakarta.inject.Inject
+import jakarta.servlet.http.HttpServletRequest
 import java.time.LocalDateTime
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
@@ -10,8 +12,6 @@ import javabot.dao.FactoidDao
 import javabot.dao.util.QueryParam
 import javabot.model.Change
 import javax.annotation.Nullable
-import javax.inject.Inject
-import javax.servlet.http.HttpServletRequest
 
 class ChangesView
 @Inject
