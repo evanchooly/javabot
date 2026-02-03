@@ -309,12 +309,12 @@ constructor(
     }
 
     private fun getRandomImage(images: Array<String>): String {
-        return images[java.util.Random().nextInt(images.size)]
+        return images.random()
     }
 
     // Helper data class for paged views
     data class PageData(val requestedPage: Int, val itemCount: Long, val itemsPerPage: Int) {
-        val pageCount: Int = Math.ceil(1.0 * itemCount / itemsPerPage).toInt()
+        val pageCount: Int = (itemCount.toDouble() / itemsPerPage).let { kotlin.math.ceil(it).toInt() }
 
         val page: Int =
             when {
@@ -332,7 +332,7 @@ constructor(
 
         val startRange: Long = index + 1L
 
-        val endRange: Long = Math.min(itemCount, startRange + itemsPerPage - 1)
+        val endRange: Long = minOf(itemCount, startRange + itemsPerPage - 1)
 
         val nextPage: String? = if (page + 1 <= pageCount) "?page=${page + 1}" else null
 
