@@ -1,0 +1,20 @@
+<table class="zebra-striped">
+    <tr>
+        <td class="right top" colspan="10   ">
+            <div id="pagination" class="pagination">
+                <ul>
+                    <li id="previousPage" class="prev {#unless previousPage}disabled{/unless}">
+                        <a {#if previousPage}href="{previousPage}"{/if}>&larr; Previous</a>
+                    </li>
+
+                    <li id="currentPage" class="current"> Displaying {startRange} to {endRange} of {itemCount} </li>
+
+                    <li id="nextPage" class="next {#unless nextPage}disabled{/unless}">
+                        <a {#if nextPage}href="{nextPage}"{/if}>Next &rarr;</a>
+                    </li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+{#insert pagedContent/}
+</table>
