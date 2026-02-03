@@ -1,10 +1,14 @@
 package javabot.web
 
-import com.codahale.metrics.health.HealthCheck
+import org.eclipse.microprofile.health.HealthCheck
+import org.eclipse.microprofile.health.HealthCheckResponse
+import org.eclipse.microprofile.health.Liveness
+import javax.enterprise.context.ApplicationScoped
 
-class JavabotHealthCheck : HealthCheck() {
-    @Throws(Exception::class)
-    override fun check(): Result {
-        return Result.healthy()
+@Liveness
+@ApplicationScoped
+class JavabotHealthCheck : HealthCheck {
+    override fun call(): HealthCheckResponse {
+        return HealthCheckResponse.up("javabot")
     }
 }

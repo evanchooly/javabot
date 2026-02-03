@@ -3,8 +3,9 @@ package javabot.web
 import java.net.URI
 import java.net.URISyntaxException
 import javabot.web.resources.PublicErrorResource
+import javax.enterprise.context.ApplicationScoped
+import javax.inject.Inject
 import javax.ws.rs.WebApplicationException
-import javax.ws.rs.core.Context
 import javax.ws.rs.core.Response
 import javax.ws.rs.core.Response.Status.FORBIDDEN
 import javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR
@@ -13,18 +14,16 @@ import javax.ws.rs.core.Response.Status.TEMPORARY_REDIRECT
 import javax.ws.rs.core.Response.Status.UNAUTHORIZED
 import javax.ws.rs.ext.ExceptionMapper
 import javax.ws.rs.ext.Provider
-import org.apache.http.protocol.HttpContext
 import org.slf4j.LoggerFactory
 
 @Provider
-class RuntimeExceptionMapper(val configuration: JavabotConfiguration) :
+@ApplicationScoped
+class RuntimeExceptionMapper @Inject constructor() :
     ExceptionMapper<RuntimeException> {
 
     companion object {
         private val LOG = LoggerFactory.getLogger(RuntimeExceptionMapper::class.java)
     }
-
-    @Context private var httpContext: HttpContext? = null
 
     override fun toResponse(runtime: RuntimeException): Response {
 

@@ -3,37 +3,30 @@ package javabot.web
 import com.google.inject.Guice
 import com.google.inject.Inject
 import com.google.inject.Injector
-import com.google.inject.Singleton
-import io.dropwizard.Application
-import io.dropwizard.assets.AssetsBundle
-import io.dropwizard.setup.Bootstrap
-import io.dropwizard.setup.Environment
-import io.dropwizard.views.ViewBundle
+import io.quarkus.runtime.StartupEvent
 import java.io.File
 import java.nio.file.Files
-import java.util.EnumSet
 import javabot.Javabot
 import javabot.JavabotConfig
 import javabot.JavabotModule
 import javabot.dao.ApiDao
-import javabot.web.resources.AdminResource
-import javabot.web.resources.BotResource
-import javabot.web.resources.PublicOAuthResource
-import javax.servlet.DispatcherType
-import javax.servlet.Filter
-import javax.servlet.FilterChain
-import javax.servlet.FilterConfig
-import javax.servlet.ServletRequest
-import javax.servlet.ServletResponse
+import javax.enterprise.context.ApplicationScoped
+import javax.enterprise.event.Observes
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import org.eclipse.jetty.server.session.SessionHandler
+import javax.ws.rs.container.ContainerRequestContext
+import javax.ws.rs.container.ContainerRequestFilter
+import javax.ws.rs.core.Context
+import javax.ws.rs.ext.Provider
+import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.slf4j.LoggerFactory
 
-@Singleton
-class JavabotApplication @Inject constructor(var injector: Injector) :
-    Application<JavabotConfiguration>() {
+@ApplicationScoped
+class JavabotApplication @Inject constructor(var injector: Injector) {
     var running = false
+
+    @ConfigProperty(name = "javabot.web.enabled", defaultValue = "false")
+    var webEnabled: Boolean = false
 
     companion object {
         private val LOG = LoggerFactory.getLogger(JavabotApplication::class.java)
@@ -41,75 +34,64 @@ class JavabotApplication @Inject constructor(var injector: Injector) :
         @Throws(Exception::class)
         @JvmStatic
         fun main(args: Array<String>) {
-            Guice.createInjector(JavabotModule())
-                .getInstance(JavabotApplication::class.java)
-                .run(*arrayOf("server", "javabot.yml"))
+            val injector = Guice.createInjector(JavabotModule())
+            // Quarkus will handle the lifecycle, just initialize the bot
+            val bot = injector.getInstance(Javabot::class.java)
+            bot.setUpThreads()
         }
     }
 
-    override fun initialize(bootstrap: Bootstrap<JavabotConfiguration>) {
-        bootstrap.addBundle(ViewBundle())
-        bootstrap.addBundle(AssetsBundle("/assets", "/assets", null, "assets"))
-        bootstrap.addBundle(
-            AssetsBundle("/META-INF/resources/webjars", "/webjars", null, "webjars")
-        )
+    fun onStart(@Observes ev: StartupEvent) {
+        if (webEnabled) {
+            LOG.info("Starting Javabot web application")
+            val bot = injector.getInstance(Javabot::class.java)
+            bot.setUpThreads()
+            running = true
+        } else {
+            LOG.info("Javabot web application is disabled")
+        }
     }
 
-    override fun run(configuration: JavabotConfiguration, environment: Environment) {
-        environment.applicationContext.isSessionsEnabled = true
-        environment.applicationContext.sessionHandler = SessionHandler()
-
-        val bot = injector.getInstance(Javabot::class.java)
-        bot.setUpThreads()
-
-        val oauth = injector.getInstance(PublicOAuthResource::class.java)
-        oauth.configuration = configuration
-        environment.jersey().register(oauth)
-
-        environment.jersey().register(injector.getInstance(BotResource::class.java))
-        environment.jersey().register(injector.getInstance(AdminResource::class.java))
-        environment.jersey().register(RuntimeExceptionMapper(configuration))
-
-        environment
-            .servlets()
-            .addFilter("javadoc", injector.getInstance(JavadocFilter::class.java))
-            .addMappingForUrlPatterns(
-                EnumSet.allOf(DispatcherType::class.java),
-                false,
-                "/javadoc/*",
-            )
-
-        environment.healthChecks().register("javabot", JavabotHealthCheck())
-
-        running = false
-    }
-
+    @Provider
+    @ApplicationScoped
     class JavadocFilter @Inject constructor(var apiDao: ApiDao, var config: JavabotConfig) :
-        Filter {
-        override fun destroy() {}
+        ContainerRequestFilter {
 
-        override fun doFilter(
-            request: ServletRequest,
-            response: ServletResponse,
-            chain: FilterChain,
-        ) {
-            request as HttpServletRequest
-            var filePath = request.requestURI.split("/").drop(2).joinToString("/")
-            if (!filePath.startsWith("/")) {
-                filePath = "/" + filePath
-            }
-            val path = File("javadoc$filePath").toPath()
+        @Context
+        private lateinit var httpRequest: HttpServletRequest
 
-            if (Files.exists(path)) {
-                response.outputStream.use { stream ->
-                    Files.copy(path, stream)
-                    stream.flush()
+        @Context
+        private lateinit var httpResponse: HttpServletResponse
+
+        override fun filter(requestContext: ContainerRequestContext) {
+            val path = requestContext.uriInfo.path
+            if (path.startsWith("/javadoc/")) {
+                var filePath = path.split("/").drop(2).joinToString("/")
+                if (!filePath.startsWith("/")) {
+                    filePath = "/" + filePath
                 }
-            } else {
-                (response as HttpServletResponse).sendError(404)
+                val javadocPath = File("javadoc$filePath").toPath()
+
+                if (Files.exists(javadocPath)) {
+                    try {
+                        httpResponse.outputStream.use { stream ->
+                            Files.copy(javadocPath, stream)
+                            stream.flush()
+                        }
+                        requestContext.abortWith(
+                            javax.ws.rs.core.Response.ok().build()
+                        )
+                    } catch (e: Exception) {
+                        requestContext.abortWith(
+                            javax.ws.rs.core.Response.status(500).build()
+                        )
+                    }
+                } else {
+                    requestContext.abortWith(
+                        javax.ws.rs.core.Response.status(404).build()
+                    )
+                }
             }
         }
-
-        override fun init(filterConfig: FilterConfig?) {}
     }
 }
