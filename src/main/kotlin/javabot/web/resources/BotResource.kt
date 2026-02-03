@@ -53,7 +53,11 @@ class BotResource @Inject constructor(var templateService: TemplateService) {
         @QueryParam("value") value: String?,
         @QueryParam("userName") userName: String?,
     ): TemplateInstance {
-        return templateService.createFactoidsView(request, page ?: 1, Factoid.of(name, value, userName))
+        return templateService.createFactoidsView(
+            request,
+            page ?: 1,
+            Factoid.of(name, value, userName),
+        )
     }
 
     @GET

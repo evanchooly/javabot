@@ -18,7 +18,8 @@ import org.slf4j.LoggerFactory
 
 @Provider
 @ApplicationScoped
-class RuntimeExceptionMapper @Inject constructor(private val templateService: TemplateService) : ExceptionMapper<RuntimeException> {
+class RuntimeExceptionMapper @Inject constructor(private val templateService: TemplateService) :
+    ExceptionMapper<RuntimeException> {
 
     companion object {
         private val LOG = LoggerFactory.getLogger(RuntimeExceptionMapper::class.java)

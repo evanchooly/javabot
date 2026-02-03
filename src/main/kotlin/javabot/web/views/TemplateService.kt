@@ -22,14 +22,8 @@ import javabot.dao.LogsDao
 import javabot.dao.util.CleanHtmlConverter
 import javabot.dao.util.QueryParam
 import javabot.model.Admin
-import javabot.model.Change
 import javabot.model.Channel
-import javabot.model.Config
 import javabot.model.Factoid
-import javabot.model.Karma
-import javabot.model.Logs
-import javabot.model.javadoc.JavadocApi
-import javabot.operations.BotOperation
 import javabot.web.JavabotConfiguration
 import javabot.web.model.InMemoryUserCache.INSTANCE
 import javabot.web.resources.BotResource
@@ -47,30 +41,18 @@ constructor(
     private val logsDao: LogsDao,
     private val changeDao: ChangeDao,
     private val configDao: ConfigDao,
-    private val javabot: Javabot
+    private val javabot: Javabot,
 ) {
 
-    @Location("templates/main.html")
-    lateinit var mainTemplate: Template
+    @Location("templates/main.html") lateinit var mainTemplate: Template
 
-    @Location("templates/paged.html")
-    lateinit var pagedTemplate: Template
+    @Location("templates/paged.html") lateinit var pagedTemplate: Template
 
-    @Location("templates/error/403.html")
-    lateinit var error403Template: Template
+    @Location("templates/error/403.html") lateinit var error403Template: Template
 
-    @Location("templates/error/404.html")
-    lateinit var error404Template: Template
+    @Location("templates/error/404.html") lateinit var error404Template: Template
 
-    @Location("templates/error/500.html")
-    lateinit var error500Template: Template
-
-    companion object {
-        private val LOG = LoggerFactory.getLogger(TemplateService::class.java)
-        val DATE_TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm")
-        val LOG_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm")
-        const val ITEMS_PER_PAGE = 50
-    }
+    @Location("templates/error/500.html") lateinit var error500Template: Template
 
     // Index view
     fun createIndexView(request: HttpServletRequest): TemplateInstance {
@@ -86,12 +68,17 @@ constructor(
     }
 
     // Factoids view
-    fun createFactoidsView(request: HttpServletRequest, page: Int, filter: Factoid): TemplateInstance {
+    fun createFactoidsView(
+        request: HttpServletRequest,
+        page: Int,
+        filter: Factoid,
+    ): TemplateInstance {
         val pageData = PageData(page, factoidDao.countFiltered(filter), ITEMS_PER_PAGE)
-        val factoids = factoidDao.getFactoidsFiltered(
-            QueryParam(pageData.index, ITEMS_PER_PAGE, "Name", true),
-            filter
-        )
+        val factoids =
+            factoidDao.getFactoidsFiltered(
+                QueryParam(pageData.index, ITEMS_PER_PAGE, "Name", true),
+                filter,
+            )
 
         val nextPage = pageData.nextPage?.let { applyFactoidFilter(it, filter) }
         val previousPage = pageData.previousPage?.let { applyFactoidFilter(it, filter) }
@@ -155,14 +142,15 @@ constructor(
         request: HttpServletRequest,
         page: Int,
         message: String?,
-        date: LocalDateTime?
+        date: LocalDateTime?,
     ): TemplateInstance {
         val pageData = PageData(page, changeDao.count(message, date), ITEMS_PER_PAGE)
-        val changes = changeDao.getChanges(
-            QueryParam(pageData.index, ITEMS_PER_PAGE, "updated"),
-            message,
-            date
-        )
+        val changes =
+            changeDao.getChanges(
+                QueryParam(pageData.index, ITEMS_PER_PAGE, "updated"),
+                message,
+                date,
+            )
 
         return pagedTemplate
             .data("factoidCount", factoidDao.count())
@@ -185,11 +173,16 @@ constructor(
     }
 
     // Logs view
-    fun createLogsView(request: HttpServletRequest, channel: String, date: LocalDateTime): TemplateInstance {
+    fun createLogsView(
+        request: HttpServletRequest,
+        channel: String,
+        date: LocalDateTime,
+    ): TemplateInstance {
         val logs = logsDao.findByChannel(channel, date, isAdmin(request))
         // Filter the log content
         for (log in logs) {
-            log.message = CleanHtmlConverter.convert(log.message) { s -> Sofia.logsAnchorFormat(s, s) }
+            log.message =
+                CleanHtmlConverter.convert(log.message) { s -> Sofia.logsAnchorFormat(s, s) }
         }
 
         val today = BotResource.FORMAT.format(date)
@@ -217,7 +210,7 @@ constructor(
     fun createAdminIndexView(
         request: HttpServletRequest,
         current: Admin,
-        editing: Admin?
+        editing: Admin?,
     ): TemplateInstance {
         return mainTemplate
             .data("factoidCount", factoidDao.count())
@@ -321,19 +314,21 @@ constructor(
 
     // Helper data class for paged views
     data class PageData(val requestedPage: Int, val itemCount: Long, val itemsPerPage: Int) {
-        val page: Int = when {
-            requestedPage < 1 -> 1
-            requestedPage > pageCount -> pageCount
-            else -> requestedPage
-        }
-
         val pageCount: Int = Math.ceil(1.0 * itemCount / itemsPerPage).toInt()
 
-        val index: Int = when {
-            itemCount == 0L -> -1
-            (page - 1) * itemsPerPage > itemCount -> (pageCount - 1) * itemsPerPage
-            else -> (page - 1) * itemsPerPage
-        }
+        val page: Int =
+            when {
+                requestedPage < 1 -> 1
+                requestedPage > pageCount -> pageCount
+                else -> requestedPage
+            }
+
+        val index: Int =
+            when {
+                itemCount == 0L -> -1
+                (page - 1) * itemsPerPage > itemCount -> (pageCount - 1) * itemsPerPage
+                else -> (page - 1) * itemsPerPage
+            }
 
         val startRange: Long = index + 1L
 
@@ -345,6 +340,10 @@ constructor(
     }
 
     companion object {
+        private val LOG = LoggerFactory.getLogger(TemplateService::class.java)
+        val DATE_TIME_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm")
+        val LOG_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm")
+        const val ITEMS_PER_PAGE = 50
         private val IMAGE_403 = arrayOf("403_1.gif", "403_2.gif", "403_3.gif")
         private val IMAGE_404 = arrayOf("404_1.gif", "404_2.gif", "404_3.gif", "404_4.gif")
         private val IMAGE_500 = arrayOf("500.gif")
