@@ -314,7 +314,8 @@ constructor(
 
     // Helper data class for paged views
     data class PageData(val requestedPage: Int, val itemCount: Long, val itemsPerPage: Int) {
-        val pageCount: Int = (itemCount.toDouble() / itemsPerPage).let { kotlin.math.ceil(it).toInt() }
+        val pageCount: Int =
+            (itemCount.toDouble() / itemsPerPage).let { kotlin.math.ceil(it).toInt() }
 
         val page: Int =
             when {
