@@ -1,14 +1,14 @@
 package javabot.web.auth
 
-import io.dropwizard.auth.Authenticator
 import java.util.Optional
+import javax.enterprise.context.ApplicationScoped
 import javabot.web.model.InMemoryUserCache.INSTANCE
 import javabot.web.model.User
 
-class OpenIDAuthenticator : Authenticator<OpenIDCredentials, User> {
+@ApplicationScoped
+class OpenIDAuthenticator {
 
-    //    @Throws(AuthenticationException::class)
-    override fun authenticate(credentials: OpenIDCredentials): Optional<User> {
+    fun authenticate(credentials: OpenIDCredentials): Optional<User> {
 
         // Get the User referred to by the API key
         val user =

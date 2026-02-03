@@ -8,6 +8,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javabot.model.Factoid
 import javabot.web.views.ViewFactory
+import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.Consumes
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory
 @Path("/")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@ApplicationScoped
 class BotResource @Inject constructor(var viewFactory: ViewFactory) {
 
     @GET

@@ -13,6 +13,7 @@ import javabot.web.model.Authority.ROLE_ADMIN
 import javabot.web.model.Authority.ROLE_PUBLIC
 import javabot.web.model.InMemoryUserCache.INSTANCE
 import javabot.web.model.User
+import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.GET
@@ -28,20 +29,25 @@ import javax.ws.rs.core.Response.Status.UNAUTHORIZED
 import org.brickred.socialauth.SocialAuthConfig
 import org.brickred.socialauth.SocialAuthManager
 import org.brickred.socialauth.util.SocialAuthUtil
+import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.slf4j.LoggerFactory
 
 @Path("/auth")
 @Produces(MediaType.TEXT_HTML)
+@ApplicationScoped
 class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
 
-    var configuration: JavabotConfiguration? = null
+    @ConfigProperty(name = "javabot.oauth.success.url", defaultValue = "/")
+    lateinit var oauthSuccessUrl: String
+
+    @ConfigProperty(name = "javabot.oauth.config", defaultValue = "")
+    var oauthConfigPath: String? = null
 
     @GET
     @Path("/login")
     @Throws(URISyntaxException::class)
     fun requestOAuth(@Context request: HttpServletRequest): Response {
-        val oauthCfg = configuration!!.OAuthCfg
-        if (oauthCfg != null) {
+        if (oauthConfigPath != null && oauthConfigPath!!.isNotEmpty()) {
             try {
                 val manager = getSocialAuthManager()
 
@@ -49,7 +55,7 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
 
                 val uri =
                     URI(
-                        manager?.getAuthenticationUrl("googleplus", configuration!!.OAuthSuccessUrl)
+                        manager?.getAuthenticationUrl("googleplus", oauthSuccessUrl)
                     )
                 return Response.temporaryRedirect(uri).build()
             } catch (e: Exception) {
@@ -113,7 +119,8 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
     private fun getSocialAuthManager(): SocialAuthManager? {
         val config = SocialAuthConfig.getDefault()
         try {
-            config.load(configuration!!.getOAuthCfgProperties())
+            // In Quarkus, we would need to load OAuth config differently
+            // For now, using a placeholder approach
             val manager = SocialAuthManager()
             manager.socialAuthConfig = config
             return manager

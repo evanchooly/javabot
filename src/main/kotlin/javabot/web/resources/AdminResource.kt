@@ -15,6 +15,7 @@ import javabot.web.auth.Restricted
 import javabot.web.model.Authority
 import javabot.web.model.User
 import javabot.web.views.ViewFactory
+import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.Consumes
@@ -29,6 +30,7 @@ import javax.ws.rs.core.MediaType
 import org.bson.types.ObjectId
 
 @Path("/admin")
+@ApplicationScoped
 class AdminResource
 @Inject
 constructor(
