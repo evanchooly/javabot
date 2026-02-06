@@ -1,5 +1,19 @@
 package javabot.web.views
 
+import jakarta.servlet.AsyncContext
+import jakarta.servlet.DispatcherType
+import jakarta.servlet.RequestDispatcher
+import jakarta.servlet.ServletContext
+import jakarta.servlet.ServletException
+import jakarta.servlet.ServletInputStream
+import jakarta.servlet.ServletRequest
+import jakarta.servlet.ServletResponse
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpSession
+import jakarta.servlet.http.HttpUpgradeHandler
+import jakarta.servlet.http.Part
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.UnsupportedEncodingException
@@ -12,20 +26,6 @@ import javabot.web.JavabotConfiguration
 import javabot.web.model.Authority
 import javabot.web.model.InMemoryUserCache
 import javabot.web.model.User
-import javax.servlet.AsyncContext
-import javax.servlet.DispatcherType
-import javax.servlet.RequestDispatcher
-import javax.servlet.ServletContext
-import javax.servlet.ServletException
-import javax.servlet.ServletInputStream
-import javax.servlet.ServletRequest
-import javax.servlet.ServletResponse
-import javax.servlet.http.Cookie
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-import javax.servlet.http.HttpSession
-import javax.servlet.http.HttpUpgradeHandler
-import javax.servlet.http.Part
 import org.brickred.socialauth.util.AccessGrant
 
 class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
@@ -156,9 +156,16 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
         return false
     }
 
-    @Deprecated("")
-    override fun isRequestedSessionIdFromUrl(): Boolean {
-        return false
+    override fun getRequestId(): String {
+        return ""
+    }
+
+    override fun getProtocolRequestId(): String {
+        return ""
+    }
+
+    override fun getServletConnection(): jakarta.servlet.ServletConnection {
+        TODO("Not yet implemented")
     }
 
     @Throws(IOException::class, ServletException::class)
@@ -277,11 +284,6 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
     }
 
     override fun getRequestDispatcher(path: String): RequestDispatcher? {
-        return null
-    }
-
-    @Deprecated("")
-    override fun getRealPath(path: String): String? {
         return null
     }
 
