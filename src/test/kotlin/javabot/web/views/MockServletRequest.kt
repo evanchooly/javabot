@@ -157,15 +157,15 @@ class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
     }
 
     override fun getRequestId(): String {
-        return ""
+        return "mock-request-id"
     }
 
     override fun getProtocolRequestId(): String {
-        return ""
+        return "mock-protocol-request-id"
     }
 
-    override fun getServletConnection(): jakarta.servlet.ServletConnection {
-        TODO("Not yet implemented")
+    override fun getServletConnection(): jakarta.servlet.ServletConnection? {
+        return null
     }
 
     @Throws(IOException::class, ServletException::class)
