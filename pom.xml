@@ -507,7 +507,7 @@
         <jaxb.version>2.3.1</jaxb.version>
         <jsoup.version>1.22.1</jsoup.version>
         <kotlin.version>2.3.10</kotlin.version>
-        <logback.version>1.5.29</logback.version>
+        <logback.version>1.5.32</logback.version>
         <morphia.version>2.5.2</morphia.version>
         <okhttp.version>4.12.0</okhttp.version>
         <slf4j.version>2.0.17</slf4j.version>
