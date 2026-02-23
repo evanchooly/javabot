@@ -408,7 +408,7 @@
         <dependency>
             <groupId>net.thauvin.erik</groupId>
             <artifactId>bitly-shorten</artifactId>
-            <version>1.0.1</version>
+            <version>2.0.0</version>
         </dependency>
 
         <dependency>
