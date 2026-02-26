@@ -1,6 +1,5 @@
 package javabot.web.resources
 
-import io.dropwizard.views.View
 import java.util.Random
 import javabot.web.views.ErrorView
 
@@ -10,15 +9,15 @@ class PublicErrorResource {
         private val IMAGE_404 = arrayOf("404_1.gif", "404_2.gif", "404_3.gif", "404_4.gif")
         private val IMAGE_500 = arrayOf("500.gif")
 
-        fun view403(): View {
+        fun view403(): ErrorView {
             return ErrorView("/error/403.ftl", getRandomImage(IMAGE_403))
         }
 
-        fun view404(): View {
+        fun view404(): ErrorView {
             return ErrorView("/error/404.ftl", getRandomImage(IMAGE_404))
         }
 
-        fun view500(): View {
+        fun view500(): ErrorView {
             return ErrorView("/error/500.ftl", getRandomImage(IMAGE_500))
         }
 
