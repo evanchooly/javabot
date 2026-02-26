@@ -1,0 +1,16 @@
+<form action="/changes" method="GET">
+    <tr>
+        <th>Message</th>
+        <th class="right">Updated</th>
+    </tr>
+    <tr>
+        <td><input type="text" name="message" value="{message ?: ''}"></td>
+        <td class="right"><input type="submit" class="submit" name="Submit"></td>
+    </tr>
+{#for change in pageItems}
+    <tr>
+        <td>{change.message}</td>
+        <td class="right">{change.changeDate.format()}</td>
+    </tr>
+{/for}
+</form>
