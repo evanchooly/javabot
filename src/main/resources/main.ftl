@@ -30,12 +30,12 @@
                     </ul>
                 </div>
             </div>
-            <#if !loggedIn()>
+            <#if !loggedIn>
                 <div>
                     <h3><a href="/auth/login">Login</a></h3>
                 </div>
             </#if>
-            <#if isAdmin()>
+            <#if isAdmin>
             <div>
                 <h3>Admin</h3>
                 <ul>
@@ -50,7 +50,7 @@
                 <table>
                     <tr>
                         <td>Channels</td>
-                    <#if isAdmin()>
+                    <#if isAdmin>
                         <td>
                             <a id="newChannel" href="/admin/newChannel">+</a>
                         </td>
@@ -61,11 +61,11 @@
 
             <div class="boxWrapper">
                 <table class="plain">
-                <#list getChannels() as channel>
+                <#list channels as channel>
                     <tr>
                         <td>
-                            <a id="${channel.name}" href="/logs/${encode(channel.name)}/today"
-                                <#if channel.name == getCurrentChannel()>
+                            <a id="${channel.name}" href="/logs/${channel.name?url}/today"
+                                <#if channel.name == currentChannel>
                                     class='current'
                                 </#if>
                             >${channel.name}</a>
@@ -79,7 +79,7 @@
 
             <div class="boxWrapper">
                 <table class="plain">
-                <#list getAPIs() as api>
+                <#list apis as api>
                     <tr>
                         <td>
                             <a href="/javadoc/${api.name}/${api.version}/index.html" target="${api.name}">${api.name}</a>
@@ -107,7 +107,11 @@
         </div>
         <div id="content">
             <div class='featurebox_center'>
-            <#include getChildView() >
+            <#if pagedView??>
+                <#include pagedView >
+            <#elseif childView??>
+                <#include childView >
+            </#if>
             </div>
         </div>
 
