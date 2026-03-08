@@ -1,0 +1,113 @@
+<div class="alert alert-error">
+{#if hasErrors}
+    <div class="errors">
+        {#for error in errors}
+            <br/>{error}
+        {/for}
+    </div>
+{/if}
+</div>
+
+<form action="/admin/saveConfig" method="POST">
+    <table class="form">
+        <tr>
+            <td class="top">{sofia.configWebUrl()}</td>
+            <td class="top right">
+                <input type="text" id="url" name="url" value="{configuration.url ?: ''}"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="right">
+            {sofia.configIrcServer()}
+            </td>
+            <td class="right">
+                <input type="text" id="server" name="server" value="{configuration.server ?: ''}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            {sofia.configIrcPort()}
+            </td>
+            <td class="right">
+                <input type="text" id="port" name="port" value="{configuration.port ?: ''}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            {sofia.configIrcHistory()}
+            </td>
+            <td class="right">
+                <input type="text" id="historyLength" name="historyLength"
+                       value="{configuration.historyLength ?: ''}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            {sofia.configIrcTrigger()}
+            </td>
+            <td class="right">
+                <input type="text" id="trigger" name="trigger" value="{configuration.trigger ?: ''}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            {sofia.configIrcNick()}
+            </td>
+            <td class="right">
+                <input type="text" id="nick" name="nick" value="{configuration.nick ?: ''}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            {sofia.configIrcPassword()}
+            </td>
+            <td class="right">
+                <input type="password" id="password" name="password" value="{configuration.password ?: ''}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            {sofia.configThrottleThreshold()}
+            </td>
+            <td class="right">
+                <input type="text" id="throttleThreshold" name="throttleThreshold"
+                       value="{configuration.throttleThreshold ?: ''}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            {sofia.configMinimumNickservAge()}
+            </td>
+            <td class="right">
+                <input type="text" id="minimumNickServAge" name="minimumNickServAge"
+                       value="{configuration.minimumNickServAge ?: ''}"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="right form-submit" colspan="2">
+                <input type="submit" value="Save"/>
+            </td>
+        </tr>
+    </table>
+</form>
+
+<h2>Operations:</h2>
+<div class="columns">
+    <table class="form operations">
+    {#for operation in operations}
+        <tr>
+            <td class="top">{operation}</td>
+            <td class="top button">
+                <a id="enable{operation.name}" title="Enable" {#if operation.enabled}class="inactive"{#else}class="active"{/if}
+                href="/admin/enableOperation/{operation.name}">
+                <img src="/assets/images/boomy/add24.png" alt="Enable"></a>
+            </td>
+            <td class="top right button">
+                <a id="disable{operation.name}" title="Disable" {#if operation.enabled}class="active"{#else}class="inactive"{/if}
+                href="/admin/disableOperation/{operation.name}">
+                <img src="/assets/images/boomy/delete24.png" alt="Disable"></a>
+            </td>
+        </tr>
+    {/for}
+    </table>
+</div>

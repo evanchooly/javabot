@@ -1,12 +1,9 @@
 package javabot.web.views
 
-import freemarker.template.Configuration.*
-import io.dropwizard.views.freemarker.FreemarkerViewRenderer
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.time.LocalDateTime
-import java.util.Locale
 import javabot.dao.FactoidDao
 import javabot.model.Factoid
 import javax.inject.Inject
@@ -54,34 +51,32 @@ class FactoidsViewTest : ViewsTest() {
     }
 
     fun twoFactoidPages() {
-        val itemCount = (PagedView.ITEMS_PER_PAGE * 1.5).toInt()
+        val itemCount = (TemplateService.ITEMS_PER_PAGE * 1.5).toInt()
         createFactoids(itemCount)
 
         var source = render(0, Factoid())
         previousDisabled(source)
         nextEnabled(source)
-        checkRange(source, 1, PagedView.ITEMS_PER_PAGE, itemCount)
+        checkRange(source, 1, TemplateService.ITEMS_PER_PAGE, itemCount)
 
         source = render(2, Factoid())
         previousEnabled(source)
         nextDisabled(source)
-        checkRange(source, PagedView.ITEMS_PER_PAGE + 1, itemCount, itemCount)
+        checkRange(source, TemplateService.ITEMS_PER_PAGE + 1, itemCount, itemCount)
 
         source = render(3, Factoid())
         previousEnabled(source)
         nextDisabled(source)
-        checkRange(source, PagedView.ITEMS_PER_PAGE + 1, itemCount, itemCount)
+        checkRange(source, TemplateService.ITEMS_PER_PAGE + 1, itemCount, itemCount)
     }
 
     @Throws(IOException::class)
     private fun render(page: Int, filter: Factoid): Source {
-        val renderer = FreemarkerViewRenderer(VERSION_2_3_32)
         val output = ByteArrayOutputStream()
-        renderer.render(
-            viewFactory.createFactoidsView(MockServletRequest(false), page, filter),
-            Locale.getDefault(),
-            output,
-        )
+        val templateInstance =
+            templateService.createFactoidsView(MockServletRequest(false), page, filter)
+        val html = templateInstance.render()
+        output.write(html.toByteArray())
         return Source(ByteArrayInputStream(output.toByteArray()))
     }
 
