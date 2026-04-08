@@ -1,0 +1,48 @@
+<form action="/admin/add" method="POST">
+    <table class="form">
+        <tr class="topRow">
+            <td><label for="irc">{sofia.ircName()}</label></td>
+            <td class="right"><input type="text" id="irc" name="ircName" value="{editing.ircName ?: ''}"></td>
+        </tr>
+        <tr class="topRow">
+            <td><label for="host">{sofia.hostName()}</label></td>
+            <td class="right"><input type="text" id="host" name="hostName" value="{editing.hostName ?: ''}"></td>
+        </tr>
+        <tr>
+            <td><label for="userName">{sofia.email()}</label></td>
+            <td class="right"><input type="text" id="userName" name="emailAddress" value="{editing.emailAddress ?: ''}"></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="form-submit right">
+                <input type="submit" value="{sofia.submit()}">
+            </td>
+        </tr>
+    </table>
+</form>
+<table>
+    <tr>
+        <th class="top">{sofia.ircName()}</th>
+        <th class="top">{sofia.hostName()}</th>
+        <th class="top">{sofia.email()}</th>
+        <th class="top">{sofia.addedBy()}</th>
+        <th class="top">{sofia.addedOn()}</th>
+        <th class="top right">{sofia.action()}</th>
+    </tr>
+    {#for admin in admins}
+        <tr id="admin{admin_index}">
+            <td>{admin.ircName ?: ''}</td>
+            <td>{admin.hostName ?: ''}</td>
+            <td>{admin.emailAddress ?: ''}</td>
+            <td>{admin.addedBy ?: ''}</td>
+            <td class="right">{admin.updated.format()}</td>
+            <td class="right top">
+                <br>{#if current.botOwner}
+                    <a href="/admin/edit/{admin.id}"> <img src="/assets/images/boomy/edit.png" alt="Edit"/></a>
+                {/if}
+                {#if !admin.botOwner}
+                    <a href="/admin/delete/{admin.id}"> <img src="/assets/images/boomy/delete24.png" alt="Delete"/></a>
+                {/if}
+            </td>
+        </tr>
+    {/for}
+</table>
