@@ -26,4 +26,8 @@ constructor(
     fun apis(): List<JavadocApi> {
         return apiDao.findAll()
     }
+
+    override fun toModel(): Map<String, Any?> {
+        return super.toModel() + mapOf("apis" to apis())
+    }
 }
