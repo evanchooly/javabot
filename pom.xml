@@ -508,7 +508,7 @@
         <jsoup.version>1.22.2</jsoup.version>
         <kotlin.version>2.3.21</kotlin.version>
         <logback.version>1.5.32</logback.version>
-        <morphia.version>2.5.2</morphia.version>
+        <morphia.version>2.5.3</morphia.version>
         <okhttp.version>4.12.0</okhttp.version>
         <slf4j.version>2.0.18</slf4j.version>
         <sofia.version>0.25</sofia.version>
