@@ -6,6 +6,6 @@ class JavadocAdminViewTest : ViewsTest() {
 
     @Test(enabled = false)
     fun render() {
-        render(viewFactory.createJavadocAdminView(MockServletRequest(false)))
+        render(templateService.createJavadocAdminView(MockServletRequest(false)))
     }
 }
