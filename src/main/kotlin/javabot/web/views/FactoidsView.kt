@@ -71,6 +71,10 @@ constructor(
         return "/factoids.ftl"
     }
 
+    override fun toModel(): Map<String, Any?> {
+        return super.toModel() + mapOf("filter" to getFilter())
+    }
+
     companion object {
         private val LOG = LoggerFactory.getLogger(FactoidsView::class.java)
     }
