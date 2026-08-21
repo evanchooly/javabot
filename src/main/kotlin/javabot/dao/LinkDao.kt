@@ -8,13 +8,13 @@ import dev.morphia.query.FindOptions
 import dev.morphia.query.MorphiaCursor
 import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.regex
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
 import javabot.dao.util.QueryParam
 import javabot.model.Link
 import javabot.model.Persistent
-import javax.inject.Inject
 
 class LinkDao
 @Inject

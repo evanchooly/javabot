@@ -1,5 +1,6 @@
 package javabot.javadoc
 
+import jakarta.inject.Inject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.Writer
@@ -12,7 +13,6 @@ import javabot.javadoc.JavadocType.Companion.discover
 import javabot.javadoc.JavadocType.Companion.forVersion
 import javabot.model.download
 import javabot.model.javadoc.JavadocApi
-import javax.inject.Inject
 import org.bson.types.ObjectId
 import org.objectweb.asm.ClassReader
 import org.slf4j.LoggerFactory

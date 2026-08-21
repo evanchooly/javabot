@@ -4,6 +4,7 @@ import com.google.inject.Injector
 import com.google.inject.Singleton
 import com.mongodb.client.model.IndexOptions
 import dev.morphia.Datastore
+import jakarta.inject.Inject
 import java.lang.reflect.Modifier
 import java.util.ArrayList
 import java.util.concurrent.TimeUnit
@@ -12,7 +13,6 @@ import javabot.JavabotConfig
 import javabot.model.Config
 import javabot.model.Logs
 import javabot.operations.BotOperation
-import javax.inject.Inject
 import org.bson.Document
 import org.reflections.Reflections
 import org.slf4j.LoggerFactory

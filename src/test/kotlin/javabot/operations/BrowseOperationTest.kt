@@ -1,8 +1,8 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import javabot.BaseTest
-import javax.inject.Inject
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import org.testng.annotations.Test

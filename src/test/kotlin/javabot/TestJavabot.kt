@@ -2,6 +2,7 @@ package javabot
 
 import com.google.inject.Injector
 import com.google.inject.Singleton
+import jakarta.inject.Inject
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
@@ -10,9 +11,6 @@ import javabot.dao.LogsDao
 import javabot.dao.ShunDao
 import javabot.model.JavabotUser
 import javabot.operations.throttle.Throttler
-import javabot.web.JavabotApplication
-import javax.inject.Inject
-import javax.inject.Provider
 
 @Singleton
 class TestJavabot
@@ -28,7 +26,6 @@ constructor(
     throttler: Throttler,
     adapter: IrcAdapter,
     javabotConfig: JavabotConfig,
-    application: Provider<JavabotApplication>,
 ) :
     Javabot(
         injector,
@@ -41,7 +38,6 @@ constructor(
         adapter,
         adminDao,
         javabotConfig,
-        application,
     ) {
 
     override val nick: String = BaseTest.TEST_BOT_NICK
