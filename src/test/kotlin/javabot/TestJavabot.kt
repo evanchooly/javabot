@@ -1,8 +1,8 @@
 package javabot
 
 import com.google.inject.Injector
-import com.google.inject.Singleton
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao

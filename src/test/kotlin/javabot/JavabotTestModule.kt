@@ -1,10 +1,10 @@
 package javabot
 
 import com.google.inject.Provides
-import com.google.inject.Singleton
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
 import jakarta.inject.Provider
+import jakarta.inject.Singleton
 import java.io.File
 import java.io.FileInputStream
 import java.util.Properties

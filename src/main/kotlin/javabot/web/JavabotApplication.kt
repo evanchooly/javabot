@@ -1,10 +1,10 @@
 package javabot.web
 
-import com.google.inject.Inject
 import com.google.inject.Injector
 import io.quarkus.runtime.StartupEvent
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.event.Observes
+import jakarta.inject.Inject
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.ws.rs.container.ContainerRequestContext

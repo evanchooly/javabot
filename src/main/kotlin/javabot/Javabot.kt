@@ -2,9 +2,9 @@ package javabot
 
 import com.antwerkz.sofia.Sofia
 import com.google.inject.Injector
-import com.google.inject.Singleton
 import io.quarkus.runtime.Quarkus
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.io.File
 import java.time.LocalDateTime
 import java.util.ArrayList

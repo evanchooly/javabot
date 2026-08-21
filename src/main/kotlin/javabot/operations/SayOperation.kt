@@ -1,6 +1,6 @@
 package javabot.operations
 
-import com.google.inject.Inject
+import jakarta.inject.Inject
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao

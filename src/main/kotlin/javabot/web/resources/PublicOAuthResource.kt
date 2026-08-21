@@ -42,14 +42,16 @@ class PublicOAuthResource @Inject constructor(private val injector: Injector) {
     @ConfigProperty(name = "javabot.oauth.success.url", defaultValue = "/")
     lateinit var oauthSuccessUrl: String
 
-    @ConfigProperty(name = "javabot.oauth.config", defaultValue = "")
-    var oauthConfigPath: String? = null
+    // Optional<String> rather than a nullable String: MicroProfile Config treats an unset
+    // property on a plain String field as required even with an empty defaultValue.
+    @ConfigProperty(name = "javabot.oauth.config")
+    lateinit var oauthConfigPath: java.util.Optional<String>
 
     @GET
     @Path("/login")
     @Throws(URISyntaxException::class)
     fun requestOAuth(@Context request: HttpServletRequest): Response {
-        if (oauthConfigPath != null && oauthConfigPath!!.isNotEmpty()) {
+        if (oauthConfigPath.isPresent && oauthConfigPath.get().isNotEmpty()) {
             try {
                 val manager = getSocialAuthManager()
 
@@ -123,15 +125,16 @@ class PublicOAuthResource @Inject constructor(private val injector: Injector) {
         val config = SocialAuthConfig.getDefault()
         try {
             // Load OAuth configuration from file if path is provided
-            if (oauthConfigPath != null && oauthConfigPath!!.isNotEmpty()) {
-                val configFile = java.io.File(oauthConfigPath!!)
+            if (oauthConfigPath.isPresent && oauthConfigPath.get().isNotEmpty()) {
+                val path = oauthConfigPath.get()
+                val configFile = java.io.File(path)
                 if (configFile.exists()) {
                     val props = java.util.Properties()
                     configFile.inputStream().use { props.load(it) }
                     config.load(props)
-                    log.info("Loaded OAuth configuration from {}", oauthConfigPath)
+                    log.info("Loaded OAuth configuration from {}", path)
                 } else {
-                    log.warn("OAuth config file not found: {}", oauthConfigPath)
+                    log.warn("OAuth config file not found: {}", path)
                 }
             }
             val manager = SocialAuthManager()

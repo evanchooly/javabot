@@ -1,9 +1,9 @@
 package javabot
 
 import com.google.inject.Guice
-import com.google.inject.Inject
 import com.google.inject.Injector
 import com.jayway.awaitility.Awaitility
+import jakarta.inject.Inject
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao

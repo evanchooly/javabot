@@ -1,8 +1,8 @@
 package javabot.mocks
 
-import com.google.inject.Inject
-import com.google.inject.Singleton
+import jakarta.inject.Inject
 import jakarta.inject.Provider
+import jakarta.inject.Singleton
 import javabot.Javabot
 import javabot.Messages
 import javabot.OfflineAdapter

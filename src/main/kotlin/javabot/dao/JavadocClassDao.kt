@@ -1,10 +1,10 @@
 package javabot.dao
 
-import com.google.inject.Inject
 import dev.morphia.Datastore
 import dev.morphia.query.QueryException
 import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.or
+import jakarta.inject.Inject
 import java.util.Locale
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass

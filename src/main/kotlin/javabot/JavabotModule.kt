@@ -10,7 +10,7 @@ import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
 import dev.morphia.Datastore
 import dev.morphia.Morphia
-import dev.morphia.config.MorphiaConfig
+import dev.morphia.config.ManualMorphiaConfig
 import jakarta.inject.Singleton
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
@@ -51,7 +51,13 @@ open class JavabotModule : AbstractModule() {
         val datastore =
             Morphia.createDatastore(
                 client(),
-                MorphiaConfig.load()
+                // MorphiaConfig.load() would try to detect a META-INF/morphia-config.properties
+                // file on the classpath (there isn't one) via smallrye-config's
+                // PropertiesConfigSourceProvider, which Quarkus's own smallrye-config version
+                // doesn't ship (removed after 3.10.1). Build the config directly instead --
+                // behaviorally identical, since load() would fall back to this same
+                // ManualMorphiaConfig() when no config file is found anyway.
+                ManualMorphiaConfig()
                     .database(databaseName)
                     .enablePolymorphicQueries(true)
                     .autoImportModels(true)

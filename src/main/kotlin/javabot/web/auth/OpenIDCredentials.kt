@@ -12,8 +12,7 @@ import javabot.web.model.Authority
 class OpenIDCredentials
 /**
  * @param sessionToken The session token acting as a surrogate for the OpenID token *
- * @param requiredAuthorities The authorities required to authenticate (provided by the [Restricted]
- *   annotation)
+ * @param requiredAuthorities The authorities required to authenticate
  */
 (sessionToken: UUID, requiredAuthorities: Set<Authority>) {
 

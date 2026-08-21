@@ -4,8 +4,8 @@ import com.enigmastation.kgpt.GPT
 import com.enigmastation.kgpt.model.BaseGPTResponse
 import com.enigmastation.kgpt.model.GPTMessage
 import com.google.common.cache.CacheBuilder
-import com.google.inject.Inject
-import com.google.inject.Singleton
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 import javabot.JavabotConfig
