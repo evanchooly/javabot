@@ -118,6 +118,48 @@ Maven build, ~178 Kotlin source files / 66 test files.
     library, decide the `dropwizard.version` dependency's fate, and revisit
     `jacoco`/test wiring if Quarkus's test story differs.
 
+## IRC event handling
+- [ ] `IrcAdapter.kt` event handling is inconsistent and swallows failures:
+      `onMessage`/`onPrivateMessage` (lines 51-90) offload to `bot.executors`
+      (a bounded `ThreadPoolExecutor`, queue capacity 50, default
+      `AbortPolicy`), but every other handler — `onJoin`, `onPart`, `onQuit`,
+      `onKick`, `onAction`, `onNickChange`, `onNotice` — runs synchronously on
+      PircBotX's listener-manager thread doing DB writes inline, so a slow
+      write there stalls IRC dispatch for the whole bot. `executors.execute`
+      has no try/catch, so a full queue throws `RejectedExecutionException`
+      straight back into PircBotX's dispatch thread, unlogged; exceptions
+      inside `processMessage` itself (as opposed to individual operation
+      dispatch in `Javabot.getResponses`, which is caught and logged) aren't
+      caught either and just die silently on the executor thread.
+      `isChannel` (lines 216-225) also catches `Throwable` and does
+      `e.printStackTrace()` instead of using `LOG` like the rest of the
+      class. Route all handlers through the executor uniformly (or make
+      synchronous handling deliberate and documented), wrap handler bodies
+      in try/catch with `LOG.error`, and replace the stray
+      `printStackTrace()`. The `onNotice` NickServ parser (lines 143-158)
+      is also hand-rolled state accumulated into a shared `ArrayList`
+      keyed off literal string matches (`"*** End of Info ***"`,
+      `"Information on "`) — worth extracting into a small, separately
+      tested parser.
+- [ ] The abstraction meant to isolate javabot from PircBotX was never
+      finished: `IrcAdapter` already uses `org.pircbotx.*` types directly
+      throughout (it's essentially the only place besides `OfflineAdapter.kt`
+      and `JavabotModule.kt` that imports them), so the isolation stalled at
+      an inheritance seam rather than a real interface — `OfflineAdapter`
+      subclasses `IrcAdapter` purely to override `action`/`joinChannel`/
+      `leave`/`isOnCommonChannel`/etc. for offline/test mode, which buys
+      nothing today since `IrcAdapter` still hard-depends on
+      `Provider<PircBotX>` regardless. Finish removing it instead of
+      completing it: fold `OfflineAdapter`'s behavior into `IrcAdapter` behind
+      a config flag, drop `open` from the class and its members, simplify
+      `JavabotModule.kt`'s `Provider<out IrcAdapter>`/`getBotListener()`
+      indirection to bind `IrcAdapter` concretely, and update the IRC mocks
+      under `src/test/kotlin/javabot/mocks/` to stub PircBotX types directly
+      rather than the subclassing seam. Keep the `toJavabot()`/`toIrcUser()`/
+      `toIrcChannel()` conversion helpers at the bottom of `IrcAdapter.kt` —
+      that model-conversion layer works and is unrelated to the seam being
+      removed.
+
 ## Code
 - [ ] Unhandled `TODO()` calls that will throw `NotImplementedError` at
       runtime if hit: `JavadocClassVisitor.kt:132` (`JAVA6 -> TODO()`) and
