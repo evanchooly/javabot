@@ -53,8 +53,6 @@ class ApiDao @Inject constructor(ds: Datastore) : BaseDao<JavadocApi>(ds, Javado
     }
 
     override fun findAll(): List<JavadocApi> {
-        return ds.find(JavadocApi::class.java)
-            .iterator(FindOptions().sort(Sort.ascending("name")))
-            .toList()
+        return ds.find(JavadocApi::class.java, FindOptions().sort(Sort.ascending("name"))).toList()
     }
 }

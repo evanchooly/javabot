@@ -14,9 +14,7 @@ import javax.inject.Inject
 class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) :
     BaseDao<Admin>(ds, Admin::class.java) {
     override fun findAll(): List<Admin> {
-        return ds.find(Admin::class.java)
-            .iterator(FindOptions().sort(Sort.ascending("ircName")))
-            .toList()
+        return ds.find(Admin::class.java, FindOptions().sort(Sort.ascending("ircName"))).toList()
     }
 
     fun isAdmin(user: JavabotUser): Boolean = findAll().isEmpty() || getAdmin(user) != null

@@ -141,8 +141,7 @@ constructor(
         }
         val header = doc.select("meta[property=\"og:title\"]")
         return if (header.isNotEmpty()) {
-            val body: Elements =
-                doc.select(".permalink-tweet-container .js-tweet-text-container") ?: Elements()
+            val body: Elements = doc.select(".permalink-tweet-container .js-tweet-text-container")
             if (body.isNotEmpty()) {
                 body.forEach { fixTwitterLinks(it) }
                 String.format("%s: \"%s\"", header.first()?.attr("content"), body.first()?.text())

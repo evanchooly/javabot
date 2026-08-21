@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/evanchooly/javabot.svg?branch=master)](https://travis-ci.org/evanchooly/javabot)
-
 javabot
 =======
 
@@ -43,7 +41,7 @@ To build and test Javabot, you'll need to do a few things.
    ```
    docker-compose -f docker-compose-test.yml up
    ```
-1. You will need to download the JavaDoc *manually* thanks to licensing issues with Java. To do this, go to the [Java download page](https://www.oracle.com/java/technologies/javase-downloads.html) and navigate to the Java version of your choice; you'll see a "JDK Download" and a "Documentation Download" link. Download the documentation, accepting licenses as appropriate; this will give you a file named, for example, `jdk-11.0.10_doc-all.zip` if that's the version you chose. Copy that file to the `javabot` directory, under the name `jdk-javadoc.jar` - which is actually set in the `javabot.properties` file, under the key `javadoc.jdk.file`.
+1. You will need to download the JavaDoc *manually* thanks to licensing issues with Java. To do this, go to the [Java 17 download page](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) and find the "Documentation Download" link. Downloading requires clicking through Oracle's license agreement (accept the terms shown on the page) before the download link becomes active. This will give you a file named `jdk-17.0.x_doc-all.zip`. Copy that file to the `javabot` directory, under the name `jdk-javadoc.jar` - which is actually set in the `javabot.properties` file, under the key `javadoc.jdk.file`.
 1. Build and test.
 
 Developing

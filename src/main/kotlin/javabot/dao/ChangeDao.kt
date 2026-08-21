@@ -64,7 +64,7 @@ class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change:
     ): Query<Change> {
         val query = ds.find(Change::class.java, options)
         if (message != null) {
-            query.filter(regex("message").pattern(message))
+            query.filter(regex("message", message))
         }
         if (date != null) {
             query.filter(eq("changeDate", date))

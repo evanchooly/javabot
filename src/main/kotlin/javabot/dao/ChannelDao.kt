@@ -66,9 +66,8 @@ class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Chann
 
     fun loggedChannels(): List<String> {
         val channels =
-            ds.find(Channel::class.java)
+            ds.find(Channel::class.java, FindOptions().projection().include("name"))
                 .filter(eq("logged", true))
-                .iterator(FindOptions().projection().include("name"))
                 .toList()
         val names = ArrayList<String>()
         for (channel in channels) {

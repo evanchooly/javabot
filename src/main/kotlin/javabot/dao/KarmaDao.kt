@@ -21,7 +21,7 @@ constructor(ds: Datastore, var changeDao: ChangeDao, var channelDao: ChannelDao)
         if (qp.hasSort()) {
             options.sort(qp.toSort())
         }
-        return ds.find(Karma::class.java).iterator(options).toList()
+        return ds.find(Karma::class.java, options).toList()
     }
 
     fun save(karma: Karma) {

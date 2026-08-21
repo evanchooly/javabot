@@ -36,12 +36,12 @@ class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channel
 
     fun getSeen(channel: String, nick: String): Seen? {
         val first =
-            ds.find(Logs::class.java)
+            ds.find(Logs::class.java, FindOptions().sort(Sort.descending("updated")))
                 .filter(
                     eq("upperNick", nick.uppercase(Locale.getDefault())),
                     eq("channel", channel),
                 )
-                .first(FindOptions().sort(Sort.descending("updated")))
+                .first()
 
         return first?.let { Seen(it.channel!!, it.message, it.nick, it.updated) }
     }
@@ -53,13 +53,12 @@ class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channel
             val tomorrow = start.plusDays(1)
             val nextMidnight = tomorrow.atStartOfDay()
             val lastMidnight = start.atStartOfDay()
-            ds.find<Logs>(Logs::class.java)
+            ds.find(Logs::class.java, FindOptions().sort(Sort.ascending("updated")))
                 .filter(
                     eq("channel", channelName),
                     lte("updated", nextMidnight),
                     gte("updated", lastMidnight),
                 )
-                .iterator(FindOptions().sort(Sort.ascending("updated")))
                 .toList()
         }
 

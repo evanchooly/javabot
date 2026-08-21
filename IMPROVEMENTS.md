@@ -4,7 +4,7 @@ Findings from a repo-wide review (2026-08-20). Kotlin/Dropwizard/Morphia IRC bot
 Maven build, ~178 Kotlin source files / 66 test files.
 
 ## Repository hygiene
-- [ ] Untracked working-tree clutter should be committed, gitignored, or removed:
+- [x] Untracked working-tree clutter should be committed, gitignored, or removed:
       `mvn.out` (build log), `pom.xml.exclusions` (looks like a stale backup pom —
       older parent v34 vs current v69, javax vs jakarta swapped), `quarkus/` and
       `.quarkus/` (appear to be unrelated Quarkus scaffolding, not part of this
@@ -18,7 +18,7 @@ Maven build, ~178 Kotlin source files / 66 test files.
       ~27MB total) fetched manually per the README; confirm these are meant to
       stay out of git (they're gitignored) but consider scripting the download
       instead of manual copy-paste steps.
-- [ ] README still references Travis CI badge/build (`travis-ci.org`), but CI
+- [x] README still references Travis CI badge/build (`travis-ci.org`), but CI
       has moved to GitHub Actions (`.github/workflows/*`) — badge is stale/dead.
 - [ ] README build/setup instructions are manual and multi-step (install mongo,
       manually download JDK javadoc zip, copy sample properties) — a setup
@@ -53,13 +53,16 @@ Maven build, ~178 Kotlin source files / 66 test files.
       or pin to a known-good commit with source in-repo.
 
 ## Build / project structure
-- [ ] `pom.xml` disables the `default-compile`/`default-testCompile` Maven
+- [x] `pom.xml` disables the `default-compile`/`default-testCompile` Maven
       lifecycle bindings in favor of custom `java-compile`/`java-test-compile`
       IDs bound to the same phases — but there is no `src/main/java`, this is
       a pure-Kotlin project (`src/main/kotlin`, `src/test/kotlin`). Worth
       double-checking whether this compiler-plugin config is legacy cruft
-      left over from a Java→Kotlin migration.
-- [ ] `pom.xml.exclusions` (untracked) suggests an in-progress or abandoned
+      left over from a Java→Kotlin migration. Removing it dropped the
+      project to the parent's default `kotlin.compiler.jvmTarget` (11) since
+      there's no `src/main/java` for a Java-side `<release>` to matter —
+      fixed by setting `kotlin.compiler.jvmTarget` to 17 explicitly.
+- [x] `pom.xml.exclusions` (untracked) suggests an in-progress or abandoned
       experiment reverting `javax.xml.bind`/`javax.activation` back from
       `jakarta.*`, and downgrading kotlin/morphia/jackson versions — if this
       was a deliberate rollback branch, it should be a git branch, not a
