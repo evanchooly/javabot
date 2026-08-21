@@ -1,10 +1,10 @@
 package javabot.dao
 
-import com.google.inject.Inject
 import dev.morphia.Datastore
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
 import dev.morphia.query.filters.Filters.eq
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.util.ArrayList
 import java.util.Locale

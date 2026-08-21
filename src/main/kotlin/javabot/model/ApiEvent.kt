@@ -3,6 +3,7 @@ package javabot.model
 import dev.morphia.annotations.Entity
 import dev.morphia.annotations.Reference
 import dev.morphia.annotations.Transient
+import jakarta.inject.Inject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -20,7 +21,6 @@ import javabot.javadoc.JavadocAsmParser
 import javabot.model.EventType.DELETE
 import javabot.model.EventType.RELOAD
 import javabot.model.javadoc.JavadocApi
-import javax.inject.Inject
 import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
 

@@ -2,7 +2,7 @@ package javabot.dao.weather
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.inject.Inject
+import jakarta.inject.Inject
 import java.util.Arrays
 import java.util.Locale
 import javabot.JavabotConfig

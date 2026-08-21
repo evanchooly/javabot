@@ -5,19 +5,17 @@ import com.google.common.base.CharMatcher
 import com.google.inject.AbstractModule
 import com.google.inject.Provider
 import com.google.inject.Provides
-import com.google.inject.assistedinject.FactoryModuleBuilder
 import com.mongodb.MongoClientSettings
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
 import dev.morphia.Datastore
 import dev.morphia.Morphia
-import dev.morphia.config.MorphiaConfig
+import dev.morphia.config.ManualMorphiaConfig
+import jakarta.inject.Singleton
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
 import javabot.model.Factoid
 import javabot.model.javadoc.JavadocClass
-import javabot.web.views.ViewFactory
-import javax.inject.Singleton
 import javax.net.ssl.SSLSocketFactory
 import net.thauvin.erik.bitly.Bitly
 import org.aeonbits.owner.Config.Key
@@ -40,7 +38,6 @@ open class JavabotModule : AbstractModule() {
         configDaoProvider = binder().getProvider(ConfigDao::class.java)
         channelDaoProvider = binder().getProvider(ChannelDao::class.java)
         ircAdapterProvider = binder().getProvider(IrcAdapter::class.java)
-        install(FactoryModuleBuilder().build(ViewFactory::class.java))
     }
 
     open fun client(): MongoClient {
@@ -54,7 +51,13 @@ open class JavabotModule : AbstractModule() {
         val datastore =
             Morphia.createDatastore(
                 client(),
-                MorphiaConfig.load()
+                // MorphiaConfig.load() would try to detect a META-INF/morphia-config.properties
+                // file on the classpath (there isn't one) via smallrye-config's
+                // PropertiesConfigSourceProvider, which Quarkus's own smallrye-config version
+                // doesn't ship (removed after 3.10.1). Build the config directly instead --
+                // behaviorally identical, since load() would fall back to this same
+                // ManualMorphiaConfig() when no config file is found anyway.
+                ManualMorphiaConfig()
                     .database(databaseName)
                     .enablePolymorphicQueries(true)
                     .autoImportModels(true)

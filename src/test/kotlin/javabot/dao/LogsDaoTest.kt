@@ -3,6 +3,7 @@ package javabot.dao
 import com.antwerkz.sofia.Sofia
 import dev.morphia.Datastore
 import dev.morphia.query.filters.Filters
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import javabot.BaseTest
 import javabot.model.Channel
@@ -10,7 +11,6 @@ import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.Logs.Type
 import javabot.model.Logs.Type.PART
-import javax.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.Test
 

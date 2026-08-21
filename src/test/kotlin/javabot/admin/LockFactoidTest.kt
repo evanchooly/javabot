@@ -1,6 +1,7 @@
 package javabot.admin
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.Message
 import javabot.dao.FactoidDao
@@ -8,7 +9,6 @@ import javabot.dao.LogsDaoTest
 import javabot.dao.NickServDao
 import javabot.operations.ForgetFactoidOperation
 import javabot.registerIrcUser
-import javax.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test

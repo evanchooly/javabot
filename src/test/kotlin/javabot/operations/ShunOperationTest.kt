@@ -1,9 +1,9 @@
 package javabot.operations
 
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.dao.FactoidDao
 import javabot.dao.LogsDaoTest
-import javax.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.Test
 

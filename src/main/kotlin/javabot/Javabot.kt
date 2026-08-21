@@ -1,10 +1,10 @@
 package javabot
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Guice
 import com.google.inject.Injector
-import com.google.inject.Singleton
-import com.jayway.awaitility.Awaitility
+import io.quarkus.runtime.Quarkus
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.io.File
 import java.time.LocalDateTime
 import java.util.ArrayList
@@ -34,9 +34,6 @@ import javabot.operations.OperationComparator
 import javabot.operations.StandardOperation
 import javabot.operations.throttle.NickServViolationException
 import javabot.operations.throttle.Throttler
-import javabot.web.JavabotApplication
-import javax.inject.Inject
-import javax.inject.Provider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -54,7 +51,6 @@ constructor(
     var adapter: IrcAdapter,
     var adminDao: AdminDao,
     var javabotConfig: JavabotConfig,
-    var application: Provider<JavabotApplication>,
 ) {
 
     companion object {
@@ -63,10 +59,9 @@ constructor(
         @JvmStatic
         fun main(args: Array<String>) {
             Sofia.javabotStart()
-            val injector = Guice.createInjector(JavabotModule())
-            val bot = injector.getInstance(Javabot::class.java)
-            bot.start()
-            Awaitility.await().forever().until<Boolean> { !bot.isRunning() }
+            // Quarkus owns the process lifecycle from here; the bot itself is started from
+            // JavabotApplication's StartupEvent observer once Arc has booted.
+            Quarkus.run(*args)
         }
     }
 
@@ -189,7 +184,9 @@ constructor(
             if (File("javabot.yml").exists()) {
                 try {
                     Sofia.logWebappStarting()
-                    application.get().run(*arrayOf("server", "javabot.yml"))
+                    // Quarkus handles application startup automatically
+                    // The JavabotApplication @Observes StartupEvent will be triggered
+                    LOG.info("Web app configuration found. Quarkus will start the web application.")
                 } catch (e: Exception) {
                     throw RuntimeException(e.message, e)
                 }

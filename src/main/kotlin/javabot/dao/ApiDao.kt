@@ -5,12 +5,12 @@ import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
 import dev.morphia.query.filters.Filters.eq
+import jakarta.inject.Inject
 import java.util.Locale
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocField
 import javabot.model.javadoc.JavadocMethod
-import javax.inject.Inject
 import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
 

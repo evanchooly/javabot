@@ -1,7 +1,7 @@
 package javabot.commands
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Inject
+import jakarta.inject.Inject
 import java.lang.String.join
 import java.util.ArrayList
 import javabot.Javabot

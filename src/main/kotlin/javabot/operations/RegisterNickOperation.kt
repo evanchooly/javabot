@@ -1,12 +1,12 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ConfigDao
 import javabot.model.NickRegistration
-import javax.inject.Inject
 
 class RegisterNickOperation
 @Inject

@@ -1,7 +1,7 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Inject
+import jakarta.inject.Inject
 import java.util.Random
 import javabot.Javabot
 import javabot.Message

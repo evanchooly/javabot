@@ -4,7 +4,7 @@ import com.antwerkz.sofia.Sofia
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.inject.Inject
+import jakarta.inject.Inject
 import java.time.Duration
 import java.util.Locale
 import javabot.Javabot

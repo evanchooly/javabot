@@ -1,6 +1,6 @@
 package javabot.operations.urlcontent
 
-import com.google.inject.Singleton
+import jakarta.inject.Singleton
 import java.util.HashMap
 import java.util.Locale
 import java.util.regex.Pattern

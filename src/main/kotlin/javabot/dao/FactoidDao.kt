@@ -8,13 +8,13 @@ import dev.morphia.query.FindOptions
 import dev.morphia.query.Query
 import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.or
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.util.Locale
 import java.util.regex.PatternSyntaxException
 import javabot.dao.util.QueryParam
 import javabot.model.Factoid
 import javabot.model.Persistent
-import javax.inject.Inject
 
 class FactoidDao
 @Inject
