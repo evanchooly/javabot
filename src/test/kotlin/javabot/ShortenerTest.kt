@@ -6,7 +6,7 @@ import kotlin.test.assertNotNull
 import org.testng.annotations.Test
 
 class ShortenerTest : BaseTest() {
-    @Inject val urlCache: UrlCacheService? = null
+    @Inject var urlCache: UrlCacheService? = null
 
     @Test
     fun shorten() {
