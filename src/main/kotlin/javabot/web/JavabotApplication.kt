@@ -4,14 +4,19 @@ import com.google.inject.Guice
 import com.google.inject.Inject
 import com.google.inject.Injector
 import com.google.inject.Singleton
-import io.dropwizard.Application
-import io.dropwizard.assets.AssetsBundle
-import io.dropwizard.setup.Bootstrap
-import io.dropwizard.setup.Environment
-import io.dropwizard.views.ViewBundle
+import freemarker.cache.ClassTemplateLoader
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.engine.*
+import io.ktor.server.freemarker.*
+import io.ktor.server.http.content.*
+import io.ktor.server.netty.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.server.sessions.*
 import java.io.File
 import java.nio.file.Files
-import java.util.EnumSet
 import javabot.Javabot
 import javabot.JavabotConfig
 import javabot.JavabotModule
@@ -19,21 +24,12 @@ import javabot.dao.ApiDao
 import javabot.web.resources.AdminResource
 import javabot.web.resources.BotResource
 import javabot.web.resources.PublicOAuthResource
-import javax.servlet.DispatcherType
-import javax.servlet.Filter
-import javax.servlet.FilterChain
-import javax.servlet.FilterConfig
-import javax.servlet.ServletRequest
-import javax.servlet.ServletResponse
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-import org.eclipse.jetty.server.session.SessionHandler
 import org.slf4j.LoggerFactory
 
 @Singleton
-class JavabotApplication @Inject constructor(var injector: Injector) :
-    Application<JavabotConfiguration>() {
+class JavabotApplication @Inject constructor(var injector: Injector) {
     var running = false
+    lateinit var server: EmbeddedServer<*, *>
 
     companion object {
         private val LOG = LoggerFactory.getLogger(JavabotApplication::class.java)
@@ -41,75 +37,97 @@ class JavabotApplication @Inject constructor(var injector: Injector) :
         @Throws(Exception::class)
         @JvmStatic
         fun main(args: Array<String>) {
-            Guice.createInjector(JavabotModule())
-                .getInstance(JavabotApplication::class.java)
-                .run(*arrayOf("server", "javabot.yml"))
+            val application =
+                Guice.createInjector(JavabotModule()).getInstance(JavabotApplication::class.java)
+            application.run()
         }
     }
 
-    override fun initialize(bootstrap: Bootstrap<JavabotConfiguration>) {
-        bootstrap.addBundle(ViewBundle())
-        bootstrap.addBundle(AssetsBundle("/assets", "/assets", null, "assets"))
-        bootstrap.addBundle(
-            AssetsBundle("/META-INF/resources/webjars", "/webjars", null, "webjars")
-        )
-    }
-
-    override fun run(configuration: JavabotConfiguration, environment: Environment) {
-        environment.applicationContext.isSessionsEnabled = true
-        environment.applicationContext.sessionHandler = SessionHandler()
+    fun run() {
+        val configuration = JavabotConfiguration()
 
         val bot = injector.getInstance(Javabot::class.java)
         bot.setUpThreads()
 
-        val oauth = injector.getInstance(PublicOAuthResource::class.java)
-        oauth.configuration = configuration
-        environment.jersey().register(oauth)
+        server =
+            embeddedServer(Netty, port = 8080, host = "0.0.0.0") { configureServer(configuration) }
 
-        environment.jersey().register(injector.getInstance(BotResource::class.java))
-        environment.jersey().register(injector.getInstance(AdminResource::class.java))
-        environment.jersey().register(RuntimeExceptionMapper(configuration))
-
-        environment
-            .servlets()
-            .addFilter("javadoc", injector.getInstance(JavadocFilter::class.java))
-            .addMappingForUrlPatterns(
-                EnumSet.allOf(DispatcherType::class.java),
-                false,
-                "/javadoc/*",
-            )
-
-        environment.healthChecks().register("javabot", JavabotHealthCheck())
-
-        running = false
+        running = true
+        server.start(wait = true)
     }
 
-    class JavadocFilter @Inject constructor(var apiDao: ApiDao, var config: JavabotConfig) :
-        Filter {
-        override fun destroy() {}
+    private fun Application.configureServer(configuration: JavabotConfiguration) {
+        // Install FreeMarker for templating
+        install(FreeMarker) {
+            templateLoader = ClassTemplateLoader(this::class.java.classLoader, "/")
+        }
 
-        override fun doFilter(
-            request: ServletRequest,
-            response: ServletResponse,
-            chain: FilterChain,
-        ) {
-            request as HttpServletRequest
-            var filePath = request.requestURI.split("/").drop(2).joinToString("/")
-            if (!filePath.startsWith("/")) {
-                filePath = "/" + filePath
-            }
-            val path = File("javadoc$filePath").toPath()
-
-            if (Files.exists(path)) {
-                response.outputStream.use { stream ->
-                    Files.copy(path, stream)
-                    stream.flush()
-                }
-            } else {
-                (response as HttpServletResponse).sendError(404)
+        // Install sessions
+        install(Sessions) {
+            cookie<UserSession>(JavabotConfiguration.SESSION_TOKEN_NAME) {
+                cookie.path = "/"
+                cookie.maxAgeInSeconds = 86400 * 30
             }
         }
 
-        override fun init(filterConfig: FilterConfig?) {}
+        // Install status pages for error handling
+        install(StatusPages) {
+            exception<Throwable> { call, cause ->
+                LOG.error("Request failed", cause)
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    "Internal Server Error: ${cause.message}",
+                )
+            }
+
+            status(HttpStatusCode.NotFound) { call, status ->
+                call.respondText("404: Page Not Found", status = status)
+            }
+        }
+
+        // Configure routing
+        routing {
+            // Static assets using static() which serves files from resources
+            static("/assets") {
+                resources("assets")
+            }
+            static("/webjars") {
+                resources("META-INF/resources/webjars")
+            }
+
+            // Javadoc filter
+            get("/javadoc/{...}") {
+                val apiDao = injector.getInstance(ApiDao::class.java)
+                val config = injector.getInstance(JavabotConfig::class.java)
+
+                val pathAfterJavadoc = call.request.uri.substringAfter("/javadoc/")
+                val filePath = "/$pathAfterJavadoc"
+                val path = File("javadoc$filePath").toPath()
+
+                if (Files.exists(path)) {
+                    call.respondFile(path.toFile())
+                } else {
+                    call.respond(HttpStatusCode.NotFound)
+                }
+            }
+
+            // Health check
+            get("/health") { call.respondText("OK", contentType = ContentType.Text.Plain) }
+
+            // Register OAuth routes
+            val oauth = injector.getInstance(PublicOAuthResource::class.java)
+            oauth.configuration = configuration
+            oauth.configureRoutes(this)
+
+            // Register Bot routes
+            val botResource = injector.getInstance(BotResource::class.java)
+            botResource.configureRoutes(this)
+
+            // Register Admin routes
+            val adminResource = injector.getInstance(AdminResource::class.java)
+            adminResource.configureRoutes(this)
+        }
     }
 }
+
+data class UserSession(val sessionToken: String)
