@@ -189,7 +189,9 @@ constructor(
             if (File("javabot.yml").exists()) {
                 try {
                     Sofia.logWebappStarting()
-                    application.get().run(*arrayOf("server", "javabot.yml"))
+                    // Quarkus handles application startup automatically
+                    // The JavabotApplication @Observes StartupEvent will be triggered
+                    LOG.info("Web app configuration found. Quarkus will start the web application.")
                 } catch (e: Exception) {
                     throw RuntimeException(e.message, e)
                 }
