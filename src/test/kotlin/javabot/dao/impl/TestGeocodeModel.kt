@@ -3,7 +3,7 @@ package javabot.dao.impl
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import javabot.dao.geocode.model.GeocodeResponse
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Test
 
 class TestGeocodeModel {
     @Test

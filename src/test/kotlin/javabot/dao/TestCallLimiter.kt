@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 import javabot.dao.util.CallLimiter
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Test
 
 class TestCallLimiter {
     @Test
