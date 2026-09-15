@@ -1,6 +1,6 @@
 package javabot
 
-import com.google.inject.Inject
+import jakarta.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.Test
 

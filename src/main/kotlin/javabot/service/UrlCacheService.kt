@@ -3,9 +3,9 @@ package javabot.service
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
-import com.google.inject.Inject
-import com.google.inject.Singleton
 import com.mongodb.lang.Nullable
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import javabot.JavabotConfig
 import net.thauvin.erik.bitly.Bitly
 
@@ -15,7 +15,8 @@ open class UrlCacheService @Inject constructor(private val config: JavabotConfig
         return urlCache[url]
     }
 
-    @field:[Nullable Inject(optional = true)]
+    // JavabotModule.bitly() is always bound, though it may produce a null Bitly.
+    @field:[Nullable Inject]
     var bitly: Bitly? = null
 
     private val urlCache: LoadingCache<String, String> =

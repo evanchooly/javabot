@@ -1,12 +1,12 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import java.util.Locale
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.FactoidDao
-import javax.inject.Inject
 
 class LiteralOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var dao: FactoidDao) :
     BotOperation(bot, adminDao) {

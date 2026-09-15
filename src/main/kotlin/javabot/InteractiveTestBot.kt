@@ -1,9 +1,9 @@
 package javabot
 
 import com.google.inject.Guice
-import com.google.inject.Inject
 import com.google.inject.Injector
 import com.jayway.awaitility.Awaitility
+import jakarta.inject.Inject
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
@@ -12,8 +12,6 @@ import javabot.dao.LogsDao
 import javabot.dao.ShunDao
 import javabot.model.Channel
 import javabot.operations.throttle.Throttler
-import javabot.web.JavabotApplication
-import javax.inject.Provider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -30,7 +28,6 @@ constructor(
     adapter: IrcAdapter,
     adminDao: AdminDao,
     javabotConfig: JavabotConfig,
-    application: Provider<JavabotApplication>,
 ) :
     Javabot(
         injector,
@@ -43,7 +40,6 @@ constructor(
         adapter,
         adminDao,
         javabotConfig,
-        application,
     ) {
     companion object {
         val LOG: Logger = LoggerFactory.getLogger(Javabot::class.java)

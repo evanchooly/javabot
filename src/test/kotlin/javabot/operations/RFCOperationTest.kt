@@ -1,8 +1,8 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import javabot.BaseTest
-import javax.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test

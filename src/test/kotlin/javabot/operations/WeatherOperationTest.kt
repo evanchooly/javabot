@@ -1,6 +1,6 @@
 package javabot.operations
 
-import com.google.inject.Inject
+import jakarta.inject.Inject
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter

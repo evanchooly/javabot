@@ -2,8 +2,8 @@ package javabot
 
 import com.antwerkz.sofia.Sofia
 import com.google.common.collect.ImmutableMap.of
-import com.google.inject.Inject
 import com.jayway.awaitility.Duration
+import jakarta.inject.Inject
 import java.util.concurrent.TimeUnit.SECONDS
 import javabot.dao.FactoidDao
 import javabot.dao.LogsDaoTest

@@ -1,7 +1,7 @@
 package javabot.operations
 
+import jakarta.inject.Inject
 import javabot.BaseTest
-import javax.inject.Inject
 import org.testng.annotations.Test
 
 @Test(groups = arrayOf("operations"))

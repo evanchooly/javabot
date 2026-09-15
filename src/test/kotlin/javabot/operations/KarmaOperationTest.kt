@@ -1,6 +1,7 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import java.lang.String.format
 import java.util.Date
 import javabot.BaseTest
@@ -8,7 +9,6 @@ import javabot.dao.KarmaDao
 import javabot.dao.NickServDao
 import javabot.dao.util.EntityNotFoundException
 import javabot.registerIrcUser
-import javax.inject.Inject
 import org.testng.Assert.assertEquals
 import org.testng.Assert.assertFalse
 import org.testng.Assert.assertTrue

@@ -1,7 +1,6 @@
 package javabot.dao
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Inject
 import com.mongodb.client.result.DeleteResult
 import dev.morphia.Datastore
 import dev.morphia.DeleteOptions
@@ -10,6 +9,7 @@ import dev.morphia.query.Query
 import dev.morphia.query.Sort.descending
 import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.regex
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import javabot.dao.util.QueryParam
 import javabot.model.Change

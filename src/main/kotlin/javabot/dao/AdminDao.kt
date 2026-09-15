@@ -5,11 +5,11 @@ import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
 import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.or
+import jakarta.inject.Inject
 import javabot.model.Admin
 import javabot.model.EventType
 import javabot.model.JavabotUser
 import javabot.model.OperationEvent
-import javax.inject.Inject
 
 class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) :
     BaseDao<Admin>(ds, Admin::class.java) {

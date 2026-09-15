@@ -4,6 +4,8 @@ import com.google.inject.Injector
 import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.Duration
 import dev.morphia.Datastore
+import jakarta.inject.Inject
+import jakarta.inject.Provider
 import java.util.EnumSet
 import java.util.concurrent.TimeUnit.SECONDS
 import javabot.dao.AdminDao
@@ -23,8 +25,6 @@ import javabot.model.Logs
 import javabot.model.NickServInfo
 import javabot.model.State
 import javabot.model.javadoc.JavadocApi
-import javax.inject.Inject
-import javax.inject.Provider
 import org.pircbotx.PircBotX
 import org.slf4j.LoggerFactory
 import org.testng.Assert

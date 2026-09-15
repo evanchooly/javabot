@@ -1,6 +1,7 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import java.util.Locale
 import javabot.Javabot
 import javabot.Message
@@ -8,7 +9,6 @@ import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 import javabot.dao.FactoidDao
 import javabot.model.Channel
-import javax.inject.Inject
 
 class ForgetFactoidOperation
 @Inject

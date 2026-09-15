@@ -1,10 +1,10 @@
 package javabot.operations
 
+import jakarta.inject.Inject
 import java.util.UUID
 import javabot.BaseTest
 import javabot.model.Logs
 import javabot.model.Logs.Type
-import javax.inject.Inject
 import org.testng.Assert
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
