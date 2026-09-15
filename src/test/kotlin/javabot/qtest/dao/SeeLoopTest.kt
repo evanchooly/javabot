@@ -1,48 +1,55 @@
-package javabot.dao
+package javabot.qtest.dao
 
 import com.antwerkz.sofia.Sofia
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
 import javabot.BaseTest
+import javabot.dao.FactoidDao
+import javabot.dao.LogsDaoTest
 import javabot.operations.GetFactoidOperation
-import org.testng.Assert
-import org.testng.annotations.AfterMethod
-import org.testng.annotations.BeforeMethod
-import org.testng.annotations.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
-@Test
+@QuarkusTest
 class SeeLoopTest : BaseTest() {
-    @Inject protected lateinit var factoidDao: FactoidDao
-    @Inject protected lateinit var operation: GetFactoidOperation
+    private val factoidDao: FactoidDao by lazy { injector.getInstance(FactoidDao::class.java) }
+    private val operation: GetFactoidOperation by lazy {
+        injector.getInstance(GetFactoidOperation::class.java)
+    }
 
-    @BeforeMethod
-    @AfterMethod
-    private fun deleteSees() {
+    @BeforeEach
+    @AfterEach
+    fun deleteSees() {
         factoidDao.delete("test", "see1", LogsDaoTest.CHANNEL_NAME)
         factoidDao.delete("test", "see2", LogsDaoTest.CHANNEL_NAME)
         factoidDao.delete("test", "see3", LogsDaoTest.CHANNEL_NAME)
     }
 
+    @Test
     fun createCircularSee() {
         factoidDao.addFactoid(TEST_USER.nick, "see1", "<see>see2", LogsDaoTest.CHANNEL_NAME)
         factoidDao.addFactoid(TEST_USER.nick, "see2", "<see>see3", LogsDaoTest.CHANNEL_NAME)
         factoidDao.addFactoid(TEST_USER.nick, "see3", "<see>see1", LogsDaoTest.CHANNEL_NAME)
         var response = operation.handleMessage(message("~see1"))
-        Assert.assertEquals(response[0].value, Sofia.factoidLoop("<see>see2"))
+        assertEquals(Sofia.factoidLoop("<see>see2"), response[0].value)
     }
 
+    @Test
     fun followReferencesCorrectly() {
         factoidDao.addFactoid(TEST_USER.nick, "see1", "Bzzt \$who", LogsDaoTest.CHANNEL_NAME)
         factoidDao.addFactoid(TEST_USER.nick, "see2", "<see>see1", LogsDaoTest.CHANNEL_NAME)
         factoidDao.addFactoid(TEST_USER.nick, "see3", "<see>see2", LogsDaoTest.CHANNEL_NAME)
         var response = operation.handleMessage(message("~see3"))
-        Assert.assertEquals(response[0].value, "${TEST_USER}, see1 is Bzzt ${TEST_USER}")
+        assertEquals("${TEST_USER}, see1 is Bzzt ${TEST_USER}", response[0].value)
     }
 
+    @Test
     fun createNormalSee() {
         factoidDao.addFactoid(TEST_USER.nick, "see1", "<see>see2", LogsDaoTest.CHANNEL_NAME)
         factoidDao.addFactoid(TEST_USER.nick, "see2", "<see>see3", LogsDaoTest.CHANNEL_NAME)
         factoidDao.addFactoid(TEST_USER.nick, "see3", "w00t", LogsDaoTest.CHANNEL_NAME)
         var response = operation.handleMessage(message("~see1"))
-        Assert.assertEquals(response[0].value, "${TEST_USER}, see3 is w00t")
+        assertEquals("${TEST_USER}, see3 is w00t", response[0].value)
     }
 }

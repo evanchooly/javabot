@@ -6,10 +6,10 @@ import com.jayway.awaitility.Duration
 import jakarta.inject.Inject
 import java.util.concurrent.TimeUnit.SECONDS
 import javabot.dao.FactoidDao
-import javabot.dao.LogsDaoTest
 import javabot.mocks.MockIrcChannel
 import javabot.mocks.MockIrcUser
 import javabot.mocks.MockUserHostmask
+import javabot.qtest.dao.LogsDaoTest
 import org.pircbotx.hooks.events.MessageEvent
 import org.pircbotx.hooks.events.PrivateMessageEvent
 import org.testng.Assert

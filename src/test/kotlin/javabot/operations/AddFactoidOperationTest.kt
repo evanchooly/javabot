@@ -5,8 +5,8 @@ import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.Message
 import javabot.dao.FactoidDao
-import javabot.dao.LogsDaoTest
 import javabot.model.JavabotUser
+import javabot.qtest.dao.LogsDaoTest
 import org.testng.Assert
 import org.testng.Assert.assertEquals
 import org.testng.annotations.BeforeMethod

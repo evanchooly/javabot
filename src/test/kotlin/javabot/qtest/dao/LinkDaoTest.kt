@@ -1,16 +1,19 @@
-package javabot.dao
+package javabot.qtest.dao
 
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
+import javabot.dao.BaseServiceTest
+import javabot.dao.LinkDao
 import javabot.model.Link
-import org.testng.Assert.assertEquals
-import org.testng.Assert.assertFalse
-import org.testng.Assert.assertNotNull
-import org.testng.Assert.assertTrue
-import org.testng.Assert.fail
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.Test
 
+@QuarkusTest
 class LinkDaoTest : BaseServiceTest() {
-    @Inject lateinit var linkDao: LinkDao
+    private val linkDao: LinkDao by lazy { injector.getInstance(LinkDao::class.java) }
 
     @Test
     fun testCreateRetrieveAllDelete() {
@@ -22,9 +25,9 @@ class LinkDaoTest : BaseServiceTest() {
             "http://foo.com is really cool, y'all",
         )
 
-        assertEquals(linkDao.findAll().size, 1)
+        assertEquals(1, linkDao.findAll().size)
         linkDao.deleteAll()
-        assertEquals(linkDao.findAll().size, 0)
+        assertEquals(0, linkDao.findAll().size)
     }
 
     @Test
@@ -36,8 +39,8 @@ class LinkDaoTest : BaseServiceTest() {
         val retrievedLink = linkDao.get(Link(url = linkData.url))
 
         assertNotNull(retrievedLink?.updated)
-        assertEquals(retrievedLink?.info, linkData.info)
-        assertEquals(retrievedLink?.url, linkData.url)
+        assertEquals(linkData.info, retrievedLink?.info)
+        assertEquals(linkData.url, retrievedLink?.url)
         assertFalse(retrievedLink?.approved ?: true)
     }
 
@@ -54,14 +57,14 @@ class LinkDaoTest : BaseServiceTest() {
             )
         linkDao.addLink(linkData.channel, linkData.username, linkData.url, linkData.info)
         var retrievedLink = linkDao.get(Link(url = linkData.url))
-        assertEquals(retrievedLink?.url, linkData.url)
+        assertEquals(linkData.url, retrievedLink?.url)
         assertFalse(retrievedLink?.approved ?: true)
 
         linkDao.approveLink("##java", retrievedLink?.id.toString().substring(15))
 
         retrievedLink = linkDao.get(Link(url = linkData.url, approved = true))
-        assertEquals(retrievedLink?.info, linkData.info)
-        assertEquals(retrievedLink?.url, linkData.url)
+        assertEquals(linkData.info, retrievedLink?.info)
+        assertEquals(linkData.url, retrievedLink?.url)
         assertTrue(retrievedLink?.approved ?: true)
 
         try {
@@ -83,24 +86,24 @@ class LinkDaoTest : BaseServiceTest() {
         }
         // all links, regardless of status
         var links = linkDao.findAll()
-        assertEquals(links.size, 4)
+        assertEquals(4, links.size)
 
         links = linkDao.unapprovedLinks("##java")
-        assertEquals(links.size, 4)
+        assertEquals(4, links.size)
 
         linkDao.approveLink("##java", links[3].id.toString())
         val nextKey = links[2].id.toString()
         links = linkDao.unapprovedLinks("##java")
 
-        assertEquals(links.size, 3)
+        assertEquals(3, links.size)
         assertTrue(links[0].updated.isAfter(links[2].updated))
 
         links = linkDao.approvedLinks("##java")
-        assertEquals(links.size, 1)
+        assertEquals(1, links.size)
         linkDao.approveLink("##java", nextKey)
         links = linkDao.approvedLinks("##java")
 
-        assertEquals(links.size, 2)
+        assertEquals(2, links.size)
         assertTrue(links[0].updated.isBefore(links[1].updated))
     }
 }

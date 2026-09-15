@@ -1,23 +1,27 @@
-package javabot.dao
+package javabot.qtest.dao
 
 import com.google.common.collect.ImmutableMap.of
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
 import java.time.LocalDateTime
 import java.time.Month
 import java.util.Arrays.asList
 import javabot.IrcAdapter
+import javabot.dao.BaseServiceTest
+import javabot.dao.NickServDao
 import javabot.mocks.MockIrcUser
 import javabot.mocks.MockUserHostmask
 import javabot.model.JavabotUser
 import javabot.model.NickServInfo
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Test
 import org.pircbotx.hooks.events.NoticeEvent
-import org.testng.Assert
-import org.testng.annotations.Test
 
-@Test
-class NickServDaoTest
-@Inject
-constructor(val nickServDao: NickServDao, val ircAdapter: IrcAdapter) : BaseServiceTest() {
+@QuarkusTest
+class NickServDaoTest : BaseServiceTest() {
+    private val nickServDao: NickServDao by lazy { injector.getInstance(NickServDao::class.java) }
+    private val ircAdapter: IrcAdapter by lazy { injector.getInstance(IrcAdapter::class.java) }
+
+    @Test
     fun parseNickServResponse() {
         nickServDao.clear()
         val list =
@@ -32,6 +36,7 @@ constructor(val nickServDao: NickServDao, val ircAdapter: IrcAdapter) : BaseServ
         nickServDao.process(list)
     }
 
+    @Test
     fun privMsg() {
         nickServDao.clear()
         for (i in 0..4) {
@@ -46,7 +51,7 @@ constructor(val nickServDao: NickServDao, val ircAdapter: IrcAdapter) : BaseServ
             )
         }
         for (i in 0..4) {
-            Assert.assertNotNull(nickServDao.find("account" + i), "Should find account" + i)
+            assertNotNull(nickServDao.find("account" + i), "Should find account" + i)
         }
     }
 

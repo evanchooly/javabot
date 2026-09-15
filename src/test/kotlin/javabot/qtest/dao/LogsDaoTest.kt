@@ -1,9 +1,9 @@
-package javabot.dao
+package javabot.qtest.dao
 
 import com.antwerkz.sofia.Sofia
 import dev.morphia.Datastore
 import dev.morphia.query.filters.Filters
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
 import java.time.LocalDateTime
 import javabot.BaseTest
 import javabot.model.Channel
@@ -11,10 +11,16 @@ import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.Logs.Type
 import javabot.model.Logs.Type.PART
-import org.testng.Assert
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
-class LogsDaoTest @Inject constructor(val ds: Datastore) : BaseTest() {
+@QuarkusTest
+class LogsDaoTest : BaseTest() {
+    private val ds: Datastore by lazy { injector.getInstance(Datastore::class.java) }
+
     companion object {
         val CHANNEL_NAME: String = "#watercooler"
     }
@@ -34,11 +40,9 @@ class LogsDaoTest @Inject constructor(val ds: Datastore) : BaseTest() {
             "test message",
         )
 
-        Assert.assertNotNull(logsDao.getSeen(channel.name, "chattycathy"))
-        Assert.assertFalse(
-            logsDao.findByChannel(channel.name, LocalDateTime.now(), false).isEmpty()
-        )
-        Assert.assertTrue(
+        assertNotNull(logsDao.getSeen(channel.name, "chattycathy"))
+        assertFalse(logsDao.findByChannel(channel.name, LocalDateTime.now(), false).isEmpty())
+        assertTrue(
             logsDao.findByChannel(channel.name, LocalDateTime.now().minusDays(1), false).isEmpty()
         )
     }
@@ -59,7 +63,7 @@ class LogsDaoTest @Inject constructor(val ds: Datastore) : BaseTest() {
 
         val logs = logsDao.findByChannel(chanName, LocalDateTime.now(), true)
 
-        Assert.assertFalse(logs.isEmpty(), "Should have one log entry")
-        Assert.assertEquals(logs[0].message, Sofia.userParted(TEST_USER.nick, "i'm out of here!"))
+        assertFalse(logs.isEmpty(), "Should have one log entry")
+        assertEquals(Sofia.userParted(TEST_USER.nick, "i'm out of here!"), logs[0].message)
     }
 }

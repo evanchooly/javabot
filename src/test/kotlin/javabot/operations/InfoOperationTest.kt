@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javabot.BaseTest
 import javabot.dao.FactoidDao
-import javabot.dao.LogsDaoTest
+import javabot.qtest.dao.LogsDaoTest
 import org.testng.Assert
 import org.testng.annotations.Test
 

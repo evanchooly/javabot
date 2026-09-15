@@ -5,9 +5,9 @@ import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.Message
 import javabot.dao.FactoidDao
-import javabot.dao.LogsDaoTest
 import javabot.dao.NickServDao
 import javabot.operations.ForgetFactoidOperation
+import javabot.qtest.dao.LogsDaoTest
 import javabot.registerIrcUser
 import org.testng.Assert
 import org.testng.annotations.DataProvider
