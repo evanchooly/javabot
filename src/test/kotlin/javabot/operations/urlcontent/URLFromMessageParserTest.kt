@@ -12,11 +12,6 @@ class URLFromMessageParserTest {
 
     var parser = URLFromMessageParser()
 
-    @Throws(Exception::class)
-    private fun expectedUrls(vararg strings: String): List<URL> {
-        return strings.map { URI(it).toURL() }
-    }
-
     @ParameterizedTest
     @MethodSource("getUrlsForParensBracketsStrip")
     fun testUrlFromMessage(message: String, expected: List<URL>) {
