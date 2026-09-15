@@ -4,7 +4,6 @@ import com.antwerkz.sofia.Sofia
 import io.quarkus.test.junit.QuarkusTest
 import javabot.BaseTest
 import javabot.dao.FactoidDao
-import javabot.dao.LogsDaoTest
 import javabot.operations.GetFactoidOperation
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals

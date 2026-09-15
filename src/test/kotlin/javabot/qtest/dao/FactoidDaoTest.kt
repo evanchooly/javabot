@@ -3,7 +3,6 @@ package javabot.qtest.dao
 import io.quarkus.test.junit.QuarkusTest
 import javabot.dao.BaseServiceTest
 import javabot.dao.FactoidDao
-import javabot.dao.LogsDaoTest
 import javabot.model.Factoid
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -39,7 +38,7 @@ class FactoidDaoTest : BaseServiceTest() {
         val count = factoidDao.count()
         factoidDao.addFactoid("cheeser", key, value, LogsDaoTest.CHANNEL_NAME)
         val count2 = factoidDao.count()
-        assertNotSame(count, count2, "Not the same")
+        assertNotSame(count2, count, "Not the same")
         factoidDao.delete("cheeser", key, LogsDaoTest.CHANNEL_NAME)
     }
 
@@ -50,6 +49,6 @@ class FactoidDaoTest : BaseServiceTest() {
             factoidDao.addFactoid("cheeser", "testing last used", "'sup?", LogsDaoTest.CHANNEL_NAME)
         assertNotNull(factoid.lastUsed, "Should have recorded a date")
         val factoid1 = factoidDao.getFactoid("testing last used")
-        assertNotSame(factoid.lastUsed, factoid1?.lastUsed, "Should have a new lastUsed value")
+        assertNotSame(factoid1?.lastUsed, factoid.lastUsed, "Should have a new lastUsed value")
     }
 }
