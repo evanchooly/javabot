@@ -6,7 +6,7 @@ import com.enigmastation.kgpt.model.GPTMessage
 import com.google.common.cache.CacheBuilder
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import io.dropwizard.util.Duration
+import java.time.Duration
 import java.util.concurrent.TimeUnit
 import javabot.JavabotConfig
 import javabot.operations.throttle.BotRateLimiter
@@ -16,7 +16,7 @@ class ChatGPTDao @Inject constructor(private val javabotConfig: JavabotConfig) {
     private val gpt = GPT(javabotConfig.chatGptKey())
 
     private val limiter: BotRateLimiter =
-        BotRateLimiter(javabotConfig.chatGptLimit(), Duration.days(1).toMilliseconds())
+        BotRateLimiter(javabotConfig.chatGptLimit(), Duration.ofDays(1).toMillis())
     private val queryCache =
         CacheBuilder.newBuilder()
             .maximumSize(100)
