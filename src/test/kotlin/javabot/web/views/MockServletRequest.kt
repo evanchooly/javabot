@@ -26,20 +26,13 @@ import javabot.web.JavabotConfiguration
 import javabot.web.model.Authority
 import javabot.web.model.InMemoryUserCache
 import javabot.web.model.User
-import org.brickred.socialauth.util.AccessGrant
 
 class MockServletRequest(loggedIn: Boolean) : HttpServletRequest {
     private val cookies: Array<Cookie>
 
     init {
         if (loggedIn) {
-            val tempUser =
-                User(
-                    UUID.randomUUID(),
-                    BaseTest.BOT_EMAIL,
-                    UUID.randomUUID().toString(),
-                    AccessGrant(),
-                )
+            val tempUser = User(UUID.randomUUID(), BaseTest.BOT_EMAIL, UUID.randomUUID().toString())
             tempUser.authorities.add(Authority.ROLE_PUBLIC)
 
             InMemoryUserCache.INSTANCE.put(tempUser)
