@@ -1,19 +1,24 @@
-package javabot.operations
+package javabot.qtest.operations
 
 import com.antwerkz.sofia.Sofia
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
 import javabot.BaseTest
 import javabot.dao.LinkDao
 import javabot.mocks.MockIrcAdapter
-import org.testng.Assert.*
-import org.testng.annotations.BeforeMethod
-import org.testng.annotations.Test
+import javabot.operations.LinksOperation
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
-class LinksOperationTest
-@Inject
-constructor(private val linkDao: LinkDao, val operation: LinksOperation) : BaseTest() {
+@QuarkusTest
+class LinksOperationTest : BaseTest() {
 
-    @BeforeMethod
+    private val linkDao: LinkDao by lazy { injector.getInstance(LinkDao::class.java) }
+    private val operation: LinksOperation by lazy {
+        injector.getInstance(LinksOperation::class.java)
+    }
+
+    @BeforeEach
     fun deleted() {
         linkDao.deleteAll()
     }
@@ -21,70 +26,70 @@ constructor(private val linkDao: LinkDao, val operation: LinksOperation) : BaseT
     @Test
     fun testSubmitLink() {
         val response = operation.handleMessage(message("~submit http://foo.com This is a test"))
-        assertEquals(response[0].value, Sofia.linksAccepted("http://foo.com", TEST_CHANNEL.name))
-        assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 1)
+        assertEquals(Sofia.linksAccepted("http://foo.com", TEST_CHANNEL.name), response[0].value)
+        assertEquals(1, linkDao.unapprovedLinks(TEST_CHANNEL.name).size)
     }
 
     @Test
     fun testSubmitNoLink() {
         val response = operation.handleMessage(message("~submit foo.com This is a test"))
-        assertEquals(response[0].value, Sofia.linksRejectedNoUrl())
-        assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 0)
+        assertEquals(Sofia.linksRejectedNoUrl(), response[0].value)
+        assertEquals(0, linkDao.unapprovedLinks(TEST_CHANNEL.name).size)
     }
 
     @Test
     fun testSubmitPrivateMessageLink() {
         var response =
             operation.handleMessage(privateMessage("submit http://foo.com This is a test"))
-        assertEquals(response[0].value, Sofia.linksNoChannel())
-        assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 0)
+        assertEquals(Sofia.linksNoChannel(), response[0].value)
+        assertEquals(0, linkDao.unapprovedLinks(TEST_CHANNEL.name).size)
 
         response =
             operation.handleMessage(
                 privateMessage("submit ${TEST_CHANNEL.name} http://foo.com This is a test")
             )
-        assertEquals(response[0].value, Sofia.linksAccepted("http://foo.com", TEST_CHANNEL.name))
-        assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 1)
+        assertEquals(Sofia.linksAccepted("http://foo.com", TEST_CHANNEL.name), response[0].value)
+        assertEquals(1, linkDao.unapprovedLinks(TEST_CHANNEL.name).size)
     }
 
     @Test
     fun testListLinks() {
         var response = operation.handleMessage(message("~submit http://foo.com This is a test"))
-        assertEquals(response[0].value, Sofia.linksAccepted("http://foo.com", TEST_CHANNEL.name))
-        assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 1)
+        assertEquals(Sofia.linksAccepted("http://foo.com", TEST_CHANNEL.name), response[0].value)
+        assertEquals(1, linkDao.unapprovedLinks(TEST_CHANNEL.name).size)
 
         response = operation.handleMessage(message("~submit http://bar.com This is another test"))
-        assertEquals(response[0].value, Sofia.linksAccepted("http://bar.com", TEST_CHANNEL.name))
-        assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 2)
+        assertEquals(Sofia.linksAccepted("http://bar.com", TEST_CHANNEL.name), response[0].value)
+        assertEquals(2, linkDao.unapprovedLinks(TEST_CHANNEL.name).size)
 
         response = operation.handleMessage(message("~list unapproved ${TEST_CHANNEL.name}"))
-        assertEquals(response.size, 2)
+        assertEquals(2, response.size)
 
         val firstKey = response[0].value.split(" ")[0]
         val secondKey = response[1].value.split(" ")[0]
         response = operation.handleMessage(message("~list approve ${TEST_CHANNEL.name} $firstKey"))
-        assertEquals(response.size, 1)
+        assertEquals(1, response.size)
         assertEquals(
-            response[0].value,
             Sofia.linksVerbApplied(firstKey, "approved", TEST_CHANNEL.name),
+            response[0].value,
         )
 
         response = operation.handleMessage(message("~list approved ${TEST_CHANNEL.name} 10"))
-        assertEquals(response.size, 1)
+        assertEquals(1, response.size)
 
         response = operation.handleMessage(message("~list unapproved ${TEST_CHANNEL.name}"))
-        assertEquals(response.size, 1)
+        assertEquals(1, response.size)
 
         response = operation.handleMessage(message("~list reject ${TEST_CHANNEL.name} $secondKey"))
-        assertEquals(response.size, 1)
+        assertEquals(1, response.size)
         assertEquals(
-            response[0].value,
             Sofia.linksVerbApplied(secondKey, "rejected", TEST_CHANNEL.name),
+            response[0].value,
         )
 
         response = operation.handleMessage(message("~list unapproved ${TEST_CHANNEL.name}"))
-        assertEquals(response.size, 1)
-        assertEquals(response[0].value, Sofia.linksNoLinksOfStatus("unapproved", TEST_CHANNEL.name))
+        assertEquals(1, response.size)
+        assertEquals(Sofia.linksNoLinksOfStatus("unapproved", TEST_CHANNEL.name), response[0].value)
     }
 
     @Test
@@ -92,19 +97,19 @@ constructor(private val linkDao: LinkDao, val operation: LinksOperation) : BaseT
         operation.handleMessage(message("~submit http://foo.com This is a test"))
         var response = operation.handleMessage(message("~list unapproved ${TEST_CHANNEL.name}"))
 
-        assertEquals(response.size, 1)
+        assertEquals(1, response.size)
 
         val firstKey = response[0].value.split(" ")[0]
         response =
             operation.handleMessage(message("~list approve ${TEST_CHANNEL.name} ${firstKey}a"))
 
-        assertEquals(response.size, 1)
-        assertEquals(response[0].value, Sofia.linksNotFound("${firstKey}a"))
+        assertEquals(1, response.size)
+        assertEquals(Sofia.linksNotFound("${firstKey}a"), response[0].value)
         response =
             operation.handleMessage(message("~list reject ${TEST_CHANNEL.name} ${firstKey}a"))
 
-        assertEquals(response.size, 1)
-        assertEquals(response[0].value, Sofia.linksNotFound("${firstKey}a"))
+        assertEquals(1, response.size)
+        assertEquals(Sofia.linksNotFound("${firstKey}a"), response[0].value)
     }
 
     @Test
@@ -112,16 +117,16 @@ constructor(private val linkDao: LinkDao, val operation: LinksOperation) : BaseT
         operation.handleMessage(message("~submit http://foo.com This is a test"))
         var response = operation.handleMessage(message("~list unapproved ${TEST_CHANNEL.name}"))
 
-        assertEquals(response.size, 1)
+        assertEquals(1, response.size)
 
         response = operation.handleMessage(message("~list approve ${TEST_CHANNEL.name}"))
 
-        assertEquals(response.size, 1)
-        assertEquals(response[0].value, Sofia.linksNoKeySpecified("approve"))
+        assertEquals(1, response.size)
+        assertEquals(Sofia.linksNoKeySpecified("approve"), response[0].value)
         response = operation.handleMessage(message("~list reject ${TEST_CHANNEL.name}"))
 
-        assertEquals(response.size, 1)
-        assertEquals(response[0].value, Sofia.linksNoKeySpecified("reject"))
+        assertEquals(1, response.size)
+        assertEquals(Sofia.linksNoKeySpecified("reject"), response[0].value)
     }
 
     @Test
@@ -129,15 +134,15 @@ constructor(private val linkDao: LinkDao, val operation: LinksOperation) : BaseT
         operation.handleMessage(message("~submit http://foo.com This is a test"))
         var response = operation.handleMessage(message("~list unapproved ${TEST_CHANNEL.name}"))
 
-        assertEquals(response.size, 1)
+        assertEquals(1, response.size)
         response = operation.handleMessage(message("~list unapproved ${TEST_CHANNEL.name}a"))
 
-        assertEquals(response.size, 1)
-        assertEquals(response[0].value, Sofia.linksWrongChannel(TEST_CHANNEL.name))
+        assertEquals(1, response.size)
+        assertEquals(Sofia.linksWrongChannel(TEST_CHANNEL.name), response[0].value)
         response = operation.handleMessage(message("~list approved ${TEST_CHANNEL.name}a"))
 
-        assertEquals(response.size, 1)
-        assertEquals(response[0].value, Sofia.linksWrongChannel(TEST_CHANNEL.name))
+        assertEquals(1, response.size)
+        assertEquals(Sofia.linksWrongChannel(TEST_CHANNEL.name), response[0].value)
     }
 
     @Test
@@ -161,84 +166,84 @@ constructor(private val linkDao: LinkDao, val operation: LinksOperation) : BaseT
                         message("~submit http://$domain.com This is a test for $domain")
                     )
                 assertEquals(
-                    response[0].value,
                     Sofia.linksAccepted("http://$domain.com", TEST_CHANNEL.name),
+                    response[0].value,
                 )
-                assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, index + 1)
+                assertEquals(index + 1, linkDao.unapprovedLinks(TEST_CHANNEL.name).size)
             }
         var response = operation.handleMessage(message("~list unapproved ${TEST_CHANNEL.name}"))
 
-        assertEquals(response.size, 5)
+        assertEquals(5, response.size)
         response = operation.handleMessage(message("~list unapproved 3"))
 
-        assertEquals(response.size, 3)
+        assertEquals(3, response.size)
 
         response = operation.handleMessage(message("~list unapproved a3"))
 
-        assertEquals(response.size, 5)
+        assertEquals(5, response.size)
     }
 
     @Test
     fun testPrivateListLinks() {
         var response = operation.handleMessage(message("submit http://foo.com This is a test"))
-        assertEquals(response[0].value, Sofia.linksAccepted("http://foo.com", TEST_CHANNEL.name))
-        assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 1)
+        assertEquals(Sofia.linksAccepted("http://foo.com", TEST_CHANNEL.name), response[0].value)
+        assertEquals(1, linkDao.unapprovedLinks(TEST_CHANNEL.name).size)
         response = operation.handleMessage(message("submit http://bar.com This is another test"))
-        assertEquals(response[0].value, Sofia.linksAccepted("http://bar.com", TEST_CHANNEL.name))
-        assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 2)
+        assertEquals(Sofia.linksAccepted("http://bar.com", TEST_CHANNEL.name), response[0].value)
+        assertEquals(2, linkDao.unapprovedLinks(TEST_CHANNEL.name).size)
 
         response = operation.handleMessage(privateMessage("list unapproved ${TEST_CHANNEL.name}a"))
-        assertEquals(response.size, 1)
-        assertEquals(response[0].value, Sofia.linksNoChannel())
+        assertEquals(1, response.size)
+        assertEquals(Sofia.linksNoChannel(), response[0].value)
 
         response = operation.handleMessage(privateMessage("list unapproved ${TEST_CHANNEL.name}"))
 
-        assertEquals(response.size, 2)
+        assertEquals(2, response.size)
         val firstKey = response[0].value.split(" ")[0]
         val secondKey = response[1].value.split(" ")[0]
 
         response = operation.handleMessage(privateMessage("list approve $firstKey"))
-        assertEquals(response.size, 1)
-        assertEquals(response[0].value, Sofia.linksNoChannel())
+        assertEquals(1, response.size)
+        assertEquals(Sofia.linksNoChannel(), response[0].value)
 
         response =
             operation.handleMessage(privateMessage("list approve ${TEST_CHANNEL.name} $firstKey"))
-        assertEquals(response.size, 1)
+        assertEquals(1, response.size)
         assertEquals(
-            response[0].value,
             Sofia.linksVerbApplied(firstKey, "approved", TEST_CHANNEL.name),
+            response[0].value,
         )
 
         response = operation.handleMessage(privateMessage("list approved ${TEST_CHANNEL.name} 10"))
-        assertEquals(response.size, 1)
+        assertEquals(1, response.size)
 
         response = operation.handleMessage(privateMessage("list unapproved ${TEST_CHANNEL.name}"))
 
-        assertEquals(response.size, 1)
+        assertEquals(1, response.size)
         operation.handleMessage(privateMessage("list reject ${TEST_CHANNEL.name} $secondKey"))
 
         response = operation.handleMessage(privateMessage("list unapproved ${TEST_CHANNEL.name}"))
 
-        assertEquals(response.size, 1)
-        assertEquals(response[0].value, Sofia.linksNoLinksOfStatus("unapproved", TEST_CHANNEL.name))
+        assertEquals(1, response.size)
+        assertEquals(Sofia.linksNoLinksOfStatus("unapproved", TEST_CHANNEL.name), response[0].value)
 
         response = operation.handleMessage(privateMessage("list unapproved"))
 
-        assertEquals(response.size, 1)
-        assertEquals(response[0].value, Sofia.linksNoChannel())
+        assertEquals(1, response.size)
+        assertEquals(Sofia.linksNoChannel(), response[0].value)
     }
 
     @Test
     fun testHelp() {
-        assertEquals(operation.handleMessage(message("list help")).size, 6)
+        assertEquals(6, operation.handleMessage(message("list help")).size)
     }
 
     @Test
     fun testInvalidCommand() {
         val response = operation.handleMessage(message("list helf"))
 
-        assertEquals(response.size, 1)
-        assertEquals(response[0].value, Sofia.linksInvalidCommand("helf"))
+        assertEquals(1, response.size)
+        assertEquals(Sofia.linksInvalidCommand("helf"), response[0].value)
     }
 
     @Test
@@ -246,28 +251,28 @@ constructor(private val linkDao: LinkDao, val operation: LinksOperation) : BaseT
         val mockIrcAdapter = bot.get().adapter as MockIrcAdapter
 
         var response = operation.handleMessage(message("~submit http://foo.com This is a test"))
-        assertEquals(response[0].value, Sofia.linksAccepted("http://foo.com", TEST_CHANNEL.name))
-        assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 1)
+        assertEquals(Sofia.linksAccepted("http://foo.com", TEST_CHANNEL.name), response[0].value)
+        assertEquals(1, linkDao.unapprovedLinks(TEST_CHANNEL.name).size)
 
         response = operation.handleMessage(message("~submit http://bar.com This is another test"))
-        assertEquals(response[0].value, Sofia.linksAccepted("http://bar.com", TEST_CHANNEL.name))
-        assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 2)
+        assertEquals(Sofia.linksAccepted("http://bar.com", TEST_CHANNEL.name), response[0].value)
+        assertEquals(2, linkDao.unapprovedLinks(TEST_CHANNEL.name).size)
 
         response = operation.handleMessage(message("~list unapproved ${TEST_CHANNEL.name}"))
-        assertEquals(response.size, 2)
+        assertEquals(2, response.size)
 
         val firstKey = response[0].value.split(" ")[0]
         val secondKey = response[1].value.split(" ")[0]
         response = operation.handleMessage(message("~list approve ${TEST_CHANNEL.name} $firstKey"))
-        assertEquals(response.size, 1)
+        assertEquals(1, response.size)
         assertEquals(
-            response[0].value,
             Sofia.linksVerbApplied(firstKey, "approved", TEST_CHANNEL.name),
+            response[0].value,
         )
         mockIrcAdapter.disableOperation("isOp")
         response = operation.handleMessage(message("~list approve ${TEST_CHANNEL.name} $secondKey"))
-        assertEquals(response.size, 1)
-        assertEquals(response[0].value, Sofia.linksNotAnOp(TEST_CHANNEL.name))
+        assertEquals(1, response.size)
+        assertEquals(Sofia.linksNotAnOp(TEST_CHANNEL.name), response[0].value)
 
         mockIrcAdapter.resetDisabledOperations()
     }
@@ -281,8 +286,8 @@ constructor(private val linkDao: LinkDao, val operation: LinksOperation) : BaseT
             operation.handleMessage(
                 privateMessage("submit ${TEST_CHANNEL.name} http://foo.com This is a test")
             )
-        assertEquals(response[0].value, Sofia.linksNotOnChannel())
-        assertEquals(linkDao.unapprovedLinks(TEST_CHANNEL.name).size, 0)
+        assertEquals(Sofia.linksNotOnChannel(), response[0].value)
+        assertEquals(0, linkDao.unapprovedLinks(TEST_CHANNEL.name).size)
         mockIrcAdapter.resetDisabledOperations()
     }
 
@@ -291,7 +296,7 @@ constructor(private val linkDao: LinkDao, val operation: LinksOperation) : BaseT
         val response =
             operation.handleMessage(privateMessage("list unapproved ${TEST_CHANNEL.name}"))
 
-        assertEquals(response.size, 1)
-        assertEquals(response[0].value, Sofia.linksNoLinksOfStatus("unapproved", TEST_CHANNEL.name))
+        assertEquals(1, response.size)
+        assertEquals(Sofia.linksNoLinksOfStatus("unapproved", TEST_CHANNEL.name), response[0].value)
     }
 }

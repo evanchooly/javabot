@@ -1,22 +1,29 @@
-package javabot.operations
+package javabot.qtest.operations
 
 import com.antwerkz.sofia.Sofia
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
 import javabot.BaseTest
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-import org.testng.annotations.Test
+import javabot.operations.BrowseOperation
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
 
-@Test(groups = arrayOf("operations"))
-class BrowseOperationTest @Inject constructor(val browseOperation: BrowseOperation) : BaseTest() {
+@QuarkusTest
+class BrowseOperationTest : BaseTest() {
+    private val browseOperation: BrowseOperation by lazy {
+        injector.getInstance(BrowseOperation::class.java)
+    }
 
     @Test
+    @Tag("operations")
     fun testNonMatchingInput() {
         val response = browseOperation.handleMessage(message("~test pong is pong"))
         assertEquals(0, response.size)
     }
 
     @Test
+    @Tag("operations")
     fun testClasses() {
         val response = browseOperation.handleMessage(message("~browse Files"))
         assertEquals(1, response.size)
@@ -24,6 +31,7 @@ class BrowseOperationTest @Inject constructor(val browseOperation: BrowseOperati
     }
 
     @Test
+    @Tag("operations")
     fun testMethodReference() {
         val response = browseOperation.handleMessage(message("~browse String.indexOf(String)"))
         assertEquals(1, response.size)
@@ -35,6 +43,7 @@ class BrowseOperationTest @Inject constructor(val browseOperation: BrowseOperati
     }
 
     @Test
+    @Tag("operations")
     fun testModules() {
         val response = browseOperation.handleMessage(message("~browse guava Files"))
         assertEquals(1, response.size)
@@ -48,6 +57,7 @@ class BrowseOperationTest @Inject constructor(val browseOperation: BrowseOperati
     }
 
     @Test
+    @Tag("operations")
     fun testNoValidResponseClass() {
         val response = browseOperation.handleMessage(message("~browse FilesMcGee"))
         assertEquals(1, response.size)
@@ -55,6 +65,7 @@ class BrowseOperationTest @Inject constructor(val browseOperation: BrowseOperati
     }
 
     @Test
+    @Tag("operations")
     fun testNoValidResponseModule() {
         val response = browseOperation.handleMessage(message("~browse guavaMcGee Files"))
         assertEquals(1, response.size)
@@ -62,6 +73,7 @@ class BrowseOperationTest @Inject constructor(val browseOperation: BrowseOperati
     }
 
     @Test
+    @Tag("operations")
     fun testNoValidResponseModuleWithClass() {
         val response = browseOperation.handleMessage(message("~browse guava filesmcgee"))
         assertEquals(1, response.size)
@@ -69,6 +81,7 @@ class BrowseOperationTest @Inject constructor(val browseOperation: BrowseOperati
     }
 
     @Test
+    @Tag("operations")
     fun testNoValidResponseModuleAndClass() {
         val response = browseOperation.handleMessage(message("~browse guavaMcGee FilesMcGee"))
         assertEquals(1, response.size)
@@ -79,6 +92,7 @@ class BrowseOperationTest @Inject constructor(val browseOperation: BrowseOperati
     }
 
     @Test
+    @Tag("operations")
     fun testBrowseHelp() {
         val response = browseOperation.handleMessage(message("~browse -help"))
         assertEquals(1, response.size)

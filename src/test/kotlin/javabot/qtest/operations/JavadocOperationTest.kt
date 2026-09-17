@@ -1,26 +1,32 @@
-package javabot.operations
+package javabot.qtest.operations
 
 import com.antwerkz.sofia.Sofia
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
 import javabot.BaseTest
 import javabot.dao.JavadocClassDao
-import org.testng.annotations.BeforeTest
-import org.testng.annotations.Test
+import javabot.operations.JavadocOperation
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
-@Test
+@QuarkusTest
 class JavadocOperationTest : BaseTest() {
     companion object {
         val STRING_URL = "java.base/java/lang/String.html#"
     }
 
-    @Inject private lateinit var operation: JavadocOperation
-    @Inject protected lateinit var javadocClassDao: JavadocClassDao
+    private val operation: JavadocOperation by lazy {
+        injector.getInstance(JavadocOperation::class.java)
+    }
+    private val javadocClassDao: JavadocClassDao by lazy {
+        injector.getInstance(JavadocClassDao::class.java)
+    }
 
-    @BeforeTest
+    @BeforeEach
     fun jdk() {
         loadApi("JDK", version = "11")
     }
 
+    @Test
     fun constructors() {
         scanForResponse(
             operation.handleMessage(message("~javadoc String(char[])")),
@@ -32,6 +38,7 @@ class JavadocOperationTest : BaseTest() {
         )
     }
 
+    @Test
     fun methods() {
         scanForResponse(
             operation.handleMessage(message("~javadoc String.split(String)")),
@@ -55,6 +62,7 @@ class JavadocOperationTest : BaseTest() {
         )
     }
 
+    @Test
     fun nestedClasses() {
         scanForResponse(
             operation.handleMessage(message("~javadoc Map.Entry")),
@@ -62,6 +70,7 @@ class JavadocOperationTest : BaseTest() {
         )
     }
 
+    @Test
     fun format() {
         scanForResponse(
             operation.handleMessage(message("~javadoc String.format(*)")),
@@ -69,6 +78,7 @@ class JavadocOperationTest : BaseTest() {
         )
     }
 
+    @Test
     fun doFinal() {
         scanForResponse(
             operation.handleMessage(message("~javadoc String.valueOf(*)")),
@@ -76,6 +86,7 @@ class JavadocOperationTest : BaseTest() {
         )
     }
 
+    @Test
     fun fields() {
         scanForResponse(
             operation.handleMessage(message("~javadoc System.in")),
@@ -91,6 +102,7 @@ class JavadocOperationTest : BaseTest() {
         )
     }
 
+    @Test
     fun inherited() {
         scanForResponse(
             operation.handleMessage(message("~javadoc ArrayList.listIterator(*)")),
@@ -98,6 +110,7 @@ class JavadocOperationTest : BaseTest() {
         )
     }
 
+    @Test
     fun packagePrivate() {
         scanForResponse(
             operation.handleMessage(message("~javadoc ASCII)")),
