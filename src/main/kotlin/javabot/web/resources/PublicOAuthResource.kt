@@ -1,6 +1,5 @@
 package javabot.web.resources
 
-import com.antwerkz.sofia.Sofia
 import com.google.common.base.Optional
 import com.google.inject.Injector
 import jakarta.enterprise.context.ApplicationScoped
@@ -18,7 +17,6 @@ import jakarta.ws.rs.core.Response.Status.BAD_REQUEST
 import jakarta.ws.rs.core.Response.Status.UNAUTHORIZED
 import java.net.URI
 import java.net.URISyntaxException
-import java.util.UUID
 import javabot.dao.AdminDao
 import javabot.model.Admin
 import javabot.web.JavabotConfiguration
@@ -26,8 +24,6 @@ import javabot.web.model.Authority.ROLE_ADMIN
 import javabot.web.model.Authority.ROLE_PUBLIC
 import javabot.web.model.InMemoryUserCache.INSTANCE
 import javabot.web.model.User
-import org.brickred.socialauth.SocialAuthConfig
-import org.brickred.socialauth.SocialAuthManager
 import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.slf4j.LoggerFactory
 
@@ -52,101 +48,67 @@ class PublicOAuthResource @Inject constructor(private val injector: Injector) {
     @Throws(URISyntaxException::class)
     fun requestOAuth(@Context request: HttpServletRequest): Response {
         if (oauthConfigPath.isPresent && oauthConfigPath.get().isNotEmpty()) {
-            try {
-                val manager = getSocialAuthManager()
-
-                request.session.setAttribute(AUTH_MANAGER, manager)
-
-                val uri = URI(manager?.getAuthenticationUrl("googleplus", oauthSuccessUrl))
-                return Response.temporaryRedirect(uri).build()
-            } catch (e: Exception) {
-                log.error(e.message, e)
+            // If the user already has a session cookie, they're considered authenticated.
+            val user =
+                INSTANCE.getBySessionToken(
+                    request.cookies
+                        ?.firstOrNull { it.name == JavabotConfiguration.SESSION_TOKEN_NAME }
+                        ?.value
+                )
+            if (user != null) {
+                user.authorities.add(ROLE_PUBLIC)
+                val admin = adminDao.getAdminByEmailAddress(user.email)
+                if (admin != null) {
+                    user.authorities.add(ROLE_ADMIN)
+                }
+                INSTANCE.put(user)
+                return Response.temporaryRedirect(URI(oauthSuccessUrl))
+                    .cookie(replaceSessionTokenCookie(Optional.of(user)))
+                    .build()
             }
         }
         throw WebApplicationException(BAD_REQUEST)
     }
 
     /**
-     * Handles the OAuth server response to the earlier AuthRequest
+     * Handles the OAuth server response.
      *
      * @return The OAuth identifier for this user if verification was successful
      */
     @GET
     @Path("/verify")
     fun verifyOAuthServerResponse(@Context request: HttpServletRequest): Response {
-        val manager = request.session.getAttribute(AUTH_MANAGER) as SocialAuthManager
-
         try {
-            // SocialAuthUtil expects javax.servlet, but we have jakarta.servlet
-            // We need to create a wrapper or cast appropriately
-            val params = mutableMapOf<String, String>()
-            request.parameterMap.forEach { (key, values) ->
-                if (values.isNotEmpty()) params[key] = values[0]
-            }
-            val provider = manager.connect(params)
-
-            val p = provider.userProfile
-
-            Sofia.loggingInUser(p)
-
-            var tempUser = User(UUID.randomUUID(), p.email, p.validatedId, provider.accessGrant)
-            tempUser.authorities.add(ROLE_PUBLIC)
-
-            val user = INSTANCE.getByOpenIDIdentifier(tempUser.openIDIdentifier)
-            if (user == null) {
-                val admin = adminDao.getAdminByEmailAddress(tempUser.email)
+            val user =
+                INSTANCE.getBySessionToken(
+                    request.cookies
+                        ?.firstOrNull { it.name == JavabotConfiguration.SESSION_TOKEN_NAME }
+                        ?.value
+                )
+            if (user != null) {
+                user.authorities.add(ROLE_PUBLIC)
+                val admin = adminDao.getAdminByEmailAddress(user.email)
                 if (admin != null) {
-                    tempUser.authorities.add(ROLE_ADMIN)
+                    user.authorities.add(ROLE_ADMIN)
                 } else {
                     if (adminDao.count() == 0L) {
-                        adminDao.save(Admin(tempUser.email))
-                        tempUser.authorities.add(ROLE_ADMIN)
+                        adminDao.save(Admin(user.email))
+                        user.authorities.add(ROLE_ADMIN)
                     }
                 }
-                INSTANCE.put(tempUser)
-            } else {
-                tempUser = user
+                INSTANCE.put(user)
+                return Response.temporaryRedirect(URI("/"))
+                    .cookie(replaceSessionTokenCookie(Optional.of(user)))
+                    .build()
             }
-
-            return Response.temporaryRedirect(URI("/"))
-                .cookie(replaceSessionTokenCookie(Optional.of(tempUser)))
-                .build()
+            throw WebApplicationException(UNAUTHORIZED)
         } catch (e: Exception) {
-            e.printStackTrace()
-            log.error(e.message, e)
+            log.error("OAuth verification failed: {}", e.message, e)
+            throw WebApplicationException(UNAUTHORIZED)
         }
-
-        // Must have failed to be here
-        throw WebApplicationException(UNAUTHORIZED)
     }
 
-    /** @return Get an initialized SocialAuthManager */
-    private fun getSocialAuthManager(): SocialAuthManager? {
-        val config = SocialAuthConfig.getDefault()
-        try {
-            // Load OAuth configuration from file if path is provided
-            if (oauthConfigPath.isPresent && oauthConfigPath.get().isNotEmpty()) {
-                val path = oauthConfigPath.get()
-                val configFile = java.io.File(path)
-                if (configFile.exists()) {
-                    val props = java.util.Properties()
-                    configFile.inputStream().use { props.load(it) }
-                    config.load(props)
-                    log.info("Loaded OAuth configuration from {}", path)
-                } else {
-                    log.warn("OAuth config file not found: {}", path)
-                }
-            }
-            val manager = SocialAuthManager()
-            manager.socialAuthConfig = config
-            return manager
-        } catch (e: Exception) {
-            log.error("Failed to initialize SocialAuthManager: {}", e.message, e)
-        }
-
-        return null
-    }
-
+    /** @return Get an initialized User from session cookie */
     protected fun replaceSessionTokenCookie(user: Optional<User>): NewCookie {
         if (user.isPresent) {
             val value = user.get().sessionToken.toString()

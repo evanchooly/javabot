@@ -105,13 +105,16 @@ constructor(
     @Path("/editChannel/{channel}")
     fun editChannel(
         @Context request: HttpServletRequest,
+        user: User,
         @PathParam("channel") channel: String,
     ): TemplateInstance {
-        val user = currentUser(request)
-
-        // TODO redirect to / if channel is null
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        return templateService.createChannelEditView(request, channelDao.get(channel)!!)
+
+        val channelOpt = channelDao.get(channel)
+        if (channelOpt == null) {
+            return templateService.createIndexView(request)
+        }
+        return templateService.createChannelEditView(request, channelOpt)
     }
 
     @POST
