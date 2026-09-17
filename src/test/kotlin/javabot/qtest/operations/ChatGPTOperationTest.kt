@@ -1,22 +1,32 @@
-package javabot.operations
+package javabot.qtest.operations
 
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
+import java.util.stream.Stream
 import javabot.BaseTest
 import javabot.Javabot.Companion.LOG
 import javabot.JavabotConfig
 import javabot.NoOperationMessage
-import org.testng.Assert.assertTrue
-import org.testng.annotations.BeforeClass
-import org.testng.annotations.DataProvider
-import org.testng.annotations.Test
+import javabot.operations.AddFactoidOperation
+import javabot.operations.ChatGPTOperation
+import javabot.operations.cleanForIRC
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 
+@QuarkusTest
 class ChatGPTOperationTest : BaseTest() {
-    @Inject protected lateinit var operation: ChatGPTOperation
-    @Inject protected lateinit var addFactoidOperation: AddFactoidOperation
+    private val operation: ChatGPTOperation by lazy {
+        injector.getInstance(ChatGPTOperation::class.java)
+    }
+    private val addFactoidOperation: AddFactoidOperation by lazy {
+        injector.getInstance(AddFactoidOperation::class.java)
+    }
+    private val config: JavabotConfig by lazy { injector.getInstance(JavabotConfig::class.java) }
 
-    @Inject protected lateinit var config: JavabotConfig
-
-    @BeforeClass
+    @BeforeEach
     fun prepFactoids() {
         addFactoidOperation.handleMessage(
             message(
@@ -31,23 +41,30 @@ class ChatGPTOperationTest : BaseTest() {
         )
     }
 
-    @DataProvider
-    fun queries() =
-        arrayOf(
-            arrayOf<Any>("help", false, "query. Note that GPT"),
-            arrayOf<Any>("speed of an african laden swallow", true, ""),
-            arrayOf<Any>(
-                "what is the maven directory structure",
-                false,
-                "Maven directory structure",
-            ),
-            arrayOf<Any>("suffering-oriented programming", false, "Suffering-oriented programming"),
-            arrayOf<Any>("list of DI frameworks", false, "Spring"),
-            arrayOf<Any>("list of DI frameworks", false, "Spring"),
-            arrayOf<Any>("how do I declare a new variable in Javascript", true, ""),
-        )
+    companion object {
+        @JvmStatic
+        fun queries(): Stream<Arguments> =
+            Stream.of(
+                Arguments.of("help", false, "query. Note that GPT"),
+                Arguments.of("speed of an african laden swallow", true, ""),
+                Arguments.of(
+                    "what is the maven directory structure",
+                    false,
+                    "Maven directory structure",
+                ),
+                Arguments.of(
+                    "suffering-oriented programming",
+                    false,
+                    "Suffering-oriented programming",
+                ),
+                Arguments.of("list of DI frameworks", false, "Spring"),
+                Arguments.of("list of DI frameworks", false, "Spring"),
+                Arguments.of("how do I declare a new variable in Javascript", true, ""),
+            )
+    }
 
-    @Test(dataProvider = "queries")
+    @ParameterizedTest
+    @MethodSource("queries")
     fun runTestQuery(prompt: String, empty: Boolean, match: String) {
         if (config.chatGptKey().isNotEmpty()) {
             val response = operation.handleMessage(message("~gpt $prompt"))
@@ -64,6 +81,7 @@ class ChatGPTOperationTest : BaseTest() {
         }
     }
 
+    @Test
     fun testNonJavaQuestion() {
         if (config.chatGptKey().isNotEmpty()) {
             val response =
@@ -75,6 +93,7 @@ class ChatGPTOperationTest : BaseTest() {
         }
     }
 
+    @Test
     fun testMavenDirectories() {
         if (config.chatGptKey().isNotEmpty()) {
             val response =
@@ -87,6 +106,7 @@ class ChatGPTOperationTest : BaseTest() {
         }
     }
 
+    @Test
     fun testSuffering() {
         val prompt = "~gpt what is suffering-oriented programming?"
         if (config.chatGptKey().isNotEmpty()) {

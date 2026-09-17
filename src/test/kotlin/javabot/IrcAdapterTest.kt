@@ -3,22 +3,26 @@ package javabot
 import com.antwerkz.sofia.Sofia
 import com.google.common.collect.ImmutableMap.of
 import com.jayway.awaitility.Duration
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
 import java.util.concurrent.TimeUnit.SECONDS
+import java.util.stream.Stream
 import javabot.dao.FactoidDao
 import javabot.mocks.MockIrcChannel
 import javabot.mocks.MockIrcUser
 import javabot.mocks.MockUserHostmask
 import javabot.qtest.dao.LogsDaoTest
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.pircbotx.hooks.events.MessageEvent
 import org.pircbotx.hooks.events.PrivateMessageEvent
-import org.testng.Assert
-import org.testng.annotations.DataProvider
-import org.testng.annotations.Test
 
+@QuarkusTest
 class IrcAdapterTest : BaseTest() {
-    @Inject lateinit var ircAdapter: IrcAdapter
-    @Inject lateinit var factoidDao: FactoidDao
+    private val ircAdapter: IrcAdapter by lazy { injector.getInstance(IrcAdapter::class.java) }
+    private val factoidDao: FactoidDao by lazy { injector.getInstance(FactoidDao::class.java) }
     val testIrcChannel: MockIrcChannel by lazy { MockIrcChannel(ircBot.get(), TEST_CHANNEL.name) }
 
     val testIrcUser: MockIrcUser by lazy { MockIrcUser(ircBot.get(), TEST_USER.nick) }
@@ -40,7 +44,7 @@ class IrcAdapterTest : BaseTest() {
                 of(),
             )
         )
-        Assert.assertEquals(messages.get(duration)[0], Sofia.unhandledMessage(TEST_USER.nick))
+        assertEquals(Sofia.unhandledMessage(TEST_USER.nick), messages.get(duration)[0])
     }
 
     @Test
@@ -48,7 +52,7 @@ class IrcAdapterTest : BaseTest() {
         ircAdapter.onPrivateMessage(
             PrivateMessageEvent(ircBot.get(), testIrcHostmask, testIrcUser, "dude", of())
         )
-        Assert.assertEquals(messages.get(duration)[0], Sofia.unhandledMessage(TEST_USER.nick))
+        assertEquals(Sofia.unhandledMessage(TEST_USER.nick), messages.get(duration)[0])
     }
 
     @Test
@@ -66,22 +70,24 @@ class IrcAdapterTest : BaseTest() {
                 of(),
             )
         )
-        Assert.assertEquals(messages.get(duration)[0], "ouch")
+        assertEquals("ouch", messages.get(duration)[0])
     }
 
-    @Suppress("UNCHECKED_CAST")
-    @DataProvider
-    fun unicodeProvider(): Array<Array<Any>> =
-        arrayOf(
-            arrayOf("\u00c3foo", "Afoo"),
-            arrayOf("\u00e3foo", "afoo"),
-            arrayOf("\u00f1foo", "nfoo"),
-            arrayOf("\u00f5foo", "ofoo"),
-        )
-            as Array<Array<Any>>
+    companion object {
+        @Suppress("UNCHECKED_CAST")
+        @JvmStatic
+        fun unicodeProvider(): Stream<Arguments> =
+            Stream.of(
+                Arguments.of("\u00c3foo", "Afoo"),
+                Arguments.of("\u00e3foo", "afoo"),
+                Arguments.of("\u00f1foo", "nfoo"),
+                Arguments.of("\u00f5foo", "ofoo"),
+            )
+    }
 
     /** This is related to issue 259: unicode chars like ã, ñ, õ as ~a, ~n, ~o */
-    @Test(dataProvider = "unicodeProvider")
+    @ParameterizedTest
+    @MethodSource("unicodeProvider")
     fun factoidLookupWithUnicode(input: String, conversion: String) {
         fun testWithValue(key: String) {
             factoidDao.delete(TEST_USER.nick, conversion, LogsDaoTest.CHANNEL_NAME)
@@ -102,7 +108,7 @@ class IrcAdapterTest : BaseTest() {
                     of(),
                 )
             )
-            Assert.assertEquals(messages.get(duration)[0], "something")
+            assertEquals("something", messages.get(duration)[0])
         }
         testWithValue("~$conversion")
         testWithValue(input)
@@ -123,6 +129,6 @@ class IrcAdapterTest : BaseTest() {
                 of(),
             )
         )
-        Assert.assertEquals(messages.get(duration)[0], "${TARGET_USER.nick}, ouch")
+        assertEquals("${TARGET_USER.nick}, ouch", messages.get(duration)[0])
     }
 }

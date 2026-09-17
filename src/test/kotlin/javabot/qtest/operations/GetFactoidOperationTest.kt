@@ -1,24 +1,33 @@
-package javabot.operations
+package javabot.qtest.operations
 
 import com.antwerkz.sofia.Sofia
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
 import java.time.ZoneOffset
 import java.util.Arrays
+import java.util.stream.Stream
 import javabot.BaseTest
 import javabot.dao.FactoidDao
+import javabot.operations.GetFactoidOperation
 import javabot.qtest.dao.LogsDaoTest
-import org.testng.Assert
-import org.testng.annotations.AfterClass
-import org.testng.annotations.BeforeClass
-import org.testng.annotations.DataProvider
-import org.testng.annotations.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 
-@Test
+@QuarkusTest
 class GetFactoidOperationTest : BaseTest() {
-    @Inject private lateinit var factoidDao: FactoidDao
-    @Inject private lateinit var operation: GetFactoidOperation
+    private val factoidDao: FactoidDao by lazy { injector.getInstance(FactoidDao::class.java) }
+    private val operation: GetFactoidOperation by lazy {
+        injector.getInstance(GetFactoidOperation::class.java)
+    }
 
-    @BeforeClass
+    @BeforeEach
     fun createGets() {
         deleteFactoids()
         factoidDao.addFactoid(
@@ -77,7 +86,7 @@ class GetFactoidOperationTest : BaseTest() {
         )
     }
 
-    @AfterClass
+    @AfterEach
     fun deleteFactoids() {
         delete("api")
         delete("stupid")
@@ -101,17 +110,19 @@ class GetFactoidOperationTest : BaseTest() {
         }
     }
 
+    @Test
     fun straightGets() {
-        Assert.assertEquals(factoidDao.getFactoid("api")?.usage, 0)
+        assertEquals(0, factoidDao.getFactoid("api")?.usage)
         val response = operation.handleMessage(message("~api"))
-        Assert.assertEquals(
-            response[0].value,
+        assertEquals(
             getFoundMessage("api", "http://java.sun.com/javase/current/docs/api/index.html"),
+            response[0].value,
         )
-        Assert.assertNotNull(factoidDao.getFactoid("api")?.lastUsed)
-        Assert.assertEquals(factoidDao.getFactoid("api")?.usage, 1)
+        assertNotNull(factoidDao.getFactoid("api")?.lastUsed)
+        assertEquals(1, factoidDao.getFactoid("api")?.usage)
     }
 
+    @Test
     fun dates() {
         factoidDao.delete(TEST_USER.nick, "dates", LogsDaoTest.CHANNEL_NAME)
         val dates =
@@ -119,166 +130,178 @@ class GetFactoidOperationTest : BaseTest() {
         operation.handleMessage(message("~dates"))
 
         val factoid = factoidDao.getFactoid("dates")!!
-        Assert.assertEquals(
-            factoid.updated.toEpochSecond(ZoneOffset.UTC),
+        assertEquals(
             dates.updated.toEpochSecond(ZoneOffset.UTC),
+            factoid.updated.toEpochSecond(ZoneOffset.UTC),
         )
-        Assert.assertTrue(factoid.lastUsed?.isAfter(dates.lastUsed) ?: false)
+        assertTrue(factoid.lastUsed?.isAfter(dates.lastUsed) ?: false)
     }
 
+    @Test
     fun replyGets() {
         val response = operation.handleMessage(message("~replyTest"))
-        Assert.assertEquals(response[0].value, REPLY_VALUE)
+        assertEquals(REPLY_VALUE, response[0].value)
     }
 
+    @Test
     fun seeGets() {
         val response = operation.handleMessage(message("~seeTest"))
-        Assert.assertEquals(response[0].value, REPLY_VALUE)
+        assertEquals(REPLY_VALUE, response[0].value)
     }
 
+    @Test
     fun seeReplyGets() {
         val response = operation.handleMessage(message("~seeTest"))
-        Assert.assertEquals(response[0].value, REPLY_VALUE)
+        assertEquals(REPLY_VALUE, response[0].value)
     }
 
+    @Test
     fun parameterReplacement() {
         var response = operation.handleMessage(message("~replace $TEST_USER"))
-        Assert.assertEquals(response[0].value, "I replaced you " + TEST_USER)
+        assertEquals("I replaced you " + TEST_USER, response[0].value)
         response = operation.handleMessage(message("~url what up doc"))
-        Assert.assertEquals(response[0].value, "what+up+doc")
+        assertEquals("what+up+doc", response[0].value)
         response = operation.handleMessage(message("~camel i should be camel case"))
-        Assert.assertEquals(response[0].value, "IShouldBeCamelCase")
+        assertEquals("IShouldBeCamelCase", response[0].value)
     }
 
+    @Test
     fun whoReplacement() {
         val response = operation.handleMessage(message("~hey"))
-        Assert.assertEquals(response[0].value, "Hello, " + TEST_USER)
+        assertEquals("Hello, " + TEST_USER, response[0].value)
     }
 
+    @Test
     fun randomList() {
         val response = operation.handleMessage(message("~coin"))
-        Assert.assertTrue(Arrays.asList("heads", "tails").contains(response[0].value))
+        assertTrue(Arrays.asList("heads", "tails").contains(response[0].value))
     }
 
-    @Test(enabled = false)
+    @Test
+    @Disabled
     fun guessFactoid() {
         val response = operation.handleMessage(message("~bre"))
-        Assert.assertEquals(
-            response[0].value,
+        assertEquals(
             "I guess the factoid 'label line breaks' might be appropriate:",
+            response[0].value,
         )
     }
 
+    @Test
     fun noGuess() {
         val response = operation.handleMessage(message("~apiz"))
-        Assert.assertEquals(response.size, 0)
+        assertEquals(0, response.size)
     }
 
+    @Test
     fun action() {
         val response = operation.handleMessage(message("~hug $TEST_TARGET_NICK"))
-        Assert.assertEquals(response[0].value, "hugs $TEST_TARGET_NICK")
+        assertEquals("hugs $TEST_TARGET_NICK", response[0].value)
     }
 
+    @Test
     fun actionWithoutTarget() {
         val response = operation.handleMessage(message("~hug "))
-        Assert.assertEquals(response[0].value, Sofia.missingTarget("hug $1", TEST_USER_NICK))
+        assertEquals(Sofia.missingTarget("hug $1", TEST_USER_NICK), response[0].value)
     }
 
-    /* unicode whitespaces as per http://www.fileformat.info/info/unicode/category/Zs/list.htm */
-    @DataProvider
-    fun whitespaceProvider(): Array<Array<Any>> {
-        @Suppress("UNCHECKED_CAST")
-        return arrayOf(
-            arrayOf('\u0020'),
-            arrayOf('\u00a0'),
-            arrayOf('\u1680'),
-            arrayOf('\u2000'),
-            arrayOf('\u2001'),
-            arrayOf('\u2002'),
-            arrayOf('\u2003'),
-            arrayOf('\u2004'),
-            arrayOf('\u2005'),
-            arrayOf('\u2006'),
-            arrayOf('\u2007'),
-            arrayOf('\u2008'),
-            arrayOf('\u2009'),
-            arrayOf('\u200a'),
-            arrayOf('\u202f'),
-            arrayOf('\u205f'),
-            arrayOf('\u3000'),
-        )
-            as Array<Array<Any>>
+    companion object {
+        /* unicode whitespaces as per http://www.fileformat.info/info/unicode/category/Zs/list.htm */
+        @JvmStatic
+        fun whitespaceProvider(): Stream<Arguments> =
+            Stream.of(
+                Arguments.of('\u0020'),
+                Arguments.of('\u00a0'),
+                Arguments.of('\u1680'),
+                Arguments.of('\u2000'),
+                Arguments.of('\u2001'),
+                Arguments.of('\u2002'),
+                Arguments.of('\u2003'),
+                Arguments.of('\u2004'),
+                Arguments.of('\u2005'),
+                Arguments.of('\u2006'),
+                Arguments.of('\u2007'),
+                Arguments.of('\u2008'),
+                Arguments.of('\u2009'),
+                Arguments.of('\u200a'),
+                Arguments.of('\u202f'),
+                Arguments.of('\u205f'),
+                Arguments.of('\u3000'),
+            )
+
+        private val REPLY_VALUE = "I'm a reply!"
     }
 
     /*
      * This test was changed to test all of the unicode whitespace characters, as per issue #177, trying to
      * find the problem. The problem remains unfound.
      */
-    @Test(dataProvider = "whitespaceProvider")
+    @ParameterizedTest
+    @MethodSource("whitespaceProvider")
     fun testLeadingSpace(leader: Char) {
         var response =
             operation.handleMessage(message("~${leader}tell $TEST_TARGET_NICK about hey"))
-        Assert.assertEquals(response[0].value, "Hello, $TEST_TARGET_NICK")
+        assertEquals("Hello, $TEST_TARGET_NICK", response[0].value)
         response = operation.handleMessage(message("~${leader}hey"))
-        Assert.assertEquals(response[0].value, "Hello, $TEST_USER_NICK")
+        assertEquals("Hello, $TEST_USER_NICK", response[0].value)
         response = operation.handleMessage(message("~hey"))
-        Assert.assertEquals(response[0].value, "Hello, $TEST_USER_NICK")
+        assertEquals("Hello, $TEST_USER_NICK", response[0].value)
         response = operation.handleMessage(message("~${leader}hey"))
-        Assert.assertEquals(response[0].value, "Hello, $TEST_USER_NICK")
+        assertEquals("Hello, $TEST_USER_NICK", response[0].value)
     }
 
     @Test
     fun tell() {
         var response = operation.handleMessage(message("~tell $TEST_TARGET_NICK about hey"))
-        Assert.assertEquals(response[0].value, "Hello, $TEST_TARGET_NICK")
+        assertEquals("Hello, $TEST_TARGET_NICK", response[0].value)
         response =
             operation.handleMessage(message("~tell $TEST_TARGET_NICK about camel I am a test"))
-        Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, IAmATest")
+        assertEquals("$TEST_TARGET_NICK, IAmATest", response[0].value)
         response = operation.handleMessage(message("~tell $TEST_TARGET_NICK about url I am a test"))
-        Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, I+am+a+test")
+        assertEquals("$TEST_TARGET_NICK, I+am+a+test", response[0].value)
         response = operation.handleMessage(message("~tell $TEST_TARGET_NICK about stupid"))
-        Assert.assertEquals(
-            response[0].value,
+        assertEquals(
             "$TEST_TARGET_NICK, what you've just said is one of the most " +
                 "insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you even close to " +
                 "anything that could be considered a rational thought. Everyone in this room is now dumber for having listened to it. I " +
                 "award you no points, and may God have mercy on your soul.",
+            response[0].value,
         )
         response = operation.handleMessage(message("~~ $TEST_TARGET_NICK seeTest"))
-        Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, I'm a reply!")
+        assertEquals("$TEST_TARGET_NICK, I'm a reply!", response[0].value)
         response = operation.handleMessage(message("~~ $TEST_TARGET_NICK bobloblaw"))
-        Assert.assertEquals(response.size, 0)
+        assertEquals(0, response.size)
         response = operation.handleMessage(message("~~ $TEST_TARGET_NICK api"))
-        Assert.assertEquals(
-            response[0].value,
+        assertEquals(
             "$TEST_TARGET_NICK, api is http://java.sun.com/javase/current/docs/api/index.html",
+            response[0].value,
         )
         validate("camel I am a test 2", "IAmATest2")
         response = operation.handleMessage(message("~~ $TEST_TARGET_NICK url I am a test 2"))
-        Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, I+am+a+test+2")
+        assertEquals("$TEST_TARGET_NICK, I+am+a+test+2", response[0].value)
         response = operation.handleMessage(message("~~ $TEST_TARGET_NICK stupid"))
-        Assert.assertEquals(
-            response[0].value,
+        assertEquals(
             "$TEST_TARGET_NICK, what you've just said is one of the most insanely idiotic" +
                 " things I have ever heard. At no point in your rambling, incoherent response were you even close to anything that could " +
                 "be considered a rational thought. Everyone in this room is now dumber for having listened to it. I award you no points, " +
                 "and may God have mercy on your soul.",
+            response[0].value,
         )
 
         response = operation.handleMessage(message("~~$TEST_TARGET_NICK seeTest"))
-        Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, I'm a reply!")
+        assertEquals("$TEST_TARGET_NICK, I'm a reply!", response[0].value)
         response = operation.handleMessage(message("~~$TEST_TARGET_NICK bobloblaw"))
-        Assert.assertEquals(response.size, 0)
+        assertEquals(0, response.size)
 
         response = operation.handleMessage(message("~~$TEST_TARGET_NICK api"))
-        Assert.assertEquals(
-            response[0].value,
+        assertEquals(
             "$TEST_TARGET_NICK, api is http://java.sun.com/javase/current/docs/api/index.html",
+            response[0].value,
         )
         response = operation.handleMessage(message("~~$TEST_TARGET_NICK camel I am a test 3"))
-        Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, IAmATest3")
+        assertEquals("$TEST_TARGET_NICK, IAmATest3", response[0].value)
         response = operation.handleMessage(message("~~$TEST_TARGET_NICK url I am a test 3"))
-        Assert.assertEquals(response[0].value, "$TEST_TARGET_NICK, I+am+a+test+3")
+        assertEquals("$TEST_TARGET_NICK, I+am+a+test+3", response[0].value)
         validate(
             "stupid",
             "what you've just said is one of the most insanely idiotic things I have ever heard. At no point in your " +
@@ -311,20 +334,16 @@ class GetFactoidOperationTest : BaseTest() {
                 )
             )
 
-        Assert.assertEquals(response.size, 1)
-        Assert.assertTrue(response[0].value.length <= 510)
+        assertEquals(1, response.size)
+        assertTrue(response[0].value.length <= 510)
     }
 
     private fun validate(factoid: String, response: String) {
         val responses = operation.handleMessage(message("~~ $TEST_TARGET_NICK ${factoid}"))
-        Assert.assertEquals(responses[0].value, "$TEST_TARGET_NICK, ${response}")
+        assertEquals("$TEST_TARGET_NICK, ${response}", responses[0].value)
     }
 
     private fun getFoundMessage(factoid: String, value: String): String {
         return "${TEST_USER}, ${factoid} is ${value}"
-    }
-
-    companion object {
-        private val REPLY_VALUE = "I'm a reply!"
     }
 }
