@@ -1,0 +1,92 @@
+package javabot.qtest.dao
+
+import com.google.common.collect.ImmutableMap.of
+import io.quarkus.test.junit.QuarkusTest
+import java.time.LocalDateTime
+import java.time.Month
+import java.util.Arrays.asList
+import javabot.IrcAdapter
+import javabot.dao.BaseServiceTest
+import javabot.dao.NickServDao
+import javabot.mocks.MockIrcUser
+import javabot.mocks.MockUserHostmask
+import javabot.model.JavabotUser
+import javabot.model.NickServInfo
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Test
+import org.pircbotx.hooks.events.NoticeEvent
+
+@QuarkusTest
+class NickServDaoTest : BaseServiceTest() {
+    private val nickServDao: NickServDao by lazy { injector.getInstance(NickServDao::class.java) }
+    private val ircAdapter: IrcAdapter by lazy { injector.getInstance(IrcAdapter::class.java) }
+
+    @Test
+    fun parseNickServResponse() {
+        nickServDao.clear()
+        val list =
+            asList(
+                "Information on cheeser (account cheeser):",
+                "Registered : Feb 20 21:31:56 2002 (12 years, 10 weeks, 2 days, 04:48:12 ago)",
+                "Last seen  : now",
+                "Flags      : HideMail, Private",
+                "cheeser has enabled nick protection",
+                "*** End of Info ***",
+            )
+        nickServDao.process(list)
+    }
+
+    @Test
+    fun privMsg() {
+        nickServDao.clear()
+        for (i in 0..4) {
+            send(
+                getNickServInfo(
+                    "account" + i,
+                    "nick" + i,
+                    LocalDateTime.of(2014, Month.MARCH, 1, 16, 30),
+                    LocalDateTime.of(2014, Month.MARCH, 1, 16, 30),
+                    LocalDateTime.now(),
+                )
+            )
+        }
+        for (i in 0..4) {
+            assertNotNull(nickServDao.find("account" + i), "Should find account" + i)
+        }
+    }
+
+    private fun send(info: NickServInfo) {
+        info.toNickServFormat().forEach { o ->
+            val user = JavabotUser("nickserv")
+            ircAdapter.onNotice(
+                NoticeEvent(
+                    ircBot.get(),
+                    MockUserHostmask(ircBot.get(), user.nick),
+                    MockIrcUser(ircBot.get(), user.nick),
+                    null,
+                    "",
+                    o,
+                    of(),
+                )
+            )
+        }
+    }
+
+    private fun getNickServInfo(
+        account: String,
+        nick: String,
+        registered: LocalDateTime,
+        userRegistered: LocalDateTime,
+        lastSeen: LocalDateTime,
+    ): NickServInfo {
+        val info = NickServInfo()
+        info.account = account
+        info.nick = nick
+        info.registered = registered
+        info.userRegistered = userRegistered
+        info.lastSeen = lastSeen
+        info.lastAddress = "last address 1"
+
+        return info
+    }
+}

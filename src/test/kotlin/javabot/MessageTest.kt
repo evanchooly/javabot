@@ -1,10 +1,12 @@
 package javabot
 
+import io.quarkus.test.junit.QuarkusTest
 import javabot.model.Channel
 import javabot.model.JavabotUser
-import org.testng.Assert.assertEquals
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
+@QuarkusTest
 class MessageTest : BaseTest() {
     companion object {
         val channel = Channel("#test")
@@ -35,7 +37,7 @@ class MessageTest : BaseTest() {
                 BaseTest.TEST_BOT_NICK,
                 test,
             )
-        assertEquals(message.value, expected)
-        assertEquals(message.triggered, triggered)
+        assertEquals(expected, message.value)
+        assertEquals(triggered, message.triggered)
     }
 }

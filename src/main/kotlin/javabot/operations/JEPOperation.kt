@@ -3,7 +3,8 @@ package javabot.operations
 import com.antwerkz.sofia.Sofia
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
-import com.google.inject.Singleton
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.io.IOException
 import java.util.Locale
 import java.util.concurrent.ExecutionException
@@ -18,7 +19,7 @@ import org.jsoup.Jsoup
  * directly with references to RFC stuff being renamed to JEP stuff instead.
  */
 @Singleton
-class JEPOperation @com.google.inject.Inject constructor(bot: Javabot, adminDao: AdminDao) :
+class JEPOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
     BotOperation(bot, adminDao) {
     var jepTitleCache =
         CacheBuilder.newBuilder()

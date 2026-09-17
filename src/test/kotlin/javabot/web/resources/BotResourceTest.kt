@@ -1,11 +1,11 @@
 package javabot.web.resources
 
+import jakarta.inject.Inject
 import java.net.http.HttpClient
 import javabot.BaseTest
 import javabot.JavabotConfig
 import javabot.web.JavabotApplication
 import javabot.web.JavabotConfiguration
-import javax.inject.Inject
 import org.testng.annotations.Test
 
 @Test(enabled = false)

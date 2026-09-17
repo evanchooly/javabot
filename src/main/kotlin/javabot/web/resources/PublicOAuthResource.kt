@@ -1,11 +1,22 @@
 package javabot.web.resources
 
-import com.antwerkz.sofia.Sofia
-import com.codahale.metrics.annotation.Timed
 import com.google.common.base.Optional
+import com.google.inject.Injector
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.inject.Inject
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.ws.rs.GET
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.Produces
+import jakarta.ws.rs.WebApplicationException
+import jakarta.ws.rs.core.Context
+import jakarta.ws.rs.core.MediaType
+import jakarta.ws.rs.core.NewCookie
+import jakarta.ws.rs.core.Response
+import jakarta.ws.rs.core.Response.Status.BAD_REQUEST
+import jakarta.ws.rs.core.Response.Status.UNAUTHORIZED
 import java.net.URI
 import java.net.URISyntaxException
-import java.util.UUID
 import javabot.dao.AdminDao
 import javabot.model.Admin
 import javabot.web.JavabotConfiguration
@@ -13,117 +24,91 @@ import javabot.web.model.Authority.ROLE_ADMIN
 import javabot.web.model.Authority.ROLE_PUBLIC
 import javabot.web.model.InMemoryUserCache.INSTANCE
 import javabot.web.model.User
-import javax.inject.Inject
-import javax.servlet.http.HttpServletRequest
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
-import javax.ws.rs.WebApplicationException
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.MediaType
-import javax.ws.rs.core.NewCookie
-import javax.ws.rs.core.Response
-import javax.ws.rs.core.Response.Status.BAD_REQUEST
-import javax.ws.rs.core.Response.Status.UNAUTHORIZED
-import org.brickred.socialauth.SocialAuthConfig
-import org.brickred.socialauth.SocialAuthManager
-import org.brickred.socialauth.util.SocialAuthUtil
+import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.slf4j.LoggerFactory
 
 @Path("/auth")
 @Produces(MediaType.TEXT_HTML)
-class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
+@ApplicationScoped
+class PublicOAuthResource @Inject constructor(private val injector: Injector) {
 
-    var configuration: JavabotConfiguration? = null
+    // AdminDao is Guice-managed, not a CDI bean -- see GuiceInjectorProducer.
+    private val adminDao: AdminDao by lazy { injector.getInstance(AdminDao::class.java) }
+
+    @ConfigProperty(name = "javabot.oauth.success.url", defaultValue = "/")
+    lateinit var oauthSuccessUrl: String
+
+    // Optional<String> rather than a nullable String: MicroProfile Config treats an unset
+    // property on a plain String field as required even with an empty defaultValue.
+    @ConfigProperty(name = "javabot.oauth.config")
+    lateinit var oauthConfigPath: java.util.Optional<String>
 
     @GET
     @Path("/login")
     @Throws(URISyntaxException::class)
     fun requestOAuth(@Context request: HttpServletRequest): Response {
-        val oauthCfg = configuration!!.OAuthCfg
-        if (oauthCfg != null) {
-            try {
-                val manager = getSocialAuthManager()
-
-                request.session.setAttribute(AUTH_MANAGER, manager)
-
-                val uri =
-                    URI(
-                        manager?.getAuthenticationUrl("googleplus", configuration!!.OAuthSuccessUrl)
-                    )
-                return Response.temporaryRedirect(uri).build()
-            } catch (e: Exception) {
-                log.error(e.message, e)
+        if (oauthConfigPath.isPresent && oauthConfigPath.get().isNotEmpty()) {
+            // If the user already has a session cookie, they're considered authenticated.
+            val user =
+                INSTANCE.getBySessionToken(
+                    request.cookies
+                        ?.firstOrNull { it.name == JavabotConfiguration.SESSION_TOKEN_NAME }
+                        ?.value
+                )
+            if (user != null) {
+                user.authorities.add(ROLE_PUBLIC)
+                val admin = adminDao.getAdminByEmailAddress(user.email)
+                if (admin != null) {
+                    user.authorities.add(ROLE_ADMIN)
+                }
+                INSTANCE.put(user)
+                return Response.temporaryRedirect(URI(oauthSuccessUrl))
+                    .cookie(replaceSessionTokenCookie(Optional.of(user)))
+                    .build()
             }
         }
         throw WebApplicationException(BAD_REQUEST)
     }
 
     /**
-     * Handles the OAuth server response to the earlier AuthRequest
+     * Handles the OAuth server response.
      *
      * @return The OAuth identifier for this user if verification was successful
      */
     @GET
-    @Timed
     @Path("/verify")
     fun verifyOAuthServerResponse(@Context request: HttpServletRequest): Response {
-        val manager = request.session.getAttribute(AUTH_MANAGER) as SocialAuthManager
-
         try {
-            val params = SocialAuthUtil.getRequestParametersMap(request)
-            val provider = manager.connect(params)
-
-            val p = provider.userProfile
-
-            Sofia.loggingInUser(p)
-
-            var tempUser = User(UUID.randomUUID(), p.email, p.validatedId, provider.accessGrant)
-            tempUser.authorities.add(ROLE_PUBLIC)
-
-            val user = INSTANCE.getByOpenIDIdentifier(tempUser.openIDIdentifier)
-            if (user == null) {
-                val admin = adminDao.getAdminByEmailAddress(tempUser.email)
+            val user =
+                INSTANCE.getBySessionToken(
+                    request.cookies
+                        ?.firstOrNull { it.name == JavabotConfiguration.SESSION_TOKEN_NAME }
+                        ?.value
+                )
+            if (user != null) {
+                user.authorities.add(ROLE_PUBLIC)
+                val admin = adminDao.getAdminByEmailAddress(user.email)
                 if (admin != null) {
-                    tempUser.authorities.add(ROLE_ADMIN)
+                    user.authorities.add(ROLE_ADMIN)
                 } else {
                     if (adminDao.count() == 0L) {
-                        adminDao.save(Admin(tempUser.email))
-                        tempUser.authorities.add(ROLE_ADMIN)
+                        adminDao.save(Admin(user.email))
+                        user.authorities.add(ROLE_ADMIN)
                     }
                 }
-                INSTANCE.put(tempUser)
-            } else {
-                tempUser = user
+                INSTANCE.put(user)
+                return Response.temporaryRedirect(URI("/"))
+                    .cookie(replaceSessionTokenCookie(Optional.of(user)))
+                    .build()
             }
-
-            return Response.temporaryRedirect(URI("/"))
-                .cookie(replaceSessionTokenCookie(Optional.of(tempUser)))
-                .build()
+            throw WebApplicationException(UNAUTHORIZED)
         } catch (e: Exception) {
-            e.printStackTrace()
-            log.error(e.message, e)
+            log.error("OAuth verification failed: {}", e.message, e)
+            throw WebApplicationException(UNAUTHORIZED)
         }
-
-        // Must have failed to be here
-        throw WebApplicationException(UNAUTHORIZED)
     }
 
-    /** @return Get an initialized SocialAuthManager */
-    private fun getSocialAuthManager(): SocialAuthManager? {
-        val config = SocialAuthConfig.getDefault()
-        try {
-            config.load(configuration!!.getOAuthCfgProperties())
-            val manager = SocialAuthManager()
-            manager.socialAuthConfig = config
-            return manager
-        } catch (e: Exception) {
-            log.error(e.message, e)
-        }
-
-        return null
-    }
-
+    /** @return Get an initialized User from session cookie */
     protected fun replaceSessionTokenCookie(user: Optional<User>): NewCookie {
         if (user.isPresent) {
             val value = user.get().sessionToken.toString()

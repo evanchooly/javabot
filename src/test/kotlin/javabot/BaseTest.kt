@@ -4,6 +4,9 @@ import com.google.inject.Injector
 import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.Duration
 import dev.morphia.Datastore
+import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
+import jakarta.inject.Provider
 import java.util.EnumSet
 import java.util.concurrent.TimeUnit.SECONDS
 import javabot.dao.AdminDao
@@ -23,17 +26,14 @@ import javabot.model.Logs
 import javabot.model.NickServInfo
 import javabot.model.State
 import javabot.model.javadoc.JavadocApi
-import javax.inject.Inject
-import javax.inject.Provider
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.TestInstance
 import org.pircbotx.PircBotX
 import org.slf4j.LoggerFactory
-import org.testng.Assert
-import org.testng.annotations.AfterSuite
-import org.testng.annotations.BeforeMethod
-import org.testng.annotations.BeforeTest
-import org.testng.annotations.Guice
 
-@Guice(modules = [JavabotTestModule::class])
+@QuarkusTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 open class BaseTest {
 
     companion object {
@@ -50,29 +50,21 @@ open class BaseTest {
 
     @Inject lateinit var injector: Injector
 
-    @Inject protected lateinit var datastore: Datastore
+    protected val datastore: Datastore by lazy { injector.getInstance(Datastore::class.java) }
+    private val config: JavabotConfig by lazy { injector.getInstance(JavabotConfig::class.java) }
+    protected val apiDao: ApiDao by lazy { injector.getInstance(ApiDao::class.java) }
+    protected val eventDao: EventDao by lazy { injector.getInstance(EventDao::class.java) }
+    protected val channelDao: ChannelDao by lazy { injector.getInstance(ChannelDao::class.java) }
+    protected val logsDao: LogsDao by lazy { injector.getInstance(LogsDao::class.java) }
+    protected val adminDao: AdminDao by lazy { injector.getInstance(AdminDao::class.java) }
+    protected val changeDao: ChangeDao by lazy { injector.getInstance(ChangeDao::class.java) }
+    protected val bot: Provider<TestJavabot> by lazy {
+        injector.getProvider(TestJavabot::class.java)
+    }
+    protected val ircBot: Provider<PircBotX> by lazy { injector.getProvider(PircBotX::class.java) }
+    protected val messages: Messages by lazy { injector.getInstance(Messages::class.java) }
 
-    @Inject private lateinit var config: JavabotConfig
-
-    @Inject protected lateinit var apiDao: ApiDao
-
-    @Inject protected lateinit var eventDao: EventDao
-
-    @Inject protected lateinit var channelDao: ChannelDao
-
-    @Inject protected lateinit var logsDao: LogsDao
-
-    @Inject protected lateinit var adminDao: AdminDao
-
-    @Inject protected lateinit var changeDao: ChangeDao
-
-    @Inject protected lateinit var bot: Provider<TestJavabot>
-
-    @Inject protected lateinit var ircBot: Provider<PircBotX>
-
-    @Inject protected lateinit var messages: Messages
-
-    @BeforeTest
+    @BeforeEach
     fun setup() {
         LOG.debug("setting up test")
         messages.clear()
@@ -109,16 +101,6 @@ open class BaseTest {
         bot.getAllOperations().keys.forEach { bot.disableOperation(it) }
     }
 
-    @BeforeMethod
-    fun clearMessages() {
-        messages.clear()
-    }
-
-    @AfterSuite
-    fun shutdown() {
-        bot.get().shutdown()
-    }
-
     protected fun waitForEvent(
         event: AdminEvent,
         alias: String,
@@ -153,7 +135,7 @@ open class BaseTest {
         for (response in messages) {
             found = found or response.value.contains(target)
         }
-        Assert.assertTrue(
+        assertTrue(
             found,
             java.lang.String.format(
                 "Did not find \n'%s' in \n'%s'",

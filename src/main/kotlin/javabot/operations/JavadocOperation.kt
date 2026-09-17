@@ -1,7 +1,7 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Inject
+import jakarta.inject.Inject
 import java.util.ArrayList
 import java.util.Locale
 import javabot.Javabot
@@ -29,7 +29,8 @@ constructor(
         private val RESULT_LIMIT = 5
     }
 
-    @field:[Nullable Inject(optional = true)]
+    // JavabotModule.bitly() is always bound, though it may produce a null Bitly.
+    @field:[Nullable Inject]
     var bitly: Bitly? = null
 
     override fun handleMessage(event: Message): List<Message> {

@@ -2,13 +2,13 @@ package javabot.operations
 
 import com.enigmastation.kgpt.asSystem
 import com.enigmastation.kgpt.asUser
+import jakarta.inject.Inject
 import java.util.*
 import javabot.Javabot
 import javabot.Message
 import javabot.NoOperationMessage
 import javabot.dao.AdminDao
 import javabot.dao.ChatGPTDao
-import javax.inject.Inject
 
 /** Gets current weather conditions for a place given as a parameter. */
 class ChatGPTOperation

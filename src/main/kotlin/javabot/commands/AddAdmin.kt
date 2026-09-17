@@ -2,10 +2,10 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
+import jakarta.inject.Inject
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
-import javax.inject.Inject
 
 class AddAdmin @Inject constructor(bot: Javabot, adminDao: AdminDao) : AdminCommand(bot, adminDao) {
     @Parameter(required = true) lateinit var userName: String

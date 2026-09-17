@@ -5,11 +5,11 @@ import dev.morphia.Datastore
 import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
 import dev.morphia.query.filters.Filters.eq
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.util.Locale
 import javabot.dao.util.QueryParam
 import javabot.model.Karma
-import javax.inject.Inject
 
 class KarmaDao
 @Inject

@@ -1,6 +1,7 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.Date
@@ -8,7 +9,6 @@ import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ShunDao
-import javax.inject.Inject
 
 /**
  * Causes the bot to disregard bot triggers for a few minutes. Useful to de-fang abusive users

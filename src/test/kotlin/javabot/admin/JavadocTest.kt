@@ -1,5 +1,6 @@
 package javabot.admin
 
+import jakarta.inject.Inject
 import java.io.File
 import javabot.BaseTest
 import javabot.JavabotConfig
@@ -7,7 +8,6 @@ import javabot.dao.JavadocClassDao
 import javabot.model.ApiEvent
 import javabot.model.javadoc.JavadocApi
 import javabot.operations.JavadocOperation
-import javax.inject.Inject
 import org.testng.Assert
 import org.testng.Assert.assertNotNull
 import org.testng.annotations.BeforeClass

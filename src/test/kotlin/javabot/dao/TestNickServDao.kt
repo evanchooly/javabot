@@ -1,8 +1,8 @@
 package javabot.dao
 
-import com.google.inject.Inject
 import com.google.inject.Provider
 import dev.morphia.Datastore
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import javabot.model.JavabotUser

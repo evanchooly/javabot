@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
-import com.google.inject.Inject
+import jakarta.inject.Inject
 import java.util.concurrent.TimeUnit
 import javabot.JavabotConfig
 import javabot.dao.geocode.model.GeocodeResponse

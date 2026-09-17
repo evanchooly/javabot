@@ -1,6 +1,5 @@
 package javabot.dao
 
-import com.google.inject.Inject
 import dev.morphia.Datastore
 import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
@@ -8,6 +7,7 @@ import dev.morphia.query.Sort
 import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.gte
 import dev.morphia.query.filters.Filters.lte
+import jakarta.inject.Inject
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.Locale
