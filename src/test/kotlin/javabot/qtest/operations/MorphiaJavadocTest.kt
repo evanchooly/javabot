@@ -1,19 +1,23 @@
-package javabot.operations
+package javabot.qtest.operations
 
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
 import javabot.BaseTest
-import org.testng.annotations.BeforeTest
-import org.testng.annotations.Test
+import javabot.operations.JavadocOperation
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
-@Test
+@QuarkusTest
 class MorphiaJavadocTest : BaseTest() {
-    @Inject private lateinit var operation: JavadocOperation
+    private val operation: JavadocOperation by lazy {
+        injector.getInstance(JavadocOperation::class.java)
+    }
 
-    @BeforeTest
+    @BeforeEach
     fun load() {
         loadApi("Morphia", "dev.morphia.morphia", "morphia-core", "2.2.10")
     }
 
+    @Test
     fun constructors() {
         scanForResponse(
             operation.handleMessage(message("~javadoc CountOptions()")),
@@ -25,6 +29,7 @@ class MorphiaJavadocTest : BaseTest() {
         )
     }
 
+    @Test
     fun methods() {
         scanForResponse(
             operation.handleMessage(message("~javadoc Query.filter(*)")),
@@ -32,6 +37,7 @@ class MorphiaJavadocTest : BaseTest() {
         )
     }
 
+    @Test
     fun primitives() {
         scanForResponse(
             operation.handleMessage(message("~javadoc CountOptions.limit(int)")),
@@ -43,6 +49,7 @@ class MorphiaJavadocTest : BaseTest() {
         )
     }
 
+    @Test
     fun fields() {
         scanForResponse(
             operation.handleMessage(message("~javadoc SystemVariables.CLUSTER_TIME")),
@@ -50,6 +57,7 @@ class MorphiaJavadocTest : BaseTest() {
         )
     }
 
+    @Test
     fun nonpublic() {
         scanForResponse(
             operation.handleMessage(

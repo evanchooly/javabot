@@ -1,22 +1,26 @@
-package javabot.operations
+package javabot.qtest.operations
 
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import javabot.BaseTest
 import javabot.JavabotConfig
-import org.testng.SkipException
-import org.testng.annotations.BeforeTest
-import org.testng.annotations.Test
+import javabot.operations.WeatherOperation
+import org.junit.jupiter.api.Assumptions.assumeFalse
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 /**
  * Integration test for the Weather Operation, will actually attempt to contact the Google API for
  * weather as it's using the real Dao instead of a Mock/Stub
  */
+@QuarkusTest
 class WeatherOperationTest : BaseTest() {
-    @Inject private lateinit var operation: WeatherOperation
-    @Inject private lateinit var config: JavabotConfig
+    private val operation: WeatherOperation by lazy {
+        injector.getInstance(WeatherOperation::class.java)
+    }
+    private val config: JavabotConfig by lazy { injector.getInstance(JavabotConfig::class.java) }
 
     @Test
     fun tellWeather() {
@@ -44,11 +48,9 @@ class WeatherOperationTest : BaseTest() {
         scanForResponse(messages, "-0700") // PHX doesn't have DST yet, so this is constant
     }
 
-    @BeforeTest
+    @BeforeEach
     fun checkForToken() {
-        if (config.openweathermapToken() == "") {
-            throw SkipException("weather token not configured")
-        }
+        assumeFalse(config.openweathermapToken() == "", "weather token not configured")
     }
 
     @Test
