@@ -9,7 +9,8 @@ import javabot.web.model.OAuthConfig
 class JavabotConfiguration {
 
     companion object {
-        val SESSION_TOKEN_NAME: String = "JavabotSession"
+        // const so it can be used in annotation arguments (e.g. @CookieParam).
+        const val SESSION_TOKEN_NAME: String = "JavabotSession"
     }
 
     @JsonDeserialize(contentAs = OAuthConfig::class) var OAuthCfg: List<OAuthConfig>? = null

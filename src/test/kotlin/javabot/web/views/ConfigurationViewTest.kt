@@ -23,7 +23,7 @@ class ConfigurationViewTest : ViewsTest() {
         configDao.save(config)
 
         var output = ByteArrayOutputStream()
-        var templateInstance = templateService.createConfigurationView(MockServletRequest(false))
+        var templateInstance = templateService.createConfigurationView(mockSessionToken(false))
         var html = templateInstance.render()
         output.write(html.toByteArray())
         var source = Source(ByteArrayInputStream(output.toByteArray()))
@@ -42,7 +42,7 @@ class ConfigurationViewTest : ViewsTest() {
         configDao.save(config)
 
         output = ByteArrayOutputStream()
-        templateInstance = templateService.createConfigurationView(MockServletRequest(false))
+        templateInstance = templateService.createConfigurationView(mockSessionToken(false))
         html = templateInstance.render()
         output.write(html.toByteArray())
         source = Source(ByteArrayInputStream(output.toByteArray()))

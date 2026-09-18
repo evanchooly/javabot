@@ -18,7 +18,7 @@ class KarmaViewTest : ViewsTest() {
         createKarma(100)
 
         val output = ByteArrayOutputStream()
-        val templateInstance = templateService.createKarmaView(MockServletRequest(false), 0)
+        val templateInstance = templateService.createKarmaView(mockSessionToken(false), 0)
         val html = templateInstance.render()
         output.write(html.toByteArray())
 

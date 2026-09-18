@@ -16,7 +16,7 @@ class ChangesViewTest : ViewsTest() {
 
         var output = ByteArrayOutputStream()
         var templateInstance =
-            templateService.createChangesView(MockServletRequest(false), 0, null, null)
+            templateService.createChangesView(mockSessionToken(false), 0, null, null)
         var html = templateInstance.render()
         output.write(html.toByteArray())
         var source = Source(ByteArrayInputStream(output.toByteArray()))
@@ -27,7 +27,7 @@ class ChangesViewTest : ViewsTest() {
 
         output = ByteArrayOutputStream()
         templateInstance =
-            templateService.createChangesView(MockServletRequest(false), 0, "change 2", null)
+            templateService.createChangesView(mockSessionToken(false), 0, "change 2", null)
         html = templateInstance.render()
         output.write(html.toByteArray())
         source = Source(ByteArrayInputStream(output.toByteArray()))

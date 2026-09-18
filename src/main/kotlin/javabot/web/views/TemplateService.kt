@@ -11,8 +11,6 @@ import io.quarkus.qute.ValueResolver
 import io.quarkus.qute.Variant
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
-import jakarta.servlet.http.Cookie
-import jakarta.servlet.http.HttpServletRequest
 import java.io.InputStreamReader
 import java.io.Reader
 import java.net.URLEncoder
@@ -34,7 +32,6 @@ import javabot.dao.util.QueryParam
 import javabot.model.Admin
 import javabot.model.Channel
 import javabot.model.Factoid
-import javabot.web.JavabotConfiguration
 import javabot.web.model.InMemoryUserCache.INSTANCE
 import javabot.web.resources.BotResource
 
@@ -76,16 +73,12 @@ class TemplateService @Inject constructor(private val injector: Injector) {
     private val error500Template: Template = engine.getTemplate("error/500.html")
 
     // Index view
-    fun createIndexView(request: HttpServletRequest): TemplateInstance {
-        return mainTemplate.data(shellData(request))
+    fun createIndexView(sessionToken: String?): TemplateInstance {
+        return mainTemplate.data(shellData(sessionToken))
     }
 
     // Factoids view
-    fun createFactoidsView(
-        request: HttpServletRequest,
-        page: Int,
-        filter: Factoid,
-    ): TemplateInstance {
+    fun createFactoidsView(sessionToken: String?, page: Int, filter: Factoid): TemplateInstance {
         val pageData = PageData(page, factoidDao.countFiltered(filter), ITEMS_PER_PAGE)
         val factoids =
             factoidDao.getFactoidsFiltered(
@@ -93,7 +86,7 @@ class TemplateService @Inject constructor(private val injector: Injector) {
                 filter,
             )
 
-        val data = shellData(request)
+        val data = shellData(sessionToken)
         data["contentTemplate"] = "paged.html"
         data["pagedView"] = "factoids.html"
         data.putAll(pagedData(pageData, factoids))
@@ -102,11 +95,11 @@ class TemplateService @Inject constructor(private val injector: Injector) {
     }
 
     // Karma view
-    fun createKarmaView(request: HttpServletRequest, page: Int): TemplateInstance {
+    fun createKarmaView(sessionToken: String?, page: Int): TemplateInstance {
         val pageData = PageData(page, karmaDao.count(), ITEMS_PER_PAGE)
         val karmaList = karmaDao.list(QueryParam(pageData.index, ITEMS_PER_PAGE, "value", false))
 
-        val data = shellData(request)
+        val data = shellData(sessionToken)
         data["contentTemplate"] = "paged.html"
         data["pagedView"] = "karma.html"
         data.putAll(pagedData(pageData, karmaList))
@@ -115,7 +108,7 @@ class TemplateService @Inject constructor(private val injector: Injector) {
 
     // Changes view
     fun createChangesView(
-        request: HttpServletRequest,
+        sessionToken: String?,
         page: Int,
         message: String?,
         date: LocalDateTime?,
@@ -128,7 +121,7 @@ class TemplateService @Inject constructor(private val injector: Injector) {
                 date,
             )
 
-        val data = shellData(request)
+        val data = shellData(sessionToken)
         data["contentTemplate"] = "paged.html"
         data["pagedView"] = "changes.html"
         data.putAll(pagedData(pageData, changes))
@@ -138,11 +131,11 @@ class TemplateService @Inject constructor(private val injector: Injector) {
 
     // Logs view
     fun createLogsView(
-        request: HttpServletRequest,
+        sessionToken: String?,
         channel: String,
         date: LocalDateTime,
     ): TemplateInstance {
-        val logs = logsDao.findByChannel(channel, date, isAdmin(request))
+        val logs = logsDao.findByChannel(channel, date, isAdmin(sessionToken))
         // Filter the log content
         for (log in logs) {
             log.message =
@@ -153,7 +146,7 @@ class TemplateService @Inject constructor(private val injector: Injector) {
         val yesterday = BotResource.FORMAT.format(date.minusDays(1))
         val tomorrow = BotResource.FORMAT.format(date.plusDays(1))
 
-        val data = shellData(request)
+        val data = shellData(sessionToken)
         data["contentTemplate"] = "logs.html"
         data["logs"] = logs
         data["channel"] = channel
@@ -165,11 +158,11 @@ class TemplateService @Inject constructor(private val injector: Injector) {
 
     // Admin index view
     fun createAdminIndexView(
-        request: HttpServletRequest,
+        sessionToken: String?,
         current: Admin,
         editing: Admin?,
     ): TemplateInstance {
-        val data = shellData(request)
+        val data = shellData(sessionToken)
         data["contentTemplate"] = "admin/index.html"
         data["current"] = current
         data["editing"] = editing
@@ -178,12 +171,12 @@ class TemplateService @Inject constructor(private val injector: Injector) {
     }
 
     // Configuration view
-    fun createConfigurationView(request: HttpServletRequest): TemplateInstance {
+    fun createConfigurationView(sessionToken: String?): TemplateInstance {
         val config = configDao.get()
         val operations = javabot.getAllOperations().values.sortedBy { it.getName() }
         val currentOps = config.operations.toSet()
 
-        val data = shellData(request)
+        val data = shellData(sessionToken)
         data["contentTemplate"] = "admin/configuration.html"
         data["configuration"] = config
         data["operations"] = operations
@@ -192,16 +185,16 @@ class TemplateService @Inject constructor(private val injector: Injector) {
     }
 
     // Channel edit view
-    fun createChannelEditView(request: HttpServletRequest, channel: Channel): TemplateInstance {
-        val data = shellData(request)
+    fun createChannelEditView(sessionToken: String?, channel: Channel): TemplateInstance {
+        val data = shellData(sessionToken)
         data["contentTemplate"] = "admin/editChannel.html"
         data["channel"] = channel
         return mainTemplate.data(data)
     }
 
     // Javadoc admin view
-    fun createJavadocAdminView(request: HttpServletRequest): TemplateInstance {
-        val data = shellData(request)
+    fun createJavadocAdminView(sessionToken: String?): TemplateInstance {
+        val data = shellData(sessionToken)
         data["contentTemplate"] = "admin/javadoc.html"
         return mainTemplate.data(data)
     }
@@ -220,12 +213,12 @@ class TemplateService @Inject constructor(private val injector: Injector) {
     }
 
     // Data shared by every page that renders through main.html
-    private fun shellData(request: HttpServletRequest): MutableMap<String, Any?> {
+    private fun shellData(sessionToken: String?): MutableMap<String, Any?> {
         return mutableMapOf(
             "factoidCount" to factoidDao.count(),
-            "loggedIn" to isLoggedIn(request),
-            "isAdmin" to isAdmin(request),
-            "channels" to channelDao.getChannels(isAdmin(request)),
+            "loggedIn" to isLoggedIn(sessionToken),
+            "isAdmin" to isAdmin(sessionToken),
+            "channels" to channelDao.getChannels(isAdmin(sessionToken)),
             "currentChannel" to "",
             "apis" to apiDao.findAll(),
             "sofia" to Sofia,
@@ -249,21 +242,13 @@ class TemplateService @Inject constructor(private val injector: Injector) {
         )
     }
 
-    private fun isLoggedIn(request: HttpServletRequest): Boolean {
-        return INSTANCE.getBySessionToken(getSessionCookie(request)?.value) != null
+    private fun isLoggedIn(sessionToken: String?): Boolean {
+        return INSTANCE.getBySessionToken(sessionToken) != null
     }
 
-    private fun isAdmin(request: HttpServletRequest): Boolean {
-        val cookie = getSessionCookie(request)
-        if (cookie != null) {
-            val user = INSTANCE.getBySessionToken(cookie.value)
-            return user != null && adminDao.getAdminByEmailAddress(user.email) != null
-        }
-        return false
-    }
-
-    private fun getSessionCookie(request: HttpServletRequest): Cookie? {
-        return request.cookies?.firstOrNull { it.name == JavabotConfiguration.SESSION_TOKEN_NAME }
+    private fun isAdmin(sessionToken: String?): Boolean {
+        val user = INSTANCE.getBySessionToken(sessionToken)
+        return user != null && adminDao.getAdminByEmailAddress(user.email) != null
     }
 
     private fun getRandomImage(images: Array<String>): String {

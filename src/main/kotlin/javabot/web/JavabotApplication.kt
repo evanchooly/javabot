@@ -5,11 +5,8 @@ import io.quarkus.runtime.StartupEvent
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.event.Observes
 import jakarta.inject.Inject
-import jakarta.servlet.http.HttpServletRequest
-import jakarta.servlet.http.HttpServletResponse
 import jakarta.ws.rs.container.ContainerRequestContext
 import jakarta.ws.rs.container.ContainerRequestFilter
-import jakarta.ws.rs.core.Context
 import jakarta.ws.rs.ext.Provider
 import java.io.File
 import java.nio.file.Files
@@ -42,10 +39,6 @@ class JavabotApplication @Inject constructor(var injector: Injector) {
     @ApplicationScoped
     class JavadocFilter : ContainerRequestFilter {
 
-        @Context private lateinit var httpRequest: HttpServletRequest
-
-        @Context private lateinit var httpResponse: HttpServletResponse
-
         override fun filter(requestContext: ContainerRequestContext) {
             val path = requestContext.uriInfo.path
             if (path.startsWith("/javadoc/")) {
@@ -57,12 +50,10 @@ class JavabotApplication @Inject constructor(var injector: Injector) {
 
                 if (Files.exists(javadocPath)) {
                     try {
-                        httpResponse.outputStream.use { stream ->
-                            Files.copy(javadocPath, stream)
-                            stream.flush()
-                        }
-                        requestContext.abortWith(jakarta.ws.rs.core.Response.ok().build())
-                    } catch (e: Exception) {
+                        requestContext.abortWith(
+                            jakarta.ws.rs.core.Response.ok(javadocPath.toFile()).build()
+                        )
+                    } catch (_: Exception) {
                         requestContext.abortWith(jakarta.ws.rs.core.Response.status(500).build())
                     }
                 } else {

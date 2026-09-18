@@ -83,7 +83,7 @@ class FactoidsViewTest : ViewsTest() {
     private fun render(page: Int, filter: Factoid): Source {
         val output = ByteArrayOutputStream()
         val templateInstance =
-            templateService.createFactoidsView(MockServletRequest(false), page, filter)
+            templateService.createFactoidsView(mockSessionToken(false), page, filter)
         val html = templateInstance.render()
         output.write(html.toByteArray())
         return Source(ByteArrayInputStream(output.toByteArray()))

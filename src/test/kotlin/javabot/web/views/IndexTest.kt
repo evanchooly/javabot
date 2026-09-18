@@ -20,7 +20,7 @@ class IndexTest : ViewsTest() {
     @Throws(IOException::class)
     protected fun find(loggedIn: Boolean) {
         val output = ByteArrayOutputStream()
-        val templateInstance = templateService.createIndexView(MockServletRequest(loggedIn))
+        val templateInstance = templateService.createIndexView(mockSessionToken(loggedIn))
         val html = templateInstance.render()
         output.write(html.toByteArray())
 

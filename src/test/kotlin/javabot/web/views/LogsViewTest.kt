@@ -16,7 +16,7 @@ class LogsViewTest : ViewsTest() {
     fun render() {
         render(
             templateService.createLogsView(
-                MockServletRequest(false),
+                mockSessionToken(false),
                 "testchannel",
                 LocalDateTime.now(),
             )
@@ -48,7 +48,7 @@ class LogsViewTest : ViewsTest() {
         val rendered =
             render(
                     templateService.createLogsView(
-                        MockServletRequest(false),
+                        mockSessionToken(false),
                         eventChannel,
                         LocalDateTime.now(),
                     )

@@ -4,15 +4,15 @@ import com.google.inject.Injector
 import io.quarkus.qute.TemplateInstance
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
-import jakarta.servlet.http.HttpServletRequest
 import jakarta.ws.rs.Consumes
+import jakarta.ws.rs.CookieParam
 import jakarta.ws.rs.FormParam
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.POST
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.PathParam
 import jakarta.ws.rs.WebApplicationException
-import jakarta.ws.rs.core.Context
+import jakarta.ws.rs.core.Cookie
 import jakarta.ws.rs.core.MediaType
 import java.util.UUID
 import javabot.Javabot
@@ -54,14 +54,12 @@ constructor(
     // Every endpoint here requires an admin session. RESTEasy Reactive resolves resource method
     // parameters itself (unlike Dropwizard/Jersey, it has no notion of a custom @Restricted
     // annotation providing one), so the authenticated user is looked up explicitly instead.
-    private fun currentUser(request: HttpServletRequest): User {
-        val cookie =
-            request.cookies?.firstOrNull { it.name == JavabotConfiguration.SESSION_TOKEN_NAME }
-                ?: throw WebApplicationException(401)
+    private fun currentUser(sessionCookie: Cookie?): User {
+        val cookie = sessionCookie ?: throw WebApplicationException(401)
         val sessionToken =
             try {
                 UUID.fromString(cookie.value)
-            } catch (e: IllegalArgumentException) {
+            } catch (_: IllegalArgumentException) {
                 throw WebApplicationException(401)
             }
         return authenticator
@@ -70,41 +68,49 @@ constructor(
     }
 
     @GET
-    fun index(@Context request: HttpServletRequest): TemplateInstance {
-        val user = currentUser(request)
+    fun index(
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?
+    ): TemplateInstance {
+        val user = currentUser(sessionCookie)
         val current = adminDao.getAdminByEmailAddress(user.email)
         return if (current == null) templateService.createError403View()
-        else templateService.createAdminIndexView(request, current, Admin())
+        else templateService.createAdminIndexView(sessionCookie?.value, current, Admin())
     }
 
     @GET
     @Path("/config")
-    fun config(@Context request: HttpServletRequest): TemplateInstance {
-        val user = currentUser(request)
+    fun config(
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?
+    ): TemplateInstance {
+        val user = currentUser(sessionCookie)
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        return templateService.createConfigurationView(request)
+        return templateService.createConfigurationView(sessionCookie?.value)
     }
 
     @GET
     @Path("/javadoc")
-    fun javadoc(@Context request: HttpServletRequest): TemplateInstance {
-        val user = currentUser(request)
+    fun javadoc(
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?
+    ): TemplateInstance {
+        val user = currentUser(sessionCookie)
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        return templateService.createJavadocAdminView(request)
+        return templateService.createJavadocAdminView(sessionCookie?.value)
     }
 
     @GET
     @Path("/newChannel")
-    fun newChannel(@Context request: HttpServletRequest): TemplateInstance {
-        val user = currentUser(request)
+    fun newChannel(
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?
+    ): TemplateInstance {
+        val user = currentUser(sessionCookie)
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        return templateService.createChannelEditView(request, Channel())
+        return templateService.createChannelEditView(sessionCookie?.value, Channel())
     }
 
     @GET
     @Path("/editChannel/{channel}")
     fun editChannel(
-        @Context request: HttpServletRequest,
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
         user: User,
         @PathParam("channel") channel: String,
     ): TemplateInstance {
@@ -112,33 +118,33 @@ constructor(
 
         val channelOpt = channelDao.get(channel)
         if (channelOpt == null) {
-            return templateService.createIndexView(request)
+            return templateService.createIndexView(sessionCookie?.value)
         }
-        return templateService.createChannelEditView(request, channelOpt)
+        return templateService.createChannelEditView(sessionCookie?.value, channelOpt)
     }
 
     @POST
     @Path("/saveChannel")
     fun saveChannel(
-        @Context request: HttpServletRequest,
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
         @FormParam("id") id: String?,
         @FormParam("name") name: String,
         @FormParam("key") key: String,
         @FormParam("logged") logged: Boolean,
     ): TemplateInstance {
-        val user = currentUser(request)
+        val user = currentUser(sessionCookie)
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         val channel =
             if (id == null) Channel(name, key, logged) else Channel(ObjectId(id), name, key, logged)
         channelDao.save(channel)
-        return index(request)
+        return index(sessionCookie)
     }
 
     @POST
     @Path("/saveConfig")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     fun saveConfig(
-        @Context request: HttpServletRequest,
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
         @FormParam("server") server: String,
         @FormParam("url") url: String,
         @FormParam("port") port: Int,
@@ -149,7 +155,7 @@ constructor(
         @FormParam("throttleThreshold") throttleThreshold: Int,
         @FormParam("minimumNickServAge") minimumNickServAge: Int,
     ): TemplateInstance {
-        val user = currentUser(request)
+        val user = currentUser(sessionCookie)
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         val config = configDao.get()
         config.server = server
@@ -162,70 +168,74 @@ constructor(
         config.throttleThreshold = throttleThreshold
         config.minimumNickServAge = minimumNickServAge
         configDao.save(config)
-        return templateService.createConfigurationView(request)
+        return templateService.createConfigurationView(sessionCookie?.value)
     }
 
     @GET
     @Path("/enableOperation/{name}")
     fun enableOperation(
-        @Context request: HttpServletRequest,
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
         @PathParam("name") name: String,
     ): TemplateInstance {
-        val user = currentUser(request)
+        val user = currentUser(sessionCookie)
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         javabot.enableOperation(name)
-        return templateService.createConfigurationView(request)
+        return templateService.createConfigurationView(sessionCookie?.value)
     }
 
     @GET
     @Path("/disableOperation/{name}")
     fun disableOperation(
-        @Context request: HttpServletRequest,
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
         @PathParam("name") name: String,
     ): TemplateInstance {
-        val user = currentUser(request)
+        val user = currentUser(sessionCookie)
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         javabot.disableOperation(name)
-        return templateService.createConfigurationView(request)
+        return templateService.createConfigurationView(sessionCookie?.value)
     }
 
     @GET
     @Path("/edit/{id}")
     fun editAdmin(
-        @Context request: HttpServletRequest,
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
         @PathParam("id") id: String,
     ): TemplateInstance {
-        val user = currentUser(request)
+        val user = currentUser(sessionCookie)
         val current =
             adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
 
-        return templateService.createAdminIndexView(request, current, adminDao.find(ObjectId(id)))
+        return templateService.createAdminIndexView(
+            sessionCookie?.value,
+            current,
+            adminDao.find(ObjectId(id)),
+        )
     }
 
     @GET
     @Path("/delete/{id}")
     fun deleteAdmin(
-        @Context request: HttpServletRequest,
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
         @PathParam("id") id: String,
     ): TemplateInstance {
-        val user = currentUser(request)
+        val user = currentUser(sessionCookie)
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         val admin = adminDao.find(ObjectId(id))
         if (admin != null && (!admin.botOwner)) {
             adminDao.delete(admin)
         }
-        return index(request)
+        return index(sessionCookie)
     }
 
     @POST
     @Path("/add")
     fun addAdmin(
-        @Context request: HttpServletRequest,
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
         @FormParam("ircName") ircName: String,
         @FormParam("hostName") hostName: String,
         @FormParam("emailAddress") emailAddress: String,
     ): TemplateInstance {
-        currentUser(request)
+        currentUser(sessionCookie)
         var admin: Admin? = adminDao.getAdminByEmailAddress(emailAddress)
         if (admin == null) {
             admin = Admin(ircName, emailAddress, hostName, true)
@@ -235,19 +245,19 @@ constructor(
             admin.emailAddress = emailAddress
         }
         adminDao.save(admin)
-        return index(request)
+        return index(sessionCookie)
     }
 
     @POST
     @Path("/addApi")
     fun addApi(
-        @Context request: HttpServletRequest,
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
         @FormParam("name") name: String?,
         @FormParam("groupId") groupId: String?,
         @FormParam("artifactId") artifactId: String?,
         @FormParam("version") version: String?,
     ): TemplateInstance {
-        val user = currentUser(request)
+        val user = currentUser(sessionCookie)
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         version?.let {
             val apiName = name ?: artifactId ?: throw WebApplicationException(400)
@@ -256,30 +266,30 @@ constructor(
             apiDao.save(ApiEvent.add(user.email, api))
         }
 
-        return javadoc(request)
+        return javadoc(sessionCookie)
     }
 
     @GET
     @Path("/deleteApi/{id}")
     fun deleteApi(
-        @Context request: HttpServletRequest,
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
         @PathParam("id") id: String,
     ): TemplateInstance {
-        val user = currentUser(request)
+        val user = currentUser(sessionCookie)
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         apiDao.delete(ObjectId(id))
-        return javadoc(request)
+        return javadoc(sessionCookie)
     }
 
     @GET
     @Path("/reloadApi/{id}")
     fun reloadApi(
-        @Context request: HttpServletRequest,
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
         @PathParam("id") id: String,
     ): TemplateInstance {
-        val user = currentUser(request)
+        val user = currentUser(sessionCookie)
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
         apiDao.find(ObjectId(id))?.let { apiDao.save(ApiEvent.reload(user.email, it)) }
-        return javadoc(request)
+        return javadoc(sessionCookie)
     }
 }

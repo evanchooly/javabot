@@ -4,12 +4,12 @@ import com.google.common.base.Optional
 import com.google.inject.Injector
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
-import jakarta.servlet.http.HttpServletRequest
+import jakarta.ws.rs.CookieParam
 import jakarta.ws.rs.GET
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.Produces
 import jakarta.ws.rs.WebApplicationException
-import jakarta.ws.rs.core.Context
+import jakarta.ws.rs.core.Cookie
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.NewCookie
 import jakarta.ws.rs.core.Response
@@ -46,15 +46,12 @@ class PublicOAuthResource @Inject constructor(private val injector: Injector) {
     @GET
     @Path("/login")
     @Throws(URISyntaxException::class)
-    fun requestOAuth(@Context request: HttpServletRequest): Response {
+    fun requestOAuth(
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?
+    ): Response {
         if (oauthConfigPath.isPresent && oauthConfigPath.get().isNotEmpty()) {
             // If the user already has a session cookie, they're considered authenticated.
-            val user =
-                INSTANCE.getBySessionToken(
-                    request.cookies
-                        ?.firstOrNull { it.name == JavabotConfiguration.SESSION_TOKEN_NAME }
-                        ?.value
-                )
+            val user = INSTANCE.getBySessionToken(sessionCookie?.value)
             if (user != null) {
                 user.authorities.add(ROLE_PUBLIC)
                 val admin = adminDao.getAdminByEmailAddress(user.email)
@@ -77,14 +74,11 @@ class PublicOAuthResource @Inject constructor(private val injector: Injector) {
      */
     @GET
     @Path("/verify")
-    fun verifyOAuthServerResponse(@Context request: HttpServletRequest): Response {
+    fun verifyOAuthServerResponse(
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?
+    ): Response {
         try {
-            val user =
-                INSTANCE.getBySessionToken(
-                    request.cookies
-                        ?.firstOrNull { it.name == JavabotConfiguration.SESSION_TOKEN_NAME }
-                        ?.value
-                )
+            val user = INSTANCE.getBySessionToken(sessionCookie?.value)
             if (user != null) {
                 user.authorities.add(ROLE_PUBLIC)
                 val admin = adminDao.getAdminByEmailAddress(user.email)

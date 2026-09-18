@@ -10,6 +10,6 @@ class JavadocAdminViewTest : ViewsTest() {
     @Test
     @Disabled
     fun render() {
-        render(templateService.createJavadocAdminView(MockServletRequest(false)))
+        render(templateService.createJavadocAdminView(mockSessionToken(false)))
     }
 }
