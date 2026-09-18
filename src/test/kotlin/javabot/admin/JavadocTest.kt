@@ -1,6 +1,6 @@
 package javabot.admin
 
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
 import java.io.File
 import javabot.BaseTest
 import javabot.JavabotConfig
@@ -8,25 +8,39 @@ import javabot.dao.JavadocClassDao
 import javabot.model.ApiEvent
 import javabot.model.javadoc.JavadocApi
 import javabot.operations.JavadocOperation
-import org.testng.Assert
-import org.testng.Assert.assertNotNull
-import org.testng.annotations.BeforeClass
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assumptions.assumeTrue
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
+import org.junit.jupiter.api.Order
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
 
-@Test
-class JavadocTest() : BaseTest() {
+@QuarkusTest
+@TestMethodOrder(OrderAnnotation::class)
+class JavadocTest : BaseTest() {
     companion object {
         val eeVersion = "8.0.0"
         val eeApiName = "JakartaEE8"
+        private var coreSucceeded = false
+        private var jakartaEESucceeded = false
     }
 
-    @Inject private lateinit var classDao: JavadocClassDao
+    // JavadocClassDao/JavabotConfig/JavadocOperation are Guice-domain (javabot.dao.**/javabot.*/
+    // javabot.operations.** are excluded from CDI) -- not real @Inject sites under @QuarkusTest.
+    private val classDao: JavadocClassDao by lazy {
+        injector.getInstance(JavadocClassDao::class.java)
+    }
 
-    @Inject private lateinit var config: JavabotConfig
+    private val config: JavabotConfig by lazy { injector.getInstance(JavabotConfig::class.java) }
 
-    @Inject private lateinit var operation: JavadocOperation
+    private val operation: JavadocOperation by lazy {
+        injector.getInstance(JavadocOperation::class.java)
+    }
 
-    @BeforeClass
+    @BeforeAll
     fun drops() {
         apiDao.delete(eeApiName)
     }
@@ -58,51 +72,19 @@ class JavadocTest() : BaseTest() {
 
     private fun checkServletFile() {
         val uri = File("javadoc/$eeApiName/$eeVersion/javax/servlet/http/HttpServlet.html")
-        Assert.assertTrue(uri.exists())
+        assertTrue(uri.exists())
     }
 
-    @Test(dependsOnMethods = ["core"])
-    fun jakartaEE() {
-        val api = loadApi(eeApiName, "jakarta.platform", "jakarta.jakartaee-api", "8.0.0")
-        verifyMapCount()
-        scanForResponse(
-            operation.handleMessage(message("~javadoc Annotated")),
-            "javax/enterprise/inject/spi/Annotated.html",
-        )
-        scanForResponse(
-            operation.handleMessage(message("~javadoc Annotated.getAnnotation(*)")),
-            "javax/enterprise/inject/spi/Annotated.html#getAnnotation",
-        )
-        scanForResponse(
-            operation.handleMessage(message("~javadoc ContextService")),
-            "javax/enterprise/concurrent/ContextService.html",
-        )
-
-        scanForResponse(
-            operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
-            "createContextualProxy-java.lang.Object-java.lang.Class...-",
-        )
-
-        scanForResponse(
-            operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
-            "createContextualProxy-java.lang.Object-java.util.Map-java.lang.Class...-",
-        )
-        scanForResponse(
-            operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
-            "createContextualProxy-T-java.lang.Class-",
-        )
-        scanForResponse(
-            operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
-            "createContextualProxy-T-java.util.Map-java.lang.Class-",
-        )
-
-        checkServlets(api)
+    private fun verifyMapCount() {
+        val list = classDao.getClass(null, "Map")
+        assertEquals(1, list.size, "Should have found only 1:  $list")
     }
 
     @Test
+    @Order(1)
     fun core() {
         val api = loadApi("JDK", version = "11")
-        Assert.assertEquals(classDao.getClass(api, "Map").size, 1)
+        assertEquals(1, classDao.getClass(api, "Map").size)
         assertNotNull(
             classDao.getClass(api, "java.lang", "Integer"),
             "Should find an entry for ${api.name}'s java.lang.Integer",
@@ -135,43 +117,79 @@ class JavadocTest() : BaseTest() {
             operation.handleMessage(message("~javadoc ResultSet.getInt(*)")),
             "${api.baseUrl}/java.sql/java/sql/ResultSet.html#getInt",
         )
+        coreSucceeded = true
     }
 
-    private fun verifyMapCount() {
-        val list = classDao.getClass(null, "Map")
-        Assert.assertEquals(list.size, 1, "Should have found only 1:  $list")
+    @Test
+    @Order(2)
+    fun jakartaEE() {
+        assumeTrue(coreSucceeded, "core must pass first")
+        val api = loadApi(eeApiName, "jakarta.platform", "jakarta.jakartaee-api", "8.0.0")
+        verifyMapCount()
+        scanForResponse(
+            operation.handleMessage(message("~javadoc Annotated")),
+            "javax/enterprise/inject/spi/Annotated.html",
+        )
+        scanForResponse(
+            operation.handleMessage(message("~javadoc Annotated.getAnnotation(*)")),
+            "javax/enterprise/inject/spi/Annotated.html#getAnnotation",
+        )
+        scanForResponse(
+            operation.handleMessage(message("~javadoc ContextService")),
+            "javax/enterprise/concurrent/ContextService.html",
+        )
+        scanForResponse(
+            operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
+            "createContextualProxy-java.lang.Object-java.lang.Class...-",
+        )
+        scanForResponse(
+            operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
+            "createContextualProxy-java.lang.Object-java.util.Map-java.lang.Class...-",
+        )
+        scanForResponse(
+            operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
+            "createContextualProxy-T-java.lang.Class-",
+        )
+        scanForResponse(
+            operation.handleMessage(message("~javadoc ContextService.createContextualProxy(*)")),
+            "createContextualProxy-T-java.util.Map-java.lang.Class-",
+        )
+        checkServlets(api)
+        jakartaEESucceeded = true
     }
 
-    @Test(dependsOnMethods = ["core", "jakartaEE"])
+    @Test
+    @Order(3)
     fun guava() {
+        assumeTrue(coreSucceeded && jakartaEESucceeded, "core and jakartaEE must pass first")
         val apiName = "guava"
         val guava = loadApi(apiName, "com.google.guava", "guava", "28.2-jre")
         val classCount = classDao.count()
 
-        Assert.assertEquals(classDao.getClass(guava, "ArrayTable").size, 1)
-        Assert.assertEquals(classDao.getClass(guava, "AbstractCache").size, 1)
-        Assert.assertEquals(classDao.getClass(guava, "ArrayBasedCharEscaper").size, 1)
-        Assert.assertEquals(classDao.getClass(null, "ArrayList").size, 1)
-        Assert.assertEquals(classDao.getClass(null, "HttpServlet").size, 1)
+        assertEquals(1, classDao.getClass(guava, "ArrayTable").size)
+        assertEquals(1, classDao.getClass(guava, "AbstractCache").size)
+        assertEquals(1, classDao.getClass(guava, "ArrayBasedCharEscaper").size)
+        assertEquals(1, classDao.getClass(null, "ArrayList").size)
+        assertEquals(1, classDao.getClass(null, "HttpServlet").size)
 
         classDao.delete(classDao.getClass(guava, "AbstractCache")[0])
         classDao.delete(classDao.getClass(guava, "ArrayTable")[0])
 
-        Assert.assertEquals(classDao.count(), classCount - 2)
+        assertEquals(classCount - 2, classDao.count())
 
-        Assert.assertEquals(classDao.getClass(null, "ArrayList").size, 1)
-        Assert.assertEquals(classDao.getClass(null, "HttpServlet").size, 1)
+        assertEquals(1, classDao.getClass(null, "ArrayList").size)
+        assertEquals(1, classDao.getClass(null, "HttpServlet").size)
 
-        Assert.assertEquals(classDao.getClass(guava, "AbstractCache").size, 0)
-        Assert.assertEquals(classDao.getClass(guava, "ArrayTable").size, 0)
+        assertEquals(0, classDao.getClass(guava, "AbstractCache").size)
+        assertEquals(0, classDao.getClass(guava, "ArrayTable").size)
 
         val event = ApiEvent.reload(TEST_USER.nick, apiName)
         injector.injectMembers(event)
         event.handle()
 
-        Assert.assertEquals(classDao.getClass(event.api, "AbstractCache").size, 1)
-        Assert.assertEquals(classDao.getClass(event.api, "ArrayTable").size, 1)
-        Assert.assertEquals(classDao.getClass(null, "ArrayList").size, 1)
-        Assert.assertEquals(classDao.getClass(null, "HttpServlet").size, 1)
+        assertEquals(1, classDao.getClass(event.api, "AbstractCache").size)
+        assertEquals(1, classDao.getClass(event.api, "ArrayTable").size)
+        assertEquals(1, classDao.getClass(null, "ArrayList").size)
+        assertEquals(1, classDao.getClass(null, "HttpServlet").size)
     }
 }

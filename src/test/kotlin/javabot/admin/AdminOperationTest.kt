@@ -1,6 +1,6 @@
 package javabot.admin
 
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
 import javabot.BaseTest
 import javabot.commands.AdminCommand
 import javabot.commands.DisableOperation
@@ -8,16 +8,35 @@ import javabot.commands.EnableOperation
 import javabot.commands.ListOperations
 import javabot.operations.BotOperation
 import javabot.operations.StandardOperation
-import org.testng.Assert
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assumptions.assumeTrue
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
+import org.junit.jupiter.api.Order
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
 
+@QuarkusTest
+@TestMethodOrder(OrderAnnotation::class)
 class AdminOperationTest : BaseTest() {
 
-    @Inject lateinit var listOperation: ListOperations
-    @Inject lateinit var disableOperation: DisableOperation
-    @Inject lateinit var enableOperation: EnableOperation
+    companion object {
+        private var disableOperationsSucceeded = false
+    }
+
+    // ListOperations/DisableOperation/EnableOperation are Guice-domain (javabot.commands.**
+    // is excluded from CDI) -- not real @Inject sites under @QuarkusTest.
+    private val listOperation: ListOperations by lazy {
+        injector.getInstance(ListOperations::class.java)
+    }
+    private val disableOperation: DisableOperation by lazy {
+        injector.getInstance(DisableOperation::class.java)
+    }
+    private val enableOperation: EnableOperation by lazy {
+        injector.getInstance(EnableOperation::class.java)
+    }
 
     @Test
+    @Order(1)
     fun disableOperations() {
         val responses = listOperation.handleMessage(message("~admin listOperations"))
         try {
@@ -26,7 +45,7 @@ class AdminOperationTest : BaseTest() {
                 disableOperation.handleMessage(message("~admin disableOperation -name=${opName}"))
 
                 val operation = findOperation(opName)
-                Assert.assertTrue(
+                assertTrue(
                     operation == null ||
                         operation is AdminCommand ||
                         operation is StandardOperation,
@@ -36,10 +55,13 @@ class AdminOperationTest : BaseTest() {
         } finally {
             enableAllOperations()
         }
+        disableOperationsSucceeded = true
     }
 
-    @Test(dependsOnMethods = ["disableOperations"])
+    @Test
+    @Order(2)
     fun enableOperations() {
+        assumeTrue(disableOperationsSucceeded, "disableOperations must pass first")
         disableAllOperations()
         val allOperations = bot.get().getAllOperations()
         for ((key) in allOperations) {
