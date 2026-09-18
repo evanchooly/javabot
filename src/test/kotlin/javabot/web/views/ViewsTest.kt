@@ -1,25 +1,29 @@
 package javabot.web.views
 
 import io.quarkus.qute.TemplateInstance
+import io.quarkus.test.junit.QuarkusTest
 import jakarta.inject.Inject
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import javabot.BaseTest
 import net.htmlparser.jericho.Source
-import org.testng.Assert
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 
+@QuarkusTest
 public open class ViewsTest : BaseTest() {
 
     @Inject protected lateinit var templateService: TemplateService
 
     protected fun checkRange(source: Source, from: Int, to: Int, of: Int) {
         val content = source.getElementById("currentPage").content.toString().trim()
-        Assert.assertEquals(content, "Displaying ${from} to ${to} of ${of}")
+        assertEquals("Displaying ${from} to ${to} of ${of}", content)
     }
 
     protected fun nextEnabled(source: Source) {
-        Assert.assertFalse(
+        assertFalse(
             source
                 .getElementById("nextPage")
                 .startTag
@@ -30,7 +34,7 @@ public open class ViewsTest : BaseTest() {
     }
 
     protected fun nextDisabled(source: Source) {
-        Assert.assertTrue(
+        assertTrue(
             source
                 .getElementById("nextPage")
                 .startTag
@@ -41,7 +45,7 @@ public open class ViewsTest : BaseTest() {
     }
 
     protected fun previousDisabled(source: Source) {
-        Assert.assertTrue(
+        assertTrue(
             source
                 .getElementById("previousPage")
                 .startTag
@@ -52,7 +56,7 @@ public open class ViewsTest : BaseTest() {
     }
 
     protected fun previousEnabled(source: Source) {
-        Assert.assertFalse(
+        assertFalse(
             source
                 .getElementById("previousPage")
                 .startTag

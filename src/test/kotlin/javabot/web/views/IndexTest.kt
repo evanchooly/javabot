@@ -1,13 +1,15 @@
 package javabot.web.views
 
+import io.quarkus.test.junit.QuarkusTest
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.lang.String.format
 import net.htmlparser.jericho.Source
-import org.testng.Assert
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
+@QuarkusTest
 class IndexTest : ViewsTest() {
     @Test
     fun index() {
@@ -24,7 +26,7 @@ class IndexTest : ViewsTest() {
 
         val source = Source(ByteArrayInputStream(output.toByteArray()))
         val a = source.getElementById("id")
-        Assert.assertTrue(
+        assertTrue(
             a == null || loggedIn,
             format("Should %sfind the newChannel link", if (loggedIn) "" else "not "),
         )
