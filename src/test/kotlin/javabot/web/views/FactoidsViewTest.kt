@@ -1,6 +1,6 @@
 package javabot.web.views
 
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -8,12 +8,15 @@ import java.time.LocalDateTime
 import javabot.dao.FactoidDao
 import javabot.model.Factoid
 import net.htmlparser.jericho.Source
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
-@Test(enabled = false)
+@QuarkusTest
 class FactoidsViewTest : ViewsTest() {
-    @Inject lateinit var factoidDao: FactoidDao
+    private val factoidDao: FactoidDao by lazy { injector.getInstance(FactoidDao::class.java) }
 
+    @Test
+    @Disabled
     fun singleFactoid() {
         createFactoids(1)
         val source = render(0, Factoid())
@@ -22,6 +25,8 @@ class FactoidsViewTest : ViewsTest() {
         checkRange(source, 1, 1, 1)
     }
 
+    @Test
+    @Disabled
     fun factoidFilter() {
         createFactoids(10)
         var source = render(0, Factoid("name 1", "", ""))
@@ -41,6 +46,8 @@ class FactoidsViewTest : ViewsTest() {
         checkRange(source, 1, 1, 1)
     }
 
+    @Test
+    @Disabled
     fun factoidBadFilter() {
         createFactoids(10)
         val source = render(0, Factoid("bad filter", "", ""))
@@ -50,6 +57,8 @@ class FactoidsViewTest : ViewsTest() {
         checkRange(source, 0, 0, 0)
     }
 
+    @Test
+    @Disabled
     fun twoFactoidPages() {
         val itemCount = (TemplateService.ITEMS_PER_PAGE * 1.5).toInt()
         createFactoids(itemCount)

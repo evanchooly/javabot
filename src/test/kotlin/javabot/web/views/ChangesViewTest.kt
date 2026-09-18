@@ -1,12 +1,14 @@
 package javabot.web.views
 
+import io.quarkus.test.junit.QuarkusTest
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
 import javabot.model.Change
 import net.htmlparser.jericho.Source
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Test
 
+@QuarkusTest
 class ChangesViewTest : ViewsTest() {
     @Test
     fun changes() {

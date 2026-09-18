@@ -1,10 +1,14 @@
 package javabot.web.views
 
-import org.testng.annotations.Test
+import io.quarkus.test.junit.QuarkusTest
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
+@QuarkusTest
 class JavadocAdminViewTest : ViewsTest() {
 
-    @Test(enabled = false)
+    @Test
+    @Disabled
     fun render() {
         render(templateService.createJavadocAdminView(MockServletRequest(false)))
     }

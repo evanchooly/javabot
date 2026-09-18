@@ -1,16 +1,17 @@
 package javabot.web.views
 
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
 import javabot.dao.KarmaDao
 import javabot.model.Karma
 import net.htmlparser.jericho.Source
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Test
 
+@QuarkusTest
 class KarmaViewTest : ViewsTest() {
-    @Inject protected lateinit var karmaDao: KarmaDao
+    private val karmaDao: KarmaDao by lazy { injector.getInstance(KarmaDao::class.java) }
 
     @Test
     fun karma() {

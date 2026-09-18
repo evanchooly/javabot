@@ -1,19 +1,22 @@
 package javabot.web.views
 
-import jakarta.inject.Inject
+import io.quarkus.test.junit.QuarkusTest
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.util.Arrays.asList
 import javabot.dao.ConfigDao
 import net.htmlparser.jericho.Source
-import org.testng.Assert.assertEquals
-import org.testng.Assert.assertNotNull
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
+@QuarkusTest
 class ConfigurationViewTest : ViewsTest() {
-    @Inject protected lateinit var configDao: ConfigDao
+    private val configDao: ConfigDao by lazy { injector.getInstance(ConfigDao::class.java) }
 
-    @Test(enabled = false)
+    @Test
+    @Disabled
     fun configuration() {
         var config = configDao.get()
         config.operations = mutableListOf()
@@ -28,11 +31,11 @@ class ConfigurationViewTest : ViewsTest() {
         val operation = "Javadoc"
         var enable = source.getElementById("enable" + operation)
         assertNotNull(enable, source.toString())
-        assertEquals(enable.getAttributeValue("class"), "active")
+        assertEquals("active", enable.getAttributeValue("class"))
 
         var disable = source.getElementById("disable" + operation)
         assertNotNull(disable, source.toString())
-        assertEquals(disable.getAttributeValue("class"), "inactive")
+        assertEquals("inactive", disable.getAttributeValue("class"))
 
         config = configDao.get()
         config.operations = asList(operation)
@@ -46,10 +49,10 @@ class ConfigurationViewTest : ViewsTest() {
 
         enable = source.getElementById("enable" + operation)
         assertNotNull(enable, source.toString())
-        assertEquals(enable.getAttributeValue("class"), "inactive")
+        assertEquals("inactive", enable.getAttributeValue("class"))
 
         disable = source.getElementById("disable" + operation)
         assertNotNull(disable, source.toString())
-        assertEquals(disable.getAttributeValue("class"), "active")
+        assertEquals("active", disable.getAttributeValue("class"))
     }
 }
