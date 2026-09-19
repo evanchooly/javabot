@@ -5,11 +5,6 @@ import io.quarkus.runtime.StartupEvent
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.event.Observes
 import jakarta.inject.Inject
-import jakarta.ws.rs.container.ContainerRequestContext
-import jakarta.ws.rs.container.ContainerRequestFilter
-import jakarta.ws.rs.ext.Provider
-import java.io.File
-import java.nio.file.Files
 import javabot.Javabot
 import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.slf4j.LoggerFactory
@@ -34,32 +29,12 @@ class JavabotApplication @Inject constructor(var injector: Injector) {
             LOG.info("Javabot web application is disabled")
         }
     }
-
-    @Provider
-    @ApplicationScoped
-    class JavadocFilter : ContainerRequestFilter {
-
-        override fun filter(requestContext: ContainerRequestContext) {
-            val path = requestContext.uriInfo.path
-            if (path.startsWith("/javadoc/")) {
-                var filePath = path.split("/").drop(2).joinToString("/")
-                if (!filePath.startsWith("/")) {
-                    filePath = "/" + filePath
-                }
-                val javadocPath = File("javadoc$filePath").toPath()
-
-                if (Files.exists(javadocPath)) {
-                    try {
-                        requestContext.abortWith(
-                            jakarta.ws.rs.core.Response.ok(javadocPath.toFile()).build()
-                        )
-                    } catch (_: Exception) {
-                        requestContext.abortWith(jakarta.ws.rs.core.Response.status(500).build())
-                    }
-                } else {
-                    requestContext.abortWith(jakarta.ws.rs.core.Response.status(404).build())
-                }
-            }
-        }
-    }
 }
+// JavadocFilter (a ContainerRequestFilter that served files out of the on-disk `javadoc/`
+// directory) used to live here. It was removed: no resource in this app maps /javadoc/*, and a
+// non-@PreMatching ContainerRequestFilter only runs once a route has already matched, so it never
+// executed. The on-disk javadoc/ directory is not under META-INF/resources either, so Quarkus's
+// static-resource serving does not reach it. Meanwhile the filter built its file path by
+// concatenating unsanitised, URL-decoded request segments, which would have been a path-traversal
+// hole the moment a /javadoc/* route did appear. Serving javadoc should be reintroduced (if
+// wanted) as a real resource that resolves and validates paths against the javadoc root.

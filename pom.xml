@@ -352,15 +352,17 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-undertow</artifactId>
+            <artifactId>quarkus-security</artifactId>
         </dependency>
+        <!-- Admin authentication: Quarkus OIDC in web-app mode handles the whole
+             redirect/callback dance and the authenticated session itself. -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-security</artifactId>
+            <artifactId>quarkus-oidc</artifactId>
         </dependency>
         <!-- Quarkus deps -->
 
-<!-- webjars -->
+        <!-- webjars -->
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>less</artifactId>

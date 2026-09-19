@@ -42,17 +42,4 @@ enum class InMemoryUserCache {
 
         userCache.put(user.sessionToken.toString(), user)
     }
-
-    fun getByOpenIDIdentifier(identifier: String?): User? {
-
-        val map = userCache.asMap()
-
-        for (entry in map.entries) {
-            if (entry.value.openIDIdentifier == identifier) {
-                return entry.value
-            }
-        }
-
-        return null
-    }
 }

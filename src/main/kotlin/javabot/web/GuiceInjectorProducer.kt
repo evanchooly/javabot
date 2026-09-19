@@ -30,7 +30,7 @@ class GuiceInjectorProducer(
         val module =
             Class.forName(moduleClassName).getDeclaredConstructor().newInstance()
                 as com.google.inject.Module
-        Guice.createInjector(module).also { javabot.GuiceInjectorProducerHolder.register(it) }
+        Guice.createInjector(module)
     }
 
     @Produces @ApplicationScoped fun injector(): Injector = injector
