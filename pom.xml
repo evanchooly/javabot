@@ -425,13 +425,6 @@
 
         <!-- Unit testing dependencies -->
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>7.12.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>
             <scope>test</scope>
@@ -448,12 +441,6 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-firefox-driver</artifactId>
             <version>4.47.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test-testng</artifactId>
-            <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

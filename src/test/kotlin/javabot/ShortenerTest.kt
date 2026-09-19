@@ -2,7 +2,7 @@ package javabot
 
 import io.quarkus.test.junit.QuarkusTest
 import javabot.service.UrlCacheService
-import kotlin.test.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
 @QuarkusTest

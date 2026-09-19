@@ -2,8 +2,8 @@ package javabot.dao
 
 import java.util.concurrent.TimeUnit
 import javabot.dao.util.CallLimiter
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class TestCallLimiter {

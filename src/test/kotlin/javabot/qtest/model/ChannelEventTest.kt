@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 @QuarkusTest
 class ChannelEventTest : BaseTest() {
     @BeforeEach
-    @Test
     fun clearEvents() {
         for (event in eventDao.findAll()) {
             eventDao.delete(event)
