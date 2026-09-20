@@ -12,7 +12,6 @@ import jakarta.ws.rs.Path
 import jakarta.ws.rs.PathParam
 import jakarta.ws.rs.WebApplicationException
 import jakarta.ws.rs.core.MediaType
-import java.nio.charset.StandardCharsets
 import java.util.UUID
 import javabot.Javabot
 import javabot.JavabotConfig
@@ -66,13 +65,26 @@ constructor(var templateService: TemplateService, private val injector: Injector
     private fun currentUser(): User {
         val email =
             idToken.getClaim<String>(Claims.email.name) ?: throw WebApplicationException(403)
+        // An unverified `email` claim is self-declared by the end user at some providers, so it
+        // must not drive an authorization decision. Fail closed when the companion
+        // `email_verified` claim is absent as well as when it is false: a provider that never
+        // asserts verification cannot be taken at its word either. Compared as a string because
+        // the claim arrives as a Boolean, a JsonValue, or a string depending on the provider and
+        // the OIDC principal implementation; only a literal true passes.
+        if (idToken.getClaim<Any?>(Claims.email_verified.name)?.toString() != "true") {
+            throw WebApplicationException(403)
+        }
         adminDao.getAdminByEmailAddress(email) ?: throw WebApplicationException(403)
 
-        // InMemoryUserCache is keyed by session token; without a session cookie of our own, a
-        // stable per-email key lets a user's cached authorities survive across requests.
-        val key = UUID.nameUUIDFromBytes(email.toByteArray(StandardCharsets.UTF_8))
-        val user =
-            INSTANCE.getBySessionToken(key.toString()) ?: User(key, email, idToken.subject ?: email)
+        // A fresh random token per request, deliberately *not* derived from the email.
+        // InMemoryUserCache is shared with BotResource's public-page cookie lookup, so any key
+        // computable from a known admin email address would let an anonymous visitor forge that
+        // key as their own session cookie and be served as that admin. currentUser() re-verifies
+        // identity from idToken (Quarkus OIDC's own signed session) on every request, so this
+        // cache entry never needs to outlive the current request -- it exists only so the
+        // TemplateService.isLoggedIn/isAdmin lookups later in this same render can find it, and
+        // then expires unreferenced.
+        val user = User(UUID.randomUUID(), email, idToken.subject ?: email)
         user.authorities.add(Authority.ROLE_PUBLIC)
         user.authorities.add(Authority.ROLE_ADMIN)
         INSTANCE.put(user)
