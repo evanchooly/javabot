@@ -8,12 +8,12 @@ import io.quarkus.test.junit.QuarkusTest
 import jakarta.inject.Inject
 import jakarta.inject.Provider
 import java.util.EnumSet
+import java.util.concurrent.TimeUnit.MILLISECONDS
 import java.util.concurrent.TimeUnit.SECONDS
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.dao.ChangeDao
 import javabot.dao.ChannelDao
-import javabot.dao.EventDao
 import javabot.dao.LogsDao
 import javabot.dao.NickServDao
 import javabot.model.Admin
@@ -53,7 +53,6 @@ open class BaseTest {
     protected val datastore: Datastore by lazy { injector.getInstance(Datastore::class.java) }
     private val config: JavabotConfig by lazy { injector.getInstance(JavabotConfig::class.java) }
     protected val apiDao: ApiDao by lazy { injector.getInstance(ApiDao::class.java) }
-    protected val eventDao: EventDao by lazy { injector.getInstance(EventDao::class.java) }
     protected val channelDao: ChannelDao by lazy { injector.getInstance(ChannelDao::class.java) }
     protected val logsDao: LogsDao by lazy { injector.getInstance(LogsDao::class.java) }
     protected val adminDao: AdminDao by lazy { injector.getInstance(AdminDao::class.java) }
@@ -104,10 +103,10 @@ open class BaseTest {
     protected fun waitForEvent(
         event: AdminEvent,
         alias: String,
-        timeout: Duration = Duration(15, SECONDS),
+        timeout: Duration = Duration(2, SECONDS),
     ) {
-        Awaitility.await(alias).atMost(timeout).pollInterval(1, SECONDS).until<Boolean> {
-            DONE.contains(eventDao.find(event.id)?.state)
+        Awaitility.await(alias).atMost(timeout).pollInterval(100, MILLISECONDS).until<Boolean> {
+            DONE.contains(event.state)
         }
     }
 

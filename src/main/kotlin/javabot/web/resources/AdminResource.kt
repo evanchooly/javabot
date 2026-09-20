@@ -262,7 +262,7 @@ constructor(var templateService: TemplateService, private val injector: Injector
             val apiName = name ?: artifactId ?: throw WebApplicationException(400)
             val api = JavadocApi(config, apiName, groupId ?: "", artifactId ?: "", version)
             apiDao.save(api)
-            apiDao.save(ApiEvent.add(user.email, api))
+            javabot.submitEvent(ApiEvent.add(user.email, api))
         }
 
         return javadoc()
@@ -282,7 +282,7 @@ constructor(var templateService: TemplateService, private val injector: Injector
     fun reloadApi(@PathParam("id") id: String): TemplateInstance {
         val user = currentUser()
         adminDao.getAdminByEmailAddress(user.email) ?: throw WebApplicationException(403)
-        apiDao.find(ObjectId(id))?.let { apiDao.save(ApiEvent.reload(user.email, it)) }
+        apiDao.find(ObjectId(id))?.let { javabot.submitEvent(ApiEvent.reload(user.email, it)) }
         return javadoc()
     }
 }
