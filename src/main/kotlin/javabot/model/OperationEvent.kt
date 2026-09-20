@@ -1,8 +1,5 @@
 package javabot.model
 
-import dev.morphia.annotations.Entity
-
-@Entity("events")
 class OperationEvent() : AdminEvent() {
 
     lateinit var operation: String

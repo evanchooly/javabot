@@ -1,13 +1,10 @@
 package javabot.model
 
-import dev.morphia.annotations.Entity
-import dev.morphia.annotations.Transient
 import jakarta.inject.Inject
 import javabot.dao.ChannelDao
 
-@Entity("events")
 class ChannelEvent : AdminEvent {
-    @Inject @Transient lateinit var channelDao: ChannelDao
+    @Inject lateinit var channelDao: ChannelDao
     lateinit var channel: String
     var key: String? = null
     var logged: Boolean = false

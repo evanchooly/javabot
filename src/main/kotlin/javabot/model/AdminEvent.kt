@@ -1,28 +1,17 @@
 package javabot.model
 
-import dev.morphia.annotations.Entity
-import dev.morphia.annotations.Field
-import dev.morphia.annotations.Id
-import dev.morphia.annotations.Index
-import dev.morphia.annotations.IndexOptions
-import dev.morphia.annotations.Indexed
-import dev.morphia.annotations.Indexes
-import dev.morphia.annotations.Transient
 import jakarta.inject.Inject
 import java.io.Serializable
 import java.time.LocalDateTime
 import javabot.Javabot
 import org.bson.types.ObjectId
 
-@Entity("events")
-@Indexes(Index(fields = arrayOf(Field("state"), Field("requestedOn"))))
-open class AdminEvent : Serializable, Persistent {
+open class AdminEvent : Serializable {
 
-    @Inject @Transient lateinit var bot: Javabot
+    @Inject lateinit var bot: Javabot
 
-    @Id var id: ObjectId = ObjectId()
+    var id: ObjectId = ObjectId()
 
-    @Indexed(options = IndexOptions(expireAfterSeconds = 60 * 60 * 24))
     var completed: LocalDateTime? = null
 
     var state: State = State.NEW
