@@ -12,9 +12,9 @@ open class AdminEvent : Serializable {
 
     var id: ObjectId = ObjectId()
 
-    var completed: LocalDateTime? = null
+    @Volatile var completed: LocalDateTime? = null
 
-    var state: State = State.NEW
+    @Volatile var state: State = State.NEW
 
     lateinit var requestedBy: String
     lateinit var requestedOn: LocalDateTime
