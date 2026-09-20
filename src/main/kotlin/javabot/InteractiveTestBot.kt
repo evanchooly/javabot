@@ -7,7 +7,6 @@ import jakarta.inject.Inject
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
-import javabot.dao.EventDao
 import javabot.dao.LogsDao
 import javabot.dao.ShunDao
 import javabot.model.Channel
@@ -23,7 +22,6 @@ constructor(
     channelDao: ChannelDao,
     logsDao: LogsDao,
     shunDao: ShunDao,
-    eventDao: EventDao,
     throttler: Throttler,
     adapter: IrcAdapter,
     adminDao: AdminDao,
@@ -35,7 +33,6 @@ constructor(
         channelDao,
         logsDao,
         shunDao,
-        eventDao,
         throttler,
         adapter,
         adminDao,

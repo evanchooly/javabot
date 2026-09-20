@@ -20,10 +20,10 @@ import javabot.commands.AdminCommand
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
-import javabot.dao.EventDao
 import javabot.dao.LogsDao
 import javabot.dao.ShunDao
 import javabot.database.UpgradeScript
+import javabot.model.AdminEvent
 import javabot.model.Channel
 import javabot.model.JavabotUser
 import javabot.model.Logs
@@ -46,7 +46,6 @@ constructor(
     var channelDao: ChannelDao,
     var logsDao: LogsDao,
     var shunDao: ShunDao,
-    var eventDao: EventDao,
     var throttler: Throttler,
     var adapter: IrcAdapter,
     var adminDao: AdminDao,
@@ -82,7 +81,10 @@ constructor(
         )
 
     private val eventHandler =
-        Executors.newScheduledThreadPool(2, JavabotThreadFactory(true, "javabot-event-handler"))
+        Executors.newScheduledThreadPool(1, JavabotThreadFactory(true, "javabot-event-handler"))
+
+    private val eventExecutor =
+        Executors.newSingleThreadExecutor(JavabotThreadFactory(true, "javabot-event-dispatch"))
 
     private val ignores = ArrayList<String>()
 
@@ -108,16 +110,13 @@ constructor(
     }
 
     fun setUpThreads() {
-        eventHandler.scheduleAtFixedRate({ this.processAdminEvents() }, 1, 5, TimeUnit.SECONDS)
         eventHandler.scheduleAtFixedRate({ this.joinChannels() }, 1, 5, TimeUnit.SECONDS)
     }
 
-    protected fun processAdminEvents() {
-        val event = eventDao.findUnprocessed()
-        if (event != null) {
+    fun submitEvent(event: AdminEvent) {
+        eventExecutor.execute {
             try {
                 event.state = State.PROCESSING
-                eventDao.save(event)
                 injector.injectMembers(event)
                 event.handle()
                 event.state = State.COMPLETED
@@ -125,9 +124,7 @@ constructor(
                 event.state = State.FAILED
                 LOG.error(e.message, e)
             }
-
             event.completed = LocalDateTime.now()
-            eventDao.save(event)
         }
     }
 
@@ -153,8 +150,10 @@ constructor(
     fun shutdown() {
         if (!executors.isShutdown) {
             executors.shutdown()
+            eventExecutor.shutdown()
             try {
                 executors.awaitTermination(10, TimeUnit.SECONDS)
+                eventExecutor.awaitTermination(10, TimeUnit.SECONDS)
             } catch (e: InterruptedException) {
                 LOG.error(e.message, e)
             }
