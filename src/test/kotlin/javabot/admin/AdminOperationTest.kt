@@ -24,8 +24,6 @@ class AdminOperationTest : BaseTest() {
         private var disableOperationsSucceeded = false
     }
 
-    // ListOperations/DisableOperation/EnableOperation are Guice-domain (javabot.commands.**
-    // is excluded from CDI) -- not real @Inject sites under @QuarkusTest.
     @Inject private lateinit var listOperation: ListOperations
     @Inject private lateinit var disableOperation: DisableOperation
     @Inject private lateinit var enableOperation: EnableOperation

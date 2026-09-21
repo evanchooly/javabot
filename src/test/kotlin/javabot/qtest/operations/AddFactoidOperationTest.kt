@@ -31,9 +31,6 @@ import org.junit.jupiter.params.provider.MethodSource
 @TestMethodOrder(OrderAnnotation::class)
 class AddFactoidOperationTest : BaseTest() {
 
-    // FactoidDao/AddFactoidOperation/GetFactoidOperation/ForgetFactoidOperation are Guice-domain
-    // (javabot.dao.**/javabot.operations.** are excluded from CDI) -- not real @Inject sites
-    // under @QuarkusTest.
     @Inject private lateinit var factoidDao: FactoidDao
     @Inject private lateinit var addFactoidOperation: AddFactoidOperation
     @Inject private lateinit var getFactoidOperation: GetFactoidOperation

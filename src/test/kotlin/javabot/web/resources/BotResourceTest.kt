@@ -15,11 +15,6 @@ class BotResourceTest : BaseTest() {
 
     @TestHTTPResource("/") lateinit var baseUri: URI
 
-    // NOTE: the original file's javabotConfig/JavabotConfig field was unused by both test
-    // bodies below (only referenced in the dead commented-out Jersey-client code this task
-    // replaces) and is a Guice-domain type besides -- dropped rather than converted to the
-    // injector-lazy pattern, since nothing in this file needs it.
-
     private val client = HttpClient.newHttpClient()
 
     private fun get(path: String): HttpResponse<String> {

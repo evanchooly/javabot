@@ -49,7 +49,7 @@ class TestDomainProducers {
         val config =
             ConfigFactory.create(
                 JavabotConfig::class.java,
-                HashMap<Any, Any>(properties as Map<Any, Any>),
+                HashMap(properties.toMap()),
                 System.getProperties(),
                 System.getenv(),
             )

@@ -29,7 +29,7 @@ class DomainProducers {
         val config =
             ConfigFactory.create(
                 JavabotConfig::class.java,
-                loadConfigProperties(),
+                HashMap<Any, Any>(),
                 System.getProperties(),
                 System.getenv(),
             )
@@ -62,14 +62,11 @@ class DomainProducers {
         val bitlyToken = config.bitlyToken()
         return if (bitlyToken != "") Bitly(bitlyToken) else null
     }
-
-    protected open fun loadConfigProperties(): HashMap<Any, Any> = HashMap()
 }
 
 /**
- * Shared by [DomainProducers.javabotConfig] and [TestDomainProducers.javabotConfig] so both the
- * production and `%test` config producers enforce the same "no missing @Key-annotated properties"
- * invariant.
+ * Shared by [DomainProducers.javabotConfig] and the `%test` config producer so both the production
+ * and `%test` config producers enforce the same "no missing @Key-annotated properties" invariant.
  */
 fun validateJavabotConfig(config: JavabotConfig): JavabotConfig {
     @Suppress("UNCHECKED_CAST")

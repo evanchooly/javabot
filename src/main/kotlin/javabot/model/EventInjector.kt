@@ -20,6 +20,12 @@ import jakarta.inject.Inject
  * `@Inject` placement on a `lateinit var`'s backing field) and resolves + sets each one directly
  * via the subset of `BeanManager` that Arc *does* support at runtime:
  * `getBeans`/`resolve`/`getReference`.
+ *
+ * The full set of types reachable through this reflection-based path -- `JavadocAsmParser` (via
+ * `ApiEvent.asmParser`), `ApiDao`/`AdminDao` (via `ApiEvent`'s fields), and `ChannelDao` (via
+ * `ChannelEvent.channelDao`) -- are invisible to Arc's build-time injection-point analysis, so each
+ * is separately annotated `@Unremovable` to protect it from Arc's unused-bean removal even if their
+ * other (currently incidental) injection points ever go away.
  */
 @ApplicationScoped
 class EventInjector @Inject constructor(private val beanManager: BeanManager) {

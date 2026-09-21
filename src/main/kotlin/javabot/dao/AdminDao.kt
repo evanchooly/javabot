@@ -5,11 +5,14 @@ import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
 import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.or
+import io.quarkus.arc.Unremovable
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import javabot.model.Admin
 import javabot.model.JavabotUser
 
+// @Unremovable: see EventInjector for why this bean must survive Arc's unused-bean removal.
+@Unremovable
 @Singleton
 class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) :
     BaseDao<Admin>(ds, Admin::class.java) {

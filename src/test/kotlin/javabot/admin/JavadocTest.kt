@@ -29,8 +29,6 @@ class JavadocTest : BaseTest() {
         private var jakartaEESucceeded = false
     }
 
-    // JavadocClassDao/JavabotConfig/JavadocOperation are Guice-domain (javabot.dao.**/javabot.*/
-    // javabot.operations.** are excluded from CDI) -- not real @Inject sites under @QuarkusTest.
     @Inject private lateinit var classDao: JavadocClassDao
 
     @Inject private lateinit var config: JavabotConfig
