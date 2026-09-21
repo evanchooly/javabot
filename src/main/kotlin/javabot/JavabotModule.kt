@@ -46,6 +46,12 @@ open class JavabotModule : AbstractModule() {
 
     @Provides
     @Singleton
+    fun mongoClient(): MongoClient {
+        return client()
+    }
+
+    @Provides
+    @Singleton
     fun datastore(): Datastore {
         val databaseName: String = javabotConfig().databaseName()
         val datastore =
