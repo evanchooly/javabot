@@ -2,11 +2,13 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.util.Locale
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 
+@Singleton
 class LeaveOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
     BotOperation(bot, adminDao) {
 

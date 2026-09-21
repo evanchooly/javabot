@@ -2,10 +2,12 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 
+@Singleton
 class IgnoreOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
     BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {

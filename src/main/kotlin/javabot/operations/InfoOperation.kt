@@ -2,6 +2,7 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javabot.Javabot
@@ -10,6 +11,7 @@ import javabot.dao.AdminDao
 import javabot.dao.FactoidDao
 
 /** Simple operation to pull who added the factoid and when it was added */
+@Singleton
 class InfoOperation
 @Inject
 constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :

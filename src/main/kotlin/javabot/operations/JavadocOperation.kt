@@ -2,6 +2,7 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.util.ArrayList
 import java.util.Locale
 import javabot.Javabot
@@ -15,6 +16,7 @@ import javabot.model.javadoc.JavadocClass
 import javax.annotation.Nullable
 import net.thauvin.erik.bitly.Bitly
 
+@Singleton
 class JavadocOperation
 @Inject
 constructor(
