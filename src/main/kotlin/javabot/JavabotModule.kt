@@ -13,16 +13,11 @@ import dev.morphia.Morphia
 import dev.morphia.config.ManualMorphiaConfig
 import jakarta.inject.Singleton
 import javabot.dao.ChannelDao
-import javabot.dao.ConfigDao
 import javabot.model.Factoid
 import javabot.model.javadoc.JavadocClass
-import javax.net.ssl.SSLSocketFactory
 import net.thauvin.erik.bitly.Bitly
 import org.aeonbits.owner.Config.Key
 import org.aeonbits.owner.ConfigFactory
-import org.pircbotx.Configuration.Builder
-import org.pircbotx.PircBotX
-import org.pircbotx.cap.SASLCapHandler
 
 open class JavabotModule : AbstractModule() {
     open val mongoClient: MongoClient by lazy {
@@ -30,14 +25,10 @@ open class JavabotModule : AbstractModule() {
     }
 
     private var config: JavabotConfig? = null
-    lateinit var ircAdapterProvider: Provider<out IrcAdapter>
     lateinit var channelDaoProvider: Provider<ChannelDao>
-    lateinit var configDaoProvider: Provider<ConfigDao>
 
     override fun configure() {
-        configDaoProvider = binder().getProvider(ConfigDao::class.java)
         channelDaoProvider = binder().getProvider(ChannelDao::class.java)
-        ircAdapterProvider = binder().getProvider(IrcAdapter::class.java)
     }
 
     open fun client(): MongoClient {
@@ -76,47 +67,6 @@ open class JavabotModule : AbstractModule() {
             )
 
         return datastore
-    }
-
-    @Provides
-    @Singleton
-    protected open fun createIrcBot(): PircBotX {
-        val config = configDaoProvider.get().get()
-        val nick = getBotNick()
-        val builder =
-            Builder()
-                .setName(nick)
-                .setLogin(nick)
-                .setAutoNickChange(false)
-                .setCapEnabled(false)
-                .addListener(getBotListener())
-                .addServer(config.server, config.port)
-                .addCapHandler(SASLCapHandler(nick, config.password))
-                .setSocketFactory(SSLSocketFactory.getDefault())
-
-        return buildBot(builder)
-    }
-
-    open fun buildBot(builder: Builder): PircBotX {
-        return PircBotX(builder.buildConfiguration())
-        /*
-                return object: PircBotX(builder.buildConfiguration()) {
-                    override fun sendRawLineToServer(line: String) {
-
-                        var line = line
-                        if (line.length > configuration.maxLineLength - 2) line = line.substring(0, configuration.maxLineLength - 2)
-                        println("raw line: $line")
-                        outputWriter.write(line + "\r\n")
-                        outputWriter.flush()
-                        val lineParts = tokenizeLine(line)
-                        getConfiguration().getListenerManager<ListenerManager>().onEvent(OutputEvent(this, line, lineParts))
-                    }
-                }
-        */
-    }
-
-    protected open fun getBotNick(): String {
-        return configDaoProvider.get().get().nick
     }
 
     @Provides
@@ -168,10 +118,6 @@ open class JavabotModule : AbstractModule() {
             throw RuntimeException(Sofia.configurationMissingProperties(missingKeys))
         }
         return config
-    }
-
-    fun getBotListener(): IrcAdapter {
-        return ircAdapterProvider.get()
     }
 }
 

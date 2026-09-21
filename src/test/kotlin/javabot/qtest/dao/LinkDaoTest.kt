@@ -1,6 +1,7 @@
 package javabot.qtest.dao
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import javabot.dao.BaseServiceTest
 import javabot.dao.LinkDao
 import javabot.model.Link
@@ -13,7 +14,7 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class LinkDaoTest : BaseServiceTest() {
-    private val linkDao: LinkDao by lazy { injector.getInstance(LinkDao::class.java) }
+    @Inject private lateinit var linkDao: LinkDao
 
     @Test
     fun testCreateRetrieveAllDelete() {

@@ -1,6 +1,7 @@
 package javabot.qtest.operations
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.mocks.MockIrcAdapter
 import javabot.operations.SayOperation
@@ -10,7 +11,7 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class SayOperationsTest : BaseTest() {
-    private val operation: SayOperation by lazy { injector.getInstance(SayOperation::class.java) }
+    @Inject private lateinit var operation: SayOperation
 
     @Test
     @Tag("operations")
@@ -23,7 +24,7 @@ class SayOperationsTest : BaseTest() {
     @Test
     @Tag("operations")
     fun testSayNoOp() {
-        val mockIrcAdapter = bot.get().adapter as MockIrcAdapter
+        val mockIrcAdapter = bot.adapter as MockIrcAdapter
         mockIrcAdapter.disableOperation("isOp")
 
         val response = operation.handleMessage(message("~say MAGNIFICENT"))

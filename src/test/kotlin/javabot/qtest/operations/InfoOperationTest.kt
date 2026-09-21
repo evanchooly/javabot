@@ -1,6 +1,7 @@
 package javabot.qtest.operations
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javabot.BaseTest
@@ -13,11 +14,9 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class InfoOperationTest : BaseTest() {
-    private val factoidDao: FactoidDao by lazy { injector.getInstance(FactoidDao::class.java) }
-    private val operation: InfoOperation by lazy { injector.getInstance(InfoOperation::class.java) }
-    private val factoidOperation: GetFactoidOperation by lazy {
-        injector.getInstance(GetFactoidOperation::class.java)
-    }
+    @Inject private lateinit var factoidDao: FactoidDao
+    @Inject private lateinit var operation: InfoOperation
+    @Inject private lateinit var factoidOperation: GetFactoidOperation
 
     @Test
     fun info() {

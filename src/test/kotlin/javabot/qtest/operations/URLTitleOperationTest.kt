@@ -1,6 +1,7 @@
 package javabot.qtest.operations
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.net.URI
 import java.util.stream.Stream
 import javabot.BaseTest
@@ -19,9 +20,7 @@ import org.junit.jupiter.params.provider.MethodSource
 @QuarkusTest
 @Tag("operations")
 class URLTitleOperationTest : BaseTest() {
-    private val operation: URLTitleOperation by lazy {
-        injector.getInstance(URLTitleOperation::class.java)
-    }
+    @Inject private lateinit var operation: URLTitleOperation
 
     private val analyzer = URLContentAnalyzer()
 

@@ -1,6 +1,7 @@
 package javabot.qtest.operations
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.util.UUID
 import javabot.BaseTest
 import javabot.model.Logs
@@ -15,7 +16,7 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class LogsOperationTest : BaseTest() {
-    private val operation: LogsOperation by lazy { injector.getInstance(LogsOperation::class.java) }
+    @Inject private lateinit var operation: LogsOperation
 
     @BeforeEach
     @AfterEach

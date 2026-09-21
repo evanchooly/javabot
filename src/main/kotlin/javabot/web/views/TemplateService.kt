@@ -1,7 +1,6 @@
 package javabot.web.views
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Injector
 import io.quarkus.qute.Engine
 import io.quarkus.qute.ReflectionValueResolver
 import io.quarkus.qute.Template
@@ -39,31 +38,27 @@ import javabot.web.resources.BotResource
  * Renders the site's Qute templates.
  *
  * This owns a standalone [Engine] rather than relying on CDI's `@Location`-injected [Template]
- * beans, so it can be constructed identically by Quarkus/Arc at runtime and by plain Guice in tests
- * (the existing test suite builds the object graph with Guice, which has no notion of Quarkus's
- * build-time Qute wiring).
+ * beans, building templates once at construction time rather than per-request.
  *
  * Page composition mirrors the old FreeMarker `main.ftl` -> `paged.ftl` -> `<child>.ftl` nesting:
  * [mainTemplate] always renders the site chrome and dynamically includes whatever template is named
  * by the "contentTemplate" data key (see `templates/main.html`); paged views additionally set
  * "pagedView" to name the innermost content template that `templates/paged.html` includes.
- *
- * DAOs and [Javabot] are Guice-managed, not CDI beans, so they're pulled from the shared [Injector]
- * (see `GuiceInjectorProducer`) rather than being constructor-injected directly -- Arc has no bean
- * definitions for the domain layer.
  */
 @ApplicationScoped
-class TemplateService @Inject constructor(private val injector: Injector) {
-
-    private val adminDao: AdminDao by lazy { injector.getInstance(AdminDao::class.java) }
-    private val channelDao: ChannelDao by lazy { injector.getInstance(ChannelDao::class.java) }
-    private val factoidDao: FactoidDao by lazy { injector.getInstance(FactoidDao::class.java) }
-    private val apiDao: ApiDao by lazy { injector.getInstance(ApiDao::class.java) }
-    private val karmaDao: KarmaDao by lazy { injector.getInstance(KarmaDao::class.java) }
-    private val logsDao: LogsDao by lazy { injector.getInstance(LogsDao::class.java) }
-    private val changeDao: ChangeDao by lazy { injector.getInstance(ChangeDao::class.java) }
-    private val configDao: ConfigDao by lazy { injector.getInstance(ConfigDao::class.java) }
-    private val javabot: Javabot by lazy { injector.getInstance(Javabot::class.java) }
+class TemplateService
+@Inject
+constructor(
+    private val adminDao: AdminDao,
+    private val channelDao: ChannelDao,
+    private val factoidDao: FactoidDao,
+    private val apiDao: ApiDao,
+    private val karmaDao: KarmaDao,
+    private val logsDao: LogsDao,
+    private val changeDao: ChangeDao,
+    private val configDao: ConfigDao,
+    private val javabot: Javabot,
+) {
 
     private val engine: Engine = buildEngine()
 

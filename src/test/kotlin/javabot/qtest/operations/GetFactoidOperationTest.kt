@@ -2,6 +2,7 @@ package javabot.qtest.operations
 
 import com.antwerkz.sofia.Sofia
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.time.ZoneOffset
 import java.util.Arrays
 import java.util.stream.Stream
@@ -22,10 +23,8 @@ import org.junit.jupiter.params.provider.MethodSource
 
 @QuarkusTest
 class GetFactoidOperationTest : BaseTest() {
-    private val factoidDao: FactoidDao by lazy { injector.getInstance(FactoidDao::class.java) }
-    private val operation: GetFactoidOperation by lazy {
-        injector.getInstance(GetFactoidOperation::class.java)
-    }
+    @Inject private lateinit var factoidDao: FactoidDao
+    @Inject private lateinit var operation: GetFactoidOperation
 
     @BeforeEach
     fun createGets() {

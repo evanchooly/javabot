@@ -1,44 +1,32 @@
 package javabot.dao
 
-import com.google.inject.Injector
 import com.mongodb.client.model.IndexOptions
 import dev.morphia.Datastore
+import jakarta.enterprise.inject.Instance
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
-import java.lang.reflect.Modifier
-import java.util.ArrayList
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeUnit.SECONDS
 import javabot.JavabotConfig
+import javabot.database.UpgradeScript
 import javabot.model.Config
 import javabot.model.Logs
 import javabot.operations.BotOperation
 import org.bson.Document
-import org.reflections.Reflections
 import org.slf4j.LoggerFactory
 
 @Singleton
 class ConfigDao
 @Inject
-constructor(ds: Datastore, var injector: Injector, var javabotConfig: JavabotConfig) :
-    BaseDao<Config>(ds, Config::class.java) {
-    fun <T> list(type: Class<T>): List<T> {
-        val reflections = Reflections("javabot")
+constructor(
+    ds: Datastore,
+    var javabotConfig: JavabotConfig,
+    private val operations: Instance<BotOperation>,
+    private val upgradeScripts: Instance<UpgradeScript>,
+) : BaseDao<Config>(ds, Config::class.java) {
+    fun listOperations(): List<BotOperation> = operations.toList()
 
-        val classes = reflections.getSubTypesOf(type)
-
-        val list = ArrayList<T>()
-        classes
-            .filterNot { Modifier.isAbstract(it.modifiers) }
-            .forEach {
-                try {
-                    list.add(injector.getInstance(it))
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        return list
-    }
+    fun listUpgradeScripts(): List<UpgradeScript> = upgradeScripts.toList()
 
     fun get(): Config {
         var config: Config? = ds.find(Config::class.java).first()
@@ -56,7 +44,7 @@ constructor(ds: Datastore, var injector: Injector, var javabotConfig: JavabotCon
         config.server = javabotConfig.ircHost()
         config.port = javabotConfig.ircPort()
         config.trigger = "~"
-        for (operation in list(BotOperation::class.java)) {
+        for (operation in listOperations()) {
             config.operations.add(operation.getName())
         }
         updateHistoryIndex(config.historyLength)

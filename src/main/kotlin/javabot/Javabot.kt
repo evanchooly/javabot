@@ -1,7 +1,6 @@
 package javabot
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Injector
 import io.quarkus.runtime.Quarkus
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
@@ -22,9 +21,9 @@ import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
 import javabot.dao.LogsDao
 import javabot.dao.ShunDao
-import javabot.database.UpgradeScript
 import javabot.model.AdminEvent
 import javabot.model.Channel
+import javabot.model.EventInjector
 import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.Logs.Type
@@ -41,7 +40,7 @@ import org.slf4j.LoggerFactory
 open class Javabot
 @Inject
 constructor(
-    var injector: Injector,
+    var eventInjector: EventInjector,
     var configDao: ConfigDao,
     var channelDao: ChannelDao,
     var logsDao: LogsDao,
@@ -117,7 +116,7 @@ constructor(
         eventExecutor.execute {
             try {
                 event.state = State.PROCESSING
-                injector.injectMembers(event)
+                eventInjector.inject(event)
                 event.handle()
                 event.state = State.COMPLETED
             } catch (e: Exception) {
@@ -202,12 +201,12 @@ constructor(
 
     protected fun applyUpgradeScripts() {
         val set = TreeSet(ScriptComparator())
-        set.addAll(configDao.list(UpgradeScript::class.java))
+        set.addAll(configDao.listUpgradeScripts())
         set.forEach { it.execute() }
     }
 
     fun getAllOperations(): SortedMap<String, BotOperation> {
-        for (op in configDao.list(BotOperation::class.java)) {
+        for (op in configDao.listOperations()) {
             allOperationsMap.put(op.getName(), op)
         }
         return allOperationsMap

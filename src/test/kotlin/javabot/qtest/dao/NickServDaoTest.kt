@@ -2,6 +2,7 @@ package javabot.qtest.dao
 
 import com.google.common.collect.ImmutableMap.of
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import java.time.Month
 import java.util.Arrays.asList
@@ -18,8 +19,8 @@ import org.pircbotx.hooks.events.NoticeEvent
 
 @QuarkusTest
 class NickServDaoTest : BaseServiceTest() {
-    private val nickServDao: NickServDao by lazy { injector.getInstance(NickServDao::class.java) }
-    private val ircAdapter: IrcAdapter by lazy { injector.getInstance(IrcAdapter::class.java) }
+    @Inject private lateinit var nickServDao: NickServDao
+    @Inject private lateinit var ircAdapter: IrcAdapter
 
     @Test
     fun parseNickServResponse() {

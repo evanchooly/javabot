@@ -2,6 +2,7 @@ package javabot.qtest.operations
 
 import com.antwerkz.sofia.Sofia
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.util.stream.Stream
 import javabot.BaseTest
 import javabot.operations.JEPOperation
@@ -15,7 +16,7 @@ import org.junit.jupiter.params.provider.MethodSource
 @QuarkusTest
 @Tag("operations")
 class JEPOperationTest : BaseTest() {
-    private val operation: JEPOperation by lazy { injector.getInstance(JEPOperation::class.java) }
+    @Inject private lateinit var operation: JEPOperation
 
     @Test
     fun testJEPOperations() {

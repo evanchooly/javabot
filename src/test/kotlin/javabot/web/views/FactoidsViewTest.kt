@@ -1,6 +1,7 @@
 package javabot.web.views
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -13,7 +14,7 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class FactoidsViewTest : ViewsTest() {
-    private val factoidDao: FactoidDao by lazy { injector.getInstance(FactoidDao::class.java) }
+    @Inject private lateinit var factoidDao: FactoidDao
 
     @Test
     @Disabled

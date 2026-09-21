@@ -3,6 +3,7 @@ package javabot
 import com.antwerkz.sofia.Sofia
 import jakarta.inject.Inject
 import jakarta.inject.Provider
+import jakarta.inject.Singleton
 import java.util.ArrayList
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
@@ -30,6 +31,7 @@ import org.pircbotx.hooks.events.PrivateMessageEvent
 import org.pircbotx.hooks.events.QuitEvent
 import org.slf4j.LoggerFactory
 
+@Singleton
 open class IrcAdapter
 @Inject
 constructor(

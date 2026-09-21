@@ -1,6 +1,7 @@
 package javabot.qtest.dao
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import javabot.dao.BaseServiceTest
 import javabot.dao.FactoidDao
 import javabot.model.Factoid
@@ -13,7 +14,7 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class FactoidDaoTest : BaseServiceTest() {
-    private val factoidDao: FactoidDao by lazy { injector.getInstance(FactoidDao::class.java) }
+    @Inject private lateinit var factoidDao: FactoidDao
 
     @Test
     @Tag("operations")

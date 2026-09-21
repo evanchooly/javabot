@@ -51,8 +51,13 @@ class DomainProducers {
         )
     }
 
+    // @Dependent (the CDI default pseudo-scope, so no scope annotation here), not
+    // @ApplicationScoped: a normal-scoped (e.g. @ApplicationScoped) producer method is
+    // forbidden by the CDI spec from returning null (IllegalProductException) -- caught
+    // empirically by ShortenerTest once UrlCacheService's `@Inject bitly: Bitly?` field started
+    // resolving through this producer for the first time (Task 15/18's combined report). Bitly
+    // is a cheap stateless wrapper, so a new instance per injection point is harmless.
     @Produces
-    @ApplicationScoped
     fun bitly(config: JavabotConfig): Bitly? {
         val bitlyToken = config.bitlyToken()
         return if (bitlyToken != "") Bitly(bitlyToken) else null

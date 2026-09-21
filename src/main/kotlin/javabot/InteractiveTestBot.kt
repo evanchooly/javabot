@@ -1,7 +1,6 @@
 package javabot
 
 import com.google.inject.Guice
-import com.google.inject.Injector
 import com.jayway.awaitility.Awaitility
 import jakarta.inject.Inject
 import javabot.dao.AdminDao
@@ -10,6 +9,7 @@ import javabot.dao.ConfigDao
 import javabot.dao.LogsDao
 import javabot.dao.ShunDao
 import javabot.model.Channel
+import javabot.model.EventInjector
 import javabot.operations.throttle.Throttler
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory
 class InteractiveTestBot
 @Inject
 constructor(
-    injector: Injector,
+    eventInjector: EventInjector,
     configDao: ConfigDao,
     channelDao: ChannelDao,
     logsDao: LogsDao,
@@ -28,7 +28,7 @@ constructor(
     javabotConfig: JavabotConfig,
 ) :
     Javabot(
-        injector,
+        eventInjector,
         configDao,
         channelDao,
         logsDao,
@@ -60,13 +60,11 @@ constructor(
     }
 }
 
-class InteractiveJavabotModule : JavabotModule() {
-    override fun configure() {
-        super.configure()
-        ircAdapterProvider = binder().getProvider(IrcAdapter::class.java)
-    }
-
-    override fun getBotNick(): String {
-        return "test-jb"
-    }
-}
+// NOTE: broken by the CDI/Arc migration (2026-09-20-remove-guice.md) -- Javabot's constructor now
+// takes EventInjector (a CDI-only type Guice cannot construct), and JavabotModule's
+// createIrcBot()/getBotListener()/getBotNick()/ircAdapterProvider (which this class used to
+// override) were deleted as permanently-dead code once ConfigDao/IrcAdapter also went CDI-only
+// (see Task 15/18's combined report). InteractiveTestBot.main() is a local developer convenience
+// tool with no test coverage; left broken rather than converted, per that migration's explicit
+// Non-goals. Fix forward if this tool is needed again.
+class InteractiveJavabotModule : JavabotModule()

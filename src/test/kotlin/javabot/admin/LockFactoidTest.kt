@@ -2,6 +2,7 @@ package javabot.admin
 
 import com.antwerkz.sofia.Sofia
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.util.stream.Stream
 import javabot.BaseTest
 import javabot.Message
@@ -18,11 +19,9 @@ import org.junit.jupiter.params.provider.MethodSource
 @QuarkusTest
 class LockFactoidTest : BaseTest() {
 
-    private val nickServDao: NickServDao by lazy { injector.getInstance(NickServDao::class.java) }
-    private val factoidDao: FactoidDao by lazy { injector.getInstance(FactoidDao::class.java) }
-    private val forgetFactoid: ForgetFactoidOperation by lazy {
-        injector.getInstance(ForgetFactoidOperation::class.java)
-    }
+    @Inject private lateinit var nickServDao: NickServDao
+    @Inject private lateinit var factoidDao: FactoidDao
+    @Inject private lateinit var forgetFactoid: ForgetFactoidOperation
 
     companion object {
         @JvmStatic

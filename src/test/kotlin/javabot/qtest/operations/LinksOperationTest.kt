@@ -2,6 +2,7 @@ package javabot.qtest.operations
 
 import com.antwerkz.sofia.Sofia
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.dao.LinkDao
 import javabot.mocks.MockIrcAdapter
@@ -13,10 +14,8 @@ import org.junit.jupiter.api.Test
 @QuarkusTest
 class LinksOperationTest : BaseTest() {
 
-    private val linkDao: LinkDao by lazy { injector.getInstance(LinkDao::class.java) }
-    private val operation: LinksOperation by lazy {
-        injector.getInstance(LinksOperation::class.java)
-    }
+    @Inject private lateinit var linkDao: LinkDao
+    @Inject private lateinit var operation: LinksOperation
 
     @BeforeEach
     fun deleted() {
@@ -248,7 +247,7 @@ class LinksOperationTest : BaseTest() {
 
     @Test
     fun testApproveWithoutBeingOp() {
-        val mockIrcAdapter = bot.get().adapter as MockIrcAdapter
+        val mockIrcAdapter = bot.adapter as MockIrcAdapter
 
         var response = operation.handleMessage(message("~submit http://foo.com This is a test"))
         assertEquals(Sofia.linksAccepted("http://foo.com", TEST_CHANNEL.name), response[0].value)
@@ -279,7 +278,7 @@ class LinksOperationTest : BaseTest() {
 
     @Test
     fun testSubmitPrivateMessageLinkNotOnChannel() {
-        val mockIrcAdapter = bot.get().adapter as MockIrcAdapter
+        val mockIrcAdapter = bot.adapter as MockIrcAdapter
         mockIrcAdapter.disableOperation("isOnChannel")
 
         val response =

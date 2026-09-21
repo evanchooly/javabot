@@ -1,6 +1,5 @@
 package javabot.web
 
-import com.google.inject.Injector
 import io.quarkus.runtime.StartupEvent
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.enterprise.event.Observes
@@ -10,7 +9,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.slf4j.LoggerFactory
 
 @ApplicationScoped
-class JavabotApplication @Inject constructor(var injector: Injector) {
+class JavabotApplication @Inject constructor(var javabot: Javabot) {
     var running = false
 
     @ConfigProperty(name = "javabot.web.enabled", defaultValue = "false")
@@ -23,7 +22,7 @@ class JavabotApplication @Inject constructor(var injector: Injector) {
     fun onStart(@Observes ev: StartupEvent) {
         if (webEnabled) {
             LOG.info("Starting Javabot web application")
-            injector.getInstance(Javabot::class.java).start()
+            javabot.start()
             running = true
         } else {
             LOG.info("Javabot web application is disabled")

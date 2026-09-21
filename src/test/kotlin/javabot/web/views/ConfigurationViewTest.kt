@@ -1,6 +1,7 @@
 package javabot.web.views
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.util.Arrays.asList
@@ -13,7 +14,7 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class ConfigurationViewTest : ViewsTest() {
-    private val configDao: ConfigDao by lazy { injector.getInstance(ConfigDao::class.java) }
+    @Inject private lateinit var configDao: ConfigDao
 
     @Test
     @Disabled

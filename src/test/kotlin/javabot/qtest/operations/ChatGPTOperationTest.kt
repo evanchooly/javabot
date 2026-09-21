@@ -1,6 +1,7 @@
 package javabot.qtest.operations
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.util.stream.Stream
 import javabot.BaseTest
 import javabot.Javabot.Companion.LOG
@@ -18,13 +19,9 @@ import org.junit.jupiter.params.provider.MethodSource
 
 @QuarkusTest
 class ChatGPTOperationTest : BaseTest() {
-    private val operation: ChatGPTOperation by lazy {
-        injector.getInstance(ChatGPTOperation::class.java)
-    }
-    private val addFactoidOperation: AddFactoidOperation by lazy {
-        injector.getInstance(AddFactoidOperation::class.java)
-    }
-    private val config: JavabotConfig by lazy { injector.getInstance(JavabotConfig::class.java) }
+    @Inject private lateinit var operation: ChatGPTOperation
+    @Inject private lateinit var addFactoidOperation: AddFactoidOperation
+    @Inject private lateinit var config: JavabotConfig
 
     @BeforeEach
     fun prepFactoids() {

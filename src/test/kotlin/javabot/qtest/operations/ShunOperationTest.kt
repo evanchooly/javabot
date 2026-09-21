@@ -1,6 +1,7 @@
 package javabot.qtest.operations
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.dao.FactoidDao
 import javabot.operations.GetFactoidOperation
@@ -13,11 +14,9 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class ShunOperationTest : BaseTest() {
-    private val operation: ShunOperation by lazy { injector.getInstance(ShunOperation::class.java) }
-    private val getFactoidOperation: GetFactoidOperation by lazy {
-        injector.getInstance(GetFactoidOperation::class.java)
-    }
-    private val factoidDao: FactoidDao by lazy { injector.getInstance(FactoidDao::class.java) }
+    @Inject private lateinit var operation: ShunOperation
+    @Inject private lateinit var getFactoidOperation: GetFactoidOperation
+    @Inject private lateinit var factoidDao: FactoidDao
 
     @Test
     @Disabled

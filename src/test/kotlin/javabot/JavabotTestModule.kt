@@ -1,28 +1,23 @@
 package javabot
 
-import com.google.inject.Provides
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
-import jakarta.inject.Provider
-import jakarta.inject.Singleton
 import java.io.File
 import java.io.FileInputStream
 import java.util.Properties
-import javabot.dao.NickServDao
-import javabot.dao.TestNickServDao
-import javabot.mocks.MockIrcAdapter
 import org.testcontainers.containers.MongoDBContainer
 
+// NickServDao/IrcAdapter's test-specific implementations (TestNickServDao/MockIrcAdapter) are no
+// longer bound here -- they're CDI @Alternative beans (see those classes) now that Javabot/
+// IrcAdapter/ConfigDao are all CDI-only-constructible (Task 15/18). getJavabot()/botProvider were
+// deleted the same way: TestJavabot is now fully CDI-constructed, so this Guice-side path to it is
+// permanently dead code, not just temporarily unreachable -- see the combined Task 15/18 report.
 class JavabotTestModule : JavabotModule() {
-    private lateinit var botProvider: Provider<TestJavabot>
     private val container = MongoDBContainer("mongo:6").withReuse(true)
 
     override fun configure() {
         super.configure()
         container.start()
-        botProvider = binder().getProvider(TestJavabot::class.java)
-        bind(NickServDao::class.java).to(TestNickServDao::class.java)
-        bind(IrcAdapter::class.java).to(MockIrcAdapter::class.java)
     }
 
     override fun client(): MongoClient {
@@ -40,12 +35,4 @@ class JavabotTestModule : JavabotModule() {
         }
         return properties
     }
-
-    @Provides
-    @Singleton
-    fun getJavabot(): Javabot {
-        return botProvider.get()
-    }
-
-    override fun getBotNick(): String = BaseTest.TEST_BOT_NICK
 }

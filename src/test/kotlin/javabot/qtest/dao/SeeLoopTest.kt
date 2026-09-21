@@ -2,6 +2,7 @@ package javabot.qtest.dao
 
 import com.antwerkz.sofia.Sofia
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.dao.FactoidDao
 import javabot.operations.GetFactoidOperation
@@ -12,10 +13,8 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class SeeLoopTest : BaseTest() {
-    private val factoidDao: FactoidDao by lazy { injector.getInstance(FactoidDao::class.java) }
-    private val operation: GetFactoidOperation by lazy {
-        injector.getInstance(GetFactoidOperation::class.java)
-    }
+    @Inject private lateinit var factoidDao: FactoidDao
+    @Inject private lateinit var operation: GetFactoidOperation
 
     @BeforeEach
     @AfterEach

@@ -1,6 +1,7 @@
 package javabot.qtest.operations
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -17,10 +18,8 @@ import org.junit.jupiter.api.Test
  */
 @QuarkusTest
 class WeatherOperationTest : BaseTest() {
-    private val operation: WeatherOperation by lazy {
-        injector.getInstance(WeatherOperation::class.java)
-    }
-    private val config: JavabotConfig by lazy { injector.getInstance(JavabotConfig::class.java) }
+    @Inject private lateinit var operation: WeatherOperation
+    @Inject private lateinit var config: JavabotConfig
 
     @Test
     fun tellWeather() {

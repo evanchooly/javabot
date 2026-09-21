@@ -1,5 +1,7 @@
 package javabot.mocks
 
+import jakarta.annotation.Priority
+import jakarta.enterprise.inject.Alternative
 import jakarta.inject.Inject
 import jakarta.inject.Provider
 import jakarta.inject.Singleton
@@ -15,6 +17,8 @@ import javabot.model.Channel
 import javabot.model.JavabotUser
 import org.pircbotx.PircBotX
 
+@Alternative
+@Priority(1)
 @Singleton
 class MockIrcAdapter
 @Inject

@@ -2,6 +2,7 @@ package javabot.qtest.operations
 
 import com.antwerkz.sofia.Sofia
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.util.stream.Stream
 import javabot.BaseTest
 import javabot.operations.JSROperation
@@ -17,8 +18,8 @@ import org.junit.jupiter.params.provider.MethodSource
 @QuarkusTest
 @Tag("operations")
 class JSROperationTest : BaseTest() {
-    private val locator: JCPJSRLocator by lazy { injector.getInstance(JCPJSRLocator::class.java) }
-    private val operation: JSROperation by lazy { injector.getInstance(JSROperation::class.java) }
+    @Inject private lateinit var locator: JCPJSRLocator
+    @Inject private lateinit var operation: JSROperation
 
     @Test
     fun testLocatorConfig() {

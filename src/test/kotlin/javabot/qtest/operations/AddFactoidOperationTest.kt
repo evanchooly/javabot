@@ -2,6 +2,7 @@ package javabot.qtest.operations
 
 import com.antwerkz.sofia.Sofia
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.util.stream.Stream
 import javabot.BaseTest
 import javabot.Message
@@ -33,16 +34,10 @@ class AddFactoidOperationTest : BaseTest() {
     // FactoidDao/AddFactoidOperation/GetFactoidOperation/ForgetFactoidOperation are Guice-domain
     // (javabot.dao.**/javabot.operations.** are excluded from CDI) -- not real @Inject sites
     // under @QuarkusTest.
-    private val factoidDao: FactoidDao by lazy { injector.getInstance(FactoidDao::class.java) }
-    private val addFactoidOperation: AddFactoidOperation by lazy {
-        injector.getInstance(AddFactoidOperation::class.java)
-    }
-    private val getFactoidOperation: GetFactoidOperation by lazy {
-        injector.getInstance(GetFactoidOperation::class.java)
-    }
-    private val forgetFactoidOperation: ForgetFactoidOperation by lazy {
-        injector.getInstance(ForgetFactoidOperation::class.java)
-    }
+    @Inject private lateinit var factoidDao: FactoidDao
+    @Inject private lateinit var addFactoidOperation: AddFactoidOperation
+    @Inject private lateinit var getFactoidOperation: GetFactoidOperation
+    @Inject private lateinit var forgetFactoidOperation: ForgetFactoidOperation
 
     companion object {
         val OK: String = Sofia.ok(TEST_USER_NICK.take(16))
@@ -203,10 +198,7 @@ class AddFactoidOperationTest : BaseTest() {
 
     @Test
     fun privMessage() {
-        bot.get()
-            .processMessage(
-                Message(TARGET_USER, System.currentTimeMillis().toString() + " is doh!")
-            )
+        bot.processMessage(Message(TARGET_USER, System.currentTimeMillis().toString() + " is doh!"))
         assertEquals(Sofia.privmsgChange(), messages.get()[0])
     }
 }

@@ -1,6 +1,7 @@
 package javabot.qtest.operations
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.operations.JavadocOperation
 import org.junit.jupiter.api.BeforeEach
@@ -8,9 +9,7 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class MorphiaJavadocTest : BaseTest() {
-    private val operation: JavadocOperation by lazy {
-        injector.getInstance(JavadocOperation::class.java)
-    }
+    @Inject private lateinit var operation: JavadocOperation
 
     @BeforeEach
     fun load() {

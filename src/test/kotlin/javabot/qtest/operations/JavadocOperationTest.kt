@@ -2,6 +2,7 @@ package javabot.qtest.operations
 
 import com.antwerkz.sofia.Sofia
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.dao.JavadocClassDao
 import javabot.operations.JavadocOperation
@@ -14,12 +15,8 @@ class JavadocOperationTest : BaseTest() {
         val STRING_URL = "java.base/java/lang/String.html#"
     }
 
-    private val operation: JavadocOperation by lazy {
-        injector.getInstance(JavadocOperation::class.java)
-    }
-    private val javadocClassDao: JavadocClassDao by lazy {
-        injector.getInstance(JavadocClassDao::class.java)
-    }
+    @Inject private lateinit var operation: JavadocOperation
+    @Inject private lateinit var javadocClassDao: JavadocClassDao
 
     @BeforeEach
     fun jdk() {

@@ -2,6 +2,7 @@ package javabot.qtest.operations
 
 import com.antwerkz.sofia.Sofia
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.operations.BrowseOperation
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -11,9 +12,7 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class BrowseOperationTest : BaseTest() {
-    private val browseOperation: BrowseOperation by lazy {
-        injector.getInstance(BrowseOperation::class.java)
-    }
+    @Inject private lateinit var browseOperation: BrowseOperation
 
     @Test
     @Tag("operations")

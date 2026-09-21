@@ -2,6 +2,7 @@ package javabot.weather.openweathermap.model
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.JavabotConfig
 import javabot.dao.weather.openweathermap.model.OWWeather
@@ -12,10 +13,8 @@ import org.junit.jupiter.api.TestInstance
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TestWeatherMapModel : BaseTest() {
-    private val javabotConfig: JavabotConfig by lazy {
-        injector.getInstance(JavabotConfig::class.java)
-    }
-    private val httpService: HttpService by lazy { injector.getInstance(HttpService::class.java) }
+    @Inject private lateinit var javabotConfig: JavabotConfig
+    @Inject private lateinit var httpService: HttpService
 
     @Test
     fun testOWMModelParsing() {

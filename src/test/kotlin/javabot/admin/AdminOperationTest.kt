@@ -1,6 +1,7 @@
 package javabot.admin
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.commands.AdminCommand
 import javabot.commands.DisableOperation
@@ -25,15 +26,9 @@ class AdminOperationTest : BaseTest() {
 
     // ListOperations/DisableOperation/EnableOperation are Guice-domain (javabot.commands.**
     // is excluded from CDI) -- not real @Inject sites under @QuarkusTest.
-    private val listOperation: ListOperations by lazy {
-        injector.getInstance(ListOperations::class.java)
-    }
-    private val disableOperation: DisableOperation by lazy {
-        injector.getInstance(DisableOperation::class.java)
-    }
-    private val enableOperation: EnableOperation by lazy {
-        injector.getInstance(EnableOperation::class.java)
-    }
+    @Inject private lateinit var listOperation: ListOperations
+    @Inject private lateinit var disableOperation: DisableOperation
+    @Inject private lateinit var enableOperation: EnableOperation
 
     @Test
     @Order(1)
@@ -63,13 +58,13 @@ class AdminOperationTest : BaseTest() {
     fun enableOperations() {
         assumeTrue(disableOperationsSucceeded, "disableOperations must pass first")
         disableAllOperations()
-        val allOperations = bot.get().getAllOperations()
+        val allOperations = bot.getAllOperations()
         for ((key) in allOperations) {
             enableOperation.handleMessage(message("~admin enableOperation --name=${key}"))
         }
     }
 
     private fun findOperation(name: String): BotOperation? {
-        return bot.get().activeOperations.filter { op -> op.getName() == name }.firstOrNull()
+        return bot.activeOperations.filter { op -> op.getName() == name }.firstOrNull()
     }
 }

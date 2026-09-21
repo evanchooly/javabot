@@ -1,15 +1,14 @@
 package javabot
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import javabot.service.UrlCacheService
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class ShortenerTest : BaseTest() {
-    private val urlCache: UrlCacheService by lazy {
-        injector.getInstance(UrlCacheService::class.java)
-    }
+    @Inject private lateinit var urlCache: UrlCacheService
 
     @Test
     fun shorten() {

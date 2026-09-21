@@ -4,6 +4,7 @@ import com.antwerkz.sofia.Sofia
 import com.google.common.collect.ImmutableMap.of
 import com.jayway.awaitility.Duration
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.util.concurrent.TimeUnit.SECONDS
 import java.util.stream.Stream
 import javabot.dao.FactoidDao
@@ -21,8 +22,8 @@ import org.pircbotx.hooks.events.PrivateMessageEvent
 
 @QuarkusTest
 class IrcAdapterTest : BaseTest() {
-    private val ircAdapter: IrcAdapter by lazy { injector.getInstance(IrcAdapter::class.java) }
-    private val factoidDao: FactoidDao by lazy { injector.getInstance(FactoidDao::class.java) }
+    @Inject private lateinit var ircAdapter: IrcAdapter
+    @Inject private lateinit var factoidDao: FactoidDao
     val testIrcChannel: MockIrcChannel by lazy { MockIrcChannel(ircBot.get(), TEST_CHANNEL.name) }
 
     val testIrcUser: MockIrcUser by lazy { MockIrcUser(ircBot.get(), TEST_USER.nick) }

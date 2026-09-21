@@ -1,6 +1,7 @@
 package javabot.qtest.commands
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.lang.String.format
 import javabot.BaseTest
 import javabot.commands.Configure
@@ -11,8 +12,8 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class ConfigureTest : BaseTest() {
-    private val configDao: ConfigDao by lazy { injector.getInstance(ConfigDao::class.java) }
-    private val operation: Configure by lazy { injector.getInstance(Configure::class.java) }
+    @Inject private lateinit var configDao: ConfigDao
+    @Inject private lateinit var operation: Configure
 
     @Test
     fun change() {

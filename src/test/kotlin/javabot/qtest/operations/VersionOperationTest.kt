@@ -1,6 +1,7 @@
 package javabot.qtest.operations
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.operations.VersionOperation
 import org.junit.jupiter.api.Tag
@@ -8,9 +9,7 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class VersionOperationTest : BaseTest() {
-    private val operation: VersionOperation by lazy {
-        injector.getInstance(VersionOperation::class.java)
-    }
+    @Inject private lateinit var operation: VersionOperation
 
     @Test
     @Tag("operations")

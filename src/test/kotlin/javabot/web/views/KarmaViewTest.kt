@@ -1,6 +1,7 @@
 package javabot.web.views
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
@@ -11,7 +12,7 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class KarmaViewTest : ViewsTest() {
-    private val karmaDao: KarmaDao by lazy { injector.getInstance(KarmaDao::class.java) }
+    @Inject private lateinit var karmaDao: KarmaDao
 
     @Test
     fun karma() {

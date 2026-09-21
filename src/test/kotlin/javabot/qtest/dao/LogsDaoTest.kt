@@ -4,6 +4,7 @@ import com.antwerkz.sofia.Sofia
 import dev.morphia.Datastore
 import dev.morphia.query.filters.Filters
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.time.LocalDateTime
 import javabot.BaseTest
 import javabot.model.Channel
@@ -19,7 +20,7 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class LogsDaoTest : BaseTest() {
-    private val ds: Datastore by lazy { injector.getInstance(Datastore::class.java) }
+    @Inject private lateinit var ds: Datastore
 
     companion object {
         val CHANNEL_NAME: String = "#watercooler"

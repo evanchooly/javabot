@@ -1,5 +1,6 @@
 package javabot.javadoc
 
+import io.quarkus.arc.Unremovable
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import java.io.File
@@ -18,6 +19,13 @@ import org.bson.types.ObjectId
 import org.objectweb.asm.ClassReader
 import org.slf4j.LoggerFactory
 
+// @Unremovable: this bean's only "consumer" is ApiEvent.asmParser, an @Inject field on a plain
+// Morphia-deserialized POJO (not itself a CDI bean) that EventInjector populates via runtime
+// BeanManager reflection rather than Arc's normal build-time injection graph. Without this
+// annotation, Arc's unused-bean removal prunes JavadocAsmParser entirely (nothing else injects
+// it through a real constructor injection point), and EventInjector.inject() then throws
+// UnsatisfiedResolutionException at runtime -- caught empirically by this task's ApiEvent test.
+@Unremovable
 @Singleton
 class JavadocAsmParser
 @Inject

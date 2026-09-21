@@ -7,7 +7,6 @@ import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ConfigDao
-import javabot.operations.BotOperation
 import org.apache.commons.lang.StringUtils
 
 @Singleton
@@ -16,7 +15,7 @@ class ListOperations
 constructor(bot: Javabot, adminDao: AdminDao, var configDao: ConfigDao) :
     OperationsCommand(bot, adminDao) {
 
-    private val operation by lazy { configDao.list(BotOperation::class.java) }
+    private val operation by lazy { configDao.listOperations() }
 
     override fun execute(event: Message): List<Message> {
         val responses = arrayListOf<Message>()

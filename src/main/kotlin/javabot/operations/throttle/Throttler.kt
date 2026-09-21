@@ -7,6 +7,7 @@ import dev.morphia.Datastore
 import dev.morphia.query.filters.Filters
 import jakarta.inject.Inject
 import jakarta.inject.Provider
+import jakarta.inject.Singleton
 import java.time.Duration.between
 import java.time.LocalDateTime.now
 import java.util.concurrent.TimeUnit
@@ -19,6 +20,7 @@ import javabot.dao.NickServDao
 import javabot.model.JavabotUser
 import javabot.model.ThrottleItem
 
+@Singleton
 class Throttler
 @Inject
 constructor(

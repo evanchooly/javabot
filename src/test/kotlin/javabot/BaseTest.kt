@@ -1,6 +1,5 @@
 package javabot
 
-import com.google.inject.Injector
 import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.Duration
 import dev.morphia.Datastore
@@ -21,6 +20,7 @@ import javabot.model.AdminEvent
 import javabot.model.ApiEvent
 import javabot.model.Change
 import javabot.model.Channel
+import javabot.model.EventInjector
 import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.NickServInfo
@@ -48,20 +48,17 @@ open class BaseTest {
         private val LOG = LoggerFactory.getLogger(BaseTest::class.java)
     }
 
-    @Inject lateinit var injector: Injector
-
-    protected val datastore: Datastore by lazy { injector.getInstance(Datastore::class.java) }
-    private val config: JavabotConfig by lazy { injector.getInstance(JavabotConfig::class.java) }
-    protected val apiDao: ApiDao by lazy { injector.getInstance(ApiDao::class.java) }
-    protected val channelDao: ChannelDao by lazy { injector.getInstance(ChannelDao::class.java) }
-    protected val logsDao: LogsDao by lazy { injector.getInstance(LogsDao::class.java) }
-    protected val adminDao: AdminDao by lazy { injector.getInstance(AdminDao::class.java) }
-    protected val changeDao: ChangeDao by lazy { injector.getInstance(ChangeDao::class.java) }
-    protected val bot: Provider<TestJavabot> by lazy {
-        injector.getProvider(TestJavabot::class.java)
-    }
-    protected val ircBot: Provider<PircBotX> by lazy { injector.getProvider(PircBotX::class.java) }
-    protected val messages: Messages by lazy { injector.getInstance(Messages::class.java) }
+    @Inject protected lateinit var datastore: Datastore
+    @Inject private lateinit var config: JavabotConfig
+    @Inject protected lateinit var apiDao: ApiDao
+    @Inject protected lateinit var channelDao: ChannelDao
+    @Inject protected lateinit var logsDao: LogsDao
+    @Inject protected lateinit var adminDao: AdminDao
+    @Inject protected lateinit var changeDao: ChangeDao
+    @Inject protected lateinit var bot: TestJavabot
+    @Inject protected lateinit var ircBot: Provider<PircBotX>
+    @Inject protected lateinit var messages: Messages
+    @Inject protected lateinit var eventInjector: EventInjector
 
     @BeforeEach
     fun setup() {
@@ -87,16 +84,14 @@ open class BaseTest {
 
         logsDao.getQuery(Logs::class.java).delete()
         changeDao.getQuery(Change::class.java).delete()
-        bot.get().start()
+        bot.start()
     }
 
     protected fun enableAllOperations() {
-        val bot = this.bot.get()
         bot.getAllOperations().keys.forEach { bot.enableOperation(it) }
     }
 
     protected fun disableAllOperations() {
-        val bot = this.bot.get()
         bot.getAllOperations().keys.forEach { bot.disableOperation(it) }
     }
 
@@ -115,14 +110,7 @@ open class BaseTest {
         start: String = "~",
         user: JavabotUser = TEST_USER,
     ): Message {
-        return Message.extractContentFromMessage(
-            bot.get(),
-            TEST_CHANNEL,
-            user,
-            start,
-            bot.get().nick,
-            value,
-        )
+        return Message.extractContentFromMessage(bot, TEST_CHANNEL, user, start, bot.nick, value)
     }
 
     protected fun privateMessage(value: String, user: JavabotUser = TEST_USER): Message {
@@ -156,7 +144,7 @@ open class BaseTest {
             api = JavadocApi(config, apiName, groupId, artifactId, version)
             apiDao.save(api)
             val event = ApiEvent.add(TEST_USER.nick, api)
-            injector.injectMembers(event)
+            eventInjector.inject(event)
             event.handle()
             messages.clear()
             LOG.info("$apiName finished.")

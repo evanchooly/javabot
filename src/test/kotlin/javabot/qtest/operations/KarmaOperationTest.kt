@@ -2,6 +2,7 @@ package javabot.qtest.operations
 
 import com.antwerkz.sofia.Sofia
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.lang.String.format
 import java.util.Date
 import java.util.stream.Stream
@@ -24,11 +25,9 @@ import org.junit.jupiter.params.provider.MethodSource
 @Tag("operations")
 class KarmaOperationTest : BaseTest() {
 
-    private val nickServDao: NickServDao by lazy { injector.getInstance(NickServDao::class.java) }
-    private val karmaDao: KarmaDao by lazy { injector.getInstance(KarmaDao::class.java) }
-    private val operation: KarmaOperation by lazy {
-        injector.getInstance(KarmaOperation::class.java)
-    }
+    @Inject private lateinit var nickServDao: NickServDao
+    @Inject private lateinit var karmaDao: KarmaDao
+    @Inject private lateinit var operation: KarmaOperation
 
     companion object {
         @JvmStatic
@@ -109,7 +108,7 @@ class KarmaOperationTest : BaseTest() {
         val response = operation.handleMessage(event)
         assertEquals(Sofia.karmaOthersValue(target, karma, TEST_USER.nick), response[0].value)
 
-        bot.get().processMessage(event)
+        bot.processMessage(event)
         assertTrue(
             changeDao.findLog(Sofia.karmaChanged(TEST_USER.nick, target, karma, TEST_CHANNEL.name))
         )
@@ -125,7 +124,7 @@ class KarmaOperationTest : BaseTest() {
         assertEquals(1, response.size)
         assertEquals(Sofia.karmaOthersValue(target, karma, TEST_USER.nick), response[0].value)
 
-        bot.get().processMessage(event)
+        bot.processMessage(event)
         assertTrue(
             changeDao.findLog(Sofia.karmaChanged(TEST_USER.nick, target, karma, TEST_CHANNEL.name))
         )
@@ -140,7 +139,7 @@ class KarmaOperationTest : BaseTest() {
         val response = operation.handleMessage(event)
         assertEquals(Sofia.karmaOthersValue(target, karma, TEST_USER.nick), response[0].value)
 
-        bot.get().processMessage(event)
+        bot.processMessage(event)
         assertTrue(
             changeDao.findLog(Sofia.karmaChanged(TEST_USER.nick, target, karma, TEST_CHANNEL.name))
         )

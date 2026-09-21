@@ -15,7 +15,7 @@ class ChannelEventTest : BaseTest() {
         channelDao.delete(channelDao.get("##testChannel"))
         val name = "##testChannel"
         val event = ChannelEvent("testng", EventType.ADD, name)
-        bot.get().submitEvent(event)
+        bot.submitEvent(event)
         waitForEvent(event, "adding channel $name.  event id: ${event.id}")
         Assertions.assertNotNull(channelDao.get(name))
     }
@@ -25,7 +25,7 @@ class ChannelEventTest : BaseTest() {
         bot
         val key = "abcdef"
         val event = ChannelEvent("testng", EventType.ADD, KEYED_CHANNEL, key)
-        bot.get().submitEvent(event)
+        bot.submitEvent(event)
         waitForEvent(event, "adding keyed channel " + KEYED_CHANNEL)
         Assertions.assertNotNull(channelDao.get(KEYED_CHANNEL))
     }
@@ -34,7 +34,7 @@ class ChannelEventTest : BaseTest() {
     fun leave() {
         bot
         val event = ChannelEvent("testng", EventType.DELETE, KEYED_CHANNEL)
-        bot.get().submitEvent(event)
+        bot.submitEvent(event)
         waitForEvent(event, "leaving channel " + KEYED_CHANNEL)
         Assertions.assertNull(channelDao.get(KEYED_CHANNEL))
     }
@@ -43,7 +43,7 @@ class ChannelEventTest : BaseTest() {
     fun update() {
         val name = "##testChannel"
         val event = ChannelEvent("testng", EventType.UPDATE, name, "newKey")
-        bot.get().submitEvent(event)
+        bot.submitEvent(event)
         waitForEvent(event, "updating channel " + name)
         val channel = channelDao.get(name)
         Assertions.assertNotNull(channel)

@@ -1,6 +1,7 @@
 package javabot.admin
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.io.File
 import javabot.BaseTest
 import javabot.JavabotConfig
@@ -30,15 +31,11 @@ class JavadocTest : BaseTest() {
 
     // JavadocClassDao/JavabotConfig/JavadocOperation are Guice-domain (javabot.dao.**/javabot.*/
     // javabot.operations.** are excluded from CDI) -- not real @Inject sites under @QuarkusTest.
-    private val classDao: JavadocClassDao by lazy {
-        injector.getInstance(JavadocClassDao::class.java)
-    }
+    @Inject private lateinit var classDao: JavadocClassDao
 
-    private val config: JavabotConfig by lazy { injector.getInstance(JavabotConfig::class.java) }
+    @Inject private lateinit var config: JavabotConfig
 
-    private val operation: JavadocOperation by lazy {
-        injector.getInstance(JavadocOperation::class.java)
-    }
+    @Inject private lateinit var operation: JavadocOperation
 
     @BeforeAll
     fun drops() {
@@ -184,7 +181,7 @@ class JavadocTest : BaseTest() {
         assertEquals(0, classDao.getClass(guava, "ArrayTable").size)
 
         val event = ApiEvent.reload(TEST_USER.nick, apiName)
-        injector.injectMembers(event)
+        eventInjector.inject(event)
         event.handle()
 
         assertEquals(1, classDao.getClass(event.api, "AbstractCache").size)

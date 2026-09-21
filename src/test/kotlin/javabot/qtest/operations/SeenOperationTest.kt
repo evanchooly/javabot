@@ -2,6 +2,7 @@ package javabot.qtest.operations
 
 import com.antwerkz.sofia.Sofia
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.operations.SeenOperation
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -9,7 +10,7 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class SeenOperationTest : BaseTest() {
-    private val operation: SeenOperation by lazy { injector.getInstance(SeenOperation::class.java) }
+    @Inject private lateinit var operation: SeenOperation
 
     @Test
     fun seen() {

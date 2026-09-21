@@ -1,6 +1,7 @@
 package javabot.qtest.operations
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.util.TreeSet
 import javabot.BaseTest
 import javabot.operations.BotOperation
@@ -13,11 +14,9 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class OperationComparatorTest : BaseTest() {
-    private val karma: KarmaOperation by lazy { injector.getInstance(KarmaOperation::class.java) }
-    private val factoid: GetFactoidOperation by lazy {
-        injector.getInstance(GetFactoidOperation::class.java)
-    }
-    private val jsr: JSROperation by lazy { injector.getInstance(JSROperation::class.java) }
+    @Inject private lateinit var karma: KarmaOperation
+    @Inject private lateinit var factoid: GetFactoidOperation
+    @Inject private lateinit var jsr: JSROperation
 
     @Test
     fun testOperationComparator() {

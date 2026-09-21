@@ -1,6 +1,5 @@
 package javabot.web.resources
 
-import com.google.inject.Injector
 import io.quarkus.qute.TemplateInstance
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
@@ -35,15 +34,15 @@ import org.eclipse.microprofile.jwt.JsonWebToken
 @ApplicationScoped
 class AdminResource
 @Inject
-constructor(var templateService: TemplateService, private val injector: Injector) {
-
-    // Guice-managed, not CDI beans -- see GuiceInjectorProducer.
-    private val adminDao: AdminDao by lazy { injector.getInstance(AdminDao::class.java) }
-    private val apiDao: ApiDao by lazy { injector.getInstance(ApiDao::class.java) }
-    private val configDao: ConfigDao by lazy { injector.getInstance(ConfigDao::class.java) }
-    private val channelDao: ChannelDao by lazy { injector.getInstance(ChannelDao::class.java) }
-    private val javabot: Javabot by lazy { injector.getInstance(Javabot::class.java) }
-    private val config: JavabotConfig by lazy { injector.getInstance(JavabotConfig::class.java) }
+constructor(
+    var templateService: TemplateService,
+    private val adminDao: AdminDao,
+    private val apiDao: ApiDao,
+    private val configDao: ConfigDao,
+    private val channelDao: ChannelDao,
+    private val javabot: Javabot,
+    private val config: JavabotConfig,
+) {
 
     // Populated by quarkus-oidc for web-app applications: the ID token of the session Quarkus
     // established during its own OIDC redirect/callback flow. Request-scoped bean, so it is

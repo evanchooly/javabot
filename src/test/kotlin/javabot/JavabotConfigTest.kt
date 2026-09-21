@@ -1,15 +1,14 @@
 package javabot
 
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class JavabotConfigTest : BaseTest() {
 
-    private val javabotConfig: JavabotConfig by lazy {
-        injector.getInstance(JavabotConfig::class.java)
-    }
+    @Inject private lateinit var javabotConfig: JavabotConfig
 
     @Test
     fun testConfig() {

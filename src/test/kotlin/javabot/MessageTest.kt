@@ -30,7 +30,7 @@ class MessageTest : BaseTest() {
     private fun check(start: String, test: String, expected: String, triggered: Boolean = true) {
         val message =
             Message.extractContentFromMessage(
-                bot.get(),
+                bot,
                 channel,
                 user,
                 start,

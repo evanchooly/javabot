@@ -2,6 +2,7 @@ package javabot.qtest.operations
 
 import com.antwerkz.sofia.Sofia
 import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import javabot.BaseTest
 import javabot.Javabot
 import javabot.mocks.MockIrcAdapter
@@ -11,10 +12,8 @@ import org.junit.jupiter.api.Test
 
 @QuarkusTest
 class IgnorePossessiveAddressTest : BaseTest() {
-    private val ircAdapter: MockIrcAdapter by lazy {
-        injector.getInstance(MockIrcAdapter::class.java)
-    }
-    private val javabot: Javabot by lazy { injector.getInstance(Javabot::class.java) }
+    @Inject private lateinit var ircAdapter: MockIrcAdapter
+    @Inject private lateinit var javabot: Javabot
 
     @Test
     fun testNonPossessiveAddress() {
