@@ -20,8 +20,9 @@ import org.slf4j.LoggerFactory
 // IrcBotProducer's `ircAdapter` param), creating an AmbiguousResolutionException against the
 // real IrcAdapter bean. Guice never had this problem: it resolves purely by the requested type,
 // not by "is-a" relationships across concrete subclasses. OfflineAdapter has no direct CDI
-// consumer of its own -- it exists to be extended by test-only javabot.mocks.MockIrcAdapter,
-// which is Guice-constructed (javabot.mocks.** stays in quarkus.arc.exclude-types).
+// consumer of its own -- its only real consumer is the test-only javabot.mocks.MockIrcAdapter,
+// which extends it and is itself a CDI @Alternative @Priority(1) @Singleton bean (see
+// MockIrcAdapter.kt), not Guice-constructed.
 @Singleton
 @Typed(OfflineAdapter::class)
 open class OfflineAdapter
