@@ -3,10 +3,12 @@ package javabot.commands
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 
+@Singleton
 class DisableOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
     OperationsCommand(bot, adminDao) {
     @Parameter(

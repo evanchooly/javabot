@@ -2,6 +2,7 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
@@ -9,6 +10,7 @@ import javabot.dao.ConfigDao
 import javabot.operations.BotOperation
 import org.apache.commons.lang.StringUtils
 
+@Singleton
 class ListOperations
 @Inject
 constructor(bot: Javabot, adminDao: AdminDao, var configDao: ConfigDao) :

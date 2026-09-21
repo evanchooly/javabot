@@ -3,11 +3,13 @@ package javabot.commands
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 
+@Singleton
 class AddChannel @Inject constructor(bot: Javabot, adminDao: AdminDao, var channelDao: ChannelDao) :
     AdminCommand(bot, adminDao) {
     @Parameter(required = true) lateinit var channelName: String

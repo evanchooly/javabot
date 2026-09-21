@@ -3,12 +3,14 @@ package javabot.commands
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.model.javadoc.JavadocApi
 
+@Singleton
 class DropApi @Inject constructor(bot: Javabot, adminDao: AdminDao, var apiDao: ApiDao) :
     AdminCommand(bot, adminDao) {
     @Parameter(required = true) lateinit var apiName: String

@@ -2,6 +2,7 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.lang.String.format
 import javabot.Javabot
 import javabot.Message
@@ -10,6 +11,7 @@ import javabot.dao.ChannelDao
 import javabot.dao.util.QueryParam
 import org.apache.commons.lang.StringUtils
 
+@Singleton
 class ListChannels
 @Inject
 constructor(bot: Javabot, adminDao: AdminDao, var channelDao: ChannelDao) :
