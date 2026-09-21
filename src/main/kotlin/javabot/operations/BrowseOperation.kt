@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.Duration
 import java.util.Locale
 import javabot.Javabot
@@ -16,6 +17,7 @@ import javabot.service.HTTP_OPTIONS
 import javabot.service.HttpService
 import javabot.service.UrlCacheService
 
+@Singleton
 class BrowseOperation
 @Inject
 constructor(

@@ -2,6 +2,7 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.LocalDateTime
 import java.util.Locale
 import javabot.Javabot
@@ -14,6 +15,7 @@ import javabot.model.Factoid
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+@Singleton
 class AddFactoidOperation
 @Inject
 constructor(

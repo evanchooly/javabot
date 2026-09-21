@@ -2,6 +2,7 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalDateTime.now
@@ -14,6 +15,7 @@ import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 
+@Singleton
 class DaysToChristmasOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
     BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {
