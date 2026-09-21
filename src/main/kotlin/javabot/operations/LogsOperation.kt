@@ -6,6 +6,7 @@ import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
 import dev.morphia.query.filters.Filters.eq
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.format.DateTimeFormatter.ofPattern
 import java.util.Locale
 import javabot.Javabot
@@ -13,6 +14,7 @@ import javabot.Message
 import javabot.dao.AdminDao
 import javabot.model.Logs
 
+@Singleton
 class LogsOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var ds: Datastore) :
     BotOperation(bot, adminDao) {
 

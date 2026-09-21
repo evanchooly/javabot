@@ -2,6 +2,7 @@ package javabot.operations
 
 import com.antwerkz.sofia.Sofia
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.net.URI
 import java.util.Locale
 import javabot.Javabot
@@ -12,6 +13,7 @@ import javabot.dao.ChannelDao
 import javabot.dao.LinkDao
 import javabot.model.Link
 
+@Singleton
 class LinksOperation
 @Inject
 constructor(
