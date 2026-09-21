@@ -1,6 +1,7 @@
 package javabot.operations
 
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.io.IOException
 import java.net.URI
 import javabot.Javabot
@@ -16,6 +17,7 @@ import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
 import org.jsoup.select.Elements
 
+@Singleton
 class URLTitleOperation
 @Inject
 constructor(
