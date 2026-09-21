@@ -33,7 +33,7 @@ class DomainProducers {
                 System.getProperties(),
                 System.getenv(),
             )
-        return validate(config)
+        return validateJavabotConfig(config)
     }
 
     @Produces
@@ -64,29 +64,34 @@ class DomainProducers {
     }
 
     protected open fun loadConfigProperties(): HashMap<Any, Any> = HashMap()
+}
 
-    private fun validate(config: JavabotConfig): JavabotConfig {
-        @Suppress("UNCHECKED_CAST")
-        val configClass = config.javaClass.interfaces[0] as Class<JavabotConfig>
-        val missingKeys = ArrayList<String>()
-        for (method in configClass.declaredMethods) {
-            try {
-                val annotation = method.getDeclaredAnnotation(Key::class.java)
-                if (
-                    annotation != null &&
-                        method.parameterCount == 0 &&
-                        method.returnType != Void::class.java &&
-                        method.invoke(config) == null
-                ) {
-                    missingKeys.add(annotation.value)
-                }
-            } catch (e: ReflectiveOperationException) {
-                throw RuntimeException(e.message, e)
+/**
+ * Shared by [DomainProducers.javabotConfig] and [TestDomainProducers.javabotConfig] so both the
+ * production and `%test` config producers enforce the same "no missing @Key-annotated properties"
+ * invariant.
+ */
+fun validateJavabotConfig(config: JavabotConfig): JavabotConfig {
+    @Suppress("UNCHECKED_CAST")
+    val configClass = config.javaClass.interfaces[0] as Class<JavabotConfig>
+    val missingKeys = ArrayList<String>()
+    for (method in configClass.declaredMethods) {
+        try {
+            val annotation = method.getDeclaredAnnotation(Key::class.java)
+            if (
+                annotation != null &&
+                    method.parameterCount == 0 &&
+                    method.returnType != Void::class.java &&
+                    method.invoke(config) == null
+            ) {
+                missingKeys.add(annotation.value)
             }
+        } catch (e: ReflectiveOperationException) {
+            throw RuntimeException(e.message, e)
         }
-        if (missingKeys.isNotEmpty()) {
-            throw RuntimeException(Sofia.configurationMissingProperties(missingKeys))
-        }
-        return config
     }
+    if (missingKeys.isNotEmpty()) {
+        throw RuntimeException(Sofia.configurationMissingProperties(missingKeys))
+    }
+    return config
 }

@@ -31,7 +31,7 @@ constructor(
         private val RESULT_LIMIT = 5
     }
 
-    // JavabotModule.bitly() is always bound, though it may produce a null Bitly.
+    // DomainProducers.bitly() is always bound, though it may produce a null Bitly.
     @field:[Nullable Inject]
     var bitly: Bitly? = null
 

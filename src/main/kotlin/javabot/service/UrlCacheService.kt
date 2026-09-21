@@ -15,7 +15,7 @@ open class UrlCacheService @Inject constructor(private val config: JavabotConfig
         return urlCache[url]
     }
 
-    // JavabotModule.bitly() is always bound, though it may produce a null Bitly.
+    // DomainProducers.bitly() is always bound, though it may produce a null Bitly.
     @field:[Nullable Inject]
     var bitly: Bitly? = null
 

@@ -95,9 +95,6 @@ constructor(
         val hook = Thread { this.shutdown() }
         hook.isDaemon = false
         Runtime.getRuntime().addShutdownHook(hook)
-        // Lets the test-suite shutdown listener stop this bot at the end of the run without
-        // asking Guice for an instance (which would build one if none ever existed).
-        GuiceInjectorProducerHolder.register(this)
     }
 
     open fun start() {
