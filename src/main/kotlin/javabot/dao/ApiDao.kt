@@ -6,6 +6,7 @@ import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
 import dev.morphia.query.filters.Filters.eq
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.util.Locale
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
@@ -14,6 +15,7 @@ import javabot.model.javadoc.JavadocMethod
 import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
 
+@Singleton
 class ApiDao @Inject constructor(ds: Datastore) : BaseDao<JavadocApi>(ds, JavadocApi::class.java) {
     companion object {
         private val LOG = LoggerFactory.getLogger(ApiDao::class.java)

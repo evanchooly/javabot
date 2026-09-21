@@ -10,10 +10,12 @@ import dev.morphia.query.Sort.descending
 import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.regex
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.LocalDateTime
 import javabot.dao.util.QueryParam
 import javabot.model.Change
 
+@Singleton
 class ChangeDao @Inject constructor(ds: Datastore) : BaseDao<Change>(ds, Change::class.java) {
 
     fun logFactoidAdded(sender: String, key: String, value: String, location: String) {

@@ -9,6 +9,7 @@ import dev.morphia.query.Query
 import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.or
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.LocalDateTime
 import java.util.Locale
 import java.util.regex.PatternSyntaxException
@@ -16,6 +17,7 @@ import javabot.dao.util.QueryParam
 import javabot.model.Factoid
 import javabot.model.Persistent
 
+@Singleton
 class FactoidDao
 @Inject
 constructor(ds: Datastore, var changeDao: ChangeDao, var configDao: ConfigDao) :

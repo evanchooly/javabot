@@ -5,6 +5,7 @@ import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
 import dev.morphia.query.filters.Filters.eq
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.LocalDateTime
 import java.util.ArrayList
 import java.util.Locale
@@ -13,6 +14,7 @@ import javabot.model.Activity
 import javabot.model.Channel
 import org.apache.commons.lang.StringUtils
 
+@Singleton
 @SuppressWarnings("ConstantNamingConvention")
 class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Channel::class.java) {
 

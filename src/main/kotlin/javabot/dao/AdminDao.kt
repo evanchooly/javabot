@@ -6,9 +6,11 @@ import dev.morphia.query.Sort
 import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.or
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import javabot.model.Admin
 import javabot.model.JavabotUser
 
+@Singleton
 class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) :
     BaseDao<Admin>(ds, Admin::class.java) {
     override fun findAll(): List<Admin> {

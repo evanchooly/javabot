@@ -6,12 +6,14 @@ import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.util.concurrent.TimeUnit
 import javabot.JavabotConfig
 import javabot.dao.geocode.model.GeocodeResponse
 import javabot.dao.util.CallLimiter
 import javabot.service.HttpService
 
+@Singleton
 class GeocodeDao
 @Inject
 constructor(private val javabotConfig: JavabotConfig, private val httpService: HttpService) {
