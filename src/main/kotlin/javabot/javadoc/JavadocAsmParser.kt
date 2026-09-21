@@ -1,6 +1,7 @@
 package javabot.javadoc
 
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.io.File
 import java.io.FileOutputStream
 import java.io.Writer
@@ -17,6 +18,7 @@ import org.bson.types.ObjectId
 import org.objectweb.asm.ClassReader
 import org.slf4j.LoggerFactory
 
+@Singleton
 class JavadocAsmParser
 @Inject
 constructor(private val apiDao: ApiDao, private val config: JavabotConfig) {
