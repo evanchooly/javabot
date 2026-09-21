@@ -5,12 +5,14 @@ import dev.morphia.query.QueryException
 import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.or
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.util.Locale
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocField
 import javabot.model.javadoc.JavadocMethod
 
+@Singleton
 class JavadocClassDao @Inject constructor(ds: Datastore) :
     BaseDao<JavadocClass>(ds, JavadocClass::class.java) {
     companion object {

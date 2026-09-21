@@ -8,6 +8,7 @@ import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.gte
 import dev.morphia.query.filters.Filters.lte
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.Locale
@@ -19,6 +20,7 @@ import javabot.model.Logs.Type
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+@Singleton
 class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channelDao: ChannelDao) :
     BaseDao<Logs>(ds, Logs::class.java) {
 

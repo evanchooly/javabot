@@ -6,11 +6,13 @@ import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
 import dev.morphia.query.filters.Filters.eq
 import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.LocalDateTime
 import java.util.Locale
 import javabot.dao.util.QueryParam
 import javabot.model.Karma
 
+@Singleton
 class KarmaDao
 @Inject
 constructor(ds: Datastore, var changeDao: ChangeDao, var channelDao: ChannelDao) :
