@@ -73,10 +73,44 @@ Maven build, ~178 Kotlin source files / 66 test files.
       simplify ops.
 
 ## Framework migration — Dropwizard → Quarkus
-- [ ] Convert the web layer (`src/main/kotlin/javabot/web/**`, currently Dropwizard +
+- [~] Convert the web layer (`src/main/kotlin/javabot/web/**`, currently Dropwizard +
       FreeMarker views + `dropwizard-auth`/socialauth OAuth) to Quarkus. This
       is a large, well-scoped effort with prior art already in the repo to
       draw from rather than starting cold:
+  - **In progress** — took the path this checklist recommended below:
+    rebased `origin/copilot/convert-dropwizard-to-quarkus`'s web-layer
+    conversion onto current master (merged clean, no conflicts) and fixed
+    what didn't actually work end to end:
+    - The FreeMarker `main.ftl` → `paged.ftl` → `<child>.ftl` nested
+      `<#include>` chain wasn't reproduced in Qute at all — pages rendered
+      an empty shell. Now uses Qute's `{#include _id=...}` dynamic include
+      against `contentTemplate`/`pagedView` data keys instead.
+    - `TemplateService`'s `@Location`-injected `Template` fields only work
+      inside a full Quarkus/Arc container; the existing view test suite
+      builds its object graph with plain Guice (`@Guice(modules =
+      [JavabotTestModule])`), which has no notion of that build-time
+      wiring. `TemplateService` now owns a standalone Qute `Engine`
+      instead, so it renders identically either way.
+    - Guice 5.1.0 only recognizes `javax.inject.Inject`; Quarkus/Arc
+      requires `jakarta.inject.Inject`. Migrated the whole codebase to
+      `jakarta.inject` and bumped Guice to 7.0.0 so one object graph
+      satisfies both. Added a CDI producer (`GuiceInjectorProducer`)
+      exposing the shared Guice `Injector` so web-layer CDI beans can pull
+      DAOs from the still-Guice-managed domain layer instead of asking Arc
+      to inject them directly (Arc has no bean definitions for them).
+    - The committed session-cookie encryption key from the source branch's
+      "fix ... encryption key" commit was still a real hardcoded default,
+      just reworded — now env-var only (`SESSION_ENCRYPTION_KEY`), fails
+      closed if unset outside `%dev`/`%test`.
+    - Verified all 8 rendered pages (index, factoids/karma/changes paging,
+      logs, all 4 admin pages) end to end with a standalone Qute-engine
+      harness against the real templates, independent of Mongo/Docker.
+    - Still open: the unmaintained `socialauth` OAuth library is untouched
+      (separate, larger effort — see Security section); the web view tests
+      still run under the Guice/TestNG harness rather than `@QuarkusTest`,
+      so they need MongoDB via Docker to actually execute (unavailable in
+      this environment, so only compiled, not run); `jacoco`/CI wiring not
+      revisited.
   - `quarkus` branch (local + `origin/quarkus`, identical) — an older,
     substantial attempt: 286 commits, diverged from master back at
     `09fa0dd2` (Dec 2024), touches ~250 files (+5.9k/-4.1k lines) across

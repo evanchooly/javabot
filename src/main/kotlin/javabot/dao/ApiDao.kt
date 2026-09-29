@@ -5,15 +5,20 @@ import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
 import dev.morphia.query.filters.Filters.eq
+import io.quarkus.arc.Unremovable
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.util.Locale
 import javabot.model.javadoc.JavadocApi
 import javabot.model.javadoc.JavadocClass
 import javabot.model.javadoc.JavadocField
 import javabot.model.javadoc.JavadocMethod
-import javax.inject.Inject
 import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
 
+// @Unremovable: see EventInjector for why this bean must survive Arc's unused-bean removal.
+@Unremovable
+@Singleton
 class ApiDao @Inject constructor(ds: Datastore) : BaseDao<JavadocApi>(ds, JavadocApi::class.java) {
     companion object {
         private val LOG = LoggerFactory.getLogger(ApiDao::class.java)

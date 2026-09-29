@@ -1,14 +1,16 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.util.Locale
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.weather.WeatherDao
-import javax.inject.Inject
 
 /** Gets current weather conditions for a place given as a parameter. */
+@Singleton
 class WeatherOperation
 @Inject
 constructor(bot: Javabot, adminDao: AdminDao, var weatherDao: WeatherDao) :

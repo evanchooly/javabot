@@ -1,91 +1,104 @@
 package javabot.web.resources
 
-import io.dropwizard.views.View
+import io.quarkus.qute.TemplateInstance
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.inject.Inject
+import jakarta.ws.rs.Consumes
+import jakarta.ws.rs.CookieParam
+import jakarta.ws.rs.GET
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.PathParam
+import jakarta.ws.rs.Produces
+import jakarta.ws.rs.QueryParam
+import jakarta.ws.rs.core.Cookie
+import jakarta.ws.rs.core.MediaType
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javabot.model.Factoid
-import javabot.web.views.ViewFactory
-import javax.inject.Inject
-import javax.servlet.http.HttpServletRequest
-import javax.ws.rs.Consumes
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.PathParam
-import javax.ws.rs.Produces
-import javax.ws.rs.QueryParam
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.MediaType
+import javabot.web.JavabotConfiguration
+import javabot.web.views.TemplateService
 import org.slf4j.LoggerFactory
 
 @Path("/")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-class BotResource @Inject constructor(var viewFactory: ViewFactory) {
+@ApplicationScoped
+class BotResource @Inject constructor(var templateService: TemplateService) {
 
     @GET
     @Produces("text/html;charset=ISO-8859-1")
-    fun index(@Context request: HttpServletRequest): View {
-        if (request.getParameter("test.exception") != null) {
+    fun index(
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
+        @QueryParam("test.exception") testException: String?,
+    ): TemplateInstance {
+        if (testException != null) {
             throw RuntimeException("Testing 500 pages")
         }
-        return viewFactory.createIndexView(request)
+        return templateService.createIndexView(sessionCookie?.value)
     }
 
     @GET
     @Path("/index")
     @Produces("text/html;charset=ISO-8859-1")
-    fun indexHtml(@Context request: HttpServletRequest): View {
-        return index(request)
+    fun indexHtml(
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
+        @QueryParam("test.exception") testException: String?,
+    ): TemplateInstance {
+        return index(sessionCookie, testException)
     }
 
     @GET
     @Path("/factoids")
     @Produces("text/html;charset=ISO-8859-1")
     fun factoids(
-        @Context request: HttpServletRequest,
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
         @QueryParam("page") page: Int?,
         @QueryParam("name") name: String?,
         @QueryParam("value") value: String?,
         @QueryParam("userName") userName: String?,
-    ): View {
-        return viewFactory.createFactoidsView(request, page ?: 1, Factoid.of(name, value, userName))
+    ): TemplateInstance {
+        return templateService.createFactoidsView(
+            sessionCookie?.value,
+            page ?: 1,
+            Factoid.of(name, value, userName),
+        )
     }
 
     @GET
     @Path("/karma")
     @Produces("text/html;charset=ISO-8859-1")
     fun karma(
-        @Context request: HttpServletRequest,
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
         @QueryParam("page") page: Int?,
         @Suppress("UNUSED_PARAMETER") @QueryParam("name") name: String?,
         @Suppress("UNUSED_PARAMETER") @QueryParam("value") value: Int?,
         @Suppress("UNUSED_PARAMETER") @QueryParam("userName") userName: String?,
-    ): View {
-        return viewFactory.createKarmaView(request, page ?: 1)
+    ): TemplateInstance {
+        return templateService.createKarmaView(sessionCookie?.value, page ?: 1)
     }
 
     @GET
     @Path("/changes")
     @Produces("text/html;charset=ISO-8859-1")
     fun changes(
-        @Context request: HttpServletRequest,
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
         @QueryParam("page") page: Int?,
         @QueryParam("message") message: String?,
-    ): View {
-        return viewFactory.createChangesView(request, page ?: 1, message)
+    ): TemplateInstance {
+        return templateService.createChangesView(sessionCookie?.value, page ?: 1, message, null)
     }
 
     @GET
     @Path("/logs/{channel}/{date}")
     @Produces("text/html;charset=ISO-8859-1")
     fun logs(
-        @Context request: HttpServletRequest,
+        @CookieParam(JavabotConfiguration.SESSION_TOKEN_NAME) sessionCookie: Cookie?,
         @PathParam("channel") channel: String?,
         @PathParam("date") dateString: String?,
-    ): View {
+    ): TemplateInstance {
         val date: LocalDateTime =
             try {
                 if ("today" == dateString) LocalDate.now().atStartOfDay()
@@ -101,7 +114,7 @@ class BotResource @Inject constructor(var viewFactory: ViewFactory) {
             throw RuntimeException(e.message, e)
         }
 
-        return viewFactory.createLogsView(request, channelName, date)
+        return templateService.createLogsView(sessionCookie?.value, channelName, date)
     }
 
     companion object {

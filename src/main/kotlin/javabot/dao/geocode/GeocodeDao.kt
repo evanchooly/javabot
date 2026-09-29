@@ -5,13 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
-import com.google.inject.Inject
-import java.util.concurrent.TimeUnit
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import javabot.JavabotConfig
 import javabot.dao.geocode.model.GeocodeResponse
 import javabot.dao.util.CallLimiter
 import javabot.service.HttpService
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
 
+@Singleton
 class GeocodeDao
 @Inject
 constructor(private val javabotConfig: JavabotConfig, private val httpService: HttpService) {
@@ -22,7 +25,7 @@ constructor(private val javabotConfig: JavabotConfig, private val httpService: H
     val cache: LoadingCache<String, GeoLocation> =
         CacheBuilder.newBuilder()
             .maximumSize(1000)
-            .expireAfterAccess(10, TimeUnit.MINUTES)
+            .expireAfterAccess(10.minutes.toJavaDuration())
             .build(
                 object : CacheLoader<String, GeoLocation>() {
                     override fun load(key: String): GeoLocation {

@@ -2,12 +2,14 @@ package javabot.commands
 
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.FactoidDao
-import javax.inject.Inject
 
+@Singleton
 class UnlockFactoid
 @Inject
 constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :

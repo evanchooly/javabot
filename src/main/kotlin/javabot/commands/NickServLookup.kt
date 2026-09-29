@@ -4,6 +4,8 @@ import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.Parameter
 import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.core.ConditionTimeoutException
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import javabot.Javabot
@@ -11,8 +13,8 @@ import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.NickServDao
 import javabot.model.NickServInfo
-import javax.inject.Inject
 
+@Singleton
 class NickServLookup
 @Inject
 constructor(bot: Javabot, adminDao: AdminDao, var nickServDao: NickServDao) :

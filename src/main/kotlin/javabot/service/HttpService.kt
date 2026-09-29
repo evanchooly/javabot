@@ -1,7 +1,7 @@
 package javabot.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.inject.Singleton
+import jakarta.inject.Singleton
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 import okhttp3.Headers.Companion.toHeaders

@@ -1,6 +1,8 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.LocalDateTime
 import java.util.HashSet
 import java.util.Locale
@@ -10,9 +12,9 @@ import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.FactoidDao
 import javabot.model.Factoid
-import javax.inject.Inject
 import org.slf4j.LoggerFactory
 
+@Singleton
 class GetFactoidOperation
 @Inject
 constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :

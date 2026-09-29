@@ -1,8 +1,8 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Inject
-import com.google.inject.Singleton
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.io.IOException
 import java.util.Locale
 import javabot.Javabot

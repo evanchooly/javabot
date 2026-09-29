@@ -3,12 +3,12 @@ package javabot.commands
 import com.antwerkz.sofia.Sofia
 import com.beust.jcommander.JCommander
 import com.beust.jcommander.Parameters
+import jakarta.inject.Inject
 import java.util.Locale
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.operations.BotOperation
-import javax.inject.Inject
 import org.slf4j.LoggerFactory
 
 @Parameters(separators = "=")

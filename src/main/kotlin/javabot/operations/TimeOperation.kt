@@ -1,11 +1,13 @@
 package javabot.operations
 
-import com.google.inject.Inject
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.util.Calendar
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 
+@Singleton
 class TimeOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
     BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {

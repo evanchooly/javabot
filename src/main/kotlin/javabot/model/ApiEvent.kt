@@ -1,8 +1,6 @@
 package javabot.model
 
-import dev.morphia.annotations.Entity
-import dev.morphia.annotations.Reference
-import dev.morphia.annotations.Transient
+import jakarta.inject.Inject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -20,11 +18,9 @@ import javabot.javadoc.JavadocAsmParser
 import javabot.model.EventType.DELETE
 import javabot.model.EventType.RELOAD
 import javabot.model.javadoc.JavadocApi
-import javax.inject.Inject
 import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
 
-@Entity("events")
 class ApiEvent : AdminEvent {
 
     companion object {
@@ -53,15 +49,15 @@ class ApiEvent : AdminEvent {
 
     lateinit var name: String
 
-    @Reference(idOnly = true, ignoreMissing = true) var api: JavadocApi? = null
+    var api: JavadocApi? = null
 
-    @Inject @Transient lateinit var config: JavabotConfig
+    @Inject lateinit var config: JavabotConfig
 
-    @Inject @Transient lateinit var asmParser: JavadocAsmParser
+    @Inject lateinit var asmParser: JavadocAsmParser
 
-    @Inject @Transient lateinit var apiDao: ApiDao
+    @Inject lateinit var apiDao: ApiDao
 
-    @Inject @Transient lateinit var adminDao: AdminDao
+    @Inject lateinit var adminDao: AdminDao
 
     constructor()
 

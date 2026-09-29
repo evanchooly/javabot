@@ -1,12 +1,14 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Inject
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.util.Random
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 
+@Singleton
 class UnixCommandOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
     BotOperation(bot, adminDao) {
     private val commands = sortedSetOf("rm", "ls", "clear")

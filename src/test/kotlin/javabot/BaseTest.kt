@@ -1,16 +1,18 @@
 package javabot
 
-import com.google.inject.Injector
 import com.jayway.awaitility.Awaitility
 import com.jayway.awaitility.Duration
 import dev.morphia.Datastore
+import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
+import jakarta.inject.Provider
 import java.util.EnumSet
+import java.util.concurrent.TimeUnit.MILLISECONDS
 import java.util.concurrent.TimeUnit.SECONDS
 import javabot.dao.AdminDao
 import javabot.dao.ApiDao
 import javabot.dao.ChangeDao
 import javabot.dao.ChannelDao
-import javabot.dao.EventDao
 import javabot.dao.LogsDao
 import javabot.dao.NickServDao
 import javabot.model.Admin
@@ -18,22 +20,20 @@ import javabot.model.AdminEvent
 import javabot.model.ApiEvent
 import javabot.model.Change
 import javabot.model.Channel
+import javabot.model.EventInjector
 import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.NickServInfo
 import javabot.model.State
 import javabot.model.javadoc.JavadocApi
-import javax.inject.Inject
-import javax.inject.Provider
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.TestInstance
 import org.pircbotx.PircBotX
 import org.slf4j.LoggerFactory
-import org.testng.Assert
-import org.testng.annotations.AfterSuite
-import org.testng.annotations.BeforeMethod
-import org.testng.annotations.BeforeTest
-import org.testng.annotations.Guice
 
-@Guice(modules = [JavabotTestModule::class])
+@QuarkusTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 open class BaseTest {
 
     companion object {
@@ -48,31 +48,19 @@ open class BaseTest {
         private val LOG = LoggerFactory.getLogger(BaseTest::class.java)
     }
 
-    @Inject lateinit var injector: Injector
-
     @Inject protected lateinit var datastore: Datastore
-
     @Inject private lateinit var config: JavabotConfig
-
     @Inject protected lateinit var apiDao: ApiDao
-
-    @Inject protected lateinit var eventDao: EventDao
-
     @Inject protected lateinit var channelDao: ChannelDao
-
     @Inject protected lateinit var logsDao: LogsDao
-
     @Inject protected lateinit var adminDao: AdminDao
-
     @Inject protected lateinit var changeDao: ChangeDao
-
-    @Inject protected lateinit var bot: Provider<TestJavabot>
-
+    @Inject protected lateinit var bot: TestJavabot
     @Inject protected lateinit var ircBot: Provider<PircBotX>
-
     @Inject protected lateinit var messages: Messages
+    @Inject protected lateinit var eventInjector: EventInjector
 
-    @BeforeTest
+    @BeforeEach
     fun setup() {
         LOG.debug("setting up test")
         messages.clear()
@@ -96,36 +84,24 @@ open class BaseTest {
 
         logsDao.getQuery(Logs::class.java).delete()
         changeDao.getQuery(Change::class.java).delete()
-        bot.get().start()
+        bot.start()
     }
 
     protected fun enableAllOperations() {
-        val bot = this.bot.get()
         bot.getAllOperations().keys.forEach { bot.enableOperation(it) }
     }
 
     protected fun disableAllOperations() {
-        val bot = this.bot.get()
         bot.getAllOperations().keys.forEach { bot.disableOperation(it) }
-    }
-
-    @BeforeMethod
-    fun clearMessages() {
-        messages.clear()
-    }
-
-    @AfterSuite
-    fun shutdown() {
-        bot.get().shutdown()
     }
 
     protected fun waitForEvent(
         event: AdminEvent,
         alias: String,
-        timeout: Duration = Duration(15, SECONDS),
+        timeout: Duration = Duration(2, SECONDS),
     ) {
-        Awaitility.await(alias).atMost(timeout).pollInterval(1, SECONDS).until<Boolean> {
-            DONE.contains(eventDao.find(event.id)?.state)
+        Awaitility.await(alias).atMost(timeout).pollInterval(100, MILLISECONDS).until<Boolean> {
+            DONE.contains(event.state)
         }
     }
 
@@ -134,14 +110,7 @@ open class BaseTest {
         start: String = "~",
         user: JavabotUser = TEST_USER,
     ): Message {
-        return Message.extractContentFromMessage(
-            bot.get(),
-            TEST_CHANNEL,
-            user,
-            start,
-            bot.get().nick,
-            value,
-        )
+        return Message.extractContentFromMessage(bot, TEST_CHANNEL, user, start, bot.nick, value)
     }
 
     protected fun privateMessage(value: String, user: JavabotUser = TEST_USER): Message {
@@ -153,7 +122,7 @@ open class BaseTest {
         for (response in messages) {
             found = found or response.value.contains(target)
         }
-        Assert.assertTrue(
+        assertTrue(
             found,
             java.lang.String.format(
                 "Did not find \n'%s' in \n'%s'",
@@ -175,7 +144,7 @@ open class BaseTest {
             api = JavadocApi(config, apiName, groupId, artifactId, version)
             apiDao.save(api)
             val event = ApiEvent.add(TEST_USER.nick, api)
-            injector.injectMembers(event)
+            eventInjector.inject(event)
             event.handle()
             messages.clear()
             LOG.info("$apiName finished.")

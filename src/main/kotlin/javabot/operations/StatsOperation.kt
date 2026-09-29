@@ -1,14 +1,16 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.Duration
 import java.time.Instant.now
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.FactoidDao
-import javax.inject.Inject
 
+@Singleton
 class StatsOperation
 @Inject
 constructor(bot: Javabot, adminDao: AdminDao, var factoidDao: FactoidDao) :

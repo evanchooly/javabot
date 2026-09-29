@@ -1,27 +1,24 @@
 package javabot.web.views
 
-import freemarker.template.Configuration.VERSION_2_3_32
-import io.dropwizard.views.freemarker.FreemarkerViewRenderer
+import io.quarkus.test.junit.QuarkusTest
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
-import java.util.Locale
 import javabot.model.Change
 import net.htmlparser.jericho.Source
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Test
 
+@QuarkusTest
 class ChangesViewTest : ViewsTest() {
     @Test
     fun changes() {
         createChanges(30)
 
-        val renderer = FreemarkerViewRenderer(VERSION_2_3_32)
         var output = ByteArrayOutputStream()
-        renderer.render(
-            viewFactory.createChangesView(MockServletRequest(false), 0),
-            Locale.getDefault(),
-            output,
-        )
+        var templateInstance =
+            templateService.createChangesView(mockSessionToken(false), 0, null, null)
+        var html = templateInstance.render()
+        output.write(html.toByteArray())
         var source = Source(ByteArrayInputStream(output.toByteArray()))
 
         previousDisabled(source)
@@ -29,11 +26,10 @@ class ChangesViewTest : ViewsTest() {
         checkRange(source, 1, 30, 30)
 
         output = ByteArrayOutputStream()
-        renderer.render(
-            viewFactory.createChangesView(MockServletRequest(false), 0, "change 2"),
-            Locale.getDefault(),
-            output,
-        )
+        templateInstance =
+            templateService.createChangesView(mockSessionToken(false), 0, "change 2", null)
+        html = templateInstance.render()
+        output.write(html.toByteArray())
         source = Source(ByteArrayInputStream(output.toByteArray()))
 
         previousDisabled(source)

@@ -1,6 +1,8 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.Date
@@ -8,12 +10,12 @@ import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 import javabot.dao.ShunDao
-import javax.inject.Inject
 
 /**
  * Causes the bot to disregard bot triggers for a few minutes. Useful to de-fang abusive users
  * without ejecting the bot from a channel entirely.
  */
+@Singleton
 class ShunOperation @Inject constructor(bot: Javabot, adminDao: AdminDao, var shunDao: ShunDao) :
     BotOperation(bot, adminDao) {
     override fun handleMessage(event: Message): List<Message> {

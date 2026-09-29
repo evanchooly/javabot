@@ -1,18 +1,20 @@
 package javabot.dao
 
-import com.google.inject.Inject
 import dev.morphia.Datastore
 import dev.morphia.DeleteOptions
 import dev.morphia.UpdateOptions
 import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.or
 import dev.morphia.query.updates.UpdateOperators.set
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import javabot.model.JavabotUser
 import javabot.model.NickServInfo
 
+@Singleton
 open class NickServDao @Inject constructor(ds: Datastore) :
     BaseDao<NickServInfo>(ds, NickServInfo::class.java) {
     fun clear() = getQuery().delete(DeleteOptions().multi(true))

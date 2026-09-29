@@ -2,7 +2,8 @@ package javabot.dao.weather
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.google.inject.Inject
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.util.Arrays
 import java.util.Locale
 import javabot.JavabotConfig
@@ -10,6 +11,7 @@ import javabot.dao.geocode.GeocodeDao
 import javabot.dao.weather.openweathermap.OpenWeatherMapHandler
 import javabot.service.HttpService
 
+@Singleton
 class WeatherDao
 @Inject
 constructor(

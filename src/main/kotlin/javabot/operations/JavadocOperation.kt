@@ -1,7 +1,8 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Inject
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.util.ArrayList
 import java.util.Locale
 import javabot.Javabot
@@ -15,6 +16,7 @@ import javabot.model.javadoc.JavadocClass
 import javax.annotation.Nullable
 import net.thauvin.erik.bitly.Bitly
 
+@Singleton
 class JavadocOperation
 @Inject
 constructor(
@@ -29,7 +31,8 @@ constructor(
         private val RESULT_LIMIT = 5
     }
 
-    @field:[Nullable Inject(optional = true)]
+    // DomainProducers.bitly() is always bound, though it may produce a null Bitly.
+    @field:[Nullable Inject]
     var bitly: Bitly? = null
 
     override fun handleMessage(event: Message): List<Message> {

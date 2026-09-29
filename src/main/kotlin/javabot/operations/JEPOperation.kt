@@ -3,14 +3,16 @@ package javabot.operations
 import com.antwerkz.sofia.Sofia
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
-import com.google.inject.Singleton
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.io.IOException
 import java.util.Locale
 import java.util.concurrent.ExecutionException
-import java.util.concurrent.TimeUnit
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.toJavaDuration
 import org.jsoup.Jsoup
 
 /**
@@ -18,12 +20,12 @@ import org.jsoup.Jsoup
  * directly with references to RFC stuff being renamed to JEP stuff instead.
  */
 @Singleton
-class JEPOperation @com.google.inject.Inject constructor(bot: Javabot, adminDao: AdminDao) :
+class JEPOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
     BotOperation(bot, adminDao) {
     var jepTitleCache =
         CacheBuilder.newBuilder()
             .maximumSize(100)
-            .expireAfterWrite(1, TimeUnit.HOURS)
+            .expireAfterWrite(1.hours.toJavaDuration())
             .recordStats()
             .build(
                 object : CacheLoader<String, String>() {

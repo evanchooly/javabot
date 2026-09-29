@@ -1,10 +1,12 @@
 package javabot.dao
 
-import com.google.inject.Inject
 import dev.morphia.Datastore
 import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
 import dev.morphia.query.filters.Filters.eq
+import io.quarkus.arc.Unremovable
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.LocalDateTime
 import java.util.ArrayList
 import java.util.Locale
@@ -13,7 +15,10 @@ import javabot.model.Activity
 import javabot.model.Channel
 import org.apache.commons.lang.StringUtils
 
+// @Unremovable: see EventInjector for why this bean must survive Arc's unused-bean removal.
+@Unremovable
 @SuppressWarnings("ConstantNamingConvention")
+@Singleton
 class ChannelDao @Inject constructor(ds: Datastore) : BaseDao<Channel>(ds, Channel::class.java) {
 
     fun delete(name: String) {

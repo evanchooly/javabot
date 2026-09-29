@@ -38,6 +38,18 @@
         </repository>
     </repositories>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.quarkus.platform</groupId>
+                <artifactId>quarkus-bom</artifactId>
+                <version>${quarkus.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <build>
         <defaultGoal>install</defaultGoal>
         <finalName>javabot</finalName>
@@ -50,6 +62,21 @@
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>io.quarkus.platform</groupId>
+                <artifactId>quarkus-maven-plugin</artifactId>
+                <version>${quarkus.version}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>generate-code</goal>
+                            <goal>generate-code-tests</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
@@ -201,6 +228,12 @@
         </dependency>
 
         <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.13.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.pircbotx</groupId>
             <artifactId>pircbotx</artifactId>
             <version>2.3-SNAPSHOT</version>
@@ -218,24 +251,6 @@
             <groupId>ca.grimoire.maven</groupId>
             <artifactId>maven-utils</artifactId>
             <version>2.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>${guice.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.inject.extensions</groupId>
-            <artifactId>guice-assistedinject</artifactId>
-            <version>${guice.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.10.2</version>
         </dependency>
 
         <dependency>
@@ -269,7 +284,7 @@
         <dependency>
             <groupId>net.iakovlev</groupId>
             <artifactId>timeshape</artifactId>
-            <version>2022g.17</version>
+            <version>2026b.29</version>
         </dependency>
 
         <dependency>
@@ -301,53 +316,38 @@
             <version>1.11.0</version>
         </dependency>
 
-        <!-- dropwizard deps -->
+        <!-- Quarkus deps -->
         <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-core</artifactId>
-            <version>${dropwizard.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-auth</artifactId>
-            <version>${dropwizard.version}</version>
-        </dependency>
-
-        <!-- dropwizard deps -->
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-assets</artifactId>
-            <version>${dropwizard.version}</version>
-        </dependency>
-        <!-- dropwizard deps -->
-
-        <!-- OAuth library -->
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-views-freemarker</artifactId>
-            <version>${dropwizard.version}</version>
-        </dependency>
-        <!-- dropwizard deps -->
-
-        <!-- OAuth library -->
-        <dependency>
-            <groupId>org.brickred</groupId>
-            <artifactId>socialauth</artifactId>
-            <version>4.15</version>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-arc</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.brickred</groupId>
-            <artifactId>socialauth-filter</artifactId>
-            <version>2.4</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest</artifactId>
         </dependency>
-        <!-- OAuth library -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-qute</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-health</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-security</artifactId>
+        </dependency>
+        <!-- Admin authentication: Quarkus OIDC in web-app mode handles the whole
+             redirect/callback dance and the authenticated session itself. -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-oidc</artifactId>
+        </dependency>
+        <!-- Quarkus deps -->
 
         <!-- webjars -->
         <dependency>
@@ -397,13 +397,25 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>3.5.0</version>
           <type>maven-plugin</type>
+          <exclusions>
+            <!--
+              Pulls in maven-core, which bundles its own Guice 5.1.0 (classifier "classes"). This
+              project no longer uses Guice itself, but a stray Maven-internal Guice on the runtime
+              classpath under Quarkus's classloader is still exactly the kind of thing that can
+              silently break @Inject resolution, so it stays excluded defensively. We only use this
+              dependency's javadoc-parsing classes, never Maven's own DI.
+            -->
+            <exclusion>
+              <groupId>com.google.inject</groupId>
+              <artifactId>guice</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
 
         <!-- Unit testing dependencies -->
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>7.12.0</version>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -418,12 +430,6 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-firefox-driver</artifactId>
             <version>4.47.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test-testng</artifactId>
-            <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -468,8 +474,7 @@
     <properties>
         <activation.version>1.1.1</activation.version>
         <critter.version>4.4.4</critter.version>
-        <dropwizard.version>2.1.5</dropwizard.version>
-        <guice.version>5.1.0</guice.version>
+        <quarkus.version>3.38.3</quarkus.version>
         <jackson.version>2.22.3</jackson.version>
         <jacoco.version>0.8.5</jacoco.version>
         <jaxb.version>2.3.1</jaxb.version>

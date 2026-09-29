@@ -1,24 +1,30 @@
 package javabot.web.views
 
 import com.antwerkz.sofia.Sofia
+import io.quarkus.test.junit.QuarkusTest
 import java.time.LocalDateTime
 import javabot.model.Logs.Type
-import org.testng.Assert
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
-@Test(enabled = false)
+@QuarkusTest
 class LogsViewTest : ViewsTest() {
 
+    @Test
+    @Disabled
     fun render() {
         render(
-            viewFactory.createLogsView(
-                MockServletRequest(false),
+            templateService.createLogsView(
+                mockSessionToken(false),
                 "testchannel",
                 LocalDateTime.now(),
             )
         )
     }
 
+    @Test
+    @Disabled
     fun actions() {
         val message = "my type is " + Type.MESSAGE
         val eventChannel = "testchannel"
@@ -41,38 +47,38 @@ class LogsViewTest : ViewsTest() {
 
         val rendered =
             render(
-                    viewFactory.createLogsView(
-                        MockServletRequest(false),
+                    templateService.createLogsView(
+                        mockSessionToken(false),
                         eventChannel,
                         LocalDateTime.now(),
                     )
                 )
                 .toString()
 
-        Assert.assertTrue(
+        Assertions.assertTrue(
             rendered.contains(Sofia.logsAnchorFormat("http://google.com/", "http://google.com/")),
             "Should find url in logs: \n" +
                 Sofia.logsAnchorFormat("http://google.com/", "http://google.com/"),
         )
-        Assert.assertTrue(
+        Assertions.assertTrue(
             rendered.contains("<td>$message</td>"),
             "Should find basic message: \n" + rendered,
         )
-        Assert.assertTrue(
+        Assertions.assertTrue(
             rendered.contains(">$user $action</td>"),
             "Should find action: \n" + rendered,
         )
-        Assert.assertTrue(
+        Assertions.assertTrue(
             rendered.contains(
                 ">" + Sofia.userJoined(user.nick, user.hostmask, eventChannel) + "</td>"
             ),
             "Should find join: \n" + rendered,
         )
-        Assert.assertTrue(
+        Assertions.assertTrue(
             rendered.contains(">" + Sofia.userQuit(user.nick, eventChannel) + "</td>"),
             "Should find quit: \n" + rendered,
         )
-        Assert.assertTrue(
+        Assertions.assertTrue(
             rendered.contains(">" + Sofia.userParted(user.nick, "i'm done") + "</td>"),
             "Should find part: \n" + rendered,
         )

@@ -1,13 +1,15 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Inject
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.util.ServiceLoader
 import javabot.Javabot
 import javabot.Message
 import javabot.commands.AdminCommand
 import javabot.dao.AdminDao
 
+@Singleton
 class ListAdminCommands @Inject constructor(bot: Javabot, adminDao: AdminDao) :
     AdminCommand(bot, adminDao) {
     override fun execute(event: Message): List<Message> {

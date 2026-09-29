@@ -5,12 +5,15 @@ import dev.morphia.query.FindOptions
 import dev.morphia.query.Sort
 import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.or
+import io.quarkus.arc.Unremovable
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import javabot.model.Admin
-import javabot.model.EventType
 import javabot.model.JavabotUser
-import javabot.model.OperationEvent
-import javax.inject.Inject
 
+// @Unremovable: see EventInjector for why this bean must survive Arc's unused-bean removal.
+@Unremovable
+@Singleton
 class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) :
     BaseDao<Admin>(ds, Admin::class.java) {
     override fun findAll(): List<Admin> {
@@ -36,20 +39,6 @@ class AdminDao @Inject constructor(ds: Datastore, var configDao: ConfigDao) :
         save(admin)
 
         return admin
-    }
-
-    fun enableOperation(name: String, admin: Admin) {
-        save(OperationEvent(admin.emailAddress, EventType.ADD, name))
-        val config = configDao.get()
-        config.operations.add(name)
-        configDao.save(config)
-    }
-
-    fun disableOperation(name: String, admin: Admin) {
-        save(OperationEvent(admin.emailAddress, EventType.DELETE, name))
-        val config = configDao.get()
-        config.operations.remove(name)
-        configDao.save(config)
     }
 
     fun count(): Long {

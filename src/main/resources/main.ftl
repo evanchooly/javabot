@@ -32,7 +32,7 @@
             </div>
             <#if !loggedIn()>
                 <div>
-                    <h3><a href="/auth/login">Login</a></h3>
+                    <h3><a href="/admin">Admin</a></h3>
                 </div>
             </#if>
             <#if isAdmin()>
