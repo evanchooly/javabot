@@ -11,13 +11,17 @@ class JCPJSRLocator @Inject constructor(private val httpService: HttpService) {
         var title: String? = null
         val urlString = "http://www.jcp.org/en/jsr/detail?id=$jsr"
         try {
-            title =
+            val extracted =
                 Jsoup.parse(httpService.get(urlString))
-                    .select("div.header1")
+                    .select("h1")
                     .first()
                     ?.textNodes()
                     ?.map { element -> element.text().trim() }
                     ?.joinToString(separator = " ") ?: throw IOException()
+            // jcp.org serves this exact page (with its own <h1>, HTTP 200) for any unknown JSR id
+            // instead of a 404 -- without this check, an unknown JSR would be reported as if its
+            // title were "The specified JSR was not found."
+            title = extracted.takeUnless { it == "The specified JSR was not found." }
         } catch (ignored: Exception) {}
 
         return urlString to title

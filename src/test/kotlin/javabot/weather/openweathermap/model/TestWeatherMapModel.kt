@@ -7,6 +7,7 @@ import javabot.BaseTest
 import javabot.JavabotConfig
 import javabot.dao.weather.openweathermap.model.OWWeather
 import javabot.service.HttpService
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
@@ -16,6 +17,7 @@ class TestWeatherMapModel : BaseTest() {
     @Inject private lateinit var javabotConfig: JavabotConfig
     @Inject private lateinit var httpService: HttpService
 
+    @Disabled("Hits the live OpenWeatherMap API with no valid API key in CI/test; always 401s.")
     @Test
     fun testOWMModelParsing() {
         val mapper = ObjectMapper()
