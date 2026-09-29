@@ -148,7 +148,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.10.0</version>
+                <version>3.11.0</version>
                 <executions>
                     <execution>
                         <id>copy</id>
@@ -170,7 +170,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.3.1</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -261,6 +261,11 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-access</artifactId>
             <version>${logback.version}</version>
         </dependency>
 
@@ -417,7 +422,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-chrome-driver</artifactId>
-            <version>4.47.0</version>
+            <version>4.49.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -470,15 +475,15 @@
         <activation.version>1.1.1</activation.version>
         <critter.version>4.4.4</critter.version>
         <quarkus.version>3.38.3</quarkus.version>
-        <jackson.version>2.22.2</jackson.version>
+        <jackson.version>2.22.3</jackson.version>
         <jacoco.version>0.8.5</jacoco.version>
         <jaxb.version>2.3.1</jaxb.version>
-        <jsoup.version>1.23.1</jsoup.version>
-        <kotlin.version>2.4.10</kotlin.version>
-        <logback.version>1.5.38</logback.version>
+        <jsoup.version>1.23.2</jsoup.version>
+        <kotlin.version>2.4.20</kotlin.version>
+        <logback.version>1.3.16</logback.version>
         <morphia.version>2.5.3</morphia.version>
         <okhttp.version>4.12.0</okhttp.version>
-        <slf4j.version>2.0.18</slf4j.version>
+        <slf4j.version>2.0.19</slf4j.version>
         <sofia.version>0.25</sofia.version>
         <kgpt.version>1.0.1</kgpt.version>
 
