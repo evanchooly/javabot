@@ -16,7 +16,6 @@ javabot.yml
 logs
 out
 target
-test-javabot.properties
 tmp
 dependency-reduced-pom.xml
 *~
