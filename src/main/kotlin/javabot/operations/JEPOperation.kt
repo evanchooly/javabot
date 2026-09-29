@@ -8,10 +8,11 @@ import jakarta.inject.Singleton
 import java.io.IOException
 import java.util.Locale
 import java.util.concurrent.ExecutionException
-import java.util.concurrent.TimeUnit
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.toJavaDuration
 import org.jsoup.Jsoup
 
 /**
@@ -24,7 +25,7 @@ class JEPOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
     var jepTitleCache =
         CacheBuilder.newBuilder()
             .maximumSize(100)
-            .expireAfterWrite(1, TimeUnit.HOURS)
+            .expireAfterWrite(1.hours.toJavaDuration())
             .recordStats()
             .build(
                 object : CacheLoader<String, String>() {

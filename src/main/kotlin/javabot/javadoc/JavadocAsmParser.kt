@@ -69,32 +69,43 @@ constructor(private val apiDao: ApiDao, private val config: JavabotConfig) {
     }
 
     private fun scanJar(api: JavadocApi, type: JavadocType, jar: File) {
-        var module: String? = null
+        // Resolved in its own pass first, before scanning any other entry: JAR/ZIP iteration
+        // order is not guaranteed to place module-info.class before the classes it describes
+        // (observed in practice -- some JDK jmod builds order it later), so a single sequential
+        // pass that sets `module` as it goes can silently leave earlier-scanned classes with no
+        // module segment in their generated javadoc URL.
+        val module = findModule(jar)
         JarFile(jar).entries().iterator().forEach { entry ->
-            if (entry.name.endsWith("class")) {
-                if (entry.name.endsWith("module-info.class")) {
-                    val moduleInfoVisitor = ModuleInfoVisitor()
+            if (entry.name.endsWith("class") && !entry.name.endsWith("module-info.class")) {
+                val packageName = entry.packageName()
+                if (!packageName.startsWith("com.sun") and !packageName.startsWith("sun")) {
                     ClassReader(JarFile(jar).getInputStream(entry))
-                        .accept(moduleInfoVisitor, ClassReader.SKIP_CODE)
-                    module = moduleInfoVisitor.module
-                } else {
-                    val packageName = entry.packageName()
-                    if (!packageName.startsWith("com.sun") and !packageName.startsWith("sun")) {
-                        ClassReader(JarFile(jar).getInputStream(entry))
-                            .accept(
-                                JavadocClassVisitor(
-                                    apiDao,
-                                    api,
-                                    packageName,
-                                    entry.className(),
-                                    module,
-                                    type,
-                                ),
-                                ClassReader.SKIP_CODE,
-                            )
-                    }
+                        .accept(
+                            JavadocClassVisitor(
+                                apiDao,
+                                api,
+                                packageName,
+                                entry.className(),
+                                module,
+                                type,
+                            ),
+                            ClassReader.SKIP_CODE,
+                        )
                 }
             }
+        }
+    }
+
+    private fun findModule(jar: File): String? {
+        val entry =
+            JarFile(jar).entries().iterator().asSequence().find {
+                it.name.endsWith("module-info.class")
+            }
+        return entry?.let {
+            val moduleInfoVisitor = ModuleInfoVisitor()
+            ClassReader(JarFile(jar).getInputStream(it))
+                .accept(moduleInfoVisitor, ClassReader.SKIP_CODE)
+            moduleInfoVisitor.module
         }
     }
 
