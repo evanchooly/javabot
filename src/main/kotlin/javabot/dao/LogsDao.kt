@@ -49,7 +49,7 @@ class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channel
     }
 
     private fun dailyLog(channelName: String, date: LocalDateTime?, logged: Boolean) =
-        if (logged) listOf()
+        if (!logged) listOf()
         else {
             val start = if (date == null) LocalDate.now() else date.toLocalDate()
             val tomorrow = start.plusDays(1)
