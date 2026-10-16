@@ -1,22 +1,23 @@
 package javabot.web.views
 
-import freemarker.template.Configuration.*
-import io.dropwizard.views.freemarker.FreemarkerViewRenderer
+import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.time.LocalDateTime
-import java.util.Locale
 import javabot.dao.FactoidDao
 import javabot.model.Factoid
-import javax.inject.Inject
 import net.htmlparser.jericho.Source
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
-@Test(enabled = false)
+@QuarkusTest
 class FactoidsViewTest : ViewsTest() {
-    @Inject lateinit var factoidDao: FactoidDao
+    @Inject private lateinit var factoidDao: FactoidDao
 
+    @Test
+    @Disabled
     fun singleFactoid() {
         createFactoids(1)
         val source = render(0, Factoid())
@@ -25,6 +26,8 @@ class FactoidsViewTest : ViewsTest() {
         checkRange(source, 1, 1, 1)
     }
 
+    @Test
+    @Disabled
     fun factoidFilter() {
         createFactoids(10)
         var source = render(0, Factoid("name 1", "", ""))
@@ -44,6 +47,8 @@ class FactoidsViewTest : ViewsTest() {
         checkRange(source, 1, 1, 1)
     }
 
+    @Test
+    @Disabled
     fun factoidBadFilter() {
         createFactoids(10)
         val source = render(0, Factoid("bad filter", "", ""))
@@ -53,35 +58,35 @@ class FactoidsViewTest : ViewsTest() {
         checkRange(source, 0, 0, 0)
     }
 
+    @Test
+    @Disabled
     fun twoFactoidPages() {
-        val itemCount = (PagedView.ITEMS_PER_PAGE * 1.5).toInt()
+        val itemCount = (TemplateService.ITEMS_PER_PAGE * 1.5).toInt()
         createFactoids(itemCount)
 
         var source = render(0, Factoid())
         previousDisabled(source)
         nextEnabled(source)
-        checkRange(source, 1, PagedView.ITEMS_PER_PAGE, itemCount)
+        checkRange(source, 1, TemplateService.ITEMS_PER_PAGE, itemCount)
 
         source = render(2, Factoid())
         previousEnabled(source)
         nextDisabled(source)
-        checkRange(source, PagedView.ITEMS_PER_PAGE + 1, itemCount, itemCount)
+        checkRange(source, TemplateService.ITEMS_PER_PAGE + 1, itemCount, itemCount)
 
         source = render(3, Factoid())
         previousEnabled(source)
         nextDisabled(source)
-        checkRange(source, PagedView.ITEMS_PER_PAGE + 1, itemCount, itemCount)
+        checkRange(source, TemplateService.ITEMS_PER_PAGE + 1, itemCount, itemCount)
     }
 
     @Throws(IOException::class)
     private fun render(page: Int, filter: Factoid): Source {
-        val renderer = FreemarkerViewRenderer(VERSION_2_3_32)
         val output = ByteArrayOutputStream()
-        renderer.render(
-            viewFactory.createFactoidsView(MockServletRequest(false), page, filter),
-            Locale.getDefault(),
-            output,
-        )
+        val templateInstance =
+            templateService.createFactoidsView(mockSessionToken(false), page, filter)
+        val html = templateInstance.render()
+        output.write(html.toByteArray())
         return Source(ByteArrayInputStream(output.toByteArray()))
     }
 

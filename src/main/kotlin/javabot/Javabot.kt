@@ -1,10 +1,9 @@
 package javabot
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Guice
-import com.google.inject.Injector
-import com.google.inject.Singleton
-import com.jayway.awaitility.Awaitility
+import io.quarkus.runtime.Quarkus
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.io.File
 import java.time.LocalDateTime
 import java.util.ArrayList
@@ -20,11 +19,11 @@ import javabot.commands.AdminCommand
 import javabot.dao.AdminDao
 import javabot.dao.ChannelDao
 import javabot.dao.ConfigDao
-import javabot.dao.EventDao
 import javabot.dao.LogsDao
 import javabot.dao.ShunDao
-import javabot.database.UpgradeScript
+import javabot.model.AdminEvent
 import javabot.model.Channel
+import javabot.model.EventInjector
 import javabot.model.JavabotUser
 import javabot.model.Logs
 import javabot.model.Logs.Type
@@ -34,9 +33,6 @@ import javabot.operations.OperationComparator
 import javabot.operations.StandardOperation
 import javabot.operations.throttle.NickServViolationException
 import javabot.operations.throttle.Throttler
-import javabot.web.JavabotApplication
-import javax.inject.Inject
-import javax.inject.Provider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -44,17 +40,15 @@ import org.slf4j.LoggerFactory
 open class Javabot
 @Inject
 constructor(
-    var injector: Injector,
+    var eventInjector: EventInjector,
     var configDao: ConfigDao,
     var channelDao: ChannelDao,
     var logsDao: LogsDao,
     var shunDao: ShunDao,
-    var eventDao: EventDao,
     var throttler: Throttler,
     var adapter: IrcAdapter,
     var adminDao: AdminDao,
     var javabotConfig: JavabotConfig,
-    var application: Provider<JavabotApplication>,
 ) {
 
     companion object {
@@ -63,10 +57,9 @@ constructor(
         @JvmStatic
         fun main(args: Array<String>) {
             Sofia.javabotStart()
-            val injector = Guice.createInjector(JavabotModule())
-            val bot = injector.getInstance(Javabot::class.java)
-            bot.start()
-            Awaitility.await().forever().until<Boolean> { !bot.isRunning() }
+            // Quarkus owns the process lifecycle from here; the bot itself is started from
+            // JavabotApplication's StartupEvent observer once Arc has booted.
+            Quarkus.run(*args)
         }
     }
 
@@ -87,7 +80,10 @@ constructor(
         )
 
     private val eventHandler =
-        Executors.newScheduledThreadPool(2, JavabotThreadFactory(true, "javabot-event-handler"))
+        Executors.newScheduledThreadPool(1, JavabotThreadFactory(true, "javabot-event-handler"))
+
+    private val eventExecutor =
+        Executors.newSingleThreadExecutor(JavabotThreadFactory(true, "javabot-event-dispatch"))
 
     private val ignores = ArrayList<String>()
 
@@ -110,26 +106,21 @@ constructor(
     }
 
     fun setUpThreads() {
-        eventHandler.scheduleAtFixedRate({ this.processAdminEvents() }, 1, 5, TimeUnit.SECONDS)
         eventHandler.scheduleAtFixedRate({ this.joinChannels() }, 1, 5, TimeUnit.SECONDS)
     }
 
-    protected fun processAdminEvents() {
-        val event = eventDao.findUnprocessed()
-        if (event != null) {
+    fun submitEvent(event: AdminEvent) {
+        eventExecutor.execute {
             try {
                 event.state = State.PROCESSING
-                eventDao.save(event)
-                injector.injectMembers(event)
+                eventInjector.inject(event)
                 event.handle()
                 event.state = State.COMPLETED
             } catch (e: Exception) {
                 event.state = State.FAILED
                 LOG.error(e.message, e)
             }
-
             event.completed = LocalDateTime.now()
-            eventDao.save(event)
         }
     }
 
@@ -155,8 +146,10 @@ constructor(
     fun shutdown() {
         if (!executors.isShutdown) {
             executors.shutdown()
+            eventExecutor.shutdown()
             try {
                 executors.awaitTermination(10, TimeUnit.SECONDS)
+                eventExecutor.awaitTermination(10, TimeUnit.SECONDS)
             } catch (e: InterruptedException) {
                 LOG.error(e.message, e)
             }
@@ -189,7 +182,9 @@ constructor(
             if (File("javabot.yml").exists()) {
                 try {
                     Sofia.logWebappStarting()
-                    application.get().run(*arrayOf("server", "javabot.yml"))
+                    // Quarkus handles application startup automatically
+                    // The JavabotApplication @Observes StartupEvent will be triggered
+                    LOG.info("Web app configuration found. Quarkus will start the web application.")
                 } catch (e: Exception) {
                     throw RuntimeException(e.message, e)
                 }
@@ -203,12 +198,12 @@ constructor(
 
     protected fun applyUpgradeScripts() {
         val set = TreeSet(ScriptComparator())
-        set.addAll(configDao.list(UpgradeScript::class.java))
+        set.addAll(configDao.listUpgradeScripts())
         set.forEach { it.execute() }
     }
 
     fun getAllOperations(): SortedMap<String, BotOperation> {
-        for (op in configDao.list(BotOperation::class.java)) {
+        for (op in configDao.listOperations()) {
             allOperationsMap.put(op.getName(), op)
         }
         return allOperationsMap

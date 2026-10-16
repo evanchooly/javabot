@@ -1,16 +1,15 @@
 package javabot.web.views
 
-import freemarker.template.Configuration.VERSION_2_3_32
-import io.dropwizard.views.freemarker.FreemarkerViewRenderer
+import io.quarkus.test.junit.QuarkusTest
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.lang.String.format
-import java.util.Locale
 import net.htmlparser.jericho.Source
-import org.testng.Assert
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
+@QuarkusTest
 class IndexTest : ViewsTest() {
     @Test
     fun index() {
@@ -20,17 +19,14 @@ class IndexTest : ViewsTest() {
 
     @Throws(IOException::class)
     protected fun find(loggedIn: Boolean) {
-        val renderer = FreemarkerViewRenderer(VERSION_2_3_32)
         val output = ByteArrayOutputStream()
+        val templateInstance = templateService.createIndexView(mockSessionToken(loggedIn))
+        val html = templateInstance.render()
+        output.write(html.toByteArray())
 
-        renderer.render(
-            viewFactory.createIndexView(MockServletRequest(loggedIn)),
-            Locale.getDefault(),
-            output,
-        )
         val source = Source(ByteArrayInputStream(output.toByteArray()))
         val a = source.getElementById("id")
-        Assert.assertTrue(
+        assertTrue(
             a == null || loggedIn,
             format("Should %sfind the newChannel link", if (loggedIn) "" else "not "),
         )

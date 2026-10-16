@@ -1,7 +1,10 @@
 package javabot.mocks
 
-import com.google.inject.Inject
-import com.google.inject.Singleton
+import jakarta.annotation.Priority
+import jakarta.enterprise.inject.Alternative
+import jakarta.inject.Inject
+import jakarta.inject.Provider
+import jakarta.inject.Singleton
 import javabot.Javabot
 import javabot.Messages
 import javabot.OfflineAdapter
@@ -12,9 +15,10 @@ import javabot.dao.LogsDao
 import javabot.dao.NickServDao
 import javabot.model.Channel
 import javabot.model.JavabotUser
-import javax.inject.Provider
 import org.pircbotx.PircBotX
 
+@Alternative
+@Priority(1)
 @Singleton
 class MockIrcAdapter
 @Inject

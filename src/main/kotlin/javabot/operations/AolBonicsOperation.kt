@@ -1,13 +1,15 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.util.Locale
 import java.util.TreeSet
 import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
-import javax.inject.Inject
 
+@Singleton
 class AolBonicsOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
     BotOperation(bot, adminDao) {
     private val phrases = TreeSet<String>()

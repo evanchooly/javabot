@@ -3,7 +3,8 @@ package javabot.web.model
 import com.google.common.base.Preconditions
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
-import java.util.concurrent.TimeUnit.MINUTES
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
 
 enum class InMemoryUserCache {
 
@@ -14,7 +15,7 @@ enum class InMemoryUserCache {
     @Volatile
     var userCache: Cache<String, User> =
         CacheBuilder.newBuilder()
-            .expireAfterWrite(15, MINUTES)
+            .expireAfterWrite(15.minutes.toJavaDuration())
             .maximumSize(1000)
             .build<String, User>()
 
@@ -41,18 +42,5 @@ enum class InMemoryUserCache {
         Preconditions.checkNotNull(user)
 
         userCache.put(user.sessionToken.toString(), user)
-    }
-
-    fun getByOpenIDIdentifier(identifier: String?): User? {
-
-        val map = userCache.asMap()
-
-        for (entry in map.entries) {
-            if (entry.value.openIDIdentifier == identifier) {
-                return entry.value
-            }
-        }
-
-        return null
     }
 }

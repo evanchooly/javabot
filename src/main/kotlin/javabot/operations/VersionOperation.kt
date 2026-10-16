@@ -1,7 +1,8 @@
 package javabot.operations
 
 import com.antwerkz.sofia.Sofia
-import com.google.inject.Inject
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.io.InputStream
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -10,6 +11,7 @@ import javabot.Javabot
 import javabot.Message
 import javabot.dao.AdminDao
 
+@Singleton
 class VersionOperation @Inject constructor(bot: Javabot, adminDao: AdminDao) :
     BotOperation(bot, adminDao), StandardOperation {
     var lastInvocationTime = LocalDateTime.of(1992, 10, 17, 9, 0)

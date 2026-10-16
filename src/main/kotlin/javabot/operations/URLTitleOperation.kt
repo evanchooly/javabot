@@ -1,5 +1,7 @@
 package javabot.operations
 
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.io.IOException
 import java.net.URI
 import javabot.Javabot
@@ -9,13 +11,13 @@ import javabot.operations.urlcontent.URLContentAnalyzer
 import javabot.operations.urlcontent.URLFromMessageParser
 import javabot.service.HttpService
 import javabot.service.TwitterService
-import javax.inject.Inject
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
 import org.jsoup.select.Elements
 
+@Singleton
 class URLTitleOperation
 @Inject
 constructor(

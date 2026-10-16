@@ -1,9 +1,9 @@
 package javabot.database
 
+import jakarta.inject.Inject
 import java.io.IOException
 import java.sql.SQLException
 import javabot.dao.ConfigDao
-import javax.inject.Inject
 
 abstract class UpgradeScript @Inject constructor(var configDao: ConfigDao) {
     fun execute() {

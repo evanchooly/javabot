@@ -1,16 +1,18 @@
 package javabot
 
-import com.google.inject.Inject
-import org.testng.Assert
-import org.testng.annotations.Test
+import io.quarkus.test.junit.QuarkusTest
+import jakarta.inject.Inject
+import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Test
 
+@QuarkusTest
 class JavabotConfigTest : BaseTest() {
 
-    @Inject protected lateinit var javabotConfig: JavabotConfig
+    @Inject private lateinit var javabotConfig: JavabotConfig
 
     @Test
     fun testConfig() {
-        Assert.assertNotEquals(javabotConfig.nick(), "javabot")
-        Assert.assertNotEquals(javabotConfig.databaseName(), "javabot")
+        assertNotEquals("javabot", javabotConfig.nick())
+        assertNotEquals("javabot", javabotConfig.databaseName())
     }
 }

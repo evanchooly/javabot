@@ -1,6 +1,5 @@
 package javabot.dao
 
-import com.google.inject.Inject
 import dev.morphia.Datastore
 import dev.morphia.DeleteOptions
 import dev.morphia.query.FindOptions
@@ -8,6 +7,8 @@ import dev.morphia.query.Sort
 import dev.morphia.query.filters.Filters.eq
 import dev.morphia.query.filters.Filters.gte
 import dev.morphia.query.filters.Filters.lte
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.Locale
@@ -19,6 +20,7 @@ import javabot.model.Logs.Type
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+@Singleton
 class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channelDao: ChannelDao) :
     BaseDao<Logs>(ds, Logs::class.java) {
 
@@ -47,7 +49,7 @@ class LogsDao @Inject constructor(ds: Datastore, var dao: ConfigDao, var channel
     }
 
     private fun dailyLog(channelName: String, date: LocalDateTime?, logged: Boolean) =
-        if (logged) listOf()
+        if (!logged) listOf()
         else {
             val start = if (date == null) LocalDate.now() else date.toLocalDate()
             val tomorrow = start.plusDays(1)

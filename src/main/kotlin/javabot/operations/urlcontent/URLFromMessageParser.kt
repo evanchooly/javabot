@@ -1,5 +1,6 @@
 package javabot.operations.urlcontent
 
+import jakarta.inject.Singleton
 import java.net.URI
 import java.net.URL
 import java.util.ArrayList
@@ -7,6 +8,7 @@ import java.util.stream.Collectors
 import org.apache.commons.lang.StringUtils.isBlank
 import org.apache.commons.lang3.ArrayUtils
 
+@Singleton
 class URLFromMessageParser {
 
     fun urlsFromMessage(message: String): List<URL> {
