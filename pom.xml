@@ -477,7 +477,7 @@
         <kotlin.version>2.4.20</kotlin.version>
         <logback.version>1.3.16</logback.version>
         <morphia.version>2.5.3</morphia.version>
-        <okhttp.version>4.12.0</okhttp.version>
+        <okhttp.version>5.5.0</okhttp.version>
         <slf4j.version>2.0.19</slf4j.version>
         <sofia.version>0.25</sofia.version>
         <kgpt.version>1.0.1</kgpt.version>
