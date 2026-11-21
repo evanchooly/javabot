@@ -1,12 +1,9 @@
 package javabot.web.views
 
-import freemarker.template.Configuration.VERSION_2_3_32
-import io.dropwizard.views.View
-import io.dropwizard.views.freemarker.FreemarkerViewRenderer
+import io.quarkus.qute.TemplateInstance
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.util.Locale
 import javabot.BaseTest
 import javax.inject.Inject
 import net.htmlparser.jericho.Source
@@ -14,7 +11,7 @@ import org.testng.Assert
 
 public open class ViewsTest : BaseTest() {
 
-    @Inject protected lateinit var viewFactory: ViewFactory
+    @Inject protected lateinit var templateService: TemplateService
 
     protected fun checkRange(source: Source, from: Int, to: Int, of: Int) {
         val content = source.getElementById("currentPage").content.toString().trim()
@@ -66,10 +63,10 @@ public open class ViewsTest : BaseTest() {
     }
 
     @Throws(IOException::class)
-    protected fun render(view: View): Source {
-        val renderer = FreemarkerViewRenderer(VERSION_2_3_32)
+    protected fun render(templateInstance: TemplateInstance): Source {
         val output = ByteArrayOutputStream()
-        renderer.render(view, Locale.getDefault(), output)
+        val html = templateInstance.render()
+        output.write(html.toByteArray())
         return Source(ByteArrayInputStream(output.toByteArray()))
     }
 }

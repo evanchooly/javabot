@@ -1,8 +1,20 @@
 package javabot.web.resources
 
 import com.antwerkz.sofia.Sofia
-import com.codahale.metrics.annotation.Timed
 import com.google.common.base.Optional
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.inject.Inject
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.ws.rs.GET
+import jakarta.ws.rs.Path
+import jakarta.ws.rs.Produces
+import jakarta.ws.rs.WebApplicationException
+import jakarta.ws.rs.core.Context
+import jakarta.ws.rs.core.MediaType
+import jakarta.ws.rs.core.NewCookie
+import jakarta.ws.rs.core.Response
+import jakarta.ws.rs.core.Response.Status.BAD_REQUEST
+import jakarta.ws.rs.core.Response.Status.UNAUTHORIZED
 import java.net.URI
 import java.net.URISyntaxException
 import java.util.UUID
@@ -13,44 +25,33 @@ import javabot.web.model.Authority.ROLE_ADMIN
 import javabot.web.model.Authority.ROLE_PUBLIC
 import javabot.web.model.InMemoryUserCache.INSTANCE
 import javabot.web.model.User
-import javax.inject.Inject
-import javax.servlet.http.HttpServletRequest
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
-import javax.ws.rs.WebApplicationException
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.MediaType
-import javax.ws.rs.core.NewCookie
-import javax.ws.rs.core.Response
-import javax.ws.rs.core.Response.Status.BAD_REQUEST
-import javax.ws.rs.core.Response.Status.UNAUTHORIZED
 import org.brickred.socialauth.SocialAuthConfig
 import org.brickred.socialauth.SocialAuthManager
-import org.brickred.socialauth.util.SocialAuthUtil
+import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.slf4j.LoggerFactory
 
 @Path("/auth")
 @Produces(MediaType.TEXT_HTML)
+@ApplicationScoped
 class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
 
-    var configuration: JavabotConfiguration? = null
+    @ConfigProperty(name = "javabot.oauth.success.url", defaultValue = "/")
+    lateinit var oauthSuccessUrl: String
+
+    @ConfigProperty(name = "javabot.oauth.config", defaultValue = "")
+    var oauthConfigPath: String? = null
 
     @GET
     @Path("/login")
     @Throws(URISyntaxException::class)
     fun requestOAuth(@Context request: HttpServletRequest): Response {
-        val oauthCfg = configuration!!.OAuthCfg
-        if (oauthCfg != null) {
+        if (oauthConfigPath != null && oauthConfigPath!!.isNotEmpty()) {
             try {
                 val manager = getSocialAuthManager()
 
                 request.session.setAttribute(AUTH_MANAGER, manager)
 
-                val uri =
-                    URI(
-                        manager?.getAuthenticationUrl("googleplus", configuration!!.OAuthSuccessUrl)
-                    )
+                val uri = URI(manager?.getAuthenticationUrl("googleplus", oauthSuccessUrl))
                 return Response.temporaryRedirect(uri).build()
             } catch (e: Exception) {
                 log.error(e.message, e)
@@ -65,13 +66,17 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
      * @return The OAuth identifier for this user if verification was successful
      */
     @GET
-    @Timed
     @Path("/verify")
     fun verifyOAuthServerResponse(@Context request: HttpServletRequest): Response {
         val manager = request.session.getAttribute(AUTH_MANAGER) as SocialAuthManager
 
         try {
-            val params = SocialAuthUtil.getRequestParametersMap(request)
+            // SocialAuthUtil expects javax.servlet, but we have jakarta.servlet
+            // We need to create a wrapper or cast appropriately
+            val params = mutableMapOf<String, String>()
+            request.parameterMap.forEach { (key, values) ->
+                if (values.isNotEmpty()) params[key] = values[0]
+            }
             val provider = manager.connect(params)
 
             val p = provider.userProfile
@@ -113,12 +118,23 @@ class PublicOAuthResource @Inject constructor(var adminDao: AdminDao) {
     private fun getSocialAuthManager(): SocialAuthManager? {
         val config = SocialAuthConfig.getDefault()
         try {
-            config.load(configuration!!.getOAuthCfgProperties())
+            // Load OAuth configuration from file if path is provided
+            if (oauthConfigPath != null && oauthConfigPath!!.isNotEmpty()) {
+                val configFile = java.io.File(oauthConfigPath!!)
+                if (configFile.exists()) {
+                    val props = java.util.Properties()
+                    configFile.inputStream().use { props.load(it) }
+                    config.load(props)
+                    log.info("Loaded OAuth configuration from {}", oauthConfigPath)
+                } else {
+                    log.warn("OAuth config file not found: {}", oauthConfigPath)
+                }
+            }
             val manager = SocialAuthManager()
             manager.socialAuthConfig = config
             return manager
         } catch (e: Exception) {
-            log.error(e.message, e)
+            log.error("Failed to initialize SocialAuthManager: {}", e.message, e)
         }
 
         return null

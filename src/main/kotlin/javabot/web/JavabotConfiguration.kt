@@ -2,12 +2,11 @@ package javabot.web
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import io.dropwizard.Configuration
 import java.util.HashMap
 import java.util.Properties
 import javabot.web.model.OAuthConfig
 
-class JavabotConfiguration : Configuration() {
+class JavabotConfiguration {
 
     companion object {
         val SESSION_TOKEN_NAME: String = "JavabotSession"
